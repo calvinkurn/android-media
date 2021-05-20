@@ -1,106 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
+    android:padding="@dimen/dp_16">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokonowEmptyStateIcon"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:padding="@dimen/dp_16">
+        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/tokomart_ic_empty_state_no_address" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/tokonowEmptyStateIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/tokomart_ic_empty_state_no_address"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokonowEmptyStateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/tokomart_common_empty_state_title"
+        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateDesc1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateIcon"
+        app:typographyType="heading_2" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tokonowEmptyStateTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tokomart_common_empty_state_title"
-            android:gravity="center"
-            app:typographyType="heading_2"
-            app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateIcon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokonowEmptyStateIcon1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc1"
+        app:layout_constraintEnd_toStartOf="@id/tokonowEmptyStateDesc1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tokonowEmptyStateDesc1"
+        app:srcCompat="@drawable/tokomart_ic_empty_state_watch" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/tokonowEmptyStateIcon1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/tokomart_ic_empty_state_watch"
-            app:layout_constraintTop_toTopOf="@id/tokonowEmptyStateDesc1"
-            app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc1"
-            app:layout_constraintStart_toStartOf="@id/tokonowEmptyStateTitle"
-            app:layout_constraintEnd_toStartOf="@id/tokonowEmptyStateTitle"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokonowEmptyStateDesc1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_12"
+        android:text="@string/tokomart_common_empty_state_desc_1"
+        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateDesc2"
+        app:layout_constraintStart_toEndOf="@id/tokonowEmptyStateIcon1"
+        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_2" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tokonowEmptyStateDesc1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginStart="@dimen/dp_20"
-            android:text="@string/tokomart_common_empty_state_desc_1"
-            app:typographyType="body_2"
-            app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateTitle"
-            app:layout_constraintStart_toEndOf="@id/tokonowEmptyStateIcon1" />
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokonowEmptyStateIcon2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc2"
+        app:layout_constraintEnd_toStartOf="@id/tokonowEmptyStateDesc2"
+        app:layout_constraintStart_toStartOf="@id/tokonowEmptyStateTitle"
+        app:layout_constraintTop_toTopOf="@id/tokonowEmptyStateDesc2"
+        app:srcCompat="@drawable/tokomart_ic_empty_state_map" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/tokonowEmptyStateIcon2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/tokonowEmptyStateTitle"
-            app:layout_constraintEnd_toStartOf="@id/tokonowEmptyStateTitle"
-            app:layout_constraintTop_toTopOf="@id/tokonowEmptyStateDesc2"
-            app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc2"
-            app:srcCompat="@drawable/tokomart_ic_empty_state_map"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokonowEmptyStateDesc2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/tokomart_common_empty_state_desc_2"
+        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButton1"
+        app:layout_constraintEnd_toEndOf="@id/tokonowEmptyStateDesc1"
+        app:layout_constraintStart_toEndOf="@id/tokonowEmptyStateIcon2"
+        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc1"
+        app:typographyType="body_2" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tokonowEmptyStateDesc2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_20"
-            android:text="@string/tokomart_common_empty_state_desc_2"
-            app:typographyType="body_2"
-            app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc1"
-            app:layout_constraintStart_toEndOf="@id/tokonowEmptyStateIcon2"
-            app:layout_constraintEnd_toEndOf="@id/tokonowEmptyStateDesc1"/>
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/tokonowEmptyStateButton1"
+        android:layout_width="@dimen/dp_240"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_24"
+        android:text="@string/tokomart_common_empty_state_button_change_address"
+        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButton2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc2"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/tokonowEmptyStateButton1"
-            android:layout_width="@dimen/dp_240"
-            android:layout_height="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_24"
-            android:text="@string/tokomart_common_empty_state_button_change_address"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonType="main"
-            app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/tokonowEmptyStateButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/tokomart_common_empty_state_button_return"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateButton1"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="text" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/tokonowEmptyStateButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/tokomart_common_empty_state_button_return"
-            android:gravity="center"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="text"
-            app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateButton1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
