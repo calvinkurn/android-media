@@ -52,20 +52,8 @@ class HomeViewModelListCarouselUnitTest{
         // Express checkout clicked
         homeViewModel.onCloseBuyAgain(dataModel.channel!!.id, 0)
 
-
         // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                        (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.none { it::class.java == DynamicChannelDataModel::class.java }
-            })
-        }
-        confirmVerified(observerHome)
-
+        assert(homeViewModel.homeDataModel.list.none { it::class.java == DynamicChannelDataModel::class.java })
     }
 
     @Test
@@ -91,19 +79,7 @@ class HomeViewModelListCarouselUnitTest{
         homeViewModel.onCloseBuyAgain(dataModel.channelModel.id, 0)
 
 
-        // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is RecommendationListCarouselDataModel &&
-                        (it.list.first() as RecommendationListCarouselDataModel).channelModel.id == "1"
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.none { it::class.java == RecommendationListCarouselDataModel::class.java }
-            })
-        }
-        confirmVerified(observerHome)
-
+        assert(homeViewModel.homeDataModel.list.none { it::class.java == DynamicChannelDataModel::class.java })
     }
 
     @Test

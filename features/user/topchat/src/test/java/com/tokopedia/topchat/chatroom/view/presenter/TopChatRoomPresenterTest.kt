@@ -1469,7 +1469,7 @@ class TopChatRoomPresenterTest {
         )
 
         // When
-        presenter.addOngoingUpdateProductStock(product, 0, null)
+        presenter.addOngoingUpdateProductStock(productId, product, 0, null)
 
         // Then
         assertThat(presenter.onGoingStockUpdate.containsKey(productId), `is`(true))
