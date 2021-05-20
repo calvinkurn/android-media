@@ -116,10 +116,7 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
         try {
             loadImageBuilder(
                     imageView = this,
-                    properties = properties.apply {
-                        useBlurHash(false)
-                        setSource(source)
-                    }
+                    properties = properties.setSource(source)
             )
         } catch (e: Exception) {
             e.printStackTrace()

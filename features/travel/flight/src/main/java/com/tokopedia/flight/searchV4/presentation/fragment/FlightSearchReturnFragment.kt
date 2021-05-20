@@ -12,6 +12,7 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.HorizontalProgressBar
+import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_BEST_PAIRING
@@ -78,8 +79,9 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         flightSearchReturnViewModel.onFlightSearchSelected(flightSearchViewModel.flightSearchPassData, journeyModel, adapterPosition)
     }
 
-    override fun onSelectedFromDetail(selectedId: String) {
+    override fun onSelectedFromDetail(detailBottomSheet: FlightDetailBottomSheet, selectedId: String) {
         flightSearchReturnViewModel.onFlightSearchSelectFromDetail(flightSearchViewModel.flightSearchPassData, selectedId)
+        if (detailBottomSheet.isAdded && detailBottomSheet.isVisible) detailBottomSheet.dismiss()
     }
 
     override fun initViewModels() {
@@ -125,12 +127,12 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         if (flightSearchReturnViewModel.isBestPairing &&
                 !flightSearchReturnViewModel.isViewOnlyBestPairing &&
                 list.isNotEmpty()) {
-                    showSeeBestPairingResultView()
+            showSeeBestPairingResultView()
         }
 
         super.renderSearchList(list)
 
-        if(flightSearchReturnViewModel.isViewOnlyBestPairing){
+        if (flightSearchReturnViewModel.isViewOnlyBestPairing) {
             hidePromoChips()
         }
 

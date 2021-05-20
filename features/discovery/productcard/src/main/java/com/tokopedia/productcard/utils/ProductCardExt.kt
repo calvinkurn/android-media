@@ -101,6 +101,7 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
 internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
+            setPlaceHolder(R.drawable.product_card_placeholder_grey)
             setErrorDrawable(R.drawable.product_card_placeholder_grey)
         }
     }
@@ -135,6 +136,7 @@ internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
             setErrorDrawable(R.drawable.product_card_placeholder_grey)
+            setPlaceHolder(R.drawable.product_card_placeholder_grey)
             centerCrop()
             setRoundedRadius(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6).toFloat())
         }
