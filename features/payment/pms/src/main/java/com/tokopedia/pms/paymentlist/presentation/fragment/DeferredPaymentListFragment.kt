@@ -152,10 +152,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     private fun showEmptyState() {
         noPendingTransactionEmptyState.visible()
         noPendingTransactionEmptyState.setPrimaryCTAClickListener {
-            RouteManager.route(
-                context,
-                ApplinkConst.HOME
-            )
+            RouteManager.route(context, ApplinkConst.HOME)
         }
     }
 
@@ -165,7 +162,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         paymentListGlobalError.setActionClickListener {
             paymentListGlobalError.gone()
             recycler_view.visible()
-            viewModel.getPaymentList()
+            onRefresh()
         }
     }
 
@@ -179,12 +176,10 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun openInvoiceDetail(model: BasePaymentModel) {
-        Toaster.make(recycler_view, model.invoiceDetailUrl, Toaster.LENGTH_LONG)
         RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, model.invoiceDetailUrl)
     }
 
     private fun redirectToHowToPay(model: BasePaymentModel) {
-        Toaster.make(recycler_view, model.howtoPayAppLink, Toaster.LENGTH_LONG)
         RouteManager.route(context, model.howtoPayAppLink)
     }
 

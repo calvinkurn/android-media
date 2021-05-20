@@ -31,9 +31,9 @@
         android:paddingTop="@dimen/unify_space_16"
         android:gravity="center"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
-    <com.tokopedia.unifycomponents.EmptyState
+    <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/noPendingTransactionEmptyState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +46,8 @@
         app:unifyEmptyStateDescription="@string/pms_deferred_payment_empty_subtitle"
         app:unifyEmptyStatePrimaryCTAText="@string/pms_deferred_payment_empty_action"
         app:unifyEmptyStateTitle="@string/pms_deferred_payment_empty_title"
-        app:unifyEmptyStateType="page"
+        app:unifyEmptyStateType="section"
         android:paddingTop="@dimen/unify_space_16"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

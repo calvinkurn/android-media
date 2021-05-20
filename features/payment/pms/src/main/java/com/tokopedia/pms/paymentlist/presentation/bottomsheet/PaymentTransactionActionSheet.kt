@@ -75,6 +75,7 @@ class PaymentTransactionActionSheet : BottomSheetUnify() {
                 }
             }
         }
+        dismiss()
     }
 
     private fun handleCancelPendingPayment(listener: PaymentListActionListener) {
@@ -94,7 +95,6 @@ class PaymentTransactionActionSheet : BottomSheetUnify() {
                 model.extractValues().second, null
             )
         }
-        dismiss()
     }
 
     companion object {
