@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -200,8 +201,8 @@ abstract class BaseSearchCategoryFragment:
         }
     }
 
-    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-
+    override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
+        getViewModel().onViewApplySortFilter(applySortFilterModel)
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
@@ -209,9 +210,10 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun onDynamicFilterModelChanged(dynamicFilterModel: DynamicFilterModel?) {
-        dynamicFilterModel?.let { it ->
-            sortFilterBottomSheet?.setDynamicFilterModel(it)
-        }
+        dynamicFilterModel ?: return
+        val sortFilterBottomSheet = sortFilterBottomSheet ?: return
+
+        sortFilterBottomSheet.setDynamicFilterModel(dynamicFilterModel)
     }
 
     override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {

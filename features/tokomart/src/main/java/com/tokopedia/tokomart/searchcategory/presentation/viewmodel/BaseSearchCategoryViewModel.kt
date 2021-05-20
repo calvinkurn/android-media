@@ -8,6 +8,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -63,6 +66,10 @@ abstract class BaseSearchCategoryViewModel(
     protected var totalData = 0
     protected var totalFetchedData = 0
     protected var nextPage = 1
+
+    init {
+        queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
+    }
 
     abstract fun onViewCreated()
 
@@ -159,10 +166,14 @@ abstract class BaseSearchCategoryViewModel(
                 isCleanUpExistingFilterWithSameKey = option.isCategoryOption,
         )
 
-        queryParamMutable.clear()
-        queryParamMutable.putAll(filterController.getParameter())
+        refreshQueryParamFromFilterController()
 
         onViewReloadPage()
+    }
+
+    private fun refreshQueryParamFromFilterController() {
+        queryParamMutable.clear()
+        queryParamMutable.putAll(filterController.getParameter())
     }
 
     open fun onViewReloadPage() {
@@ -268,6 +279,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun onGetFilterSuccess(dynamicFilterModel: DynamicFilterModel) {
+        filterController.appendFilterList(queryParam, dynamicFilterModel.data.filter)
         dynamicFilterModelMutableLiveData.value = dynamicFilterModel
     }
 
@@ -278,8 +290,8 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createGetFilterRequestParams(): RequestParams =
         RequestParams.create().also {
             it.putAll(queryParamMutable as Map<String, String>)
-//            it.putString(SearchApiConst.SOURCE, "search") // Temporary, source should be tokonow
-            it.putString(SearchApiConst.SOURCE, TOKONOW)
+            it.putString(SearchApiConst.SOURCE, "search") // Temporary, source should be tokonow
+//            it.putString(SearchApiConst.SOURCE, TOKONOW)
         }
 
     open fun onViewDismissFilterPage() {
@@ -288,6 +300,13 @@ abstract class BaseSearchCategoryViewModel(
 
     fun onCategoryFilterClicked(option: Option, isSelected: Boolean) {
         onFilterChipSelected(option, isSelected)
+    }
+
+    fun onViewApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
+        filterController.refreshMapParameter(applySortFilterModel.mapParameter)
+        refreshQueryParamFromFilterController()
+
+        onViewReloadPage()
     }
 
     protected data class HeaderDataView(

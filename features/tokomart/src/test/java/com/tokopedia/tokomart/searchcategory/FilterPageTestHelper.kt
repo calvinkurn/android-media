@@ -1,7 +1,9 @@
 package com.tokopedia.tokomart.searchcategory
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.usecase.RequestParams
@@ -11,18 +13,23 @@ import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.Assert.assertThat
+import java.lang.AssertionError
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
-class OpenFilterPageTestHelper(
+class FilterPageTestHelper(
         private val baseViewModel: BaseSearchCategoryViewModel,
         private val getFilterUseCase: UseCase<DynamicFilterModel>,
 ) {
+    private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
+    private val mockApplyFilterMapParam = mutableMapOf<String, String>()
+    private val selectedFilterMap = mutableMapOf<String, String>()
+    private var applySortFilterModel: ApplySortFilterModel? = null
 
     fun `test open filter page first time`(expectedQueryParamMap: Map<String, String>) {
         val filterRequestParamsSlot = slot<RequestParams>()
         val filterRequestParams by lazy { filterRequestParamsSlot.captured }
-        val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
 
+        `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel, filterRequestParamsSlot)
 
         `When view open filter page`()
@@ -30,6 +37,10 @@ class OpenFilterPageTestHelper(
         `Then assert filter is open live data`(true)
         `Then assert filter request params`(expectedQueryParamMap, filterRequestParams)
         `Then assert dynamic filter model live data is updated`(dynamicFilterModel)
+    }
+
+    private fun `Given view already created`() {
+        baseViewModel.onViewCreated()
     }
 
     private fun `Given get filter API will be successful`(
@@ -72,8 +83,7 @@ class OpenFilterPageTestHelper(
     }
 
     fun `test open filter page cannot be spammed`() {
-        val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
-
+        `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel)
 
         `When view open filter page`()
@@ -90,8 +100,7 @@ class OpenFilterPageTestHelper(
     }
 
     fun `test dismiss filter page`() {
-        val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
-
+        `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel)
         `Given view open filter page`()
 
@@ -109,8 +118,7 @@ class OpenFilterPageTestHelper(
     }
 
     fun `test open filter page second time should not call API again`() {
-        val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
-
+        `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel)
         `Given view open filter page`()
         `Given view dismiss filter page`()
@@ -122,5 +130,57 @@ class OpenFilterPageTestHelper(
 
     private fun `Given view dismiss filter page`() {
         baseViewModel.onViewDismissFilterPage()
+    }
+
+    fun `test apply filter from filter page`(testInterface: ApplyFilterTestInterface) {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+
+        `Given view already created`()
+        `Given get filter API will be successful`(dynamicFilterModel)
+        `Given view open filter page`()
+        `Given mock apply filter param`(dynamicFilterModel)
+
+        `When view apply filter`()
+
+        testInterface.`Then assert first page use case is called twice`(requestParamsSlot)
+        `Then verify query params is updated from filter`(requestParams)
+    }
+
+    private fun `Given mock apply filter param`(dynamicFilterModel: DynamicFilterModel) {
+        val selectedFilterOption = dynamicFilterModel.data.filter[0].options[3]
+
+        selectedFilterMap.clear()
+        selectedFilterMap[selectedFilterOption.key] = selectedFilterOption.value
+
+        mockApplyFilterMapParam.clear()
+        mockApplyFilterMapParam.putAll(baseViewModel.queryParam)
+        mockApplyFilterMapParam.putAll(selectedFilterMap)
+
+        applySortFilterModel = ApplySortFilterModel(
+                mapParameter = mockApplyFilterMapParam,
+                selectedFilterMapParameter = selectedFilterMap,
+                selectedSortMapParameter = mapOf(),
+                selectedSortName = "",
+        )
+    }
+
+    private fun `When view apply filter`() {
+        val applySortFilterModel = applySortFilterModel ?:
+        throw AssertionError("Apply Sort Filter Model is null")
+
+        baseViewModel.onViewApplySortFilter(applySortFilterModel)
+    }
+
+    private fun `Then verify query params is updated from filter`(requestParams: RequestParams) {
+        val queryParams = getTokonowQueryParam(requestParams)
+
+        mockApplyFilterMapParam.forEach { (key, value) ->
+            assertThat("Query param with key $key is incorrect", queryParams[key], shouldBe(value))
+        }
+    }
+
+    interface ApplyFilterTestInterface {
+        fun `Then assert first page use case is called twice`(requestParamsSlot: CapturingSlot<RequestParams>)
     }
 }
