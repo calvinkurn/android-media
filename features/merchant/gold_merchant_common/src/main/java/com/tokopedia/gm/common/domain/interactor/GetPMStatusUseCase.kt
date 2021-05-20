@@ -29,7 +29,7 @@ class GetPMStatusUseCase @Inject constructor(
             return if (data.shopStatus?.data != null) {
                 mapper.mapRemoteModelToUiModel(data.shopStatus.data)
             } else {
-                throw MessageErrorException("power merchant data is null from backend")
+                throw RuntimeException("power merchant data is null from backend")
             }
         } else {
             throw MessageErrorException(gqlErrors.joinToString(" - ") { it.message })

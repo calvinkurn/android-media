@@ -1,6 +1,5 @@
 package com.tokopedia.seller.menu.presentation.fragment
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -27,8 +26,8 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
@@ -177,22 +176,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-    }
-
-    fun onNewIntent(uri: Uri?) {
-        uri?.let {
-            activity?.let { activity ->
-                view?.run {
-                    pmShopScoreInterruptHelper.setShopScoreConsentStatus(activity, it) {
-                        if (it) {
-                            pmShopScoreInterruptHelper.showsShopScoreConsentToaster(rootView)
-                        }
-                    }
-
-                    pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, rootView)
-                }
-            }
-        }
     }
 
     private fun setupSwipeRefresh() {
