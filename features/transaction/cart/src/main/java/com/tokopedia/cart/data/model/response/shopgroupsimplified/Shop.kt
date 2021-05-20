@@ -38,6 +38,7 @@ data class Shop(
         val isGold: Int = 0,
         @SerializedName("is_official")
         val isOfficial: Int = 0,
+
         @SerializedName("shop_ticker")
         val shopTicker: String = "",
         @SerializedName("maximum_weight_wording")

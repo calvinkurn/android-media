@@ -190,6 +190,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setTradeInDropOff(isTradeInDropOff);
         shippingParam.setPreOrderDuration(shipmentDetailData.getShipmentCartData().getPreOrderDuration());
         shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
+        shippingParam.setBoMetadata(shipmentDetailData.getShipmentCartData().getBoMetadata());
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));

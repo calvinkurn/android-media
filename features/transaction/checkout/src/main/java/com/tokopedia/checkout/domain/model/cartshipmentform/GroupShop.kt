@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.BoMetadata
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

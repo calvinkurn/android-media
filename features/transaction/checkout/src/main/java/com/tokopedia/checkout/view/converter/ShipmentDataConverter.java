@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.converter;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShopTypeInfo;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;

@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.model.response.shipmentaddressform
+package com.tokopedia.purchase_platform.common.feature.bometadata
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

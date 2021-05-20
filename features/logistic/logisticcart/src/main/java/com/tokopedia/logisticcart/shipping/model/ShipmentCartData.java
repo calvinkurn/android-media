@@ -3,6 +3,8 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata;
+
 import java.util.List;
 
 /**
@@ -33,6 +35,7 @@ public class ShipmentCartData implements Parcelable {
     private int preOrderDuration;
     private boolean isFulfillment;
     private int shopTier;
+    private BoMetadata boMetadata;
 
     public ShipmentCartData() {
     }
@@ -221,6 +224,14 @@ public class ShipmentCartData implements Parcelable {
         this.shopTier = shopTier;
     }
 
+    public BoMetadata getBoMetadata() {
+        return boMetadata;
+    }
+
+    public void setBoMetadata(BoMetadata boMetadata) {
+        this.boMetadata = boMetadata;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -251,6 +262,7 @@ public class ShipmentCartData implements Parcelable {
         dest.writeInt(this.preOrderDuration);
         dest.writeByte((byte) (isFulfillment? 1 : 0));
         dest.writeInt(shopTier);
+        dest.writeParcelable(boMetadata, flags);
     }
 
     protected ShipmentCartData(Parcel in) {
@@ -277,6 +289,7 @@ public class ShipmentCartData implements Parcelable {
         this.preOrderDuration = in.readInt();
         this.isFulfillment = in.readByte() != 0;
         this.shopTier = in.readInt();
+        this.boMetadata = in.readParcelable(BoMetadata.class.getClassLoader());
     }
 
     public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
