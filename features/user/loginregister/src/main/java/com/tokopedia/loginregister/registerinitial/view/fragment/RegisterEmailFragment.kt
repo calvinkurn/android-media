@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.registerinitial.view.fragment
 
+import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -33,11 +34,12 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
-import com.tokopedia.loginregister.registerinitial.view.util.RegisterUtil
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -75,32 +77,27 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     var source = ""
     var token = ""
 
-    @JvmField
     @Inject
-    var analytics: LoginRegisterAnalytics? = null
+    lateinit var analytics: LoginRegisterAnalytics
 
-    @JvmField
     @Inject
-    var registerAnalytics: RegisterAnalytics? = null
+    lateinit var registerAnalytics: RegisterAnalytics
 
-    @JvmField
-    @Named(SessionModule.SESSION_MODULE)
+    @field:Named(SessionModule.SESSION_MODULE)
     @Inject
-    var userSession: UserSessionInterface? = null
+    lateinit var userSession: UserSessionInterface
 
-    @JvmField
     @Inject
-    var viewModelFactory: ViewModelProvider.Factory? = null
-    var viewModelProvider: ViewModelProvider? = null
-    var registerInitialViewModel: RegisterInitialViewModel? = null
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelProvider: ViewModelProvider
+    lateinit var registerInitialViewModel: RegisterInitialViewModel
 
     //** see fragment_register_email
     private val REGISTER_BUTTON_IME = 123321
-
     override fun onStart() {
         super.onStart()
-        activity?.run {
-            analytics?.trackScreen(this, screenName)
+        activity?.let {
+            analytics?.trackScreen(it, screenName)
         }
     }
 
@@ -153,10 +150,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     private fun initObserver() {
         registerInitialViewModel?.registerRequestResponse?.observe(viewLifecycleOwner, Observer { registerRequestDataResult: Result<RegisterRequestData>? ->
-            if (registerRequestDataResult is Success<*>) {
-                val data = (registerRequestDataResult as Success<RegisterRequestData>).data
+            if (registerRequestDataResult is Success) {
+                val data = (registerRequestDataResult).data
                 userSession?.clearToken()
-                userSession?.setToken(data.accessToken, data.tokenType, data.refreshToken)
+                userSession?.setToken(data.accessToken, data.tokenType, EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
                 onSuccessRegister()
                 if (activity != null) {
                     val intent = Intent()
@@ -168,12 +165,14 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
                 dismissLoadingProgress()
-                if (throwable is MessageErrorException
-                        && throwable.message != null && throwable.message?.contains(ALREADY_REGISTERED) == true) {
-                    showInfo()
-                } else if (throwable is MessageErrorException
-                        && throwable.message != null) {
-                    onErrorRegister(throwable.message)
+                if(throwable is MessageErrorException){
+                    throwable.message?.run {
+                        if(this.contains(ALREADY_REGISTERED)){
+                            showInfo()
+                        } else {
+                            onErrorRegister(throwable.message)
+                        }
+                    }
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
@@ -219,6 +218,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
     }
@@ -259,7 +259,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length > 0) {
+                if (s.isNotEmpty()) {
                     setWrapperErrorNew(wrapper, null)
                 }
             }
@@ -284,9 +284,15 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun passwordWatcher(wrapper: TextFieldUnify?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperErrorNew(wrapper, null)
+                }
+            }
 
             override fun afterTextChanged(s: Editable) {
+                showPasswordHint()
+                if (s.isEmpty()) { setWrapperErrorNew(wrapper, getString(R.string.error_field_required)) }
                 checkIsValidForm()
             }
         }
@@ -312,6 +318,19 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
+    val emailListOfAccountsUserHasLoggedInto: List<String>
+        get() {
+            val listOfAddresses: MutableSet<String> = LinkedHashSet()
+            val emailPattern = Patterns.EMAIL_ADDRESS
+            val accounts = AccountManager.get(activity).getAccountsByType("com.google")
+            for (account in accounts) {
+                if (emailPattern.matcher(account.name).matches()) {
+                    listOfAddresses.add(account.name)
+                }
+            }
+            return ArrayList(listOfAddresses)
+        }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setViewListener() {
         wrapperPassword?.textFieldInput?.setOnEditorActionListener { v: TextView?, id: Int, event: KeyEvent? ->
@@ -322,6 +341,26 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             false
         }
         registerButton?.setOnClickListener { v: View? -> registerEmail() }
+    }
+
+    private fun validatePasswordInput(): Boolean {
+        wrapperPassword?.textFieldInput?.text?.toString()?.run {
+            return when {
+                isEmpty() -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_field_required))
+                    false
+                }
+                PasswordUtils.isTooShortLength(this) -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_minimal_password))
+                    false
+                }
+                PasswordUtils.isExceedMaximumLength(this) -> {
+                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_maximal_password))
+                    false
+                } else -> true
+            }
+        }
+        return false
     }
 
     private fun registerEmail() {
@@ -348,56 +387,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun validatePasswordInput(): Boolean {
-        wrapperPassword?.textFieldInput?.text?.toString()?.run {
-            return when {
-                isEmpty() -> {
-                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_field_required))
-                    false
-                }
-                !PasswordUtils.isValidMinimumlength(this) -> {
-                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_minimal_password))
-                    false
-                }
-                !PasswordUtils.isValidMaxLength(this) -> {
-                    setWrapperErrorNew(wrapperPassword, getString(R.string.error_maximal_password))
-                    false
-                } else -> true
-            }
-        }
-        return false
-    }
-
-    fun isCanRegister(name: String?, email: String?, password: String): Boolean {
-        var isValid = true
-        if (TextUtils.isEmpty(password)) {
-            isValid = false
-        } else if (password.length < PasswordUtils.PASSWORD_MINIMUM_LENGTH) {
-            isValid = false
-        } else if(password.length > PasswordUtils.PASSWORD_MAXIMUM_LENGTH){
-            isValid = false
-        }
-        if (TextUtils.isEmpty(name)) {
-            isValid = false
-        } else if (RegisterUtil.checkRegexNameLocal(name)) {
-            isValid = false
-        } else if (RegisterUtil.isBelowMinChar(name)) {
-            isValid = false
-        } else if (RegisterUtil.isExceedMaxCharacter(name)) {
-            isValid = false
-        }
-        if (TextUtils.isEmpty(email)) {
-            isValid = false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            isValid = false
-        }
-        return isValid
-    }
-
     private fun checkIsValidForm() {
-        if (isCanRegister(wrapperName?.textFieldInput?.text.toString(),
-                        wrapperEmail?.textFieldInput?.text.toString(),
-                        wrapperPassword?.textFieldInput?.text.toString())) {
+        if (RegisterUtil.isCanRegister(wrapperName?.textFieldInput?.text.toString(), wrapperEmail?.textFieldInput?.text.toString(), wrapperPassword?.textFieldInput?.text.toString())) {
             setRegisterButtonEnabled()
         } else {
             setRegisterButtonDisabled()
@@ -429,6 +420,13 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     private fun setWrapperHint(wrapper: TextFieldUnify?, s: String) {
         wrapper?.setError(false)
         wrapper?.setMessage(s)
+    }
+
+    fun resetError() {
+        setWrapperErrorNew(wrapperName, null)
+        setWrapperErrorNew(wrapperEmail, null)
+        showPasswordHint()
+        showNameHint()
     }
 
     fun showPasswordHint() {
@@ -480,6 +478,21 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         registerButton?.clearFocus()
     }
 
+    private val isEmailAddressFromDevice: Boolean
+        private get() {
+            val list = emailListOfAccountsUserHasLoggedInto
+            var result = false
+            if (list.size > 0) {
+                for (e in list) {
+                    if (e == wrapperEmail?.textFieldInput?.text.toString()) {
+                        result = true
+                        break
+                    }
+                }
+            }
+            return result
+        }
+
     fun showInfo() {
         dismissLoadingProgress()
         val view: Typography? = redirectView?.findViewById(R.id.body)
@@ -501,10 +514,6 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     fun onForbidden() {
         ForbiddenActivity.startActivity(activity)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -555,6 +564,10 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage ?: "")
     }
 
+    val isAutoVerify: Int
+        get() = if (isEmailAddressFromDevice) 1 else 0
+
+
     fun onBackPressed() {
         registerAnalytics?.trackClickOnBackButtonRegisterEmail()
     }
@@ -564,7 +577,13 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         private const val REQUEST_ACTIVATE_ACCOUNT = 102
 
         private const val ALREADY_REGISTERED = "sudah terdaftar"
-        @JvmStatic
+        private const val GO_TO_REGISTER = 0
+        private const val GO_TO_ACTIVATION_PAGE = 1
+        private const val GO_TO_LOGIN = 2
+        private const val GO_TO_RESET_PASSWORD = 3
+        private const val STATUS_ACTIVE = 1
+        private const val STATUS_PENDING = -1
+        private const val STATUS_INACTIVE = 0
         fun createInstance(bundle: Bundle?): RegisterEmailFragment {
             val fragment = RegisterEmailFragment()
             fragment.arguments = bundle

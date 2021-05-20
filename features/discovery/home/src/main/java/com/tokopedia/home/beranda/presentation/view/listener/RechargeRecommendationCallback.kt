@@ -6,7 +6,6 @@ import com.tokopedia.home.analytics.v2.RechargeRecommendationTracking
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendationData
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home_component.listener.RechargeRecommendationListener
 import com.tokopedia.home_component.model.ReminderData
 

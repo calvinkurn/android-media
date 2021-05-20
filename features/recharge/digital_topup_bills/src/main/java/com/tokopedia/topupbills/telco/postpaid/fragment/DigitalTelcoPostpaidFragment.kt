@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
@@ -302,6 +303,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })
+
+        enquiryViewModel.enquiryResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> enquirySuccess(it.data)
+                is Fail -> {
+                    enquiryFailed(it.throwable)
+                }
+            }
+        })
+
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
                 if (userSession.isLoggedIn) {
@@ -316,21 +327,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     fun getEnquiryNumber() {
         operatorSelected?.let { selectedOperator ->
             topupAnalytics.eventClickCheckEnquiry(categoryId, operatorName, userSession.userId)
-            var mapParam = HashMap<String, Any>()
-            mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
-            mapParam.put(KEY_PRODUCT_ID, selectedOperator.operator.attributes.defaultProductId.toString())
-
             postpaidClientNumberWidget.setLoadingButtonEnquiry(true)
-            enquiryViewModel.getEnquiry(CommonTopupBillsGqlQuery.enquiryDigital, mapParam)
-
-            enquiryViewModel.enquiryResult.observe(this, Observer {
-                when (it) {
-                    is Success -> enquirySuccess(it.data)
-                    is Fail -> {
-                        enquiryFailed(it.throwable)
-                    }
-                }
-            })
+            enquiryViewModel.getEnquiry(
+                    CommonTopupBillsGqlQuery.rechargeInquiry,
+                    selectedOperator.operator.attributes.defaultProductId.toString(),
+                    postpaidClientNumberWidget.getInputNumber()
+            )
         }
     }
 
@@ -359,6 +361,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         view?.run {
             Toaster.build(this, ErrorHandler.getErrorMessage(context, error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
+    }
+
+    private fun onInputNewNumberUpdateLayout() {
+        viewPager.show()
+        buyWidget.setVisibilityLayout(false)
+        postpaidClientNumberWidget.resetEnquiryResult()
     }
 
     private fun setCheckoutPassData(telcoEnquiryData: TelcoEnquiryData) {
@@ -404,6 +412,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     }
                     postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
                     if (postpaidClientNumberWidget.getInputNumber().length in 10..14) {
+                        onInputNewNumberUpdateLayout()
                         postpaidClientNumberWidget.setButtonEnquiry(true)
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
@@ -505,8 +514,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         private const val CACHE_CLIENT_NUMBER = "cache_client_number"
         private const val EXTRA_PARAM = "extra_param"
         private const val DG_TELCO_POSTPAID_TRACE = "dg_telco_postpaid_pdp"
-        const val KEY_CLIENT_NUMBER = "clientNumber"
-        const val KEY_PRODUCT_ID = "productId"
         private const val TITLE_PAGE = "telco post paid"
 
 

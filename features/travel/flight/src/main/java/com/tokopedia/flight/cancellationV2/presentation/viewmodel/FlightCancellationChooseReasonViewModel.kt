@@ -3,7 +3,7 @@ package com.tokopedia.flight.cancellationV2.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellationV2.data.FlightCancellationReasonDataCacheSource
 import javax.inject.Inject
@@ -13,8 +13,8 @@ import javax.inject.Inject
  */
 class FlightCancellationChooseReasonViewModel @Inject constructor(
         private val reasonDataCacheSource: FlightCancellationReasonDataCacheSource,
-        dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var selectedReason: FlightCancellationPassengerEntity.Reason? = null
 

@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
-import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
@@ -30,7 +30,7 @@ interface CommonTopupBillsComponent {
 
     fun coroutineDispatcher(): CoroutineDispatcher
 
-    fun topupBillsDispatchersProvider(): TopupBillsDispatchersProvider
+    fun topupBillsDispatchersProvider(): CoroutineDispatchers
 
     fun graphqlRepository(): GraphqlRepository
 

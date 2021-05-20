@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -25,19 +27,23 @@ import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.oms.R;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
 public class ScroogeActivity extends AppCompatActivity implements FilePickerInterface {
     //callbacks URL's
-    private static String ADD_CC_SUCESS_CALLBACK = "tokopedia://action_add_cc_success";
-    private static String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";
-    private static String DELETE_CC_SUCESS_CALLBACK = "tokopedia://action_delete_cc_success";
-    private static String DELETE_CC_FAIL_CALLBACK = "tokopedia://action_delete_cc_fail";
-    private static String SUCCESS_CALLBACK = "tokopedia://order/";
+    private static final String ADD_CC_SUCESS_CALLBACK = "tokopedia://action_add_cc_success";
+    private static final String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";
+    private static final String DELETE_CC_SUCESS_CALLBACK = "tokopedia://action_delete_cc_success";
+    private static final String DELETE_CC_FAIL_CALLBACK = "tokopedia://action_delete_cc_fail";
+    private static final String SUCCESS_CALLBACK = "tokopedia://order/";
 
     private static final String EXTRA_KEY_POST_PARAMS = "EXTRA_KEY_POST_PARAMS";
     private static final String EXTRA_KEY_URL = "URL";
@@ -73,6 +79,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSecureWindowFlag();
         mPostParams = getIntent().getStringExtra(EXTRA_KEY_POST_PARAMS);
         mURl = getIntent().getStringExtra(EXTRA_KEY_URL);
         isPostRequest = getIntent().getBooleanExtra(EXTRA_IS_POST_REQUEST, false);
@@ -87,6 +94,18 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
 
     }
 
+    private void setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread(() -> {
+                Window window = getWindow();
+                if (window != null) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                }
+            });
+        }
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
@@ -97,11 +116,11 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     }
 
     private void initUI() {
-        mWebView = (WebView) findViewById(R.id.webview);
-        mProgress = (ProgressBar) findViewById(R.id.progressbar);
+        mWebView = findViewById(R.id.webview);
+        mProgress = findViewById(R.id.progressbar);
 
         //setup toolbar
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         if (mToolbar != null) {
             mToolbar.setTitle(title);
             setSupportActionBar(mToolbar);
@@ -146,7 +165,11 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
             public synchronized void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 Timber.d("ScroogeActivity :: Error occured while loading url " + failingUrl);
-                Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description);
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", failingUrl);
+                messageMap.put("error_code", String.valueOf(errorCode));
+                messageMap.put("desc", description);
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
                 Intent responseIntent = new Intent();
                 responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, description);
                 setResult(ScroogePGUtil.RESULT_CODE_RECIEVED_ERROR, responseIntent);

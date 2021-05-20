@@ -1,7 +1,7 @@
 package com.tokopedia.hotel.cancellation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -34,7 +34,7 @@ class HotelCancellationViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    val dispatcher = TravelTestDispatcherProvider()
+    val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelCancellationViewModel: HotelCancellationViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()

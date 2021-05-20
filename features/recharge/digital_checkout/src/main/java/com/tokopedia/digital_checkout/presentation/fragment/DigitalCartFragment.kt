@@ -453,20 +453,24 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
-        digitalAnalytics.eventTebusMurahImpression(fintechProduct, position, userSession.userId)
+        digitalAnalytics.eventTebusMurahImpression(fintechProduct, getCategoryName(), position, userSession.userId)
+    }
+
+    override fun onCrossellImpression(fintechProduct: FintechProduct, position: Int) {
+        digitalAnalytics.eventImpressionCrossSell(fintechProduct, getCategoryName(), position, userSession.userId)
     }
 
     override fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean) {
-        if (isChecked) digitalAnalytics.eventTebusMurahChecked(fintechProduct, position, userSession.userId)
-        else digitalAnalytics.eventTebusMurahUnchecked(fintechProduct, userSession.userId)
+        if (isChecked) digitalAnalytics.eventTebusMurahChecked(fintechProduct, getCategoryName(), position, userSession.userId)
+        else digitalAnalytics.eventTebusMurahUnchecked(fintechProduct, getCategoryName(), userSession.userId)
         viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }
 
-    override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
-        if (fintechProduct.transactionType == TRANSACTION_TYPE_PROTECTION) {
-            digitalAnalytics.eventClickProtection(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
+    override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int) {
+        if (isChecked) {
+            digitalAnalytics.eventClickCrossSell(fintechProduct, getCategoryName(), position, userSession.userId)
         } else {
-            digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
+            digitalAnalytics.eventUnclickCrossSell(fintechProduct, userSession.userId)
         }
         viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }

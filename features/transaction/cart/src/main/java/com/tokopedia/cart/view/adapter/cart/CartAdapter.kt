@@ -68,7 +68,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             for (data in cartDataList) {
                 if (data is CartShopHolderData) {
                     if ((data.isPartialSelected || data.isAllSelected)) {
-                        data.shopGroupAvailableData.cartItemDataList?.let {
+                        data.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
                                 if (cartItemHolderData.isSelected && cartItemHolderData.cartItemData?.isError == false) {
                                     cartItemHolderData.cartItemData?.let { cartItemData ->
@@ -89,7 +89,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             val cartShopHolderDataList = ArrayList<CartShopHolderData>()
             for (data in cartDataList) {
                 if (data is CartShopHolderData) {
-                    if ((data.isPartialSelected || data.isAllSelected) && data.shopGroupAvailableData.cartItemDataList != null) {
+                    if ((data.isPartialSelected || data.isAllSelected) && data.shopGroupAvailableData?.cartItemDataList != null) {
                         cartShopHolderDataList.add(data)
                     }
                 }
@@ -104,7 +104,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             loop@ for (data in cartDataList) {
                 when (data) {
                     is CartShopHolderData -> {
-                        val cartItemHolderDataList = data.shopGroupAvailableData.cartItemDataList
+                        val cartItemHolderDataList = data.shopGroupAvailableData?.cartItemDataList
                         cartItemHolderDataList?.let {
                             for (cartItemHolderData in it) {
                                 cartItemHolderData.cartItemData?.let { cartItemData ->
@@ -133,7 +133,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             loop@ for (data in cartDataList) {
                 when (data) {
                     is CartShopHolderData -> {
-                        data.shopGroupAvailableData.cartItemDataList?.let {
+                        data.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
                                 cartItemHolderData.cartItemData?.let {
                                     cartItemDataList.add(it)
@@ -190,7 +190,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             for (data in cartDataList) {
                 when (data) {
                     is CartShopHolderData -> {
-                        data.shopGroupAvailableData.cartItemDataList?.let {
+                        data.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
                                 productIdList.add(cartItemHolderData.cartItemData?.originData?.productId
                                         ?: "")
@@ -209,7 +209,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             val cartItemDataList = ArrayList<CartItemHolderData>()
             for (data in cartDataList) {
                 if (data is CartShopHolderData) {
-                    data.shopGroupAvailableData.cartItemDataList?.let {
+                    data.shopGroupAvailableData?.cartItemDataList?.let {
                         cartItemDataList.addAll(it)
                     }
                 }
@@ -474,10 +474,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val cartShopHolderData = CartShopHolderData()
                 cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
                 if (shopGroupAvailableData.isError) {
-                    cartShopHolderData.isAllSelected = false
+                    cartShopHolderData.setAllItemSelected(false)
                 } else {
                     if (shopGroupAvailableData.isChecked) {
-                        cartShopHolderData.isAllSelected = true
+                        cartShopHolderData.setAllItemSelected(true)
                     } else if (shopGroupAvailableData.cartItemDataList?.size ?: 0 > 1) {
                         shopGroupAvailableData.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
@@ -650,8 +650,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun setShopSelected(position: Int, selected: Boolean) {
         val any = cartDataList[position]
         if (any is CartShopHolderData) {
-            any.isAllSelected = selected
-            any.shopGroupAvailableData.cartItemDataList?.let {
+            any.setAllItemSelected(selected)
+            any.shopGroupAvailableData?.cartItemDataList?.let {
                 for (cartItemHolderData in it) {
                     cartItemHolderData.isSelected = selected
                 }
@@ -663,7 +663,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val any = cartDataList[parentPosition]
         if (any is CartShopHolderData) {
             var selectedCount = 0
-            any.shopGroupAvailableData.cartItemDataList?.let {
+            any.shopGroupAvailableData?.cartItemDataList?.let {
                 for (i in it.indices) {
                     val cartItemHolderData = it[i]
                     if (i == position) {
@@ -676,13 +676,13 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
 
                 if (selectedCount == 0) {
-                    any.isAllSelected = false
+                    any.setAllItemSelected(false)
                     any.isPartialSelected = false
                 } else if (selectedCount > 0 && selectedCount < it.size) {
-                    any.isAllSelected = false
+                    any.setAllItemSelected(false)
                     any.isPartialSelected = true
                 } else {
-                    any.isAllSelected = true
+                    any.setAllItemSelected(true)
                     any.isPartialSelected = false
                 }
             }
@@ -692,7 +692,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun resetQuantity(position: Int, parentPosition: Int) {
         if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             (cartDataList[parentPosition] as CartShopHolderData).shopGroupAvailableData
-                    .cartItemDataList?.get(position)?.cartItemData?.updatedData?.resetQuantity()
+                    ?.cartItemDataList?.get(position)?.cartItemData?.updatedData?.resetQuantity()
         }
         checkForShipmentForm()
     }
@@ -761,11 +761,11 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         var checkedCount = 0
         for (any in cartDataList) {
             if (any is CartShopHolderData) {
-                if (!any.shopGroupAvailableData.isError) {
+                if (any.shopGroupAvailableData?.isError == false) {
                     if (any.isAllSelected) {
-                        checkedCount += any.shopGroupAvailableData.cartItemDataList?.size ?: 0
+                        checkedCount += any.shopGroupAvailableData?.cartItemDataList?.size ?: 0
                     } else if (any.isPartialSelected) {
-                        any.shopGroupAvailableData.cartItemDataList?.let {
+                        any.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
                                 if (cartItemHolderData.isSelected) {
                                     checkedCount++
@@ -786,7 +786,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
 
         for (any in cartDataList) {
             if (any is CartShopHolderData && (any.isAllSelected || any.isPartialSelected)) {
-                any.shopGroupAvailableData.cartItemDataList?.forEach {
+                any.shopGroupAvailableData?.cartItemDataList?.forEach {
                     if (!it.errorFormItemValidationMessage.isNullOrBlank()) {
                         canProcess = false
                         return@forEach
@@ -854,7 +854,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             val obj = cartDataList[i]
             if (obj is CartShopHolderData) {
                 val cartShopHolderData = cartDataList[i] as CartShopHolderData
-                cartShopHolderData.shopGroupAvailableData.cartItemDataList?.let {
+                cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
                     for (cartItemHolderData in it) {
                         if (cartItemHolderData.cartItemData?.originData?.productId == productId) {
                             cartItemHolderData.cartItemData?.originData?.isWishlisted = isWishlisted
@@ -1003,7 +1003,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 // For enable / available item
                 is CartShopHolderData -> {
                     val toBeRemovedCartItemHolderData = ArrayList<CartItemHolderData>()
-                    obj.shopGroupAvailableData.cartItemDataList?.let {
+                    obj.shopGroupAvailableData?.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
                             cartItemHolderData.cartItemData?.originData?.let { data ->
                                 if (cartIds.contains(data.cartId.toString())) {
@@ -1107,7 +1107,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             var normalItemCount = 0
             loop@ for (any in cartDataList) {
                 when (any) {
-                    is CartShopHolderData -> any.shopGroupAvailableData.cartItemDataList?.let {
+                    is CartShopHolderData -> any.shopGroupAvailableData?.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
                             normalItemCount++
                         }
@@ -1279,7 +1279,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         getData().forEach outer@{ any ->
             when (any) {
                 is CartShopHolderData -> {
-                    any.shopGroupAvailableData.cartItemDataList?.forEach {
+                    any.shopGroupAvailableData?.cartItemDataList?.forEach {
                         cartItemCount++
 
                         if (cartItemCount > 1) {
@@ -1296,8 +1296,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 when (any) {
                     is CartShopHolderData -> {
                         tmpIndex = index
-                        any.isAllSelected = true
-                        any.shopGroupAvailableData.cartItemDataList?.forEach {
+                        any.setAllItemSelected(true)
+                        any.shopGroupAvailableData?.cartItemDataList?.forEach {
                             it.isSelected = true
                         }
                     }
@@ -1319,7 +1319,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         getData().forEach {
             when (it) {
                 is CartShopHolderData -> {
-                    if (it.shopGroupAvailableData.cartItemDataList?.isNotEmpty() == true) {
+                    if (it.shopGroupAvailableData?.cartItemDataList?.isNotEmpty() == true) {
                         return true
                     }
                 }
@@ -1338,7 +1338,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             when (data) {
                 is CartShopHolderData -> {
                     var changeShopLevelCheckboxState = false
-                    data.shopGroupAvailableData.cartItemDataList?.forEach {
+                    data.shopGroupAvailableData?.cartItemDataList?.forEach {
                         if (it.isSelected != cheked) {
                             it.isSelected = cheked
                             indices.add(index)
@@ -1347,7 +1347,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     }
 
                     if (changeShopLevelCheckboxState) {
-                        data.isAllSelected = cheked
+                        data.setAllItemSelected(cheked)
                         data.isPartialSelected = false
                     }
                 }
@@ -1366,7 +1366,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         getData().forEach {
             when (it) {
                 is CartShopHolderData -> {
-                    it.shopGroupAvailableData.cartItemDataList?.forEach {
+                    it.shopGroupAvailableData?.cartItemDataList?.forEach {
                         if (!it.isSelected) {
                             return false
                         }
@@ -1389,7 +1389,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         getData().forEach {
             when (it) {
                 is CartShopHolderData -> {
-                    it.shopGroupAvailableData.cartItemDataList?.forEach {
+                    it.shopGroupAvailableData?.cartItemDataList?.forEach {
                         if (it.isSelected) return true
                     }
                 }

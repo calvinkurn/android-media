@@ -4,12 +4,12 @@
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
             <size android:height="1dp"/>
-            <solid android:color="@color/red_500"/>
+            <solid android:color="@color/Unify_R600"/>
         </shape>
     </item>
     <item android:top="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/red_50" />
+            <solid android:color="@color/Unify_R100" />
         </shape>
     </item>
 </layer-list>

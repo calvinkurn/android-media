@@ -11,8 +11,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -36,6 +34,7 @@ import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.MoneyInScheduledTi
 import com.tokopedia.tradein.viewmodel.liveState.CourierPriceError
 import com.tokopedia.tradein.viewmodel.liveState.MutationCheckoutError
 import com.tokopedia.tradein.viewmodel.liveState.ScheduleTimeError
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 
@@ -109,7 +108,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
         }
-        val mTvTnc = findViewById<TextView>(R.id.terms_text) as TextView
+        val mTvTnc = findViewById<Typography>(R.id.terms_text) as Typography
         spannableString.setSpan(clickableSpan, 16, 36, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         mTvTnc.text = spannableString
         mTvTnc.isClickable = true
@@ -142,7 +141,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
                     if (it.data.error?.message.isNullOrEmpty())
                         setCourierRatesBottomSheet(it.data)
                     else {
-                        val courierBtn = findViewById<Button>(R.id.courier_btn)
+                        val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
                         showMessageWithAction(it.data.error?.message, getString(com.tokopedia.abstraction.R.string.title_ok)) {}
                         courierBtn.setOnClickListener { v ->
                             sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
@@ -201,7 +200,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
     }
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
-        val courierBtn = findViewById<Button>(R.id.courier_btn)
+        val courierBtn = findViewById<UnifyButton>(R.id.courier_btn)
         spId = data.services[0].products[0].shipper.shipperProduct.id
         val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
                 data.services[0].products[0].features.moneyIn,
@@ -217,17 +216,17 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
             moneyInCourierBottomSheet.show(supportFragmentManager, "")
         }
         moneyInCourierBottomSheet.setActionListener(this)
-        val totalPaymentValue = findViewById<TextView>(R.id.tv_total_payment_value) as TextView
+        val totalPaymentValue = findViewById<Typography>(R.id.tv_total_payment_value) as Typography
         totalPaymentValue.text = data.services[0].products[0].price.text
     }
 
     private fun resetRateAndTime() {
         val courierLabel = findViewById<Typography>(R.id.courier_label) as Typography
         val courierPrice = findViewById<Typography>(R.id.courier_price) as Typography
-        val courierButton = findViewById<Button>(R.id.courier_btn) as Button
+        val courierButton = findViewById<UnifyButton>(R.id.courier_btn) as UnifyButton
         val retrieverTimeLabel = findViewById<Typography>(R.id.retriever_time_label) as Typography
         val retrieverTime = findViewById<Typography>(R.id.retriever_time) as Typography
-        val retrieverTimeButton = findViewById<Button>(R.id.retrival_time_btn) as Button
+        val retrieverTimeButton = findViewById<UnifyButton>(R.id.retrival_time_btn) as UnifyButton
         courierLabel.text = getString(R.string.choose_courier)
         courierPrice.hide()
         courierButton.text = getString(R.string.choose)
@@ -245,7 +244,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
     override fun onCourierButtonClick(shipperName: String?, price: String?) {
         val courierLabel = findViewById<Typography>(R.id.courier_label) as Typography
         val courierPrice = findViewById<Typography>(R.id.courier_price) as Typography
-        val courierButton = findViewById<Button>(R.id.courier_btn) as Button
+        val courierButton = findViewById<UnifyButton>(R.id.courier_btn) as UnifyButton
         courierLabel.text = shipperName
         courierPrice.show()
         courierPrice.text = price
@@ -256,7 +255,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
     }
 
     private fun setScheduleBottomSheet(scheduleDate: ArrayList<ScheduleDate>) {
-        val retrievalBtn = findViewById<Button>(R.id.retrival_time_btn)
+        val retrievalBtn = findViewById<UnifyButton>(R.id.retrival_time_btn)
         val moneyInScheduledTimeBottomSheet = MoneyInScheduledTimeBottomSheet.newInstance(scheduleDate)
         retrievalBtn.setOnClickListener {
             sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
@@ -275,7 +274,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
         this.scheduleTime = scheduleTime
         val retrieverTimeLabel = findViewById<Typography>(R.id.retriever_time_label) as Typography
         val retrieverTime = findViewById<Typography>(R.id.retriever_time) as Typography
-        val retrieverTimeButton = findViewById<Button>(R.id.retrival_time_btn) as Button
+        val retrieverTimeButton = findViewById<UnifyButton>(R.id.retrival_time_btn) as UnifyButton
         retrieverTimeLabel.text = dateFmt
         retrieverTime.show()
         retrieverTime.text = scheduleTime.timeFmt
@@ -312,7 +311,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity<MoneyInCheckoutViewModel>(),
         addrId = recipientAddress.addrId
         moneyInCheckoutViewModel.getCourierRates(destination)
 
-        val btBuy = findViewById<Button>(R.id.bt_buy)
+        val btBuy = findViewById<UnifyButton>(R.id.bt_buy)
         btBuy.setOnClickListener {
             if (isTimeSet && isCourierSet) {
                 moneyInCheckoutViewModel.makeCheckoutMutation(hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)

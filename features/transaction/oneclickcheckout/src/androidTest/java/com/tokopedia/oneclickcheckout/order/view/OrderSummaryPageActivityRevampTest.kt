@@ -71,10 +71,11 @@ class OrderSummaryPageActivityRevampTest {
                     productQty = 1
             )
 
-            assertProfileRevampWording("Template Beli Langsung")
-            assertProfileRevampUtama(true)
-
-            assertProfileRevampActionWording("Tambah template")
+        //    Deprecated Test (will delete in next iteration)
+//            assertProfileRevampWording("Template Beli Langsung")
+//            assertProfileRevampUtama(true)
+//
+//            assertProfileRevampActionWording("Tambah template")
 
             assertAddressRevamp(
                     addressName = "Address 1 - User 1 (1)",
@@ -295,6 +296,22 @@ class OrderSummaryPageActivityRevampTest {
                 )
                 closeBottomSheet()
             }
+
+            clickInsurance()
+            assertInsurance(false)
+
+            assertPayment("Rp116.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        insurancePrice = null,
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp116.000"
+                )
+                closeBottomSheet()
+            }
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",
@@ -350,6 +367,79 @@ class OrderSummaryPageActivityRevampTest {
     }
 
     @Test
+    fun happyFlow_UnchooseBbo() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShipmentPromoRevamp(
+                    hasPromo = true,
+                    promoDescription = "Tersedia Bebas Ongkir (4-6 hari)")
+
+            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
+
+            clickApplyShipmentPromoRevamp()
+
+            assertShipmentPromoRevamp(hasPromo = false)
+
+            assertShipmentRevamp(
+                    shippingDuration = null,
+                    shippingCourier = "Pengiriman Bebas Ongkir (4-6 hari)",
+                    shippingPrice = null,
+                    shippingEta = null
+            )
+
+            assertPayment("Rp101.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp0",
+                        isBbo = true,
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp101.000"
+                )
+                closeBottomSheet()
+            }
+
+            clickChangeCourierRevamp {
+                chooseCourierWithText("Next Day (1 hari)")
+            }
+
+            assertShipmentPromoRevamp(
+                    hasPromo = true,
+                    promoDescription = "Tersedia Bebas Ongkir (4-6 hari)")
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Next Day (1 hari)",
+                    shippingCourier = "JNE",
+                    shippingPrice = "Rp38.000",
+                    shippingEta = null
+            )
+
+            assertPayment("Rp139.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp38.000",
+                        isBbo = false,
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp139.000"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
     fun happyFlow_UseRecommendationSpId() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_RECOMMENDATION_SPID_RESPONSE_PATH
 
@@ -381,6 +471,71 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertGlobalErrorVisible()
+        }
+    }
+
+    @Test
+    fun errorFlow_GetOccCartPageReturnNoShipmentData() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_SHIPMENT_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProductCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = null,
+                    isFreeShipping = true,
+                    productQty = 1
+            )
+
+            assertAddressRevamp(
+                    addressName = "Address 1 - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                    isMainAddress = true
+            )
+
+            assertShipmentError(
+                    errorMessage = "Durasi pengiriman tidak tersedia Ubah"
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPaymentButtonEnable(false)
+
+            clickShipmentErrorAction {
+                chooseDurationWithText("Next Day (1 hari)")
+            }
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Next Day (1 hari)",
+                    shippingCourier = "JNE",
+                    shippingPrice = "Rp38.000",
+                    shippingEta = null
+            )
+
+            assertPayment("Rp139.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp38.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp139.000"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
         }
     }
 }

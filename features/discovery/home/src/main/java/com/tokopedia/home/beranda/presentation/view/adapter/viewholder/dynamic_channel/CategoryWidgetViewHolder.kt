@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
@@ -16,6 +15,7 @@ import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
 import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_dc_category_widget.view.*
 import java.util.*
@@ -30,6 +30,16 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView = itemView.recycleList
+        if (!channel.isCache) {
+            itemView.addOnImpressionListener(channel) {
+                categoryListener.putEEToIris(
+                        CategoryWidgetTracking.getCategoryWidgetBannerImpression(
+                                channel.grids.toList(),
+                                categoryListener.userId,
+                                true,
+                                channel) as HashMap<String, Any>)
+            }
+        }
         recyclerView.adapter = CategoryWidgetItemAdapter(channel, categoryListener, adapterPosition)
         recyclerView.layoutManager = GridLayoutManager(
                 view.context,
@@ -70,7 +80,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
 
         override fun onBindViewHolder(holder: CategoryWidgetItemViewHolder, position: Int) {
             val grid = grids[position]
-            holder.categoryImageView.loadImageRounded(grid.imageUrl, 8, FPM_CATEGORY_WIDGET_ITEM)
+            holder.categoryImageView.loadImageRounded(grid.imageUrl, 16, FPM_CATEGORY_WIDGET_ITEM)
             holder.categoryName.text = grid.name
             holder.itemView.setOnClickListener {
                 listener?.sendEETracking(

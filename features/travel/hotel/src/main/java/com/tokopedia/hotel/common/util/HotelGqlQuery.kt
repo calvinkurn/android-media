@@ -214,6 +214,7 @@ object HotelGqlQuery {
               checkOutFrom
               checkOutTo
               isDirectPayment
+              isDirectPaymentString
               room {
                 roomID
                 isBreakFastIncluded
@@ -645,6 +646,8 @@ object HotelGqlQuery {
                 IsFreeExtraBed
                 Content
               }
+              isDirectPayment
+              isDirectPaymentString
             }
             isAddressRequired
             isCvCRequired
