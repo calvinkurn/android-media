@@ -64,11 +64,6 @@ abstract class BaseHotelSearchResultScreenshotTesting {
     fun screenShotOldSrp(){
         CommonActions.findViewAndScreenShot(R.id.hotel_search_header, filePrefix(), "header")
         CommonActions.findViewAndScreenShot(R.id.quick_filter_sort_filter, filePrefix(), "quick-filter")
-        CommonActions.screenShotFullRecyclerView(R.id.recycler_view,
-                1,
-                getHotelResultCount()- 1,
-                "${filePrefix()}-full")
-        CommonActions.findViewHolderAndScreenshot(R.id.recycler_view, 0, filePrefix(), "item-hotel")
 
         //SS testing for filter
         Espresso.onView(AllOf.allOf(ViewMatchers.withText("Filter"))).perform(ViewActions.click())

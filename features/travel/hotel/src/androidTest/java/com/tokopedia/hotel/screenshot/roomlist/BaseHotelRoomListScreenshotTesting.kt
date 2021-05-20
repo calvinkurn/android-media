@@ -50,10 +50,6 @@ abstract class BaseHotelRoomListScreenshotTesting {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "top")
         }
 
-        CommonActions.screenShotFullRecyclerView(R.id.recycler_view,
-                0,
-                getItemCount()- 1,
-                "${filePrefix()}-full")
         CommonActions.findViewHolderAndScreenshot(R.id.recycler_view, 0, filePrefix(), "item-room-list")
 
         //SS testing for hotel and guest bottom sheet
