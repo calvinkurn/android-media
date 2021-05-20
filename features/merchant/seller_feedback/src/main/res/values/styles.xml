@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.SellerFeedback" parent="Theme.WhiteUnify">
+        <item name="toolbarTheme">@style/Toolbar.SellerFeedback</item>
+        <item name="titleTextAppearance">@style/TextAppearance.SellerFeedback</item>
+    </style>
+
+    <style name="Toolbar.SellerFeedback" parent="Base.Toolbar.Theme">
+        <item name="actionModeBackground">@color/Unify_N0</item>
+        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="TextAppearance.SellerFeedback">
+        <item name="android:textColor">@color/Unify_N0</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textSize">@dimen/sp_16</item>
+    </style>
+</resources>

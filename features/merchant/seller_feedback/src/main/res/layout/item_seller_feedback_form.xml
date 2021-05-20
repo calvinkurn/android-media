@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/backgroundHeader"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@color/Unify_N400"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textFeedbackHeader"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:gravity="center_horizontal"
+        android:text="Bagaimana pendapatmu tentang halaman ini?"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/badFeedbackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:drawableTop="@drawable/iconunify_feed"
+        android:text="Kecewa"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintStart_toStartOf="@id/textFeedbackHeader"
+        app:layout_constraintTop_toBottomOf="@id/textFeedbackHeader"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/neutralFeedbackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/iconunify_feed"
+        android:text="Biasa Aja"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintEnd_toStartOf="@id/goodFeedbackBtn"
+        app:layout_constraintStart_toEndOf="@id/badFeedbackBtn"
+        app:layout_constraintTop_toTopOf="@id/badFeedbackBtn"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/goodFeedbackBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/iconunify_feed"
+        android:text="Puas"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintEnd_toEndOf="@id/textFeedbackHeader"
+        app:layout_constraintTop_toTopOf="@id/neutralFeedbackBtn"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/firstFormLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="Feedback apa yang ingin kamu kasih?"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toStartOf="@id/rightGuideline"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/backgroundHeader"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipFeedBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:chipSize="medium"
+        app:chipText="Saran"
+        app:chipType="selected"
+        app:layout_constraintStart_toStartOf="@id/firstFormLabel"
+        app:layout_constraintTop_toBottomOf="@id/firstFormLabel" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipReportError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:chipSize="medium"
+        app:chipText="Laporan Error"
+        app:chipType="normal"
+        app:layout_constraintStart_toEndOf="@id/chipFeedBack"
+        app:layout_constraintTop_toTopOf="@id/chipFeedBack" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/secondFormLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="Feedback apa yang ingin kamu kasih?"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toStartOf="@id/rightGuideline"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/chipFeedBack"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <EditText
+        android:id="@+id/textFieldFeedbackPage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:hint="Pilih Halaman"
+        android:inputType="text"
+        app:layout_constraintEnd_toStartOf="@id/rightGuideline"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/secondFormLabel" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/thirdFormLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="Ceritakan detailnya di sini, ya"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toStartOf="@id/rightGuideline"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/textFieldFeedbackPage"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <EditText
+        android:id="@+id/textFieldFeedbackDetail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:hint="Ketik saran atau laporan error"
+        android:inputType="text"
+        app:layout_constraintEnd_toStartOf="@id/rightGuideline"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/thirdFormLabel" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/forthFormLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="Ada lampirannya, nggak?"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintEnd_toStartOf="@id/rightGuideline"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/textFieldFeedbackDetail"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textAttachmentDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Lampirkan bukti pendukung di sini supaya kami bisa paham masalahmu, ya."
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@id/rightGuideline"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/forthFormLabel"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/firstAttachment"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/leftGuideline"
+        app:layout_constraintTop_toBottomOf="@id/textAttachmentDescription" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/secondAttachment"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toEndOf="@id/firstAttachment"
+        app:layout_constraintTop_toTopOf="@id/firstAttachment" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/spacing_lvl4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/spacing_lvl4" />
+</androidx.constraintlayout.widget.ConstraintLayout>
