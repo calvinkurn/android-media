@@ -152,7 +152,7 @@ data class ShopLayoutWidget(
                     @SerializedName("imageURL")
                     val imageUrl: String = "",
                     @SerializedName("price")
-                    val price: String = "",
+                    val displayedPrice: String = "",
                     @SerializedName("countSold")
                     val countSold: Int = -1,
                     @SerializedName("stock")

@@ -309,7 +309,7 @@ object ShopPageHomeMapper {
                 id = it.id
                 name = it.name
                 displayedPrice = it.discountedPrice
-                originalPrice = it.price
+                originalPrice = it.displayedPrice
                 discountPercentage = it.discountPercentage
                 imageUrl = it.imageUrl
                 imageUrl300 = ""
