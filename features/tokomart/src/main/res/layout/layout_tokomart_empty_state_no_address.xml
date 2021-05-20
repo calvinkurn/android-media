@@ -26,7 +26,7 @@
             android:id="@+id/tokonowEmptyStateTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tokomart_search_category_empty_state_title"
+            android:text="@string/tokomart_common_empty_state_title"
             android:gravity="center"
             app:typographyType="heading_2"
             app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateIcon"
@@ -49,13 +49,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginStart="@dimen/dp_20"
-            android:text="@string/tokomart_search_category_empty_state_desc_1"
+            android:text="@string/tokomart_common_empty_state_desc_1"
             app:typographyType="body_2"
             app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateTitle"
             app:layout_constraintStart_toEndOf="@id/tokonowEmptyStateIcon1" />
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/tokonowSearchCategoryEmptyStateIcon2"
+            android:id="@+id/tokonowEmptyStateIcon2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@id/tokonowEmptyStateTitle"
@@ -70,10 +70,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_20"
-            android:text="@string/tokomart_search_category_empty_state_desc_2"
+            android:text="@string/tokomart_common_empty_state_desc_2"
             app:typographyType="body_2"
             app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc1"
-            app:layout_constraintStart_toEndOf="@id/tokonowSearchCategoryEmptyStateIcon2"
+            app:layout_constraintStart_toEndOf="@id/tokonowEmptyStateIcon2"
             app:layout_constraintEnd_toEndOf="@id/tokonowEmptyStateDesc1"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -81,7 +81,7 @@
             android:layout_width="@dimen/dp_240"
             android:layout_height="@dimen/dp_40"
             android:layout_marginTop="@dimen/dp_24"
-            android:text="@string/tokomart_search_category_empty_state_button_change_address"
+            android:text="@string/tokomart_common_empty_state_button_change_address"
             app:unifyButtonVariant="filled"
             app:unifyButtonType="main"
             app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc2"
@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/tokomart_search_category_empty_state_button_return"
+            android:text="@string/tokomart_common_empty_state_button_return"
             android:gravity="center"
             app:unifyButtonSize="medium"
             app:unifyButtonVariant="text"
