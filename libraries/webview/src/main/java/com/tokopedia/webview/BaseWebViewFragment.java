@@ -608,7 +608,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             super.onReceivedError(view, errorCode, description, failingUrl);
             String webUrl = view.getUrl();
             onWebPageReceivedError(failingUrl, errorCode, description, webUrl);
-            enableBackButton();
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
@@ -618,7 +617,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             String webUrl = view.getUrl();
             onWebPageReceivedError(request.getUrl().toString(), error.getErrorCode(),
                     error.getDescription().toString(), webUrl);
-            enableBackButton();
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
