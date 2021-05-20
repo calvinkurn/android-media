@@ -738,9 +738,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (url.contains(PARAM_EXTERNAL)) {
             try {
-                Intent destination = new Intent(Intent.ACTION_VIEW);
-                destination.setData(Uri.parse(url));
-                startActivity(destination);
+                routeToNativeBrowser(url);
                 hasMoveToNativePage = true;
                 return true;
             } catch (ActivityNotFoundException e) {
@@ -783,6 +781,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         return hasMoveToNativePage;
+    }
+
+    private void routeToNativeBrowser(String browserUrl){
+        RouteManager.route(getContext(), ApplinkConst.BROWSER + "url=" + browserUrl);
     }
 
     private void logApplinkErrorOpen(String url) {
