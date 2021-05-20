@@ -78,7 +78,7 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
     }
 
     fun clickHereTickerPenalty() {
-        sendShopScoreItemEvent(TRANSITION_PERIOD_PENALTY_PAGE, CLICK_SEE_DETAIL_PENALTY)
+        sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_SEE_DETAIL_PENALTY)
     }
 
     fun clickMenuPenalty() {
