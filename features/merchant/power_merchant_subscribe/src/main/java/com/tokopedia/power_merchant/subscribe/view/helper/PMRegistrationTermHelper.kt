@@ -3,6 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.helper
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.gm.common.constant.KYCStatusId
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.power_merchant.subscribe.R
@@ -173,6 +174,12 @@ object PMRegistrationTermHelper {
         val isEligibleShopScore = (!isPmPro && !shopInfo.isEligibleShopScore()) ||
                 (isPmPro && !shopInfo.isEligibleShopScorePmPro())
 
+        val kycAppLink = if (isPmPro) {
+            PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
+        } else {
+            PMConstant.AppLink.KYC_POWER_MERCHANT
+        }
+
         val shopKycResIcon: Int
         val title: String
         val description: String
@@ -192,12 +199,12 @@ object PMRegistrationTermHelper {
                     !shopInfo.isNewSeller && isEligibleShopScore -> {
                         description = context.getString(R.string.pm_description_kyc_not_verified_existing_seller)
                         ctaText = context.getString(R.string.pm_verify_data_clickable)
-                        ctaAppLink = ApplinkConst.KYC_SELLER_DASHBOARD
+                        ctaAppLink = kycAppLink
                     }
                     shopInfo.isNewSeller && !shopInfo.hasActiveProduct -> {
                         description = context.getString(R.string.pm_description_kyc_not_verified_new_seller)
                         ctaText = context.getString(R.string.pm_verify_data_clickable)
-                        ctaAppLink = ApplinkConst.KYC_SELLER_DASHBOARD
+                        ctaAppLink = kycAppLink
                     }
                     else -> {
                         description = context.getString(R.string.pm_description_kyc_not_verified_directly_pm)
@@ -217,7 +224,7 @@ object PMRegistrationTermHelper {
                 if ((shopInfo.isNewSeller && !shopInfo.hasActiveProduct) || !isEligibleShopScore) {
                     description = context.getString(R.string.pm_description_kyc_verification_failed)
                     ctaText = context.getString(R.string.pm_verify_again_clickable)
-                    ctaAppLink = ApplinkConst.KYC_SELLER_DASHBOARD
+                    ctaAppLink = kycAppLink
                 } else {
                     description = context.getString(R.string.pm_description_kyc_verification_failed_directly_pm)
                 }
