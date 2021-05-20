@@ -3,5 +3,7 @@
     <dimen name="dp_local_1">1dp</dimen>
     <dimen name="dp_local_168">168dp</dimen>
     <dimen name="dp_local_180">180dp</dimen>
+    <dimen name="dp_local_230">230dp</dimen>
     <dimen name="dp_local_260">260dp</dimen>
+    <dimen name="dp_local_360">360dp</dimen>
 </resources>

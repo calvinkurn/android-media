@@ -23,8 +23,9 @@
 
         <ImageView
             android:id="@+id/imageview_error"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_local_260"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/dp_local_360"
+            android:layout_height="@dimen/dp_local_230"
             android:visibility="gone"
             />
 
@@ -32,7 +33,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_local_260"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/emoney_tap_card_instruction_title"
@@ -44,7 +45,7 @@
         android:id="@+id/text_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center"
         android:text="@string/emoney_tap_card_instruction_message"
         android:textColor="@color/Unify_N700_68"

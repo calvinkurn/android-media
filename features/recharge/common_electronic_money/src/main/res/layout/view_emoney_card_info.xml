@@ -152,6 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:typographyType="body_3"
+                android:textColor="@color/Unify_N700_68"
                 tools:text="(12 Mei 2018, 06:50)" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView

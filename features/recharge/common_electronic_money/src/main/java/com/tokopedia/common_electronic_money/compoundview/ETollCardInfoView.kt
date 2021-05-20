@@ -15,6 +15,7 @@ import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.jetbrains.annotations.NotNull
 import java.text.SimpleDateFormat
@@ -31,7 +32,7 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
 
     private val textLabelBalance: TextView
     private val textRemainingBalance: TextView
-    private val textDate: TextView
+    private val textDate: Typography
     private val textLabelCardNumber: TextView
     private val textCardNumber: TextView
     private val imageIssuer: ImageView
@@ -86,7 +87,8 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         val simpleDateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm",
                 DateFormatUtils.DEFAULT_LOCALE)
         val date = Date()
-        textDate.text = simpleDateFormat.format(date)
+        val result = String.format("(%s)", simpleDateFormat.format(date))
+        textDate.text = result
     }
 
     fun showLoading() {
@@ -104,7 +106,6 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         textRemainingBalance.layoutParams = paramsTextRemainingBalance
 
         textDate.text = " 26 Jun 2018, 13:47 "
-        textDate.measure(0, 0)
         val paramsTextDate = textDate.layoutParams
         paramsTextDate.width = textDate.measuredWidth
         textDate.layoutParams = paramsTextDate
