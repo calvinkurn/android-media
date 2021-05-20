@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
@@ -90,7 +91,9 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     }
 
     fun showErrorState(errorMessageTitle: String, errorMessageLabel: String,
-                       imageUrl:String, isButtonShow: Boolean) {
+                       imageUrl:String, isButtonShow: Boolean,
+                       isSocketTimeOutMandiri: Boolean
+    ) {
         textTitle.text = errorMessageTitle
         textLabel.text = errorMessageLabel
         lottieAnimationView.visibility = View.GONE
@@ -105,10 +108,18 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
             imageviewError.loadImage(resources.getDrawable(R.drawable.emoney_revamp_connection_issue))
         }
 
-
-        buttonTryAgain.setOnClickListener {
-            showInitialState()
-            listener.tryAgainTopup(issuerId)
+        buttonTryAgain.apply {
+            if(isSocketTimeOutMandiri){
+                text = resources.getString(R.string.emoney_nfc_tap_card_button_socket_label)
+                setOnClickListener {
+                    listener.goToHome()
+                }
+            } else {
+                setOnClickListener {
+                    showInitialState()
+                    listener.tryAgainTopup(issuerId)
+                }
+            }
         }
     }
 
@@ -133,7 +144,6 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         globalError.apply {
             errorTitle.text = errorMessageTitle
             errorDescription.text = errorMessageLabel
-            errorIllustration.loadImage(resources.getDrawable(R.drawable.emoney_revamp_connection_issue))
 
             setActionClickListener {
                 showInitialState()
@@ -144,5 +154,6 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     interface OnTapEtoll {
         fun tryAgainTopup(issuerId: Int)
+        fun goToHome()
     }
 }

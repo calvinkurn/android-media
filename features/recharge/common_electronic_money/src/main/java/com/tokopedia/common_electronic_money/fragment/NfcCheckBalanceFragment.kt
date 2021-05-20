@@ -32,6 +32,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import okhttp3.Route
 import javax.inject.Inject
 
 open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -116,6 +117,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             override fun tryAgainTopup(issuerId: Int) {
                 emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, userSession.userId, irisSessionId)
             }
+
+            override fun goToHome() {
+                RouteManager.route(context, ApplinkConst.HOME)
+            }
         })
 
         nfcDisabledView.buttonActivateNFC.setOnClickListener {
@@ -173,8 +178,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     protected abstract fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData
 
     protected fun showError(errorMessage: String, errorMessageLabel: String = "",
-                            imageUrl: String = "", isButtonShow: Boolean = true,
-                            isGlobalErrorShow: Boolean = false
+                            imageUrl: String = "",
+                            isButtonShow: Boolean = true,
+                            isGlobalErrorShow: Boolean = false,
+                            isSocketTimeoutMandiri: Boolean = false
     ) {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
@@ -194,7 +201,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         } else {
             tapETollCardView.showInitialState()
             tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,
-                    imageUrl, isButtonShow)
+                    imageUrl, isButtonShow, isSocketTimeoutMandiri)
         }
 
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
