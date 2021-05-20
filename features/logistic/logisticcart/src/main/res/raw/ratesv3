@@ -122,6 +122,9 @@ query RatesV3($param: OngkirRatesV3Input!) {
               mvc_logo
               mvc_error_message
             }
+            dynamic_price {
+              text_label
+            }
           }
           eta {
             text_eta

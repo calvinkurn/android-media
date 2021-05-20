@@ -41,6 +41,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private Typography tvMvcError;
     private ConstraintLayout layoutMvc;
     private FrameLayout flDisableContainer;
+    private Label dynamicPriceLabel;
 
     private int cartPosition;
 
@@ -61,6 +62,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
         layoutMvc = itemView.findViewById(R.id.layout_mvc);
         flDisableContainer = itemView.findViewById(R.id.fl_container);
+        dynamicPriceLabel = itemView.findViewById(R.id.lbl_dynamic_pricing);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -93,6 +95,15 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                     .getProductData().getFeatures().getOntimeDeliveryGuarantee();
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
+
+        if (shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData() != null ||
+                shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData().getTextLabel().isEmpty()) {
+            dynamicPriceLabel.setVisibility(View.GONE);
+        } else {
+            dynamicPriceLabel.setVisibility(View.VISIBLE);
+            dynamicPriceLabel.setText(shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData().getTextLabel());
+        }
+
 
         if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 1) {
             layoutMvc.setVisibility(View.VISIBLE);

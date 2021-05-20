@@ -1,5 +1,5 @@
 package com.tokopedia.logisticcart.shipping.model
 
-data class DynamicPricingModel(
+data class DynamicPriceModel(
         var textLabel: String = ""
 )

@@ -180,12 +180,12 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         }
 
-        /*Dynamic Pricing*/
-        if (shippingDurationUiModel.getDynamicPricingModel().getTextLabel().isEmpty()) {
+        /*Dynamic Price*/
+        if (shippingDurationUiModel.getDynamicPriceModel().getTextLabel().isEmpty()) {
             labelDynamicPricing.setVisibility(View.GONE);
         } else {
             labelDynamicPricing.setVisibility(View.VISIBLE);
-            labelDynamicPricing.setText(shippingDurationUiModel.getDynamicPricingModel().getTextLabel());
+            labelDynamicPricing.setText(shippingDurationUiModel.getDynamicPriceModel().getTextLabel());
         }
 
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);

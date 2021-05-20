@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.FeaturesData;
-import com.tokopedia.logisticcart.shipping.model.DynamicPricingModel;
+import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
@@ -113,10 +113,10 @@ public class ShippingDurationConverter {
             if (serviceData.getFeatures() != null) {
                 FeaturesData featuresData = serviceData.getFeatures();
 
-                DynamicPricingModel dynamicPricingModel = new DynamicPricingModel(
+                DynamicPriceModel dynamicPriceModel = new DynamicPriceModel(
                         featuresData.getDynamicPricing().getTextLabel()
                 );
-                shippingDurationUiModel.setDynamicPricingModel(dynamicPricingModel);
+                shippingDurationUiModel.setDynamicPriceModel(dynamicPriceModel);
             }
         }
 

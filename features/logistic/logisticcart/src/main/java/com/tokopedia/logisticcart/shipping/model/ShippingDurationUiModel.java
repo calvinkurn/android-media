@@ -23,7 +23,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
     private boolean showShippingInformation;
     private MerchantVoucherModel merchantVoucherModel;
     private int etaErrorCode;
-    private DynamicPricingModel dynamicPricingModel;
+    private DynamicPriceModel dynamicPriceModel;
 
     public ShippingDurationUiModel() {
     }
@@ -146,11 +146,11 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
         this.etaErrorCode = etaErrorCode;
     }
 
-    public DynamicPricingModel getDynamicPricingModel() {
-        return dynamicPricingModel;
+    public DynamicPriceModel getDynamicPriceModel() {
+        return dynamicPriceModel;
     }
 
-    public void setDynamicPricingModel(DynamicPricingModel dynamicPricingModel) {
-        this.dynamicPricingModel = dynamicPricingModel;
+    public void setDynamicPriceModel(DynamicPriceModel dynamicPriceModel) {
+        this.dynamicPriceModel = dynamicPriceModel;
     }
 }
