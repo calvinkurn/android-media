@@ -29,10 +29,10 @@ class PushController(val context: Context) : CoroutineScope {
     private val isOfflinePushEnabled
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
 
-    fun handleNotificationBundle(bundle: Bundle, isAmplification: Boolean = false) {
+    fun handleNotificationBundle(bundle: Bundle) {
         try {
             val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
-            handleNotificationBundle(baseNotificationModel, isAmplification)
+            handleNotificationBundle(baseNotificationModel)
         } catch (e: Exception) {
             ServerLogger.log(Priority.P2, "CM_VALIDATION",
                     mapOf("type" to "exception",
@@ -41,10 +41,9 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
-    private fun handleNotificationBundle(baseNotificationModel: BaseNotificationModel, isAmplification: Boolean = false) {
+    private fun handleNotificationBundle(baseNotificationModel: BaseNotificationModel) {
         launchCatchError(
                 block = {
-                    if (isAmplification) baseNotificationModel.isAmplification = true
                     if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) {
                         if (isOfflinePushEnabled)
                             onOfflinePushPayloadReceived(baseNotificationModel)
@@ -66,10 +65,11 @@ class PushController(val context: Context) : CoroutineScope {
                 val amplificationBaseNotificationModel = gson.fromJson(payloadJson, AmplificationBaseNotificationModel::class.java)
                 val model = PayloadConverter.convertToBaseModel(amplificationBaseNotificationModel)
                 if (isAmpNotificationValid(model.notificationId)) {
+                    model.isAmplification = true
                     if (model.notificationMode != NotificationMode.OFFLINE) {
                         IrisAnalyticsEvents.sendPushEvent(context, IrisAnalyticsEvents.PUSH_RECEIVED, model)
                     }
-                    handleNotificationBundle(model, true)
+                    handleNotificationBundle(model)
                 }
             }, onError = {
                 println(it.message)
