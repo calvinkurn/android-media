@@ -1,8 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.POWER_MERCHANT_PRO_POP_UP
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.POWER_MERCHANT_PRO_POP_UP_NOT_SHOW
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.POWER_MERCHANT_PRO_POP_UP_SHOW
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -29,8 +27,8 @@ internal class SearchProductHandlePowerMerchantProPopUpTest: ProductListPresente
 
     private fun `Given AB Test will not show Power Merchant Pro Pop Up for control`() {
         every {
-            productListView.abTestRemoteConfig?.getString(POWER_MERCHANT_PRO_POP_UP, POWER_MERCHANT_PRO_POP_UP_NOT_SHOW)
-        } returns POWER_MERCHANT_PRO_POP_UP_NOT_SHOW
+            productListView.abTestRemoteConfig?.getString(POWER_MERCHANT_PRO_POP_UP)
+        } returns ""
     }
 
     @Test
@@ -49,8 +47,8 @@ internal class SearchProductHandlePowerMerchantProPopUpTest: ProductListPresente
 
     private fun `Given AB Test will show Power Merchant Pro Pop Up`() {
         every {
-            productListView.abTestRemoteConfig?.getString(POWER_MERCHANT_PRO_POP_UP, POWER_MERCHANT_PRO_POP_UP_NOT_SHOW)
-        } returns POWER_MERCHANT_PRO_POP_UP_SHOW
+            productListView.abTestRemoteConfig?.getString(POWER_MERCHANT_PRO_POP_UP)
+        } returns POWER_MERCHANT_PRO_POP_UP
     }
 
     private fun `Configure on boarding shown`(

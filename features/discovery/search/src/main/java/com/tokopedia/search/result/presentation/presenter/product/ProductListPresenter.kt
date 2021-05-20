@@ -215,8 +215,8 @@ class ProductListPresenter @Inject constructor(
 
     private fun shouldShowPMProPopUp(): Boolean {
         return try {
-            (view.abTestRemoteConfig?.getString(AbTestPlatform.POWER_MERCHANT_PRO_POP_UP, AbTestPlatform.POWER_MERCHANT_PRO_POP_UP_NOT_SHOW)
-                    == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP_SHOW)
+            (view.abTestRemoteConfig?.getString(AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
+                    == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
         } catch (e: Exception) {
             e.printStackTrace()
             false
