@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.topads
 
+import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -10,7 +11,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
@@ -31,6 +34,11 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     init {
         topadsHeadlineView.setTopAdsBannerClickListener(this)
         topadsHeadlineView.setFollowBtnClickListener(this)
+        topadsHeadlineView.setTopAdsProductItemListsner(object : TopAdsItemImpressionListener() {
+            override fun onImpressionProductAdsItem(position: Int, product: Product?, cpmData: CpmData) {
+                topAdsHeadlineListener?.onTopAdsProductItemListsner(position, product!!, cpmData)
+            }
+        })
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
@@ -86,6 +94,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     interface TopAdsHeadlineListener {
         fun onFollowClick(positionInFeed: Int, shopId: String, adId: String)
         fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel)
+        fun onTopAdsProductItemListsner(position: Int, product: Product, cpmData: CpmData)
         fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData)
     }
 

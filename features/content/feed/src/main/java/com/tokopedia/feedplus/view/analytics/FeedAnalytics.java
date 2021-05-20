@@ -662,7 +662,7 @@ public class FeedAnalytics {
     }
 
 
-    public void sendFeedTopAdsHeadlineProductImpression(String eventAction, String eventLabel, List<Product> products, String userId) {
+    public void sendFeedTopAdsHeadlineProductImpression(String eventAction, String eventLabel, List<Product> products, int position, String userId) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_VIEW,
@@ -674,7 +674,7 @@ public class FeedAnalytics {
                         KEY_USER_ID, userId,
                         EVENT_ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "impressions", getProductList(products))
+                                "impressions", getProductList(products, position))
                 )
         );
     }
@@ -694,7 +694,7 @@ public class FeedAnalytics {
                                 "click", DataLayer.mapOf(
                                         "actionField", DataLayer.mapOf(
                                                 "list", "/feed - topads"),
-                                        "products", getProductList(products)))
+                                        "products", getProductList(products, position)))
                 )
         );
     }
@@ -710,17 +710,16 @@ public class FeedAnalytics {
         return productList;
     }
 
-    private List<Object> getProductList(List<Product> items) {
+    private List<Object> getProductList(List<Product> items, int position) {
         ArrayList<Object> productList = new ArrayList<>();
 
-        int position = 0;
         for(int i=0; i<items.size(); i++) {
             HashMap<String, Object> productItem = new HashMap<>();
             productItem.put("name", items.get(i).getName());
             productItem.put("id", items.get(i).getId());
-            productItem.put("position", ++position);
+            productItem.put("position", position);
             productItem.put("list", "/feed - topads");
-            productItem.put("price", items.get(i).getPriceFormat().replaceAll("[^0-9]", ""));
+            productItem.put("price", formatStringToInt(items.get(i).getPriceFormat()));
             productItem.put("variant", "");
             productItem.put("brand", "");
             productItem.put("category", "");

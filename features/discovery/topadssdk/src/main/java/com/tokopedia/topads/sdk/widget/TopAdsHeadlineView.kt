@@ -50,6 +50,10 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         topadsBannerView.setTopAdsBannerClickListener(context)
     }
 
+    fun setTopAdsProductItemListsner(context: TopAdsItemImpressionListener) {
+        topadsBannerView.setTopAdsImpressionListener(context)
+    }
+
     fun setFollowBtnClickListener(context: TopAdsShopFollowBtnClickListener) {
         topadsBannerView.setTopAdsShopFollowClickListener(context)
     }

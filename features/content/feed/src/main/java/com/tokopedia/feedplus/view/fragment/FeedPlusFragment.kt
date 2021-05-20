@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -142,6 +143,7 @@ import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
@@ -2111,38 +2113,42 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {
         var eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
+        var eventAction = "impression - card - topads";
 
-        var eventAction1 = "impression - card - topads";
-        var eventAction2 = "impression - product - topads";
+        analytics.sendFeedTopAdsHeadlineAdsImpression(eventAction, eventLabel, cpmModel.data[0].id, position, userSession.userId)
+    }
 
-        analytics.sendFeedTopAdsHeadlineAdsImpression(eventAction1, eventLabel, cpmModel.data[0].id, position, userSession.userId)
-        analytics.sendFeedTopAdsHeadlineProductImpression(eventAction2, eventLabel, cpmModel.data[0].cpm.cpmShop.products, userSession.userId)
+    override fun onTopAdsProductItemListsner(position: Int, product: Product, cpmData: CpmData) {
+
+        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+        var eventAction = "impression - product - topads";
+        var productList: MutableList<Product> = mutableListOf()
+        productList.clear()
+        productList.add(product)
+        analytics.sendFeedTopAdsHeadlineProductImpression(eventAction, eventLabel, productList, position, userSession.userId)
     }
 
     override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData) {
         RouteManager.route(context, applink)
 
         var eventAction = ""
-        var eventLabel = ""
+        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
 
         if(applink?.contains("shop") == true && position == 0){
             eventAction = "click - cek sekarang - topads"
-            eventLabel = "${cpmData.cpm.cpmShop.id}"
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         } else if(applink?.contains("shop") == true && position == 1){
             eventAction = "click - shop - topads"
-            eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         } else {
             var productId = applink?.substring(applink.lastIndexOf("/") + 1)
             eventAction = " click - product - topads"
-            eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
             var clickedProducts : MutableList<Product> = mutableListOf()
             for((index, productItem) in cpmData.cpm.cpmShop.products.withIndex()) {
                 if(productId.equals(productItem.id)) {
                     clickedProducts.clear()
                     clickedProducts.add(productItem)
-                    analytics.sendFeedTopAdsHeadlineProductClick(eventAction, eventLabel, clickedProducts, index, userSession.userId)
+                    analytics.sendFeedTopAdsHeadlineProductClick(eventAction, eventLabel, clickedProducts, index+1, userSession.userId)
                 }
             }
 
