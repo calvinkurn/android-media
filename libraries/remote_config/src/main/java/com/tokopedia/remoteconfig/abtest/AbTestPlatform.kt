@@ -47,15 +47,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return defaultValue
     }
 
-
-    override fun getByteArray(key: String?): ByteArray {
-        throw RuntimeException("Method is not implemented yet")
-    }
-
-    override fun getByteArray(key: String?, defaultValue: ByteArray?): ByteArray {
-        throw RuntimeException("Method is not implemented yet")
-    }
-
     override fun getDouble(key: String?): Double {
         throw RuntimeException("Method is not implemented yet")
     }

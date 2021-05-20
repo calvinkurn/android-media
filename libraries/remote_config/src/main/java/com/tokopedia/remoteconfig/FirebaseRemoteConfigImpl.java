@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.tokopedia.config.GlobalConfig;
 
 import java.util.Set;
@@ -70,20 +71,6 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                 return "true".equalsIgnoreCase(value);
             }
         }
-        return defaultValue;
-    }
-
-    @Override
-    public byte[] getByteArray(String key) {
-        return getByteArray(key, new byte[0]);
-    }
-
-    @Override
-    public byte[] getByteArray(String key, byte[] defaultValue) {
-        if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getByteArray(key);
-        }
-
         return defaultValue;
     }
 
@@ -174,12 +161,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public void fetch(@Nullable final Listener listener) {
         try {
             if (firebaseRemoteConfig != null) {
-                firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
-                firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
+                firebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_default);
+                FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                        .setMinimumFetchIntervalInSeconds(CONFIG_CACHE_EXPIRATION)
+                        .build();
+                firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+                firebaseRemoteConfig.fetchAndActivate()
                         .addOnCompleteListener(new JobExecutor(), task -> {
-                            if (task.isSuccessful()) {
-                                firebaseRemoteConfig.activateFetched();
-                            }
                             if (listener != null) {
                                 listener.onComplete(FirebaseRemoteConfigImpl.this);
                             }
