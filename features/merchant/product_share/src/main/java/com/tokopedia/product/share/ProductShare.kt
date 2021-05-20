@@ -124,7 +124,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     "img_ready" to imageReady.toString(),
                     "img_process" to imageProcess.toString(),
                     "branch_time" to branchTime.toString(),
-                    "err" to error.map { it.stackTrace.joinToString(",").substring(0, 50) }.toString(),
+                    "err" to error.map { it.stackTraceToString().take(200) }.joinToString(","),
                     "linker_err" to linkerError?.errorCode.toString()
             ))
         }
