@@ -67,7 +67,7 @@
     <string name="example_regarding_penalty_pm_value">Power Merchant Gold</string>
     <string name="example_desc_pm_status">Dari Performamu saat ini, tokomu berpotensi <![CDATA[<b>naik</b>]]> di grade <![CDATA[<b>Diamond</b>]]>.</string>
     <string name="example_content_penalty">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. Pelajari Selengkapnya</string>
-    <string name="desc_non_eligible_power_merchant">Hingga %s, Power Merchant akan dapat grade dari reputasi dan akan tetap aktif walaupun skor di bawah 60, ya.</string>
+    <string name="desc_non_eligible_power_merchant">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
     <string name="example_desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga 5 kali lipat</string>
     <string name="see_all_benefit">Lihat Semua Keuntungannya</string>
     <string name="title_non_eligible_status_power_merchant">Yuk, tingkatkan skor hingga 60 untuk daftar Power Merchant dan dapat benefitnya!</string>
