@@ -1,10 +1,12 @@
 package com.tokopedia.tokomart.searchcategory.presentation.viewholder
 
+import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomart.R
@@ -28,9 +30,17 @@ class CategoryFilterViewHolder(
     )
 
     override fun bind(element: CategoryFilterDataView) {
-        filterRecyclerView?.layoutManager =
-                LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        filterRecyclerView?.adapter = Adapter(element.categoryFilterItemList, categoryFilterListener)
+        val context = itemView.context ?: return
+        val filterRecyclerView = filterRecyclerView ?: return
+
+        filterRecyclerView.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
+        filterRecyclerView.adapter = Adapter(element.categoryFilterItemList, categoryFilterListener)
+
+        if (filterRecyclerView.itemDecorationCount == 0) {
+            val unifySpace16 = com.tokopedia.unifyprinciples.R.dimen.unify_space_16
+            val spacing = context.resources.getDimensionPixelSize(unifySpace16)
+            filterRecyclerView.addItemDecoration(ItemDecoration(spacing))
+        }
     }
 
     private class Adapter(
@@ -83,6 +93,26 @@ class CategoryFilterViewHolder(
             filterChip?.listener = object: FilterChip.Listener {
                 override fun onClick(state: Boolean) {
                     categoryFilterListener.onCategoryFilterChipClick(option, state)
+                }
+            }
+        }
+    }
+
+    private class ItemDecoration(private val spacing: Int): RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            when (parent.getChildAdapterPosition(view)) {
+                0 -> {
+                    outRect.left = spacing
+                    outRect.right = spacing / 4
+                }
+                parent.adapter?.itemCount -> {
+                    outRect.left = spacing / 4
+                    outRect.right = spacing
+                }
+                else -> {
+                    outRect.left = spacing / 4
+                    outRect.right = spacing / 4
                 }
             }
         }
