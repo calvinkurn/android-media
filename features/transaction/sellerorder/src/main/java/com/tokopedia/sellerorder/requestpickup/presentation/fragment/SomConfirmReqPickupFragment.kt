@@ -113,7 +113,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     }
 
     private fun observingConfirmReqPickup() {
-        somConfirmRequestPickupViewModel.confirmReqPickupResult.observe(this, Observer {
+        somConfirmRequestPickupViewModel.confirmReqPickupResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     confirmReqPickupResponse = it.data.mpLogisticPreShipInfo
@@ -128,7 +128,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     }
 
     private fun observingProcessReqPickup() {
-        somConfirmRequestPickupViewModel.processReqPickupResult.observe(this, Observer {
+        somConfirmRequestPickupViewModel.processReqPickupResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     processReqPickupResponse = it.data.mpLogisticRequestPickup
