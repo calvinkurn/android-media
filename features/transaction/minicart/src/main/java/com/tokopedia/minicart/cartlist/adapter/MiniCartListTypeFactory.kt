@@ -16,7 +16,7 @@ interface MiniCartListTypeFactory {
 
     fun type(uiModel: MiniCartTickerErrorUiModel): Int
 
-    fun type(uiModel: MiniCartTickerInformationUiModel): Int
+    fun type(uiModel: MiniCartTickerWarningUiModel): Int
 
     fun type(uiModel: MiniCartUnavailableHeaderUiModel): Int
 

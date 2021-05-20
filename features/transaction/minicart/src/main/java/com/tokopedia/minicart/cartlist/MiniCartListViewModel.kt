@@ -11,7 +11,8 @@ import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
 import javax.inject.Inject
 
 class MiniCartListViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
-                                                private val getMiniCartListUseCase: GetMiniCartListUseCase) : BaseViewModel(executorDispatchers.main) {
+                                                private val getMiniCartListUseCase: GetMiniCartListUseCase,
+                                                private val miniCartListViewHolderMapper: MiniCartListViewHolderMapper) : BaseViewModel(executorDispatchers.main) {
 
     // Cart List UI Model
     private val _cartListUiModel = MutableLiveData<MutableList<Visitable<*>>>()
@@ -20,8 +21,9 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
 
     fun getCartList() {
         getMiniCartListUseCase.execute(onSuccess = {
-//            _cartListUiModel.value =
+            _cartListUiModel.value = miniCartListViewHolderMapper.mapUiModel(it)
         }, onError = {
+            _cartListUiModel.value = mutableListOf<Visitable<*>>()
         })
 
     }

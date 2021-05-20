@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 
 data class MiniCartTickerErrorUiModel(
-        var errorMessage: String = "",
+        var unavailableItemCount: Int = 0,
         var isShowErrorActionLabel: Boolean = false
 ) : Visitable<MiniCartListAdapterTypeFactory> {
 

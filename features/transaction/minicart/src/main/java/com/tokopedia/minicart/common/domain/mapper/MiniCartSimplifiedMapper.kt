@@ -42,7 +42,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             isError = false
                             cartId = cartDetail.cartId
                             productId = cartDetail.product.productId
-                            parentProductId = cartDetail.product.parentId
+                            productParentId = cartDetail.product.parentId
                             quantity = cartDetail.product.productQuantity
                             notes = cartDetail.product.productNotes
                         }
@@ -64,7 +64,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                                 isError = true
                                 cartId = cartDetail.cartId
                                 productId = cartDetail.product.productId
-                                parentProductId = cartDetail.product.parentId
+                                productParentId = cartDetail.product.parentId
                                 quantity = cartDetail.product.productQuantity
                                 notes = cartDetail.product.productNotes
                             }

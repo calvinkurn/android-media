@@ -3,9 +3,9 @@ package com.tokopedia.minicart.common.widget
 import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -26,6 +26,10 @@ class MiniCartWidget @JvmOverloads constructor(
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var miniCartListBottomSheet: MiniCartListBottomSheet
+
+    private var view: View? = null
     private var fragmentManager: FragmentManager? = null
     private var totalAmount: TotalAmount? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
@@ -33,26 +37,16 @@ class MiniCartWidget @JvmOverloads constructor(
     lateinit var viewModel: MiniCartWidgetViewModel
 
     init {
-        val v = inflate(context, R.layout.widget_mini_cart, this)
-        totalAmount = v.findViewById(R.id.mini_cart_total_amount)
-        totalAmount?.let {
-            it.enableAmountChevron(true)
-            it.amountChevronView.setOnClickListener {
-                fragmentManager?.let {
-                    MiniCartListBottomSheet.show(it, context)
-                }
-            }
-        }
-
-        totalAmount?.isTotalAmountLoading = true
+        view = inflate(context, R.layout.widget_mini_cart, this)
     }
 
     /*
     * Function to initialize the widget if being used on activity
     * */
-    fun initialize(activity: AppCompatActivity, listener: MiniCartWidgetListener) {
+    fun initialize(activity: FragmentActivity, listener: MiniCartWidgetListener) {
         val application = activity.application
-        inject(application)
+        initializeInjector(application)
+        initializeView(activity)
 
         viewModel = ViewModelProvider(activity, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
         miniCartWidgetListener = listener
@@ -62,14 +56,41 @@ class MiniCartWidget @JvmOverloads constructor(
         })
     }
 
+    private fun initializeView(activity: FragmentActivity) {
+        totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
+        totalAmount?.let {
+            it.enableAmountChevron(true)
+            it.amountChevronView.setOnClickListener {
+                fragmentManager?.let {
+                    miniCartListBottomSheet.show(it, activity)
+                }
+            }
+        }
+        totalAmount?.isTotalAmountLoading = true
+    }
+
+    private fun initializeView(fragment: Fragment) {
+        totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
+        totalAmount?.let {
+            it.enableAmountChevron(true)
+            it.amountChevronView.setOnClickListener {
+                fragmentManager?.let {
+                    miniCartListBottomSheet.show(it, fragment)
+                }
+            }
+        }
+        totalAmount?.isTotalAmountLoading = true
+    }
+
     /*
     * Function to initialize the widget if being used on fragment
     * */
     fun initialize(fragment: Fragment, listener: MiniCartWidgetListener) {
         fragment.activity?.let {
             val application = it.application
-            inject(application)
+            initializeInjector(application)
         }
+        initializeView(fragment)
 
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
         miniCartWidgetListener = listener
@@ -100,7 +121,7 @@ class MiniCartWidget @JvmOverloads constructor(
         ))
     }
 
-    private fun inject(baseAppComponent: Application?) {
+    private fun initializeInjector(baseAppComponent: Application?) {
         if (baseAppComponent is BaseMainApplication) {
             DaggerMiniCartWidgetComponent.builder()
                     .baseAppComponent(baseAppComponent.baseAppComponent)

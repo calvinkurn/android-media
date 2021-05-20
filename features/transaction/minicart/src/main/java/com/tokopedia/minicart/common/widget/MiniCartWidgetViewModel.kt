@@ -20,9 +20,9 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         getMiniCartWidgetDataUseCase.execute(onSuccess = {
             _miniCartWidgetUiModel.value = MiniCartWidgetUiModel(
                     state = MiniCartWidgetUiModel.STATE_NORMAL,
-                    totalProductCount = it.miniCartData.totalProductCount,
-                    totalProductPrice = it.miniCartData.totalProductPrice,
-                    totalProductError = it.miniCartData.totalProductError
+                    totalProductCount = it.data.totalProductCount,
+                    totalProductPrice = it.data.totalProductPrice,
+                    totalProductError = it.data.totalProductError
             )
         }, onError = {
             _miniCartWidgetUiModel.value = MiniCartWidgetUiModel(

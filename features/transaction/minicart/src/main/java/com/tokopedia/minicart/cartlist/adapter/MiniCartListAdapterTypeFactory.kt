@@ -32,8 +32,8 @@ class MiniCartListAdapterTypeFactory(private val listener: MiniCartListActionLis
         return MiniCartTickerErrorViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: MiniCartTickerInformationUiModel): Int {
-        return MiniCartTickerInformationViewHolder.LAYOUT
+    override fun type(uiModel: MiniCartTickerWarningUiModel): Int {
+        return MiniCartTickerWarningViewHolder.LAYOUT
     }
 
     override fun type(uiModel: MiniCartUnavailableHeaderUiModel): Int {
@@ -55,7 +55,7 @@ class MiniCartListAdapterTypeFactory(private val listener: MiniCartListActionLis
             MiniCartSeparatorViewHolder.LAYOUT -> MiniCartSeparatorViewHolder(view, listener)
             MiniCartShopViewHolder.LAYOUT -> MiniCartShopViewHolder(view, listener)
             MiniCartTickerErrorViewHolder.LAYOUT -> MiniCartTickerErrorViewHolder(view, listener)
-            MiniCartTickerInformationViewHolder.LAYOUT -> MiniCartTickerInformationViewHolder(view, listener)
+            MiniCartTickerWarningViewHolder.LAYOUT -> MiniCartTickerWarningViewHolder(view, listener)
             MiniCartUnavailableHeaderViewHolder.LAYOUT -> MiniCartUnavailableHeaderViewHolder(view, listener)
             MiniCartUnavailableReasonViewHolder.LAYOUT -> MiniCartUnavailableReasonViewHolder(view, listener)
             MiniCartLoadingViewHolder.LAYOUT -> MiniCartLoadingViewHolder(view)

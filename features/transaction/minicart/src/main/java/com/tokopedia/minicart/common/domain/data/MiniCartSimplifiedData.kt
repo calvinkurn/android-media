@@ -16,7 +16,7 @@ data class MiniCartItem(
         var isError: Boolean = false,
         var cartId: String = "",
         var productId: String = "",
-        var parentProductId: String = "",
+        var productParentId: String = "",
         var quantity: Int = 0,
         var notes: String = ""
 )
