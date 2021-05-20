@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -244,14 +245,17 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        data?.let {
-            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN){
+            showLoading()
+            data?.let {
                 if (userSession.isLoggedIn) {
                     data?.let {
                         processTagIntent(data)
                     }
                 }
             }
+        } else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN){
+            RouteManager.route(context, ApplinkConst.HOME)
         }
     }
 
