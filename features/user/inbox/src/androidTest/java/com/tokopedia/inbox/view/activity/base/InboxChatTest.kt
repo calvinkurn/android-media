@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.view.activity.base
 
-import android.content.Intent
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.fake.InboxChatFakeDependency
@@ -19,6 +18,13 @@ open class InboxChatTest : InboxTest() {
         chatListComponent!!.inject(this)
     }
 
+    override fun onBuildUri(uriBuilder: Uri.Builder) {
+        uriBuilder.appendQueryParameter(
+                ApplinkConst.Inbox.PARAM_PAGE,
+                ApplinkConst.Inbox.VALUE_PAGE_CHAT
+        )
+    }
+
 
     private fun setupChatListDaggerComponent() {
         chatListComponent = DaggerFakeChatListComponent.builder()
@@ -27,15 +33,4 @@ open class InboxChatTest : InboxTest() {
                 .build()
     }
 
-    override fun createActivityIntent(): Intent {
-        val inboxChat = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
-            appendQueryParameter(
-                    ApplinkConst.Inbox.PARAM_PAGE,
-                    ApplinkConst.Inbox.VALUE_PAGE_CHAT
-            )
-        }.build()
-        return Intent().apply {
-            data = inboxChat
-        }
-    }
 }

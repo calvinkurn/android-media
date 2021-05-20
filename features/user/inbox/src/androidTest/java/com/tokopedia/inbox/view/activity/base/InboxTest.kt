@@ -2,8 +2,10 @@ package com.tokopedia.inbox.view.activity.base
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inbox.fake.InboxFakeDependency
 import com.tokopedia.inbox.fake.di.DaggerFakeInboxComponent
@@ -68,7 +70,10 @@ abstract class InboxTest {
             isSellerApp: Boolean = false,
             intentModifier: (Intent) -> Unit = {}
     ) {
-        val intent = createActivityIntent()
+        val uri = buildIntent().build()
+        val intent = Intent().apply {
+            data = uri
+        }
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
@@ -77,7 +82,17 @@ abstract class InboxTest {
         }
     }
 
-    abstract fun createActivityIntent(): Intent
+    protected open fun buildIntent(): Uri.Builder {
+        val uriBuilder = Uri.parse(ApplinkConst.INBOX).buildUpon()
+        onBuildUri(uriBuilder)
+        return uriBuilder
+    }
+
+    /**
+     * callback when building uri. use it when you want
+     * to modify/update the uri (ex. query) on child class
+     */
+    abstract fun onBuildUri(uriBuilder: Uri.Builder)
 
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
