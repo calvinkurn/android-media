@@ -4,12 +4,11 @@ ext {
     tkpdInternalLibDependencies = [
             authentication          : "com.tokopedia.authentication:authentication:1.0.19",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.5",
-            cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
             globalconfig            : "com.tokopedia.config:global_config:1.0.14",
             url                     : "com.tokopedia.url:url:1.0.10",
-            network                 : "com.tokopedia.network:network:1.1.16",
+            network                 : "com.tokopedia.network:network:1.1.17",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
-            usersession             : "com.tokopedia.user.session:user_session:1.0.35",
+            usersession             : "com.tokopedia.user.session:user_session:1.0.38",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.9",
@@ -24,7 +23,7 @@ ext {
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.21",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21",
-            lint                    : "com.tokopedia.library:lint:0.0.11"
+            lint                    : "com.tokopedia.library:lint:0.0.13"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -78,10 +77,10 @@ ext {
             pocNewRelic             : ":libraries:poc_new_relic",
             productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
-            reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
             shakeDetect             : ":libraries:shake_detect",
+            pageInfoPusher          : ":libraries:page_info_pusher",
             preReleaseInspector     : ":libraries:pre_release_inspector",
             preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
@@ -94,7 +93,6 @@ ext {
             workManagerUtil         : ":libraries:work_manager_util",
             webview                 : ":libraries:webview",
             websocket               : ":libraries:websocket",
-            williamchart            : ":libraries:williamchart",
             videoplayer             : ":libraries:videoplayer",
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",

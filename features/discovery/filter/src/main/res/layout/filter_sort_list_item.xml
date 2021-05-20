@@ -15,7 +15,7 @@
         android:paddingRight="15dp"
         android:clickable="true"
         app:drawableRightCompat="@drawable/sort_selector_drawable_filter"
-        android:textColor="@color/sort_selector"
+        android:textColor="@color/filter_dms_sort_selector"
         android:background="?attr/selectableItemBackground"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

@@ -224,6 +224,7 @@ public class ShipmentDataConverter {
             }
             if (shipmentInformationData.getFreeShippingExtra().getEligible()) {
                 shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShippingExtra().getBadgeUrl());
+                shipmentCartItemModel.setFreeShippingExtra(true);
             } else if (shipmentInformationData.getFreeShipping().getEligible()) {
                 shipmentCartItemModel.setFreeShippingBadgeUrl(shipmentInformationData.getFreeShipping().getBadgeUrl());
             }
@@ -246,7 +247,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
         shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
-        shipmentCartItemModel.setIsLeasingProduct(groupShop.getIsLeasingProduct());
+        shipmentCartItemModel.setIsLeasingProduct(groupShop.isLeasingProduct());
         shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
         shipmentCartItemModel.setListPromoCodes(groupShop.getListPromoCodes());
 
@@ -299,9 +300,7 @@ public class ShipmentDataConverter {
         cartItemModel.setPreOrderInfo(product.getProductPreOrderInfo());
         cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
-        cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!UtilsKt.isNullOrEmpty(product.getProductCashback()));
-        cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
         cartItemModel.setFInsurance(product.isProductFcancelPartial());
         cartItemModel.setFCancelPartial(product.isProductFinsurance());
         cartItemModel.setError(product.isError());
@@ -323,7 +322,7 @@ public class ShipmentDataConverter {
             cartItemModel.setDiagnosticId(product.getTradeInInfoData().getDiagnosticId());
         }
 
-        if (product.getPurchaseProtectionPlanData() != null) {
+        if (product.getPurchaseProtectionPlanData() != null && product.getPurchaseProtectionPlanData().isProtectionAvailable()) {
             PurchaseProtectionPlanData ppp = product.getPurchaseProtectionPlanData();
             cartItemModel.setProtectionAvailable(ppp.isProtectionAvailable());
             cartItemModel.setProtectionPricePerProduct(ppp.getProtectionPricePerProduct());

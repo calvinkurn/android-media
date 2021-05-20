@@ -36,7 +36,7 @@ class InAppDataProviderSubscriberTest {
 */
         inAppDataProviderSubscriber.onNext(inAppDataList)
 
-        verify { dataProvider.notificationsDataResult(capture(slot)) }
+        verify { dataProvider.notificationsDataResult(capture(slot), any(), any()) }
         assertEquals(slot.captured.size, 0 )
 
     }
@@ -125,7 +125,7 @@ class InAppDataProviderSubscriberTest {
 
         inAppDataProviderSubscriber.onNext(inAppDataList)
 
-        verify { dataProvider.notificationsDataResult(inAppDataList) }
+        verify { dataProvider.notificationsDataResult(inAppDataList, any(), any()) }
         //assertNull(slot.captured)
 
     }

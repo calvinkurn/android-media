@@ -257,13 +257,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     private fun initiateMenuTelco(recom: List<TopupBillsRecommendation>, promo: List<TopupBillsPromo>) {
         listMenu.clear()
         var idTab = 1L
-        if (promo.isNotEmpty()) {
-            viewModel.setPromoTelco(promo)
-            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
-        }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
             listMenu.add(TelcoTabItem(null, TelcoComponentName.RECENTS, idTab++))
+        }
+        if (promo.isNotEmpty()) {
+            viewModel.setPromoTelco(promo)
+            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
         }
 
         viewModel.setTitleMenu(listMenu.size < 2)
@@ -303,14 +303,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }

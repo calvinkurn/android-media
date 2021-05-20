@@ -308,6 +308,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     primaryListener = { dialog ->
                         dialog.dismiss()
                         parentViewModel.continueLiveStream()
+                        analytic.clickDialogContinueBroadcastOnLivePage(parentViewModel.channelId, parentViewModel.title)
                     },
                     secondaryCta = getString(R.string.play_broadcast_end),
                     secondaryListener = { dialog ->
@@ -376,10 +377,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
             is PlayLivePusherState.Resume -> {
                 showLoading(false)
-                if (state.isResumed) showToaster(
+                if (!state.isResumed) showDialogContinueLiveStreaming()
+            }
+            is PlayLivePusherState.Recovered -> {
+                showLoading(false)
+                showToaster(
                         message = getString(R.string.play_live_broadcast_network_recover),
-                        type = Toaster.TYPE_NORMAL)
-                else showDialogContinueLiveStreaming()
+                        type = Toaster.TYPE_NORMAL
+                )
             }
         }
     }

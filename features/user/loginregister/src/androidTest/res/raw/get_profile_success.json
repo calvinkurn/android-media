@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "profile": {
+        "user_id": "1690351",
+        "full_name": "Yoris Prayogo",
+        "first_name": "Yoris",
+        "email": "yoris.prayogo+3@tokopedia.com",
+        "bday": "1970-04-03T00:00:00Z",
+        "gender": "1",
+        "phone": "6282242454504",
+        "phone_masked": "XXXX-XXXX-4504",
+        "phone_verified": true,
+        "profile_picture": "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-13.jpg",
+        "created_password": true,
+        "isLoggedIn": true
+      },
+      "shopBasicData": {
+        "result": {
+          "shopID": "1023108",
+          "name": "Test Ol Shop",
+          "domain": "yoris",
+          "level": 1,
+          "logo": "https://images.tokopedia.net/img/seller_no_logo_0.png"
+        }
+      }
+    }
+  }
+]

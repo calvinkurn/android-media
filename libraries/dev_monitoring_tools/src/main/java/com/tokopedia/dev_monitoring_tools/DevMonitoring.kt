@@ -10,10 +10,11 @@ import com.gu.toolargetool.TooLargeTool
 import com.tokopedia.dev_monitoring_tools.anr.ANRListener
 import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsConfig
 import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsRemoteConfig
-import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolFormatter
 import com.tokopedia.dev_monitoring_tools.toolargetool.TooLargeToolLogger
-import timber.log.Timber
+import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 
 /**
  * Created by nathan on 9/16/17.
@@ -28,8 +29,9 @@ class DevMonitoring(private var context: Context) {
     fun initCrashMonitoring() {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            Timber.w("P1#DEV_CRASH#${UserJourney.getLastActivity()};journey='${UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize)}';error='${Log.getStackTraceString(throwable)}'")
-            exceptionHandler.uncaughtException(thread, throwable)
+            ServerLogger.log(Priority.P1, "DEV_CRASH", mapOf("journey" to UserJourney.getReadableJourneyActivity(devMonitoringToolsConfig.userJourneySize),
+                    "error" to Log.getStackTraceString(throwable).replace("\n", "").replace("\t", " ")))
+            exceptionHandler?.uncaughtException(thread, throwable)
         }
     }
 
@@ -44,5 +46,9 @@ class DevMonitoring(private var context: Context) {
 
     fun initBlockCanary() {
         BlockCanary.install(context, BlockCanaryContext()).start()
+    }
+
+    fun initLeakCanary(enable: Boolean = true) {
+        DevMonitoringExtension.initLeakCanary(enable)
     }
 }

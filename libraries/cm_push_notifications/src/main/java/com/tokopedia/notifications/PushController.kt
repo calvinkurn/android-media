@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.data.converters.JsonBundleConverter.jsonToBundle
@@ -34,9 +36,10 @@ class PushController(val context: Context) : CoroutineScope {
             val baseNotificationModel = PayloadConverter.convertToBaseModel(bundle)
             handleNotificationBundle(baseNotificationModel, isAmplification)
         } catch (e: Exception) {
-            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${bundle.toString()
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to bundle.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         }
     }
 
@@ -51,9 +54,10 @@ class PushController(val context: Context) : CoroutineScope {
                         onLivePushPayloadReceived(baseNotificationModel)
                     }
                 }, onError = {
-            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${baseNotificationModel.toString()
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         })
     }
 
@@ -69,12 +73,16 @@ class PushController(val context: Context) : CoroutineScope {
                     handleNotificationBundle(bundle, true)
                 }
             }, onError = {
-                Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(it)
-                        .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+                ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                        mapOf("type" to "exception",
+                                "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
+                                "data" to ""))
             })
         } catch (e: Exception) {
-            Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""))
         }
     }
 
@@ -163,9 +171,10 @@ class PushController(val context: Context) : CoroutineScope {
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
             }
         } catch (e: Exception) {
-            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${baseNotificationModel.toString()
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}'")
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception",
+                            "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         }
     }
 

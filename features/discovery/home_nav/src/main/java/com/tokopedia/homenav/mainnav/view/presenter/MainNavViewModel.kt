@@ -8,7 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
-import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
@@ -48,7 +48,7 @@ import javax.inject.Inject
 
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
-        private val baseDispatcher: Lazy<NavDispatcherProvider>,
+        private val baseDispatcher: Lazy<CoroutineDispatchers>,
         private val getCategoryGroupUseCase: Lazy<GetCategoryGroupUseCase>,
         private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
         private val getNavNotification: Lazy<GetNavNotification>,
@@ -58,7 +58,7 @@ class MainNavViewModel @Inject constructor(
         private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>
-): BaseViewModel(baseDispatcher.get().io()) {
+): BaseViewModel(baseDispatcher.get().io) {
 
     companion object {
         private const val INDEX_MODEL_ACCOUNT = 0
@@ -70,7 +70,6 @@ class MainNavViewModel @Inject constructor(
         private const val SOURCE = "dave_home_nav"
     }
 
-    private var haveLogoutData: Boolean? = false
 
     //network process live data, false if it is processing and true if it is finished
     val networkProcessLiveData: LiveData<Boolean>
@@ -139,15 +138,15 @@ class MainNavViewModel @Inject constructor(
         else { addHomeBackButtonMenu() }
     }
 
-    fun setUserHaveLogoutData(haveLogoutData: Boolean) {
-        this.haveLogoutData = haveLogoutData
+    fun getPageSource(): String {
+        return pageSource
     }
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
     // ============================================================================================
 
-    private fun setInitialState(): MutableList<Visitable<*>> {
+    fun setInitialState(): MutableList<Visitable<*>> {
         val initialList = mutableListOf<Visitable<*>>()
         if (userSession.get().isLoggedIn) {
             initialList.add(InitialShimmerProfileDataModel())
@@ -357,7 +356,7 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getOngoingTransaction() {
+    suspend fun getOngoingTransaction() {
         //find error state if available and change to shimmering
         val transactionErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateOngoingTransactionModel
@@ -437,16 +436,16 @@ class MainNavViewModel @Inject constructor(
                         it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                         InitialShimmerTransactionDataModel(),
                         it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
             } else {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                         it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
+                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
             }
             return transactionDataList
@@ -491,12 +490,12 @@ class MainNavViewModel @Inject constructor(
 
             launchCatchError(coroutineContext, block = {
                 val call = async {
-                    withContext(baseDispatcher.get().io()) {
+                    withContext(baseDispatcher.get().io) {
                         getShopInfoUseCase.get().executeOnBackground()
                     }
                 }
                 val adminDataCall = async {
-                    withContext(baseDispatcher.get().io()) {
+                    withContext(baseDispatcher.get().io) {
                         getAdminData()
                     }
                 }
@@ -597,10 +596,6 @@ class MainNavViewModel @Inject constructor(
         return Triple(adminRoleText, canGoToSellerAccount, isShopActive)
     }
 
-    private fun onlyForLoggedInUserUi(function: ()-> Unit) {
-        if (userSession.get().isLoggedIn) function.invoke()
-    }
-
     fun findComplainModelPosition(): Int? {
         val findComplainModel = _mainNavListVisitable.find {
             it is HomeNavMenuDataModel && it.id == ID_TOKOPEDIA_CARE
@@ -664,7 +659,7 @@ class MainNavViewModel @Inject constructor(
         return null
     }
 
-    private fun findMenu(menuId: Int): HomeNavMenuDataModel? {
+    fun findMenu(menuId: Int): HomeNavMenuDataModel? {
         val findExistingMenu = _mainNavListVisitable.find {
             it is HomeNavVisitable && it.id() == menuId
         }

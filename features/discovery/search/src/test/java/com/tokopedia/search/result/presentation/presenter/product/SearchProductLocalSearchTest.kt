@@ -164,7 +164,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Given getQueryKey will return keyword`() {
-        every { productListView.queryKey } returns searchParameter[SearchApiConst.Q]
+        every { productListView.queryKey } returns (searchParameter[SearchApiConst.Q] ?: "")
     }
 
     private fun `Then verify recommendation use case not called`() {

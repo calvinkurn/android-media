@@ -43,6 +43,7 @@
     <dimen name="setting_shop_name_shimmer_height">20dp</dimen>
     <dimen name="setting_status_loading_padding_top">20dp</dimen>
     <dimen name="setting_status_loading_padding_bottom">17dp</dimen>
+    <dimen name="setting_indented_margin_start">60dp</dimen>
     <dimen category="font-size" name="line_spacing_6">6sp</dimen>
     <dimen category="font-size" name="top_ads_description_size">14sp</dimen>
 </resources>

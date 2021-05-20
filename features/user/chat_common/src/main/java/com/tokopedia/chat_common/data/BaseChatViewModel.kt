@@ -1,5 +1,6 @@
 package com.tokopedia.chat_common.data
 
+
 /**
  * @author by yfsx on 08/05/18.
  */
@@ -38,6 +39,7 @@ constructor(
         const val SOURCE_AUTO_REPLY = "auto_reply"
         const val SOURCE_WELCOME_MESSAGE = "welcome_message"
         const val SOURCE_TOPBOT = "topbot"
+        const val SOURCE_SMART_REPLY = "smart_reply"
         const val SOURCE_BLAST_SELLER = "blast_seller"
         const val SOURCE_REPLIED_BLAST = "replied_blast"
     }

@@ -9,11 +9,7 @@ import android.graphics.Canvas
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.os.FileUtils
 import android.provider.MediaStore
-import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,11 +18,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
 import com.tokopedia.hotel.evoucher.presentation.adapter.HotelEVoucherCancellationPoliciesAdapter
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
@@ -43,7 +40,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSI
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
 import java.io.File
 import java.io.File.separator
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.OutputStream
 import javax.inject.Inject
@@ -113,8 +109,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
         val args = savedInstanceState ?: arguments
         orderId = args?.getString(EXTRA_ORDER_ID) ?: ""
-        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_hotel_order_list_detail), orderId)
+        eVoucherViewModel.getOrderDetail(HotelGqlQuery.ORDER_DETAILS, orderId)
 
     }
 
@@ -145,6 +140,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         v.measure(View.MeasureSpec.makeMeasureSpec(v.width, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
 
+        /**Stretch out layout to fit root view (because, footer is sticky) */
+        v.layout(0, 0, v.measuredWidth, v.measuredHeight)
+
         val b = Bitmap.createBitmap(v.measuredWidth, v.measuredHeight, Bitmap.Config.ARGB_8888)
         val c = Canvas(b)
         v.draw(c)
@@ -153,6 +151,10 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
     private fun saveImage(bitmap: Bitmap?, isShare: Boolean) {
         if (bitmap != null) {
+
+            /**Reset layout to origin*/
+            container_root.requestLayout()
+
             permissionChecker.checkPermission(this,
                     PERMISSION_WRITE_EXTERNAL_STORAGE,
                     object : PermissionCheckerHelper.PermissionCheckListener {
@@ -193,7 +195,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 context.contentResolver.update(it, values, null, null)
             }
         } else {
-            val directory = File(Environment.getExternalStorageDirectory().toString() + separator + folderName)
+            val directory = File(requireContext().getExternalFilesDir(null)?.absoluteFile.toString() + separator + folderName)
             if (!directory.exists()) {
                 directory.mkdirs()
             }
@@ -343,14 +345,12 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     }
 
     override fun onErrorRetryClicked() {
-        eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_hotel_order_list_detail), orderId)
+        eVoucherViewModel.getOrderDetail(HotelGqlQuery.ORDER_DETAILS, orderId)
     }
 
     override fun sendPdf(emailList: MutableList<String>) {
         progressDialog.show()
-        eVoucherViewModel.sendPdf(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_mutation_hotel_share_pdf), emailList, orderId)
+        eVoucherViewModel.sendPdf(HotelGqlMutation.SHARE_PDF_NOTIFICATION, emailList, orderId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

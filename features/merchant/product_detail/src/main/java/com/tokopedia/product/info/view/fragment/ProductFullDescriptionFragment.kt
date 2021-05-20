@@ -9,11 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,6 +21,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
@@ -65,7 +66,9 @@ class ProductFullDescriptionFragment : BaseDaggerFragment(), ProductFullDescript
         arguments?.let {
             val descriptionData: DescriptionData = it.getParcelable(PARAM_DESCRIPTION_DATA)
                     ?: DescriptionData()
-            ImageHandler.loadImageAndCache(product_image, descriptionData.thumbnailPicture)
+            product_image.loadImage(descriptionData.thumbnailPicture) {
+                setCacheStrategy(MediaCacheStrategy.DATA)
+            }
             product_name.text = MethodChecker.fromHtml(descriptionData.basicName)
             product_price.text = descriptionData.basicPrice.getCurrencyFormatted()
             product_shop.text = descriptionData.shopName

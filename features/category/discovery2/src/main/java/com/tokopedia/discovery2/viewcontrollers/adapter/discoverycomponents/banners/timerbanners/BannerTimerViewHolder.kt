@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
@@ -18,6 +17,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.media.loader.loadImageFitCenter
 
 class BannerTimerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView, fragment.viewLifecycleOwner) {
 
@@ -64,7 +64,7 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     private fun configureTimerUI() {
         bannerTimerViewModel.getComponent().let {
             if (!it.data.isNullOrEmpty()) {
-                ImageHandler.LoadImage(bannerImageView, it.data?.firstOrNull()?.backgroundUrlMobile ?: "")
+                bannerImageView.loadImageFitCenter(it.data?.firstOrNull()?.backgroundUrlMobile ?: "")
                 timeTextFontColour = getTimerFontColour(it)
                 timeBoxColour = getTimerBoxColour(it)
                 setTimerUI(DAYS)

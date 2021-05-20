@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
@@ -82,7 +83,8 @@ data class DynamicHomeChannel(
             val widgetParam: String = "",
             @SerializedName("token")
             var token: String = "",
-            var timestamp: String = ""
+            var timestamp: String = "",
+            var isCache: Boolean = true
     ) : ImpressHolder() {
 
         private var position: Int = 0
@@ -360,6 +362,7 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("url")
             val url: String = "",
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",
@@ -384,6 +387,7 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("shop")
             val shop: Shop = Shop(),
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",
@@ -457,7 +461,19 @@ data class DynamicHomeChannel(
             val recommendationType: String = "",
             @Expose
             @SerializedName("campaignCode")
-            val campaignCode: String = ""
+            val campaignCode: String = "",
+            @Expose
+            @SerializedName("badges")
+            val badges: Array<HomeBadges> = arrayOf()
+    )
+
+    data class HomeBadges(
+            @Expose
+            @SerializedName("title")
+            val title: String = "",
+            @Expose
+            @SerializedName("image_url")
+            val imageUrl: String = ""
     )
 
     data class Benefit(
@@ -468,6 +484,7 @@ data class DynamicHomeChannel(
             @SerializedName("value")
             val value: String = ""
     )
+
     data class Header(
             @Expose
             @SerializedName("id")
@@ -554,6 +571,9 @@ data class DynamicHomeChannel(
     data class Shop(
         @Expose
         @SerializedName("shopID")
-        val shopId: String = ""
+        val shopId: String = "",
+        @Expose
+        @SerializedName("city")
+        val city: String = ""
     )
 }

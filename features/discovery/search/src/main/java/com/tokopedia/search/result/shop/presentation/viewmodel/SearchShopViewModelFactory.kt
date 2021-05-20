@@ -2,7 +2,7 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
@@ -13,7 +13,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy as daggerLazy
 
 internal class SearchShopViewModelFactory(
-        private val coroutineDispatcher: DispatcherProvider,
+        private val coroutineDispatcher: CoroutineDispatchers,
         private val searchParameter: Map<String, Any>,
         private val searchShopFirstPageUseCase: daggerLazy<UseCase<SearchShopModel>>,
         private val searchShopLoadMoreUseCase: daggerLazy<UseCase<SearchShopModel>>,

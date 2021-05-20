@@ -68,11 +68,7 @@ class MainSliceProvider : SliceProvider() {
             userSession = UserSession(contextNonNull)
             sliceTracking = SliceTracking(userSession)
         }
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            createGetInvoiceSlice(sliceUri)
-        } else {
-            return null
-        }
+        return createGetInvoiceSlice(sliceUri)
     }
 
     private fun createPendingIntent(id: Int?, applink: String?, trackingClick: String): PendingIntent? {
@@ -119,7 +115,7 @@ class MainSliceProvider : SliceProvider() {
                         return sliceNoAccess(sliceUri)
                     }
                     return list(contextNonNull, sliceUri, INFINITY) {
-                        setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Green_G500))
+                        setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                         header {
                             title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
                             if (recommendationModel.isNullOrEmpty() && !alreadyLoadData){
@@ -207,7 +203,7 @@ class MainSliceProvider : SliceProvider() {
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNotLogin(sliceUri: Uri): Slice {
         return list(contextNonNull, sliceUri, INFINITY) {
-            setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Green_G500))
+            setAccentColor(ContextCompat.getColor(contextNonNull, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             header {
                 title = contextNonNull.resources.getString(R.string.slice_not_login)
                 primaryAction = createPendingIntentLogin()?.let {
@@ -225,7 +221,7 @@ class MainSliceProvider : SliceProvider() {
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNoAccess(sliceUri: Uri): Slice {
         return list(contextNonNull, sliceUri, INFINITY) {
-            setAccentColor(ContextCompat.getColor(contextNonNull,com.tokopedia.unifyprinciples.R.color.Green_G500))
+            setAccentColor(ContextCompat.getColor(contextNonNull,com.tokopedia.unifyprinciples.R.color.Unify_G500))
             header {
                 title = contextNonNull.resources.getString(R.string.slice_not_access)
                 primaryAction = createPendingIntentNoAccess()?.let {

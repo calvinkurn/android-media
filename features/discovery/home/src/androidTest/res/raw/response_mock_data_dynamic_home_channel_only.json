@@ -1,0 +1,1971 @@
+[{
+    "data": {
+        "dynamicHomeChannel": {
+            "channels": [
+                {
+                    "id": 29925,
+                    "group_id": 164,
+                    "galaxy_attribution": "PG",
+                    "persona": "Others",
+                    "brand_id": "",
+                    "category_persona": "69,1517,497,2121,1875,500,744,498,2102,752",
+                    "name": "Android Test - Lego 6",
+                    "layout": "6_image",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 4,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 30151,
+                        "name": "Android Test - Lego 6",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru-pg-dg-rabu?source=home",
+                        "applink": "tokopedia://discovery/pengguna-baru-pg-dg-rabu?source=home",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [{
+                        "id": 160305,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru-pg-dg-rabu?source=home",
+                        "applink": "tokopedia://discovery/pengguna-baru-pg-dg-rabu?source=home",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/5/27/69874981/69874981_ddbb682b-5951-4ee1-9247-2d95d8cf9cb2.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 160306,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru-pg-dg-rabu?source=home",
+                        "applink": "tokopedia://discovery/pengguna-baru-pg-dg-rabu?source=home",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/5/27/69874981/69874981_7a852b08-0a51-45e3-881e-9b963117e52a.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "OTHERS2_PG_DG_NUZNONLOGIN_SLOT1_29MAY20",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 160307,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru-pg-dg-rabu?source=home",
+                        "applink": "tokopedia://discovery/pengguna-baru-pg-dg-rabu?source=home",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/5/27/69874981/69874981_4a837964-728b-4620-a649-0a5e297c8afa.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "OTHERS3_PG_DG_NUZNONLOGIN_SLOT1_29MAY20",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 160308,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/tokopoints/kupon-saya/top-up-tagihan",
+                        "applink": "tokopedia://tokopoints/kupon-saya/top-up-tagihan",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/5/27/69874981/69874981_c16d90f2-2426-4884-93fe-c8161d5408d5.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "OTHERS_PG_DG_NUZNONLOGIN_SLOT1_29MAY20",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 160309,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/pulsa?ispulsa=1",
+                        "applink": "tokopedia://digital/form?category_id=1",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/5/27/69874981/69874981_615e62db-785b-4d9a-9dc2-e596a6da73b7.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "OTHERS5_PG_DG_NUZNONLOGIN_SLOT1_29MAY20",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 160310,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/pln?ispulsa=1",
+                        "applink": "tokopedia://digital/form?category_id=3",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/5/27/69874981/69874981_b4b8657c-4c17-4531-a169-5989d08e21ab.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "OTHERS6_PG_DG_NUZNONLOGIN_SLOT1_29MAY20",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
+                    }
+                },
+                {
+                    "id": 29555,
+                    "group_id": 169,
+                    "galaxy_attribution": "PG",
+                    "persona": "Parenthood,Healthy Life",
+                    "brand_id": "",
+                    "category_persona": "500,2042,69,972,146,161,980,401,1036,2013,469,1383,394,743,1318,1808,1822,1821,1863,1483",
+                    "name": "Android Test - Lego 4 Image",
+                    "layout": "lego_4_image",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{65,35,1759,1758,60,56,984,983}",
+                    "perso_type": 4,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 29781,
+                        "name": "Android Test - Lego 4 Image",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                        "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [{
+                        "id": 158587,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/discovery/sayur-buah?source=home",
+                        "applink": "tokopedia://discovery/sayur-buah?source=home",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/attachment/2020/5/28/88321389/88321389_8a1a24c3-1e38-4eda-b8a3-c8cfaaaf6243.png",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "X_PG_4 BANNERS_NON LOGIN_GIZI_28 May 20",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    },
+                        {
+                            "id": 158588,
+                            "back_color": "",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/discovery/sembako?source=home",
+                            "applink": "tokopedia://discovery/sembako?source=home",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/attachment/2020/5/28/88321389/88321389_af6256aa-3a9d-4c99-bcfa-4f4bc1cbe4d9.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "X_PG_4 BANNERS_NON LOGIN_SEMBAKO_28 May 20",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        },
+                        {
+                            "id": 158589,
+                            "back_color": "",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/discovery/bumbu-masakan?source=home",
+                            "applink": "tokopedia://discovery/bumbu-masakan?source=home",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/attachment/2020/5/28/88321389/88321389_23694462-a217-4217-b1d4-efc788947789.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "X_PG_4 BANNERS_NON LOGIN_BUMBU MASAK_28 May 20",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        },
+                        {
+                            "id": 158590,
+                            "back_color": "",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/discovery/popok-pilihan?source=home",
+                            "applink": "tokopedia://discovery/popok-pilihan?source=home",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/attachment/2020/5/28/88321389/88321389_c287b001-0b0a-4ef8-8a5c-20ccbefa61c4.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "X_PG_4 BANNERS_NON LOGIN_POPOK_28 May 20",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        }],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
+                    }
+                },
+                {
+                    "id": 34036,
+                    "group_id": 37,
+                    "galaxy_attribution": "PG",
+                    "persona": "Others",
+                    "brand_id": "",
+                    "category_persona": "69,1517,497,2121,1875,500,744,498,2102,752",
+                    "name": "Android Test - Lego 3",
+                    "layout": "lego_3_image",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 4,
+                    "campaignCode": "cen00000019_terlaris terupdate kamis_09july20-31august20\t",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 34275,
+                        "name": "Android Test - Lego 3",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/official-store",
+                        "applink": "tokopedia://official-store/mobile",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [{
+                        "id": 174617,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/discovery/terupdate-terlaris-kamis?source=homepage.lego_3_image.0.34036",
+                        "applink": "tokopedia://discovery/terupdate-terlaris-kamis?source=homepage.lego_3_image.0.34036",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/47d0059b-a366-4319-a532-0c68bbfb1601.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "X_PG_OS_PG_Non Login_23Jul",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 174618,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/discovery/terupdate-terlaris-kamis?source=homepage.lego_3_image.0.34036",
+                        "applink": "tokopedia://discovery/terupdate-terlaris-kamis?source=homepage.lego_3_image.0.34036",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/943e2256-417e-491d-8dcd-5c89e75f8827.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "X_PG_OS_PG_Non Login_23Jul",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 174619,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/discovery/terupdate-terlaris-kamis?source=homepage.lego_3_image.0.34036",
+                        "applink": "tokopedia://discovery/terupdate-terlaris-kamis?source=homepage.lego_3_image.0.34036",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/phZFtb/2020/7/22/b34db909-374d-42ae-880a-4727d14877e2.jpg",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "X_PG_OS_PG_Non Login_23Jul",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
+                    }
+                },
+                {
+                    "id": 72908,
+                    "group_id": 240,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Android Test - 1x2 Banner",
+                    "layout": "1x2_banner",
+                    "type": "inspiration",
+                    "campaignID": 0,
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 73149,
+                        "name": "",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "hero": null,
+                    "grids": [
+                        {
+                            "id": 245676,
+                            "name": "Android Test - 1x2 Banner",
+                            "url": "https://m.tokopedia.com/discovery/apalah",
+                            "applink": "tokopedia://discovery/apalah?source=homepage.1x2_banner.0.72908",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/RInQea/2021/2/2/9b4f8045-a1ae-49ee-833c-aa158010949c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "atribution",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": []
+                        },
+                        {
+                            "id": 245677,
+                            "name": "",
+                            "url": "https://m.tokopedia.com/discovery/apalah",
+                            "applink": "tokopedia://discovery/apalah?source=homepage.1x2_banner.0.72908",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/RInQea/2021/2/2/8d3e4f4b-ba1e-4f42-acb4-fea8275894f4.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "atribution",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
+                    }
+                },
+                {
+                    "id": 38550,
+                    "group_id": 218,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Android Test - 4 Banners Auto",
+                    "layout": "4_banners_auto",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "header": {
+                        "id": 38789,
+                        "name": "Android Test - 4 Banners Auto",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [
+                        {
+                            "id": 1768,
+                            "back_color": "red",
+                            "name": "Atasan Wanita",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550&max_cashback=96",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=96&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_7fc832de-911f-4c53-87e4-d9f97d7d52ed.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Cashback Hingga",
+                                "value": "96%"
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 1899,
+                            "back_color": "red",
+                            "name": "Jilbab",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=1899&search_ref=homepage.4_banners_auto.2.1899.38550",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&search_ref=homepage.4_banners_auto.2.1899.38550&max_cashback=99&category_id=1899",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/19/82120085/82120085_dbf48ae0-045c-46d7-a3ad-b7e10ef6f91b.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Cashback Hingga",
+                                "value": "99%"
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 863,
+                            "back_color": "red",
+                            "name": "Pendidikan",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/20/77305583/77305583_db19aa4e-bb1e-4cfd-a2c0-df81be5fd429.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Cashback Hingga",
+                                "value": "95%"
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 3441,
+                            "back_color": "red",
+                            "name": "Perlengkapan Cuci Piring",
+                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
+                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/82120085/82120085_a38bd671-0d6b-433e-8e89-582315a8690a.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "Cashback Hingga",
+                                "value": "99%"
+                            },
+                            "textColor": ""
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
+                    }
+                },
+                {
+                    "banner": {
+                        "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
+                        "attribution": "",
+                        "back_color": "red",
+                        "cta": {
+                            "coupon_code": "",
+                            "mode": "",
+                            "text": "",
+                            "type": ""
+                        },
+                        "description": "",
+                        "gradient_color": [],
+                        "id": 10197,
+                        "image_url": "https://ecs7-p.tokopedia.net/img/PYbRbC/2021/1/28/e6a29f96-c463-4960-91ce-90ddf8678567.png",
+                        "text_color": "",
+                        "title": "",
+                        "url": "https://www.tokopedia.com/discovery/kejar-diskon"
+                    },
+                    "brand_id": "",
+                    "campaignCode": "",
+                    "categoryID": "{}",
+                    "category_persona": "",
+                    "contextualInfo": 1,
+                    "galaxy_attribution": "PG",
+                    "grids": [
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=1147390125",
+                            "attribution": "sa",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243826,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/9/4/11879544/11879544_76e020bd-a725-4a5c-ab2f-b4043b20ea07_1080_1080",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Laptop",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=1147390125",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=721948527",
+                            "attribution": "ds",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243827,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2021/1/12/49d0f4b5-9c16-4b87-9a2d-0e4e6712a6fb.jpg",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Lampu",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=721948527",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=1139161419",
+                            "attribution": "sa",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243828,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/31/31712488/31712488_11433140-e4ce-45aa-8c62-c39872e764ed_800_800",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Alat Tulis",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=1139161419",
+                            "warehouseID": 0
+                        },
+                        {
+                            "applink": "tokopedia://discovery/pengguna-baru-bandung?source=homepage.6_image_auto.0.71344&product_id=786947893",
+                            "attribution": "ds",
+                            "back_color": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "campaignCode": "",
+                            "cashback": "",
+                            "count_review": 0,
+                            "discount": "",
+                            "freeOngkir": {
+                                "imageUrl": "",
+                                "isActive": false
+                            },
+                            "has_buy_button": false,
+                            "id": 243829,
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/12/9/f12f41c6-02ff-4e81-94c2-7438f790b221.jpg",
+                            "impression": "",
+                            "isOutOfStock": false,
+                            "isTopads": false,
+                            "label": "Meja Belajar",
+                            "labelGroup": [],
+                            "minOrder": 0,
+                            "name": "",
+                            "price": "",
+                            "productClickUrl": "",
+                            "productViewCountFormatted": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "slashedPrice": "",
+                            "soldPercentage": 0,
+                            "textColor": "",
+                            "url": "https://www.tokopedia.com/discovery/pengguna-baru-bandung?product_id=786947893",
+                            "warehouseID": 0
+                        }
+                    ],
+                    "group_id": 240,
+                    "has_close_button": false,
+                    "header": {
+                        "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
+                        "backColor": "",
+                        "backImage": "",
+                        "expiredTime": "",
+                        "id": 71585,
+                        "name": "Android Test - Lego 6 Auto",
+                        "serverTime": 0,
+                        "subtitle": "",
+                        "textColor": "",
+                        "url": "https://www.tokopedia.com/discovery/kejar-diskon"
+                    },
+                    "id": 71344,
+                    "isAutoRefreshAfterExpired": false,
+                    "layout": "6_image_auto",
+                    "name": "Android Test - Lego 6 Auto",
+                    "pageName": "",
+                    "perso_type": 1,
+                    "persona": "",
+                    "showPromoBadge": false,
+                    "token": "",
+                    "type": "inspiration",
+                    "widgetParam": ""
+                },
+                {
+                    "id": 25744,
+                    "group_id": 151,
+                    "galaxy_attribution": "PG",
+                    "persona": "Fashion Muslim",
+                    "brand_id": "",
+                    "category_persona": "1889,1901,1904,1771,1921,1902,69,500,425,1764",
+                    "name": "Android Test - List carousel",
+                    "layout": "list_carousel",
+                    "type": "inspiration",
+                    "showPromoBadge": true,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": true,
+                    "header": {
+                        "id": 25833,
+                        "name": "Android Test - List carousel",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                        "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [
+                        {
+                            "id": 45873377,
+                            "back_color": "",
+                            "name": "Microsoft Surface Pro 4 Cover / Keyboard Fingerprint Original Garansi",
+                            "url": "https://www.tokopedia.com/chocoapple/microsoft-surface-pro-4-cover-keyboard-fingerprint-original-garansi?src=topads",
+                            "applink": "tokopedia://product/45873377",
+                            "price": "Rp2.350.000",
+                            "slashedPrice": "Rp2.350.000",
+                            "discount": "99%",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/16/5138814/5138814_bee96f1a-3622-44e1-ab19-13dabed77231_1132_1132",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "abc",
+                            "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosJFH_n7Hp1DUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUstho_jNHAKf6ArObm-srcHi6srOHmFiy3zwrfo5rM1i6sUdHZd7HsJFosr7H_176A1Rbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O2oI2o8jOE_92o8jOE_92o8jOE_92oH1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32g8Jhke92vzcDa_uzC8jYJqp-ouJVE_jo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_u6zJOE_92u8u22HI2g8MxW_Vzz8V2WZ9zvucPR3BHhqV2Wz_zo8jBN_OP6QJNJ33BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZMgozsxR3I2mgjNkz9x6qMoE3AJdPOxEe3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z9BvzJuO_jz-8JOJ3_o6zJ1h_jzSH1NNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk_9Bvepep_jzSoJNkyRxozVBd_92C81BXHA7ibm-Orfua9fBjUstiHpyfHAy7HaUDUSoBrRo2QfNwq3ei6i-By1-p69V_Qjrhu_2C1JJNH3-cPszMb1BqQsVOZRV2H3PdQBueP_uR8ux5gBzOPRJWoO-NyBjdH7gIq32wZ9nO1MN2qJuZPMtO61268u-W_MhE_3Voqp-OZjWj8A-i3sjagsuzoOKRrArhz_rh814pPVCdHVzzufh03sz_gpCbH3gF_cONe1zf_OueP7ddHfV2qJKa6_yOgiUDUMVDgaUEUSotQRCwrMusg3N7PMBBPaUDUMNOQ3-BrBY5gBYxgIHi6sKDUMNOQ3-BrBYxgIowrMuhUstdbm-sy9zwq3zpUs2Qos1DHsrfbAHFopuPbm-X9foxQMz2gcV7guYxgIHi6syObm-xyBY7g9o7Ustig9xF9f-DQfYW9fh2Q3B79fBWrI-BrRo2QfNwgMBDPcuaUiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7H_jNHR7?sid=eaBs9qSnG1U%3AAPA91bFv4f-IZn1uKqi1gxnUPu5wyXofTuwq-7RybY83FGij_Ip5RnihERvj59JNyRmNlzMaMk2uJKdx2bZ92f5Q7X7p71E71yO3tPx0TQWlkZ4Sg0K1fpLmyADvOUPwN83aihH2965f&r=https%3A%2F%2Fwww.tokopedia.com%2Fchocoapple%2Fmicrosoft-surface-pro-4-cover-keyboard-fingerprint-original-garansi%3Fsrc%3Dtopads&src=recom_widget_homepage&t=android&management_type=1&page=1&dv=android-3.92",
+                            "impression": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syhHAJFoAHObm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_1N6_ndosKRoZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpr5H_y5o_Jp6AKhom4OH_Hd6AJ79f-Bg_jfgsVxb_HfHsUWoAzBHZOxysJNb_JpgcVig3eRopUpHu4hH_Ha9pJhHpUibm-xgVYpyfYagZUEHsKhbseaH_nfopeho_edo_rDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_3j78jOE_92o8jOE_92o8jOE_92o8j7hZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBBd_c2C8jYJqp-ouJVE_7z0HjO1e926e7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-o1NJ_92o8BuN3MjF8BBEqcOHuVVd3MO-PJY1gRPq1pVt3MOVoJOEZ9Bvu7ND_jzgq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGgjOc6IPy8j-M_M2V8JNkyR2yH_xR3I2Cq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-81YJz9u6zJBd_1zgH7NJz_V6zcrh_SB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32o81YAoAo6zcr7_M2s8JOJ39xo8jVNZ3dFvZUDUSupg9-wq3ei6iUposyFosepUiFirfuprfB5QBY2gmUEUMuxeSHNruoXzpVu6jVee_jhyjgfocyWZu2XH9ubr3jhgRxXuuCOo9PN3cYMuIuRrZ7R1SBi3_KpzjP2qBY-rAuZQMBtzu-fqs1NZjNN1MO6QI2oy1O0HSuGZfzdHM-q6_-MouJR3APFopVVopVN_po71IKFuVV9QcWqoVoSHJDhgSCHQ9BCzIgvuuCR_sKpy3BtZAUNosuMUiFiy3hSUstirfx5rVYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUE6mFiQSuWyMua9fVjrOYag9Ji6sKDUMNwyfVXgcBjy9zB9fVjraUEos1DUMVi9RzBrRei6i-B8ICwyMh5QfOwQcBWq9zwq3OFrMuprfB5QBYMq3h7g9Uibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAJN6_oY?page=1&dv=android-3.92&src=recom_widget_homepage&sid=eaBs9qSnG1U%3AAPA91bFv4f-IZn1uKqi1gxnUPu5wyXofTuwq-7RybY83FGij_Ip5RnihERvj59JNyRmNlzMaMk2uJKdx2bZ92f5Q7X7p71E71yO3tPx0TQWlkZ4Sg0K1fpLmyADvOUPwN83aihH2965f&management_type=1&t=android",
+                            "cashback": "",
+                            "isTopads": true,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 611673
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Cashback",
+                                    "position": "promo",
+                                    "type": "lightGreen"
+                                },
+                                {
+                                    "title": "Bisa Tukar Tambah",
+                                    "position": "offers",
+                                    "type": "lightGrey"
+                                },
+                                {
+                                    "title": "Cashback",
+                                    "position": "price",
+                                    "type": "lightGreen"
+                                }
+                            ],
+                            "has_buy_button": true,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        }
+                    ],
+                    "banner": {
+                        "id": 2313,
+                        "title": "Android Test - List carousel",
+                        "description": "",
+                        "url": "https://www.tokopedia.com/discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                        "back_color": "red",
+                        "cta": {
+                            "type": "ghost",
+                            "mode": "inverted",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "tokopedia://discovery/produk-baru?source=homepage.list_carousel.0.25744",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
+                    }
+                },
+                {
+                    "id": 33459,
+                    "group_id": 151,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Android Test - Product highlight",
+                    "layout": "product_highlight",
+                    "type": "inspiration",
+                    "showPromoBadge": true,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "header": {
+                        "id": 33698,
+                        "name": "Android Test - Product highlight",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": "",
+                        "textColor": "white"
+                    },
+                    "grids": [
+                        {
+                            "id": 1013183943,
+                            "back_color": "",
+                            "name": "[Sanghai stripe RO] blouse wanita katun stirpe navy dan hitam - Biru",
+                            "url": "https://www.tokopedia.com/fashionista-yus/sanghai-stripe-ro-blouse-wanita-katun-stirpe-navy-dan-hitam-biru",
+                            "applink": "tokopedia://product/1013183943",
+                            "price": "Rp2.350.000",
+                            "slashedPrice": "Rp2.350.000",
+                            "discount": "99%",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2017/10/16/12186374/12186374_6f64f01a-e1fd-4cd0-99dd-f24b8f58f931_720_738.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1771&event=click&experimentVersion=v1.4&page=0&page_name=terlaris_no_ads&pid=1013183943&pos=1&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/fashionista-yus/sanghai-stripe-ro-blouse-wanita-katun-stirpe-navy-dan-hitam-biru?catid1771=%26ref=terlaris_no_ads_pa0_po1%26src=r3best_seller&tid=qn_Y_62VQfdw5cSkOhBiQd9tyNM=&uid=3660643&unique_id=&utime=1599702306&widget=r3_widget&xdevice=android-3.90",
+                            "impression": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2017/10/16/12186374/12186374_6f64f01a-e1fd-4cd0-99dd-f24b8f58f931_720_738.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 7475,
+                            "minOrder": 1,
+                            "shop": {
+                                "shopID": 86242
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Cashback",
+                                    "position": "promo",
+                                    "type": "lightGreen"
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        }
+                    ],
+                    "banner": {
+                        "id": 3911,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "red",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "red"
+                        ]
+                    }
+                },
+                {
+                    "id": 36970,
+                    "group_id": 113,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Android Test - Category widget",
+                    "layout": "category_widget",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "header": {
+                        "id": 37209,
+                        "name": "Android Test - Category widget",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/produk-terlaris?source=homepage.category_widget.0.36970",
+                        "applink": "tokopedia://discovery/produk-terlaris?source=homepage.category_widget.0.36970",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [
+                        {
+                            "id": 65,
+                            "back_color": "",
+                            "name": "Handphone & Tablet",
+                            "url": "https://www.tokopedia.com/p/handphone-tablet",
+                            "applink": "tokopedia://category/65?categoryName=Handphone+%26+Tablet",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_6da6ce24-c161-4e14-960c-37795f3fc267.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 1758,
+                            "back_color": "",
+                            "name": "Fashion Wanita",
+                            "url": "https://www.tokopedia.com/p/fashion-wanita",
+                            "applink": "tokopedia://category/1758?categoryName=Fashion+Wanita",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 1760,
+                            "back_color": "",
+                            "name": "Fashion Muslim",
+                            "url": "https://www.tokopedia.com/p/fashion-muslim",
+                            "applink": "tokopedia://category/1760?categoryName=Fashion+Muslim",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_199c682c-2ff3-4c9f-8a87-d71c54520c23.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 61,
+                            "back_color": "",
+                            "name": "Kecantikan",
+                            "url": "https://www.tokopedia.com/p/kecantikan",
+                            "applink": "tokopedia://category/61?categoryName=Kecantikan",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_01e1d7fe-ec54-4c0a-a372-0d5cc34c4b88.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 78,
+                            "back_color": "",
+                            "name": "Fashion Anak & Bayi",
+                            "url": "https://www.tokopedia.com/p/fashion-anak-bayi",
+                            "applink": "tokopedia://category/78?categoryName=Fashion+Anak+%26+Bayi",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_920fddea-e74a-4be2-8a75-813a873116c3.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        },
+                        {
+                            "id": 62,
+                            "back_color": "",
+                            "name": "Olahraga",
+                            "url": "https://www.tokopedia.com/p/olahraga",
+                            "applink": "tokopedia://category/62?categoryName=Olahraga",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/8/24/40768394/40768394_8d48c23a-3090-4c71-abfa-2c637003c1e2.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": ""
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
+                    }
+                },
+                {
+                    "id": 34022,
+                    "group_id": 206,
+                    "galaxy_attribution": "PG",
+                    "persona": "Homeliving",
+                    "brand_id": "",
+                    "category_persona": "1043,999,1045,1052,1270,1042,1372,1368,1038,1011",
+                    "name": "Android Test - Mix Left",
+                    "layout": "left_carousel",
+                    "type": "inspiration",
+                    "showPromoBadge": true,
+                    "categoryID": "{}",
+                    "perso_type": 17,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 34261,
+                        "name": "Android Test - Mix Left",
+                        "subtitle": "Berakhir dalam",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru?source=home",
+                        "applink": "tokopedia://discovery/pengguna-baru?source=home",
+                        "serverTime": 1595493972,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [
+                        {
+                            "id": 866484030,
+                            "back_color": "",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/basike-official/basike-in-ear-headphone-audio-plug-3-5mm-length-120cm-mt18-putih?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D17_catid%3D564",
+                            "applink": "tokopedia://product/866484030",
+                            "price": "Rp 10.000",
+                            "slashedPrice": "Rp 59.000",
+                            "discount": "83%",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/5/25/96439959/96439959_312c8c86-635a-4bf5-80c7-5ed787c5d9f2_700_700",
+                            "label": "Tersedia",
+                            "soldPercentage": 18,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        },
+                        {
+                            "id": 866484030,
+                            "back_color": "red",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/basike-official/basike-in-ear-headphone-audio-plug-3-5mm-length-120cm-mt18-putih?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D17_catid%3D564",
+                            "applink": "tokopedia://product/866484030",
+                            "price": "Rp 10.000",
+                            "slashedPrice": "Rp 59.000",
+                            "discount": "83%",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/5/25/96439959/96439959_312c8c86-635a-4bf5-80c7-5ed787c5d9f2_700_700",
+                            "label": "Tersedia",
+                            "soldPercentage": 18,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        }
+                    ],
+                    "banner": {
+                        "id": 4032,
+                        "title": "",
+                        "description": "",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru?source=home",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "tokopedia://discovery/pengguna-baru?source=home",
+                        "text_color": "",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/cache/240/PYbRbC/2020/7/21/15355103-6e76-48ee-a8bb-c455adecdf47.png",
+                        "attribution": "X_PG_NUZ_Deal Pengguna Baru_July 20",
+                        "gradient_color": [
+                            "red"
+                        ]
+                    }
+                },
+                {
+                    "id": 26137,
+                    "group_id": 184,
+                    "galaxy_attribution": "PG",
+                    "persona": "Cook",
+                    "brand_id": "",
+                    "category_persona": "912,948,949,951,916,952,950,946,953,958",
+                    "name": "Android Test - Mix top",
+                    "layout": "top_carousel",
+                    "type": "inspiration",
+                    "showPromoBadge": true,
+                    "categoryID": "{715,35,63,60}",
+                    "perso_type": 4,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 26361,
+                        "name": "Android Test - Mix top",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/produk-rekomendasi-kebutuhan-harian?source=homepage.top_carousel.0.26137",
+                        "applink": "tokopedia://discovery/produk-rekomendasi-kebutuhan-harian?source=homepage.top_carousel.0.26137",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [
+                        {
+                            "id": 596162501,
+                            "back_color": "",
+                            "name": "Tumblr Tee / Kaos Pria Lengan Pendek SAVAGE - Putih",
+                            "url": "https://www.tokopedia.com/ellipses/tumblr-tee-kaos-pria-lengan-pendek-savage-putih",
+                            "applink": "tokopedia://product/596162501",
+                            "price": "Rp 40.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2019/10/25/3453155/3453155_ea10c229-2dac-4747-85f9-e2400fbc5f67_700_700",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1808\u0026event=click\u0026experimentVersion=v1.4\u0026page=0\u0026page_name=injection\u0026pid=596162501\u0026pos=1\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/ellipses/tumblr-tee-kaos-pria-lengan-pendek-savage-putih?catid1808=%26ref=injection_pa0_po1%26src=r3injection\u0026tid=iFwALK5qYOTFlnN2W56Umw_mL3U=\u0026uid=0\u0026unique_id=\u0026utime=1595493972\u0026widget=r3_widget\u0026xdevice=android-3.85",
+                            "impression": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/10/25/3453155/3453155_ea10c229-2dac-4747-85f9-e2400fbc5f67_700_700",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 107033,
+                            "minOrder": 1,
+                            "shop": {
+                                "shopID": 443716
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 5,
+                            "count_review": 2
+                        },
+                        {
+                            "id": 596162501,
+                            "back_color": "",
+                            "name": "Tumblr Tee / Kaos Pria Lengan Pendek SAVAGE - Putih",
+                            "url": "https://www.tokopedia.com/ellipses/tumblr-tee-kaos-pria-lengan-pendek-savage-putih",
+                            "applink": "tokopedia://product/596162501",
+                            "price": "Rp 40.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2019/10/25/3453155/3453155_ea10c229-2dac-4747-85f9-e2400fbc5f67_700_700",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1808\u0026event=click\u0026experimentVersion=v1.4\u0026page=0\u0026page_name=injection\u0026pid=596162501\u0026pos=1\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/ellipses/tumblr-tee-kaos-pria-lengan-pendek-savage-putih?catid1808=%26ref=injection_pa0_po1%26src=r3injection\u0026tid=iFwALK5qYOTFlnN2W56Umw_mL3U=\u0026uid=0\u0026unique_id=\u0026utime=1595493972\u0026widget=r3_widget\u0026xdevice=android-3.85",
+                            "impression": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/10/25/3453155/3453155_ea10c229-2dac-4747-85f9-e2400fbc5f67_700_700",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 107033,
+                            "minOrder": 1,
+                            "shop": {
+                                "shopID": 443716
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 5,
+                            "count_review": 2
+                        }
+                    ],
+                    "banner": {
+                        "id": 2410,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "red",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/attachment/2020/4/20/88321389/88321389_45a5c71e-a590-48d8-8753-70ed4a3b6ca0.jpg",
+                        "attribution": "",
+                        "gradient_color": [
+                            "red"
+                        ]
+                    }
+                },
+                {
+                    "id": 74104,
+                    "layout": "dg_bills"
+                },
+                {
+                    "id": 75166,
+                    "layout": "home_widget_2",
+                    "widgetParam": "?section=top_up_dan_tagihan"
+                },
+                {
+                    "id": 17771,
+                    "group_id": 149,
+                    "galaxy_attribution": "",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Android Test - Popular keyword",
+                    "layout": "popular_keyword",
+                    "type": "inspiration",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 17858,
+                        "name": "Android Test - Popular keyword",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "red",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [{
+                        "id": 105704,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/",
+                        "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2F",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 105705,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/",
+                        "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2F",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }, {
+                        "id": 105706,
+                        "back_color": "",
+                        "name": "",
+                        "url": "https://www.tokopedia.com/",
+                        "applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2F",
+                        "price": "",
+                        "slashedPrice": "",
+                        "discount": "",
+                        "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/",
+                        "label": "",
+                        "soldPercentage": 0,
+                        "attribution": "",
+                        "productClickUrl": "",
+                        "impression": "",
+                        "cashback": "",
+                        "isTopads": false,
+                        "freeOngkir": {
+                            "isActive": false,
+                            "imageUrl": ""
+                        },
+                        "productViewCountFormatted": "",
+                        "isOutOfStock": false,
+                        "warehouseID": 0,
+                        "minOrder": 0,
+                        "shop": {
+                            "shopID": 0
+                        },
+                        "labelGroup": [],
+                        "has_buy_button": false,
+                        "rating": 0,
+                        "count_review": 0
+                    }],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": []
+                    }
+                },
+                {
+                    "id": 74103,
+                    "layout": "salam_todo"
+                },
+                {
+                    "id": 7345,
+                    "name": "Android Test - Home widget",
+                    "layout": "home_widget",
+                    "type": "inspiration",
+                    "header": {
+                        "id": 7432,
+                        "name": "Android Test - Home widget",
+                        "url": "https://m.tokopedia.com/discovery/flash-sale",
+                        "applink": "tokopedia://discovery/flash-sale",
+                        "expiredTime": "",
+                        "backColor": "green",
+                        "backImage": ""
+                    }
+                }
+            ]
+        }
+    }
+}]

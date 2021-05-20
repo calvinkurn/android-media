@@ -97,7 +97,7 @@ class NonGroupItemsItemViewHolder(val view: View,
         }
 
         view.img_menu.setOnClickListener {
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.adStatus, item.data.productName)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.adStatus, item.data.productName, item.data.groupId)
             sheet?.onEditAction = {
                 editDone.invoke(item.data.adId, item.data.adPriceBid)
             }

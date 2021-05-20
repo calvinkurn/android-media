@@ -119,7 +119,7 @@ class DigitalCartViewModel @Inject constructor(
             _showLoading.postValue(true)
             digitalGetCartUseCase.execute(
                     DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
-                    onSuccessGetCart(),
+                    onSuccessGetCart(categoryId),
                     onErrorGetCart()
             )
         }
@@ -151,10 +151,10 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(categoryId: String): (RechargeGetCart.Response) -> Unit {
         return {
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
-            mapDataSuccessCart(mappedCartData)
+            mapDataSuccessCart(mappedCartData, categoryId)
         }
     }
 
@@ -164,8 +164,8 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData) {
-        analytics.eventCheckout(mappedCartData, userSession.userId)
+    private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData, categoryId: String) {
+        analytics.eventCheckout(mappedCartData, userSession.userId, categoryId)
 
         requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken, requestCheckoutParam)
 
@@ -327,7 +327,9 @@ class DigitalCartViewModel @Inject constructor(
                         if (fintech.isNotEmpty()) {
                             fintech.values.forEach {
                                 if (it.info.iconUrl.isNotEmpty()) {
-                                    analytics.eventProceedCheckoutTebusMurah(it, userSession.userId)
+                                    analytics.eventProceedCheckoutTebusMurah(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
+                                } else {
+                                    analytics.eventProceedCheckoutCrossell(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
                                 }
                             }
                         }
@@ -362,16 +364,10 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     fun applyPromoData(promoData: PromoData) {
-        when (promoData.state) {
-            TickerCheckoutView.State.FAILED,
-            TickerCheckoutView.State.EMPTY -> {
-                resetCheckoutSummaryPromoAndTotalPrice()
-            }
-            TickerCheckoutView.State.ACTIVE -> {
-                onReceivedPromoCode()
-            }
-            else -> {
-            }
+        if (promoData.state == TickerCheckoutView.State.FAILED || promoData.state == TickerCheckoutView.State.EMPTY) {
+            resetCheckoutSummaryPromoAndTotalPrice()
+        } else if (promoData.state == TickerCheckoutView.State.ACTIVE) {
+            onReceivedPromoCode()
         }
     }
 

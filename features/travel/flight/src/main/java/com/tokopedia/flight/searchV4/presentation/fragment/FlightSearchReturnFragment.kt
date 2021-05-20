@@ -12,6 +12,7 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.HorizontalProgressBar
+import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_BEST_PAIRING
@@ -78,8 +79,9 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         flightSearchReturnViewModel.onFlightSearchSelected(flightSearchViewModel.flightSearchPassData, journeyModel, adapterPosition)
     }
 
-    override fun onSelectedFromDetail(selectedId: String) {
+    override fun onSelectedFromDetail(detailBottomSheet: FlightDetailBottomSheet, selectedId: String) {
         flightSearchReturnViewModel.onFlightSearchSelectFromDetail(flightSearchViewModel.flightSearchPassData, selectedId)
+        if (detailBottomSheet.isAdded && detailBottomSheet.isVisible) detailBottomSheet.dismiss()
     }
 
     override fun initViewModels() {
@@ -121,6 +123,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
 
     override fun renderSearchList(list: List<FlightJourneyModel>) {
         clearAllData()
+
         if (flightSearchReturnViewModel.isBestPairing &&
                 !flightSearchReturnViewModel.isViewOnlyBestPairing &&
                 list.isNotEmpty()) {
@@ -128,6 +131,10 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         }
 
         super.renderSearchList(list)
+
+        if (flightSearchReturnViewModel.isViewOnlyBestPairing) {
+            hidePromoChips()
+        }
 
         if (flightSearchViewModel.isDoneLoadData() && flightSearchReturnViewModel.isViewOnlyBestPairing) {
             showSeeAllResultView()
@@ -214,6 +221,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             clearAllData()
             fetchSortAndFilterData()
             resetDepartureLabelPrice()
+            showPromoChips()
             dialog.dismiss()
         }
         dialog.setSecondaryCTAText(getString(R.string.flight_search_return_dialog_abort))
@@ -245,7 +253,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         if (isAdded) {
             val dialog = AlertDialog.Builder(activity)
             dialog.setMessage(R.string.flight_search_return_departure_should_greater_message)
-            dialog.setPositiveButton(activity!!.getString(com.tokopedia.abstraction.R.string.title_ok)
+            dialog.setPositiveButton(requireActivity().getString(com.tokopedia.abstraction.R.string.title_ok)
             ) { dialog, which ->
                 dialog.dismiss()
             }

@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -12,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipFilterAdapter
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.decoration.CommonMarginStartDecoration
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel.Companion.BEST_SELLER_HIDE_LOADING_RECOMMENDATION
@@ -72,13 +74,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         }
         itemView.best_seller_subtitle.shouldShowWithAction(element.subtitle.isNotBlank()){
             itemView.best_seller_subtitle.text = element.subtitle
+            anchorSeeMoreButtonTo(R.id.best_seller_subtitle)
         }
         itemView.best_seller_see_more.shouldShowWithAction(element.seeMoreAppLink.isNotBlank()){
             itemView.best_seller_see_more.setOnClickListener {
                 listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
             }
         }
-        itemView.root.show()
+        itemView.container_best_seller_widget.show()
         itemView.show()
     }
 
@@ -96,6 +99,20 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             if(itemView.best_seller_recommendation_recycler_view.adapter == null) {
                 itemView.best_seller_recommendation_recycler_view.adapter = recommendationAdapter
             }
+            if (itemView.best_seller_recommendation_recycler_view.itemDecorationCount == 0) {
+                itemView.best_seller_recommendation_recycler_view.addItemDecoration(
+                        CommonMarginStartDecoration(
+                                marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12)
+                        )
+                )
+            }
+            if (itemView.best_seller_chip_filter_recyclerview.itemDecorationCount == 0) {
+                itemView.best_seller_chip_filter_recyclerview.addItemDecoration(
+                        CommonMarginStartDecoration(
+                                marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                        )
+                )
+            }
             val recommendationCarouselList: MutableList<Visitable<RecommendationCarouselTypeFactory>> = element.recommendationItemList.withIndex().map {
                 RecommendationCarouselItemDataModel(it.value, element.productCardModelList[it.index])
             }.toMutableList()
@@ -106,6 +123,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
             itemView.best_seller_recommendation_recycler_view.layoutManager?.scrollToPosition(0)
         }
+    }
+
+    private fun anchorSeeMoreButtonTo(anchorRef: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(itemView.container_best_seller_widget)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(itemView.container_best_seller_widget)
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {

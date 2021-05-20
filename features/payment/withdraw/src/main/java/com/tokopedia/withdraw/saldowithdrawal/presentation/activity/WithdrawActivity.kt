@@ -3,6 +3,7 @@ package com.tokopedia.withdraw.saldowithdrawal.presentation.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -19,6 +20,7 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalFr
 import com.tokopedia.withdraw.saldowithdrawal.presentation.listener.WithdrawalJoinRPCallback
 import kotlinx.android.synthetic.main.swd_activity_saldo_withdraw.*
 import javax.inject.Inject
+import com.tokopedia.config.GlobalConfig
 
 /**
  * For navigating to this class
@@ -39,8 +41,15 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
         updateHeaderTitle(getString(R.string.swd_activity_withdraw))
         initInjector()
+    }
+
+    private fun setSecureWindowFlag() {
+        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+        }
     }
 
     private fun initInjector() {

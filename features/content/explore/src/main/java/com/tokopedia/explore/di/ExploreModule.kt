@@ -2,8 +2,6 @@ package com.tokopedia.explore.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.explore.analytics.ContentExploreAnalytics
@@ -34,12 +32,6 @@ class ExploreModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context?): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @ExploreScope
-    @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
     }
 
     @ExploreScope

@@ -17,7 +17,7 @@ class HomeDataMapper(
         private val trackingQueue: TrackingQueue,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ) {
-    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean, showGeolocation: Boolean = true): HomeDataModel{
+    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         val addLoadingMore = homeData.token.isNotEmpty()
@@ -28,7 +28,6 @@ class HomeDataMapper(
                 .addUserWalletVisitable()
                 .addDynamicIconVisitable()
 
-        if (showGeolocation) factory.addGeolocationVisitable()
 
         factory.addDynamicChannelVisitable(addLoadingMore, true)
                 .build()

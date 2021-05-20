@@ -2,11 +2,12 @@
     <string name="inbox_title_notification">Notifikasi</string>
     <string name="inbox_title_chat">Chat</string>
     <string name="inbox_title_discussion">Diskusi</string>
+    <string name="inbox_title_review">Ulasan</string>
     <string name="title_change_role">Akun sudah diganti ke %s.</string>
-    <string name="inbox_title_onboarding_1"><![CDATA[Cek notifikasi, chat, & diskusi lebih mudah]]></string>
-    <string name="inbox_desc_onboarding_1">Pantau berbagai info di Tokopedia dengan pilih jenis pesan yang ingin kamu cek di sini.</string>
+    <string name="inbox_title_onboarding_1">Ada yang baru di bawah sini</string>
+    <string name="inbox_desc_onboarding_1">Bisa langsung pilih info mana yang mau kamu cek, dari notifikasi, chat, diskusi, hingga ulasan.</string>
     <string name="inbox_title_onboarding_2">Mau cek isi Inbox tokomu?</string>
     <string name="inbox_desc_onboarding_2"><![CDATA[Klik tanda panah untuk ganti akun ke tokomu & buka Inbox-nya.]]></string>
     <string name="inbox_title_onboarding_3">Pilih akun yang mau kamu cek</string>
-    <string name="inbox_desc_onboarding_3">Kamu juga bisa lihat jumlah pesan baru di masing-masing akun lewat halaman ini.</string>
+    <string name="inbox_desc_onboarding_3"><![CDATA[Kamu juga bisa lihat jumlah pesan baru & produk yang bisa diulas lewat halaman ini.]]></string>
 </resources>
