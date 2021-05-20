@@ -1691,7 +1691,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 
@@ -2509,7 +2508,13 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     private fun onSuccessAddWishlist(productId: String?) {
-        view?.showToasterSuccess(toasterWishlistText)
+        view?.showToasterSuccess(
+                message = toasterWishlistText,
+                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                ctaListener = {
+                    goToWishlist()
+                }
+        )
         pdpUiUpdater?.updateWishlistData(true)
         updateUi()
         DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
@@ -2575,6 +2580,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         search_pdp_toolbar?.hide()
         navToolbar = view?.findViewById(R.id.pdp_navtoolbar)
         navToolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {

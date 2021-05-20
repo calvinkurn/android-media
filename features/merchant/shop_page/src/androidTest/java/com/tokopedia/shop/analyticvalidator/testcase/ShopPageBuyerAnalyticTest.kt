@@ -36,6 +36,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.constant.Constant
+import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -133,7 +134,7 @@ class ShopPageBuyerAnalyticTest {
                 withText("Tutup"))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.layout_remind_me))
+                withId(R.id.layout_remind_me_un_notified))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.snackbar_btn))

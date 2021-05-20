@@ -1,0 +1,53 @@
+[
+  {
+    "data": {
+      "notifcenter_unread": {
+        "notif_unread": "0"
+      },
+      "notifications": {
+        "buyerOrderStatus": {
+          "arriveAtDestination": 0,
+          "confirmed": 0,
+          "paymentStatus": 0,
+          "processed": 0,
+          "shipped": 0
+        },
+        "chat": {
+          "unreads": 0,
+          "unreadsSeller": 0,
+          "unreadsUser": 0
+        },
+        "inbox": {
+          "review": 0,
+          "talk": 10,
+          "ticket": 0
+        },
+        "inbox_counter": {
+          "all": {
+            "total_int": 0
+          }
+        },
+        "resolutionAs": {
+          "buyer": 10,
+          "seller": 0
+        },
+        "sellerInfo": {
+          "notification": 0
+        },
+        "sellerOrderStatus": {
+          "arriveAtDestination": 0,
+          "newOrder": 0,
+          "readyToShip": 0,
+          "shipped": 0
+        },
+        "total_cart": 10
+      },
+      "status": "OK",
+      "userShopInfo": {
+        "info": {
+          "shop_id": "-1"
+        }
+      }
+    }
+  }
+]

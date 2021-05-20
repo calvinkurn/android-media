@@ -1,16 +1,22 @@
 package com.tokopedia.utils.file
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import com.tokopedia.config.GlobalConfig
 import java.io.*
 import java.nio.channels.FileChannel
+import java.text.SimpleDateFormat
 import java.util.*
 
 object FileUtil {
+    private const val SCHEME_CONTENT = "content"
+
     /**
      * get Tokopedia's internal directory
      * it will be create a new directory if doesn't exist
@@ -56,6 +62,14 @@ object FileUtil {
         }
         timeString = timeString.substring(startIndex)
         return timeString + Random().nextInt(100)
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun generateUniqueFileNameDateFormat(index: Int): String {
+        val date = Date()
+        val sdf = SimpleDateFormat("ddMMyyyyhhmmss")
+        val dateString = sdf.format(date)
+        return dateString.replace("[^a-zA-Z0-9]".toRegex(), "") + "_" + (index + 1).toString()
     }
 
     fun writeStreamToFile(source: InputStream, file: File): Boolean {
@@ -155,6 +169,26 @@ object FileUtil {
                     fileExtension.toLowerCase(Locale.getDefault()))
         }
         return mimeType
+    }
+
+    @JvmStatic
+    fun getPath(resolver: ContentResolver, uri: Uri?): String? {
+        if (uri == null) {
+            return null
+        }
+        if (SCHEME_CONTENT == uri.scheme) {
+            var cursor: Cursor? = null
+            return try {
+                cursor = resolver.query(uri, arrayOf(MediaStore.Images.ImageColumns.DATA),
+                        null, null, null)
+                if (cursor == null || !cursor.moveToFirst()) {
+                    null
+                } else cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
+            } finally {
+                cursor?.close()
+            }
+        }
+        return uri.path
     }
 
 }
