@@ -9,7 +9,7 @@ data class SubmitGlobalFeedback(
         val state: String = "",
         @SerializedName("error")
         @Expose
-        val error: Boolean = false,
+        val error: Boolean = true,
         @SerializedName("errorMsg")
         @Expose
         val errorMsg: String = ""

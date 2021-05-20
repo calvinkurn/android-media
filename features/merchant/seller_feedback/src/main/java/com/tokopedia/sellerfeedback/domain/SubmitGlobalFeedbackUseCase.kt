@@ -22,7 +22,7 @@ class SubmitGlobalFeedbackUseCase @Inject constructor(
         const val PARAM_UPLOADID3 = "uploadID3"
         const val SUBMIT_GLOBAL_FEEDBACK_QUERY_CLASS_NAME = "SubmitGlobalFeedback"
         const val SUBMIT_GLOBAL_FEEDBACK_QUERY = """
-            query submitGlobalFeedback(
+            mutation submitGlobalFeedback(
                 ${'$'}shopID: Int!,
                 ${'$'}feedbackScore: String!,
                 ${'$'}feedbackType: String!,
