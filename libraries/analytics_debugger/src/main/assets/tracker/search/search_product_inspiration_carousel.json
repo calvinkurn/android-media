@@ -173,7 +173,7 @@
       "eventLabel": ".+ - .+",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
-      "item_list": "/search - carousel",
+      "item_list": "/search - carousel dynamic",
       "items": [
         {
           "index": "\\d*.\\d*",
@@ -195,7 +195,7 @@
       "eventLabel": ".+ - .+",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
-      "item_list": "/search - carousel",
+      "item_list": "/search - carousel dynamic",
       "items": [
         {
           "index": "\\d*.\\d*",
