@@ -4,10 +4,8 @@ import android.view.View
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.GMCommonUrl
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_GREEN_TIMER
@@ -23,9 +21,6 @@ class ItemTimerNewSellerViewHolder(view: View,
     companion object {
         val LAYOUT = R.layout.timer_new_seller_before_transition
     }
-
-    private val impressHolderWatchVideo = ImpressHolder()
-    private val impressHolderBtnLearn = ImpressHolder()
 
     override fun bind(element: ItemTimerNewSellerUiModel?) {
         with(itemView) {
@@ -43,9 +38,7 @@ class ItemTimerNewSellerViewHolder(view: View,
     private fun setBtnPerformanceClickListener(element: ItemTimerNewSellerUiModel?) {
         with(itemView) {
             btn_shop_performance_learn?.let { btn ->
-                btn.addOnImpressionListener(impressHolderBtnLearn) {
-                    itemTimerNewSellerListener.onImpressBtnLearnPerformance()
-                }
+                itemTimerNewSellerListener.onImpressBtnLearnPerformance()
                 btn.setOnClickListener {
                     if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
                         itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
@@ -62,9 +55,7 @@ class ItemTimerNewSellerViewHolder(view: View,
             addOnClickListener {
                 itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
-            addOnImpressionListener(impressHolderWatchVideo) {
-                itemTimerNewSellerListener.onImpressWatchVideo()
-            }
+            itemTimerNewSellerListener.onImpressWatchVideo()
         }
     }
 

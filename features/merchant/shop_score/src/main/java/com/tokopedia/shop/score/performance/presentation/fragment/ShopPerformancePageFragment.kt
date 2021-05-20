@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -23,7 +22,6 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreCoachMarkPrefs
@@ -78,10 +76,6 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private val coachMark: CoachMark2? by lazy {
         context?.let { CoachMark2(it) }
     }
-
-
-    private val impressHolderMenuPenalty = ImpressHolder()
-    private val impressHolderMenuShopInfo = ImpressHolder()
 
     private val penaltyDotBadge: PenaltyDotBadge? by lazy {
         context?.let { PenaltyDotBadge(it) }
@@ -195,7 +189,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onItemClickedGoToPMActivation() {
         goToPowerMerchantSubscribe(PARAM_PM)
-        shopScorePenaltyTracking.clickPowerMerchantSection()
+        shopScorePenaltyTracking.clickPowerMerchantSection(isNewSeller)
     }
 
     override fun onImpressHeaderPowerMerchantSection() {
@@ -223,7 +217,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     /**
-     * ItemTimerNewSellerListener
+     * ItemRecommendationFeatureListener
      */
     override fun onItemClickedRecommendationFeature(appLink: String, identifier: String) {
         shopScorePenaltyTracking.clickMerchantToolsRecommendation(identifier)
@@ -249,8 +243,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         startActivity(intent)
     }
 
-    override fun onItemImpressRecommendationFeature() {
-        shopScorePenaltyTracking.impressMerchantToolsRecommendation()
+    override fun onItemImpressRecommendationFeature(identifier: String) {
+        shopScorePenaltyTracking.impressMerchantToolsRecommendation(identifier)
     }
 
     /**
@@ -321,12 +315,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun impressMenuShopPerformance() {
-        menu?.findItem(PENALTY_WARNING_MENU_ID)?.actionView?.addOnImpressionListener(impressHolderMenuPenalty) {
-            shopScorePenaltyTracking.impressMenuPenalty()
-        }
-        menu?.findItem(INFO_MENU_ID)?.actionView?.addOnImpressionListener(impressHolderMenuShopInfo) {
-            shopScorePenaltyTracking.impressMenuInfoPage()
-        }
+        if (menu?.findItem(PENALTY_WARNING_MENU_ID)?.isVisible == true) shopScorePenaltyTracking.impressMenuPenalty()
+
+        if (menu?.findItem(INFO_MENU_ID)?.isVisible == true) shopScorePenaltyTracking.impressMenuInfoPage()
     }
 
     private fun showPenaltyBadge() {

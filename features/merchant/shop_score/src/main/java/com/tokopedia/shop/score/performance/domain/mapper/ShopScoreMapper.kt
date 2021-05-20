@@ -160,8 +160,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                     add(SectionFaqUiModel(mapToItemFaqUiModel()))
                 }
                 userSession.isGoldMerchant && !userSession.isShopOfficialStore -> {
-                    if (shopAge >= SHOP_AGE_SIXTY) {
-                        if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
+                    if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
+                        if (shopAge >= NEW_SELLER_DAYS) {
                             add(mapToTransitionPeriodReliefUiModel(shopInfoPeriodUiModel.periodEndDate))
                         }
                     }
@@ -399,16 +399,26 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
             sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
 
-                val minValueFormattedPercent = (shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT)
                 val roundNextMinValue = shopScoreDetail.nextMinValue
 
                 val (targetDetailPerformanceText, parameterItemDetailPerformance) =
                         when (shopScoreDetail.identifier) {
                             CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> {
-                                Pair("$roundNextMinValue $minuteText", minuteText)
+                                val rawValueFormatted = if (roundNextMinValue.rem(1) == 0.0) {
+                                    roundNextMinValue.roundToInt().toString()
+                                } else {
+                                    roundNextMinValue.toString()
+                                }
+                                Pair("$rawValueFormatted $minuteText", minuteText)
                             }
                             ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
-                                Pair("$minValueFormattedPercent$percentText", percentText)
+                                val minValueFormattedPercent = (shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT)
+                                val minValueFormatted = if (minValueFormattedPercent.rem(1) == 0.0) {
+                                    minValueFormattedPercent.roundToInt().toString()
+                                } else {
+                                    minValueFormattedPercent.toString()
+                                }
+                                Pair("$minValueFormatted$percentText", percentText)
                             }
                             TOTAL_BUYER_KEY -> {
                                 Pair("${roundNextMinValue.roundToInt()} $peopleText", peopleText)
@@ -425,7 +435,21 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         } else {
                             when (shopScoreDetail.identifier) {
                                 ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
-                                    (shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT).toString()
+                                    val rawValuePercent = shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT
+                                    val rawValueFormatted = if (rawValuePercent.rem(1) == 0.0) {
+                                        rawValuePercent.roundToInt().toString()
+                                    } else {
+                                        rawValuePercent.toString()
+                                    }
+                                    rawValueFormatted
+                                }
+                                CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> {
+                                    val rawValueFormatted = if (roundNextMinValue.rem(1) == 0.0) {
+                                        roundNextMinValue.roundToInt().toString()
+                                    } else {
+                                        roundNextMinValue.toString()
+                                    }
+                                    rawValueFormatted
                                 }
                                 TOTAL_BUYER_KEY, OPEN_TOKOPEDIA_SELLER_KEY -> {
                                     shopScoreDetail.rawValue.roundToInt().toString()
@@ -478,7 +502,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 descPM = if (isNewSellerProjection)
                     context?.getString(R.string.desc_pm_section_new_seller).orEmpty()
                 else
-                    context?.getString(R.string.desc_content_pm_section).orEmpty())
+                    context?.getString(R.string.desc_content_pm_section).orEmpty(),
+                isNewSellerProjection = isNewSellerProjection
+        )
     }
 
     private fun mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMBenefitUiModel {

@@ -4,7 +4,6 @@ import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
@@ -15,19 +14,16 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.card_shop_score_total_penalty.view.*
 
 class ItemHeaderCardPenaltyViewHolder(view: View,
-                                      private val itemHeaderCardPenaltyListener: ItemHeaderCardPenaltyListener): AbstractViewHolder<ItemCardShopPenaltyUiModel>(view) {
+                                      private val itemHeaderCardPenaltyListener: ItemHeaderCardPenaltyListener) : AbstractViewHolder<ItemCardShopPenaltyUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.card_shop_score_total_penalty
     }
 
-    private val impressHolderLearnMore = ImpressHolder()
-
     override fun bind(element: ItemCardShopPenaltyUiModel?) {
         with(itemView) {
-            tvContentPenalty?.addOnImpressionListener(impressHolderLearnMore) {
-                itemHeaderCardPenaltyListener.impressLearnMorePenaltyPage()
-            }
+            itemHeaderCardPenaltyListener.impressLearnMorePenaltyPage()
+
             tvContentPenalty?.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
                 itemHeaderCardPenaltyListener.onMoreInfoHelpPenaltyClicked()
             }

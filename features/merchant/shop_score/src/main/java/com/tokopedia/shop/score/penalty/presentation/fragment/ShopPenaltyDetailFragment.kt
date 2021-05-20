@@ -11,9 +11,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
@@ -35,8 +34,6 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
     private val penaltyDetailStepperAdapter by lazy { PenaltyDetailStepperAdapter() }
-
-    private val impressHolderHelpCenter = ImpressHolder()
 
     override fun getScreenName(): String = ""
 
@@ -91,7 +88,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
             shopScorePenaltyTracking.clickLearMoreHelpCenterPenaltyDetail()
         }
 
-        btnCallHelpCenter?.addOnImpressionListener(impressHolderHelpCenter) {
+        if (btnCallHelpCenter?.isVisible == true) {
             shopScorePenaltyTracking.impressHelpCenterPenaltyDetail()
         }
     }

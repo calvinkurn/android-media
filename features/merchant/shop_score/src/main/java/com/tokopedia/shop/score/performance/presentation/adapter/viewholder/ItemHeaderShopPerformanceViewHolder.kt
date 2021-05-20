@@ -6,7 +6,6 @@ import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreUtils
@@ -22,8 +21,6 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
     }
-
-    private val impressHolderTicker = ImpressHolder()
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         setBackgroundRadiusHeader()
@@ -127,11 +124,9 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
             val isNewSeller = element?.shopAge.orZero() < NEW_SELLER_DAYS
             tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0 && !isNewSeller)
             tickerShopHasPenalty?.apply {
-                addOnImpressionListener(impressHolderTicker) {
-                    shopPerformanceListener.onTickerImpressionToPenaltyPage()
-                }
                 if (element?.scorePenalty != null) {
                     setHtmlDescription(getString(R.string.ticker_deduction_point_penalty, element.scorePenalty?.toString()))
+                    shopPerformanceListener.onTickerImpressionToPenaltyPage()
                 }
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {

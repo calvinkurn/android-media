@@ -15,8 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:background="@drawable/bg_header_gold">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/ic_pm_badge_current_status"
@@ -115,6 +114,7 @@
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginStart="@dimen/dp_12"
                 android:paddingBottom="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMSection"
