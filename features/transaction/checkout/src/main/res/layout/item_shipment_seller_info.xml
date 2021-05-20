@@ -151,7 +151,7 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_free_shipping"
-            android:layout_width="@dimen/dp_100"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:gravity="center_vertical"
             app:unify_image_type="rect"
