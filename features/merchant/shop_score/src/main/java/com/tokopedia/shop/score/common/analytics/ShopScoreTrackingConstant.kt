@@ -28,7 +28,7 @@ object ShopScoreTrackingConstant {
     const val MERCHANT_VOUCHER = "merchant voucher"
     const val FREE_SHIPPING = "bebas ongkir"
     const val BROADCAST_CHAT = "broadcast chat"
-    const val TOP_ADS = "top ads"
+    const val TOP_ADS = "topads"
 
     const val OLD_PERFORMA_TOKO_PAGE = "old performa toko page"
     const val CLICK_LEARN_MORE = "click - pelajari selengkapnya"
