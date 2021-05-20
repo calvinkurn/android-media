@@ -118,24 +118,18 @@ class OSChooseAddressWidgetView : FrameLayout {
                 isExpand = true
                 motionlayout_choose_address.setTransitionListener(object : MotionLayout.TransitionListener {
                     override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-                        Log.d("osScroll", "shouldExpand: start expand")
                     }
 
                     override fun onTransitionChange(p0: MotionLayout, p1: Int, p2: Int, progress: Float) {
-                        Log.d("osScroll", "shouldExpand: chane expand: " + progress)
                     }
 
                     override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                        Log.d("osScroll", "shouldExpand: done expand")
                     }
 
                     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
-                        Log.d("osScroll", "shouldExpand: trigger expand")
                     }
                 })
                 motionlayout_choose_address.transitionToStart()
-            } else {
-                Log.d("osScroll", "shouldExpand: not expand")
             }
         }
 
@@ -158,24 +152,18 @@ class OSChooseAddressWidgetView : FrameLayout {
                 isExpand = false
                 motionlayout_choose_address.setTransitionListener(object : MotionLayout.TransitionListener {
                     override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-                        Log.d("osScroll", "shouldExpand: start collapse")
                     }
 
                     override fun onTransitionChange(p0: MotionLayout, p1: Int, p2: Int, progress: Float) {
-                        Log.d("osScroll", "shouldExpand: change collapse: " + progress)
                     }
 
                     override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                        Log.d("osScroll", "shouldExpand: done collapse")
                     }
 
                     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
-                        Log.d("osScroll", "shouldExpand: trigger collapse")
                     }
                 })
                 motionlayout_choose_address.transitionToEnd()
-            } else {
-                Log.d("osScroll", "shouldExpand: not collapse")
             }
         }
     }
