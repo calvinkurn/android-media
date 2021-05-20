@@ -34,7 +34,7 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
 
     private fun showInterruptToaster(intent: Intent?) {
         intent?.data?.let { uri ->
-            val parentView = findViewById<FrameLayout>(R.id.parent_view)
+            val parentView = window.decorView
             pmShopScoreInterruptHelper.setShopScoreConsentStatus(uri) {
                 if (it) {
                     pmShopScoreInterruptHelper.showsShopScoreConsentToaster(parentView)
