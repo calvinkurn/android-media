@@ -71,7 +71,7 @@ class TopadsDailyBudgetRecomAdapter(private val userSession: UserSessionInterfac
                         potentialClick = calculatePotentialClick(holder).toLong()
                     }
                     dailyRecommendationModel.add(dailyBudgetModel)
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", dailyRecommendationModel, userSession.userId)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", dailyRecommendationModel, holder.adapterPosition, userSession.userId)
             }
             holder.view.editBudget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(holder.view.editBudget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {

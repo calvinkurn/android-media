@@ -83,7 +83,7 @@ class TopadsProductRecomAdapter(private val userSession: UserSessionInterface, v
                         recommendedBid = recomBid
                     }
                     insightRecommendationModel.add(insightProductRecommendationModel)
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", insightRecommendationModel, userSession.userId)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", insightRecommendationModel, holder.adapterPosition, userSession.userId)
             }
             holder.view.editBudget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(holder.view.editBudget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {

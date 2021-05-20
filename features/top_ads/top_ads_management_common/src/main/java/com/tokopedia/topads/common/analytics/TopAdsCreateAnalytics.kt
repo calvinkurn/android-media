@@ -320,7 +320,7 @@ class TopAdsCreateAnalytics {
         getTracker().sendGeneralEvent(map)
     }
 
-    fun sendInsightSightProductEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<InsightProductRecommendationModel>, userId: String) {
+    fun sendInsightSightProductEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<InsightProductRecommendationModel>, position: Int, userId: String) {
         val map = mapOf(
                 KEY_EVENT to KEY_PROMO_VIEW,
                 KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
@@ -330,14 +330,14 @@ class TopAdsCreateAnalytics {
                 KEY_EVENT_LABEL to eventLabel,
                 KEY_ECOMMERCE_EVENT to mapOf(
                         KEY_PROMO_VIEW to mapOf(
-                                KEY_PROMOTIONS to getInsightProductList(data)
+                                KEY_PROMOTIONS to getInsightProductList(data, position)
                         )),
                 KEY_EVENT_USER_ID to userId)
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    fun sendInsightSightDailyProductEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<InsightDailyBudgetModel>, userId: String) {
+    fun sendInsightSightDailyProductEcommerceViewEvent(eventAction: String, eventLabel: String, data: List<InsightDailyBudgetModel>, position: Int, userId: String) {
         val map = mapOf(
                 KEY_EVENT to KEY_PROMO_VIEW,
                 KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_INSIGHT_RECOMMENDATION,
@@ -347,33 +347,33 @@ class TopAdsCreateAnalytics {
                 KEY_EVENT_LABEL to eventLabel,
                 KEY_ECOMMERCE_EVENT to mapOf(
                         KEY_PROMO_VIEW to mapOf(
-                                KEY_PROMOTIONS to getInsightDailyBidgetList(data)
+                                KEY_PROMOTIONS to getInsightDailyBidgetList(data, position)
                         )),
                 KEY_EVENT_USER_ID to userId)
 
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getInsightDailyBidgetList(data: List<InsightDailyBudgetModel>): Any? {
+    private fun getInsightDailyBidgetList(data: List<InsightDailyBudgetModel>, position: Int): Any? {
         var list = arrayListOf<Any>()
         data.forEachIndexed { index, it ->
             list.add(mapOf(
                     "id" to it.id,
                     "name" to it.name,
                     "creative" to "${it.dailySuggestedPrice} - ${it.potentialClick}",
-                    "position" to index + 1))
+                    "position" to position+1))
         }
         return list
     }
 
-    private fun getInsightProductList(data: List<InsightProductRecommendationModel>): Any? {
+    private fun getInsightProductList(data: List<InsightProductRecommendationModel>, position: Int): Any? {
         var list = arrayListOf<Any>()
         data.forEachIndexed { index, it ->
             list.add(mapOf(
                     "id" to it.id,
                     "name" to it.name,
                     "creative" to "${it.searchNumber} - ${it.searchPercent} - ${it.recommendedBid}",
-                    "position" to index + 1))
+                    "position" to position+1))
         }
         return list
     }
