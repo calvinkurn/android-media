@@ -19,8 +19,6 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
         changeAddressButton = findViewById<UnifyButton>(R.id.tokonowEmptyStateButton1)
         returnButton = findViewById<UnifyButton>(R.id.tokonowEmptyStateButton2)
 
-        // Remove this later
-        setDescriptionCityName("Jakarta Utara")
     }
 
     var actionListener: ActionListener? = null
@@ -34,7 +32,7 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
 
     fun setDescriptionCityName(city: String) {
         val tvDescription = findViewById<TextView?>(R.id.tokonowEmptyStateDesc2)
-        tvDescription?.text = context.getString(R.string.tokomart_search_category_empty_state_desc_2, city)
+        tvDescription?.text = context.getString(R.string.tokomart_common_empty_state_desc_2, city)
     }
 
     interface ActionListener {
