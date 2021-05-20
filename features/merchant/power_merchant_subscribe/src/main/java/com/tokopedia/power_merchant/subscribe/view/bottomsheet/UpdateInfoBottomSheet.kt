@@ -1,7 +1,10 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import kotlinx.android.synthetic.main.bottom_sheet_pm_update_info.view.*
 
 /**
@@ -30,7 +33,7 @@ class UpdateInfoBottomSheet : BaseBottomSheet() {
     }
 
     private fun setOnCtaClicked() {
-        //todo : open seller edu
+        RouteManager.route(context, Constant.Url.PM_PRO_BENEFIT_PACKAGE_EDU)
         dismiss()
     }
 }

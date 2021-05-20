@@ -78,10 +78,6 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     private fun showPmGrade(grade: String) {
         tvPmCurrentGrade.text = grade.asCamelCase()
         when {
-            PMShopGrade.ADVANCED.equals(grade, true) -> {
-                tvPmCurrentGrade.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                imgPmGradeBg.loadImageDrawable(R.drawable.bg_pm_benefit_package_advanced)
-            }
             PMShopGrade.EXPERT.equals(grade, true) -> {
                 tvPmCurrentGrade.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_T500))
                 imgPmGradeBg.loadImageDrawable(R.drawable.bg_pm_benefit_package_expert)
@@ -89,6 +85,10 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
             PMShopGrade.ULTIMATE.equals(grade, true) -> {
                 tvPmCurrentGrade.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                 imgPmGradeBg.loadImageDrawable(R.drawable.bg_pm_benefit_package_ultimate)
+            }
+            else -> { //PMShopGrade.ADVANCED
+                tvPmCurrentGrade.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                imgPmGradeBg.loadImageDrawable(R.drawable.bg_pm_benefit_package_advanced)
             }
         }
     }

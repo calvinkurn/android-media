@@ -81,14 +81,15 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgPmShopGradeIllustration"
-            android:layout_width="@dimen/gmc_dimen_128dp"
-            android:layout_height="@dimen/gmc_dimen_134dp"
+            android:layout_width="@dimen/gmc_dimen_112dp"
+            android:layout_height="@dimen/gmc_dimen_112dp"
             android:layout_marginTop="@dimen/gmc_dimen_10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeStatus"
             app:unify_image_corner_radius="0"
-            app:unify_image_placeholder="@android:color/transparent" />
+            app:unify_image_placeholder="@android:color/transparent"
+            tools:src="@tools:sample/avatars" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -120,14 +121,13 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:layout_marginBottom="@dimen/layout_lvl2"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
         app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeScore"
         app:layout_constraintVertical_bias="0.0"
-        app:layout_goneMarginBottom="@dimen/layout_lvl3"
         app:typographyType="body_2"
         tools:text="Pertahankan skor min. 60 poin untuk tetap menjadi Power Merchant setelah 31 Mei 2021." />
 

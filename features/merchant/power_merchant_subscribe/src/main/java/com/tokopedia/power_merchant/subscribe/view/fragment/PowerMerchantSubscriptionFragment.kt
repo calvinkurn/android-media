@@ -563,6 +563,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
         val isAutoExtendEnabled = getAutoExtendEnabled()
+        val isPmActive = pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val widgets = mutableListOf<BaseWidgetUiModel>()
         /*if (!pmSettingInfo?.tickers.isNullOrEmpty() && isAutoExtendEnabled) {
@@ -583,7 +584,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
         }
         val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled
-                && data.currentPMGrade?.gradeName != PMShopGrade.ULTIMATE && isPmPro
+                && data.currentPMGrade?.gradeName != PMShopGrade.ULTIMATE
+                && isPmPro && isPmActive
         if (shouldShowNextGradeWidget) {
             val pmProThreshold = pmBasicInfo?.shopInfo?.itemSoldPmProThreshold
                     ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD

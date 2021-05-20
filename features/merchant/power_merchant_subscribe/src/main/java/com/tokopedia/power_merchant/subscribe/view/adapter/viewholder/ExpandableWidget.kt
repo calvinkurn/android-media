@@ -38,12 +38,12 @@ class ExpandableWidget(
             }
 
             setupExpandableItem(element)
-            setupPmSection(element)
+            setupPmSection()
             setupPmProSection(element)
         }
     }
 
-    private fun setupPmSection(element: WidgetExpandableUiModel) = with(itemView) {
+    private fun setupPmSection() = with(itemView) {
         viewPmBenefitSection.setOnClickListener {
             handleExpandableView()
         }

@@ -198,7 +198,7 @@
     <string name="pm_shop_performance_sum_new_seller"><![CDATA[Proyeksi Performa Toko : <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_shop_score_threshold_description"><![CDATA[Pertahankan skor performa toko <b>min. %1$d poin</b> untuk tetap menjadi Power Merchant setelah %2$s.]]></string>
     <string name="pm_shop_score_threshold_description_final_period"><![CDATA[Pertahankan skor <b>min. %1$d poin</b> agar %2$s-mu tetap aktif, ya.]]></string>
-    <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>Level %1$d</b> dan <b>skor min. %2$d</b> untuk naik jadi <b>PM %3$s</b> di periode update selanjutnya dan nikmati:]]></string>
+    <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>level %1$d</b> untuk mendapatkan paket keuntungan <b>%2$s</b> pada periode update berikutnya. Pelajari Selengkapnya]]></string>
     <string name="pm_next_update_pm_pro_info"><![CDATA[Pengecekan status PM PRO akan dilakukan setiap 30 hari. Toko dengan skor <b>di bawah %1$d</b> berpotensi diturunkan menjadi PM.]]></string>
     <string name="pm_label_next_three_months_pm_grade_update">Update selanjutnya: %1$s</string>
     <string name="pm_deactivate_power_merchant_bottom_cta">Berhenti dari Power Merchant? <font color="#03AC0E"><b>Klik di sini</b></font></string>
