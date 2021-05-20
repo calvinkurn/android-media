@@ -7,7 +7,7 @@ import dagger.Component
 @ChatListScope
 @Component(
         modules = [CommonTopchatModule::class,
-            ChatListNetworkModule::class,
+            FakeChatListNetworkModule::class,
             ChatListSettingModule::class,
             ChatListQueryModule::class,
             ChatNotificationsQueryModule::class,
