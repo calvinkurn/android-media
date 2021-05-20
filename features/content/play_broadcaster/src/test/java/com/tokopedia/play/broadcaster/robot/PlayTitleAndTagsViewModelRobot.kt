@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayTitleAndTagsSetupViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -48,9 +49,9 @@ class PlayTitleAndTagsViewModelRobot(
 }
 
 fun givenPlayTitleAndTagsViewModel(
-        hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
+        hydraConfigStore: HydraConfigStore = TestDoubleModelBuilder().buildHydraConfigStore(),
         dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
-        setupDataStore: PlayBroadcastSetupDataStore = mockk(relaxed = true),
+        setupDataStore: PlayBroadcastSetupDataStore = TestDoubleModelBuilder().buildSetupDataStore(),
         getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase = mockk(relaxed = true),
         fn: PlayTitleAndTagsViewModelRobot.() -> Unit = {},
 ) : PlayTitleAndTagsViewModelRobot {

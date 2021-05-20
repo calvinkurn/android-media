@@ -45,9 +45,6 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val channelId: String
         get() = hydraConfigStore.getChannelId()
 
-    private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + dispatcher.main)
-
     val observableEtalase: LiveData<PageResult<List<EtalaseContentUiModel>>>
         get() = _observableEtalase
     private val _observableEtalase = MutableLiveData<PageResult<List<EtalaseContentUiModel>>>()
@@ -87,13 +84,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val productPreviewChannel = BroadcastChannel<String>(Channel.BUFFERED)
 
     init {
-        scope.launch { initProductPreviewChannel() }
+        viewModelScope.launch { initProductPreviewChannel() }
         loadEtalaseList()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancelChildren()
     }
 
     fun loadEtalaseProducts(etalaseId: String, page: Int) {
@@ -104,7 +96,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 else currentValue
         )
 
-        scope.launch {
+        viewModelScope.launch {
             _observableSelectedEtalase.value = fetchEtalaseProduct(etalaseId, page)
         }
     }
@@ -116,14 +108,14 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     fun loadEtalaseProductPreview(etalaseId: String) {
-        scope.launch {
+        viewModelScope.launch {
             productPreviewChannel.send(etalaseId)
         }
     }
 
     fun uploadProduct() {
         _observableUploadProductEvent.value = NetworkResult.Loading
-        scope.launch {
+        viewModelScope.launch {
             val result = setupDataStore.uploadSelectedProducts(channelId).map { Event(Unit) }
             _observableUploadProductEvent.value =
                     if (result is NetworkResult.Fail) NetworkResult.Fail(EventException(result.error))
@@ -139,7 +131,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         _observableSearchedProducts.value = PageResult.Loading(
                 if (page == 1) emptyList() else currentValue
         )
-        scope.launch {
+        viewModelScope.launch {
             try {
                 val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
                 updateProductMap(searchedProducts)
@@ -155,7 +147,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun loadEtalaseList() {
         _observableEtalase.value = PageResult.Loading(emptyList())
-        scope.launch {
+        viewModelScope.launch {
             try {
                 val etalaseList = getEtalaseList()
                 val newMap = updateEtalaseMap(etalaseList)

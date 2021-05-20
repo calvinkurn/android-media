@@ -53,8 +53,8 @@ class PlayBroadcastUiMapper(
         ProductContentUiModel(
                 id = it.id.toLong(),
                 name = it.name,
-                imageUrl = it.pictures.first().urlThumbnail,
-                originalImageUrl = it.pictures.first().urlThumbnail,
+                imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
+                originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                 stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
                 isSelectedHandler = isSelectedHandler,
                 isSelectable = isSelectableHandler
