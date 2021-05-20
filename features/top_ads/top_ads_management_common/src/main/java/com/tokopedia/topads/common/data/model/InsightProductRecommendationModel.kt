@@ -5,10 +5,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 open class InsightProductRecommendationModel(
-        var productid: String = "",
-        var productname: String = "",
-        var searchCount: Int = 0,
-        var serachPercentage: String = "",
+        var id: String = "",
+        var name: String = "",
+        var searchNumber: Int = 0,
+        var searchPercent: String = "",
         var recommendedBid: String = "",
         var pricebid: String = ""
 

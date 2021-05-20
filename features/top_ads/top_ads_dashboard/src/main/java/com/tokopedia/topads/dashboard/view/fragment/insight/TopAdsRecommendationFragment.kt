@@ -40,9 +40,7 @@ import kotlin.collections.ArrayList
 
 const val CLICK_PRODUK_BERPOTENSI = "click - produk berpotensi"
 const val CLICK_ANGARRAN_HARIAN = "click - anggaran harian"
-const val VIEW_RECOMMENDED_PRODUK = "view - rekomendasi produk"
 const val CLICK_IKLANKAN = "click - iklankan"
-const val VIEW_DAILY_RECOMMENDATION_PRODUKS = "view - rekomendasi anggaran - grup iklan"
 
 class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
@@ -53,8 +51,6 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var countProduct = 0
     private var countBid = 0
     private var index = 0
-    private var insightRecommendationModel = mutableListOf<InsightProductRecommendationModel>()
-    private var dailyRecommendationModel = mutableListOf<InsightDailyBudgetModel>()
 
     companion object {
         const val HEIGHT = "addp_bar_height"
@@ -148,11 +144,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             override fun onTabItemClick(position: Int) {
                 if (position == 0 && checkFragmentPosition(CONST_0, PRODUK)) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_PRODUK_BERPOTENSI, userSession.userId, userSession.userId)
-                    sendProductRecommendationEvent()
                 } else if ((position == 1) && checkFragmentPosition(CONST_1, DAILY_BUDGET) || (position == 0) && checkFragmentPosition(CONST_0, DAILY_BUDGET)) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_ANGARRAN_HARIAN, userSession.userId, userSession.userId)
-                    sendDailyBudgetRecommendationEvent()
-
                 }
                 view_pager.currentItem = position
                 if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true && countProduct != 0) {
@@ -286,51 +279,5 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     fun checkBtnVisibilityAndSetTracker() {
         if (productRecommendData != null)
             (activity as TopAdsDashboardActivity?)?.hideButton(countProduct == 0)
-
-        when (getFirstPage()) {
-            CONST_0 -> sendProductRecommendationEvent()
-            CONST_1 -> sendDailyBudgetRecommendationEvent()
-//            CONST_2 -> ""
-            else -> ""
-        }
-    }
-
-    private fun getFirstPage(): Int {
-        return when {
-            isProductAvailable() -> CONST_0
-            isDailyBudgetAvailable() -> CONST_1
-//            isKeywordAvailable() -> CONST_2
-            else -> -1
-        }
-    }
-
-
-    private fun sendProductRecommendationEvent() {
-        insightRecommendationModel.clear()
-        productRecommendData?.products?.forEach {
-            var insightProductRecommendationModel = InsightProductRecommendationModel().apply {
-                productid = it.productId
-                productname = it.productName
-                searchCount = it.searchCount
-                serachPercentage = it.searchPercentage
-                recommendedBid = it.recomBid
-            }
-            insightRecommendationModel.add(insightProductRecommendationModel)
-        }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", insightRecommendationModel, userSession.userId)
-    }
-
-    private fun sendDailyBudgetRecommendationEvent() {
-        dailyRecommendationModel.clear()
-        dailyBudgetRecommendData?.data?.forEach {
-            var dailyBudgetModel = InsightDailyBudgetModel().apply {
-                groupId = it.groupId
-                groupName = it.groupName
-                dailySuggestedPrice = it.suggestedPriceDaily
-                potentialClick = it.setPotensiKlik
-            }
-            dailyRecommendationModel.add(dailyBudgetModel)
-        }
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightDailyProductEcommerceViewEvent(VIEW_DAILY_RECOMMENDATION_PRODUKS, "", dailyRecommendationModel, userSession.userId)
     }
 }

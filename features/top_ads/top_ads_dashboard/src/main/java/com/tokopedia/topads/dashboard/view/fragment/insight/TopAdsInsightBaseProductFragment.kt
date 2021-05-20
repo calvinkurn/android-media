@@ -95,7 +95,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
-        adapter = TopadsProductRecomAdapter(::itemCheckedUnchecked, ::enableButton)
+        adapter = TopadsProductRecomAdapter(userSession, ::itemCheckedUnchecked, ::enableButton)
         val dummyId: MutableList<Long> = mutableListOf()
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions(PRODUCT, dummyId))
@@ -274,8 +274,8 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     private fun getAdsList(): List<AdsItem> {
         val ids = adapter.getSelectedIds()
         val adsList: MutableList<AdsItem> = mutableListOf()
-        val ad = AdsItem()
         ids.forEach {
+            val ad = AdsItem()
             ad.productID = it
             ad.source = PARAM_SOURCE_RECOM
             ad.ad = Ad().apply {

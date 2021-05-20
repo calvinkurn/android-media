@@ -68,7 +68,7 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = TopadsDailyBudgetRecomAdapter(::onButtonClick)
+        adapter = TopadsDailyBudgetRecomAdapter(userSession, ::onButtonClick)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 

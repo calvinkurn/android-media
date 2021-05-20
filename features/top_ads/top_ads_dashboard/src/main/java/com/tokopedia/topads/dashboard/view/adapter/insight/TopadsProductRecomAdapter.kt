@@ -5,18 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.model.InsightProductRecommendationModel
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.BUDGET_MULTIPLE_FACTOR
 import com.tokopedia.topads.dashboard.data.model.ProductRecommendation
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_dash_recon_product_item.view.*
 
-class TopadsProductRecomAdapter(var itemSelected: () -> Unit, var enableButton: (enable: Boolean) -> Unit) : RecyclerView.Adapter<TopadsProductRecomAdapter.ViewHolder>() {
+const val VIEW_RECOMMENDED_PRODUK = "view - rekomendasi produk"
+const val VIEW_DAILY_RECOMMENDATION_PRODUKS = "view - rekomendasi anggaran - grup iklan"
+class TopadsProductRecomAdapter(private val userSession: UserSessionInterface, var itemSelected: () -> Unit, var enableButton: (enable: Boolean) -> Unit) : RecyclerView.Adapter<TopadsProductRecomAdapter.ViewHolder>() {
     var items: MutableList<ProductRecommendation> = mutableListOf()
     private var maxBid = "0"
+    private var insightRecommendationModel = mutableListOf<InsightProductRecommendationModel>()
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -65,6 +72,18 @@ class TopadsProductRecomAdapter(var itemSelected: () -> Unit, var enableButton: 
                 holder.view.cb_product_recom.isChecked = !holder.view.cb_product_recom.isChecked
                 isChecked = holder.view.cb_product_recom.isChecked
                 itemSelected.invoke()
+            }
+            holder.view.addOnImpressionListener(impressHolder) {
+                insightRecommendationModel.clear()
+                    var insightProductRecommendationModel = InsightProductRecommendationModel().apply {
+                        id = productId
+                        name = productName
+                        searchNumber = searchCount
+                        searchPercent = searchPercentage
+                        recommendedBid = recomBid
+                    }
+                    insightRecommendationModel.add(insightProductRecommendationModel)
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightSightProductEcommerceViewEvent(VIEW_RECOMMENDED_PRODUK, "", insightRecommendationModel, userSession.userId)
             }
             holder.view.editBudget?.textFieldInput?.addTextChangedListener(object : NumberTextWatcher(holder.view.editBudget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {

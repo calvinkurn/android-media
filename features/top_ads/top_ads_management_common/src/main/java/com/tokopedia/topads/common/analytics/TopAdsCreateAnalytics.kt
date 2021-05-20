@@ -358,8 +358,8 @@ class TopAdsCreateAnalytics {
         var list = arrayListOf<Any>()
         data.forEachIndexed { index, it ->
             list.add(mapOf(
-                    "id" to it.groupId,
-                    "name" to it.groupName,
+                    "id" to it.id,
+                    "name" to it.name,
                     "creative" to "${it.dailySuggestedPrice} - ${it.potentialClick}",
                     "position" to index + 1))
         }
@@ -370,9 +370,9 @@ class TopAdsCreateAnalytics {
         var list = arrayListOf<Any>()
         data.forEachIndexed { index, it ->
             list.add(mapOf(
-                    "id" to it.productid,
-                    "name" to it.productname,
-                    "creative" to "${it.searchCount} - ${it.serachPercentage} - ${it.recommendedBid}",
+                    "id" to it.id,
+                    "name" to it.name,
+                    "creative" to "${it.searchNumber} - ${it.searchPercent} - ${it.recommendedBid}",
                     "position" to index + 1))
         }
         return list

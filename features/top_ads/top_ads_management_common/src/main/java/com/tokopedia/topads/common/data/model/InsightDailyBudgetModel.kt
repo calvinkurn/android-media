@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 open class InsightDailyBudgetModel(
-        var groupId: String = "",
-        var groupName: String = "",
+        var id: String = "",
+        var name: String = "",
         var dailySuggestedPrice: Double = 0.0,
         var potentialClick: Long = 0,
         var priceDaily: Double = 0.0
