@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.inbox.fake.InboxChatFakeDependency
 import com.tokopedia.inbox.fake.InboxFakeDependency
 import com.tokopedia.inbox.fake.di.DaggerFakeInboxComponent
 import com.tokopedia.inbox.fake.di.FakeInboxComponent
@@ -38,6 +39,9 @@ abstract class InboxTest {
 
     @Inject
     protected lateinit var inboxDep: InboxFakeDependency
+
+    @Inject
+    protected lateinit var inboxChatDep: InboxChatFakeDependency
 
     @Before
     open fun before() {

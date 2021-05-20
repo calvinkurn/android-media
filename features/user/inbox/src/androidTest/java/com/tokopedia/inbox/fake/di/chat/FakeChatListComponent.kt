@@ -13,7 +13,8 @@ import dagger.Component
             ChatNotificationsQueryModule::class,
             ChatListViewsModelModule::class,
             ChatNotificationsViewsModelModule::class,
-            ChatListContextModule::class
+            ChatListContextModule::class,
+            FakeChatListUseCase::class
         ],
         dependencies = [FakeBaseAppComponent::class]
 )
