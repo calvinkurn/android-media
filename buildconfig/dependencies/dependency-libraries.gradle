@@ -93,7 +93,6 @@ ext {
             workManagerUtil         : ":libraries:work_manager_util",
             webview                 : ":libraries:webview",
             websocket               : ":libraries:websocket",
-            williamchart            : ":libraries:williamchart",
             videoplayer             : ":libraries:videoplayer",
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",
