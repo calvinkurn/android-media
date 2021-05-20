@@ -37,6 +37,10 @@ import org.junit.Rule
 import javax.inject.Inject
 
 open class LoginBase {
+
+    var isDefaultRegisterCheck = true
+    var isDefaultDiscover = true
+
     @get:Rule
     var activityTestRule = IntentsTestRule(
             LoginActivityStub::class.java, false, false
@@ -110,6 +114,17 @@ open class LoginBase {
         )
     }
 
+    fun runTest(test: () -> Unit) {
+        if(isDefaultDiscover) {
+            setDefaultDiscover()
+        }
+        if(isDefaultRegisterCheck) {
+            setRegisterCheckDefaultResponse()
+        }
+        launchDefaultFragment()
+        test.invoke()
+    }
+
     protected fun waitForFragmentResumed() {
         IdlingRegistry.getInstance().register(fragmentTransactionIdling)
         onView(withId(R.id.login_input_view))
@@ -124,19 +139,13 @@ open class LoginBase {
         inflateTestFragment()
     }
 
-    fun testRegisterCheck() {
-        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "email")
-        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
-
-        launchDefaultFragment()
-        inputEmailOrPhone("yoris.prayogo+543@tokopedia.com")
-        clickSubmit()
-
-        onView(withId(R.id.wrapper_password)).check(matches(ViewMatchers.isDisplayed()))
-    }
-
     fun clickTopRegister() {
         val viewInteraction = onView(withId(R.id.actionTextID)).check(matches(isDisplayed()))
+        viewInteraction.perform(ViewActions.click())
+    }
+
+    fun clickBottomRegister() {
+        val viewInteraction = onView(withId(R.id.register_button)).check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.click())
     }
 
