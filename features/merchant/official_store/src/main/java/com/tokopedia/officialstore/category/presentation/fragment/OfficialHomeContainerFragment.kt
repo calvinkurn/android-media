@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
@@ -34,6 +35,7 @@ import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeCon
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
 import com.tokopedia.officialstore.category.presentation.listener.OSContainerListener
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
+import com.tokopedia.officialstore.category.presentation.viewutil.OSChooseAddressWidgetView
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.presentation.listener.OSChooseAddressWidgetCallback
@@ -86,10 +88,9 @@ class OfficialHomeContainerFragment
     private var badgeNumberCart: Int = 0
     private var keyCategory = "0"
     private var useNewInbox = false
-    private var chooseAddressWidget: ChooseAddressWidget? = null
+    private var chooseAddressView: OSChooseAddressWidgetView? = null
     private var chooseAddressData = OSChooseAddressData()
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
-    private var chooseAddressWidgetInitialized: Boolean = false
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -168,6 +169,7 @@ class OfficialHomeContainerFragment
         if(dy == 0) return
 
         tabLayout?.adjustTabCollapseOnScrolled(dy)
+        chooseAddressView?.adjustViewCollapseOnScrolled(dy)
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -212,8 +214,8 @@ class OfficialHomeContainerFragment
     override fun onChooseAddressUpdated() {
         val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         chooseAddressData.setLocalCacheModel(localCacheModel)
-        chooseAddressWidgetInitialized = false
-        chooseAddressWidget?.updateWidget()
+        chooseAddressView?.updateChooseAddressInitializedState(false)
+        getChooseAddressWidget()?.updateWidget()
         fetchOSCategory()
     }
 
@@ -222,7 +224,7 @@ class OfficialHomeContainerFragment
     }
 
     private fun removeChooseAddressWidget() {
-        chooseAddressWidget?.gone()
+        chooseAddressView?.gone()
     }
 
     private fun fetchOSCategory() {
@@ -331,8 +333,25 @@ class OfficialHomeContainerFragment
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
-        chooseAddressWidget = view.findViewById(R.id.widget_choose_address)
-        initializeChooseAddressWidget(isChooseAddressRollenceActive())
+        chooseAddressView = view.findViewById(R.id.view_widget_choose_address)
+        chooseAddressView?.let {
+            it.initChooseAddressWidget(
+                    needToShowChooseAddress = isChooseAddressRollenceActive(),
+                    listener = this,
+                    fragment = this,
+                    widgetShown = {
+                        it.show()
+                        it.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+                            override fun onGlobalLayout() {
+                                it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                it.setMeasuredHeight()
+                            }
+                        })
+                    },
+                    widgetGone = {
+                        it.gone()
+                    })
+        }
     }
 
     //status bar background compability
@@ -431,28 +450,20 @@ class OfficialHomeContainerFragment
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return ChooseAddressUtils.isRollOutUser(requireContext())
+        return true
+//        return ChooseAddressUtils.isRollOutUser(requireContext())
     }
 
-    private fun initializeChooseAddressWidget(needToShowChooseAddress: Boolean) {
-        if (!chooseAddressWidgetInitialized) {
-            chooseAddressWidget?.bindChooseAddress(OSChooseAddressWidgetCallback(context, this, this))
-            chooseAddressWidget?.run {
-                visibility = if (needToShowChooseAddress) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
-            }
-            chooseAddressWidgetInitialized = true
-        }
+    private fun getChooseAddressWidget(): ChooseAddressWidget? {
+       return chooseAddressView?.getChooseAddressWidget()
     }
+
 
     private fun conditionalViewModelRefresh() {
         chooseAddressAbTestCondition(
                 ifChooseAddressActive = {
                     if (isAddressDataChanged()) {
-                        chooseAddressWidget?.updateWidget()
+                        getChooseAddressWidget()?.updateWidget()
                         fetchOSCategory()
                     }
                 },
