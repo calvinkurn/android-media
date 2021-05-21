@@ -45,12 +45,12 @@ class FakeAppModule(private val context: Context) {
     @ApplicationScope
     @Provides
     @ApplicationContext
-    fun provideGraphqlRepository(): GraphqlRepository? {
+    fun provideGraphqlRepository(): GraphqlRepository {
         return getInstance().graphqlRepository
     }
 
     @Provides
-    fun provideGraphqlUsecase(): GraphqlUseCaseInterface? {
+    fun provideGraphqlUsecase(): GraphqlUseCaseInterface {
         return GraphqlUseCase()
     }
 
