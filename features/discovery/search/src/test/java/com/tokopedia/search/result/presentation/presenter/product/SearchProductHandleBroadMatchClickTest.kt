@@ -171,11 +171,11 @@ internal class SearchProductHandleBroadMatchClick: ProductListPresenterTestFixtu
         verify {
             val carouselProductType = dynamicProductCarousel.broadMatchItemDataViewList.first().carouselProductType as DynamicCarouselProduct
             productListView.trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel, carouselProductType.type)
-            productListView.modifyApplinkToSearchResult(dynamicProductCarousel.applink)
             productListView.redirectionStartActivity(any(), dynamicProductCarousel.url)
         }
 
         verify(exactly = 0) {
+            productListView.modifyApplinkToSearchResult(any())
             productListView.trackEventClickSeeMoreBroadMatch(any())
         }
     }
