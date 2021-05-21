@@ -87,10 +87,10 @@ abstract class BaseSearchCategoryViewModel(
     private fun createTokonowQueryParams(): MutableMap<String, Any> {
         val tokonowQueryParam = mutableMapOf<String, Any>()
 
-        tokonowQueryParam.putAll(queryParam)
         tokonowQueryParam.appendMandatoryParams()
         tokonowQueryParam.appendDeviceParam()
         tokonowQueryParam.appendPaginationParam()
+        tokonowQueryParam.putAll(queryParam)
 
         return tokonowQueryParam
     }

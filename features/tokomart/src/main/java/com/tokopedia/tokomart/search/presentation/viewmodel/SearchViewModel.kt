@@ -45,8 +45,10 @@ class SearchViewModel @Inject constructor (
     }
 
     override fun MutableMap<String, Any>.appendMandatoryParams() {
-        put(SearchApiConst.SOURCE, TOKONOW)
-//        put(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
+        this[SearchApiConst.SOURCE] = TOKONOW
+
+        //temporary for testing, remove this later
+//        this[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {

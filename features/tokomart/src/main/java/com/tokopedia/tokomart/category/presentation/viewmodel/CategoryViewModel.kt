@@ -55,6 +55,9 @@ class CategoryViewModel @Inject constructor (
         this[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
         this[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
         this[SearchApiConst.SRP_PAGE_ID] = categoryId
+
+        //temporary for testing, remove this later
+//        this[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
     }
 
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
