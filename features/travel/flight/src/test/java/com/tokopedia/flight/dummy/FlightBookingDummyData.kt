@@ -9,10 +9,10 @@ import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.search.presentation.model.FlightFareModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 

@@ -1,6 +1,5 @@
 package com.tokopedia.flight.bookingV3.data
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -564,7 +563,7 @@ data class FlightCart(
 
             @SerializedName("amenities")
             @Expose
-            val amenities: List<com.tokopedia.flight.searchV4.data.cloud.single.Amenity> = listOf()
+            val amenities: List<com.tokopedia.flight.search.data.cloud.single.Amenity> = listOf()
     )
 
     data class StopDetail(

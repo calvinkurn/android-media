@@ -13,8 +13,8 @@ import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import java.util.*

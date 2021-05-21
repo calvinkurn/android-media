@@ -13,8 +13,8 @@ import com.tokopedia.flight.bookingV3.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV3.presentation.fragment.FlightBookingFragment
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.BaseFlightActivity
-import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 
 /**
  * @author by jessica on 2019-10-23

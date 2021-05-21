@@ -34,8 +34,8 @@ import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
-import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.airport.view.model.FlightCountryAirportModel;
 import com.tokopedia.flight.common.view.model.EmptyResultModel;
-import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder;
+import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder;
 
 /**
  * Created by alvarisi on 12/19/17.

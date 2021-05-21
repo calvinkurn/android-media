@@ -37,12 +37,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".searchV4.presentation.activity.FlightSearchActivity"
+            android:name=".search.presentation.activity.FlightSearchActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".searchV4.presentation.activity.FlightSearchReturnActivity"
+            android:name=".search.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />

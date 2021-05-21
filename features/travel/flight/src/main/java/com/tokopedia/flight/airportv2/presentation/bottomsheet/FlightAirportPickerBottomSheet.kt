@@ -22,7 +22,7 @@ import com.tokopedia.flight.airportv2.di.FlightAirportComponent
 import com.tokopedia.flight.airportv2.presentation.adapter.FlightAirportAdapterTypeFactory
 import com.tokopedia.flight.airportv2.presentation.viewmodel.FlightAirportPickerViewModel
 import com.tokopedia.flight.common.view.model.EmptyResultModel
-import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder
+import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

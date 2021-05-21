@@ -17,7 +17,7 @@ import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.di.DaggerFlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.di.FlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
