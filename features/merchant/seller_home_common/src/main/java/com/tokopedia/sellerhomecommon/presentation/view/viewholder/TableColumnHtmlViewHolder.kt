@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.text.TextPaint
 import android.view.Gravity
@@ -56,27 +57,44 @@ class TableColumnHtmlViewHolder(
 
     private fun setOnHtmlTextClicked(element: TableRowsUiModel.RowColumnHtml) {
         with(itemView) {
-            tvTableColumnHtml?.setClickableUrlHtml(
-                    element.valueStr,
-                    applyCustomStyling = {
-                        isUnderlineText = false
-                        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
-                        context?.let {
-                            applyTypographyFont(it)
-                        }
-                    },
-                    onUrlClicked = { url ->
-                        listener.onHyperlinkClicked(url)
-                        Uri.parse(url).let { uri ->
-                            if (isAppLink(uri)) {
-                                RouteManager.route(context, url)
-                            } else {
-                                if (!checkUrlForNativePage(context, uri)) {
-                                    goToDefaultIntent(context, uri)
+            val textColorInt = getColorFromHtml(context, element.valueStr)
+            tvTableColumnHtml?.run {
+                setClickableUrlHtml(
+                        element.valueStr,
+                        applyCustomStyling = {
+                            isUnderlineText = false
+                            color = textColorInt
+                            context?.let {
+                                applyTypographyFont(it)
+                            }
+                        },
+                        onUrlClicked = { url ->
+                            listener.onHyperlinkClicked(url)
+                            Uri.parse(url).let { uri ->
+                                if (isAppLink(uri)) {
+                                    RouteManager.route(context, url)
+                                } else {
+                                    if (!checkUrlForNativePage(context, uri)) {
+                                        goToDefaultIntent(context, uri)
+                                    }
                                 }
                             }
-                        }
-                    })
+                        })
+                setTextColor(textColorInt)
+            }
+        }
+    }
+
+    private fun getColorFromHtml(context: Context, htmlString: String): Int {
+        return try {
+            val colorString = htmlString.substringAfter("color").substringBefore(";").replace("[^A-Za-z0-9#]+".toRegex(), "")
+            if (colorString.isEmpty()) {
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+            } else {
+                Color.parseColor(colorString)
+            }
+        } catch (ex: Exception) {
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
         }
     }
 
