@@ -17,7 +17,6 @@ class PMShopInfoMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(response: GoldGetPMShopInfoDataModel?): PMShopInfoUiModel {
         return PMShopInfoUiModel(
                 isNewSeller = response?.isNewSeller.orTrue(),
-                shopAge = response?.shopAge.orZero(),
                 isKyc = response?.isKyc.orFalse(),
                 kycStatusId = response?.kycStatusId ?: KYCStatusId.NOT_VERIFIED,
                 shopScore = response?.shopScore.orZero(),
@@ -26,7 +25,6 @@ class PMShopInfoMapper @Inject constructor() {
                 hasActiveProduct = response?.hasActiveProduct.orFalse(),
                 isEligiblePm = response?.isEligiblePm.orFalse(),
                 isEligiblePmPro = response?.isEligiblePmPro.orFalse(),
-                shopLevel = response?.shopLevel.orZero(),
                 itemSoldOneMonth = response?.itemSoldOneMonth.orZero(),
                 itemSoldPmProThreshold = response?.itemSoldPmProThreshold ?: PMShopInfoUiModel.DEFAULT_ORDER_THRESHOLD,
                 nivOneMonth = response?.nivOneMonth.orZero(),

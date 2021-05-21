@@ -1,6 +1,7 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.cloud.model.PMInterruptDataResponse
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
@@ -16,7 +17,7 @@ class GetPMInterruptDataMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(data: PMInterruptDataResponse): PowerMerchantInterruptUiModel {
         val currentFormat = "yyyy-MM-dd"
         val newFormat = "dd MMMM yyyy"
-        val osActiveStatus = "active"
+        val osActiveStatus = PMStatusConst.ACTIVE
         val unformattedDate = data.gradeBenefitInfo?.nextMonthlyRefreshDate.orEmpty()
         val pmNewUpdateDateFmt = DateFormatUtils.formatDate(currentFormat, newFormat, unformattedDate)
         val reputationThreshold = 5

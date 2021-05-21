@@ -43,14 +43,12 @@ class GetPMShopInfoUseCase @Inject constructor(
           query goldGetPMShopInfo(${'$'}shop_id: Int!, ${'$'}source: String!) {
             goldGetPMShopInfo(shop_id: ${'$'}shop_id, source: ${'$'}source) {
               is_new_seller
-              shop_age
               is_kyc
               kyc_status_id
               shop_score_sum
               shop_score_threshold
               shop_score_pm_pro_threshold
               is_has_active_product
-              shop_level
               is_eligible_shop_score
               is_eligible_pm
               is_eligible_pm_pro

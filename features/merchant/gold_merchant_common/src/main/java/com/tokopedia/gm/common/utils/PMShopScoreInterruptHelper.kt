@@ -160,64 +160,6 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         }
     }
 
-    private fun showInterruptEndOfTenureNewSeller(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        val bottomSheet = SimpleInterruptBottomSheet.createInstance(true)
-        val isBottomSheetEverSeen = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_END_OF_TENURE_POPUP, false).orFalse()
-        if (fm.isStateSaved || bottomSheet.isAdded || isBottomSheetEverSeen) return
-
-        val now = Date().time
-        val shopAge = data.shopAge
-        val endOfTenureDays = 90
-        val remainingDays = endOfTenureDays.minus(shopAge)
-        val canShopInterruptPopup = remainingDays in 0..7
-
-        if (!(remainingDays in 1..endOfTenureDays && canShopInterruptPopup)) return
-
-        val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays.toLong())
-        val endOfTenureMillis = now.plus(remainingDaysMillis)
-
-        val endOfTenureCal = Calendar.getInstance().apply {
-            timeInMillis = endOfTenureMillis
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-
-        val endOfTenureFirstMondayCal = Calendar.getInstance().apply {
-            timeInMillis = endOfTenureMillis
-            firstDayOfWeek = Calendar.MONDAY
-            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-
-        val dateFormat = "dd MMMM yyyy"
-        val endOfTenureFirstMondayStr = when {
-            endOfTenureFirstMondayCal < endOfTenureCal -> {
-                val days7Millis = TimeUnit.DAYS.toMillis(7)
-                DateFormatUtils.getFormattedDate(endOfTenureFirstMondayCal.timeInMillis.plus(days7Millis), dateFormat)
-            }
-            else -> DateFormatUtils.getFormattedDate(endOfTenureFirstMondayCal.timeInMillis, dateFormat)
-        }
-
-        val title = context.getString(R.string.gmc_new_seller_end_of_tenure_interrupt_title, endOfTenureFirstMondayStr)
-        val description = context.getString(R.string.gmc_new_seller_end_of_tenure_interrupt_description)
-        val ctaText = context.getString(R.string.gmc_check_your_shop_performance)
-
-        bottomSheet.setContent(title, description)
-                .setOnCtaClickListener(ctaText) {
-                    RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
-                }
-                .setOnDismissListener {
-                    pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_END_OF_TENURE_POPUP, true)
-                    pmCommonPreferenceManager?.apply()
-                }
-        bottomSheet.show(fm)
-    }
-
     private fun showInterruptNewSellerPmIdle(context: Context, fm: FragmentManager) {
         val bottomSheet = SimpleInterruptBottomSheet.createInstance(false)
         val isBottomSheetEverSeen = pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_NEW_SELLER_PM_IDLE_POPUP, false).orFalse()
@@ -258,23 +200,6 @@ class PMShopScoreInterruptHelper @Inject constructor() {
         showInterruptPage(context, data)
     }
 
-    private fun showTransitionPmInterruptPopup(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        if (!hasOpenedInterruptPopup()) {
-            val bottomSheet = PMTransitionInterruptBottomSheet.getInstance(fm)
-            Handler().post {
-                if (!bottomSheet.isAdded && !fm.isStateSaved) {
-                    pmCommonPreferenceManager?.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP, true)
-                    pmCommonPreferenceManager?.apply()
-                    bottomSheet.setData(data)
-                            .setOnCtaClickListener {
-                                RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
-                            }
-                            .show(fm)
-                }
-            }
-        }
-    }
-
     private fun showInterruptPage(context: Context, data: PowerMerchantInterruptUiModel) {
         if (data.periodType == PeriodType.TRANSITION_PERIOD) {
             if (!hasOpenedInterruptPage()) {
@@ -306,10 +231,6 @@ class PMShopScoreInterruptHelper @Inject constructor() {
 
     private fun hasConsentChecked(): Boolean {
         return pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_SHOP_SCORE_CONSENT_CHECKED, false).orFalse()
-    }
-
-    private fun hasOpenedInterruptPopup(): Boolean {
-        return pmCommonPreferenceManager?.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_TRANSITION_INTERRUPT_POPUP, false).orFalse()
     }
 
     private fun hasOpenedInterruptPage(): Boolean {
