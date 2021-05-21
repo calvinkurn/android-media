@@ -26,7 +26,7 @@ class CategoryAisleViewHolder(itemView: View): AbstractViewHolder<CategoryAisleD
                 aisleContainer?.visibility = View.GONE
             }
             1 -> {
-                val rightAisleCard = itemView.findViewById<CardUnify?>(R.id.tokomartSearchCategoryAisleCardRight)
+                val rightAisleCard = itemView.findViewById<CardUnify?>(R.id.tokomartSearchCategoryAisleGroupRight)
                 rightAisleCard?.visibility = View.INVISIBLE
                 bindLeftAisle(aisle.items[0])
             }
