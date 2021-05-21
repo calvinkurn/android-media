@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tokomart_category_list_bottom_sheet_title">Semua kategori di TokoNOW!</string>
+    <string name="tokomart_see_all">Lihat Semua</string>
 </resources>

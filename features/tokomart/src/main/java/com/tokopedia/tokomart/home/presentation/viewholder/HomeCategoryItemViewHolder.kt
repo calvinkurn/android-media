@@ -7,13 +7,13 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryItemUiModel
-import kotlinx.android.synthetic.main.item_tokomart_home_category_menu.view.*
+import kotlinx.android.synthetic.main.item_tokomart_home_category.view.*
 
 class HomeCategoryItemViewHolder(itemView: View): AbstractViewHolder<HomeCategoryItemUiModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_home_category_menu
+        val LAYOUT = R.layout.item_tokomart_home_category
     }
 
     override fun bind(data: HomeCategoryItemUiModel) {
