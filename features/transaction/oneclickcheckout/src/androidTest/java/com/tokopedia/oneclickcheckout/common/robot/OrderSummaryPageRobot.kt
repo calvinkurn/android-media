@@ -192,6 +192,18 @@ class OrderSummaryPageRobot {
         onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText(productQty.toString())))
     }
 
+    fun assertShopBadge(hasShopBadge: Boolean = true, shopTypeName: String) {
+        onView(withId(R.id.iv_shop)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (hasShopBadge) {
+                assertEquals(View.VISIBLE, view.visibility)
+                assertEquals("image shop badge $shopTypeName", view.contentDescription)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+    }
+
     fun assertProductQuantity(qty: Int) {
         onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).perform(scrollTo()).check(matches(withText(qty.toString())))
     }
