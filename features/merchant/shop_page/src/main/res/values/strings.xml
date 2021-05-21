@@ -296,6 +296,13 @@
     <string name="follow_button_label">Follow</string>
     <string name="follow_button_label_npl">Follow Toko</string>
 
+    <!-- Shop Operational Hour -->
+    <string name="shop_ops_hour_bottomsheet_title">Jam Operasional</string>
+    <string name="shop_ops_hour_bottomsheet_description">Pesanan yang lewat dari jam operasional akan diproses saat toko beroperasi kembali.</string>
+    <string name="shop_ops_hour_datetime_format_text">Jam %1$s - %2$s WIB</string>
+    <string name="shop_ops_hour_datetime_format_24_hours_text">Buka 24 Jam</string>
+    <string name="shop_ops_hour_datetime_format_holiday_text">Libur</string>
+
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="shop_page_share_copy_link">Copy Link</string>
@@ -321,6 +328,7 @@
     <string name="content_desc_tvSeeAll">text lihat semua</string>
     <string name="content_desc_button_chat">button chat</string>
     <string name="content_desc_shop_home_get_failed_reload_image">Reload Image</string>
+    <string name="content_desc_icon_chevron">Icon Chevron</string>
 
     <!-- shop page showcase tab -->
     <string name="shop_page_showcase_featured_text">Etalase Unggulan</string>

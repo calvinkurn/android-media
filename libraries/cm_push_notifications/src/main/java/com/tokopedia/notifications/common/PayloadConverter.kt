@@ -43,6 +43,7 @@ object PayloadConverter {
         model.notificationId = data.getString(NOTIFICATION_ID, "500").toIntOrZero()
         model.campaignId = data.getString(CAMPAIGN_ID, "0").toLongOrZero()
         model.parentId = data.getString(PARENT_ID, "0").toLongOrZero()
+        model.elementId = data.getString(ELEMENT_ID, "")
         model.tribeKey = data.getString(TRIBE_KEY, "")
         model.type = data.getString(NOTIFICATION_TYPE, "")
         model.channelName = data.getString(CHANNEL, "")
@@ -55,7 +56,7 @@ object PayloadConverter {
         if (actionButtonList != null)
             model.actionButton = actionButtonList
         model.persistentButtonList = getPersistentNotificationData(data)
-        model.videoPushModel = getVideoNotificationData(data)//todo check
+        model.videoPushModel = getVideoNotificationData(data)
         model.customValues = data.getString(CUSTOM_VALUE, "")
         val carouselList = getCarouselList(data)
         if (carouselList != null) {
@@ -73,7 +74,9 @@ object PayloadConverter {
             model.productInfoList = productInfoList
         model.subText = data.getString(SUB_TEXT)
         model.visualCollapsedImageUrl = data.getString(VISUAL_COLLAPSED_IMAGE)
+        model.visualCollapsedElementId = data.getString(VISUAL_COLLAPSED_ELEMENT_ID)
         model.visualExpandedImageUrl = data.getString(VISUAL_EXPANDED_IMAGE)
+        model.visualExpandedElementId = data.getString(VISUAL_EXPANDED_ELEMENT_ID)
         model.campaignUserToken = data.getString(CAMPAIGN_USER_TOKEN, "")
 
         model.notificationMode = getNotificationMode(data)
@@ -99,7 +102,7 @@ object PayloadConverter {
         model.blastId = data.getString(BLAST_ID)
 
         // webHook parameters
-        model.webHookParam = data.getString(WEBHOOK_PARAM) //todo check
+        model.webHookParam = data.getString(WEBHOOK_PARAM)
 
         return model
     }
@@ -112,6 +115,7 @@ object PayloadConverter {
         model.notificationId = data.notificationId ?: 500
         model.campaignId = data.campaignId ?: 0
         model.parentId = data.parentId ?: 0
+        model.elementId = data.elementId
         model.tribeKey = data.tribeKey
         model.type = data.type
         model.channelName = data.channelName
@@ -177,6 +181,8 @@ object PayloadConverter {
         model.subText = data.subText
         model.visualCollapsedImageUrl = data.visualCollapsedImageUrl
         model.visualExpandedImageUrl = data.visualExpandedImageUrl
+        model.visualCollapsedElementId = data.visualCollapsedElementId
+        model.visualExpandedElementId = data.visualExpandedElementId
         model.campaignUserToken = data.campaignUserToken
 
         model.notificationMode =  if (data.notificationMode == true) NotificationMode.OFFLINE else NotificationMode.POST_NOW

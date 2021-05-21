@@ -6,8 +6,8 @@
       "eventCategory": "inbox pesan bantuan",
       "event": "clickInboxBantuan",
       "eventAction": "click close ticket",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

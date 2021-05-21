@@ -123,11 +123,11 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             if (cartItem.isProtectionCheckboxDisabled) {
                 mCbPPP.isEnabled = false
                 mCbPPP.isChecked = true
-                mCbPPP.isClickable = false
+                mCbPPP.skipAnimation()
             } else {
                 mCbPPP.isEnabled = true
                 mCbPPP.isChecked = cartItem.isProtectionOptIn
-                mCbPPP.isClickable = true
+                mCbPPP.skipAnimation()
                 mCbPPP.setOnCheckedChangeListener { _: CompoundButton?, checked: Boolean -> shipmentItemListener?.notifyOnPurchaseProtectionChecked(checked, adapterPosition + 1) }
             }
         }

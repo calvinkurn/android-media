@@ -5,7 +5,6 @@ import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_CAMPAIGN
 import com.tokopedia.shop.common.data.model.Actions
 import com.tokopedia.shop.common.data.model.RestrictionEngineModel
 import com.tokopedia.shop.common.data.response.RestrictionEngineDataResponse
@@ -72,7 +71,7 @@ object ShopPageProductListMapper {
                     it.etalaseId = etalaseId
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
-                    if(it.etalaseType == ETALASE_CAMPAIGN) {
+                    if(it.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN) {
                         it.isUpcoming  = campaign.isUpcoming
                         if (!campaign.isUpcoming) {
                             val viewCount = stats.viewCount
@@ -158,7 +157,11 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
-    fun mapToProductCardModel(shopProductUiModel: ShopProductUiModel, isWideContent: Boolean): ProductCardModel {
+    fun mapToProductCardModel(
+            shopProductUiModel: ShopProductUiModel,
+            isWideContent: Boolean,
+            isShowThreeDots: Boolean = true
+    ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
         } catch (ignored: Exception) {
@@ -184,7 +187,7 @@ object ShopPageProductListMapper {
                 labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                hasThreeDots = true,
+                hasThreeDots = isShowThreeDots,
                 pdpViewCount = shopProductUiModel.pdpViewCount,
                 stockBarLabel = shopProductUiModel.stockLabel,
                 stockBarPercentage = shopProductUiModel.stockBarPercentage,

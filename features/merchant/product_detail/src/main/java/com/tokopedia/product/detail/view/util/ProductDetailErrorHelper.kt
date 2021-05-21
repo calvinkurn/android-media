@@ -2,13 +2,13 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.os.Handler
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
 import com.tokopedia.product.detail.data.util.TobacoErrorException

@@ -75,6 +75,7 @@ dependencies {
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.atc_common)
@@ -192,6 +193,9 @@ dependencies {
     } else {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+
+    implementation project(rootProject.ext.libraries.pageInfoPusher)
+
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.preReleaseInspector)
     } else {
@@ -206,7 +210,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.measurementApi
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
@@ -300,8 +303,6 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation 'com.facebook.fresco:fresco:1.10.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore

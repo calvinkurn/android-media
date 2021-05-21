@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.orderhistory.di.OrderHistoryContext
 import com.tokopedia.orderhistory.di.OrderHistoryScope
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -22,7 +21,7 @@ class OrderHistoryModuleStub {
 
     @OrderHistoryScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Unconfined
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @OrderHistoryScope
     @Provides
@@ -47,11 +46,5 @@ class OrderHistoryModuleStub {
         return GraphqlHelper.loadRawString(
                 context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart
         )
-    }
-
-    @OrderHistoryScope
-    @Provides
-    fun provideOrderHistoryCoroutineContextProvider(): CoroutineTestDispatchersProvider {
-        return CoroutineTestDispatchersProvider
     }
 }

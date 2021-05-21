@@ -27,6 +27,11 @@ data class AmplificationBaseNotificationModel(
         var notificationId: Int? = 0,
 
         @Expose
+        @SerializedName(ELEMENT_ID)
+        @ColumnInfo(name = "elementId")
+        var elementId: String? = "",
+
+        @Expose
         @SerializedName(CAMPAIGN_ID)
         @PrimaryKey
         @ColumnInfo(name = "campaignId")
@@ -122,6 +127,16 @@ data class AmplificationBaseNotificationModel(
         @SerializedName(VISUAL_COLLAPSED_IMAGE)
         @ColumnInfo(name = "visualExpandedImg")
         var visualExpandedImageUrl: String? = null,
+
+        @Expose
+        @SerializedName(VISUAL_COLLAPSED_ELEMENT_ID)
+        @ColumnInfo(name = "visualCollapsedElementId")
+        var visualCollapsedElementId: String? = "",
+
+        @Expose
+        @SerializedName(VISUAL_EXPANDED_ELEMENT_ID)
+        @ColumnInfo(name = "visualExpandedElementId")
+        var visualExpandedElementId: String? = "",
 
         @Expose
         @SerializedName(CAROUSEL_INDEX)
