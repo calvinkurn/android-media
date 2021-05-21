@@ -270,6 +270,7 @@ class DiscoveryFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
@@ -682,7 +683,14 @@ class DiscoveryFragment :
         }
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
-                discoveryBaseViewModel?.loggedInCallback()
+                if (resultCode == Activity.RESULT_OK) {
+                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                        discoveryBaseViewModel?.loggedInCallback()
+                    }else{
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                    }
+                }
             }
             MOBILE_VERIFICATION_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -693,6 +701,7 @@ class DiscoveryFragment :
             }
             PAGE_REFRESH_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     refreshPage()
                 }
             }
@@ -871,11 +880,11 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return analytics.getHostSource()
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return analytics.getHostTrackingSource()
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -883,6 +892,10 @@ class DiscoveryFragment :
 
     override fun onLocalizingAddressUpdatedFromBackground() {
 
+    }
+
+    override fun getEventLabelHostPage(): String {
+        return analytics.getEventLabel()
     }
 
     private fun fetchUserLatestAddressData() {

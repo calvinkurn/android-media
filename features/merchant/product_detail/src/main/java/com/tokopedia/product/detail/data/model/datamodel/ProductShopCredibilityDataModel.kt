@@ -24,6 +24,7 @@ data class ProductShopCredibilityDataModel(
         var shopName: String = "",
         var shopAva: String = "",
         var shopLocation: String = "",
+        var shopTierBadgeUrl: String = "",
 
         var isOs: Boolean = false,
         var isPm: Boolean = false,
@@ -75,6 +76,7 @@ data class ProductShopCredibilityDataModel(
                     && isFavorite == newData.isFavorite
                     && enableButtonFavorite == newData.enableButtonFavorite
                     && infoShopData.size == newData.infoShopData.size
+                    && shopTierBadgeUrl == newData.shopTierBadgeUrl
         } else {
             false
         }

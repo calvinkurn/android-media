@@ -18,7 +18,7 @@ data class ReviewDataModel(
         return false
     }
     override fun visitableId(): String {
-        return suggestedProductReview?.suggestedProductReview?.title ?: DEFAULT_REVIEW_ID
+        return channel.id
     }
 
     override fun setTrackingData(trackingData: MutableMap<String, Any>?) {

@@ -509,13 +509,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToShopDetail(int shopId) {
+    public void onGoToShopDetail(long shopId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
         startActivity(intent);
     }
 
     @Override
-    public void onGoToPeopleProfile(int userId) {
+    public void onGoToPeopleProfile(long userId) {
         startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, String.valueOf(userId)));
     }
 
