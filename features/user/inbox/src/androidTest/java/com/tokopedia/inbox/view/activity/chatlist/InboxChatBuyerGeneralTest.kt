@@ -6,6 +6,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.viewmatcher.withTotalItem
 import com.tokopedia.inbox.view.activity.base.chat.InboxChatBuyerTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,7 +33,15 @@ class InboxChatBuyerGeneralTest : InboxChatBuyerTest() {
         )
     }
 
-    // TODO: test filter size buyer
+    @Test
+    fun should_have_1_filter_only_for_buyer() {
+        // Given
+        startInboxActivity()
+
+        // Then
+        onView(withId(R.id.rv_filter)).check(matches(withTotalItem(1)))
+    }
+
     // TODO: test filter click buyer and its empty state
     // TODO: test pinned icon is visible for pinned chat
     // TODO: test success pin unpin chat
