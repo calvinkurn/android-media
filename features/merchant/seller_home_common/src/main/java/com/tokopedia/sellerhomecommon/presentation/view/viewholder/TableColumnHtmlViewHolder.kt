@@ -57,7 +57,8 @@ class TableColumnHtmlViewHolder(
 
     private fun setOnHtmlTextClicked(element: TableRowsUiModel.RowColumnHtml) {
         with(itemView) {
-            val textColorInt = getColorFromHtml(context, element.valueStr)
+            val textColorInt = element.colorInt ?: getColorFromHtml(context, element.valueStr)
+            element.colorInt = textColorInt
             tvTableColumnHtml?.run {
                 setClickableUrlHtml(
                         element.valueStr,
