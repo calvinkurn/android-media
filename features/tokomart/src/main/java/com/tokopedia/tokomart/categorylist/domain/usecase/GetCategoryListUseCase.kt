@@ -13,7 +13,6 @@ class GetCategoryListUseCase @Inject constructor(
         //Dummy data
         val iconUrl = "https://img.icons8.com/cotton/2x/circled-down--v2.png"
         val childCategoryList = listOf(
-            CategoryListResponse("21", "All category"),
             CategoryListResponse("22", "L2 Category with image", iconUrl),
             CategoryListResponse("23", "L2 Category with image", iconUrl),
             CategoryListResponse("24", "L2 Category with image", iconUrl),

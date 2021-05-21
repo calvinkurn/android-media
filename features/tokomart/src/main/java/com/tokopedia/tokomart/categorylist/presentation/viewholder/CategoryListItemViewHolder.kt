@@ -4,17 +4,13 @@ import android.view.View
 import android.view.animation.Animation
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapter
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapterTypeFactory
-import com.tokopedia.tokomart.categorylist.presentation.adapter.decoration.TokoMartCategoryListDecoration
 import com.tokopedia.tokomart.categorylist.presentation.adapter.differ.TokoMartCategoryListDiffer
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokomart.common.base.viewholder.BaseExpandableViewHolder
-import kotlinx.android.synthetic.main.item_tokomart_category_child.view.imageCategory
-import kotlinx.android.synthetic.main.item_tokomart_category_child.view.textTitle
 import kotlinx.android.synthetic.main.item_tokomart_category_list.view.*
 
 class CategoryListItemViewHolder(
@@ -52,13 +48,11 @@ class CategoryListItemViewHolder(
     private fun View.showImageCategory(category: CategoryListItemUiModel) {
         category.iconUrl?.let {
             imageCategory.loadImage(it)
-            imageCategory.show()
         }
     }
 
     private fun View.setupChildCategory() {
         with(rvChildCategory) {
-            addItemDecoration(TokoMartCategoryListDecoration())
             adapter = this@CategoryListItemViewHolder.adapter
             layoutManager = LinearLayoutManager(context)
         }

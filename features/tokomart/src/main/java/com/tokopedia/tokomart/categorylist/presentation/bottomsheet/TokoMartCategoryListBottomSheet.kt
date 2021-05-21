@@ -14,6 +14,7 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.categorylist.di.component.DaggerTokoMartCategoryListComponent
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapter
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapterTypeFactory
+import com.tokopedia.tokomart.categorylist.presentation.adapter.decoration.TokoMartCategoryListDecoration
 import com.tokopedia.tokomart.categorylist.presentation.adapter.differ.TokoMartCategoryListDiffer
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -77,6 +78,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
     private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
         val itemView = inflater.inflate(R.layout.bottomsheet_tokomart_category_list, container)
         val menuTitle = itemView.context.getString(R.string.tokomart_category_list_bottom_sheet_title)
+        clearContentPadding  = true
         isFullpage = true
         setTitle(menuTitle)
         setChild(itemView)
@@ -86,6 +88,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
         with(rvCategoryList) {
             adapter = this@TokoMartCategoryListBottomSheet.adapter
             layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(TokoMartCategoryListDecoration())
         }
     }
 

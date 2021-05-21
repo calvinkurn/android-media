@@ -2,8 +2,8 @@ package com.tokopedia.tokomart.categorylist.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomart.R
@@ -20,18 +20,13 @@ class CategoryListChildViewHolder(itemView: View): AbstractViewHolder<CategoryLi
     override fun bind(category: CategoryListChildUiModel) {
         itemView.run {
             textTitle.text = category.title
+            textTitle.setWeight(category.textWeight)
+            textTitle.setTextColor(ContextCompat.getColor(context, category.textColorId))
+
             category.iconUrl?.let {
                 imageCategory.loadImage(it)
                 imageCategory.show()
             }
         }
-    }
-
-    fun showTopDivider() {
-        itemView.topDividier.show()
-    }
-
-    fun hideBottomDivider() {
-        itemView.bottomDivider.hide()
     }
 }
