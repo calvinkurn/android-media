@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.view.activity.chatlist
+package com.tokopedia.inbox.view.activity.chatlist.buyer
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
