@@ -210,8 +210,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun initInjector() {
-//        getComponent(LoginComponent::class.java).inject(this)
-        activity?.application?.let { LoginComponentBuilder.getComponent(it).inject(this) }
+        getComponent(LoginComponent::class.java).inject(this)
     }
 
     override fun onStart() {
