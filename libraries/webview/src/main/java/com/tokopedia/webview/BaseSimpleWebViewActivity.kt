@@ -364,8 +364,10 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 }
 
         private fun getSimpleWebViewActivityIntent(context: Context, webUrl: String) =
+                // param external set to false (if any) is to
+                // prevent infinite loop from webview -> browser -> webview
                 Intent(context, BaseSimpleWebViewActivity::class.java).apply {
-                    putExtra(KEY_URL, webUrl)
+                    putExtra(KEY_URL, webUrl.replaceFirst(PARAM_EXTERNAL_TRUE, PARAM_EXTERNAL_FALSE))
                 }
     }
 
