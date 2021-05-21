@@ -4,6 +4,7 @@ import android.view.View
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.GMCommonUrl
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
@@ -51,17 +52,18 @@ class ItemTimerNewSellerViewHolder(view: View,
     }
 
     private fun setIconVideoClickListener() {
-        itemView.watchVideoGroup?.apply {
-            addOnClickListener {
+        with(itemView) {
+            tv_watch_video?.setOnClickListener {
                 itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
-            itemTimerNewSellerListener.onImpressWatchVideo()
-        }
-    }
 
-    private fun Group.addOnClickListener(listener: (view: View) -> Unit) {
-        referencedIds.forEach { id ->
-            rootView.findViewById<View>(id).setOnClickListener(listener)
+            ic_video_shop_performance_learn?.setOnClickListener {
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
+            }
+
+            if (tv_watch_video?.isVisible == true || ic_video_shop_performance_learn?.isVisible == true) {
+                itemTimerNewSellerListener.onImpressWatchVideo()
+            }
         }
     }
 }
