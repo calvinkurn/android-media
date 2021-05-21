@@ -17,7 +17,7 @@ class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategor
         @LayoutRes
         val LAYOUT = R.layout.item_tokomart_home_category_grid
 
-        private const val GRID_SPAN_COUNT = 5
+        private const val GRID_SPAN_COUNT = 2
     }
 
     private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(), TokoMartHomeListDiffer()) }
