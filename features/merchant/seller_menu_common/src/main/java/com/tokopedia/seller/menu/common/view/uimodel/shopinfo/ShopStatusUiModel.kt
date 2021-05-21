@@ -6,9 +6,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.user.session.UserSessionInterface
 
-class ShopStatusUiModel(val shopType: ShopType,
-                        val user: UserSessionInterface?,
-                        val thematicIllustrationUrl: String = "") :
+class ShopStatusUiModel(val shopType: ShopType, val user: UserSessionInterface?) :
         SettingShopInfoImpressionTrackable,
     SettingShopInfoClickTrackable
 {

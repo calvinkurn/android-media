@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl6"
-        android:minHeight="@dimen/sob_370dp"
+        android:minHeight="@dimen/sob_360dp"
         android:contentDescription="@string/sob_illustration_content_desc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

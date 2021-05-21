@@ -188,6 +188,14 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             is_official
             os_logo_url
           }
+          shop_type_info {
+            shop_tier
+            shop_grade
+            badge
+            badge_svg
+            title
+            title_fmt
+          }
           postal_code
           latitude
           longitude
