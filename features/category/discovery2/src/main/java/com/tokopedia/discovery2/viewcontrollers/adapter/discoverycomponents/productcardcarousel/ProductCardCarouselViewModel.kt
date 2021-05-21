@@ -48,10 +48,10 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         handleLihatSemuaHeader()
-        fetchProductCarouselData()
+//        fetchProductCarouselData()
 
         // Remove
-//        fetchProductCarouselData(false)
+        fetchProductCarouselData(false)
     }
 
     private fun handleLihatSemuaHeader() {
@@ -71,33 +71,33 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         productCarouselHeaderData.value = lihatSemuaComponentData
     }
 
-    fun fetchProductCarouselData() {
-        launchCatchError(block = {
-            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
-            setProductsList()
-        }, onError = {
-            components.noOfPagesLoaded = 0
-            components.pageLoadedCounter = 1
-            productLoadError.value = true
-        })
-    }
-
-// Remove
-//    fun fetchProductCarouselData(reload : Boolean) {
+//    fun fetchProductCarouselData() {
 //        launchCatchError(block = {
-//            if (reload) {
-//                productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
-//                setProductsList()
-//            } else {
-//                throw Exception("Error message")
-//            }
+//            productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+//            setProductsList()
 //        }, onError = {
 //            components.noOfPagesLoaded = 0
 //            components.pageLoadedCounter = 1
 //            productLoadError.value = true
-//            it.printStackTrace()
 //        })
 //    }
+
+// Remove
+    fun fetchProductCarouselData(reload : Boolean) {
+        launchCatchError(block = {
+            if (reload) {
+                productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, PRODUCT_PER_PAGE)
+                setProductsList()
+            } else {
+                throw Exception("Error message")
+            }
+        }, onError = {
+            components.noOfPagesLoaded = 0
+            components.pageLoadedCounter = 1
+            productLoadError.value = true
+            it.printStackTrace()
+        })
+    }
 
     private suspend fun setProductsList() {
         getProductList()?.let {
