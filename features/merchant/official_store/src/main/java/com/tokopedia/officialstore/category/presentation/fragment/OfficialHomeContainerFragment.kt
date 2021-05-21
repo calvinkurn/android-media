@@ -282,6 +282,7 @@ class OfficialHomeContainerFragment
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val categoryReselected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
+                chooseAddressView?.forceExpandView()
                 categoryReselected?.let {
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
@@ -291,6 +292,7 @@ class OfficialHomeContainerFragment
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val categorySelected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
+                chooseAddressView?.forceExpandView()
                 categorySelected?.let {
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }

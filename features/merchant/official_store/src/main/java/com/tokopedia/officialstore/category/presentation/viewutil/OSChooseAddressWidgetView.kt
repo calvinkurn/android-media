@@ -74,6 +74,10 @@ class OSChooseAddressWidgetView : FrameLayout {
         }
     }
 
+    fun forceExpandView() {
+        expandView()
+    }
+
     fun updateChooseAddressInitializedState(state: Boolean) {
         chooseAddressWidgetInitialized = state
     }
