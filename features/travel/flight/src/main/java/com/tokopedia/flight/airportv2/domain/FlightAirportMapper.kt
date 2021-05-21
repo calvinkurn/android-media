@@ -1,11 +1,11 @@
 package com.tokopedia.flight.airportv2.domain
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.airport.view.model.FlightCountryAirportModel
 import com.tokopedia.flight.airportv2.data.source.entity.FlightAirportSuggestionEntity
 import com.tokopedia.flight.airportv2.data.source.entity.FlightPopularCityEntity
 import com.tokopedia.flight.airportv2.presentation.model.FlightAirport
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
+import com.tokopedia.flight.airportv2.presentation.model.FlightCountryAirportModel
 import java.util.*
 import javax.inject.Inject
 
@@ -116,15 +116,15 @@ class FlightAirportMapper @Inject constructor() {
                     mutableListOf())
             visitables.add(countryAirportViewModel)
 
-            flightAirportList.map {
+            flightAirportList.map { airport ->
                 val airportViewModel = FlightAirportModel()
-                airportViewModel.airportName = it.airportName
-                airportViewModel.countryName = it.countryName
-                airportViewModel.airportCode = it.airportCode
-                airportViewModel.cityCode = it.cityCode
-                airportViewModel.cityId = it.cityId
-                airportViewModel.cityName = it.cityName
-                airportViewModel.cityAirports = it.airports
+                airportViewModel.airportName = airport.airportName
+                airportViewModel.countryName = airport.countryName
+                airportViewModel.airportCode = airport.airportCode
+                airportViewModel.cityCode = airport.cityCode
+                airportViewModel.cityId = airport.cityId
+                airportViewModel.cityName = airport.cityName
+                airportViewModel.cityAirports = airport.airports
                 return@map visitables.add(airportViewModel)
             }
 

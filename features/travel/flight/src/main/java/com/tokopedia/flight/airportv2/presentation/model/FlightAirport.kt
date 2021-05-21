@@ -11,4 +11,4 @@ class FlightAirport(
         val cityCode: String,
         val cityName: String,
         val airportName: String,
-        val airports: List<String>? = null)
+        val airports: MutableList<String> = arrayListOf())

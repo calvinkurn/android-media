@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.presentation.model
 
 import android.os.Parcelable
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import kotlinx.android.parcel.Parcelize

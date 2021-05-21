@@ -3,11 +3,11 @@ package com.tokopedia.flight.airportv2.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.flight.airport.view.adapter.FlightAirportClickListener
-import com.tokopedia.flight.airport.view.adapter.FlightAirportViewHolder
-import com.tokopedia.flight.airport.view.adapter.FlightCountryViewHolder
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.airport.view.model.FlightCountryAirportModel
+import com.tokopedia.flight.airportv2.presentation.adapter.viewholder.FlightAirportClickListener
+import com.tokopedia.flight.airportv2.presentation.adapter.viewholder.FlightAirportViewHolder
+import com.tokopedia.flight.airportv2.presentation.adapter.viewholder.FlightCountryViewHolder
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
+import com.tokopedia.flight.airportv2.presentation.model.FlightCountryAirportModel
 import com.tokopedia.flight.common.view.adapter.FlightAdapterTypeFactory
 
 /**

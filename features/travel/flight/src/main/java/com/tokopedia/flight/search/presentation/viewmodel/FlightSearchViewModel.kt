@@ -10,7 +10,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.promo_chips.data.FlightLowestPriceQuery

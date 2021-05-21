@@ -1,13 +1,13 @@
 package com.tokopedia.flight.airportv2.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.airportv2.domain.FlightAirportPopularCityUseCase
 import com.tokopedia.flight.airportv2.domain.FlightAirportSuggestionUseCase
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
 import com.tokopedia.flight.dummy.DUMMY_POPULAR_AIRPORT
 import com.tokopedia.flight.dummy.DUMMY_SUGGESTION_AIRPORT
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

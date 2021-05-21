@@ -15,11 +15,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.adapter.FlightAirportClickListener
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.airportv2.di.DaggerFlightAirportComponent
 import com.tokopedia.flight.airportv2.di.FlightAirportComponent
 import com.tokopedia.flight.airportv2.presentation.adapter.FlightAirportAdapterTypeFactory
+import com.tokopedia.flight.airportv2.presentation.adapter.viewholder.FlightAirportClickListener
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
 import com.tokopedia.flight.airportv2.presentation.viewmodel.FlightAirportPickerViewModel
 import com.tokopedia.flight.common.view.model.EmptyResultModel
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
@@ -50,8 +50,8 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
 
     private val emptyResultModel: EmptyResultModel
         get() {
-            val emptyModel: EmptyResultModel = EmptyResultModel()
-            if (filterText.length < 3) {
+            val emptyModel = EmptyResultModel()
+            if (getFilterText().length < 3) {
                 emptyModel.iconRes = R.drawable.ic_flight_airport_search_not_complete
                 emptyModel.title = getString(R.string.flight_airport_less_than_three_keyword_title_error)
                 emptyModel.content = getString(R.string.flight_airport_less_than_three_keyword_error)
@@ -72,7 +72,7 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
             emptyModel.buttonTitle = getString(R.string.flight_booking_action_retry)
             emptyModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyButtonClicked() {
-                    onSearchAirportTextChanged(filterText)
+                    onSearchAirportTextChanged(getFilterText())
                 }
             }
             return emptyModel
@@ -122,7 +122,7 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
             }
         })
 
-        flightAirportPickerViewModel.fetchAirport(filterText)
+        flightAirportPickerViewModel.fetchAirport(getFilterText())
     }
 
     override fun airportClicked(airportViewModel: FlightAirportModel) {
@@ -158,7 +158,7 @@ class FlightAirportPickerBottomSheet : BottomSheetUnify(),
         flightAirportSearchBar.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 flightAirportSearchBar.clearFocus()
-                onSearchAirportTextChanged(filterText)
+                onSearchAirportTextChanged(getFilterText())
                 true
             } else {
                 false

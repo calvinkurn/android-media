@@ -1,6 +1,6 @@
 package com.tokopedia.flight.dummy
 
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.data.*
 import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.detail.view.model.FlightDetailModel

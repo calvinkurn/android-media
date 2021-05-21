@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.*
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
@@ -444,7 +444,7 @@ class FlightSearchViewModelTest {
             cityCode = "JKTA"
             cityName = "Jakarta"
             cityAirports = arrayListOf("CGK", "HLP")
-            airportCode = null
+            airportCode = ""
             airportName = ""
             cityId = ""
         }
@@ -452,7 +452,7 @@ class FlightSearchViewModelTest {
             cityCode = "TKYA"
             cityName = "Tokyo"
             cityAirports = arrayListOf("HND", "NRT")
-            airportCode = null
+            airportCode = ""
             airportName = ""
             cityId = ""
         }
