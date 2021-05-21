@@ -72,7 +72,6 @@ class PushController(val context: Context) : CoroutineScope {
                     handleNotificationBundle(model)
                 }
             }, onError = {
-                println(it.message)
                 ServerLogger.log(Priority.P2, "CM_VALIDATION",
                         mapOf("type" to "exception",
                                 "err" to Log.getStackTraceString(it).take(CMConstant.TimberTags.MAX_LIMIT),
