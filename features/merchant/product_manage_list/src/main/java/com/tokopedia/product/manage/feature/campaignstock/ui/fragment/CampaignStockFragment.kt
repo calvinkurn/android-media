@@ -51,7 +51,6 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     companion object {
         private const val MAIN_TAB_POSITION = 0
-        const val SOURCE = "extra_source"
         const val DEFAULT_SOURCE = "manage product"
 
         @JvmStatic
