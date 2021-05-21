@@ -750,11 +750,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         RouteManager.route(context, url)
     }
 
-    override fun clickInstallmentPayment(applink: String, componentTrackDataModel: ComponentTrackDataModel) {
-        goToApplink(applink)
-        DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-    }
-
     override fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         if (url.isNotEmpty()) {
             DynamicProductDetailTracking.Click.eventClickCustomInfo(title, viewModel.userId, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
