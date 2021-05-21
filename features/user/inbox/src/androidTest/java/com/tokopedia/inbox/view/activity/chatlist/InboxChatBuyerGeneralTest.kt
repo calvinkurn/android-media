@@ -20,7 +20,7 @@ class InboxChatBuyerGeneralTest : InboxChatBuyerTest() {
         inboxChatDep.getChatList.response = inboxChatDep.getChatList_EmptyBuyerResponse
         startInboxActivity()
 
-        // When
+        // Then
         onView(withId(R.id.thumbnail_empty_chat_list)).check(
                 matches(isDisplayed())
         )
