@@ -30,6 +30,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -141,7 +142,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         )
                     }
                     if(ongoingMonth == null) {
-                        showGetListError(getDataErrorException())
+                        showGlobalError(getDataErrorException())
                     }
                 }
                 is Fail -> {
@@ -150,7 +151,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     if (throwable.message == SmartBillsViewModel.STATEMENT_MONTHS_ERROR) {
                         throwable = getDataErrorException()
                     }
-                    showGetListError(throwable)
+                    showGlobalError(throwable)
                 }
             }
         })
@@ -204,7 +205,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     if (throwable.message == SmartBillsViewModel.STATEMENT_BILLS_ERROR) {
                         throwable = getDataErrorException()
                     }
-                    showGetListError(throwable)
+                    showGlobalError(throwable)
                 }
             }
         })
@@ -254,7 +255,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
                     }
                     view?.let { v ->
-                        Toaster.build(v, throwable.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        Toaster.build(v, getErrorHandling(throwable) ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -575,6 +576,25 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun updateCheckAll(){
         cb_smart_bills_select_all.isChecked = adapter.totalChecked == listBills.size
+    }
+
+    private fun showGlobalError(throwable: Throwable){
+        checkout_loading_view.show()
+        sbm_global_error.apply {
+            show()
+            errorTitle.text = getErrorHandling(throwable)
+            sbm_loader_unify.hide()
+            setActionClickListener {
+                this.gone()
+                checkout_loading_view.hide()
+                showLoading()
+                loadInitialData()
+            }
+        }
+    }
+
+    private fun getErrorHandling(throwable: Throwable): String{
+        return ErrorHandler.getErrorMessage(context, throwable)
     }
 
     companion object {

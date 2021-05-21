@@ -119,9 +119,19 @@
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/sbm_loader_unify"
             android:layout_width="@dimen/spacing_lvl8"
             android:layout_height="@dimen/spacing_lvl8"
             android:layout_gravity="center" />
+
+        <com.tokopedia.globalerror.GlobalError
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:id="@+id/sbm_global_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
 
     </FrameLayout>
 

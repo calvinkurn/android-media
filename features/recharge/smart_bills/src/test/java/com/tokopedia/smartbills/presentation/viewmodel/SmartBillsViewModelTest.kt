@@ -1,14 +1,16 @@
 package com.tokopedia.smartbills.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.topupbills.data.RechargeField
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.smartbills.data.*
-import com.tokopedia.smartbills.data.api.SmartBillsRepository
+import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,7 +37,7 @@ class SmartBillsViewModelTest {
     lateinit var graphqlRepository: GraphqlRepository
 
     @MockK
-    lateinit var smartBillsRepository: SmartBillsRepository
+    lateinit var smartBillsMultiCheckoutUseCase: SmartBillsMultiCheckoutUseCase
 
     @MockK
     lateinit var userSession: UserSessionInterface
@@ -55,7 +57,7 @@ class SmartBillsViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         smartBillsViewModel =
-                SmartBillsViewModel(graphqlRepository, smartBillsRepository, CoroutineTestDispatchersProvider)
+                SmartBillsViewModel(graphqlRepository, smartBillsMultiCheckoutUseCase, CoroutineTestDispatchersProvider)
 
         coEvery { userSession.userId } returns "0123456"
         coEvery { userSession.deviceId } returns "android-3.70"
@@ -182,9 +184,19 @@ class SmartBillsViewModelTest {
                 queryString = "test_query_string"
         )
         val mockMultiCheckoutResponse = RechargeMultiCheckoutResponse("test", "0123456789", successResponseAttributes)
-        coEvery { smartBillsRepository.postMultiCheckout(any()) } returns mockMultiCheckoutResponse
+        val dataRechargeMultiCheckoutResponse = DataRechargeMultiCheckoutResponse(mockMultiCheckoutResponse)
+
+        val restResponse = RestResponse(dataRechargeMultiCheckoutResponse, 200, false)
+        val dataCheckoutMap = mapOf<Type, RestResponse>(
+                DataRechargeMultiCheckoutResponse::class.java to restResponse
+        )
+
+        coEvery { smartBillsMultiCheckoutUseCase.setHeader(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.setParam(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
 
         smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
+
         val actualData = smartBillsViewModel.multiCheckout.value
         assert(actualData is Success)
         val multiCheckoutResponse = (actualData as Success).data
@@ -203,7 +215,16 @@ class SmartBillsViewModelTest {
                 listOf(RechargeMultiCheckoutResponse.Error(0, 1, "error"))
         )
         val mockMultiCheckoutResponse = RechargeMultiCheckoutResponse("test", "0123456789", errorResponseAttributes)
-        coEvery { smartBillsRepository.postMultiCheckout(any()) } returns mockMultiCheckoutResponse
+        val dataRechargeMultiCheckoutResponse = DataRechargeMultiCheckoutResponse(mockMultiCheckoutResponse)
+
+        val restResponse = RestResponse(dataRechargeMultiCheckoutResponse, 200, false)
+        val dataCheckoutMap = mapOf<Type, RestResponse>(
+                DataRechargeMultiCheckoutResponse::class.java to restResponse
+        )
+
+        coEvery { smartBillsMultiCheckoutUseCase.setHeader(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.setParam(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
 
         smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -223,12 +244,73 @@ class SmartBillsViewModelTest {
 
     @Test
     fun runMultiCheckout_Fail() {
-        coEvery { smartBillsRepository.postMultiCheckout(any()) } throws MessageErrorException("error")
+
+        coEvery { smartBillsMultiCheckoutUseCase.setHeader(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.setParam(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} throws MessageErrorException("error")
 
         smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
+
         val actualData = smartBillsViewModel.multiCheckout.value
         assert(actualData is Fail)
         assertEquals((actualData as Fail).throwable.message, "error")
+    }
+
+    @Test
+    fun runMultiCheckout_AtributeNotNull() {
+
+        coEvery { smartBillsMultiCheckoutUseCase.setHeader(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.setParam(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} throws MessageErrorException("error")
+
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(attributes = MultiCheckoutRequest.
+        MultiCheckoutRequestAttributes(identifier = RequestBodyIdentifier().apply {
+            userId = "12345"
+        })))
+
+        val actualData = smartBillsViewModel.multiCheckout.value
+        assert(actualData is Fail)
+        assertEquals((actualData as Fail).throwable.message, "error")
+    }
+
+    @Test
+    fun runMultiCheckout_GeneratedAtributeNotNull() {
+
+        val request = MultiCheckoutRequest(attributes = MultiCheckoutRequest.
+        MultiCheckoutRequestAttributes(identifier = RequestBodyIdentifier().apply {
+            userId = "12345"
+        }))
+
+        coEvery { smartBillsMultiCheckoutUseCase.setHeader(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.setParam(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} throws MessageErrorException("error")
+
+        smartBillsViewModel.runMultiCheckout(request)
+
+        val actualData = smartBillsViewModel.multiCheckout.value
+        assert(actualData is Fail)
+        assertEquals((actualData as Fail).throwable.message, "error")
+    }
+
+    @Test
+    fun runMultiCheckout_ConverterNUll() {
+        val request = MultiCheckoutRequest(attributes = MultiCheckoutRequest.
+        MultiCheckoutRequestAttributes(identifier = RequestBodyIdentifier().apply {
+            userId = "12345"
+        }))
+
+        val dataCheckoutMap = mapOf<Type, RestResponse?>(
+                DataRechargeMultiCheckoutResponse::class.java to null
+        )
+
+        coEvery { smartBillsMultiCheckoutUseCase.setHeader(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.setParam(any())} returns Unit
+        coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
+
+        smartBillsViewModel.runMultiCheckout(request)
+
+        val actualData = smartBillsViewModel.multiCheckout.value
+        assert(actualData is Fail)
     }
 
     @Test
