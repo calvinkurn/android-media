@@ -4,11 +4,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.localizationchooseaddress.data.query.ChooseAddressQuery
+import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
 import com.tokopedia.localizationchooseaddress.domain.response.GetChosenAddressListQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressGqlResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.localizationchooseaddress.util.getResponse
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import javax.inject.Inject
 
 class ChooseAddressRepository @Inject constructor(private val gql: GraphqlRepository){
@@ -32,6 +34,18 @@ class ChooseAddressRepository @Inject constructor(private val gql: GraphqlReposi
                 "postal_code" to postalCode))
         val request = GraphqlRequest(ChooseAddressQuery.setStateChosenAddress,
                 SetStateChosenAddressQqlResponse::class.java, param)
+        return gql.getResponse(request)
+    }
+
+    suspend fun setStateChosenAddressFromAddress(model: RecipientAddressModel): SetStateChosenAddressQqlResponse {
+        val param = StateChooseAddressParam(
+                model.addressStatus, model.id.toInt(), model.recipientName,
+                model.addressName, model.latitude, model.longitude,
+                model.destinationDistrictId.toInt(), model.postalCode
+        )
+        val gqlParam = mapOf("input" to param.toMap() )
+        val request = GraphqlRequest(ChooseAddressQuery.setStateChosenAddress,
+                SetStateChosenAddressQqlResponse::class.java, gqlParam)
         return gql.getResponse(request)
     }
 

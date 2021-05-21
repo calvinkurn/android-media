@@ -159,6 +159,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bottomSheetLainnya = null
+    }
+
     private fun openSoftKeyboard() {
         searchAddress?.searchBarTextField?.let {
             (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
@@ -477,15 +482,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         bottomSheetLainnya = BottomSheetUnify()
         val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
             if (data.addressStatus == 2) {
-                layout_utama?.gone()
-                layout_utama_choose?.gone()
+                btn_alamat_utama?.gone()
+                divider?.gone()
+                btn_alamat_utama_choose?.gone()
+                divider_utama_choose?.gone()
             } else {
                 if (!data.isStateChosenAddress) {
-                    layout_utama_choose?.visible()
-                    layout_utama?.gone()
+                    btn_alamat_utama?.gone()
+                    divider?.gone()
+                    btn_alamat_utama_choose?.visible()
+                    divider_utama_choose?.visible()
                 } else {
-                    layout_utama?.visible()
-                    layout_utama_choose?.gone()
+                    btn_alamat_utama?.visible()
+                    divider?.visible()
+                    btn_alamat_utama_choose?.gone()
+                    divider_utama_choose?.gone()
                 }
             }
             btn_alamat_utama?.setOnClickListener {
@@ -604,28 +615,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 activity?.setResult(Activity.RESULT_OK, resultIntent)
                 activity?.finish()
             } else {
-                viewModel.setStateChosenAddress(
-                        status = _selectedAddressItem?.addressStatus,
-                        addressId = _selectedAddressItem?.id,
-                        receiverName = _selectedAddressItem?.recipientName,
-                        addressName = _selectedAddressItem?.addressName,
-                        latitude = _selectedAddressItem?.latitude,
-                        longitude = _selectedAddressItem?.longitude,
-                        districtId = _selectedAddressItem?.destinationDistrictId,
-                        postalCode = _selectedAddressItem?.postalCode
-                )
+                _selectedAddressItem?.let { viewModel.setStateChosenAddress(it) }
             }
         } else if (isFromCheckoutChangeAddress == true) {
-            viewModel.setStateChosenAddress(
-                    status = _selectedAddressItem?.addressStatus,
-                    addressId = _selectedAddressItem?.id,
-                    receiverName = _selectedAddressItem?.recipientName,
-                    addressName = _selectedAddressItem?.addressName,
-                    latitude = _selectedAddressItem?.latitude,
-                    longitude = _selectedAddressItem?.longitude,
-                    districtId = _selectedAddressItem?.destinationDistrictId,
-                    postalCode = _selectedAddressItem?.postalCode
-            )
+            _selectedAddressItem?.let { viewModel.setStateChosenAddress(it) }
         }
     }
 
