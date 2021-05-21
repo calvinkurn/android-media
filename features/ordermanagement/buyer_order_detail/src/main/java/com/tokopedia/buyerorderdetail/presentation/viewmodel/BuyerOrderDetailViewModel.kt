@@ -17,6 +17,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -34,6 +35,10 @@ class BuyerOrderDetailViewModel @Inject constructor(
         private val atcUseCase: dagger.Lazy<AddToCartMultiUseCase>
 ) : BaseViewModel(coroutineDispatchers.io) {
 
+    companion object {
+        private const val ERROR_MESSAGE_NO_PRODUCT = "Tidak ada produk yang dapat ditambahkan ke keranjang!"
+    }
+
     private val _buyerOrderDetailResult: MutableLiveData<Result<BuyerOrderDetailUiModel>> = MutableLiveData()
     val buyerOrderDetailResult: LiveData<Result<BuyerOrderDetailUiModel>>
         get() = _buyerOrderDetailResult
@@ -42,9 +47,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
     val finishOrderResult: LiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>>
         get() = _finishOrderResult
 
-    private val _atcResult: MutableLiveData<Pair<ProductListUiModel.ProductUiModel, Result<AtcMultiData>>> = MutableLiveData()
-    val atcResult: LiveData<Pair<ProductListUiModel.ProductUiModel, Result<AtcMultiData>>>
-        get() = _atcResult
+    private val _singleAtcResult: MutableLiveData<Pair<ProductListUiModel.ProductUiModel, Result<AtcMultiData>>> = MutableLiveData()
+    val singleAtcResult: LiveData<Pair<ProductListUiModel.ProductUiModel, Result<AtcMultiData>>>
+        get() = _singleAtcResult
+
+    private val _multiAtcResult: MutableLiveData<Result<AtcMultiData>> = MutableLiveData()
+    val multiAtcResult: LiveData<Result<AtcMultiData>>
+        get() = _multiAtcResult
 
     private fun getOrderId(): String {
         return buyerOrderDetailResult.value.takeIf { it is Success }?.let {
@@ -64,6 +73,18 @@ class BuyerOrderDetailViewModel @Inject constructor(
         return if (buyerOrderDetailResult is Success) {
             buyerOrderDetailResult.data.productListUiModel.productListHeaderUiModel.shopId
         } else "0"
+    }
+
+    private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
+        return AddToCartMultiParam(
+                productId = productId.toLong(),
+                productName = productName,
+                productPrice = price.toLong(),
+                qty = quantity,
+                notes = productNote,
+                shopId = getShopId().toInt(),
+                custId = userSession.get().userId.toInt()
+        )
     }
 
     fun getBuyerOrderDetail(orderId: String, paymentId: String, cart: String = "") {
@@ -88,20 +109,27 @@ class BuyerOrderDetailViewModel @Inject constructor(
         })
     }
 
-    fun addToCart(product: ProductListUiModel.ProductUiModel) {
+    fun addSingleToCart(product: ProductListUiModel.ProductUiModel) {
         launchCatchError(block = {
-            val param = AddToCartMultiParam(
-                    productId = product.productId.toLong(),
-                    productName = product.productName,
-                    productPrice = product.price.toLong(),
-                    qty = product.quantity,
-                    notes = product.productNote,
-                    shopId = getShopId().toInt(),
-                    custId = userSession.get().userId.toInt()
-            )
-            _atcResult.postValue(product to atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), arrayListOf(param)))
+            _singleAtcResult.postValue(product to atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), arrayListOf(product.mapToAddToCartParam())))
         }, onError = {
-            _atcResult.postValue(product to Fail(it))
+            _singleAtcResult.postValue(product to Fail(it))
+        })
+    }
+
+    fun addMultipleToCart() {
+        launchCatchError(block = {
+            val buyerOrderDetailResult = buyerOrderDetailResult.value
+            if (buyerOrderDetailResult is Success) {
+                val params = ArrayList(buyerOrderDetailResult.data.productListUiModel.productList.map {
+                    it.mapToAddToCartParam()
+                })
+                _multiAtcResult.postValue(atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params))
+            } else {
+                _multiAtcResult.postValue(Fail(MessageErrorException(ERROR_MESSAGE_NO_PRODUCT)))
+            }
+        }, onError = {
+            _multiAtcResult.postValue(Fail(it))
         })
     }
 

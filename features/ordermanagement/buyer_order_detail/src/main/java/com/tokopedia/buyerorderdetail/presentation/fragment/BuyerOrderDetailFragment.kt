@@ -119,7 +119,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         setupViews()
         observeBuyerOrderDetail()
         observeReceiveConfirmation()
-        observeAddToCart()
+        observeAddSingleToCart()
+        observeAddMultipleToCart()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -136,6 +137,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button.url)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> onReceiveConfirmationActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> onHelpActionButtonClicked(button)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> onBuyAgainAllProductButtonClicked()
         }
     }
 
@@ -155,7 +157,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
         val productCopy = product.copy(isProcessing = true)
         adapter.updateItem(product, productCopy)
-        viewModel.addToCart(productCopy)
+        viewModel.addSingleToCart(productCopy)
     }
 
     override fun onSeeSimilarProductsButtonClicked(url: String) {
@@ -208,6 +210,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         BuyerOrderDetailNavigator.goToHelpPage(this, button.url)
+    }
+
+    private fun onBuyAgainAllProductButtonClicked() {
+        btnBuyerOrderDetailPrimaryActions?.isLoading = true
+        viewModel.addMultipleToCart()
     }
 
     private fun setupViews() {
@@ -292,13 +299,23 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         })
     }
 
-    private fun observeAddToCart() {
-        viewModel.atcResult.observe(viewLifecycleOwner, Observer { result ->
+    private fun observeAddSingleToCart() {
+        viewModel.singleAtcResult.observe(viewLifecycleOwner, Observer { result ->
             when (val requestResult = result.second) {
                 is Success -> onSuccessAddToCart(requestResult.data)
                 is Fail -> onFailedAddToCart(requestResult.throwable)
             }
             adapter.updateItem(result.first, result.first.copy(isProcessing = false))
+        })
+    }
+
+    private fun observeAddMultipleToCart() {
+        viewModel.multiAtcResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> onSuccessAddToCart(result.data)
+                is Fail -> onFailedAddToCart(result.throwable)
+            }
+            btnBuyerOrderDetailPrimaryActions?.isLoading = false
         })
     }
 
