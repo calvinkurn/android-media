@@ -379,7 +379,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun setupPrimaryButton(primaryActionButton: ActionButtonsUiModel.ActionButton, secondaryActionButtonCount: Int) {
-        btnBuyerOrderDetailPrimaryActions.apply {
+        btnBuyerOrderDetailPrimaryActions?.apply {
             val layoutParamsCopy = layoutParams as ViewGroup.MarginLayoutParams
             layoutParamsCopy.marginStart = if (secondaryActionButtonCount == 0) 0 else getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             layoutParams = layoutParamsCopy
@@ -387,6 +387,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             buttonVariant = Utils.mapButtonVariant(primaryActionButton.variant)
             buttonType = Utils.mapButtonType(primaryActionButton.type)
             setOnClickListener(primaryActionButtonClickListener)
+            show()
         }
     }
 
