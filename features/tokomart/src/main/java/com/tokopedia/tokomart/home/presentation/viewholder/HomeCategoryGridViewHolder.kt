@@ -9,13 +9,13 @@ import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
-import kotlinx.android.synthetic.main.item_tokomart_home_category.view.*
+import kotlinx.android.synthetic.main.item_tokomart_home_category_grid.view.*
 
 class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategoryGridUiModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_home_category
+        val LAYOUT = R.layout.item_tokomart_home_category_grid
 
         private const val GRID_SPAN_COUNT = 5
     }
