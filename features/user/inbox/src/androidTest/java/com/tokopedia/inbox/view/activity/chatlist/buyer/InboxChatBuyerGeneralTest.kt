@@ -70,9 +70,6 @@ class InboxChatBuyerGeneralTest : InboxChatBuyerTest() {
         )
     }
 
-    // TODO: test pinned icon is visible for pinned chat
-    // TODO: test success pin unpin chat
-    // TODO: test error pin/unpin chat
     // TODO: test mark read/unread chat
     // TODO: test delete chat
 
