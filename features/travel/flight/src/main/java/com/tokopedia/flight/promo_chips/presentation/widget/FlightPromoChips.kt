@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.flight.R
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapter
 import com.tokopedia.flight.promo_chips.presentation.adapter.FlightPromoChipsAdapterTypeFactory
 import com.tokopedia.flight.promo_chips.presentation.adapter.viewholder.FlightPromoChipsViewHolder
-import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.include_flight_promo_chips.view.*
@@ -28,6 +28,10 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
     init {
         val view = View.inflate(context, R.layout.include_flight_promo_chips, this)
         recyclerView = view.findViewById(R.id.recycler_view_promo_chips)
+        setBackground()
+    }
+
+    fun setBackground() {
         recyclerView.setBackgroundResource(R.drawable.bg_flight_promo_chips_container)
     }
 
@@ -58,15 +62,17 @@ class FlightPromoChips @JvmOverloads constructor(context: Context, attrs: Attrib
         adapter.renderList(dataCollection)
     }
 
-    fun resetState(){
-        if(adapter.itemCount > 0 && adapter.selectedPosition != FlightPromoChipsAdapter.SELECTED_POSITION_INIT){
-            recyclerView.findViewHolderForAdapterPosition(adapter.selectedPosition).let {
-                (it as FlightPromoChipsViewHolder).itemView.performClick()
+    fun resetState() {
+        if (::adapter.isInitialized) {
+            if (adapter.itemCount > 0 && adapter.selectedPosition != FlightPromoChipsAdapter.SELECTED_POSITION_INIT) {
+                recyclerView.findViewHolderForAdapterPosition(adapter.selectedPosition).let {
+                    (it as FlightPromoChipsViewHolder).itemView.performClick()
+                }
             }
         }
     }
 
-    interface PromoChipsListener{
+    interface PromoChipsListener {
         fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int)
         fun onUnselectChips()
     }

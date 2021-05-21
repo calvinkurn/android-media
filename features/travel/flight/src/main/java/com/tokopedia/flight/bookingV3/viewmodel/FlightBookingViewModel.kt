@@ -6,12 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV3.data.*
 import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
@@ -116,7 +116,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun fetchTickerData() {
-        launch(dispatcherProvider.main) {
+        launch(dispatcherProvider.io) {
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.BOOK)
             mutableTickerData.postValue(tickerData)
         }
@@ -141,7 +141,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
                     flightDetailModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceModel)
                     if (flightPassengersData.value?.isEmpty() != false && !isRefreshCart) {
-                        _flightPromoResult.postValue( FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher))
+                        _flightPromoResult.postValue(FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher))
                         _flightPassengersData.postValue(FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
                                 data.cartData.flight.child, data.cartData.flight.infant))
                     }
@@ -276,39 +276,39 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
         if (contactName.isEmpty()) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_name_empty_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_name_empty_error
         } else if (contactName.isNotEmpty() && !isAlphabetAndSpaceOnly(contactName)) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_name_alpha_space_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_name_alpha_space_error
         } else if (contactEmail.isEmpty()) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_email_empty_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_email_empty_error
         } else if (!isValidEmail(contactEmail)) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_email_invalid_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_email_invalid_error
         } else if (!isEmailWithoutProhibitSymbol(contactEmail)) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_email_invalid_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_email_invalid_error
         } else if (contactPhone.isEmpty()) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_phone_empty_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_phone_empty_error
         } else if (contactPhone.isNotEmpty() && !isNumericOnly(contactPhone)) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_phone_invalid_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_phone_invalid_error
         } else if (contactPhone.length > 13) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_phone_max_length_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_phone_max_length_error
         } else if (contactPhone.length < 9) {
             isValid = false
-            _errorToastMessageData.postValue(R.string.flight_booking_contact_phone_min_length_error)
+            _errorToastMessageData.value = R.string.flight_booking_contact_phone_min_length_error
         } else {
             val passengerViewModels = flightPassengersData.value ?: listOf()
             if (!isAllPassengerFilled(passengerViewModels)) {
                 isValid = false
-                _errorToastMessageData.postValue(R.string.flight_booking_passenger_not_fullfilled_error)
+                _errorToastMessageData.value = R.string.flight_booking_passenger_not_fullfilled_error
             }
         }
-        if (isValid) _errorToastMessageData.postValue( 0)
+        if (isValid) _errorToastMessageData.value = 0
         return isValid
     }
 
@@ -420,19 +420,19 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     }
 
     fun setPassengerModels(passengerModels: List<FlightBookingPassengerModel>) {
-        _flightPassengersData.postValue(passengerModels)
+        _flightPassengersData.value = passengerModels
     }
 
     fun setPriceData(priceData: List<FlightCart.PriceDetail>) {
-        _flightPriceData.postValue(priceData)
+        _flightPriceData.value = priceData
     }
 
     fun setOtherPriceData(priceData: List<FlightCart.PriceDetail>) {
-        _flightOtherPriceData.postValue(priceData)
+        _flightOtherPriceData.value = priceData
     }
 
     fun setAmenityPriceData(priceData: List<FlightCart.PriceDetail>) {
-        _flightAmenityPriceData.postValue(priceData)
+        _flightAmenityPriceData.value = priceData
     }
 
     fun onPassengerResultReceived(passengerModel: FlightBookingPassengerModel) {
@@ -440,7 +440,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val indexPassenger = passengerViewModels?.indexOf(passengerModel) ?: -1
         if (indexPassenger != -1) {
             passengerViewModels[indexPassenger] = passengerModel
-            _flightPassengersData.postValue(passengerViewModels)
+            _flightPassengersData.value = passengerViewModels
         }
         addPassengerAmenitiesPrices()
     }
@@ -468,7 +468,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             passenger.flightBookingMealMetaViewModels = arrayListOf()
             passenger.headerTitle = String.format("Penumpang dewasa")
             passengers[0] = passenger
-            _flightPassengersData.postValue(passengers)
+            _flightPassengersData.value = passengers
         }
     }
 
@@ -529,19 +529,19 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     FlightCurrencyFormatUtil.convertToIdrPrice(value), value))
             grandTotalAmenityPrice += value
         }
-        _flightAmenityPriceData.postValue(prices)
+        _flightAmenityPriceData.value = prices
         return grandTotalAmenityPrice
     }
 
     fun updatePromoData(promoData: PromoData) {
         flightPromoResult.value!!.let {
             it.promoData = promoData
-            _flightPromoResult.postValue(it)
+            _flightPromoResult.value = it
         }
     }
 
     fun updateFlightPriceData(priceDetail: List<FlightCart.PriceDetail>) {
-        _flightPriceData.postValue(priceDetail)
+        _flightPriceData.value = priceDetail
     }
 
     fun updateFlightDetailPriceData(newPrices: List<FlightCart.NewPrice>) {
@@ -601,7 +601,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
             //update UI promoData
             flightPromoViewEntity.promoData.description = voucher.message
-            _flightPromoResult.postValue(flightPromoViewEntity)
+            _flightPromoResult.value = flightPromoViewEntity
 
             return promoEligibility
         } catch (e: Exception) {
@@ -727,7 +727,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         for (passenger in passengerViewModels) {
             passenger.flightBookingLuggageMetaViewModels = listOf()
         }
-        _flightPassengersData.postValue(passengerViewModels)
+        _flightPassengersData.value = passengerViewModels
 
         val amenitiesPrice = addPassengerAmenitiesPrices()
 

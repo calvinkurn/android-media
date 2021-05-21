@@ -3,6 +3,7 @@ package com.tokopedia.shop_settings.viewmodel.shopsettingsinfo
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
@@ -40,13 +41,21 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         runBlocking {
             val shopId: String = "123456"
             val includeOs: Boolean = false
-            shopSettingsInfoViewModel.getShopData(shopId, includeOs)
-
+            val sampleShopBadgeValue = "shop_badge"
             val shopBasicData = ShopBasicDataModel()
             val goldGetPmOsStatus = GoldGetPmOsStatus()
-
+            val shopInfo = ShopInfo(
+                    goldOS = ShopInfo.GoldOS(badge = sampleShopBadgeValue)
+            )
+            coEvery {
+                getShopInfoUseCase.executeOnBackground()
+            } returns shopInfo
+            shopSettingsInfoViewModel.getShopData(shopId, includeOs)
             val expectedResultShopBasicData = Success(shopBasicData)
             val expectedResultGoldGetPmOsStatus = Success(goldGetPmOsStatus)
+            assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Success)
+            shopSettingsInfoViewModel.shopBadgeData
+                    .verifySuccessEquals(Success(sampleShopBadgeValue))
 
             assertTrue(shopSettingsInfoViewModel.shopBasicData.value is Success)
             shopSettingsInfoViewModel.shopBasicData
@@ -85,6 +94,7 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value == null)
         assertTrue(shopSettingsInfoViewModel.shopStatusData.value == null)
         assertTrue(shopSettingsInfoViewModel.updateScheduleResult.value == null)
+        assertTrue(shopSettingsInfoViewModel.shopBadgeData.value == null)
 
     }
 
