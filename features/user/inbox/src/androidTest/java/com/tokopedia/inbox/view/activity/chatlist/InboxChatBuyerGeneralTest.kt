@@ -18,7 +18,9 @@ class InboxChatBuyerGeneralTest : InboxChatBuyerTest() {
     @Test
     fun should_render_empty_view_when_response_is_empty() {
         // Given
-        inboxChatDep.getChatList.response = inboxChatDep.getChatList_EmptyBuyerResponse
+        inboxChatDep.apply {
+            getChatList.response = getChatList_EmptyBuyerResponse
+        }
         startInboxActivity()
 
         // Then
@@ -42,7 +44,32 @@ class InboxChatBuyerGeneralTest : InboxChatBuyerTest() {
         onView(withId(R.id.rv_filter)).check(matches(withTotalItem(1)))
     }
 
-    // TODO: test filter click buyer and its empty state
+    @Test
+    fun should_show_different_empty_state_when_response_with_filter_is_empty() {
+        // Given
+        inboxChatDep.apply {
+            getChatList.response = getChatList_BuyerSize3Response
+        }
+        startInboxActivity()
+
+        // When
+        inboxChatDep.apply {
+            getChatList.response = getChatList_EmptyBuyerResponse
+        }
+        clickFilterPositionAt(0)
+
+        // Then
+        onView(withId(R.id.thumbnail_empty_chat_list)).check(
+                matches(isDisplayed())
+        )
+        onView(withId(R.id.title_empty_chat_list)).check(
+                matches(withText("Mantap! Semua chat sudah kamu baca!"))
+        )
+        onView(withId(R.id.subtitle)).check(
+                matches(withText("Kalau ada chat baru buat kamu, bakal muncul disini."))
+        )
+    }
+
     // TODO: test pinned icon is visible for pinned chat
     // TODO: test success pin unpin chat
     // TODO: test error pin/unpin chat

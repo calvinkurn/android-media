@@ -3,10 +3,15 @@ package com.tokopedia.inbox.view.activity.base
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.viewaction.clickChildViewWithId
 import com.tokopedia.inbox.fake.InboxFakeDependency
 import com.tokopedia.inbox.fake.di.DaggerFakeInboxComponent
 import com.tokopedia.inbox.fake.di.FakeInboxComponent
@@ -17,6 +22,7 @@ import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
 import com.tokopedia.inbox.fake.view.activity.FakeInboxActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.filter.ChatFilterViewHolder
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -64,6 +70,15 @@ abstract class InboxTest {
         inboxComponent = DaggerFakeInboxComponent.builder()
                 .fakeBaseAppComponent(baseComponent)
                 .build()
+    }
+
+    protected fun clickFilterPositionAt(position: Int) {
+        val viewAction = RecyclerViewActions
+                .actionOnItemAtPosition<ChatFilterViewHolder>(
+                        position,
+                        clickChildViewWithId(R.id.chips_filter)
+                )
+        Espresso.onView(ViewMatchers.withId(R.id.rv_filter)).perform(viewAction)
     }
 
     protected fun startInboxActivity(

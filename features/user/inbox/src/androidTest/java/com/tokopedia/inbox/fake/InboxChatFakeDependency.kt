@@ -15,6 +15,7 @@ class InboxChatFakeDependency @Inject constructor(
 ) {
 
     var getChatList_EmptyBuyerResponse = ChatListPojo()
+    var getChatList_BuyerSize3Response = ChatListPojo()
 
     fun init() {
         initResponse()
@@ -23,6 +24,9 @@ class InboxChatFakeDependency @Inject constructor(
     private fun initResponse() {
         getChatList_EmptyBuyerResponse = AndroidFileUtil.parseRaw(
                 R.raw.chat_list_buyer_empty, ChatListPojo::class.java
+        )
+        getChatList_BuyerSize3Response = AndroidFileUtil.parseRaw(
+                R.raw.chat_list_buyer_normal_size_3, ChatListPojo::class.java
         )
     }
 }

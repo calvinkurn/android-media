@@ -1,0 +1,82 @@
+{
+  "status": "OK",
+  "chatListMessage": {
+    "list": [
+      {
+        "msgID": 1,
+        "messageKey": "user-12299592~shop-3987128",
+        "attributes": {
+          "contact": {
+            "id": 3987128,
+            "role": "shop",
+            "domain": "totokaku",
+            "name": "Meraih mimpi",
+            "shopStatus": 1,
+            "tag": "Penjual",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/3987128/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "Ready, You can order it!",
+          "lastReplyTimeStr": "1621320598271",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false,
+          "label": ""
+        }
+      },
+      {
+        "msgID": 2,
+        "messageKey": "user-12299592~shop-1479278",
+        "attributes": {
+          "contact": {
+            "id": 1479278,
+            "role": "shop",
+            "domain": "tumblersbux",
+            "name": "Tumbler Starbucks 123",
+            "shopStatus": 1,
+            "tag": "Penjual",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/1479278/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "Hai hai",
+          "lastReplyTimeStr": "1620376550622",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false,
+          "label": ""
+        }
+      },
+      {
+        "msgID": 3,
+        "messageKey": "user-12299592~shop-10973694",
+        "attributes": {
+          "contact": {
+            "id": 10973694,
+            "role": "shop",
+            "domain": "br04dc4st-du4",
+            "name": "10973694br04dc4st-du4",
+            "shopStatus": 1,
+            "tag": "Penjual",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/10973694/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "gsjsbznak",
+          "lastReplyTimeStr": "1620304566347",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false,
+          "label": ""
+        }
+      }
+    ],
+    "hasNext": false,
+    "pagingNext": false,
+    "showTimeMachine": 0
+  }
+}
