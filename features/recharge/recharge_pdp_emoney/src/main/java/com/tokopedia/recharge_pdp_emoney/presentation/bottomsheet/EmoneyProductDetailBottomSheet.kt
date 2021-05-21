@@ -1,4 +1,4 @@
-package com.tokopedia.recharge_pdp_emoney.presentation.widget
+package com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.widget_emoney_product_detail_bottom_sheet.view.*
 
 /**
@@ -39,7 +41,7 @@ class EmoneyProductDetailBottomSheet(val product: CatalogProduct) : BottomSheetU
         with(view) {
             emoneyBottomSheetProductTitle.text = product.attributes.desc
             emoneyBottomSheetProductDescription.text = MethodChecker.fromHtml(product.attributes.detail)
-            emoneyBottomSheetProductPrice.text = product.attributes.price
+            emoneyBottomSheetProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero())
         }
     }
 }

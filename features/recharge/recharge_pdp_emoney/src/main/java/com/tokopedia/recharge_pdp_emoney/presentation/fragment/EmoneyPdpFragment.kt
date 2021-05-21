@@ -18,26 +18,36 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.utils.DeviceUtil
+import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentPagerAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
+import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
-import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyProductDetailBottomSheet
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -46,6 +56,8 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_emoney_pdp.*
 import javax.inject.Inject
 
@@ -54,15 +66,33 @@ import javax.inject.Inject
  */
 
 class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.ActionListener,
-        EmoneyPdpInputCardNumberWidget.ActionListener, EmoneyPdpProductViewHolder.ActionListener {
+        EmoneyPdpInputCardNumberWidget.ActionListener, EmoneyPdpProductViewHolder.ActionListener,
+        TopupBillsCheckoutWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
     private val emoneyPdpViewModel by lazy { viewModelFragmentProvider.get(EmoneyPdpViewModel::class.java) }
+    private val addToCartViewModel by lazy { viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java) }
+
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    lateinit var detailPassData: DigitalCategoryDetailPassData
 
     override fun getScreenName(): String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            detailPassData = it.getParcelable(EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA)
+                    ?: DigitalCategoryDetailPassData.Builder().build()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_emoney_pdp, container, false)
@@ -77,11 +107,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
         loadData()
 
-        // dummy
-        // will replace this
+        renderCardState(detailPassData)
         emoneyPdpHeaderView.configureCheckBalanceView()
         emoneyPdpHeaderView.actionListener = this
         emoneyPdpInputCardWidget.initView(this)
+        emoneyPdpProductWidget.setListener(this)
+        emoneyBuyWidget.listener = this
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -90,26 +121,34 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         topUpBillsViewModel.menuDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    trackEventViewPdp(it.data.catalog.label)
                     renderRecommendationsAndPromoList(it.data.recommendations, it.data.promos)
                     renderTicker(EmoneyPdpMapper.mapTopUpBillsTickersToTickersData(it.data.tickers))
                 }
                 is Fail -> {
-                    emoneyPdpViewModel.setErrorMessage(it.throwable)
+                    renderErrorMessage(it.throwable)
                 }
             }
         })
 
         emoneyPdpViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            renderErrorMessage()
+            renderErrorMessage(it)
         })
 
         emoneyPdpViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) emoneyPdpViewModel.setErrorMessage(it.throwable)
+            if (it is Fail) renderErrorMessage(it.throwable)
         })
 
         emoneyPdpViewModel.selectedOperator.observe(viewLifecycleOwner, Observer {
             renderOperatorIcon(it)
-            loadProducts(it.operator)
+            loadProducts(it)
+        })
+
+        emoneyPdpViewModel.selectedRecentNumber.observe(viewLifecycleOwner, Observer {
+            emoneyFullPageLoadingLayout.show()
+            proceedAddToCart(emoneyPdpViewModel.generateCheckoutPassData(
+                    (requireActivity() as EmoneyPdpActivity).promoCode,
+                    it.clientNumber, it.productId.toString(), it.operatorId.toString()))
         })
 
         emoneyPdpViewModel.catalogData.observe(viewLifecycleOwner, Observer {
@@ -118,20 +157,39 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     renderProducts(it.data.product.dataCollections.firstOrNull()?.products
                             ?: listOf())
                 }
-                is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
+                is Fail -> renderErrorMessage(it.throwable)
             }
+        })
+
+        addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    navigateToCart(it.data)
+                }
+                is Fail -> {
+                    if (it.throwable is DigitalAddToCartViewModel.DigitalUserNotLoginException) {
+                        navigateToLoginPage()
+                    } else renderErrorMessage(it.throwable)
+                }
+            }
+            emoneyFullPageLoadingLayout.hide()
+            emoneyBuyWidget.onBuyButtonLoading(false)
         })
     }
 
     private fun loadData() {
         topUpBillsViewModel.getMenuDetail(CommonTopupBillsGqlQuery.catalogMenuDetail,
-                topUpBillsViewModel.createMenuDetailParams(EmoneyPdpActivity.EMONEY_MENU_ID))
+                topUpBillsViewModel.createMenuDetailParams(detailPassData.menuId.toIntOrZero()))
 
         topUpBillsViewModel.getFavoriteNumbers(
                 CommonTopupBillsGqlMutation.favoriteNumber,
-                topUpBillsViewModel.createFavoriteNumbersParams(EmoneyPdpActivity.EMONEY_CATEGORY_ID))
+                topUpBillsViewModel.createFavoriteNumbersParams(detailPassData.categoryId.toIntOrZero()))
 
-        emoneyPdpViewModel.getPrefixOperator(EmoneyPdpActivity.EMONEY_MENU_ID)
+        emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntOrZero())
+    }
+
+    private fun trackEventViewPdp(categoryName: String) {
+        rechargeAnalytics.eventViewPdpPage(categoryName, userSession.userId)
     }
 
     private fun renderRecommendationsAndPromoList(recommendations: List<TopupBillsRecommendation>,
@@ -231,15 +289,19 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     val checkSaldoData = data?.getParcelableExtra<DigitalCategoryDetailPassData>(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA)
                     checkSaldoData?.run {
                         val clientNumberData = TopupBillsFavNumberItem(
-                                clientNumber = clientNumber,
-                                productId = productId,
-                                operatorId = operatorId,
-                                categoryId = categoryId)
+                                clientNumber = clientNumber ?: "",
+                                productId = productId ?: "",
+                                operatorId = operatorId ?: "",
+                                categoryId = categoryId ?: "")
 
                         renderClientNumber(clientNumberData)
                         //renderProduct
                         renderCardState(this)
                     }
+                }
+
+                REQUEST_CODE_LOGIN -> {
+                    proceedAddToCart(emoneyPdpViewModel.digitalCheckoutPassData)
                 }
             }
         }
@@ -251,20 +313,17 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun renderClientNumber(item: TopupBillsFavNumberItem) {
         emoneyPdpInputCardWidget.setNumber(item.clientNumber)
-        emoneyPdpViewModel.getSelectedOperator(item.clientNumber)
     }
 
-    private fun renderErrorMessage() {
-
+    private fun renderErrorMessage(error: Throwable) {
+        var errorThrowable = error
+        if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
+            errorThrowable = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        }
+        Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), errorThrowable), Toaster.LENGTH_LONG).show()
     }
 
     override fun onClickCheckBalance() {
-        val intent = RouteManager.getIntent(activity,
-                ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false")
-        startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
-    }
-
-    override fun onClickUpdateBalance() {
         val intent = RouteManager.getIntent(activity,
                 ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false")
         startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
@@ -276,7 +335,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onClickInputView(inputNumber: String) {
-        showFavoriteNumbersPage((topUpBillsViewModel.favNumberData.value as Success).data.favNumberList)
+        if (topUpBillsViewModel.favNumberData.value is Success) {
+            showFavoriteNumbersPage((topUpBillsViewModel.favNumberData.value as Success).data.favNumberList)
+        } else showFavoriteNumbersPage(arrayListOf())
     }
 
     override fun onRemoveNumberIconClick() {
@@ -285,46 +346,76 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onInputNumberChanged(inputNumber: String) {
         // call be to get operator name
+        emoneyPdpViewModel.getSelectedOperator(inputNumber)
     }
 
     private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {
         startActivityForResult(
                 TopupBillsSearchNumberActivity.getCallingIntent(requireContext(),
-                        ClientNumberType.TYPE_INPUT_NUMERIC, "", favoriteNumbers),
+                        ClientNumberType.TYPE_INPUT_NUMERIC, emoneyPdpInputCardWidget.getNumber(), favoriteNumbers),
                 REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER)
     }
 
-    private fun renderOperatorIcon(operator: RechargePrefix) {
-        if (operator.operator != null) emoneyPdpInputCardWidget.setOperator(operator.operator.attributes.imageUrl)
+    private fun renderOperatorIcon(selectedOperator: RechargePrefix) {
+        if (selectedOperator.operator != null) {
+            emoneyPdpInputCardWidget.setOperator(selectedOperator.operator.attributes.imageUrl)
+        }
     }
 
     private fun renderCardState(detailPassData: DigitalCategoryDetailPassData) {
-        //
+        if (detailPassData.additionalETollBalance != null && detailPassData.additionalETollBalance.isNotEmpty()) {
+            emoneyPdpHeaderView.configureUpdateBalanceWithCardNumber(detailPassData.clientNumber,
+                    detailPassData.additionalETollBalance)
+        } else {
+            emoneyPdpHeaderView.configureCheckBalanceView()
+        }
     }
 
-    private fun loadProducts(operator: TelcoOperator) {
-        if (operator != null) emoneyPdpViewModel.getProductFromOperator(EmoneyPdpActivity.EMONEY_MENU_ID, operator.id)
+    private fun loadProducts(prefix: RechargePrefix) {
+        // to be changed to operator.id // NEED ACTION
+        showProducts()
+        emoneyPdpProductWidget.showShimmering()
+        emoneyBuyWidgetLayout.hide()
+        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero()
+                , prefix.key)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
-        showProducts()
-        emoneyPdpProductWidget.titleText = "Pilih Nominal"
+        emoneyPdpProductWidget.setTitle(getString(R.string.recharge_pdp_emoney_products_title))
         emoneyPdpProductWidget.setProducts(productList)
-        emoneyPdpProductWidget.setListener(this)
     }
 
     private fun showProducts() {
-        emoneyPdpProductWidget.show()
+        emoneyPdpTab.hide()
         emoneyPdpViewPager.hide()
+        emoneyPdpProductWidget.show()
     }
 
     private fun showRecentNumberAndPromo() {
         emoneyPdpProductWidget.hide()
+        (emoneyPdpViewPager.adapter)?.let {
+            if ((it as EmoneyPdpFragmentPagerAdapter).itemCount > TAB_COUNT_THRESHOLD_NUMBER) {
+                emoneyPdpTab.show()
+            }
+        }
         emoneyPdpViewPager.show()
+        emoneyPdpProductWidget.showPaddingBottom(false)
+        emoneyBuyWidgetLayout.hide()
     }
 
-    override fun onClickProduct(product: CatalogProduct) {
-        //ac
+    override fun onClickProduct(product: CatalogProduct, position: Int) {
+        //atc
+        emoneyPdpViewModel.setSelectedProduct(product)
+
+        if (product.attributes.price.isNotEmpty()) {
+            emoneyBuyWidget.setTotalPrice(product.attributes.price)
+        } else {
+            emoneyBuyWidget.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero()))
+        }
+
+        emoneyBuyWidgetLayout.show()
+        emoneyPdpProductWidget.showPaddingBottom(true)
+        emoneyBuyWidget.setVisibilityLayout(true)
     }
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
@@ -332,11 +423,52 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         bottomSheet.show(childFragmentManager, TAG)
     }
 
+    override fun onClickNextBuyButton() {
+        emoneyBuyWidget.onBuyButtonLoading(true)
+        proceedAddToCart(emoneyPdpViewModel.generateCheckoutPassData(
+                (requireActivity() as EmoneyPdpActivity).promoCode,
+                emoneyPdpInputCardWidget.getNumber()))
+    }
+
+    private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {
+        addToCartViewModel.addToCart(digitalCheckoutData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                DigitalSubscriptionParams())
+    }
+
+    private fun navigateToCart(categoryId: String) {
+        context?.let { context ->
+            val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+            emoneyPdpViewModel.digitalCheckoutPassData.categoryId = categoryId
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, emoneyPdpViewModel.digitalCheckoutPassData)
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        }
+    }
+
+    private fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
     companion object {
         private const val TAG = "EmoneyProductDetailBottomSheet"
 
+        private const val TAB_COUNT_THRESHOLD_NUMBER = 1
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
         private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
+        private const val REQUEST_CODE_CART_DIGITAL = 1090
         private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
+        private const val REQUEST_CODE_LOGIN = 1010
+
+        private const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
+
+        fun newInstance(digitalCategoryDetailPassData: DigitalCategoryDetailPassData)
+                : EmoneyPdpFragment {
+            val fragment = EmoneyPdpFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA, digitalCategoryDetailPassData)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
+
 }

@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpProductAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
@@ -32,17 +34,35 @@ class EmoneyPdpProductWidget @JvmOverloads constructor(@NotNull context: Context
         emoneyProductListRecyclerView.adapter = adapter
     }
 
-    var titleText: String = ""
-        set(title) {
-            field = title
-            emoneyProductWidgetTitle.text = title
-        }
+    fun setTitle(title: String) {
+        emoneyProductWidgetTitle.text = title
+    }
 
     fun setProducts(products: List<CatalogProduct>) {
-        adapter.products = products
+        adapter.selectedProductIndex = null
+        adapter.updateProducts(products)
+        showContent()
     }
 
     fun setListener(listener: EmoneyPdpProductViewHolder.ActionListener) {
         adapter.listener = listener
+    }
+
+    fun showShimmering() {
+        if (!emoneyProductShimmering.isShown) emoneyProductShimmering.show()
+        if (emoneyProductWidgetTitle.isShown) emoneyProductWidgetTitle.hide()
+        if (emoneyProductListRecyclerView.isShown) emoneyProductListRecyclerView.hide()
+    }
+
+    private fun showContent() {
+        if (emoneyProductShimmering.isShown) emoneyProductShimmering.hide()
+        if (!emoneyProductWidgetTitle.isShown) emoneyProductWidgetTitle.show()
+        if (!emoneyProductListRecyclerView.isShown) emoneyProductListRecyclerView.show()
+    }
+
+    fun showPaddingBottom(isShow: Boolean) {
+        emoneyProductListRecyclerView.setPadding(0, 0, 0,
+                if (isShow) resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.layout_lvl9)
+                else resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl6))
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
+import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpPromoListSpaceID
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
@@ -67,6 +68,9 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
             val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText(CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode)
             clipboard.setPrimaryClip(clip)
+            if (it is EmoneyPdpActivity) {
+                it.promoCode = voucherCode
+            }
             view?.run {
                 Toaster.build(this,
                         getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),

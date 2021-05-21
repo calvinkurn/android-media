@@ -13,6 +13,7 @@ import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpRecentTransactionAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.RecentTransactionViewHolder
+import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_emoney_recent_number.*
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class EmoneyPdpRecentTransactionFragment : BaseDaggerFragment(), RecentTransacti
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
+    private val emoneyPdpViewModel by lazy { viewModelFragmentProvider.get(EmoneyPdpViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_emoney_recent_number, container, false)
@@ -46,6 +48,6 @@ class EmoneyPdpRecentTransactionFragment : BaseDaggerFragment(), RecentTransacti
     }
 
     override fun onClickItem(item: TopupBillsRecommendation) {
-
+        emoneyPdpViewModel.setSelectedRecentNumber(item)
     }
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="@dimen/unify_space_12">
+    android:padding="@dimen/unify_space_12"
+    android:layout_marginTop="@dimen/spacing_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/emoneyProductWidgetTitle"
@@ -13,12 +14,21 @@
         android:layout_height="wrap_content"
         app:typographyType="heading_4"
         tools:text="Pilih Nominal"
-        android:layout_marginStart="@dimen/spacing_lvl2" />
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/emoneyProductListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12" />
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:clipToPadding="false"
+        android:paddingBottom="?attr/actionBarSize"
+        app:layout_constraintTop_toBottomOf="@id/emoneyProductWidgetTitle" />
 
-</LinearLayout>
+    <include
+        android:id="@+id/emoneyProductShimmering"
+        layout="@layout/item_emoney_shimmering"
+        android:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

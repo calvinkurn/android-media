@@ -6,7 +6,8 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.kotlin.extensions.view.clearImage
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_emoney_input_card_number.view.*
@@ -57,23 +58,27 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun setNumber(number: String) {
         emoneyPdpCardInputNumber.textFieldInput.setText(number)
-        showClearIcon()
+        if (number.isNotEmpty()) showClearIcon()
     }
+
+    fun getNumber(): String = emoneyPdpCardInputNumber.textFieldInput.text.toString()
 
     fun setOperator(imageUrl: String) {
         emoneyPdpCardInputNumber.setFirstIcon(imageUrl)
+        emoneyPdpCardInputNumber.getFirstIcon().show()
     }
 
     private fun getInputString() = emoneyPdpCardInputNumber.textFieldInput.text.toString()
 
     private fun clearNumberAndOperator() {
         emoneyPdpCardInputNumber.textFieldInput.setText("")
-        emoneyPdpCardInputNumber.getSecondIcon().clearImage()
-        emoneyPdpCardInputNumber.getFirstIcon().clearImage()
+        emoneyPdpCardInputNumber.getSecondIcon().hide()
+        emoneyPdpCardInputNumber.getFirstIcon().hide()
     }
 
     private fun showClearIcon() {
         emoneyPdpCardInputNumber.setSecondIcon(R.drawable.ic_system_action_close_grayscale_16)
+        emoneyPdpCardInputNumber.getSecondIcon().show()
     }
 
     interface ActionListener {

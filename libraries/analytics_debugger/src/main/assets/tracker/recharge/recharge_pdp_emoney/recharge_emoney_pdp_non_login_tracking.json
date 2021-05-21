@@ -1,0 +1,16 @@
+{
+  "readme": "Emoney Pdp Non-Login Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "viewDigitalIris",
+      "userId": "{{.*}}",
+      "eventAction": "view pdp page",
+      "sessionIris": "{{.+}}",
+      "eventLabel": "Uang Elektronik"
+    }
+  ]
+}
