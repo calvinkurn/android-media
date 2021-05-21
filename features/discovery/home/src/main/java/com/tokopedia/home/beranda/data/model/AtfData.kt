@@ -26,7 +26,10 @@ data class AtfData(
         var content: String? = "",
         @SerializedName("status")
         @Expose
-        var status: Int = AtfKey.STATUS_LOADING
+        var status: Int = AtfKey.STATUS_LOADING,
+        @SerializedName("error")
+        @Expose
+        var errorString: String = ""
 ) {
         inline fun <reified T> getAtfContent(): T? {
                 val gson = Gson()

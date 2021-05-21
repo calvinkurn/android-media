@@ -121,6 +121,7 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
@@ -1141,7 +1142,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun observeErrorEvent() {
-        getHomeViewModel().errorEventLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?>? -> showToaster(getString(R.string.home_error_connection), TYPE_ERROR) })
+        getHomeViewModel().errorEventLiveData.observe(viewLifecycleOwner, Observer { data: Event<Throwable> ->
+            run {
+                showToaster(getErrorString(data.peekContent()), TYPE_ERROR)
+            }
+        })
     }
 
     private fun observeHomeData() {
@@ -2763,5 +2768,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         productCardOptionsModel.productPosition = position
         productCardOptionsModel.screenName = header
         return productCardOptionsModel
+    }
+
+    private fun getErrorString(e: Throwable) : String {
+        return ErrorHandler.getErrorMessage(requireContext(), e)
     }
 }

@@ -53,6 +53,7 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -168,9 +169,9 @@ open class HomeRevampViewModel @Inject constructor(
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
-    val errorEventLiveData: LiveData<Event<String>>
+    val errorEventLiveData: LiveData<Event<Throwable>>
         get() = _errorEventLiveData
-    private val _errorEventLiveData = MutableLiveData<Event<String>>()
+    private val _errorEventLiveData = MutableLiveData<Event<Throwable>>()
 
     val isViewModelInitialized: LiveData<Event<Boolean>>
         get() = _isViewModelInitialized
@@ -423,10 +424,10 @@ open class HomeRevampViewModel @Inject constructor(
                 if(closeChannel.success){
                     deleteWidget(dynamicChannelDataModel, position)
                 } else {
-                    _errorEventLiveData.postValue(Event(""))
+                    _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }){
-                _errorEventLiveData.postValue(Event(it.message ?: ""))
+                _errorEventLiveData.postValue(Event(it))
                 Timber.tag(this::class.java.simpleName).e(it)
             }
         }
@@ -438,11 +439,11 @@ open class HomeRevampViewModel @Inject constructor(
                 if(closeChannel.success){
                     deleteWidget(recommendationListHomeComponentModel, position)
                 } else {
-                    _errorEventLiveData.postValue(Event(""))
+                    _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }){
                 it.printStackTrace()
-                _errorEventLiveData.postValue(Event(it.message ?: ""))
+                _errorEventLiveData.postValue(Event(it))
             }
         }
     }
@@ -1189,7 +1190,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             try {
                 walletContent = getWalletBalanceContent()
-            } catch (e: Exception) {
+            } catch (e: MessageErrorException) {
                 homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeDataModel.homeBalanceModel.mapErrorWallet()
                 newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
@@ -1197,7 +1198,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             try {
                 tokopointContent = getTokopointBalanceContent()
-            } catch (e: Exception) {
+            } catch (e: MessageErrorException) {
                 homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeDataModel.homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
@@ -1219,7 +1220,7 @@ open class HomeRevampViewModel @Inject constructor(
                                     )
                             )
                         }
-                    } catch (e: Exception) {
+                    } catch (e: MessageErrorException) {
                         homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
                         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
                     }
