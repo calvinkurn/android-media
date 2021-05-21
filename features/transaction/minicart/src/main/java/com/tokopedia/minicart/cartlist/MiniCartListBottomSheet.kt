@@ -25,15 +25,7 @@ class MiniCartListBottomSheet @Inject constructor() {
         initializeInjector(activity)
         initializeViewModel(activity)
         initializeView(activity, fragmentManager)
-    }
-
-    fun show(fragmentManager: FragmentManager, fragment: Fragment) {
-        fragment.activity?.let {
-            initializeInjector(it)
-            initializeViewModel(it)
-            initializeView(it, fragmentManager)
-            initializeCartData()
-        }
+        initializeCartData()
     }
 
     private fun initializeCartData() {

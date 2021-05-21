@@ -7,15 +7,17 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 
-class ExampleFragment : Fragment() {
+class ExampleFragment : Fragment(), MiniCartWidgetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val widget = MiniCartWidget(requireContext())
-        widget.initialize(this, object : MiniCartWidgetListener {
-            override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        val miniCartWidget = MiniCartWidget(requireContext())
+        this.activity?.let {
+            miniCartWidget.initialize(it, this)
+        }
+    }
 
-            }
-        })
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+
     }
 }

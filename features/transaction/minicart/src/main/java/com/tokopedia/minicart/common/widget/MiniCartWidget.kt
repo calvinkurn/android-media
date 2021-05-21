@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -41,7 +40,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     /*
-    * Function to initialize the widget if being used on activity
+    * Function to initialize the widget
     * */
     fun initialize(activity: FragmentActivity, listener: MiniCartWidgetListener) {
         val application = activity.application
@@ -67,37 +66,6 @@ class MiniCartWidget @JvmOverloads constructor(
             }
         }
         totalAmount?.isTotalAmountLoading = true
-    }
-
-    private fun initializeView(fragment: Fragment) {
-        totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
-        totalAmount?.let {
-            it.enableAmountChevron(true)
-            it.amountChevronView.setOnClickListener {
-                fragmentManager?.let {
-                    miniCartListBottomSheet.show(it, fragment)
-                }
-            }
-        }
-        totalAmount?.isTotalAmountLoading = true
-    }
-
-    /*
-    * Function to initialize the widget if being used on fragment
-    * */
-    fun initialize(fragment: Fragment, listener: MiniCartWidgetListener) {
-        fragment.activity?.let {
-            val application = it.application
-            initializeInjector(application)
-        }
-        initializeView(fragment)
-
-        viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
-        miniCartWidgetListener = listener
-        fragmentManager = fragment.parentFragmentManager
-        viewModel.miniCartWidgetUiModel.observe(fragment, {
-            renderWidget(it)
-        })
     }
 
     /*
