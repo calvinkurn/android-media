@@ -37,10 +37,20 @@ class PlayEtalasePickerViewModelRobot(
             playBroadcastMapper = playBroadcastMapper,
     )
 
-    fun getCurrentEtalaseResult() = viewModel.observableEtalase.getOrAwaitValue()
+    fun getEtalaseResult() = viewModel.observableEtalase.getOrAwaitValue()
+
+    fun getSelectedEtalaseResult() = viewModel.observableSelectedEtalase.getOrAwaitValue()
+
+    fun getUploadProductResult() = viewModel.observableUploadProductEvent.getOrAwaitValue()
+
+    fun getSearchedProductResult() = viewModel.observableSearchedProducts.getOrAwaitValue()
 
     fun loadProductPreview(etalaseId: String) {
         viewModel.loadEtalaseProductPreview(etalaseId)
+    }
+
+    fun loadEtalaseProducts(etalaseId: String, page: Int) {
+        viewModel.loadEtalaseProducts(etalaseId, page)
     }
 
     fun selectProduct(productId: Long) {
@@ -58,6 +68,14 @@ class PlayEtalasePickerViewModelRobot(
     }
 
     fun getMaxProductDesc() = viewModel.maxProductDesc
+
+    fun uploadProduct() {
+        viewModel.uploadProduct()
+    }
+
+    fun searchProducts(keyword: String, page: Int) {
+        viewModel.searchProductsByKeyword(keyword, page)
+    }
 }
 
 fun givenPlayEtalasePickerViewModel(

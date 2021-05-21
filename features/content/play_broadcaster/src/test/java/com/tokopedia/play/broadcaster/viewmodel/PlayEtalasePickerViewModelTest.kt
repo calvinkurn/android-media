@@ -67,7 +67,7 @@ class PlayEtalasePickerViewModelTest {
         givenPlayEtalasePickerViewModel(
                 getSelfEtalaseListUseCase = etalaseUseCase
         ).andWhen {
-            getCurrentEtalaseResult()
+            getEtalaseResult()
         }.thenVerify {
             it.assertWhenSuccess { _, data ->
                 data.isEqualTo(mappedResponse)
@@ -83,7 +83,7 @@ class PlayEtalasePickerViewModelTest {
         givenPlayEtalasePickerViewModel(
                 getSelfEtalaseListUseCase = etalaseUseCase
         ).andWhen {
-            getCurrentEtalaseResult()
+            getEtalaseResult()
         }.thenVerify {
             it.assertWhenFailed { state, data ->
                 data.isEmpty()
@@ -99,7 +99,7 @@ class PlayEtalasePickerViewModelTest {
         givenPlayEtalasePickerViewModel(
                 getSelfEtalaseListUseCase = etalaseUseCase
         ).andWhen {
-            getCurrentEtalaseResult().currentValue
+            getEtalaseResult().currentValue
         }.thenVerify {
             it.assertNotEmpty()
 
@@ -129,7 +129,7 @@ class PlayEtalasePickerViewModelTest {
         ).andThen {
             loadProductPreview(firstEtalaseId)
         }.andWhen {
-            getCurrentEtalaseResult().currentValue
+            getEtalaseResult().currentValue
         }.thenVerify {
             it.assertNotEmpty()
 
@@ -198,6 +198,185 @@ class PlayEtalasePickerViewModelTest {
             getSelectedProducts()
         }.thenVerify {
             it.assertEmpty()
+        }
+    }
+
+    @Test
+    fun `when selecting invalid product id, then it should not be included in selected products`() {
+        val mockIdNameProductList = listOf(
+                "1" to "Buku Dewa",
+                "2" to "Pencil John Wick"
+        )
+
+        val mockResponse = responseBuilder.buildGetProductsInEtalaseUseCaseResponse(mockIdNameProductList)
+        val mockProductsInEtalaseUseCase: GetProductsInEtalaseUseCase = mockk(relaxed = true)
+
+        coEvery { etalaseUseCase.executeOnBackground() } returns mockSelfEtalaseResponse
+        coEvery { mockProductsInEtalaseUseCase.executeOnBackground() } returns mockResponse
+
+        givenPlayEtalasePickerViewModel(
+                getSelfEtalaseListUseCase = etalaseUseCase,
+                getProductsInEtalaseUseCase = mockProductsInEtalaseUseCase,
+        ).andWhen {
+            getSelectedProducts()
+        }.thenVerify {
+            it.assertEmpty()
+        }.andThen {
+            selectProduct(9999)
+        }.andWhen {
+            getSelectedProducts()
+        }.thenVerify {
+            it.assertEmpty()
+        }
+    }
+
+    @Test
+    fun `when load etalase products for next page, it should append the products in corresponding etalase`() {
+        val mockIdNameProductList = listOf(
+                "1" to "Buku Dewa",
+                "2" to "Pencil John Wick"
+        )
+
+        val otherMockIdNameProductList = listOf(
+                "3" to "Buku Dewa",
+                "4" to "Pencil John Wick"
+        )
+
+        val mockResponse = responseBuilder.buildGetProductsInEtalaseUseCaseResponse(mockIdNameProductList)
+        val mockProductsInEtalaseUseCase: GetProductsInEtalaseUseCase = mockk(relaxed = true)
+
+        coEvery { etalaseUseCase.executeOnBackground() } returns mockSelfEtalaseResponse
+        coEvery { mockProductsInEtalaseUseCase.executeOnBackground() } returns mockResponse
+
+        val firstEtalaseId = mockEtalaseIdNameList.first().first
+
+        givenPlayEtalasePickerViewModel(
+                getSelfEtalaseListUseCase = etalaseUseCase,
+                getProductsInEtalaseUseCase = mockProductsInEtalaseUseCase,
+        ).andThen {
+            loadEtalaseProducts(firstEtalaseId, 1)
+        }.andWhen {
+            getSelectedEtalaseResult()
+        }.thenVerify {
+            it.assertWhenSuccess { _, data ->
+                data.productMap.assertCount(1)
+                data.productMap.values.flatten().map(ProductContentUiModel::id)
+                        .isEqualTo(
+                                mockIdNameProductList.map { (id, _) ->
+                                    id.toLong()
+                                }
+                        )
+            }
+        }.andThen {
+            val otherMockResponse = responseBuilder.buildGetProductsInEtalaseUseCaseResponse(otherMockIdNameProductList)
+            coEvery { mockProductsInEtalaseUseCase.executeOnBackground() } returns otherMockResponse
+            loadEtalaseProducts(firstEtalaseId, 2)
+        }.andWhen {
+            getSelectedEtalaseResult()
+        }.thenVerify {
+            it.assertWhenSuccess { _, data ->
+                data.productMap.assertCount(2)
+                data.productMap.values.flatten().map(ProductContentUiModel::id).isEqualTo(
+                        (mockIdNameProductList + otherMockIdNameProductList).map { (id, _) ->
+                            id.toLong()
+                        }
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `when upload product success, it should return success`() {
+        val mockProductDataStore = modelBuilder.buildProductDataStore(
+                dispatcher = dispatcher
+        )
+
+        val mockDataStore = modelBuilder.buildSetupDataStore(
+                productDataStore = mockProductDataStore
+        )
+
+        givenPlayEtalasePickerViewModel(
+                setupDataStore = mockDataStore
+        ) {
+            mockProductDataStore.setUploadSuccess(true)
+        }.andThen {
+            uploadProduct()
+        }.andWhen {
+            getUploadProductResult()
+        }.thenVerify {
+            it.assertSuccess()
+        }
+    }
+
+    @Test
+    fun `when upload product failed, it should return failed`() {
+        val mockProductDataStore = modelBuilder.buildProductDataStore(
+                dispatcher = dispatcher
+        )
+
+        val mockDataStore = modelBuilder.buildSetupDataStore(
+                productDataStore = mockProductDataStore
+        )
+
+        givenPlayEtalasePickerViewModel(
+                setupDataStore = mockDataStore
+        ) {
+            mockProductDataStore.setUploadSuccess(false)
+        }.andThen {
+            uploadProduct()
+        }.andWhen {
+            getUploadProductResult()
+        }.thenVerify {
+            it.assertFailed()
+        }
+    }
+
+    @Test
+    fun `when search products success, it should return the search results`() {
+        val mockIdNameProductList = listOf(
+                "1" to "Buku Dewa",
+                "2" to "Pencil John Wick"
+        )
+
+        val mockResponse = responseBuilder.buildGetProductsInEtalaseUseCaseResponse(mockIdNameProductList)
+        val mockProductsInEtalaseUseCase: GetProductsInEtalaseUseCase = mockk(relaxed = true)
+
+        coEvery { mockProductsInEtalaseUseCase.executeOnBackground() } returns mockResponse
+
+        givenPlayEtalasePickerViewModel(
+                getProductsInEtalaseUseCase = mockProductsInEtalaseUseCase,
+        ).andThen {
+            searchProducts("abc", 1)
+        }.andWhen {
+            getSearchedProductResult()
+        }.thenVerify {
+            it.assertWhenSuccess { _, data ->
+                data.isEqualToIgnoringFields(
+                        playBroadcastMapper.mapProductList(mockResponse, { false }, { Selectable }),
+                        ProductContentUiModel::isSelectable, ProductContentUiModel::isSelectedHandler, ProductContentUiModel::transitionName
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `when search products failed, it should return error`() {
+        val mockProductsInEtalaseUseCase: GetProductsInEtalaseUseCase = mockk(relaxed = true)
+        val error = IllegalArgumentException("Error Getting Products")
+
+        coEvery { mockProductsInEtalaseUseCase.executeOnBackground() } throws error
+
+        givenPlayEtalasePickerViewModel(
+                getProductsInEtalaseUseCase = mockProductsInEtalaseUseCase,
+        ).andThen {
+            searchProducts("abc", 1)
+        }.andWhen {
+            getSearchedProductResult()
+        }.thenVerify {
+            it.assertWhenFailed { state, data ->
+                data.assertEmpty()
+                state.error.isEqualToComparingFieldByField(error)
+            }
         }
     }
 }

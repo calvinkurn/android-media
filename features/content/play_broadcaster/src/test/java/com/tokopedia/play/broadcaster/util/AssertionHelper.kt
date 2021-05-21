@@ -4,6 +4,7 @@ import com.tokopedia.play.broadcaster.ui.model.result.PageResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play_common.model.result.NetworkResult
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.ListAssert
 import kotlin.reflect.KProperty
 
 
@@ -20,6 +21,11 @@ fun <T : Any> T.isEqualToComparingFieldByField(expected: T) {
     Assertions
             .assertThat(this)
             .isEqualToComparingFieldByField(expected)
+}
+
+inline fun <reified T : Any> List<T>.isContentEqualTo(expected: List<T>) {
+    ListAssert(this)
+            .containsExactly(*expected.toTypedArray())
 }
 
 fun <T : Any> List<T>.isEqualToIgnoringFields(expected: List<T>, vararg ignoredFields: KProperty<*>) {
@@ -57,6 +63,12 @@ fun <K: Any, V: Any> Map<K, V>.assertEmpty() {
     Assertions
             .assertThat(this)
             .isEmpty()
+}
+
+fun <K: Any, V: Any> Map<K, V>.assertCount(count: Int) {
+    Assertions
+            .assertThat(size)
+            .isEqualTo(count)
 }
 
 fun <T : Throwable> T.isErrorType(error: Class<out T>) {

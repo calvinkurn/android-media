@@ -44,7 +44,7 @@ class MockProductDataStore(
 
     override suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit> {
         return if (isSuccess) NetworkResult.Success(Unit)
-        else NetworkResult.Fail(IllegalArgumentException())
+        else NetworkResult.Fail(IllegalArgumentException("Error Upload Product"))
     }
 
     override fun setSelectedProducts(selectedProducts: List<ProductData>) {
