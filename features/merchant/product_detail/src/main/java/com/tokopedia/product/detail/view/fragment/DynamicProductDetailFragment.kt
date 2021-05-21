@@ -954,7 +954,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         if (url.isEmpty()) return
         trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
         if (activity != null && RouteManager.isSupportApplink(activity, url)) {
-            componentTrackDataModel?.let { goToApplink(url) }
+            goToApplink(url)
         } else {
             openWebViewUrl(url)
         }
