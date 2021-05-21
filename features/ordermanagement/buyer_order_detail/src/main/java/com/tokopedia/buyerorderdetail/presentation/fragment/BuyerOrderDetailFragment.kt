@@ -16,11 +16,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
+import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
@@ -104,6 +106,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         RequestCancelResultDialog()
     }
 
+    private val buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring?
+        get() {
+            return activity?.let {
+                if (it is BuyerOrderDetailActivity) it.buyerOrderDetailLoadMonitoring else null
+            }
+        }
+
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
 
     override fun initInjector() {
@@ -121,6 +130,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         observeReceiveConfirmation()
         observeAddSingleToCart()
         observeAddMultipleToCart()
+        buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
+        loadInitialData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -162,6 +173,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     override fun onSeeSimilarProductsButtonClicked(url: String) {
         RouteManager.route(context, url)
+    }
+
+    private fun loadInitialData() {
+        showLoadIndicator()
+        loadBuyerOrderDetail()
     }
 
     private fun onAskSellerActionButtonClicked() {
@@ -277,9 +293,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun observeBuyerOrderDetail() {
-        showLoadIndicator()
-        loadBuyerOrderDetail()
         viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, Observer { result ->
+            buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
             hideLoadIndicator()
             when (result) {
                 is Success -> onSuccessGetBuyerOrderDetail(result.data)
@@ -323,6 +338,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         setupActionButtons(data.actionButtonsUiModel)
         adapter.updateItems(data)
         contentVisibilityAnimator.showContent()
+        stopLoadTimeMonitoring()
     }
 
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
@@ -375,6 +391,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             emptyStateBuyerOrderDetail?.gone()
         }
         contentVisibilityAnimator.hideContent()
+        stopLoadTimeMonitoring()
     }
 
     private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
@@ -522,5 +539,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             loadBuyerOrderDetail()
         }
         dismissBottomSheets()
+    }
+
+    private fun stopLoadTimeMonitoring() {
+        rvBuyerOrderDetail?.post {
+            buyerOrderDetailLoadMonitoring?.stopRenderPerformanceMonitoring()
+        }
     }
 }
