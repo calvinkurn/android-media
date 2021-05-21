@@ -5,8 +5,7 @@ object BuyerOrderDetailConst {
     const val ACTION_BUTTON_KEY_REQUEST_CANCEL = "request_cancel"
     const val ACTION_BUTTON_KEY_TRACK_SHIPMENT = "track"
     const val ACTION_BUTTON_KEY_COMPLAINT = "complaint"
-    const val ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION = "receive_confirmation"
-    const val ACTION_BUTTON_KEY_DO_RECEIVE_CONFIRMATION = "do_receive_confirmation"
+    const val ACTION_BUTTON_KEY_FINISH_ORDER = "finish_order"
     const val ACTION_BUTTON_KEY_BACK = "back"
     const val ACTION_BUTTON_KEY_HELP = "help"
 

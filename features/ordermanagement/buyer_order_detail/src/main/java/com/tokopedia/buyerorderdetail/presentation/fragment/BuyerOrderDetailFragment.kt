@@ -131,15 +131,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> onAskSellerActionButtonClicked()
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> onRequestCancelActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> onTrackShipmentActionButtonClicked(button)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> onReceiveConfirmationActionButtonClicked(button)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_DO_RECEIVE_CONFIRMATION -> onDoReceiveConfirmationActionButtonClicked(button)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button.url)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> onReceiveConfirmationActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> onHelpActionButtonClicked(button)
         }
     }
 
     override fun onPopUpActionButtonClicked(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton) {
-        TODO("Not yet implemented")
+        when (button.key) {
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> onDoReceiveConfirmationActionButtonClicked()
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button.uri)
+        }
     }
 
     private fun onSecondaryActionButtonClicked() {
@@ -183,19 +185,20 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    private fun onComplaintActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+    private fun onComplaintActionButtonClicked(complaintUrl: String) {
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
-                BuyerOrderDetailNavigator.goToCreateResolution(this, button.url)
+                BuyerOrderDetailNavigator.goToCreateResolution(this, complaintUrl)
             }
         }
+        bottomSheetReceiveConfirmation?.finishLoading()
     }
 
     private fun onReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         showReceiveConfirmationBottomSheet(button)
     }
 
-    private fun onDoReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
+    private fun onDoReceiveConfirmationActionButtonClicked() {
         viewModel.finishOrder()
     }
 
@@ -293,6 +296,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
+        bottomSheetReceiveConfirmation?.finishLoading()
         bottomSheetReceiveConfirmation?.dismiss()
         secondaryActionButtonBottomSheet.dismiss()
         showCommonToaster(data.message.firstOrNull().orEmpty())

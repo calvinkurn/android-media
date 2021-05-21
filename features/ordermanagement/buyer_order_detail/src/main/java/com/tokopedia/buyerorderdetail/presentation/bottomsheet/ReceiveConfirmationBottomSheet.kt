@@ -92,12 +92,12 @@ class ReceiveConfirmationBottomSheet(
     }
 
     override fun onClick(v: View?) {
+        if (v is UnifyButton) {
+            v.isLoading = true
+        }
         when (v?.id) {
             R.id.btnPrimary -> onPrimaryButtonClicked()
             R.id.btnSecondary -> onSecondaryButtonClicked()
-        }
-        if (v is UnifyButton) {
-            v.isLoading = true
         }
     }
 
