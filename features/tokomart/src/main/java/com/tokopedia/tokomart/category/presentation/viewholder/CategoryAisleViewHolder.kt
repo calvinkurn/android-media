@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
@@ -26,7 +27,7 @@ class CategoryAisleViewHolder(itemView: View): AbstractViewHolder<CategoryAisleD
                 aisleContainer?.visibility = View.GONE
             }
             1 -> {
-                val rightAisleCard = itemView.findViewById<CardUnify?>(R.id.tokomartSearchCategoryAisleGroupRight)
+                val rightAisleCard = itemView.findViewById<Group?>(R.id.tokomartSearchCategoryAisleGroupRight)
                 rightAisleCard?.visibility = View.INVISIBLE
                 bindLeftAisle(aisle.items[0])
             }
