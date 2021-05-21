@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.di.module;
+package com.tokopedia.manageaddress.di;
 
 import android.content.Context;
 
@@ -9,9 +9,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.cachemanager.CacheManager;
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface;
 
 import dagger.Module;
@@ -22,11 +20,11 @@ import dagger.Provides;
  * @author kulomady on 1/9/17.
  */
 @Module(includes = {NetModule.class})
-public class AppModule {
+public class FakeAppModule {
 
     private final Context context;
 
-    public AppModule(Context context) {
+    public FakeAppModule(Context context) {
         this.context = context;
     }
 
@@ -63,11 +61,12 @@ public class AppModule {
     @Provides
     @ApplicationContext
     public GraphqlRepository provideGraphqlRepository() {
-        return GraphqlInteractor.getInstance().getGraphqlRepository();
+        return new FakeGraphqlRepository();
     }
 
+    @ApplicationScope
     @Provides
     public GraphqlUseCaseInterface provideGraphqlUsecase() {
-        return new GraphqlUseCase();
+        return new FakeGraphqlUseCase(context);
     }
 }
