@@ -368,7 +368,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             layoutParams = layoutParamsCopy
             text = primaryActionButton.label
             buttonVariant = Utils.mapButtonVariant(primaryActionButton.variant)
-            buttonType = Utils.mapTickerType(primaryActionButton.type)
+            buttonType = Utils.mapButtonType(primaryActionButton.type)
             setOnClickListener(primaryActionButtonClickListener)
         }
     }
