@@ -1,15 +1,34 @@
 package com.tokopedia.loginregister.login.behaviour.case
 
+import android.view.KeyEvent
+import android.view.View
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressKey
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.managepassword.forgotpassword.view.activity.ForgotPasswordActivity
+import junit.framework.TestCase.assertEquals
+import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Test
+
 
 class LoginNormalCase : LoginBase() {
 
@@ -82,5 +101,79 @@ class LoginNormalCase : LoginBase() {
         launchDefaultFragment()
         clickForgotPass()
         intended(hasComponent(ForgotPasswordActivity::class.java.name))
+    }
+
+
+    @Test
+    fun checkEmailExtensionShownAfterAddAt() {
+        launchDefaultFragment()
+        inputEmailOrPhone("yoris.prayogo@")
+        isEmailExtensionDisplayed()
+    }
+
+    @Test
+    fun checkEmailExtensionVisibility() {
+        checkEmailExtensionShownAfterAddAt()
+        onView(withId(R.id.input_email_phone))
+                .perform(pressKey(KeyEvent.KEYCODE_DEL))
+        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo")
+        isEmailExtensionDismissed()
+        inputEmailOrPhone("@")
+        isEmailExtensionDisplayed()
+    }
+
+
+    @Test
+    fun checkEmailExtensionAdded() {
+        checkEmailExtensionShownAfterAddAt()
+
+        onView(withId(R.id.recyclerViewEmailExtension))
+                .perform(RecyclerViewActions
+                        .actionOnItemAtPosition<EmailExtensionAdapter.ViewHolder>(0, clickOnViewChild(R.id.textEmailExtension)))
+        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@gmail.com")
+    }
+
+    @Test
+    fun checkEmailExtensionAdded2() {
+        checkEmailExtensionShownAfterAddAt()
+        onView(withId(R.id.recyclerViewEmailExtension)).perform(scrollToPosition<EmailExtensionAdapter.ViewHolder>(6))
+        onView(withId(R.id.recyclerViewEmailExtension))
+                .perform(RecyclerViewActions
+                        .actionOnItemAtPosition<EmailExtensionAdapter.ViewHolder>(6, clickOnViewChild(R.id.textEmailExtension)))
+        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@outlook.com")
+    }
+
+    @Test
+    fun checkEmailExtensionDismissedAfterAdded() {
+        checkEmailExtensionAdded()
+        isEmailExtensionDismissed()
+    }
+
+    @Test
+    fun checkDeveloperOptions() {
+        launchDefaultFragment()
+        val viewDevOpts = onView(withText("Developer Options"))
+        if(GlobalConfig.isAllowDebuggingTools()){
+            viewDevOpts.check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        } else {
+            viewDevOpts.check(ViewAssertions.matches(not(ViewMatchers.isDisplayed())))
+        }
+    }
+
+    @Test
+    fun checkOnlyLoading(){
+        launchDefaultFragment()
+//        onView(withId(R.id.ll_layout)).check(ViewAssertions.matches(hasChildCount(1)))
+        val parent : ConstraintLayout = activityTestRule.activity.findViewById<View>(R.id.parent_container) as ConstraintLayout
+
+        assertEquals(parent.childCount, 4)
+    }
+
+    private fun clickOnViewChild(viewId: Int) = object : ViewAction {
+        override fun getConstraints() = null
+
+        override fun getDescription() = "Click on a child view with specified id."
+
+        override fun perform(uiController: UiController, view: View) = click().perform(uiController, view.findViewById<View>(viewId))
     }
 }

@@ -200,4 +200,12 @@ open class LoginBase {
                 .check(matches(isDisplayed()))
     }
 
+    fun isEmailExtensionDisplayed() {
+        shouldBeDisplayed(R.id.emailExtension)
+    }
+
+    fun isEmailExtensionDismissed() {
+        shouldBeHidden(R.id.emailExtension)
+    }
+
 }

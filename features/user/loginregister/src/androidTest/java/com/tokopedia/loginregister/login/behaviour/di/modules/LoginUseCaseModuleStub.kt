@@ -11,7 +11,6 @@ import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.RegisterCheckUseCaseStub
 import com.tokopedia.loginregister.login.data.CloudDiscoverDataSource
-import com.tokopedia.loginregister.login.data.LocalDiscoverDataSource
 import com.tokopedia.loginregister.login.di.LoginScope
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.StatusFingerprintpojo
@@ -73,10 +72,9 @@ class LoginUseCaseModuleStub {
 
     @LoginScope
     @Provides
-    fun provideDiscoverUseCasStub(cloudDiscoverDataSource: CloudDiscoverDataSource,
-                                  localDiscoverDataSource: LocalDiscoverDataSource
+    fun provideDiscoverUseCasStub(cloudDiscoverDataSource: CloudDiscoverDataSource
     ): DiscoverUseCaseStub {
-        return DiscoverUseCaseStub(cloudDiscoverDataSource, localDiscoverDataSource)
+        return DiscoverUseCaseStub(cloudDiscoverDataSource)
     }
 
     @Provides
