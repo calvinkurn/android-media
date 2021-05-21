@@ -156,6 +156,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
                         handleCollapsedViewClick(context, intent, notificationId, baseNotificationModel)
+                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
                         ProductNotification.onLeftIconClick(context.applicationContext, baseNotificationModel!!)
