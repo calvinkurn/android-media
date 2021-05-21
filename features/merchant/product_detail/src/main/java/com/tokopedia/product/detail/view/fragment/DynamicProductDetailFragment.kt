@@ -760,7 +760,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     /**
      * ProductGeneralInfoViewHolder Listener
      */
-    override fun onInfoClicked(name: String, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun onInfoClicked(appLink: String, name: String, componentTrackDataModel: ComponentTrackDataModel) {
         when (name) {
             ProductDetailConstant.PRODUCT_SHIPPING_INFO -> {
                 val productP3Resp = viewModel.productInfoP3.value ?: ProductInfoP3()
@@ -801,6 +801,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ProductDetailConstant.PRODUCT_PROTECTION -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, getPurchaseProtectionUrl(), componentTrackDataModel)
                 openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
+            }
+            ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO -> {
+                goToApplink(appLink)
+                DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
         }
     }
