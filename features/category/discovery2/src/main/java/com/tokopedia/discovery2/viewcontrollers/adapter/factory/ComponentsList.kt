@@ -81,5 +81,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Discovery Play Widget
     DiscoPlayWidgetView(PlayWidgetViewHolder.layout, ComponentNames.DiscoPlayWidgetView.componentName),
 
+    //Category Best Seller
+    CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName)
 
 }

@@ -7,6 +7,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.CacheManager
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.topchat.stub.common.CoroutineAndroidTestDispatchersProvider
 import dagger.Module
 import dagger.Provides
@@ -36,6 +40,18 @@ class FakeAppModule(private val context: Context) {
     @Provides
     fun provideCoroutineDispatchers(): CoroutineDispatchers {
         return CoroutineAndroidTestDispatchersProvider
+    }
+
+    @ApplicationScope
+    @Provides
+    @ApplicationContext
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return getInstance().graphqlRepository
+    }
+
+    @Provides
+    fun provideGraphqlUsecase(): GraphqlUseCaseInterface {
+        return GraphqlUseCase()
     }
 
 }

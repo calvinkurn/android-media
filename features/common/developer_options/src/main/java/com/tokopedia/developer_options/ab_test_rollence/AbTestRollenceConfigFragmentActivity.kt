@@ -20,6 +20,7 @@ class AbTestRollenceConfigFragmentActivity : FragmentActivity(), AbTestRollenceC
 
     companion object {
         const val ARGS_SELECTED_KEY = "selected_key"
+        const val ARGS_SELECTED_KEY_VALUE = "selected_key_value"
     }
 
     private lateinit var listAdapter: AbTestRollenceConfigListAdapter
@@ -36,9 +37,10 @@ class AbTestRollenceConfigFragmentActivity : FragmentActivity(), AbTestRollenceC
         initView()
     }
 
-    override fun onListItemClick(selectedConfigKey: String) {
+    override fun onListItemClick(selectedConfigKey: String, selectedConfigKeyValue: String) {
         val fragmentBundle = Bundle()
         fragmentBundle.putString(ARGS_SELECTED_KEY, selectedConfigKey)
+        fragmentBundle.putString(ARGS_SELECTED_KEY_VALUE, selectedConfigKeyValue)
 
         val dialog = AbTestRollenceConfigEditorDialog()
         dialog.arguments = fragmentBundle
@@ -51,6 +53,13 @@ class AbTestRollenceConfigFragmentActivity : FragmentActivity(), AbTestRollenceC
 
             updateListAdapterData(searchKeyword)
         }
+    }
+
+    override fun onEditorDeleteKeyButtonClick(editedConfigKey: String) {
+        if(editedConfigKey.isNotEmpty()){
+            abTestRollenceConfig?.deleteKeyLocally(editedConfigKey)
+        }
+        updateListAdapterData(searchKeyword)
     }
 
     private fun getFilteredKeys(vararg prefixes: String): Set<String> {
