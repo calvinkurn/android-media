@@ -249,7 +249,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var shouldScrollToTop: Boolean = false
     private var filterOrderType: Int = 0
     private var skipSearch: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
-    private var tabActive: String = ""
     private var canDisplayOrderData = false
     private var canMultiAcceptOrder = false
     private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
@@ -267,6 +266,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private var tickerIsReady = false
     private var wasChangingTab = false
 
+    protected var tabActive: String = ""
     protected var coachMarkIndexToShow: Int = 0
     protected var somListLoadTimeMonitoring: SomListLoadTimeMonitoring? = null
     protected var shouldShowCoachMark: Boolean = false
@@ -2352,7 +2352,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     protected open fun shouldShowBulkAcceptOrderCoachMark() = scrollViewErrorState?.isVisible == false &&
             shouldShowCoachMark && rvSomList != null && coachMarkIndexToShow == bulkProcessCoachMarkItemPosition &&
-            tvSomListBulk?.isVisible == true
+            tvSomListBulk?.isVisible == true && tabActive == SomConsts.STATUS_NEW_ORDER
 
     protected open fun onSuccessGetFilter(result: Success<SomListFilterUiModel>, realtimeDataChangeCount: Int): Int {
         /* apply result only if:
