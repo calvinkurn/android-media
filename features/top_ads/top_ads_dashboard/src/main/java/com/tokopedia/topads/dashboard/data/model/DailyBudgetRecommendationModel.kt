@@ -32,6 +32,6 @@ data class DataBudget(
         @SerializedName("suggested_price_daily")
         val suggestedPriceDaily: Double = 0.0,
         var setCurrentBid: Double = 0.0,
-        var setPotensiKlik: Long = 0,
+        var setPotensiKlik: String = "",
         val impressHolder: ImpressHolder = ImpressHolder()
 ):Parcelable
