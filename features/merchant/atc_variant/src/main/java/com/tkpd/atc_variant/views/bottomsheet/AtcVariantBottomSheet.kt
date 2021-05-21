@@ -18,6 +18,7 @@ import com.tkpd.atc_variant.data.uidata.PartialButtonDataModel
 import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tkpd.atc_variant.di.AtcVariantComponent
 import com.tkpd.atc_variant.di.DaggerAtcVariantComponent
+import com.tkpd.atc_variant.util.ATC_LOGIN_REQUEST_CODE
 import com.tkpd.atc_variant.util.AtcVariantMapper
 import com.tkpd.atc_variant.views.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapter
@@ -25,6 +26,8 @@ import com.tkpd.atc_variant.views.adapter.AtcVariantAdapterTypeFactoryImpl
 import com.tkpd.atc_variant.views.adapter.AtcVariantDiffutil
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
@@ -99,6 +102,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         when (requestCode) {
             ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT -> {
                 viewModel.updateActivityResult(requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+            }
+            ATC_LOGIN_REQUEST_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    viewModel.updateActivityResult(requestCode = ATC_LOGIN_REQUEST_CODE, shouldRefreshPreviousPage = true)
+                    loadingProgressDialog?.dismiss()
+                    dismiss()
+                }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -214,7 +224,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun getErrorMessage(throwable: Throwable): String {
         return context?.let {
-            ErrorHandler.getErrorMessage(it, throwable);
+            ErrorHandler.getErrorMessage(it, throwable)
         }
                 ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
     }
@@ -320,6 +330,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         context?.let {
             val isPartialySelected = AtcVariantMapper.isPartiallySelectedOptionId(viewModel.getSelectedOptionIds())
 
+            if (checkLogin()) return@let
+
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
                 val btnTextAfterAction = "Cek Wishlist Kamu"
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
@@ -334,6 +346,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 showErrorVariantUnselected()
                 return@let
             }
+
 
             val sharedData = sharedViewModel.aggregatorParams.value
 
@@ -350,6 +363,19 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     sharedData?.trackerListNamePdp ?: ""
             )
         }
+    }
+
+    private fun checkLogin(): Boolean {
+        var goToLogin = false
+        if (!userSessionInterface.isLoggedIn) {
+            showProgressDialog()
+            activity?.let {
+                goToLogin = true
+                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        ATC_LOGIN_REQUEST_CODE)
+            }
+        }
+        return goToLogin
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
