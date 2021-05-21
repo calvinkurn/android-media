@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -38,11 +39,15 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
 
     companion object {
         private const val TAG = "DeactivationBottomSheet"
+        private const val KEY_PM_TIRE_TYPE = "key_pm_tier"
 
-        fun createInstance(): DeactivationQuestionnaireBottomSheet {
+        fun createInstance(pmTireType: Int): DeactivationQuestionnaireBottomSheet {
             return DeactivationQuestionnaireBottomSheet().apply {
                 overlayClickDismiss = false
                 isFullpage = true
+                arguments = Bundle().apply {
+                    putInt(KEY_PM_TIRE_TYPE, pmTireType)
+                }
             }
         }
     }
@@ -163,7 +168,8 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
 
     private fun getDeactivationQuestionnaire() {
         childView?.progressPmDeactivation?.visible()
-        mViewModel.getPMCancellationQuestionnaireData(userSession.shopId)
+        val pmTireType = arguments?.getInt(KEY_PM_TIRE_TYPE, PMConstant.ShopTierType.POWER_MERCHANT) ?: PMConstant.ShopTierType.POWER_MERCHANT
+        mViewModel.getPMCancellationQuestionnaireData(userSession.shopId, pmTireType)
     }
 
     private fun showToaster(message: String, ctaText: String, duration: Int, action: () -> Unit = {}) {

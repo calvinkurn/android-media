@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
@@ -153,7 +154,15 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun showPmProDeactivationBottomSheet() {
         val bottomSheet = PowerMerchantProDeactivationBottomSheet.createInstance()
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheet.setOnNextClickListener { shopTire ->
+            val pmTireType = if (shopTire == PMConstant.ShopTierType.POWER_MERCHANT) {
+                PMConstant.PMTierType.POWER_MERCHANT_PRO
+            } else {
+                PMConstant.PMTierType.POWER_MERCHANT
+            }
 
+            showDeactivationQuestionnaire(pmTireType)
+        }
         bottomSheet.show(childFragmentManager)
     }
 
@@ -163,7 +172,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         bottomSheet.setListener(object : PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {
             override fun onClickCancelButton() {
-                showDeactivationQuestionnaire()
+                showDeactivationQuestionnaire(PMConstant.PMTierType.POWER_MERCHANT)
                 bottomSheet.dismiss()
             }
 
@@ -695,13 +704,14 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         )
     }
 
-    private fun showDeactivationQuestionnaire() {
-        val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance()
+    private fun showDeactivationQuestionnaire(pmTireType: Int) {
+        val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance(pmTireType)
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
-        bottomSheet.show(childFragmentManager)
+
         bottomSheet.setOnDeactivationSuccess {
             fetchPowerMerchantBasicInfo()
         }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun logToCrashlytic(message: String, throwable: Throwable) {
@@ -716,7 +726,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         pmBasicInfo?.shopInfo?.let {
             val benefitList = listOf(
                     PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_1),
+                            benefitName = getString(R.string.pm_pro_general_benefit_1, Constant.POWER_MERCHANT_PRO_CHARGING),
                             drawableResIcon = R.drawable.ic_pm_free_shipping_rounded
                     ),
                     PMGradeBenefitUiModel(

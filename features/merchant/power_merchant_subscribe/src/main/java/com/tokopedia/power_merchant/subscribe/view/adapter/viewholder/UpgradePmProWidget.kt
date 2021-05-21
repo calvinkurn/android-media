@@ -69,7 +69,7 @@ class UpgradePmProWidget(
         viewPmUpgradeTermSection.setEligibility(element.shopInfo.isEligiblePmPro)
 
         if (element.shopInfo.isEligiblePmPro) {
-            tvPmUpgradeBenefitDescription.text = getString(R.string.pm_pro_upgrade_eligible_description).parseAsHtml()
+            tvPmUpgradeBenefitDescription.text = getString(R.string.pm_pro_upgrade_eligible_description, Constant.POWER_MERCHANT_PRO_CHARGING).parseAsHtml()
             tvPmProTncDescription.visible()
             btnPmProUpgrade.visible()
             showTncMessage()

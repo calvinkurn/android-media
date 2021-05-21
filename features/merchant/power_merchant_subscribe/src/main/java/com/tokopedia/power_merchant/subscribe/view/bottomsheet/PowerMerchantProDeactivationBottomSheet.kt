@@ -3,6 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 import android.text.method.LinkMovementMethod
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
@@ -23,11 +24,28 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
         }
     }
 
+    private var onNextClickCallback: ((selectedShopTire: Int) -> Unit)? = null
+    private var selectedShopTire = PMConstant.ShopTierType.NA
+
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_pro_deactivation
 
     override fun setupView() = childView?.run {
         setupOptions()
         setupTnc()
+        setOnNextClickListener()
+    }
+
+    fun setOnNextClickListener(callback: (selectedShopTire: Int) -> Unit) {
+        this.onNextClickCallback = callback
+    }
+
+    private fun setOnNextClickListener() = childView?.run {
+        btnPmOptionsNext.setOnClickListener {
+            if (selectedShopTire != PMConstant.ShopTierType.NA) {
+                onNextClickCallback?.invoke(selectedShopTire)
+                dismiss()
+            }
+        }
     }
 
     private fun setupTnc() = childView?.run {
@@ -52,7 +70,7 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
     private fun setupOptions() = childView?.run {
         val rmLabel = getString(R.string.pm_stop_pm)
         val rmName = getString(R.string.pm_regular_merchant)
-        val rmDescription = getString(R.string.pm_option_become_regular_merchant_description)
+        val rmDescription = getString(R.string.pm_option_become_regular_merchant_description, Constant.REGULAR_MERCHANT_CHARGING)
         with(optionPmPowerMerchant) {
             show(rmLabel, rmName, rmDescription)
             setSelectedStatus(false)
@@ -62,13 +80,14 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
                     setSelectedStatus(selectedStatus)
                     childView?.optionPmRegularMerchant?.setSelectedStatus(!selectedStatus)
                     childView?.btnPmOptionsNext?.isEnabled = true
+                    selectedShopTire = PMConstant.ShopTierType.REGULAR_MERCHANT
                 }
             }
         }
 
         val pmLabel = getString(R.string.pm_downgrade_to_pm)
         val pmName = getString(R.string.pm_title_activity)
-        val pmDescription = getString(R.string.pm_option_become_power_merchant_description)
+        val pmDescription = getString(R.string.pm_option_become_power_merchant_description, Constant.REGULAR_MERCHANT_CHARGING)
         with(optionPmRegularMerchant) {
             show(pmLabel, pmName, pmDescription)
             setSelectedStatus(false)
@@ -78,6 +97,7 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
                     setSelectedStatus(selectedStatus)
                     childView?.optionPmPowerMerchant?.setSelectedStatus(!selectedStatus)
                     childView?.btnPmOptionsNext?.isEnabled = true
+                    selectedShopTire = PMConstant.ShopTierType.POWER_MERCHANT
                 }
             }
         }

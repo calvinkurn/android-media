@@ -25,7 +25,7 @@
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:gravity="center"
-        android:text="@string/pm_deactivation_pm_pro_bottom_sheet_description"
+        android:text="@string/pm_deactivation_pm_pro_bottom_sheet_title"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

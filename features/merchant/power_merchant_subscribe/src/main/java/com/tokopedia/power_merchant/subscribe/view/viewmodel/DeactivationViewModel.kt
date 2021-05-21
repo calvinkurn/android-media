@@ -49,7 +49,7 @@ class DeactivationViewModel @Inject constructor(
         _isSuccessDeactivate
     }
 
-    fun getPMCancellationQuestionnaireData(shopId: String) {
+    fun getPMCancellationQuestionnaireData(shopId: String, pmTireType: Int) {
         getPMCancellationQuestionnaireDataUseCase.execute(
                 GetPMCancellationQuestionnaireDataUseCase.createRequestParams(shopId),
                 object : Subscriber<PMCancellationQuestionnaireDataUseCaseModel>() {

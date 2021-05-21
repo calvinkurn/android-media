@@ -250,10 +250,10 @@
     <string name="pm_update_info_bottom_sheet_message">Update kenaikan paket keuntungan dilakukan setiap bulan dan penurunan setiap 3 bulan. Di update berikutnya <b>tidak akan ada penurunan paket benefit</b></string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro">Dapatkan berbagai keuntungan eksklusif dengan gabung Power Merchant PRO!</string>
     <string name="pm_pro_upgrade_not_eligible_description"><![CDATA[Tingkatkan performa hingga min. %1$d untuk daftar PM PRO dengan biaya layanan <b>%2$s</b>]]></string>
-    <string name="pm_pro_upgrade_eligible_description"><![CDATA[Dengan <b>biaya layanan 1,5%</b> saja, kamu bisa daftar jadi Power Merchant PRO dan mendapat berbagai keuntungan eksklusif!]]></string>
+    <string name="pm_pro_upgrade_eligible_description"><![CDATA[Dengan <b>biaya layanan %1$s</b> saja, kamu bisa daftar jadi Power Merchant PRO dan mendapat berbagai keuntungan eksklusif!]]></string>
     <string name="pm_pro_upgrade_tnc_description"><![CDATA[Dengan mendaftar, saya setuju dengan S&K yang berlaku.]]></string>
     <string name="pm_upgrade_to_pm_pro">Upgrade ke PM PRO</string>
-    <string name="pm_pro_general_benefit_1"><![CDATA[Biaya Bebas Ongkir lebih murah, hanya <b>1,5%</b>]]></string>
+    <string name="pm_pro_general_benefit_1"><![CDATA[Biaya Bebas Ongkir lebih murah, hanya <b>%1$s</b>]]></string>
     <string name="pm_pro_general_benefit_2">Peringkat pencarian produk tokomu akan lebih tinggi di pencarian produk</string>
     <string name="pm_pro_general_benefit_3">Ongkir Spesial untuk Same Day &amp; Instan menggunakan GoSend</string>
     <string name="pm_pro_general_benefit_4">Badge khusus Power Merchant PRO ditampilkan pada calon pembeli</string>
@@ -266,12 +266,11 @@
     <string name="pm_deactivation_bottom_sheet_message">Mulai 14 Juni, Regular Merchant dengan jumlah transaksi <b>di atas 100 transaksi</b> akan dikenai biaya sebesar <b>0,5%</b> per produk terjual.</string>
     <string name="pm_pm_deactivation_be_rm_tnc">Dengan kembali menjadi RM, saya setuju dengan S&amp;K yang berlaku</string>
     <string name="pm_deactivation_pm_pro_bottom_sheet_title">Yakin mau berhenti dari \nPower Merchant PRO?</string>
-    <string name="pm_deactivation_pm_pro_bottom_sheet_description">Kamu bisa turunkan status tokomu jadi Power Merchant. Hanya dengan biaya layanan 1,25%, kamu tetap bisa menikmati berbagai keuntungan.</string>
     <string name="pm_stop_pm">Berhenti dari PM</string>
     <string name="pm_downgrade_to_pm">Turun ke PM</string>
     <string name="pm_regular_merchant">Regular Merchant</string>
-    <string name="pm_option_become_regular_merchant_description"><![CDATA[Berjualan di Tokopedia dengan biaya layanan <b>0,5%</b>]]></string>
-    <string name="pm_option_become_power_merchant_description"><![CDATA[Jadi Seller tepercaya dengan biaya layanan <b>1,25%</b>]]></string>
+    <string name="pm_option_become_regular_merchant_description"><![CDATA[Berjualan di Tokopedia dengan biaya layanan <b>%1$s</b>]]></string>
+    <string name="pm_option_become_power_merchant_description"><![CDATA[Jadi Seller tepercaya dengan biaya layanan <b>%1$s</b>]]></string>
     <string name="pm_options_tnc_text">Dengan melanjutkan, saya setuju dengan S&amp;K yang berlaku</string>
     <string name="pm_registration_success_message">Tokomu berhasil jadi Power Merchant!</string>
     <string name="pm_pro_registration_success_message">Tokomu berhasil jadi Power Merchant PRO!</string>
