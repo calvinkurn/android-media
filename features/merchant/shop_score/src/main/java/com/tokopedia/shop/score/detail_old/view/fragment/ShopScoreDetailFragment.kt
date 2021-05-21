@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.constant.GM_BADGE_TITLE
