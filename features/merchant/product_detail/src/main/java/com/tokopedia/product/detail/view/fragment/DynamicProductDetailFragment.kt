@@ -1390,7 +1390,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             hideProgressDialog()
             data.doSuccessOrFail({
                 if (it.data.errorReporter.eligible) {
-                    logException(Throwable(it.data.errorReporter.texts.submitTitle))
                     view?.showToasterError(it.data.errorReporter.texts.submitTitle, ctaText = getString(R.string.label_oke_pdp))
                 } else {
                     onSuccessAtc(it.data)
