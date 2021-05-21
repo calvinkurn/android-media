@@ -1843,7 +1843,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun handleRouting(applink: String) {
         if (applink.contains(CREATE_REVIEW_APPLINK)) {
-            startActivityForResult(RouteManager.getIntent(context, URLDecoder.decode(applink, UohConsts.UTF_8)), REQUEST_CODE_LOGIN)
+            startActivityForResult(RouteManager.getIntent(context, URLDecoder.decode(applink, UohConsts.UTF_8)), CREATE_REVIEW_REQUEST_CODE)
         } else {
             RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
         }

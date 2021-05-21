@@ -139,7 +139,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     }
 
     private fun setTemplates() {
-        if(templates.isEmpty()) return
+        if(templates.isEmpty() || !isUserEligible) return
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
             layoutManager = StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL)
