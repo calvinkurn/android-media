@@ -1,7 +1,7 @@
 package com.tokopedia.tokomart.categorylist.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokomart.base.adapter.BaseTokoMartDiffer
+import com.tokopedia.tokomart.common.base.adapter.BaseTokoMartDiffer
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
 

@@ -77,6 +77,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
     private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
         val itemView = inflater.inflate(R.layout.bottomsheet_tokomart_category_list, container)
         val menuTitle = itemView.context.getString(R.string.tokomart_category_list_bottom_sheet_title)
+        isFullpage = true
         setTitle(menuTitle)
         setChild(itemView)
     }

@@ -7,7 +7,7 @@ data class CategoryListItemUiModel(
     val title: String,
     val iconUrl: String? = null,
     val childList: List<CategoryListChildUiModel> = emptyList()
-) : CategoryListUiModel {
+) : CategoryListUiModel() {
     override fun type(typeFactory: TokoMartCategoryListTypeFactory): Int {
         return typeFactory.type(this)
     }

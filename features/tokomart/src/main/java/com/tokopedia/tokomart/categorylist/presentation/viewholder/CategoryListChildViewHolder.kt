@@ -17,17 +17,21 @@ class CategoryListChildViewHolder(itemView: View): AbstractViewHolder<CategoryLi
         val LAYOUT = R.layout.item_tokomart_category_child
     }
 
-    override fun bind(data: CategoryListChildUiModel) {
+    override fun bind(category: CategoryListChildUiModel) {
         itemView.run {
-            textTitle.text = data.title
-            data.iconUrl?.let {
+            textTitle.text = category.title
+            category.iconUrl?.let {
                 imageCategory.loadImage(it)
                 imageCategory.show()
             }
         }
     }
 
-    fun hideDivider() {
-        itemView.categoryDivider.hide()
+    fun showTopDivider() {
+        itemView.topDividier.show()
+    }
+
+    fun hideBottomDivider() {
+        itemView.bottomDivider.hide()
     }
 }

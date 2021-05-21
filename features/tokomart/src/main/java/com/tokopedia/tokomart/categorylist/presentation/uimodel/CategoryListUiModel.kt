@@ -1,6 +1,6 @@
 package com.tokopedia.tokomart.categorylist.presentation.uimodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListTypeFactory
+import com.tokopedia.tokomart.common.base.uimodel.BaseExpandableUiModel
 
-interface CategoryListUiModel: Visitable<TokoMartCategoryListTypeFactory>
+abstract class CategoryListUiModel: BaseExpandableUiModel<TokoMartCategoryListTypeFactory>()

@@ -3,8 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_lvl3">
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/topDividier"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tokomart_category_divider_height"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:background="@color/Unify_N75"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/textTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageCategory"
@@ -12,10 +23,10 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/textTitle"
         app:layout_constraintEnd_toStartOf="@id/textTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textTitle"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -25,16 +36,16 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageCategory"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topDividier"
         app:layout_goneMarginStart="@dimen/spacing_lvl2"
         app:typographyType="body_3"
         tools:text="Fruit and Vegetable" />
 
     <View
-        android:id="@+id/categoryDivider"
+        android:id="@+id/bottomDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tokomart_category_divider_height"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:background="@color/Unify_N75"
-        app:layout_constraintTop_toBottomOf="@id/imageCategory" />
+        app:layout_constraintTop_toBottomOf="@id/textTitle" />
 </androidx.constraintlayout.widget.ConstraintLayout>
