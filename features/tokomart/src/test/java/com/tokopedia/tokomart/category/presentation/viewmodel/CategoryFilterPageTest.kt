@@ -1,7 +1,9 @@
 package com.tokopedia.tokomart.category.presentation.viewmodel
 
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.tokomart.searchcategory.FilterPageTestHelper
 import com.tokopedia.tokomart.searchcategory.FilterPageTestHelper.ApplyFilterTestInterface
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.usecase.RequestParams
 import io.mockk.CapturingSlot
 import io.mockk.verify
@@ -17,12 +19,15 @@ class CategoryFilterPageTest: CategoryTestFixtures(), ApplyFilterTestInterface {
         filterPageTestHelper = FilterPageTestHelper(
                 categoryViewModel,
                 getFilterUseCase,
+                getProductCountUseCase,
         )
     }
 
     @Test
     fun `open filter page first time`() {
-        filterPageTestHelper.`test open filter page first time`(mapOf())
+        filterPageTestHelper.`test open filter page first time`(
+                mapOf(SearchApiConst.SOURCE to TOKONOW_DIRECTORY)
+        )
     }
 
     @Test
@@ -52,5 +57,28 @@ class CategoryFilterPageTest: CategoryTestFixtures(), ApplyFilterTestInterface {
             getCategoryFirstPageUseCase.cancelJobs()
             getCategoryFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))
         }
+    }
+
+    @Test
+    fun `get filter count success when choosing filter`() {
+        val mandatoryParams = createMandatoryParamsForGetProductCount()
+
+        filterPageTestHelper.`test get filter count success when choosing filter`(mandatoryParams)
+    }
+
+    private fun createMandatoryParamsForGetProductCount(): Map<String, String> {
+        return mapOf(
+                SearchApiConst.NAVSOURCE to TOKONOW_DIRECTORY,
+                SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
+                SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+                SearchApiConst.SRP_PAGE_ID to defaultCategoryId.toString(),
+        )
+    }
+
+    @Test
+    fun `get filter count fail when choosing filter`() {
+        val mandatoryParams = createMandatoryParamsForGetProductCount()
+
+        filterPageTestHelper.`test get filter count fail when choosing filter`(mandatoryParams)
     }
 }

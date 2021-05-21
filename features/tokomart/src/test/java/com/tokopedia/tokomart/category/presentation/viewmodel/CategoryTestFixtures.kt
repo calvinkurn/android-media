@@ -24,6 +24,7 @@ open class CategoryTestFixtures {
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
+    protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
 
     protected lateinit var categoryViewModel: CategoryViewModel
@@ -44,6 +45,7 @@ open class CategoryTestFixtures {
                 getCategoryFirstPageUseCase,
                 getCategoryLoadMorePageUseCase,
                 getFilterUseCase,
+                getProductCountUseCase,
                 chooseAddressWrapper,
         )
     }

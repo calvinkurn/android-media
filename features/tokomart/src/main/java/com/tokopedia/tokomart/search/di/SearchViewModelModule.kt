@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokomart.search.domain.usecase.GetSearchUseCaseModule
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
 import com.tokopedia.tokomart.searchcategory.domain.usecase.GetFilterUseCaseModule
+import com.tokopedia.tokomart.searchcategory.domain.usecase.GetProductCountUseCaseModule
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -14,6 +15,7 @@ import dagger.multibindings.IntoMap
 @Module(includes = [
     GetSearchUseCaseModule::class,
     GetFilterUseCaseModule::class,
+    GetProductCountUseCaseModule::class,
 ])
 abstract class SearchViewModelModule {
 

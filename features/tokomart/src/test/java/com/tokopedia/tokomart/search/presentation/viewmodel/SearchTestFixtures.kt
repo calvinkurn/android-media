@@ -25,6 +25,7 @@ open class SearchTestFixtures {
     protected val getSearchFirstPageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
     protected val getSearchLoadMorePageUseCase = mockk<UseCase<SearchModel>>(relaxed = true)
     protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
+    protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val chooseAdddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected lateinit var searchViewModel: SearchViewModel
 
@@ -40,6 +41,7 @@ open class SearchTestFixtures {
                 getSearchFirstPageUseCase,
                 getSearchLoadMorePageUseCase,
                 getFilterUseCase,
+                getProductCountUseCase,
                 chooseAdddressWrapper,
         )
     }

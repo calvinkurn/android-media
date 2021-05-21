@@ -1,6 +1,5 @@
 package com.tokopedia.tokomart.searchcategory.data
 
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.UrlParamUtils.generateUrlParamString
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -23,32 +22,14 @@ internal fun createAceSearchProductRequest(params: Map<String?, Any>) = GraphqlR
 internal fun createCategoryFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
         CATEGORY_FILTER_QUERY,
         CategoryFilterModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to createCategoryFilterParams(params))
+        mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
-
-private fun createCategoryFilterParams(params: Map<String?, Any>): String {
-    val paramMap = params.toMutableMap().also {
-//            it[SearchApiConst.SOURCE] = CATEGORY_TOKONOW // Temporary, source should be category tokonow
-        it[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER
-    }
-
-    return generateUrlParamString(paramMap)
-}
 
 internal fun createQuickFilterRequest(params: Map<String?, Any>) = GraphqlRequest(
         QUICK_FILTER_QUERY,
         QuickFilterModel::class.java,
-        mapOf(SearchConstant.GQL.KEY_PARAMS to createQuickFilterParams(params))
+        mapOf(SearchConstant.GQL.KEY_PARAMS to generateUrlParamString(params))
 )
-
-private fun createQuickFilterParams(params: Map<String?, Any>): String {
-    val paramMap = params.toMutableMap().also {
-//            it[SearchApiConst.SOURCE] = QUICK_FILTER_TOKONOW // Temporary, source should be quick filter tokonow
-        it[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER
-    }
-
-    return generateUrlParamString(paramMap)
-}
 
 private const val ACE_SEARCH_PRODUCT_QUERY = """
     query aceSearchProductV4(${'$'}params: String!) {

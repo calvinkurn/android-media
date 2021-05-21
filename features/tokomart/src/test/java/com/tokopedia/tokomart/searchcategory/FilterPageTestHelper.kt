@@ -5,7 +5,6 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterMod
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.CapturingSlot
@@ -19,6 +18,7 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 class FilterPageTestHelper(
         private val baseViewModel: BaseSearchCategoryViewModel,
         private val getFilterUseCase: UseCase<DynamicFilterModel>,
+        private val getProductCountUseCase: UseCase<String>,
 ) {
     private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
     private val mockApplyFilterMapParam = mutableMapOf<String, String>()
@@ -72,8 +72,6 @@ class FilterPageTestHelper(
         expectedQueryParamMap.forEach { (key, value) ->
             assertThat(actualRequestParams[key], shouldBe(value))
         }
-
-        assertThat(actualRequestParams[SearchApiConst.SOURCE], shouldBe(TOKONOW))
     }
 
     private fun `Then assert dynamic filter model live data is updated`(
@@ -177,6 +175,81 @@ class FilterPageTestHelper(
 
         mockApplyFilterMapParam.forEach { (key, value) ->
             assertThat("Query param with key $key is incorrect", queryParams[key], shouldBe(value))
+        }
+    }
+
+    fun `test get filter count success when choosing filter`(mandatoryParams: Map<String, Any>) {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+        val successResponse = "10rb+"
+
+        `Given view already created`()
+        `Given get filter API will be successful`(dynamicFilterModel)
+        `Given get product count API will be successful`(requestParamsSlot, successResponse)
+        `Given view open filter page`()
+        `Given mock apply filter param`(dynamicFilterModel)
+
+        `When view get product count`()
+
+        `Then assert params for get product count`(mandatoryParams, requestParams)
+        `Then assert product count live data`(successResponse)
+    }
+
+    private fun `Given get product count API will be successful`(
+            requestParamsSlot: CapturingSlot<RequestParams>,
+            successResponse: String,
+    ) {
+        every {
+            getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
+        } answers {
+            firstArg<(String) -> Unit>().invoke(successResponse)
+        }
+    }
+
+    private fun `When view get product count`() {
+        baseViewModel.onViewGetProductCount(mockApplyFilterMapParam)
+    }
+
+    private fun `Then assert params for get product count`(
+            mandatoryParams: Map<String, Any>,
+            getProductCountRequestParams: RequestParams
+    ) {
+        val expectedGetProductCountParams =
+                mockApplyFilterMapParam + mandatoryParams + mapOf(SearchApiConst.ROWS to 0)
+
+        val getProductCountParams = getProductCountRequestParams.parameters
+
+        expectedGetProductCountParams.forEach { (key, value) ->
+            val reason = "Get product count params key \"$key\" value is invalid"
+            assertThat(reason, getProductCountParams[key].toString(), shouldBe(value.toString()))
+        }
+    }
+
+    private fun `Then assert product count live data`(successResponse: String) {
+        assertThat(baseViewModel.productCountAfterFilterLiveData.value, shouldBe(successResponse))
+    }
+
+    fun `test get filter count fail when choosing filter`(mandatoryParams: Map<String, Any>) {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+
+        `Given view already created`()
+        `Given get filter API will be successful`(dynamicFilterModel)
+        `Given get product count API will fail`(requestParamsSlot)
+        `Given view open filter page`()
+        `Given mock apply filter param`(dynamicFilterModel)
+
+        `When view get product count`()
+
+        `Then assert params for get product count`(mandatoryParams, requestParams)
+        `Then assert product count live data`("0")
+    }
+
+    private fun `Given get product count API will fail`(requestParamsSlot: CapturingSlot<RequestParams>) {
+        every {
+            getProductCountUseCase.execute(any(), any(), capture(requestParamsSlot))
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
     }
 

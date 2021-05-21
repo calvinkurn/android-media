@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
-import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -31,7 +30,6 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDa
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.util.DummyDataViewGenerator
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -41,6 +39,7 @@ abstract class BaseSearchCategoryViewModel(
         baseDispatcher: CoroutineDispatchers,
         queryParamMap: Map<String, String>,
         protected val getFilterUseCase: UseCase<DynamicFilterModel>,
+        protected val getProductCountUseCase: UseCase<String>,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseViewModel(baseDispatcher.io) {
 
@@ -63,6 +62,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val dynamicFilterModelMutableLiveData = MutableLiveData<DynamicFilterModel?>(null)
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = dynamicFilterModelMutableLiveData
 
+    protected val productCountAfterFilterMutableLiveData = MutableLiveData("")
+    val productCountAfterFilterLiveData: LiveData<String> = productCountAfterFilterMutableLiveData
+
     protected var totalData = 0
     protected var totalFetchedData = 0
     protected var nextPage = 1
@@ -74,21 +76,36 @@ abstract class BaseSearchCategoryViewModel(
     abstract fun onViewCreated()
 
     protected open fun createRequestParams(): RequestParams {
-        val tokonowQueryParam = mutableMapOf<String, Any>().also {
-            it.prependQueryParam()
-            it[SearchApiConst.PAGE] = nextPage
-            it[SearchApiConst.USE_PAGE] = true
-            it[SearchApiConst.DEVICE] = DEFAULT_VALUE_OF_PARAMETER_DEVICE
-            it.putAll(queryParam)
-        }
+        val tokonowQueryParam = createTokonowQueryParams()
 
-        return RequestParams.create().also {
-            it.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
-        }
+        val requestParams = RequestParams.create()
+        requestParams.putObject(TOKONOW_QUERY_PARAMS, tokonowQueryParam)
+
+        return requestParams
     }
 
-    protected open fun MutableMap<String, Any>.prependQueryParam() {
+    private fun createTokonowQueryParams(): MutableMap<String, Any> {
+        val tokonowQueryParam = mutableMapOf<String, Any>()
 
+        tokonowQueryParam.putAll(queryParam)
+        tokonowQueryParam.appendMandatoryParams()
+        tokonowQueryParam.appendDeviceParam()
+        tokonowQueryParam.appendPaginationParam()
+
+        return tokonowQueryParam
+    }
+
+    protected open fun MutableMap<String, Any>.appendMandatoryParams() {
+
+    }
+
+    protected open fun MutableMap<String, Any>.appendDeviceParam() {
+        this[SearchApiConst.DEVICE] = DEFAULT_VALUE_OF_PARAMETER_DEVICE
+    }
+
+    protected open fun MutableMap<String, Any>.appendPaginationParam() {
+        this[SearchApiConst.PAGE] = nextPage
+        this[SearchApiConst.USE_PAGE] = true
     }
 
     protected fun onGetFirstPageSuccess(
@@ -271,10 +288,14 @@ abstract class BaseSearchCategoryViewModel(
 
         if (dynamicFilterModelLiveData.value != null) return
 
+        val getFilterRequestParams = RequestParams.create()
+        getFilterRequestParams.putAll(createTokonowQueryParams())
+
+        getFilterUseCase.cancelJobs()
         getFilterUseCase.execute(
                 this::onGetFilterSuccess,
                 this::onGetFilterFailed,
-                createGetFilterRequestParams()
+                getFilterRequestParams
         )
     }
 
@@ -286,13 +307,6 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun onGetFilterFailed(throwable: Throwable) {
 
     }
-
-    protected open fun createGetFilterRequestParams(): RequestParams =
-        RequestParams.create().also {
-            it.putAll(queryParamMutable as Map<String, String>)
-            it.putString(SearchApiConst.SOURCE, "search") // Temporary, source should be tokonow
-//            it.putString(SearchApiConst.SOURCE, TOKONOW)
-        }
 
     open fun onViewDismissFilterPage() {
         isFilterPageOpenMutableLiveData.value = false
@@ -307,6 +321,36 @@ abstract class BaseSearchCategoryViewModel(
         refreshQueryParamFromFilterController()
 
         onViewReloadPage()
+    }
+
+    fun onViewGetProductCount(mapParameter: Map<String, String>) {
+        getProductCountUseCase.cancelJobs()
+        getProductCountUseCase.execute(
+                this::onGetProductCountSuccess,
+                this::onGetProductCountFailed,
+                createGetProductCountRequestParams(mapParameter)
+        )
+    }
+
+    protected open fun createGetProductCountRequestParams(mapParameter: Map<String, String>): RequestParams {
+        val getProductCountParams = mutableMapOf<String, Any>()
+        getProductCountParams.putAll(mapParameter)
+        getProductCountParams.appendMandatoryParams()
+        getProductCountParams.appendDeviceParam()
+        getProductCountParams[SearchApiConst.ROWS] = 0
+
+        val getProductCountRequestParams = RequestParams.create()
+        getProductCountRequestParams.putAll(getProductCountParams)
+
+        return getProductCountRequestParams
+    }
+
+    protected open fun onGetProductCountSuccess(countText: String) {
+        productCountAfterFilterMutableLiveData.value = countText
+    }
+
+    protected open fun onGetProductCountFailed(throwable: Throwable) {
+        onGetProductCountSuccess("0")
     }
 
     protected data class HeaderDataView(

@@ -206,7 +206,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
-
+        getViewModel().onViewGetProductCount(mapParameter)
     }
 
     private fun onDynamicFilterModelChanged(dynamicFilterModel: DynamicFilterModel?) {

@@ -23,12 +23,14 @@ class SearchViewModel @Inject constructor (
         @param:Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
         private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
         getFilterUseCase: UseCase<DynamicFilterModel>,
+        getProductCountUseCase: UseCase<String>,
         chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
         getFilterUseCase,
-        chooseAddressWrapper
+        getProductCountUseCase,
+        chooseAddressWrapper,
 ) {
 
     val query = queryParamMap[SearchApiConst.Q] ?: ""
@@ -42,7 +44,7 @@ class SearchViewModel @Inject constructor (
         )
     }
 
-    override fun MutableMap<String, Any>.prependQueryParam() {
+    override fun MutableMap<String, Any>.appendMandatoryParams() {
         put(SearchApiConst.SOURCE, TOKONOW)
 //        put(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
     }

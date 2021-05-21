@@ -30,12 +30,14 @@ class CategoryViewModel @Inject constructor (
         @param:Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
         private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
         getFilterUseCase: UseCase<DynamicFilterModel>,
+        getProductCountUseCase: UseCase<String>,
         chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
         getFilterUseCase,
-        chooseAddressWrapper
+        getProductCountUseCase,
+        chooseAddressWrapper,
 ) {
 
     private var navigation: CategoryDetail.Navigation? = null
@@ -49,7 +51,7 @@ class CategoryViewModel @Inject constructor (
         )
     }
 
-    override fun MutableMap<String, Any>.prependQueryParam() {
+    override fun MutableMap<String, Any>.appendMandatoryParams() {
         this[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
         this[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
         this[SearchApiConst.SRP_PAGE_ID] = categoryId

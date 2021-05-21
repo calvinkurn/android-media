@@ -1,5 +1,7 @@
 package com.tokopedia.tokomart.search.domain.usecase
 
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.data.createAceSearchProductRequest
@@ -17,11 +19,13 @@ class GetSearchFirstPageUseCase(
 
     override suspend fun executeOnBackground(): SearchModel {
         val queryParams = getTokonowQueryParam(useCaseRequestParams)
+        val categoryFilterParams = createCategoryFilterParams(queryParams)
+        val quickFilterParams = createQuickFilterParams(queryParams)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(createAceSearchProductRequest(queryParams))
-        graphqlUseCase.addRequest(createCategoryFilterRequest(queryParams))
-        graphqlUseCase.addRequest(createQuickFilterRequest(queryParams))
+        graphqlUseCase.addRequest(createCategoryFilterRequest(categoryFilterParams))
+        graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 
@@ -30,5 +34,19 @@ class GetSearchFirstPageUseCase(
                 categoryFilter = getCategoryFilter(graphqlResponse),
                 quickFilter = getQuickFilter(graphqlResponse),
         )
+    }
+
+    private fun createCategoryFilterParams(queryParams: Map<String?, Any>): Map<String?, Any> {
+        return queryParams.toMutableMap().also {
+//            it[SearchApiConst.SOURCE] = CATEGORY_TOKONOW // Temporary, source should be category tokonow
+            it[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER
+        }
+    }
+
+    private fun createQuickFilterParams(queryParams: Map<String?, Any>): Map<String?, Any> {
+        return queryParams.toMutableMap().also {
+//            it[SearchApiConst.SOURCE] = QUICK_FILTER_TOKONOW // Temporary, source should be quick filter tokonow
+            it[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER
+        }
     }
 }
