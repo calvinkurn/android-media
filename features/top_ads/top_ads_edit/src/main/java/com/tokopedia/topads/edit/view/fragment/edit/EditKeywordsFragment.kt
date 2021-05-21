@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
@@ -520,6 +522,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         userID = UserSession(view.context).userId
 
+        info1.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
+        info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info1.setOnClickListener {
             InfoBottomSheet.newInstance().show(childFragmentManager, 0)
         }
