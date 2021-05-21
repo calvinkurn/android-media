@@ -4,7 +4,7 @@ import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokomart.home.constant.HomeLayoutType
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryItemUiModel
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSectionUiModel
 
 object HomeLayoutMapper {
@@ -24,7 +24,7 @@ object HomeLayoutMapper {
         }
     }
 
-    private fun mapToCategoryUiModel(it: HomeLayoutResponse): HomeCategoryUiModel {
+    private fun mapToCategoryUiModel(it: HomeLayoutResponse): HomeCategoryGridUiModel {
         val menuList = listOf(
             HomeCategoryItemUiModel("1", "Daging", "https://img.icons8.com/cotton/2x/circled-down--v2.png"),
             HomeCategoryItemUiModel("2", "Makanan Laut", "https://img.icons8.com/cotton/2x/circled-down--v2.png"),
@@ -37,6 +37,6 @@ object HomeLayoutMapper {
             HomeCategoryItemUiModel("9", "Category 5", "https://img.icons8.com/cotton/2x/circled-down--v2.png"),
             HomeCategoryItemUiModel("10", "Kategori Lainnya", "https://img.icons8.com/cotton/2x/circled-down--v2.png")
         )
-        return HomeCategoryUiModel(it.id, it.title, menuList)
+        return HomeCategoryGridUiModel(it.id, it.title, menuList)
     }
 }

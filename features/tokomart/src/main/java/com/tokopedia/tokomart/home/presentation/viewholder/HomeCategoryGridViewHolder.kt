@@ -8,10 +8,10 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import kotlinx.android.synthetic.main.item_tokomart_home_category.view.*
 
-class HomeCategoryViewHolder(itemView: View): AbstractViewHolder<HomeCategoryUiModel>(itemView) {
+class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategoryGridUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,12 +22,12 @@ class HomeCategoryViewHolder(itemView: View): AbstractViewHolder<HomeCategoryUiM
 
     private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(), TokoMartHomeListDiffer()) }
 
-    override fun bind(data: HomeCategoryUiModel) {
+    override fun bind(data: HomeCategoryGridUiModel) {
         itemView.apply {
             textTitle.text = data.title
 
             with(rvCategory) {
-                adapter = this@HomeCategoryViewHolder.adapter
+                adapter = this@HomeCategoryGridViewHolder.adapter
                 layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT)
             }
 
