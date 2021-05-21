@@ -96,7 +96,7 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
     }
 
     fun clickSeeAllBenefitInRM(isNewSeller: Boolean) {
-        sendShopScoreItemEvent(SHOP_SCORE_PAGE, CLICK_SEE_ALL_BENEFIT, isNewSeller)
+        sendShopScoreItemEvent(if (isNewSeller) SHOP_SCORE_PAGE else TRANSITION_PERIOD_SHOP_SCORE, CLICK_SEE_ALL_BENEFIT, isNewSeller)
     }
 
     fun clickLearMorePenaltyPage() {

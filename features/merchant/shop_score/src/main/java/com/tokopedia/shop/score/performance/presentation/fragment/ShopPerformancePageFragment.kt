@@ -114,7 +114,6 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         inflater.inflate(R.menu.menu_shop_score, menu)
         this.menu = menu
         showPenaltyBadge()
-        impressMenuShopPerformance()
     }
 
     override fun onBtnErrorStateClicked() {
@@ -573,6 +572,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     viewModel.getShopScoreLevel(it.data)
                     this.isNewSeller = it.data.isNewSeller
                     toggleMenuForNewSeller()
+                    impressMenuShopPerformance()
                 }
                 is Fail -> {
                     shopPerformanceAdapter.hideLoading()

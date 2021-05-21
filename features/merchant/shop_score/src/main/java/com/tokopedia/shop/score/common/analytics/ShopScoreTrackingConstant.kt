@@ -32,7 +32,7 @@ object ShopScoreTrackingConstant {
 
     const val OLD_PERFORMA_TOKO_PAGE = "old performa toko page"
     const val CLICK_LEARN_MORE = "click - pelajari selengkapnya"
-    const val CLICK_CONTACT_HELP_CENTER = "click - pusat bantuan"
+    const val CLICK_CONTACT_HELP_CENTER = "click - hubungi pusat bantuan"
     const val CLICK_HELP_CENTER = "click - pusat bantuan"
     const val VIEW_SHOP_SCORE_IRIS = "viewShopScoreIris"
     const val IMPRESSION_LEARN_MORE = "impression - pelajari selengkapnya"

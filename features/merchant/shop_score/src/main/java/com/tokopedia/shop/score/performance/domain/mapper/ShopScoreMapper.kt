@@ -407,7 +407,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 val rawValueFormatted = if (roundNextMinValue.rem(1) == 0.0) {
                                     roundNextMinValue.roundToInt().toString()
                                 } else {
-                                    roundNextMinValue.toString()
+                                    String.format("%.1f", roundNextMinValue)
                                 }
                                 Pair("$rawValueFormatted $minuteText", minuteText)
                             }
@@ -416,7 +416,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 val minValueFormatted = if (minValueFormattedPercent.rem(1) == 0.0) {
                                     minValueFormattedPercent.roundToInt().toString()
                                 } else {
-                                    minValueFormattedPercent.toString()
+                                    String.format("%.1f", minValueFormattedPercent)
                                 }
                                 Pair("$minValueFormatted$percentText", percentText)
                             }
@@ -439,7 +439,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                     val rawValueFormatted = if (rawValuePercent.rem(1) == 0.0) {
                                         rawValuePercent.roundToInt().toString()
                                     } else {
-                                        rawValuePercent.toString()
+                                        String.format("%.1f", rawValuePercent)
                                     }
                                     rawValueFormatted
                                 }
@@ -447,7 +447,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                     val rawValueFormatted = if (shopScoreDetail.rawValue.rem(1) == 0.0) {
                                         shopScoreDetail.rawValue.roundToInt().toString()
                                     } else {
-                                        shopScoreDetail.rawValue.toString()
+                                        String.format("%.1f", shopScoreDetail.rawValue)
                                     }
                                     rawValueFormatted
                                 }
