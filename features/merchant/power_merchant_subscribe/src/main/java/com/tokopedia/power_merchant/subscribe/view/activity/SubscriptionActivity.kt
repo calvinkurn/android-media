@@ -285,9 +285,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             setTnCVisibility(needTnC)
             setOnCtaClickListener { tncAgreed ->
                 if (isPmProSelected) {
-                    pmProRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed)
+                    pmProRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed, PMConstant.ShopTierType.POWER_MERCHANT_PRO)
                 } else {
-                    pmRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed)
+                    pmRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed, PMConstant.ShopTierType.POWER_MERCHANT)
                 }
             }
         }

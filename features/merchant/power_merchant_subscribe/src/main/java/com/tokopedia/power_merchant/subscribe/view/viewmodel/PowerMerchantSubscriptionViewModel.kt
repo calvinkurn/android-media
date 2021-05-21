@@ -73,9 +73,9 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         })
     }
 
-    fun submitPMActivation(nextShopTierType: Int) {
+    fun submitPMActivation(currentShopTier: Int, nextShopTierType: Int) {
         launchCatchError(block = {
-            activatePMUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(nextShopTierType)
+            activatePMUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(currentShopTier, nextShopTierType)
             val result = withContext(dispatchers.io) {
                 activatePMUseCase.get().executeOnBackground()
             }
@@ -85,9 +85,10 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         })
     }
 
-    fun cancelPmDeactivationSubmission() {
+    fun cancelPmDeactivationSubmission(currentShopTier: Int) {
         launchCatchError(block = {
-            activatePMUseCase.get().params = RequestParams.EMPTY
+            val nextShopTierType = currentShopTier
+            activatePMUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(currentShopTier, nextShopTierType)
             val result = withContext(dispatchers.io) {
                 activatePMUseCase.get().executeOnBackground()
             }

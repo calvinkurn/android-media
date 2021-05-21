@@ -123,7 +123,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     override fun cancelPmDeactivationSubmission(position: Int) {
         cancelPmDeactivationWidgetPosition = position
         observePmCancelDeactivationSubmission()
-        mViewModel.cancelPmDeactivationSubmission()
+        val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
+        val shopTier = getShopTireByPmTire(currentPmTireType)
+        mViewModel.cancelPmDeactivationSubmission(shopTier)
     }
 
     override fun setOnReloadClickListener() {
@@ -145,7 +147,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     override fun onUpgradePmProClickListener(adapterPosition: Int) {
         this.upgradePmProWidgetPosition = adapterPosition
-        submitPmRegistration()
+        submitPmRegistration(PMConstant.ShopTierType.POWER_MERCHANT_PRO)
     }
 
     private fun showPmProDeactivationBottomSheet() {
@@ -172,10 +174,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         bottomSheet.show(childFragmentManager)
     }
 
-    fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean) {
+    fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean, nextShopTireType: Int) {
         val shopInfo = pmBasicInfo?.shopInfo ?: return
         when {
-            isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed)
+            isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed, nextShopTireType)
             term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
             term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
             term is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
@@ -517,7 +519,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         })
     }
 
-    private fun submitPmRegistrationOnEligible(isTncChecked: Boolean) {
+    private fun submitPmRegistrationOnEligible(isTncChecked: Boolean, nextShopTireType: Int) {
         if (!isTncChecked) {
             val message = getString(R.string.pm_tnc_agreement_error_message)
             val actionText = getString(R.string.power_merchant_ok_label)
@@ -526,21 +528,22 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
 
         showActivationProgress()
-        submitPmRegistration()
+        submitPmRegistration(nextShopTireType)
     }
 
-    private fun submitPmRegistration() {
-        val shopTireType = getShopTireByPmTire(currentPmTireType)
+    private fun submitPmRegistration(nextShopTireType: Int) {
+        val currentPmTire = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
+        val currentShopTireType = getShopTireByPmTire(currentPmTire)
 
         observePmActivationStatus()
-        mViewModel.submitPMActivation(shopTireType)
+        mViewModel.submitPMActivation(currentShopTireType, nextShopTireType)
     }
 
     private fun getShopTireByPmTire(pmTire: Int): Int {
         return when (pmTire) {
             PMConstant.PMTierType.POWER_MERCHANT -> PMConstant.ShopTierType.POWER_MERCHANT
             PMConstant.PMTierType.POWER_MERCHANT_PRO -> PMConstant.ShopTierType.POWER_MERCHANT_PRO
-            else -> PMConstant.ShopTierType.NA
+            else -> PMConstant.ShopTierType.REGULAR_MERCHANT
         }
     }
 
@@ -575,12 +578,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
-        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro
+        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
             getUpgradePmProWidget()?.let {
                 widgets.add(it)
-                widgets.add(WidgetDividerUiModel)
             }
         }
         val shouldShowNextGradeWidget = data.nextPMGrade != null && isAutoExtendEnabled
