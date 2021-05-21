@@ -1,7 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase.coroutine
 
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
@@ -9,13 +8,15 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class AddToCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                            private val addToCartDataMapper: AddToCartDataMapper,
-                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AddToCartDataModel>() {
+                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
 
     var addToCartRequestParams: AddToCartRequestParams? = null
 
@@ -37,7 +38,7 @@ class AddToCartUseCase @Inject constructor(private val graphqlRepository: Graphq
                         PARAM_WAREHOUSE_ID to addToCartRequestParams?.warehouseId,
                         PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams?.atcFromExternalSource,
                         PARAM_IS_SCP to addToCartRequestParams?.isSCP,
-                        ChosenAddressAddToCartRequestHelper.PARAM_KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+                        KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
                 )
         )
     }

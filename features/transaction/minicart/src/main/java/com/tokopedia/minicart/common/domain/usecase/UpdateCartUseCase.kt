@@ -3,15 +3,13 @@ package com.tokopedia.minicart.common.domain.usecase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.minicart.common.data.request.localizationchooseaddress.ChosenAddressRequestHelper
-import com.tokopedia.minicart.common.data.request.localizationchooseaddress.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.minicart.common.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 class UpdateCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
