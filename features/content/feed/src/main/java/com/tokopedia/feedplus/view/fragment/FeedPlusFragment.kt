@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -149,6 +148,12 @@ import kotlin.collections.ArrayList
  * @author by nisie on 5/15/17.
  */
 
+const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
+const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
+const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
+const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
+const val CLICK_SHOP_TOPADS = "click - shop - topads"
+const val CLICK_PRODUCT_TOPADS = "click - product - topads"
 class FeedPlusFragment : BaseDaggerFragment(),
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
@@ -2106,14 +2111,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
         var eventLabel = "$adId - $shopId"
 
-        var eventAction = "click - follow - topads"
+        var eventAction = CLICK_FOLLOW_TOPADS
         analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
     }
 
     override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {
         var eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
-        var eventAction = "impression - card - topads";
+        var eventAction = IMPRESSION_CARD_TOPADS
 
         analytics.sendFeedTopAdsHeadlineAdsImpression(eventAction, eventLabel, cpmModel.data[0].id, position, userSession.userId)
     }
@@ -2121,7 +2126,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onTopAdsProductItemListsner(position: Int, product: Product, cpmData: CpmData) {
 
         var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
-        var eventAction = "impression - product - topads";
+        var eventAction = IMPRESSION_PRODUCT_TOPADS
         var productList: MutableList<Product> = mutableListOf()
         productList.clear()
         productList.add(product)
@@ -2135,14 +2140,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
 
         if(applink?.contains("shop") == true && position == 0){
-            eventAction = "click - cek sekarang - topads"
+            eventAction = CLICK_CEK_SEKARANG
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         } else if(applink?.contains("shop") == true && position == 1){
-            eventAction = "click - shop - topads"
+            eventAction = CLICK_SHOP_TOPADS
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         } else {
             var productId = applink?.substring(applink.lastIndexOf("/") + 1)
-            eventAction = " click - product - topads"
+            eventAction = CLICK_PRODUCT_TOPADS
             var clickedProducts : MutableList<Product> = mutableListOf()
             for((index, productItem) in cpmData.cpm.cpmShop.products.withIndex()) {
                 if(productId.equals(productItem.id)) {
