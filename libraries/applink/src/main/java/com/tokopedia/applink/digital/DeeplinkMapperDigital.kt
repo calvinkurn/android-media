@@ -21,7 +21,7 @@ object DeeplinkMapperDigital {
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
     const val REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_digital_checkout"
-    const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY = "android_customer_enable_digital_emoney_pdp"
+    const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP = "android_customer_enable_digital_emoney_pdp"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
@@ -101,8 +101,8 @@ object DeeplinkMapperDigital {
 
     private fun handleEmoneyApplink(context: Context, deeplink: String): String {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val getNewEmoneyPage = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY, true)
-        return if (getNewEmoneyPage) ApplinkConsInternalDigital.ELECTRONIC_MONEY else
+        val getNewEmoneyPage = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP, true)
+        return if (getNewEmoneyPage) ApplinkConsInternalDigital.ELECTRONIC_MONEY_PDP else
             deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
     }
 
