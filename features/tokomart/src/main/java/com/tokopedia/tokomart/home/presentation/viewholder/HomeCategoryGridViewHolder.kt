@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
@@ -25,6 +27,9 @@ class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategor
     override fun bind(data: HomeCategoryGridUiModel) {
         itemView.apply {
             textTitle.text = data.title
+            textSeeAll.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalTokoMart.CATEGORY_LIST)
+            }
 
             with(rvCategory) {
                 adapter = this@HomeCategoryGridViewHolder.adapter
