@@ -126,13 +126,8 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun signDataVerifyQr(uuid: String, status: String): SignResult {
         return try {
-            val datetime = (System.currentTimeMillis() / 1000).toString()
             val data = uuid + status
-            if(SignatureUtil.generateKey(LOGIN_QR_ALIAS) != null) {
-                SignatureUtil.signData(data, datetime, LOGIN_QR_ALIAS)
-            } else {
-                SignResult()
-            }
+            SignatureUtil.signData(data, LOGIN_QR_ALIAS)
         } catch (e: Exception) {
             SignResult()
         }
@@ -178,7 +173,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
 
     companion object {
 
-        private const val LOGIN_QR_ALIAS = "LoginByQr"
+        private const val LOGIN_QR_ALIAS = "PushNotif"
         private const val PARAM_DATA = "data"
         private const val STATUS_APPROVE = "approve"
         private const val STATUS_REJECT = "reject"

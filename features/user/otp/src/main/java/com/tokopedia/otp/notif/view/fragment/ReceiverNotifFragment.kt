@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -33,10 +32,6 @@ import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.security.KeyStore
-import java.security.PrivateKey
-import java.security.PublicKey
-import java.security.Signature
 import javax.inject.Inject
 
 /**
@@ -182,9 +177,8 @@ class ReceiverNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun signDataVerifyPushNotif(challangeCode: String, status: String): SignResult {
-        val datetime = (System.currentTimeMillis() / 1000).toString()
         val data = challangeCode + status
-        return SignatureUtil.signData(data, datetime, PUSH_NOTIF_ALIAS)
+        return SignatureUtil.signData(data, PUSH_NOTIF_ALIAS)
     }
 
     private fun goToResultNotif(imglink: String, messageTitle: String, messageBody: String, ctaType: String, status: String) {

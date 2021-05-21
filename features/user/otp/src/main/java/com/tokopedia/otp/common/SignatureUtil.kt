@@ -31,9 +31,10 @@ object SignatureUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun signData(data: String, datetime: String, alias: String): SignResult {
+    fun signData(data: String, alias: String): SignResult {
         val signResult = SignResult()
         try {
+            val datetime = (System.currentTimeMillis() / 1000).toString()
             signResult.datetime = datetime
 
             val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEY_STORE).apply {
