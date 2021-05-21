@@ -139,7 +139,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".bookingV3.presentation.activity.FlightBookingActivity"
+            android:name=".booking.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
