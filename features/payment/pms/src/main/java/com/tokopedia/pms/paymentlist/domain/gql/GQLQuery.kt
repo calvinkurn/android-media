@@ -1,7 +1,7 @@
 package com.tokopedia.pms.paymentlist.domain.gql
 
 const val GQL_PAYMENT_LIST_QUERY = """query paymentList(${'$'}lang : String!, ${'$'}cursor : String!){
-    paymentList(lang: ${'$'}lang, cursor:${'$'}cursor, perPage:50) {
+    paymentList(lang: ${'$'}lang, cursor:${'$'}cursor, perPage:20) {
         last_cursor
         has_next_page
         payment_list {
@@ -63,3 +63,11 @@ const val GQL_CANCEL_PAYMENT_MUTATION =
   }
 }
 """
+
+const val GQL_EDIT_KLIC_BCA =
+    """mutation editKlikbca(${'$'}transactionID: String!, ${'$'}merchantCode:String!, ${'$'}newKlikbcaUserID: String!){
+                    editKlikbca(transactionID: ${'$'}transactionID, merchantCode:${'$'}merchantCode, newKlikbcaUserID: ${'$'}newKlikbcaUserID){
+                          success
+                            message
+             }  
+            }"""
