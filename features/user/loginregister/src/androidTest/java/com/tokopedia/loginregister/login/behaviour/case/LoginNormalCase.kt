@@ -192,9 +192,11 @@ class LoginNormalCase : LoginBase() {
 
     @Test
     fun checkEmailExtensionShownAfterAddAt() {
-        launchDefaultFragment()
-        inputEmailOrPhone("yoris.prayogo@")
-        isEmailExtensionDisplayed()
+        runTest {
+            inputEmailOrPhone("yoris.prayogo@")
+            isEmailExtensionDisplayed()
+        }
+
     }
 
     @Test
@@ -237,12 +239,13 @@ class LoginNormalCase : LoginBase() {
 
     @Test
     fun checkDeveloperOptions() {
-        launchDefaultFragment()
-        val viewDevOpts = onView(withText("Developer Options"))
-        if(GlobalConfig.isAllowDebuggingTools()){
-            viewDevOpts.check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        } else {
-            viewDevOpts.check(ViewAssertions.matches(not(ViewMatchers.isDisplayed())))
+        runTest {
+            val viewDevOpts = onView(withText("Developer Options"))
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                viewDevOpts.check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            } else {
+                viewDevOpts.check(ViewAssertions.matches(not(ViewMatchers.isDisplayed())))
+            }
         }
     }
 //
