@@ -94,7 +94,6 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                       status
                       error_message
                       data {
-                        config_name
                         available_buttons {
                           text
                           color

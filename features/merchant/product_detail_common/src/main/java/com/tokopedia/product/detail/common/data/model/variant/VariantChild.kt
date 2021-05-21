@@ -57,6 +57,10 @@ data class VariantChild(
         @Expose
         val isCod: Boolean = false,
 
+        @SerializedName("isWishlist")
+        @Expose
+        var isWishlist: Boolean = false,
+
         @SerializedName("thematicCampaign")
         val thematicCampaign: ThematicCampaign? = null
 ){

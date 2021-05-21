@@ -453,7 +453,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
-                if (shouldRefreshValidateOvo) {
+                if (shouldRefreshPreviousPage) {
                     productId = selectedProductId
                     onSwipeRefresh()
                 } else {
@@ -2787,7 +2787,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             }
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
-                toasterWishlistText = getString(R.string.toaster_success_add_wishlist_from_button)
+                toasterWishlistText = getString(com.tokopedia.product.detail.common.R.string.toaster_success_add_wishlist_from_button)
                 addWishList()
                 return@let
             }

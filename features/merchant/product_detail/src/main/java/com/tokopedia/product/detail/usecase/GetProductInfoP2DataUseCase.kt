@@ -288,7 +288,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               error_message
               data{
                 product_id
-                config_name
                 available_buttons {
                   text
                   color

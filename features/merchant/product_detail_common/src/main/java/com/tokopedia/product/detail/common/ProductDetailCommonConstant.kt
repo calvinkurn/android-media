@@ -61,6 +61,8 @@ object ProductDetailCommonConstant{
     const val KEY_BUTTON_DISABLE = "disabled"
     const val KEY_BUTTON_SECONDARY = "secondary"
     const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
+    const val KEY_CART_TYPE_REMIND_ME = "remind_me"
+    const val KEY_CART_TYPE_CHECK_WISHLIST = "check_wishlist"
 
     //Button Action
     const val BUY_BUTTON = 1

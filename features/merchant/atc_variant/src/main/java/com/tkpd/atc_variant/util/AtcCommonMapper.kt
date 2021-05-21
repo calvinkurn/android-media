@@ -140,7 +140,7 @@ object AtcCommonMapper {
                                  parentProductId: String? = null,
                                  mapOfSelectedVariantOption: MutableMap<String, String>? = null,
                                  atcMessage: String? = null,
-                                 shouldRefreshValidateOvo: Boolean? = null,
+                                 shouldRefreshPreviousPage: Boolean? = null,
                                  requestCode: Int? = null): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
@@ -149,7 +149,7 @@ object AtcCommonMapper {
         if (mapOfSelectedVariantOption != null) result.mapOfSelectedVariantOption = mapOfSelectedVariantOption
         if (atcMessage != null) result.atcMessage = atcMessage
         if (parentProductId != null) result.parentProductId = parentProductId
-        if (shouldRefreshValidateOvo != null) result.shouldRefreshValidateOvo = shouldRefreshValidateOvo
+        if (shouldRefreshPreviousPage != null) result.shouldRefreshPreviousPage = shouldRefreshPreviousPage
         if (requestCode != null) result.requestCode = requestCode
 
         return result

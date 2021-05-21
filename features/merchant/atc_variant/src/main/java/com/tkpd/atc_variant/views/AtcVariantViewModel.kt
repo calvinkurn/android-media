@@ -37,8 +37,8 @@ import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -51,9 +51,11 @@ class AtcVariantViewModel @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase,
         private val addToCartOcsUseCase: AddToCartOcsUseCase,
         private val addToCartOccUseCase: AddToCartOccUseCase,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
         private val addWishListUseCase: AddWishListUseCase
 ) : ViewModel() {
+
+    //This livedata is only for access variant,cartRedirection, and warehouse locally in viewmodel
+    private val aggregatorData = MutableLiveData<ProductVariantAggregatorUiData>()
 
     private val _initialData = MutableLiveData<Result<List<AtcVariantVisitable>>>()
     val initialData: LiveData<Result<List<AtcVariantVisitable>>>
@@ -63,10 +65,6 @@ class AtcVariantViewModel @Inject constructor(
     val buttonData: LiveData<Result<PartialButtonDataModel>>
         get() = _buttonData
 
-    private val _aggregatorData = MutableLiveData<ProductVariantAggregatorUiData>()
-    val aggregatorData: LiveData<ProductVariantAggregatorUiData>
-        get() = _aggregatorData
-
     private val _variantActivityResult = MutableLiveData<ProductVariantResult>()
     val variantActivityResult: LiveData<ProductVariantResult>
         get() = _variantActivityResult
@@ -74,6 +72,10 @@ class AtcVariantViewModel @Inject constructor(
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
+
+    private val _addWishlistResult = MutableLiveData<Result<Boolean>>()
+    val addWishlistResult: LiveData<Result<Boolean>>
+        get() = _addWishlistResult
 
     fun onVariantClicked(selectedOptionKey: String,
                          selectedOptionId: String,
@@ -83,7 +85,7 @@ class AtcVariantViewModel @Inject constructor(
 
             val selectedVariantIds = updateSelectedOptionIds(selectedOptionKey, selectedOptionId)
 
-            //Run variant logic to determine selected , empty , etc
+            //Run variant logic to determine selected , empty , flash sale, etc
             val processedVariant = AtcVariantMapper.processVariant(getVariantData(),
                     selectedVariantIds,
                     variantLevel
@@ -91,7 +93,7 @@ class AtcVariantViewModel @Inject constructor(
 
             val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds?.values?.toList()
                     ?: listOf())
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, _aggregatorData.value?.cardRedirection)
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData.value?.cardRedirection)
 
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
@@ -111,7 +113,7 @@ class AtcVariantViewModel @Inject constructor(
 
             if (!isPartiallySelected) {
                 // if user only select 1 of 2 variant, no need to update the button
-                // this validation only be execute when user clicked variant
+                // this validation only be execute when user clicked variant and fully clicked 2 of 2 variant or 1 of 1
                 _buttonData.postValue(cartData.asSuccess())
                 updateActivityResult(
                         listVariant = processedVariant,
@@ -124,15 +126,15 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun getVariantData(): ProductVariant? {
-        return _aggregatorData.value?.variantData
+        return aggregatorData.value?.variantData
     }
 
     fun updateActivityResult(listVariant: List<VariantCategory>? = null,
                              selectedProductId: String? = null,
                              mapOfSelectedVariantOption: MutableMap<String, String>? = null,
                              atcSuccessMessage: String? = null,
-                             shouldRefreshValidateOvo: Boolean? = null,
-                             requestCode:Int? = null) {
+                             shouldRefreshPreviousPage: Boolean? = null,
+                             requestCode: Int? = null) {
 
         _variantActivityResult.run {
             postValue(AtcCommonMapper.updateActivityResultData(
@@ -143,23 +145,15 @@ class AtcVariantViewModel @Inject constructor(
                     mapOfSelectedVariantOption = mapOfSelectedVariantOption,
                     atcMessage = atcSuccessMessage,
                     requestCode = requestCode,
-                    shouldRefreshValidateOvo = shouldRefreshValidateOvo))
+                    shouldRefreshPreviousPage = shouldRefreshPreviousPage))
         }
     }
 
-    private fun updateSelectedOptionIds(selectedOptionKey: String, selectedOptionId: String): MutableMap<String, String>? {
-        val variantDataModel = (_initialData.value as Success).data.firstOrNull {
-            it is VariantComponentDataModel
-        } as? VariantComponentDataModel
-
-        //Update selected variant id to existing options
-        val selectedVariantIds = variantDataModel?.mapOfSelectedVariant?.toMutableMap()
-        selectedVariantIds?.let { selectedIds ->
-            selectedIds[selectedOptionKey] = selectedOptionId
-        }
-        return selectedVariantIds
-    }
-
+    /**
+     * Get current selected variant option id
+     * if user already choose 2, the result will be sometng like this (warna, merah), (ukuran,L)
+     * if user only choose 1 level of 2, the result will be like (warna,merah), (ukuran,0)
+     */
     fun getSelectedOptionIds(): MutableMap<String, String>? {
         val variantDataModel = (_initialData.value as Success).data.firstOrNull {
             it is VariantComponentDataModel
@@ -181,7 +175,7 @@ class AtcVariantViewModel @Inject constructor(
                 aggregatorParams.variantAggregator
             }
 
-            _aggregatorData.postValue(aggregatorResult)
+            aggregatorData.postValue(aggregatorResult)
 
             //Get selected child by product id, if product parent auto select first child
             //If parent just update the header and ignore the variant selection
@@ -210,6 +204,57 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    fun addWishlist(productId: String, userId: String, btnTextAfterAction: String) {
+        addWishListUseCase.createObservable(productId,
+                userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+//                if (!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
+////                    val extras = mapOf("wishlist_status" to ADD_WISHLIST).toString()
+////                    ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
+//                }
+                _addWishlistResult.postValue(Throwable(errorMessage ?: "").asFail())
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                updateActivityResult(shouldRefreshPreviousPage = true)
+                updateButtonAndWishlistLocally(productId ?: "", btnTextAfterAction)
+                _addWishlistResult.postValue(true.asSuccess())
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                // no op
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                // no op
+            }
+        })
+    }
+
+    private fun updateButtonAndWishlistLocally(productId: String, btnText: String) {
+        updateCartRedirectionData(productId, btnText)
+        //update wishlist in child locally
+        val selectedChild = getVariantData()?.getChildByProductId(productId)
+        selectedChild?.isWishlist = true
+
+        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData.value?.cardRedirection)
+        _buttonData.postValue(generateCartRedir.asSuccess())
+    }
+
+    private fun updateCartRedirectionData(productId: String, btnText: String) {
+        val cartType = ProductDetailCommonConstant.KEY_CART_TYPE_CHECK_WISHLIST
+        val btnColor = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY
+
+        //update cart redir localy
+        aggregatorData.value?.cardRedirection?.let {
+            it[productId]?.availableButtons = listOf(it[productId]?.availableButtons?.firstOrNull()?.copy(
+                    cartType = cartType,
+                    color = btnColor,
+                    text = btnText
+            ) ?: return@let)
+        }
+    }
+
     fun hitAtc(actionButton: Int,
                shopIdInt: Int,
                categoryName: String,
@@ -218,7 +263,6 @@ class AtcVariantViewModel @Inject constructor(
                shippingMinPrice: Int = 0,
                trackerAttributionPdp: String = "",
                trackerListNamePdp: String = "") {
-
         val selectedChild = getVariantData()?.getChildByOptionId(getSelectedOptionIds()?.values?.toList()
                 ?: listOf())
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
@@ -277,10 +321,6 @@ class AtcVariantViewModel @Inject constructor(
                 addToCart(addToCartRequestParams)
             }
         }
-    }
-
-    private fun getSelectedWarehouse(productId: String): WarehouseInfo? {
-        return _aggregatorData.value?.nearestWarehouse?.get(productId)
     }
 
     private fun addToCart(atcParams: Any) {
@@ -358,5 +398,27 @@ class AtcVariantViewModel @Inject constructor(
                 processedVariant = AtcVariantMapper.processVariant(variantData, selectedOptionIds),
                 selectedProductFulfillment = isFulfillment,
                 totalStock = variantData.totalStockChilds)
+    }
+
+    /**
+     * Update selection by key eg:
+     *  - Before update (warna, 0), (ukuran, 0)
+     *  - After update (warna, merah), (ukuran, 0)
+     */
+    private fun updateSelectedOptionIds(selectedOptionKey: String, selectedOptionId: String): MutableMap<String, String>? {
+        val variantDataModel = (_initialData.value as Success).data.firstOrNull {
+            it is VariantComponentDataModel
+        } as? VariantComponentDataModel
+
+        //Update selected variant id to existing options
+        val selectedVariantIds = variantDataModel?.mapOfSelectedVariant?.toMutableMap()
+        selectedVariantIds?.let { selectedIds ->
+            selectedIds[selectedOptionKey] = selectedOptionId
+        }
+        return selectedVariantIds
+    }
+
+    private fun getSelectedWarehouse(productId: String): WarehouseInfo? {
+        return aggregatorData.value?.nearestWarehouse?.get(productId)
     }
 }

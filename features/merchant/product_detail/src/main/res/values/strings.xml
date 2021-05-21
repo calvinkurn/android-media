@@ -232,7 +232,6 @@
     <string name="ticker_product_inactive_title">Barang Tak Tersedia</string>
     <string name="ticker_product_inactive_description">Untuk sementara barang ini tidak dijual. Kamu bisa wishlist barang ini atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
     <string name="toaster_success_add_wishlist_from_fab">Sukses menambah ke wishlist. Kamu akan dapat notifikasi ketika barang kembali tersedia.</string>
-    <string name="toaster_success_add_wishlist_from_button">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di wishlist ya..</string>
     <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
     <string name="pdp_video_divider"> / </string>
 

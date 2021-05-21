@@ -14,6 +14,7 @@
 
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
     <string name="add_to_cart_error_variant_builder">Oops, pilih %s dulu, ya</string>
+    <string name="toaster_success_add_wishlist_from_button">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di wishlist ya..</string>
 
     <string name="content_desc_btn_buy_now">button beli</string>
     <string name="content_desc_btn_add_to_cart">button tambah keranjang</string>

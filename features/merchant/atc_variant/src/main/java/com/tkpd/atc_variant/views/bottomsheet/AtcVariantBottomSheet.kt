@@ -150,6 +150,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             viewModel.decideInitialValue(it)
         })
 
+        observeInitialVisitablesData()
+        observeButtonState()
+        observeCart()
+        observeWishlist()
+    }
+
+    private fun observeInitialVisitablesData() {
         viewModel.initialData.observe(viewLifecycleOwner, {
             if (it is Success) {
                 adapter.submitList(it.data)
@@ -161,7 +168,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 }
             }
         })
+    }
 
+    private fun observeButtonState() {
         viewModel.buttonData.observe(viewLifecycleOwner, {
             if (it is Success) {
                 renderButton(it.data)
@@ -169,8 +178,19 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 baseAtcBtn?.visibility = false
             }
         })
+    }
 
-        observeCart()
+    private fun observeWishlist() {
+        viewModel.addWishlistResult.observe(viewLifecycleOwner, {
+            if (it is Success) {
+                if (it.data) {
+                    //success add wishlist
+                    viewContent.showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.toaster_success_add_wishlist_from_button))
+                }
+            } else if (it is Fail) {
+                viewContent.showToasterError(getErrorMessage(it.throwable))
+            }
+        })
     }
 
     private fun observeCart() {
@@ -224,7 +244,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         if (result.data.success == 0) {
             val parentId = viewModel.getVariantData()?.parentId ?: ""
             ProductCartHelper.validateOvo(activity, result, parentId, userSessionInterface.userId, {
-                viewModel.updateActivityResult(shouldRefreshValidateOvo = true)
+                viewModel.updateActivityResult(shouldRefreshPreviousPage = true)
                 dismiss()
             }, {
                 viewContent?.showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
@@ -299,6 +319,16 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         buttonActionType = buttonAction
         context?.let {
             val isPartialySelected = AtcVariantMapper.isPartiallySelectedOptionId(viewModel.getSelectedOptionIds())
+
+            if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
+                val btnTextAfterAction = "Cek Wishlist Kamu"
+                //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
+                //Use product id from params because we dont have selected id yet here
+                viewModel.addWishlist(sharedViewModel.aggregatorParams.value?.productId
+                        ?: "", userSessionInterface.userId,
+                        btnTextAfterAction)
+                return@let
+            }
 
             if (isPartialySelected) {
                 showErrorVariantUnselected()

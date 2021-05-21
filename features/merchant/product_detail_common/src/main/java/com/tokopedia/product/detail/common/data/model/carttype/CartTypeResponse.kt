@@ -28,10 +28,7 @@ data class CartTypeData(
         val productId: String = "",
         @SerializedName("available_buttons")
         @Expose
-        val availableButtons: List<AvailableButton> = listOf(),
-        @SerializedName("config_name")
-        @Expose
-        val configName: String = "",
+        var availableButtons: List<AvailableButton> = listOf(),
         @SerializedName("unavailable_buttons")
         @Expose
         val unavailableButtons: List<String> = listOf(),
