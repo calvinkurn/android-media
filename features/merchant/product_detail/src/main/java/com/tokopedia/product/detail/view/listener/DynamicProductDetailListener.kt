@@ -50,7 +50,7 @@ interface DynamicProductDetailListener {
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun goToApplink(url: String)
-    fun sendTrackerInstallmentPayment(componentTrackDataModel: ComponentTrackDataModel)
+    fun clickInstallmentPayment(applink: String, componentTrackDataModel: ComponentTrackDataModel)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
 
@@ -110,7 +110,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductGeneralInfoViewHolder
      */
-    fun onInfoClicked(name: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onInfoClicked(appLink: String, name: String, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecom

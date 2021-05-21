@@ -750,7 +750,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         RouteManager.route(context, url)
     }
 
-    override fun sendTrackerInstallmentPayment(componentTrackDataModel: ComponentTrackDataModel) {
+    override fun clickInstallmentPayment(applink: String, componentTrackDataModel: ComponentTrackDataModel) {
+        goToApplink(applink)
         DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
     }
 
@@ -764,7 +765,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     /**
      * ProductGeneralInfoViewHolder Listener
      */
-    override fun onInfoClicked(name: String, componentTrackDataModel: ComponentTrackDataModel) {
+    override fun onInfoClicked(appLink: String, name: String, componentTrackDataModel: ComponentTrackDataModel) {
         when (name) {
             ProductDetailConstant.PRODUCT_SHIPPING_INFO -> {
                 val productP3Resp = viewModel.productInfoP3.value ?: ProductInfoP3()
@@ -805,6 +806,10 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             ProductDetailConstant.PRODUCT_PROTECTION -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, getPurchaseProtectionUrl(), componentTrackDataModel)
                 openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
+            }
+            ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO -> {
+                goToApplink(appLink)
+                DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
         }
     }
