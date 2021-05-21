@@ -343,11 +343,11 @@ object ProductManageTracking {
     ) {
         val label =
                 if (isMain) {
-                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN
+                    "${ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN} - $source"
                 } else {
                     ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
                 }
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant, "$label - $source")
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant, label)
     }
 
     fun eventClickPreviewVariantProduct() {
