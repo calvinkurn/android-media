@@ -66,7 +66,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements T
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_overflow_menu){
+        if (item.getItemId() == R.id.action_overflow_menu) {
             showBottomMenu();
             return true;
         }
@@ -94,7 +94,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements T
         return false;
     }
 
-    public void showBottomMenu(){
+    public void showBottomMenu() {
         TravelMenuBottomSheet flightMenuBottomSheet = new TravelMenuBottomSheet();
         flightMenuBottomSheet.listener = this;
         flightMenuBottomSheet.show(getSupportFragmentManager(), TAG_FLIGHT_MENU);
@@ -107,13 +107,8 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements T
 
     @Override
     public void onOrderListClicked() {
-        if (userSession.isLoggedIn()) {
-            flightAnalytics.eventClickTransactions(getScreenName());
-            RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
-        } else {
-            Intent intent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN_FLIGHT);
-        }
+        flightAnalytics.eventClickTransactions(getScreenName());
+        RouteManager.route(this, ApplinkConst.FLIGHT_ORDER);
     }
 
     @Override
