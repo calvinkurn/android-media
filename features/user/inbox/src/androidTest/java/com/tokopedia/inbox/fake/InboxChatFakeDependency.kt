@@ -8,6 +8,9 @@ import com.tokopedia.inbox.test.R
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import javax.inject.Inject
 
+/**
+ * All chatlist fake dependency on new inbox
+ */
 class InboxChatFakeDependency @Inject constructor(
         val userSession: FakeUserSession,
         val ws: FakeTopchatWebSocket,
