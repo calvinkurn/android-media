@@ -68,6 +68,7 @@ class TopadsProductRecomAdapter(private val userSession: UserSessionInterface, v
             holder.view.recommendedBid.text = recommendationBid
             holder.view.editBudget.textFieldInput.setText(convertToCurrency(recomBid.toLong()))
             holder.view.cb_product_recom.isChecked = isChecked
+            setCurrentBid = recomBid.toInt()
             holder.view.setOnClickListener {
                 holder.view.cb_product_recom.isChecked = !holder.view.cb_product_recom.isChecked
                 isChecked = holder.view.cb_product_recom.isChecked
