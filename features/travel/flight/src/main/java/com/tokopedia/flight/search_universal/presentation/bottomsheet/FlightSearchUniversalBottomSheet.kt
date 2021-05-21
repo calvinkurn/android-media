@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
-import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet

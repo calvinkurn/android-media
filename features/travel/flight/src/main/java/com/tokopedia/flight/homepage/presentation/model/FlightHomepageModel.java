@@ -11,7 +11,7 @@ import android.text.style.RelativeSizeSpan;
 
 import androidx.core.content.ContextCompat;
 
-import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel;
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel;
 
 /**
  * Created by alvarisi on 10/30/17.

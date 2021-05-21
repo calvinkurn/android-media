@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.HorizontalProgressBar

@@ -20,8 +20,8 @@ import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
-import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLINK
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil

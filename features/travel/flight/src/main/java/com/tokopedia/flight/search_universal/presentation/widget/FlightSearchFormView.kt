@@ -13,7 +13,7 @@ import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel

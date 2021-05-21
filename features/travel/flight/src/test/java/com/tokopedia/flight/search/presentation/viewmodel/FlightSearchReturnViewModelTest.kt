@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.flight.airportv2.presentation.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.*
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
