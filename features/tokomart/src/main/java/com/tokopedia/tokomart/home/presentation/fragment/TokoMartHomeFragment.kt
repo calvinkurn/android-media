@@ -54,10 +54,10 @@ class TokoMartHomeFragment: Fragment() {
     }
 
     private fun setupRecyclerView() {
-        with(rvHome) {
-            adapter = this@TokoMartHomeFragment.adapter
-            layoutManager = LinearLayoutManager(requireContext())
-        }
+//        with(rvHome) {
+//            adapter = this@TokoMartHomeFragment.adapter
+//            layoutManager = LinearLayoutManager(requireContext())
+//        }
     }
 
     private fun observeLiveData() {
