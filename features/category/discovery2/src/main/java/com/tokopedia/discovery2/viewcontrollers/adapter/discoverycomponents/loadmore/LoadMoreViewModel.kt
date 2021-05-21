@@ -22,26 +22,13 @@ class LoadMoreViewModel(val application: Application, private val components: Co
 
     fun getViewOrientation() = components.loadForHorizontal
 
-//    override fun onAttachToViewHolder() {
-//        super.onAttachToViewHolder()
-//        launchCatchError(block = {
-//            if (!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
-//        }, onError = {
-//            getComponent(components.parentComponentId, components.pageEndPoint)?.verticalProductFailState = true
-//            syncData.value = true
-//        })
-//    }
-
-
-    // Remove
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            throw Exception("Error message")
+            if (!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
         }, onError = {
             getComponent(components.parentComponentId, components.pageEndPoint)?.verticalProductFailState = true
             syncData.value = true
         })
     }
-
 }

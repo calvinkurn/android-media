@@ -36,22 +36,10 @@ class ProductCardRevampViewModel(val application: Application, val components: C
         }
     }
 
-
-//    override fun onAttachToViewHolder() {
-//        super.onAttachToViewHolder()
-//        launchCatchError(block = {
-//            this@ProductCardRevampViewModel.syncData.value = productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
-//        }, onError = {
-//            getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
-//            this@ProductCardRevampViewModel.syncData.value = true
-//        })
-//    }
-
-// Remove
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            throw Exception("Error message")
+            this@ProductCardRevampViewModel.syncData.value = productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
         }, onError = {
             getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
             this@ProductCardRevampViewModel.syncData.value = true

@@ -33,7 +33,6 @@ class CarouselErrorLoadViewModel(val application: Application,
             syncData.value = productCardUseCase.getCarouselPaginatedData(components.parentComponentId, components.pageEndPoint)
         }, onError = {
             showLoader.value = false
-            it.printStackTrace()
         })
     }
 }

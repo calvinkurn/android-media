@@ -39,7 +39,6 @@ class ErrorLoadViewModel(val application: Application,
             }
         }, onError = {
             showLoader.value = false
-            it.printStackTrace()
         })
     }
 }

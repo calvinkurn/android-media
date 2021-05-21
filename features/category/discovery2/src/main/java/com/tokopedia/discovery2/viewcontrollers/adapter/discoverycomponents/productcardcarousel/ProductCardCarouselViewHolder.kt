@@ -149,10 +149,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private fun reloadComponent() {
         mProductCarouselRecyclerView.visible()
         carouselEmptyState?.gone()
-//        mProductCarouselComponentViewModel.fetchProductCarouselData()
-
-        // Remove
-        mProductCarouselComponentViewModel.fetchProductCarouselData(true)
+        mProductCarouselComponentViewModel.fetchProductCarouselData()
     }
 
     override fun getInnerRecycleView(): RecyclerView {
