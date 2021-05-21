@@ -151,7 +151,7 @@
                     <Space
                         android:id="@+id/space"
                         android:layout_width="@dimen/dp_120"
-                        android:layout_height="@dimen/dp_half" />
+                        android:layout_height="0dp" />
 
                     <TextView
                         android:id="@+id/text_new"
@@ -170,8 +170,7 @@
 
                 </RelativeLayout>
 
-                <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <com.tokopedia.design.label.LabelView
                     android:id="@+id/label_view_kyc"
                     style="@style/LabelLayout"
                     android:minHeight="@dimen/dp_64"
