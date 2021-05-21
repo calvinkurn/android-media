@@ -2,13 +2,13 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationExploreCategory
 import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
+import com.tokopedia.applink.chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
@@ -31,7 +31,6 @@ import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeOfficialStore
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
-import com.tokopedia.applink.internal.ApplinkConstInternalContent.TOKOPEDIA_BYME
 import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getInternalShopPage
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
@@ -192,9 +191,8 @@ object DeeplinkMapper {
                         uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS)) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
-        if (uri.host == TOKOPEDIA_BYME) {
-            return DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(deeplink)
-        }
+        val appLinkContent = DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
+        if (appLinkContent.isNotBlank()) return appLinkContent
 
         val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
