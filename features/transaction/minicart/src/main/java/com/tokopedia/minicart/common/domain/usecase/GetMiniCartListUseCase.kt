@@ -28,8 +28,9 @@ class GetMiniCartListUseCase @Inject constructor(private val graphqlRepository: 
     }
 
     override suspend fun executeOnBackground(): MiniCartData {
-//        val response = Gson().fromJson(MOCK_RESPONSE, MiniCartGqlResponse::class.java)
-//        return response.miniCart
+        if (params == null) {
+            throw RuntimeException("Parameter is null!")
+        }
 
         val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<MiniCartGqlResponse>()
@@ -39,7 +40,6 @@ class GetMiniCartListUseCase @Inject constructor(private val graphqlRepository: 
         } else {
             throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
         }
-
     }
 
     companion object {

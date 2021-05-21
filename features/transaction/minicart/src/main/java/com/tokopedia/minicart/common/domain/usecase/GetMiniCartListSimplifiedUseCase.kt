@@ -29,6 +29,10 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(private val graphqlRe
     }
 
     override suspend fun executeOnBackground(): MiniCartSimplifiedData {
+        if (params == null) {
+            throw RuntimeException("Parameter is null!")
+        }
+
         val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 

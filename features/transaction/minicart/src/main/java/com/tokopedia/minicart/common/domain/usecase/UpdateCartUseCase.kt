@@ -5,9 +5,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -15,22 +17,52 @@ import javax.inject.Inject
 class UpdateCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartV2Data>() {
 
-    var updateCartRequestList = emptyList<UpdateCartRequest>()
+    private var params: Map<String, Any?>? = null
 
-    fun setParams(updateCartRequestList: List<UpdateCartRequest>) {
-        this.updateCartRequestList = updateCartRequestList
-    }
+    fun setParams(miniCartItemList: List<MiniCartItem>) {
+        val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
-    override suspend fun executeOnBackground(): UpdateCartV2Data {
-        if (updateCartRequestList.isEmpty()) {
-            throw RuntimeException("Parameter is empty!")
+        miniCartItemList.forEach {
+            updateCartRequestList.add(
+                    UpdateCartRequest().apply {
+                        cartId = it.cartId
+                        quantity = it.quantity
+                        notes = it.notes
+                    }
+            )
         }
 
-        val params = mapOf(
+        mapParams(updateCartRequestList)
+    }
+
+    fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>) {
+        val updateCartRequestList = mutableListOf<UpdateCartRequest>()
+
+        miniCartItemList.forEach {
+            updateCartRequestList.add(
+                    UpdateCartRequest().apply {
+                        cartId = it.cartId
+                        quantity = it.productQty
+                        notes = it.productNotes
+                    }
+            )
+        }
+
+        mapParams(updateCartRequestList)
+    }
+
+    private fun mapParams(updateCartRequestList: MutableList<UpdateCartRequest>) {
+        params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_CARTS to updateCartRequestList,
                 KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
+    }
+
+    override suspend fun executeOnBackground(): UpdateCartV2Data {
+        if (params == null) {
+            throw RuntimeException("Parameter is null!")
+        }
 
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
