@@ -1,4 +1,4 @@
-package com.tokopedia.travelhomepage.homepage.data
+package com.tokopedia.travelhomepage.destination.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

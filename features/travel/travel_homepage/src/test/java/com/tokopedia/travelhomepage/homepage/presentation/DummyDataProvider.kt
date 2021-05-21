@@ -3,10 +3,10 @@ package com.tokopedia.travelhomepage.homepage.presentation
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelMetaModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
+import com.tokopedia.travelhomepage.destination.model.TravelHomepageOrderListModel
+import com.tokopedia.travelhomepage.destination.model.TravelHomepageRecommendationModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 
 /**
  * @author by furqan on 13/02/2020

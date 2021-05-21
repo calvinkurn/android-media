@@ -1,19 +1,13 @@
 package com.tokopedia.travelhomepage.destination.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.data.entity.TravelMetaModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationCityModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
+import com.tokopedia.travelhomepage.destination.model.*
 import com.tokopedia.travelhomepage.destination.usecase.GetEmptyModelsUseCase
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 import com.tokopedia.travelhomepage.shouldBe
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations

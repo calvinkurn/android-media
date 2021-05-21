@@ -2,7 +2,6 @@ package com.tokopedia.travelhomepage.destination.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travelhomepage.destination.factory.TravelDestinationAdapterTypeFactory
 
 /**
