@@ -427,8 +427,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onSuccessSubmitReview() {
         stopButtonLoading()
-        dismiss()
         activity?.setResult(Activity.RESULT_OK)
+        dismiss()
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
