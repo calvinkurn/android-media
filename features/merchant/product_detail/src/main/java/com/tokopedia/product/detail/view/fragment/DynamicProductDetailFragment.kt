@@ -746,14 +746,17 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         startActivity(intent)
     }
 
-    override fun goToApplink(url: String) {
+    override fun goToApplink(url: String, componentTrackDataModel: ComponentTrackDataModel?) {
         RouteManager.route(context, url)
+        if (componentTrackDataModel?.componentName == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) {
+            DynamicProductDetailTracking.Click.eventClickPDPInstallmentSeeMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+        }
     }
 
     override fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel) {
         if (url.isNotEmpty()) {
             DynamicProductDetailTracking.Click.eventClickCustomInfo(title, viewModel.userId, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-            goToApplink(url)
+            goToApplink(url = url, componentTrackDataModel = componentTrackDataModel)
         }
     }
 
@@ -950,7 +953,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         if (url.isEmpty()) return
         trackOnTickerClicked(tickerTitle, tickerType, componentTrackDataModel, tickerDescription)
         if (activity != null && RouteManager.isSupportApplink(activity, url)) {
-            goToApplink(url)
+            componentTrackDataModel?.let { goToApplink(url, it) }
         } else {
             openWebViewUrl(url)
         }
@@ -3522,7 +3525,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
     }
 
     override fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String) {
-        applink?.let { goToApplink(it) }
+        applink?.let { goToApplink(it, null) }
         val position = getComponentPosition(model)
         DynamicProductDetailTracking.Click.eventTopAdsImageViewClicked(trackingQueue, viewModel.userId, bannerId, position, bannerName)
     }

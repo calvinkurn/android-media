@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
@@ -42,7 +43,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
         view.setOnClickListener {
             if (element.name == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) {
-                listener.goToApplink(element.applink)
+                listener.goToApplink(element.applink, getComponentTrackData(element))
             } else {
                 listener.onInfoClicked(element.name, getComponentTrackData(element))
             }

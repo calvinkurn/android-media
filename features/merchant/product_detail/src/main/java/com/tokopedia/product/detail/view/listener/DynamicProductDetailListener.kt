@@ -49,7 +49,7 @@ interface DynamicProductDetailListener {
     fun gotoDescriptionTab(descriptionText: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun goToApplink(url: String)
+    fun goToApplink(url: String, componentTrackDataModel: ComponentTrackDataModel?)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
 
