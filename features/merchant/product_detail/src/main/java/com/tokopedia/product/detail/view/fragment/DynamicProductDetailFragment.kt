@@ -59,7 +59,7 @@ import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify

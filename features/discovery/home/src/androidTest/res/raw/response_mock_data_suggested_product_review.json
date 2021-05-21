@@ -1,0 +1,16 @@
+[
+  {
+    "data": {
+      "suggestedProductReview": {
+        "description": "Yuk, Berikan nilaimu di sini.",
+        "dismissURL": "http://www.tokopedia.com",
+        "dismissable": true,
+        "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/6/55fab267-aab9-4b0a-818b-27922767c92d.jpg",
+        "linkURL": "tokopedia://product-review/create/582683417/1621935536",
+        "orderID": "786684113",
+        "productID": "1621935536",
+        "title": "Android Test - Product Review"
+      }
+    }
+  }
+]

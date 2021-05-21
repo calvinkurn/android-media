@@ -2,6 +2,7 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ResolveInfo
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
@@ -25,8 +26,6 @@ import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.webview.BaseSimpleWebViewActivity.DeeplinkIntent.APP_WHITELISTED_DOMAINS_URL
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import timber.log.Timber
-import java.util.*
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -277,6 +276,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
         const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
         const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
+        const val CHROME_PACKAGE = "com.android.chrome"
+
+        private const val EXAMPLE_DOMAIN = "http://example.com/"
 
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
@@ -328,17 +330,17 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
         @JvmStatic
         fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
-            val webUrl = extras.getString("url", getInstance().WEB)
+            val webUrl = extras.getString("url", getInstance().WEB).decode()
+            val webUri = Uri.parse(webUrl)
+
             val destinationIntent = Intent(Intent.ACTION_VIEW)
-            val decodedUrl: String?
-            decodedUrl = webUrl.decode()
-            val uriData = Uri.parse(decodedUrl)
-            destinationIntent.data = uriData
-            if (context == null) {
-                return destinationIntent
-            }
+            if (context == null) return destinationIntent.apply { data = webUri }
+
+            // hacky way: to avoid looping forever
+            destinationIntent.data = Uri.parse(EXAMPLE_DOMAIN)
+
             val resolveInfos = context.packageManager.queryIntentActivities(destinationIntent, 0)
-            // remove deeplink tokopedia if any
+            // remove package tokopedia if any
             for (i in resolveInfos.indices.reversed()) {
                 val resolveInfo = resolveInfos[i]
                 val packageName = resolveInfo.activityInfo.packageName
@@ -347,17 +349,24 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 }
             }
 
-            // return the first intent only (only if it is the only available browser)
-            return if (resolveInfos.size == 1) {
-                val resolveInfo = resolveInfos[0]
-                val browserIntent = Intent()
-                browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
-                browserIntent.data = uriData
-                browserIntent
-            } else {
-                destinationIntent
-            }
+            // return when the device has a browser app
+            return if (resolveInfos.size >= 1) {
+                // open chrome app by default
+                val resolveInfo = resolveInfos.find { it.resolvePackageName == CHROME_PACKAGE }?: resolveInfos.first()
+                getBrowserIntent(resolveInfo, webUri)
+            } else getSimpleWebViewActivityIntent(context, webUrl)
         }
+
+        private fun getBrowserIntent(resolveInfo: ResolveInfo, webUri: Uri) =
+                Intent().apply {
+                    setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
+                    data = webUri
+                }
+
+        private fun getSimpleWebViewActivityIntent(context: Context, webUrl: String) =
+                Intent(context, BaseSimpleWebViewActivity::class.java).apply {
+                    putExtra(KEY_URL, webUrl)
+                }
     }
 
 }
