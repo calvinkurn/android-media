@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.example
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.minicart.R
@@ -14,10 +13,9 @@ class ExampleActivity : AppCompatActivity(), MiniCartWidgetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
-        Log.d("MiniCart", "LaunchActivityExample")
 
         val miniCartWidget = findViewById<MiniCartWidget>(R.id.mini_cart_widget)
-        miniCartWidget?.initialize(this, this)
+        miniCartWidget?.initialize(listOf("1"), this, this)
 //        miniCartWidget?.updateData(MiniCartWidgetData(totalProductCount = 10, totalProductPrice = 1000000))
         miniCartWidget?.updateData()
     }

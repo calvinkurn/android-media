@@ -21,15 +21,15 @@ class MiniCartListBottomSheet @Inject constructor() {
 
     lateinit var viewModel: MiniCartListViewModel
 
-    fun show(fragmentManager: FragmentManager, activity: FragmentActivity) {
+    fun show(shopIds: List<String>, fragmentManager: FragmentManager, activity: FragmentActivity) {
         initializeInjector(activity)
         initializeViewModel(activity)
         initializeView(activity, fragmentManager)
-        initializeCartData()
+        initializeCartData(shopIds)
     }
 
-    private fun initializeCartData() {
-        viewModel.getCartList()
+    private fun initializeCartData(shopIds: List<String>) {
+        viewModel.getCartList(shopIds)
     }
 
     private fun initializeViewModel(activity: FragmentActivity) {

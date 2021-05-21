@@ -42,10 +42,10 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(activity: FragmentActivity, listener: MiniCartWidgetListener) {
+    fun initialize(shopIds: List<String>, activity: FragmentActivity, listener: MiniCartWidgetListener) {
         val application = activity.application
         initializeInjector(application)
-        initializeView(activity)
+        initializeView(shopIds, activity)
 
         viewModel = ViewModelProvider(activity, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
         miniCartWidgetListener = listener
@@ -55,13 +55,13 @@ class MiniCartWidget @JvmOverloads constructor(
         })
     }
 
-    private fun initializeView(activity: FragmentActivity) {
+    private fun initializeView(shopIds: List<String>, activity: FragmentActivity) {
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         totalAmount?.let {
             it.enableAmountChevron(true)
             it.amountChevronView.setOnClickListener {
                 fragmentManager?.let {
-                    miniCartListBottomSheet.show(it, activity)
+                    miniCartListBottomSheet.show(shopIds, it, activity)
                 }
             }
         }

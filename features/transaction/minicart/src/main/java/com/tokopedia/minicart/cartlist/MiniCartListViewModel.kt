@@ -19,7 +19,8 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
     val cartListUiModel: LiveData<MutableList<Visitable<*>>>
         get() = _cartListUiModel
 
-    fun getCartList() {
+    fun getCartList(shopIds: List<String>) {
+        getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(onSuccess = {
             _cartListUiModel.value = miniCartListViewHolderMapper.mapUiModel(it)
         }, onError = {
