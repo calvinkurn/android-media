@@ -694,7 +694,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             val decimalNumber = valueResponse.toString().split(".").getOrNull(1)?.getOrNull(0) ?: ""
             "$number.$decimalNumber"
         } catch (e: IndexOutOfBoundsException) {
-            ""
+            String.format("%.1f", valueResponse)
         }
     }
 }
