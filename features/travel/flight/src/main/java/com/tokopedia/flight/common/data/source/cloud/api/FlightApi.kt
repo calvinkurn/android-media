@@ -1,6 +1,6 @@
 package com.tokopedia.flight.common.data.source.cloud.api
 
-import com.tokopedia.flight.cancellationV2.data.CancellationAttachmentUploadEntity
+import com.tokopedia.flight.cancellation.data.CancellationAttachmentUploadEntity
 import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.network.data.model.response.DataResponse
 import okhttp3.MultipartBody
