@@ -27,7 +27,8 @@
       android:layout_marginTop="@dimen/layout_lvl2"
       app:srcCompat="@drawable/ic_indo_flag"
       app:layout_constraintTop_toBottomOf="@+id/labelPhoneNumberView"
-      app:layout_constraintLeft_toLeftOf="parent"/>
+      app:layout_constraintLeft_toLeftOf="parent"
+      android:contentDescription="@null"/>
     
     <com.tokopedia.unifyprinciples.Typography
       android:id="@+id/codePhoneNumberView"

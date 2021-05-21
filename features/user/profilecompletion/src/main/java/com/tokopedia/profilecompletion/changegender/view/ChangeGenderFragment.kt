@@ -83,7 +83,7 @@ class ChangeGenderFragment : BaseDaggerFragment() {
 
     private fun setObserver() {
         viewModel.mutateChangeGenderResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> onSuccessChangeGender(it.data)

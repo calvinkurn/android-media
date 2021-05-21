@@ -129,7 +129,7 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     private fun setObserver() {
         viewModel.mutateAddEmailResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> onSuccessAddEmail(it.data)
@@ -139,7 +139,7 @@ class AddEmailFragment : BaseDaggerFragment() {
         )
 
         viewModel.mutateCheckEmailResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> goToVerificationActivity(it.data)
@@ -201,7 +201,7 @@ class AddEmailFragment : BaseDaggerFragment() {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             if (otpCode.isNotBlank()) {
                 val email = et_email.textFieldInput.text.toString().trim()
-                viewModel.mutateAddEmail(context!!, email, otpCode)
+                viewModel.mutateAddEmail(requireContext(), email, otpCode)
             } else {
                 onErrorShowSnackbar(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))

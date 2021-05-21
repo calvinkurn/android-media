@@ -67,8 +67,8 @@ class AddBodFragment: BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        maxDate = GregorianCalendar(getCurrentLocale(context!!))
-        defaultDate = GregorianCalendar(getCurrentLocale(context!!))
+        maxDate = GregorianCalendar(getCurrentLocale(requireContext()))
+        defaultDate = GregorianCalendar(getCurrentLocale(requireContext()))
 
         initVar()
         initDatepicker()
@@ -83,7 +83,7 @@ class AddBodFragment: BaseDaggerFragment(){
         btnSave.setOnClickListener {
             if(selectedDate.isNotBlank()) {
                 showLoading()
-                addBodViewModel.editBodUserProfile(context!!, selectedDate)
+                addBodViewModel.editBodUserProfile(requireContext(), selectedDate)
             }
         }
 
@@ -132,7 +132,7 @@ class AddBodFragment: BaseDaggerFragment(){
     }
 
     private fun initObserver(){
-        addBodViewModel.editBodUserProfileResponse.observe(this, Observer {
+        addBodViewModel.editBodUserProfileResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessAddBodUserProfile(it.data)
                 is Fail -> onErrorAddBodUserProfile(it.throwable)

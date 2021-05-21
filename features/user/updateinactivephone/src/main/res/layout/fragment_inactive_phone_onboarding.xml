@@ -66,7 +66,8 @@
       android:layout_height="@dimen/spacing_lvl4"
       app:srcCompat="@drawable/ic_shield_inactive_phone"
       app:layout_constraintTop_toBottomOf="@+id/textDescription"
-      app:layout_constraintLeft_toLeftOf="parent"/>
+      app:layout_constraintLeft_toLeftOf="parent"
+      android:contentDescription="@null"/>
   
     <com.tokopedia.unifyprinciples.Typography
       android:layout_width="wrap_content"
