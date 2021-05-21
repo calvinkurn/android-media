@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -26,6 +25,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.ConnectException
@@ -126,20 +126,19 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     }
 
     private fun setAccordion(model: ShopNoteModel) {
-        val tvContent = TextView(context)
-        tvContent.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        tvContent.text = MethodChecker.fromHtml(model.content)
         context?.let {
-            tvContent.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
+            val tpContent = Typography(it)
+            tpContent.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            tpContent.text = MethodChecker.fromHtml(model.content)
+            accordion?.addGroup(AccordionDataUnify(
+                    model.title ?: "",
+                    "",
+                    null,
+                    null,
+                    tpContent,
+                    false
+            ).setContentPadding(16.toPx(), 4.toPx(), 16.toPx(), 4.toPx()))
         }
-        accordion?.addGroup(AccordionDataUnify(
-                model.title ?: "",
-                "",
-                null,
-                null,
-                tvContent,
-                false
-        ).setContentPadding(16.toPx(), 4.toPx(), 16.toPx(), 4.toPx()))
     }
 
     private fun getShopNotes() {
