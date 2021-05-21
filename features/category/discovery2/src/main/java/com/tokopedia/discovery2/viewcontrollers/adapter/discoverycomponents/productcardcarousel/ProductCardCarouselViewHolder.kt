@@ -130,7 +130,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     }
 
     private fun handleErrorState() {
-        mDiscoveryRecycleAdapter.setDataList(ArrayList())
+        addShimmer()
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
         if (mHeaderView.childCount > 0)
             mHeaderView.removeAllViews()

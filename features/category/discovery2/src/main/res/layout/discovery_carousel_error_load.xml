@@ -12,7 +12,7 @@
         android:layout_height="@dimen/dp_60"
         android:layout_gravity="center"
         android:layout_marginHorizontal="@dimen/dp_16"
-        android:src="@drawable/ic_reload"
+        android:src="@drawable/error_loader"
         android:visibility="visible" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -21,8 +21,8 @@
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
         android:layout_marginHorizontal="@dimen/dp_16"
+        android:visibility="gone"
         app:loader_corner_radius="@dimen/dp_10"
         app:loader_type="circular"
-        android:visibility="gone"
-        tools:visibility = "visible"/>
+        tools:visibility="visible" />
 </LinearLayout>
