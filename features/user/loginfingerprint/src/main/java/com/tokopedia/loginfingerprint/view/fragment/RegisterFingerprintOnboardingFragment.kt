@@ -99,7 +99,7 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment(), ScanFingerpr
     }
 
     private fun setupObserver(){
-        viewModel.verifyRegisterFingerprintResult.observe(this, Observer {
+        viewModel.verifyRegisterFingerprintResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessRegisterFP()
                 is Fail -> onErrorRegisterFP(it.throwable)
