@@ -542,7 +542,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
 
         } catch (e: Exception) {
-            false
+            true
         }
     }
 
