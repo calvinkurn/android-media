@@ -16,8 +16,6 @@ object HomeLayoutMapper {
         return response.run {
             listOf(
                     HomeChooseAddressWidgetUiModel("0", "Choose Address Widget"),
-                    HomeAllCategoryUiModel("1", "Kategori"),
-                    HomeSectionUiModel("2", "Another section"),
                     BannerDataModel(ChannelModel(
                             "1221",
                             "12",
@@ -25,7 +23,50 @@ object HomeLayoutMapper {
                                     ChannelGrid(id = "0", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg"),
                                     ChannelGrid(id = "1", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg")
                             )
-                    ))
+                    )),
+                    BannerDataModel(ChannelModel(
+                            "1221",
+                            "12",
+                            channelGrids = listOf(
+                                    ChannelGrid(id = "0", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg"),
+                                    ChannelGrid(id = "1", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg")
+                            )
+                    )),
+                    BannerDataModel(ChannelModel(
+                            "1221",
+                            "12",
+                            channelGrids = listOf(
+                                    ChannelGrid(id = "0", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg"),
+                                    ChannelGrid(id = "1", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg")
+                            )
+                    )),
+                    BannerDataModel(ChannelModel(
+                            "1221",
+                            "12",
+                            channelGrids = listOf(
+                                    ChannelGrid(id = "0", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg"),
+                                    ChannelGrid(id = "1", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg")
+                            )
+                    )),
+                    BannerDataModel(ChannelModel(
+                            "1221",
+                            "12",
+                            channelGrids = listOf(
+                                    ChannelGrid(id = "0", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg"),
+                                    ChannelGrid(id = "1", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg")
+                            )
+                    )),
+                    BannerDataModel(ChannelModel(
+                            "1221",
+                            "12",
+                            channelGrids = listOf(
+                                    ChannelGrid(id = "0", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg"),
+                                    ChannelGrid(id = "1", imageUrl = "http://www.helpmykidlearn.ie/images/uploads/Big_and_small_329.jpg")
+                            )
+                    )),
+                    HomeAllCategoryUiModel("1", "Kategori"),
+                    HomeSectionUiModel("2", "Another section")
+
             )
         }
     }

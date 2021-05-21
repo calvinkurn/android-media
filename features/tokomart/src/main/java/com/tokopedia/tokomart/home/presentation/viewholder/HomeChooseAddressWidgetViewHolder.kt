@@ -10,7 +10,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.util.NavToolbarExt
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
+import com.tokopedia.unifycomponents.toPx
 
 class HomeChooseAddressWidgetViewHolder(
         itemView: View,
@@ -29,6 +31,7 @@ class HomeChooseAddressWidgetViewHolder(
     private var coachMark: CoachMark2? = null
 
     override fun bind(element: HomeChooseAddressWidgetUiModel?) {
+        itemView.setPadding(16.toPx(), NavToolbarExt.getFullToolbarHeight(itemView.context) - 16, 0, 8.toPx())
         setupChooseAddressWidget()
     }
 
