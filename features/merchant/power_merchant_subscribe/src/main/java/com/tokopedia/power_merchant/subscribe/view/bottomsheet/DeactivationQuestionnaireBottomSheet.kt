@@ -40,12 +40,14 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
     companion object {
         private const val TAG = "DeactivationBottomSheet"
         private const val KEY_PM_TIRE_TYPE = "key_pm_tier"
+        private const val KEY_PM_EXPIRED_DATE = "key_expired_date"
 
-        fun createInstance(pmTireType: Int): DeactivationQuestionnaireBottomSheet {
+        fun createInstance(expiredDate: String, pmTireType: Int): DeactivationQuestionnaireBottomSheet {
             return DeactivationQuestionnaireBottomSheet().apply {
                 overlayClickDismiss = false
                 isFullpage = true
                 arguments = Bundle().apply {
+                    putString(KEY_PM_EXPIRED_DATE, expiredDate)
                     putInt(KEY_PM_TIRE_TYPE, pmTireType)
                 }
             }
@@ -169,7 +171,7 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
     private fun getDeactivationQuestionnaire() {
         childView?.progressPmDeactivation?.visible()
         val pmTireType = arguments?.getInt(KEY_PM_TIRE_TYPE, PMConstant.ShopTierType.POWER_MERCHANT) ?: PMConstant.ShopTierType.POWER_MERCHANT
-        mViewModel.getPMCancellationQuestionnaireData(userSession.shopId, pmTireType)
+        mViewModel.getPMCancellationQuestionnaireData(pmTireType)
     }
 
     private fun showToaster(message: String, ctaText: String, duration: Int, action: () -> Unit = {}) {
@@ -188,10 +190,11 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
         questionnaireAdapter.addElement(data.listQuestion)
 
         childView?.run {
+            val expiredDateStr = arguments?.getString(KEY_PM_EXPIRED_DATE).orEmpty()
             val expiredDateFmt = DateFormatUtils.formatDate(
                     DateFormatUtils.FORMAT_YYYY_MM_DD,
                     DateFormatUtils.FORMAT_D_MMMM_YYYY,
-                    data.expiredDate
+                    expiredDateStr
             )
             tvPmDeactivationInfo?.text = context.getString(R.string.pm_label_deactivation_questionnaire_intro_desc, expiredDateFmt).parseAsHtml()
             nestedScrollPmDeactivation.visible()
