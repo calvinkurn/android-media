@@ -20,7 +20,9 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
 
-        testInstrumentationRunnerArguments clearPackageData: 'true'
+        testInstrumentationRunnerArguments clearPackageData: 'true',
+                // Leak Canary Listener, if do not want to use, just comment the code below
+                'listener': 'leakcanary.FailTestOnLeakRunListener'
     }
 
     testOptions {
@@ -84,6 +86,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.leakCanaryInstrument
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
