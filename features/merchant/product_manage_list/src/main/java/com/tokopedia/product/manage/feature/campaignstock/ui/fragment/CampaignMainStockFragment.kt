@@ -37,7 +37,8 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                            stock: Int,
                            isCampaign: Boolean,
                            access: ProductManageAccess,
-                           campaignStockListener: CampaignStockListener): CampaignMainStockFragment {
+                           source: String,
+                           campaignStockListener: CampaignStockListener,): CampaignMainStockFragment {
             return CampaignMainStockFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_VARIANT, isVariant)
@@ -46,6 +47,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                     putInt(EXTRA_STOCK, stock)
                     putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductUIList)
                     putParcelable(EXTRA_PRODUCT_MANAGE_ACCESS, access)
+                    putString(CampaignStockFragment.SOURCE, source)
                 }
                 this.campaignStockListener = campaignStockListener
             }
@@ -93,6 +95,8 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_PRODUCT_MANAGE_ACCESS) }
 
+    private val source by lazy { arguments?.getString(CampaignStockFragment.SOURCE) }
+
     private var campaignStockListener: CampaignStockListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -114,7 +118,8 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
             onTotalStockChanged = ::onTotalStockChanged,
             onActiveStockChanged = ::onActiveStockChanged,
             onVariantStockChanged = ::onVariantStockChanged,
-            onVariantStatusChanged = ::onVariantStatusChanged
+            onVariantStatusChanged = ::onVariantStatusChanged,
+            source = source?: CampaignStockFragment.DEFAULT_SOURCE
     )
 
     override fun onItemClicked(t: Visitable<CampaignStockTypeFactory>?) {}

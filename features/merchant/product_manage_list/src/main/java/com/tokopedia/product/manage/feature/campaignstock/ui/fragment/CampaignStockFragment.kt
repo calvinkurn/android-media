@@ -50,6 +50,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     companion object {
         private const val MAIN_TAB_POSITION = 0
+        const val SOURCE = "extra_source"
+        const val DEFAULT_SOURCE = "manage product"
 
         @JvmStatic
         fun createInstance(): CampaignStockFragment = CampaignStockFragment()
@@ -68,6 +70,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private val productIds by lazy {
         activity?.intent?.getStringArrayExtra(CampaignStockActivity.PRODUCT_ID)
+    }
+
+    private val source by lazy {
+        activity?.intent?.getStringExtra(SOURCE)?: DEFAULT_SOURCE
     }
 
     private var isVariant: Boolean? = null
@@ -203,7 +209,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             this@CampaignStockFragment.tabs_campaign_stock?.getUnifyTabLayout()?.selectedTabPosition?.let { tabPosition ->
                 val isMainStock = tabPosition == MAIN_TAB_POSITION
                 isVariant?.run {
-                    ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock)
+                    ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock, source)
                 }
             }
         }
@@ -374,7 +380,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                      stock: Int,
                                      isCampaign: Boolean,
                                      access: ProductManageAccess) =
-            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList, isActive, stock, isCampaign, access, this)
+            CampaignMainStockFragment.createInstance(
+                    isVariant, sellableProductUIList,
+                    isActive, stock, isCampaign,
+                    access, source
+                    , this)
 
     private fun getReservedStockFragment(isVariant: Boolean,
                                          reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>,

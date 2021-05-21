@@ -308,26 +308,29 @@ object ProductManageTracking {
     }
 
     fun eventClickAllocationProductStatus(isVariant: Boolean,
-                                          isOn: Boolean) {
-        val label =
+                                          isOn: Boolean,
+                                          source: String = ""
+    ) {
+        var label =
                 if (isOn) {
                     ProductManageDataLayer.EVENT_LABEL_ALLOCATION_ON
                 } else {
                     ProductManageDataLayer.EVENT_LABEL_ALLOCATION_OFF
                 }
+        if(source.isNotEmpty()) label = "$label - $source"
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS withAllocationType isVariant, label)
     }
 
-    fun eventClickAllocationDecreaseStock(isVariant: Boolean) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK withAllocationType isVariant, "")
+    fun eventClickAllocationDecreaseStock(isVariant: Boolean, label: String = "") {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK withAllocationType isVariant, label)
     }
 
     fun eventClickAllocationInputStock(isVariant: Boolean) {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INPUT_STOCK withAllocationType isVariant, "")
     }
 
-    fun eventClickAllocationIncreaseStock(isVariant: Boolean) {
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK withAllocationType isVariant, "")
+    fun eventClickAllocationIncreaseStock(isVariant: Boolean, label: String = "") {
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK withAllocationType isVariant, label)
     }
 
     fun eventClickAllocationOnStockCampaign(isVariant: Boolean) {
@@ -335,14 +338,16 @@ object ProductManageTracking {
     }
 
     fun eventClickAllocationSaveStock(isVariant: Boolean,
-                                      isMain: Boolean) {
+                                      isMain: Boolean,
+                                      source: String
+    ) {
         val label =
                 if (isMain) {
                     ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN
                 } else {
                     ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
                 }
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant, label)
+        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant, "$label - $source")
     }
 
     fun eventClickPreviewVariantProduct() {
