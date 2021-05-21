@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.topads
 
-import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -20,6 +19,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 const val TOPADS_HEADLINE_VALUE_SRC = "fav_product"
+
 class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface,
                                private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
 
@@ -36,7 +36,9 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         topadsHeadlineView.setFollowBtnClickListener(this)
         topadsHeadlineView.setTopAdsProductItemListsner(object : TopAdsItemImpressionListener() {
             override fun onImpressionProductAdsItem(position: Int, product: Product?, cpmData: CpmData) {
-                topAdsHeadlineListener?.onTopAdsProductItemListsner(position, product!!, cpmData)
+                product?.let {
+                    topAdsHeadlineListener?.onTopAdsProductItemListsner(position, it, cpmData)
+                }
             }
         })
     }
@@ -75,20 +77,20 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         hideHeadlineView()
         topadsHeadlineUiModel?.run {
             if (cpmModel != null) {
-                showHeadlineView(cpmModel!!)
+                showHeadlineView(cpmModel)
             } else {
                 fetchTopadsHeadlineAds(topadsHeadlineUiModel?.topadsHeadLinePage ?: 0)
             }
         }
     }
 
-    private fun showHeadlineView(cpmModel: CpmModel) {
+    private fun showHeadlineView(cpmModel: CpmModel?) {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
-        topadsHeadlineView.displayAds(cpmModel)
-        if(topadsHeadlineUiModel != null) {
-            setImpressionListener(topadsHeadlineUiModel!!)
+        cpmModel?.let {
+            topadsHeadlineView.displayAds(it)
         }
+        topadsHeadlineUiModel?.let { setImpressionListener(it) }
     }
 
     interface TopAdsHeadlineListener {
@@ -103,14 +105,16 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun setImpressionListener(element: TopadsHeadlineUiModel) {
-        if(element.cpmModel != null) {
+        element.cpmModel?.let {
             topadsHeadlineView.addOnImpressionListener(element.impressHolder) {
-                topAdsHeadlineListener?.onTopAdsHeadlineImpression(adapterPosition, element.cpmModel!!)
+                topAdsHeadlineListener?.onTopAdsHeadlineImpression(adapterPosition, it)
             }
         }
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-        topAdsHeadlineListener?.onTopAdsHeadlineAdsClick(position, applink, data!!)
+        data?.let {
+            topAdsHeadlineListener?.onTopAdsHeadlineAdsClick(position, applink, it)
+        }
     }
 }
