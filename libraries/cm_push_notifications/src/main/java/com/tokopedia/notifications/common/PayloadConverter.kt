@@ -40,6 +40,7 @@ object PayloadConverter {
         model.notificationId = Integer.parseInt(data.getString(NOTIFICATION_ID, "500"))
         model.campaignId = java.lang.Long.parseLong(data.getString(CAMPAIGN_ID, "0"))
         model.parentId = java.lang.Long.parseLong(data.getString(PARENT_ID, "0"))
+        model.elementId = data.getString(ELEMENT_ID, "")
         model.tribeKey = data.getString(TRIBE_KEY, "")
         model.type = data.getString(NOTIFICATION_TYPE, "")
         model.channelName = data.getString(CHANNEL, "")
@@ -70,7 +71,9 @@ object PayloadConverter {
             model.productInfoList = productInfoList
         model.subText = data.getString(SUB_TEXT)
         model.visualCollapsedImageUrl = data.getString(VISUAL_COLLAPSED_IMAGE)
+        model.visualCollapsedElementId = data.getString(VISUAL_COLLAPSED_ELEMENT_ID)
         model.visualExpandedImageUrl = data.getString(VISUAL_EXPANDED_IMAGE)
+        model.visualExpandedElementId = data.getString(VISUAL_EXPANDED_ELEMENT_ID)
         model.campaignUserToken = data.getString(CAMPAIGN_USER_TOKEN, "")
 
         model.notificationMode = getNotificationMode(data)
