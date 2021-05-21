@@ -21,7 +21,7 @@
           "unreads": 0,
           "unreadsreply": 0,
           "fraudStatus": 0,
-          "pinStatus": 0,
+          "pinStatus": 1,
           "isReplyByTopbot": false,
           "label": ""
         }
