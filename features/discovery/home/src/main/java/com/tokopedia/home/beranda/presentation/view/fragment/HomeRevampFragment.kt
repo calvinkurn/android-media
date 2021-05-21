@@ -1163,26 +1163,33 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeUpdateNetworkStatusData() {
         getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status) ->
             resetImpressionListener()
-            if (status === Result.Status.SUCCESS) {
-                hideLoading()
-            } else if (status === Result.Status.ERROR) {
-                hideLoading()
-                showNetworkError(getString(R.string.home_error_connection))
-                onPageLoadTimeEnd()
-            } else if (status === Result.Status.ERROR_PAGINATION) {
-                hideLoading()
-                showNetworkError(getString(R.string.home_error_connection))
-            } else if (status === Result.Status.ERROR_ATF) {
-                hideLoading()
-                showNetworkError(getString(R.string.home_error_connection))
-                adapter?.resetChannelErrorState()
-                adapter?.resetAtfErrorState()
-            } else if (status == Result.Status.ERROR_GENERAL) {
-                showNetworkError(getString(R.string.home_error_connection))
-                NetworkErrorHelper.showEmptyState(activity, root, getString(R.string.home_error_connection)) { onRefresh() }
-                onPageLoadTimeEnd()
-            } else {
-                showLoading()
+            when {
+                status === Result.Status.SUCCESS -> {
+                    hideLoading()
+                }
+                status === Result.Status.ERROR -> {
+                    hideLoading()
+                    showNetworkError(getErrorString(Throwable(getString(R.string.home_error_connection))))
+                    onPageLoadTimeEnd()
+                }
+                status === Result.Status.ERROR_PAGINATION -> {
+                    hideLoading()
+                    showNetworkError(getErrorString(Throwable(getString(R.string.home_error_connection))))
+                }
+                status === Result.Status.ERROR_ATF -> {
+                    hideLoading()
+                    showNetworkError(getErrorString(Throwable(getString(R.string.home_error_connection))))
+                    adapter?.resetChannelErrorState()
+                    adapter?.resetAtfErrorState()
+                }
+                status == Result.Status.ERROR_GENERAL -> {
+                    showNetworkError(getErrorString(Throwable(getString(R.string.home_error_connection))))
+                    NetworkErrorHelper.showEmptyState(activity, root, getErrorString(Throwable(getString(R.string.home_error_connection)))) { onRefresh() }
+                    onPageLoadTimeEnd()
+                }
+                else -> {
+                    showLoading()
+                }
             }
         })
     }
@@ -1208,7 +1215,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().oneClickCheckout.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
             val data = event.peekContent()
             if (data is Throwable) { // error
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                showToaster(getErrorString(Throwable(getString(R.string.home_error_connection))), TYPE_ERROR)
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarousel(
@@ -1226,7 +1233,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         viewModel.get().oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
             val data = event.peekContent()
             if (data is Throwable) { // error
-                showToaster(getString(R.string.home_error_connection), TYPE_ERROR)
+                showToaster(getErrorString(Throwable(data)), TYPE_ERROR)
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarouselHomeComponent(
@@ -1239,6 +1246,61 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
             }
+        })
+    }
+
+    private fun observeSendLocation() {
+        getHomeViewModel().sendLocationLiveData.observe(viewLifecycleOwner, Observer { data: Event<Any?>? -> detectAndSendLocation() })
+    }
+
+    private fun observePopupIntroOvo() {
+        getHomeViewModel().popupIntroOvoLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?> ->
+            if (RouteManager.isSupportApplink(activity, data.peekContent())) {
+                val intentBalanceWallet = RouteManager.getIntent(activity, data.peekContent())
+                activity?.run {
+                    startActivity(intentBalanceWallet)
+                    overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
+                }
+            }
+        })
+    }
+
+    private fun observeRechargeBUWidget() {
+        context?.let {
+            getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
+                getHomeViewModel().insertRechargeBUWidget(it.peekContent())
+            })
+        }
+    }
+
+    private fun observeHomeNotif() {
+        context?.let {
+            getHomeViewModel().homeNotifLiveData.observe(viewLifecycleOwner, Observer {
+                if (!useNewInbox) {
+                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
+                }
+                navToolbar?.setBadgeCounter(getInboxIcon(), it.messageCount)
+                navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
+            })
+        }
+    }
+
+    private fun observePlayWidgetReminder() {
+        getHomeViewModel().playWidgetReminderObservable.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Result.Status.SUCCESS -> if (it.data != null) showToaster(
+                        if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                        else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), TYPE_NORMAL)
+                Result.Status.ERROR -> showToaster(getErrorString(Throwable(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))), TYPE_ERROR)
+                else -> {
+                }
+            }
+        })
+    }
+
+    private fun observePlayWidgetReminderEvent() {
+        getHomeViewModel().playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
         })
     }
 
@@ -1273,22 +1335,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 .into(backgroundViewImage)
     }
 
-    private fun observeSendLocation() {
-        getHomeViewModel().sendLocationLiveData.observe(viewLifecycleOwner, Observer { data: Event<Any?>? -> detectAndSendLocation() })
-    }
-
-    private fun observePopupIntroOvo() {
-        getHomeViewModel().popupIntroOvoLiveData.observe(viewLifecycleOwner, Observer { data: Event<String?> ->
-            if (RouteManager.isSupportApplink(activity, data.peekContent())) {
-                val intentBalanceWallet = RouteManager.getIntent(activity, data.peekContent())
-                activity?.run {
-                    startActivity(intentBalanceWallet)
-                    overridePendingTransition(R.anim.anim_slide_up_in, R.anim.anim_page_stay)
-                }
-            }
-        })
-    }
-
     @VisibleForTesting
     private fun observeRequestImagePlayBanner() {
         context?.let {
@@ -1306,26 +1352,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 getHomeViewModel().clearPlayBanner()
                             }
                         })
-            })
-        }
-    }
-
-    private fun observeRechargeBUWidget() {
-        context?.let {
-            getHomeViewModel().rechargeBUWidgetLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertRechargeBUWidget(it.peekContent())
-            })
-        }
-    }
-
-    private fun observeHomeNotif() {
-        context?.let {
-            getHomeViewModel().homeNotifLiveData.observe(viewLifecycleOwner, Observer {
-                if (!useNewInbox) {
-                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, it.notifCount)
-                }
-                navToolbar?.setBadgeCounter(getInboxIcon(), it.messageCount)
-                navToolbar?.setBadgeCounter(IconList.ID_CART, it.cartCount)
             })
         }
     }
@@ -2663,25 +2689,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
         getHomeViewModel().getPlayWidget()
-    }
-
-    private fun observePlayWidgetReminder() {
-        getHomeViewModel().playWidgetReminderObservable.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                Result.Status.SUCCESS -> if (it.data != null) showToaster(
-                        if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                        else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), TYPE_NORMAL)
-                Result.Status.ERROR -> showToaster(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), TYPE_ERROR)
-                else -> {
-                }
-            }
-        })
-    }
-
-    private fun observePlayWidgetReminderEvent() {
-        getHomeViewModel().playWidgetReminderEvent.observe(viewLifecycleOwner, Observer {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME)
-        })
     }
 
     private fun notifyPlayWidgetTotalView(data: Intent) {
