@@ -925,6 +925,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         if (!selectedCourierItemData.getLogPromoDesc().isEmpty()) {
             labelSingleShippingMessage.setText(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));
+            labelSingleShippingMessage.setVisibility(View.VISIBLE);
+        } else {
+            labelSingleShippingMessage.setVisibility(View.GONE);
         }
 
         layoutStateHasSelectedSingleShipping.setVisibility(View.VISIBLE);

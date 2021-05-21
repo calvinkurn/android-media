@@ -1,0 +1,376 @@
+[
+  {
+    "data": {
+      "shipment_address_form": {
+        "status": "OK",
+        "error_message": [],
+        "data": {
+          "errors": [],
+          "error_code": 0,
+          "kero_token": "Tokopedia+Kero:xmxUtuvzDT3h8X7V75KqvrHIe5E=",
+          "kero_discom_token": "Tokopedia+Kero:d9G7B9rHT2SdV3ZvkJntDwiYN6A=",
+          "kero_unix_time": 1611554824,
+          "is_robinhood": 1,
+          "is_hide_courier_name": false,
+          "is_blackbox": 0,
+          "is_show_onboarding": false,
+          "is_ineligible_promo_dialog_enabled": true,
+          "disabled_features": [],
+          "donation_checkbox_status": false,
+          "open_prerequisite_site": false,
+          "eligible_new_shipping_experience": true,
+          "ab_test_button": {
+            "enable": true
+          },
+          "group_address": [
+            {
+              "errors": [],
+              "user_address": {
+                "address_id": 123297113,
+                "address_name": "Rumah",
+                "address": "Jl. Prof. DR. Satrio, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta [Tokopedia Note: jl satrio]",
+                "postal_code": "12940",
+                "phone": "628561533911",
+                "receiver_name": "Irfan Khoirul",
+                "status": 1,
+                "country": "Indonesia",
+                "province_id": 13,
+                "province_name": "DKI Jakarta",
+                "city_id": 175,
+                "city_name": "Jakarta Selatan",
+                "district_id": 2270,
+                "district_name": "Setiabudi",
+                "address_2": "-6.223055799999999,106.8264403",
+                "latitude": "-6.223055799999999",
+                "longitude": "106.8264403",
+                "corner_id": 0,
+                "is_corner": false
+              },
+              "group_shop": [
+                {
+                  "errors": [],
+                  "shipping_id": 10,
+                  "sp_id": 20,
+                  "is_insurance": false,
+                  "is_fulfillment_service": false,
+                  "cart_string": "2661965-0-7377294-123297113",
+                  "has_promo_list": false,
+                  "shipment_information": {
+                    "shop_location": "Jakarta Timur",
+                    "estimation": "",
+                    "free_shipping": {
+                      "eligible": true,
+                      "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                    },
+                    "preorder": {
+                      "is_preorder": false,
+                      "duration": ""
+                    }
+                  },
+                  "is_disable_change_courier": true,
+                  "bo_metadata": {
+                    "bo_type": 3,
+                    "bo_eligibilities": [
+                      {
+                        "key": "is_tokonow",
+                        "value": "true"
+                      }
+                    ]
+                  },
+                  "save_state_flag": false,
+                  "promo_codes": [],
+                  "vehicle_leasing": {
+                    "booking_fee": 0,
+                    "is_leasing_product": false
+                  },
+                  "shop": {
+                    "shop_id": 2661965,
+                    "user_id": 24071379,
+                    "shop_name": "Miniso Indonesia",
+                    "shop_image": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2017/10/31/2661965/2661965_c3b4680e-65a7-4281-bc8c-24ab8476e44b.png",
+                    "shop_url": "https://www.tokopedia.com/miniso-official",
+                    "shop_status": 1,
+                    "is_gold": 1,
+                    "is_gold_badge": true,
+                    "is_official": 1,
+                    "is_free_returns": 0,
+                    "address_id": 2295,
+                    "postal_code": "13650",
+                    "latitude": "-6.244698799999999",
+                    "longitude": "106.87776050000002",
+                    "district_id": 2295,
+                    "district_name": "",
+                    "origin": 0,
+                    "address_street": "",
+                    "province_id": 0,
+                    "city_id": 178,
+                    "city_name": "Jakarta Timur",
+                    "gold_merchant": {
+                      "is_gold": 0,
+                      "is_gold_badge": false,
+                      "gold_merchant_logo_url": ""
+                    },
+                    "official_store": {
+                      "is_official": 1,
+                      "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
+                    },
+                    "shop_alert_message": ""
+                  },
+                  "shop_shipments": [
+                    {
+                      "ship_id": 10,
+                      "ship_name": "Gojek",
+                      "ship_code": "gojek",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                      "is_dropship_enabled": 0,
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 20,
+                          "ship_prod_name": "Same Day",
+                          "ship_group_name": "sameday",
+                          "ship_group_id": 1002,
+                          "additional_fee": 0,
+                          "minimum_weight": 0
+                        }
+                      ]
+                    }
+                  ],
+                  "dropshipper": {
+                    "name": "",
+                    "telp_no": ""
+                  },
+                  "products": [
+                    {
+                      "errors": [],
+                      "cart_id": "1934012412",
+                      "product_id": 1000611079,
+                      "product_name": "MINISO Kotak Penyimpanan Storage Box Container Organizer Tempat Baju - Biru Muda, S",
+                      "product_price_fmt": "Rp 49.900",
+                      "product_price": 49900,
+                      "product_original_price": 59900,
+                      "product_wholesale_price": 49900,
+                      "product_wholesale_price_fmt": "Rp49.900",
+                      "product_weight_fmt": "1400gr",
+                      "product_weight": 1400,
+                      "product_condition": 1,
+                      "product_url": "https://www.tokopedia.com/miniso-official/miniso-kotak-penyimpanan-storage-box-container-organizer-tempat-baju-biru-muda-s",
+                      "product_returnable": 0,
+                      "product_is_free_returns": 0,
+                      "product_is_preorder": 0,
+                      "product_cashback": "",
+                      "product_min_order": 1,
+                      "product_invenage_value": 10,
+                      "product_switch_invenage": 1,
+                      "product_price_currency": 1,
+                      "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2021/1/21/65580410/65580410_b4a4e3dd-29a8-4e4e-ad0c-f927febb146e.jpg",
+                      "product_notes": "",
+                      "product_quantity": 2,
+                      "product_menu_id": 26694768,
+                      "product_finsurance": 1,
+                      "product_fcancel_partial": 0,
+                      "product_cat_id": 3735,
+                      "product_catalog_id": 0,
+                      "product_category": "Rumah Tangga / Tempat Penyimpanan / Storage Box Multifungsi",
+                      "product_shipment": [],
+                      "product_shipment_mapping": [],
+                      "purchase_protection_plan_data": {
+                        "protection_available": false,
+                        "protection_type_id": 0,
+                        "protection_price_per_product": 0,
+                        "protection_price": 0,
+                        "protection_title": "",
+                        "protection_subtitle": "",
+                        "protection_link_text": "",
+                        "protection_link_url": "",
+                        "protection_opt_in": false,
+                        "protection_checkbox_disabled": false
+                      },
+                      "free_returns": {
+                        "free_returns_logo": ""
+                      },
+                      "product_tracker_data": {
+                        "attribution": "none/other",
+                        "tracker_list_name": "none/other"
+                      },
+                      "product_preorder": {
+                        "duration_text": "",
+                        "duration_day": "0"
+                      },
+                      "trade_in_info": {
+                        "is_valid_trade_in": false,
+                        "new_device_price": 0,
+                        "new_device_price_fmt": "",
+                        "old_device_price": 0,
+                        "old_device_price_fmt": "",
+                        "drop_off_enable": false,
+                        "device_model": "",
+                        "diagnostic_id": 0
+                      },
+                      "free_shipping": {
+                        "eligible": true,
+                        "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "product_ticker": {
+                        "show_ticker": false,
+                        "message": ""
+                      },
+                      "variant_description_detail": {
+                        "variant_name": [
+                          "Biru Muda",
+                          "S"
+                        ],
+                        "variant_description": "Biru Muda, S"
+                      },
+                      "product_alert_message": "",
+                      "product_information": [],
+                      "campaign_id": -10000
+                    }
+                  ],
+                  "warehouse": {
+                    "warehouse_id": 7377294,
+                    "city_name": "Jakarta Timur"
+                  }
+                }
+              ]
+            }
+          ],
+          "donation": {
+            "Title": "Donasi Rp5000 Bantu Peralatan Belajar",
+            "Nominal": 5000,
+            "Description": "Bantu donasi perlengkapan belajar untuk adik-adik prasejahtera bersama BenihBaik.com dan Dewan Masjid Indonesia."
+          },
+          "cod": {
+            "is_cod": false,
+            "counter_cod": -1
+          },
+          "message": {
+            "message_info": "",
+            "message_link": "",
+            "message_logo": ""
+          },
+          "egold_attributes": {
+            "eligible": true,
+            "is_tiering": true,
+            "range": {
+              "min": 2000,
+              "max": 5999
+            },
+            "message": {
+              "title_text": "Bulatkan Tagihan dengan Nabung Emas",
+              "sub_text": "Tambah Emas Senilai",
+              "ticker_text": "",
+              "tooltip_text": "Nominal pembulatan disesuaikan dengan total tagihan setiap transaksi yang otomatis ditabung dan dapat di cek saldonya di Tokopedia Emas (berpartner dengan Pegadaian)."
+            },
+            "tier_data": [
+              {
+                "minimum_total_amount": 500,
+                "minimum_amount": 2000,
+                "maximum_amount": 5999,
+                "basis_amount": 4000
+              },
+              {
+                "minimum_total_amount": 98001,
+                "minimum_amount": 2000,
+                "maximum_amount": 11999,
+                "basis_amount": 10000
+              },
+              {
+                "minimum_total_amount": 998001,
+                "minimum_amount": 2000,
+                "maximum_amount": 51999,
+                "basis_amount": 50000
+              }
+            ]
+          },
+          "tickers": [],
+          "campaign_timer": {
+            "description": "",
+            "show_timer": false,
+            "expired_timer_message": {
+              "Button": "",
+              "description": "",
+              "title": ""
+            },
+            "timer_detail": {
+              "deduct_time": "",
+              "expire_duration": 0,
+              "expired_time": "",
+              "server_time": ""
+            }
+          },
+          "addresses": {
+            "active": "",
+            "disable_tabs": [],
+            "data": []
+          },
+          "disabled_features_detail": {
+            "disabled_multi_address_message": ""
+          },
+          "promo": {
+            "error_default": {
+              "title": "promo tidak dapat digunakan",
+              "description": "silahkan coba beberapa saat lagi"
+            },
+            "last_apply": {
+              "code": "200000",
+              "data": {
+                "codes": [],
+                "promo_code_id": 0,
+                "cashback_advocate_referral_amount": 0,
+                "cashback_wallet_amount": 0,
+                "discount_amount": 0,
+                "title_description": "",
+                "is_tokopedia_gerai": false,
+                "global_success": true,
+                "gateway_id": "",
+                "is_coupon": 0,
+                "success": true,
+                "invoice_description": "",
+                "voucher_orders": [],
+                "clashing_info_detail": {
+                  "is_clashed_promos": false,
+                  "clash_reason": "",
+                  "clash_message": ""
+                },
+                "tracking_details": [],
+                "message": {
+                  "color": "",
+                  "state": "",
+                  "text": ""
+                },
+                "additional_info": {
+                  "sp_ids": [],
+                  "usage_summaries": [],
+                  "message_info": {
+                    "message": "Makin hemat pakai promo",
+                    "detail": ""
+                  },
+                  "error_detail": {
+                    "message": ""
+                  },
+                  "empty_cart_info": {
+                    "image_url": "",
+                    "detail": "",
+                    "message": ""
+                  },
+                  "promo_sp_ids": []
+                },
+                "benefit_summary_info": {
+                  "final_benefit_amount_str": "",
+                  "final_benefit_amount": 0,
+                  "final_benefit_text": "",
+                  "summaries": []
+                },
+                "ticker_info": {
+                  "unique_id": "",
+                  "status_code": 0,
+                  "message": ""
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]
