@@ -72,6 +72,8 @@ open class MenuItemUiModel(
     val isNoIcon: Boolean
         get() = drawableReference == null && iconUnify == null
 
+    var clickSendTracker: () -> Unit = {}
+
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
             typeFactory.type(this)
 }

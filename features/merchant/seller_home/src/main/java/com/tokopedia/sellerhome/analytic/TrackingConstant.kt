@@ -31,9 +31,11 @@ object TrackingConstant {
 
     //event
     const val VIEW_SELLER_WIDGET = "viewSellerWidget"
+    const val VIEW_SELLER_DASHBOARD = "viewSellerDashboardIris"
     const val VIEW_SELLER_WIDGET_IRIS = "viewSellerWidgetIris"
     const val VIEW_SELLER_HOMEPAGE_IRIS = "viewHomepageIris"
     const val CLICK_SELLER_WIDGET = "clickSellerWidget"
+    const val CLICK_SELLER_DASHBOARD = "clickSellerDashboard"
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
@@ -69,11 +71,14 @@ object TrackingConstant {
     const val FILTER = "filter"
     const val CLICK_WIDGET_MULTI_LINE_GRAPH = "click widget multi trendline"
     const val CLICK_WIDGET_MULTI_ANNOUNCEMENT = "click widget announcement"
+    const val CLICK_RECOMMENDATION = "click recommendation"
+    const val CLICK_RECOMMENDATION_WIDGET = "click recommendation widget"
     const val IMPRESSION_WIDGET_TABLE = "impression widget simple table"
     const val IMPRESSION_WIDGET_PIE_CHART = "impression widget pie chart"
     const val IMPRESSION_WIDGET_BAR_CHART = "impression widget bar chart"
     const val IMPRESSION_WIDGET_MULTI_LINE_GRAPH = "impression multi trendline"
     const val IMPRESSION_WIDGET_ANNOUNCEMENT = "impression widget announcement "
+    const val IMPRESSION_RECOMMENDATION_WIDGET = "impression recommendation widget"
     const val CLICK_WIDGET_ADVANCE_TABLE = "click widget advance table"
     const val CLICK_WIDGET_SIMPLE_TABLE = "click widget simple table"
 
@@ -95,4 +100,18 @@ object TrackingConstant {
     const val WIDGET_PIE_CHART = "widget pie chart"
     const val WIDGET_BAR_CHART = "widget bar chart"
     const val EMPTY_STATE = "emptystate"
+
+    //performance
+    const val CLICK_SHOP_SCORE = "clickShopScore"
+    const val ACTION_SHOP_SCORE = "click - performa toko"
+    const val ACTION_SHOP_SCORE_NEW_SELLER = "click - performa"
+    const val IMPRESS_ACTION_SHOP_SCORE_NEW_SELLER = "impression - performa"
+    const val IMPRESS_ACTION_SHOP_SCORE = "impression - performa toko"
+    const val CATEGORY_SHOP_SCORE_NEW_SELLER = "toko saya"
+    const val CATEGORY_SHOP_SCORE = "lainnya"
+    const val NEW_SELLER = "new seller -"
+    const val SHOP_TYPE_RM = "RM"
+    const val SHOP_TYPE_PM = "PM"
+    const val SHOP_TYPE_OS = "OS"
+    const val VIEW_SHOP_SCORE_IRIS = "viewShopScoreIris"
 }

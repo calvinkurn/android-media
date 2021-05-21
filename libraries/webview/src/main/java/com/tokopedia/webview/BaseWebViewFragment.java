@@ -508,13 +508,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
     }
-
 
     class MyWebViewClient extends WebViewClient {
         @Override
@@ -533,6 +531,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.setWebViewTitle(title);
                         activity.updateTitle(title);
                     }
+                }
+                if (url.startsWith(BaseWebViewFragment.this.url)) {
+                    activity.setOnWebViewPageFinished();
+                } else {
+                    activity.enableBackButton();
                 }
             } else if (activityInstance != null && !activityInstance.isFinishing() && activityInstance instanceof BaseSimpleActivity) {
                 ActionBar actionBar = ((AppCompatActivity) activityInstance).getSupportActionBar();

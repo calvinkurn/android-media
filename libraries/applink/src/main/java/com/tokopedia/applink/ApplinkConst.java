@@ -40,6 +40,8 @@ public interface ApplinkConst {
     String SHOP_FEED = "tokopedia://shop/{shop_id}/feed";
     String SHOP_ETALASE_LIST = "tokopedia://shop/{shop_id}/etalase-list";
     String MY_SHOP_ETALASE_LIST = "tokopedia://my-shop/etalase/list";
+    String SHOP_PENALTY = "tokopedia://shop-penalty";
+    String SHOP_PENALTY_DETAIL = "tokopedia://shop-penalty-detail";
     String SHOP_FOLLOWER_LIST = "tokopedia://shop/{shop_id}/follower";
     String SHOP_SETTINGS_CUSTOMER_APP = "tokopedia://shop/{shop_id}/settings";
 
@@ -163,6 +165,7 @@ public interface ApplinkConst {
     String HOWTOPAY = "tokopedia://howtopay";
     String GOLD_MERCHANT_STATISTIC_DASHBOARD = "tokopedia://gold-merchant-statistic-dashboard";
     String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
+    String SHOP_SCORE_DETAIL_ACKNOWLEDGE_INTERRUPT = "tokopedia://shop-score-detail/acknowledge-interrupt";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_CATEGORY = "tokopedia://events/category";
@@ -333,6 +336,7 @@ public interface ApplinkConst {
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
 
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
+    String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
 
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";

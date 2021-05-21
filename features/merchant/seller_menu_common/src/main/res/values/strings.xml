@@ -2,6 +2,7 @@
     <string name="app_name">seller_menu_common</string>
 
     <string name="setting_menu_buyer_info">KATA PEMBELI</string>
+    <string name="setting_menu_performance">Performa Toko</string>
     <string name="setting_menu_review">Ulasan</string>
     <string name="setting_menu_discussion">Diskusi</string>
     <string name="setting_menu_complaint">Pesanan Dikomplain</string>
@@ -56,6 +57,9 @@
     <string name="seller_menu_financial_service_description">Kelola arus dana untuk keuangan tokomu dengan mudah dan cepat.</string>
     <string name="seller_menu_shop_score_label">Skor performa Toko</string>
     <string name="seller_menu_shop_score_max_label">/100</string>
+    <string name="seller_menu_shop_score_empty_label">--</string>
     <string name="seller_menu_admin_no_permission_oops">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
 
+    <string name="seller_menu_ticker_title_shop_score">Mulai %s, ada skema Performa Toko baru!</string>
+    <string name="seller_menu_ticker_desc_shop_score">Ada 3 perubahan besar yang penting untuk tokomu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
 </resources>

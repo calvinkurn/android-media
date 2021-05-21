@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import android.widget.Toast
 import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -36,6 +37,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         private set
     protected var allowOverride = true
     protected var needLogin = false
+    protected var backPressedEnabled = true
+    protected var backPressedMessage = ""
     var webViewTitle = ""
     var whiteListedDomains = WhiteListedDomains()
 
@@ -155,7 +158,31 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 f.webView.goBack()
             }
         } else {
-            goPreviousActivity()
+            if (backPressedEnabled) {
+                goPreviousActivity()
+            } else {
+                showOnBackPressedDisabledMessage()
+            }
+        }
+    }
+
+    fun setOnWebViewPageFinished() {
+        val uri = intent.data
+        uri?.let {
+            backPressedEnabled = it.getBooleanQueryParameter(KEY_BACK_PRESSED_ENABLED, true)
+            val message = it.getQueryParameter(KEY_BACK_PRESSED_MESSAGE)
+            backPressedMessage = if (!message.isNullOrBlank()) {
+                message
+            } else {
+                getString(R.string.webview_on_back_pressed_disabled_message)
+            }
+        }
+    }
+
+    fun enableBackButton() {
+        val f = fragment
+        if (f is BaseWebViewFragment && !f.webView.canGoBack()) {
+            backPressedEnabled = true
         }
     }
 
@@ -198,6 +225,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
         }
         return false
+    }
+
+    private fun showOnBackPressedDisabledMessage() {
+        if (backPressedMessage.isNotBlank()) {
+            Toast.makeText(this, backPressedMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun logWebViewApplink() {

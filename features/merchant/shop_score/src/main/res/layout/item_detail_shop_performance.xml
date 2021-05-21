@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:layout_marginStart="@dimen/spacing_lvl3"
+    android:layout_marginEnd="@dimen/spacing_lvl3"
+    android:id="@+id/cardItemDetailShopPerformance"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitlePerformanceProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        tools:text="Tingkat kesuksesan pesanan"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPerformanceValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        tools:text="@string/item_detail_performance_value"
+        app:typographyType="heading_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitlePerformanceProgress"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPerformanceTarget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:textColor="@color/Neutral_N700_68"
+        tools:text="@string/item_detail_performance_target"
+        app:typographyType="body_3"
+        app:layout_constraintEnd_toStartOf="@id/ic_item_performance_right"
+        app:layout_constraintTop_toBottomOf="@id/tvTitlePerformanceProgress"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_item_performance_right"
+        app:icon_name="CHEVRON_RIGHT"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toTopOf="@id/tvPerformanceTarget"
+        app:layout_constraintBottom_toBottomOf="@id/tvPerformanceTarget"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/separatorItemDetail"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/tvPerformanceValue"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

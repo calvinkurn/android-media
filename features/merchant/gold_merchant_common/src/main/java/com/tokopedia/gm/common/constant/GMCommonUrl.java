@@ -15,4 +15,5 @@ public class GMCommonUrl {
     public static final String GET_CASHBACK_PRODUCTS = "v1/tx/cashback";
     public static final String SHOPS_SCORE_STATUS = "v1/shopstats/shopscore/sum/";
 
+    public static final String SHOP_INTERRUPT_PAGE = "https://www.tokopedia.com/shop-interrupt";
 }

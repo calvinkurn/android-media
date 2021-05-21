@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_penalty_shop_performance"
+        android:title="@string/menu_title_warning_shop_performance"
+        android:icon="@drawable/ic_penalty_group_shop_score"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_info_shop_performance"
+        android:title="@string/menu_title_info_shop_performance"
+        android:icon="@drawable/ic_information_shop_score"
+        app:showAsAction="always" />
+
+</menu>
