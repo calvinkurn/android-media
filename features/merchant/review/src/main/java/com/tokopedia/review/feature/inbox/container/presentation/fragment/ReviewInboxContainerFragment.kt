@@ -163,6 +163,8 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
                 containerListener?.showReviewCounter()
             }
             RoleType.SELLER -> {
+                setBuyerReviewFragment()
+                attachBuyerReviewFragment()
                 updateInboxUnifiedSellerView()
                 containerListener?.hideReviewCounter()
             }
