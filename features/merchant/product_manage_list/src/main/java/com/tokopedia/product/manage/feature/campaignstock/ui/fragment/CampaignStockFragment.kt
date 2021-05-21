@@ -23,6 +23,7 @@ import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
@@ -73,7 +74,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     private val source by lazy {
-        activity?.intent?.getStringExtra(SOURCE)?: DEFAULT_SOURCE
+        activity?.intent?.getStringExtra(EXTRA_SOURCE)?: DEFAULT_SOURCE
     }
 
     private var isVariant: Boolean? = null
@@ -383,8 +384,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             CampaignMainStockFragment.createInstance(
                     isVariant, sellableProductUIList,
                     isActive, stock, isCampaign,
-                    access, source
-                    , this)
+                    access, source, this)
 
     private fun getReservedStockFragment(isVariant: Boolean,
                                          reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>,

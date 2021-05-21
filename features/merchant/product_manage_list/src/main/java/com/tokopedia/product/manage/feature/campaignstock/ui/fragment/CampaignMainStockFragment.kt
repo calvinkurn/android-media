@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerList
@@ -47,7 +48,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
                     putInt(EXTRA_STOCK, stock)
                     putParcelableArrayList(EXTRA_SELLABLE_PRODUCT_LIST, sellableProductUIList)
                     putParcelable(EXTRA_PRODUCT_MANAGE_ACCESS, access)
-                    putString(CampaignStockFragment.SOURCE, source)
+                    putString(EXTRA_SOURCE, source)
                 }
                 this.campaignStockListener = campaignStockListener
             }
@@ -95,7 +96,7 @@ class CampaignMainStockFragment: BaseListFragment<Visitable<CampaignStockTypeFac
 
     private val access by lazy { arguments?.getParcelable<ProductManageAccess>(EXTRA_PRODUCT_MANAGE_ACCESS) }
 
-    private val source by lazy { arguments?.getString(CampaignStockFragment.SOURCE) }
+    private val source by lazy { arguments?.getString(EXTRA_SOURCE) }
 
     private var campaignStockListener: CampaignStockListener? = null
 

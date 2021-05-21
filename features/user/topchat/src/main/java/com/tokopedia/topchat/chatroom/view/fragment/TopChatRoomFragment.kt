@@ -70,6 +70,7 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -500,7 +501,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
                 id, product.shopId.toString()
         )
-        intent.putExtra(EXTRA_SOURCE_STOCK_KEY, EXTRA_SOURCE_STOCK)
+        intent.putExtra(EXTRA_SOURCE, EXTRA_SOURCE_STOCK)
         presenter.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
@@ -2039,7 +2040,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
         const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
-        private const val EXTRA_SOURCE_STOCK_KEY = "extra_source"
         private const val EXTRA_SOURCE_STOCK = "chat"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
         fun createInstance(bundle: Bundle): BaseChatFragment {
