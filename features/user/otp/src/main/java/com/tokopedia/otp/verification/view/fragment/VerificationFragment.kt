@@ -211,7 +211,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessOtpValidate(it.data)
-                is Fail -> onFailedOtpValidate().invoke(it.throwable)
+                is Fail -> onFailedOtpValidate(it.throwable)
             }
         })
     }
@@ -287,15 +287,15 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 redirectAfterValidationSuccessful(bundle)
             }
             otpValidateData.errorMessage.isNotEmpty() -> {
-                onFailedOtpValidate().invoke(MessageErrorException(otpValidateData.errorMessage))
+                onFailedOtpValidate(MessageErrorException(otpValidateData.errorMessage))
             }
             else -> {
-                onFailedOtpValidate().invoke(Throwable())
+                onFailedOtpValidate(Throwable())
             }
         }
     }
 
-    private fun trackSuccess() {
+    protected open fun trackSuccess() {
         when (otpData.otpType) {
             OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                 analytics.trackSuccessClickVerificationRegisterPhoneButton()
@@ -321,19 +321,17 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         activity?.finish()
     }
 
-    private fun onFailedOtpValidate(): (Throwable) -> Unit {
-        return { throwable ->
-            throwable.printStackTrace()
-            viewBound.containerView?.let {
-                val message = ErrorHandler.getErrorMessage(context, throwable)
-                Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                when (otpData.otpType) {
-                    OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                        analytics.trackFailedClickVerificationRegisterPhoneButton(message)
-                    }
-                    OtpConstant.OtpType.REGISTER_EMAIL -> {
-                        analytics.trackFailedClickVerificationRegisterEmailButton(message)
-                    }
+    protected open fun onFailedOtpValidate(throwable: Throwable) {
+        throwable.printStackTrace()
+        viewBound.containerView?.let {
+            val message = ErrorHandler.getErrorMessage(context, throwable)
+            Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            when (otpData.otpType) {
+                OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                    analytics.trackFailedClickVerificationRegisterPhoneButton(message)
+                }
+                OtpConstant.OtpType.REGISTER_EMAIL -> {
+                    analytics.trackFailedClickVerificationRegisterEmailButton(message)
                 }
             }
             viewBound.pin?.isError = true

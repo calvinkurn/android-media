@@ -70,7 +70,7 @@ interface LoginEmailPhoneContract {
 
         fun onErrorLoginGoogle(email: String?): Function1<Throwable, Unit>
 
-        fun onSuccessGetUserInfo(): Function1<ProfilePojo, Unit>
+        fun onSuccessGetUserInfo(profilePojo: ProfilePojo)
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
 

@@ -25,9 +25,9 @@ class TrackingOtpUtil @Inject constructor() {
     fun trackClickMethodOtpButton(otpType: Int, modeName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
-                Category.CATEGORY_CHOOSE_OTP_PAGE,
-                Action.ACTION_CLICK_ON_OTP_METHOD,
-                String.format("%s - %s", otpType.toString(), modeName)))
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_METHOD_OTP,
+                String.format("click %s - %s", otpType.toString(), modeName)))
     }
 
     fun trackClickInactivePhoneNumber(otpType: String) {
@@ -440,6 +440,25 @@ class TrackingOtpUtil @Inject constructor() {
                 Category.CATEGORY_CHOOSE_OTP_PAGE,
                 Action.ACTION_CLICK_ON_INACTIVE_PHONE,
                 Label.LABEL_EMPTY
+        ))
+    }
+
+    /* GOOGLE AUTH */
+    fun trackViewVerificationGoogleAuth(otpType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_VIEW_CHOOSE_OTP_PAGE,
+                otpType
+        ))
+    }
+
+    fun trackAutoSubmitVerificationGoogleAuth(otpType: String, isSuccess: Boolean, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_VIEW_CHOOSE_OTP_PAGE,
+                "$otpType - " + if (isSuccess) "success" else "fail - $message"
         ))
     }
 }

@@ -1208,6 +1208,11 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                 startActivity(intent)
             }
+
+            if (isSmartLogin) {
+                analytics.trackerSuccessRegisterFromLogin(userSession.loginMethod)
+            }
+
             val intent = Intent()
             intent.putExtra(PARAM_IS_SUCCESS_REGISTER, true)
 
