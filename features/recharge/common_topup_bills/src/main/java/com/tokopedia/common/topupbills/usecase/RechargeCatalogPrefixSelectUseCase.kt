@@ -14,6 +14,10 @@ import javax.inject.Inject
 class RechargeCatalogPrefixSelectUseCase @Inject constructor(
         private val useCase: GraphqlUseCase<TelcoCatalogPrefixSelect>
 ) {
+    /**
+     * To fetch all prefixes and its operator of telco and recharge products
+     * CacheStrategy: CACHE_FIRST 1 minutes.
+     */
     fun execute(
             params: Map<String, Any>,
             onSuccess: (TelcoCatalogPrefixSelect) -> Unit,

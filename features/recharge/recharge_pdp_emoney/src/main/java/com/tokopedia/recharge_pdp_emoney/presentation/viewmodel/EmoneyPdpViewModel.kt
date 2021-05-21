@@ -19,9 +19,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -33,8 +30,8 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                              private val rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase)
     : BaseViewModel(dispatcher) {
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String>
+    private val _errorMessage = MutableLiveData<Throwable>()
+    val errorMessage: LiveData<Throwable>
         get() = _errorMessage
 
     private val _inputViewError = MutableLiveData<String>()
@@ -63,17 +60,6 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
 
     var digitalCheckoutPassData = DigitalCheckoutPassData()
 
-    fun setErrorMessage(e: Throwable) {
-        val errorMsg: String = when {
-            e is UnknownHostException || e is ConnectException -> ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            e is SocketTimeoutException -> ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            e.message.isNullOrEmpty() -> ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-            (e.message ?: "").contains("grpc timeout", true) -> ""
-            else -> e.message ?: ""
-        }
-        _errorMessage.value = errorMsg
-    }
-
     fun getPrefixOperator(menuId: Int) {
         rechargeCatalogPrefixSelectUseCase.execute(
                 RechargeCatalogPrefixSelectUseCase.createParams(menuId),
@@ -98,7 +84,7 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 }
                 _selectedOperator.value = operatorSelected
             } else {
-                setErrorMessage(MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT))
+                _errorMessage.value = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         } catch (e: Throwable) {
             _inputViewError.value = errorNotFoundString
@@ -143,5 +129,9 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         checkoutPassData.isFromPDP = true
         digitalCheckoutPassData = checkoutPassData
         return digitalCheckoutPassData
+    }
+
+    companion object {
+        const val ERROR_GRPC_TIMEOUT = "grpc timeout"
     }
 }

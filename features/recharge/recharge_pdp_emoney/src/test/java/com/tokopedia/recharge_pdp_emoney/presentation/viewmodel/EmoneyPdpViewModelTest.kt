@@ -53,19 +53,6 @@ class EmoneyPdpViewModelTest {
     }
 
     @Test
-    fun setErrorMessage_shouldReturnProperErrorMessage() {
-        //given
-        val message = "This is custom error message"
-
-        //when
-        emoneyPdpViewModel.setErrorMessage(MessageErrorException(message))
-
-        //then
-        assert(!emoneyPdpViewModel.errorMessage.value.isNullOrEmpty())
-        assert(emoneyPdpViewModel.errorMessage.value.equals(message, false))
-    }
-
-    @Test
     fun getPrefixOperator_onSuccess_shouldUpdateOperatorPrefix() {
         //given
         val prefixes = mutableListOf<RechargePrefix>()

@@ -1,9 +1,11 @@
 package com.tokopedia.common.topupbills.utils
 
 object CommonTopupBillsGqlQuery {
+    private const val RECHARGE_PARAM_ANDROID_DEVICE_ID = 5
+
     val rechargeCatalogDynamicProductInput = """
         query rechargeCatalogDynamicInput(${'$'}menuID: Int!,${'$'}operator: String!) {
-          rechargeCatalogDynamicInput(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operator) {
+          rechargeCatalogDynamicInput(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID, operator:${'$'}operator) {
             needEnquiry
             isShowingProduct
             dynamicFields {
@@ -48,7 +50,7 @@ object CommonTopupBillsGqlQuery {
 
     val rechargeCatalogProductInput = """
         query voucherGameProductDetail(${'$'}menuID: Int!,${'$'}operator: String!){
-          rechargeCatalogProductInput(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operator) {
+          rechargeCatalogProductInput(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID, operator:${'$'}operator) {
             needEnquiry
             isShowingProduct
             enquiryFields {
@@ -120,7 +122,7 @@ object CommonTopupBillsGqlQuery {
 
     val catalogMenuDetail = """
         query catalogMenuDetail(${'$'}menuID: Int!){
-          rechargeCatalogMenuDetail(menuID:${'$'}menuID, platformID: 5) {
+          rechargeCatalogMenuDetail(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID) {
             catalog {
               id
               name
@@ -224,7 +226,7 @@ object CommonTopupBillsGqlQuery {
 
     val prefixSelectTelco = """
         query telcoPrefixSelect(${'$'}menuID: Int!) {
-          rechargeCatalogPrefixSelect(menuID:${'$'}menuID, platformID: 5) {
+          rechargeCatalogPrefixSelect(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID) {
             componentID
             name
             paramName

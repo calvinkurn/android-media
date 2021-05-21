@@ -39,6 +39,9 @@ import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
@@ -141,9 +144,6 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntOrZero())
         })
 
-        emoneyPdpViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            renderErrorToaster(it)
-        })
 
         emoneyPdpViewModel.inputViewError.observe(viewLifecycleOwner, Observer {
             emoneyPdpInputCardWidget.renderError(it)
@@ -152,7 +152,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
         emoneyPdpViewModel.catalogPrefixSelect.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
+                is Fail -> renderErrorMessage(it.throwable)
                 is Success -> {
                     if (detailPassData.clientNumber != null && detailPassData.clientNumber.isNotEmpty()) {
                         renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber))
@@ -185,7 +185,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     renderProducts(it.data.product.dataCollections.firstOrNull()?.products
                             ?: listOf())
                 }
-                is Fail -> emoneyPdpViewModel.setErrorMessage(it.throwable)
+                is Fail -> renderErrorMessage(it.throwable)
             }
         })
 
@@ -197,7 +197,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 is Fail -> {
                     if (it.throwable is DigitalAddToCartViewModel.DigitalUserNotLoginException) {
                         navigateToLoginPage()
-                    } else emoneyPdpViewModel.setErrorMessage(it.throwable)
+                    } else renderErrorMessage(it.throwable)
                     emoneyFullPageLoadingLayout.hide()
                 }
             }
@@ -376,8 +376,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyPdpInputCardWidget.setNumber(cardNumber)
     }
 
-    private fun renderErrorToaster(message: String) {
-        Toaster.build(requireView(), message, Toaster.LENGTH_LONG).show()
+    private fun renderErrorMessage(error: Throwable) {
+        var errorThrowable = error
+        if ((error.message ?: "").contains(EmoneyPdpViewModel.ERROR_GRPC_TIMEOUT, true)) {
+            errorThrowable = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        }
+        Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), errorThrowable), Toaster.LENGTH_LONG).show()
     }
 
     private fun renderFullPageError(throwable: Throwable) {
@@ -425,9 +429,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER)
     }
 
-    private fun renderOperatorIcon(operator: RechargePrefix) {
-        if (operator.operator != null) {
-            emoneyPdpInputCardWidget.setOperator(operator.operator.attributes.imageUrl)
+    private fun renderOperatorIcon(selectedOperator: RechargePrefix) {
+        if (selectedOperator.operator != null) {
+            emoneyPdpInputCardWidget.setOperator(selectedOperator.operator.attributes.imageUrl)
         }
     }
 
@@ -450,7 +454,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
-        emoneyPdpProductWidget.setTitle("Pilih Nominal")
+        emoneyPdpProductWidget.setTitle(getString(R.string.recharge_pdp_emoney_products_title))
         emoneyPdpProductWidget.setProducts(productList)
     }
 
@@ -465,7 +469,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyPdpShimmeringLayout.hide()
         emoneyPdpProductWidget.hide()
         (emoneyPdpViewPager.adapter)?.let {
-            if ((it as EmoneyPdpFragmentPagerAdapter).itemCount > 1) {
+            if ((it as EmoneyPdpFragmentPagerAdapter).itemCount > TAB_COUNT_THRESHOLD_NUMBER) {
                 emoneyPdpTab.show()
             }
         }
@@ -477,7 +481,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     override fun onClickProduct(product: CatalogProduct, position: Int) {
         //atc
         emoneyPdpViewModel.setSelectedProduct(product)
-        emoneyBuyWidget.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero()))
+
+        if (product.attributes.price.isNotEmpty()) {
+            emoneyBuyWidget.setTotalPrice(product.attributes.price)
+        } else {
+            emoneyBuyWidget.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntOrZero()))
+        }
+
         emoneyBuyWidgetLayout.show()
         emoneyBuyWidget.setVisibilityLayout(true)
         emoneyBuyWidgetLayout.invalidate()
@@ -488,7 +498,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
         EmoneyPdpAnalyticsUtils.clickSeeProductDetail(product.attributes.pricePlain, userSession.userId)
         val bottomSheet = EmoneyProductDetailBottomSheet(product)
-        bottomSheet.show(childFragmentManager, "")
+        bottomSheet.show(childFragmentManager, TAG)
     }
 
     override fun onClickNextBuyButton() {
@@ -518,6 +528,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     companion object {
+        private const val TAG = "EmoneyProductDetailBottomSheet"
+
+        private const val TAB_COUNT_THRESHOLD_NUMBER = 1
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
         private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
         private const val REQUEST_CODE_CART_DIGITAL = 1090

@@ -20,8 +20,12 @@ class EmoneyPdpProductViewHolder(val view: View,
         with(itemView) {
             emoneyProductTitle.text = item.attributes.desc
             emoneyProductSubtitle.text = MethodChecker.fromHtml(item.attributes.detail)
-            emoneyProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(item.attributes.pricePlain.toIntOrZero())
 
+            if (item.attributes.price.isNotEmpty()) {
+                emoneyProductPrice.text = item.attributes.price
+            } else {
+                emoneyProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(item.attributes.pricePlain.toIntOrZero())
+            }
             setOnClickListener { listener?.onClickProduct(item, position) }
             emoneyProductSeeDetailText.setOnClickListener {
                 listener?.onClickSeeDetailProduct(item)

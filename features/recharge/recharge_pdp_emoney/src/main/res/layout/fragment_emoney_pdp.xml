@@ -110,7 +110,6 @@
             android:layout_marginRight="@dimen/layout_lvl2" />
     </androidx.cardview.widget.CardView>
 
-    <!--    will move this to activity-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/emoneyFullPageLoadingLayout"
         android:layout_width="match_parent"

@@ -68,7 +68,9 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
             val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText(CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode)
             clipboard.setPrimaryClip(clip)
-            (it as EmoneyPdpActivity).promoCode = voucherCode
+            if (it is EmoneyPdpActivity) {
+                it.promoCode = voucherCode
+            }
             view?.run {
                 Toaster.build(this,
                         getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),

@@ -97,20 +97,24 @@ object DeeplinkMapperDigital {
                     ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
                 }
                 TEMPLATE_ID_ELECTRONIC_MONEY -> {
-                    val remoteConfig = FirebaseRemoteConfigImpl(context)
-                    val getNewEmoneyPage = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY, true)
-                    if (getNewEmoneyPage) ApplinkConsInternalDigital.ELECTRONIC_MONEY else
-                        deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+                    handleEmoneyApplink(context, deeplink)
                 }
                 else -> deeplink
             }
         } ?: deeplink
     }
 
+    private fun handleEmoneyApplink(context: Context, deeplink: String): String {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val getNewEmoneyPage = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY, true)
+        return if (getNewEmoneyPage) ApplinkConsInternalDigital.ELECTRONIC_MONEY else
+            deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+    }
+
     private fun getDigitalSmartcardNavigation(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         val paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
-        val statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI)?: "false"
+        val statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI) ?: "false"
 
         return if (statusBrizzi == "true")
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, paramValue)
