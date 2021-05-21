@@ -19,11 +19,24 @@ mutation MpLogisticPreShipInfo($input: MpLogisticPreShipInfoInputs!)
           count_text
           count
         }
+        orchestra_partner
       }
       notes{
         title
         list
       }
+      schedule_time_day {
+          today {
+            key
+            start
+            end
+          }
+          tomorrow {
+            key
+            start
+            end
+          }
+        }
     }
 
   }
