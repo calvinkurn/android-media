@@ -46,8 +46,8 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
             quickFilterVisitable: QuickFilterDataView,
     ) {
         quickFilterVisitable.quickFilterItemList.forEach {
-            val failedReason = "Quick filter option \"${it.option.key}\" type is incorrect."
-            val expectedType = getExpectedChipsUnifyType(it.option, selectedFilterOption)
+            val failedReason = "Quick filter option \"${it.firstOption!!.key}\" type is incorrect."
+            val expectedType = getExpectedChipsUnifyType(it.firstOption!!, selectedFilterOption)
 
             assertThat(failedReason, it.sortFilterItem.type, shouldBe(expectedType))
         }
@@ -92,10 +92,10 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
             requestParams: RequestParams,
             selectedQuickFilter: SortFilterItemDataView
     ) {
-        val selectedQuickFilterKey = selectedQuickFilter.option.key
+        val selectedQuickFilterKey = selectedQuickFilter.firstOption!!.key
         val actualParamsValue = getTokonowQueryParam(requestParams)[selectedQuickFilterKey].toString()
 
-        assertThat(actualParamsValue, shouldBe(selectedQuickFilter.option.value))
+        assertThat(actualParamsValue, shouldBe(selectedQuickFilter.firstOption!!.value))
     }
 
     @Test
@@ -127,7 +127,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
             requestParams: RequestParams,
             selectedQuickFilter: SortFilterItemDataView
     ) {
-        val selectedQuickFilterKey = selectedQuickFilter.option.key
+        val selectedQuickFilterKey = selectedQuickFilter.firstOption!!.key
         val actualParamsValue = requestParams.parameters[selectedQuickFilterKey]
 
         assertThat(actualParamsValue, nullValue())

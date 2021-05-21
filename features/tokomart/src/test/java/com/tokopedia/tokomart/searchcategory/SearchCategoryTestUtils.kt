@@ -15,7 +15,10 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountData
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.notNullValue
+import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert.assertThat
 import java.io.File
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -76,9 +79,12 @@ fun Visitable<*>.assertQuickFilterDataView(quickFilterDataValue: DataValue) {
     expectedQuickFilter.forEachIndexed { index, quickFilter ->
         val sortFilterItemDataView = quickFilterItemList[index]
 
-        assertThat(sortFilterItemDataView.option, shouldBe(quickFilter.options[0]))
+        assertThat(sortFilterItemDataView.filter, shouldBe(quickFilter))
         assertThat(sortFilterItemDataView.sortFilterItem.title.toString(), shouldBe(quickFilter.title))
         assertThat(sortFilterItemDataView.sortFilterItem.typeUpdated, shouldBe(false))
+
+        val chevronListenerMatcher = if (quickFilter.options.size > 1) notNullValue() else nullValue()
+        assertThat(sortFilterItemDataView.sortFilterItem.chevronListener, chevronListenerMatcher)
     }
 }
 

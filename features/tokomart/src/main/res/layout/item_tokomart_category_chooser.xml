@@ -8,7 +8,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_subcategory"
+        android:id="@+id/tokomartCategoryChooserItemTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Kategori"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-        android:id="@+id/radio_button_subcategory"
+        android:id="@+id/tokomartCategoryChooserItemRadio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"

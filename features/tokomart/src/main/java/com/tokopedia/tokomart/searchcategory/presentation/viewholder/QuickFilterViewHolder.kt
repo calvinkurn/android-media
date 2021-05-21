@@ -38,7 +38,8 @@ class QuickFilterViewHolder(
 
     private fun setNewNotification(element: QuickFilterDataView) {
         element.quickFilterItemList.forEach {
-            it.sortFilterItem.refChipUnify.showNewNotification = it.option.isNew
+            val showNewNotification = it.filter.options.firstOrNull()?.isNew ?: false
+            it.sortFilterItem.refChipUnify.showNewNotification = showNewNotification
         }
     }
 }

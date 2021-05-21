@@ -65,6 +65,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val productCountAfterFilterMutableLiveData = MutableLiveData("")
     val productCountAfterFilterLiveData: LiveData<String> = productCountAfterFilterMutableLiveData
 
+    protected val isL3FilterPageOpenMutableLiveData = MutableLiveData<Filter?>(null)
+    val isL3FilterPageOpenLiveData: LiveData<Filter?> = isL3FilterPageOpenMutableLiveData
+
     protected var totalData = 0
     protected var totalFetchedData = 0
     protected var nextPage = 1
@@ -155,20 +158,35 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun createQuickFilterItemList(headerDataView: HeaderDataView) =
             headerDataView.quickFilterDataValue.filter.map {
-                val option = it.options.getOrNull(0) ?: Option()
-                val isSelected = filterController.getFilterViewState(option)
                 SortFilterItemDataView(
-                        option = option,
-                        sortFilterItem = createSortFilterItem(it, isSelected, option)
+                        filter = it,
+                        sortFilterItem = createSortFilterItem(it),
                 )
             }
 
-    private fun createSortFilterItem(it: Filter, isSelected: Boolean, option: Option) =
-            SortFilterItem(it.title, getSortFilterItemType(isSelected)) {
+    private fun createSortFilterItem(filter: Filter): SortFilterItem {
+        val option = filter.options.getOrNull(0) ?: Option()
+        val isSelected = filterController.getFilterViewState(option)
+        val chipType = getSortFilterItemType(isSelected)
+
+        val sortFilterItem = SortFilterItem(filter.title, chipType)
+        sortFilterItem.typeUpdated = false
+
+        if (filter.options.size == 1) {
+            sortFilterItem.listener = {
                 onFilterChipSelected(option, !isSelected)
-            }.also { sortFilterItem ->
-                sortFilterItem.typeUpdated = false
             }
+        }
+        else {
+            val listener = {
+                openL3FilterPage(filter)
+            }
+            sortFilterItem.chevronListener = listener
+            sortFilterItem.listener = listener
+        }
+
+        return sortFilterItem
+    }
 
     private fun getSortFilterItemType(isSelected: Boolean) =
             if (isSelected)
@@ -199,6 +217,10 @@ abstract class BaseSearchCategoryViewModel(
         nextPage = 1
 
         onViewCreated()
+    }
+
+    protected open fun openL3FilterPage(selectedFilter: Filter) {
+        isL3FilterPageOpenMutableLiveData.value = selectedFilter
     }
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =

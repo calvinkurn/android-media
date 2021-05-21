@@ -577,6 +577,32 @@
             "valMin": "",
             "hexColor": "",
             "child": []
+          },
+          {
+            "name": "Gratis Ongkir",
+            "key": "free_shipping",
+            "icon": "",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Official Store",
+            "key": "official",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
           }
         ]
       },

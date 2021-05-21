@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -22,6 +23,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
+import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
@@ -38,7 +40,8 @@ abstract class BaseSearchCategoryFragment:
         TitleListener,
         CategoryFilterListener,
         QuickFilterListener,
-        SortFilterBottomSheet.Callback {
+        SortFilterBottomSheet.Callback,
+        CategoryChooserBottomSheet.Callback {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -47,6 +50,7 @@ abstract class BaseSearchCategoryFragment:
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
 
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
@@ -141,6 +145,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().dynamicFilterModelLiveData.observe(
                 viewLifecycleOwner, this::onDynamicFilterModelChanged
         )
+        getViewModel().productCountAfterFilterLiveData.observe(viewLifecycleOwner, this::setFilterProductCount)
+        getViewModel().isL3FilterPageOpenLiveData.observe(viewLifecycleOwner, this::configureL3BottomSheet)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -211,9 +217,38 @@ abstract class BaseSearchCategoryFragment:
 
     private fun onDynamicFilterModelChanged(dynamicFilterModel: DynamicFilterModel?) {
         dynamicFilterModel ?: return
-        val sortFilterBottomSheet = sortFilterBottomSheet ?: return
 
-        sortFilterBottomSheet.setDynamicFilterModel(dynamicFilterModel)
+        sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
+    }
+
+    protected open fun setFilterProductCount(countText: String) {
+        val productCountText = "$countText produk"
+
+        sortFilterBottomSheet?.setResultCountText(productCountText)
+        categoryChooserBottomSheet?.setResultCountText(productCountText)
+    }
+
+    private fun configureL3BottomSheet(filter: Filter?) {
+        if (filter != null) {
+            categoryChooserBottomSheet = CategoryChooserBottomSheet()
+            categoryChooserBottomSheet?.show(
+                    parentFragmentManager,
+                    getViewModel().queryParam,
+                    filter,
+                    this,
+            )
+        } else {
+            categoryChooserBottomSheet?.dismiss()
+            categoryChooserBottomSheet = null
+        }
+    }
+
+    override fun getResultCount(selectedOption: Option) {
+
+    }
+
+    override fun onApplyCategory(selectedOption: Option) {
+
     }
 
     override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {

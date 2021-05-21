@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
@@ -10,7 +11,6 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataV
 import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
-import io.mockk.CapturingSlot
 import io.mockk.slot
 import io.mockk.verify
 import org.hamcrest.CoreMatchers.nullValue
@@ -49,8 +49,8 @@ class SearchQuickFilterTest: SearchTestFixtures() {
             quickFilterVisitable: QuickFilterDataView,
     ) {
         quickFilterVisitable.quickFilterItemList.forEach {
-            val failedReason = "Quick filter option \"${it.option.key}\" type is incorrect."
-            val expectedType = getExpectedChipsUnifyType(it.option, selectedFilterOption)
+            val failedReason = "Quick filter option \"${it.firstOption!!.key}\" type is incorrect."
+            val expectedType = getExpectedChipsUnifyType(it.firstOption!!, selectedFilterOption)
 
             assertThat(failedReason, it.sortFilterItem.type, shouldBe(expectedType))
         }
@@ -95,10 +95,10 @@ class SearchQuickFilterTest: SearchTestFixtures() {
             requestParams: RequestParams,
             selectedQuickFilter: SortFilterItemDataView
     ) {
-        val selectedQuickFilterKey = selectedQuickFilter.option.key
+        val selectedQuickFilterKey = selectedQuickFilter.firstOption!!.key
         val actualParamsValue = getTokonowQueryParam(requestParams)[selectedQuickFilterKey].toString()
 
-        assertThat(actualParamsValue, shouldBe(selectedQuickFilter.option.value))
+        assertThat(actualParamsValue, shouldBe(selectedQuickFilter.firstOption!!.value))
     }
 
     @Test
@@ -131,9 +131,29 @@ class SearchQuickFilterTest: SearchTestFixtures() {
             requestParams: RequestParams,
             selectedQuickFilter: SortFilterItemDataView
     ) {
-        val selectedQuickFilterKey = selectedQuickFilter.option.key
+        val selectedQuickFilterKey = selectedQuickFilter.firstOption!!.key
         val actualParamsValue = requestParams.parameters[selectedQuickFilterKey]
 
         assertThat(actualParamsValue, nullValue())
+    }
+
+    @Test
+    fun `click quick filter to open L3 filter bottom sheet`() {
+        val requestParamsSlot = slot<RequestParams>()
+        `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
+        `Given view already created`()
+
+        val quickFilterVisitable = searchViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val selectedQuickFilter = quickFilterVisitable.quickFilterItemList[0]
+
+        `When quick filter selected`(selectedQuickFilter)
+
+        `Then assert L3 Bottomsheet filter is open with filter`(selectedQuickFilter.filter)
+    }
+
+    private fun `Then assert L3 Bottomsheet filter is open with filter`(selectedFilter: Filter) {
+        val isL3FilterPageOpen = searchViewModel.isL3FilterPageOpenLiveData.value
+
+        assertThat(isL3FilterPageOpen, shouldBe(selectedFilter))
     }
 }

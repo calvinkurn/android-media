@@ -1,5 +1,6 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
