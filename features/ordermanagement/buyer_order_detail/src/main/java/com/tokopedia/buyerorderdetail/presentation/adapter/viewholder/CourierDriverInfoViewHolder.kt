@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
@@ -27,6 +28,34 @@ class CourierDriverInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipment
             setupDriverPhoneNumber(it.phoneNumber)
             setupDriverPlateNumber(it.plateNumber)
         }
+    }
+
+    override fun bind(element: ShipmentInfoUiModel.CourierDriverInfoUiModel?, payloads: MutableList<Any>) {
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val oldItem = it.first
+                val newItem = it.second
+                if (oldItem is ShipmentInfoUiModel.CourierDriverInfoUiModel && newItem is ShipmentInfoUiModel.CourierDriverInfoUiModel) {
+                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    this.element = newItem
+                    if (oldItem.photoUrl != newItem.photoUrl) {
+                        setupDriverPhoto(newItem.photoUrl)
+                    }
+                    if (oldItem.name != newItem.name) {
+                        setupDriverName(newItem.name)
+                    }
+                    if (oldItem.phoneNumber != newItem.phoneNumber) {
+                        setupDriverPhoneNumber(newItem.phoneNumber)
+                    }
+                    if (oldItem.plateNumber != newItem.plateNumber) {
+                        setupDriverPlateNumber(newItem.plateNumber)
+                    }
+                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    return
+                }
+            }
+        }
+        super.bind(element, payloads)
     }
 
     private fun setupClickListeners() {

@@ -1,12 +1,13 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
-import android.os.Bundle
+import android.animation.LayoutTransition
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -21,8 +22,6 @@ class ProductViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
-
-        const val PAYLOAD_IS_PROCESSING = "is_processing"
     }
 
     private var element: ProductListUiModel.ProductUiModel? = null
@@ -44,20 +43,43 @@ class ProductViewHolder(
     }
 
     override fun bind(element: ProductListUiModel.ProductUiModel?, payloads: MutableList<Any>) {
-        if (payloads.isNotEmpty()) {
-            val payload = payloads.firstOrNull()
-            if (payload is Bundle) {
-                if (payload.containsKey(PAYLOAD_IS_PROCESSING)) {
-                    itemView.btnBuyerOrderDetailBuyProductAgain?.isLoading = payload.getBoolean(PAYLOAD_IS_PROCESSING, false)
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val oldItem = it.first
+                val newItem = it.second
+                if (oldItem is ProductListUiModel.ProductUiModel && newItem is ProductListUiModel.ProductUiModel) {
+                    itemView.cardBuyerOrderDetailProduct?.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    this.element = newItem
+                    if (oldItem.productThumbnailUrl != newItem.productThumbnailUrl) {
+                        setupProductThumbnail(newItem.productThumbnailUrl)
+                    }
+                    if (oldItem.productName != newItem.productName) {
+                        setupProductName(newItem.productName)
+                    }
+                    if (oldItem.quantity != newItem.quantity || oldItem.priceText != newItem.priceText) {
+                        setupProductQuantityAndPrice(newItem.quantity, newItem.priceText)
+                    }
+                    if (oldItem.productNote != newItem.productNote) {
+                        setupProductNote(newItem.productNote)
+                    }
+                    if (oldItem.totalPriceText != newItem.totalPriceText) {
+                        setupTotalPrice(newItem.totalPriceText)
+                    }
+                    if (oldItem.button != newItem.button || oldItem.isProcessing != newItem.isProcessing) {
+                        setupButton(newItem.button, newItem.isProcessing)
+                    }
+                    itemView.cardBuyerOrderDetailProduct?.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    return
                 }
             }
         }
+        super.bind(element, payloads)
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.cardBuyerOrderDetailProduct -> goToProductSnapshotPage()
-            R.id.btnBuyerOrderDetailBuyProductAgain -> addToCart()
+            R.id.btnBuyerOrderDetailBuyProductAgain -> onActionButtonClicked()
         }
     }
 
@@ -67,9 +89,24 @@ class ProductViewHolder(
         }
     }
 
+    private fun onActionButtonClicked() {
+        element?.let {
+            when (it.button.key) {
+                BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> addToCart()
+                BuyerOrderDetailConst.ACTION_BUTTON_KEY_SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
+            }
+        }
+    }
+
     private fun addToCart() {
         element?.let {
             listener.onBuyAgainButtonClicked(it)
+        }
+    }
+
+    private fun seeSimilarProducts() {
+        element?.let {
+            listener.onSeeSimilarProductsButtonClicked(it.button.url)
         }
     }
 
@@ -123,5 +160,6 @@ class ProductViewHolder(
 
     interface ProductViewListener {
         fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel)
+        fun onSeeSimilarProductsButtonClicked(url: String)
     }
 }

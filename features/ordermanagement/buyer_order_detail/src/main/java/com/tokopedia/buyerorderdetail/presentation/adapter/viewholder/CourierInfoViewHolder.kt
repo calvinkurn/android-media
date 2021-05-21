@@ -1,10 +1,10 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_courier.view.*
 
@@ -20,6 +20,30 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
             setupFreeShippingBadge(it.isFreeShipping)
             setupArrivalEstimation(it.arrivalEstimation, it.isFreeShipping)
         }
+    }
+
+    override fun bind(element: ShipmentInfoUiModel.CourierInfoUiModel?, payloads: MutableList<Any>) {
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val oldItem = it.first
+                val newItem = it.second
+                if (oldItem is ShipmentInfoUiModel.CourierInfoUiModel && newItem is ShipmentInfoUiModel.CourierInfoUiModel) {
+                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    if (oldItem.courierNameAndProductName != newItem.courierNameAndProductName) {
+                        setupCourierNameAndProductName(newItem.courierNameAndProductName)
+                    }
+                    if (oldItem.isFreeShipping != newItem.isFreeShipping) {
+                        setupFreeShippingBadge(newItem.isFreeShipping)
+                    }
+                    if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping) {
+                        setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping)
+                    }
+                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    return
+                }
+            }
+        }
+        super.bind(element, payloads)
     }
 
     private fun setupCourierNameAndProductName(courierNameAndProductName: String) {

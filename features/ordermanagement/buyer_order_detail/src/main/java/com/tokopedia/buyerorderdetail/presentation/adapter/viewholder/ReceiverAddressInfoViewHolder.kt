@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.animation.LayoutTransition
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
@@ -22,6 +23,33 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipme
             setupReceiverAddress(it.receiverAddress)
             setupReceiverAddressNote(it.receiverAddressNote)
         }
+    }
+
+    override fun bind(element: ShipmentInfoUiModel.ReceiverAddressInfoUiModel?, payloads: MutableList<Any>) {
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val oldItem = it.first
+                val newItem = it.second
+                if (oldItem is ShipmentInfoUiModel.ReceiverAddressInfoUiModel && newItem is ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
+                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    if (oldItem.receiverName != newItem.receiverName) {
+                        setupReceiverName(newItem.receiverName)
+                    }
+                    if (oldItem.receiverPhoneNumber != newItem.receiverPhoneNumber) {
+                        setupReceiverPhoneNumber(newItem.receiverPhoneNumber)
+                    }
+                    if (oldItem.receiverAddress != newItem.receiverAddress) {
+                        setupReceiverAddress(newItem.receiverAddress)
+                    }
+                    if (oldItem.receiverAddressNote != newItem.receiverAddressNote) {
+                        setupReceiverAddressNote(newItem.receiverAddressNote)
+                    }
+                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    return
+                }
+            }
+        }
+        super.bind(element, payloads)
     }
 
     private fun setupReceiverName(receiverName: String) {

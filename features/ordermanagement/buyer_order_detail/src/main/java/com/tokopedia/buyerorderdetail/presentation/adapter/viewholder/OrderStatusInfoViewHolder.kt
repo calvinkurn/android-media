@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.animation.LayoutTransition
 import android.graphics.Color
 import android.view.View
 import com.tokopedia.buyerorderdetail.R
@@ -27,6 +28,31 @@ class OrderStatusInfoViewHolder(itemView: View?) : BaseToasterViewHolder<OrderSt
             setupDeadline(it.deadline)
             setupClickListener()
         }
+    }
+
+    override fun bind(element: OrderStatusUiModel.OrderStatusInfoUiModel?, payloads: MutableList<Any>) {
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val oldItem = it.first
+                val newItem = it.second
+                if (oldItem is OrderStatusUiModel.OrderStatusInfoUiModel && newItem is OrderStatusUiModel.OrderStatusInfoUiModel) {
+                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    this.element = newItem
+                    if (oldItem.invoice.invoice != newItem.invoice.invoice) {
+                        setupInvoice(newItem.invoice.invoice)
+                    }
+                    if (oldItem.purchaseDate != newItem.purchaseDate) {
+                        setupPurchaseDate(newItem.purchaseDate)
+                    }
+                    if (oldItem.deadline != newItem.deadline) {
+                        setupDeadline(newItem.deadline)
+                    }
+                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    return
+                }
+            }
+        }
+        super.bind(element, payloads)
     }
 
     override fun onClick(v: View?) {

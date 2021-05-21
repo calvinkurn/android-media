@@ -45,6 +45,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
+import kotlinx.android.synthetic.main.fragment_buyer_order_detail.emptyStateBuyerOrderDetail
+import kotlinx.android.synthetic.main.fragment_buyer_order_detail.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -152,10 +154,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
         val productCopy = product.copy(isProcessing = true)
-        adapter.updateItem(product, productCopy, Bundle().apply {
-            putBoolean(ProductViewHolder.PAYLOAD_IS_PROCESSING, true)
-        })
+        adapter.updateItem(product, productCopy)
         viewModel.addToCart(productCopy)
+    }
+
+    override fun onSeeSimilarProductsButtonClicked(url: String) {
+        RouteManager.route(context, url)
     }
 
     private fun onAskSellerActionButtonClicked() {
@@ -213,6 +217,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             setDuration(LayoutTransition.CHANGING, CONTENT_CHANGING_ANIMATION_DURATION)
             setStartDelay(LayoutTransition.CHANGING, CONTENT_CHANGING_ANIMATION_DELAY)
         }
+        containerActionButtons?.actionButtonWrapper?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         setupToolbar()
         setupGlobalError()
         setupSwipeRefreshLayout()
@@ -228,10 +233,20 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun setupGlobalError() {
         globalErrorBuyerOrderDetail.setActionClickListener {
-            globalErrorBuyerOrderDetail.gone()
+            globalErrorBuyerOrderDetail?.gone()
             showLoadIndicator()
             contentVisibilityAnimator.hideContent()
             loadBuyerOrderDetail()
+        }
+        emptyStateBuyerOrderDetail?.apply {
+            setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
+            setPrimaryCTAText(context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty())
+            setPrimaryCTAClickListener {
+                emptyStateBuyerOrderDetail?.gone()
+                showLoadIndicator()
+                contentVisibilityAnimator.hideContent()
+                loadBuyerOrderDetail()
+            }
         }
     }
 
@@ -283,9 +298,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 is Success -> onSuccessAddToCart(requestResult.data)
                 is Fail -> onFailedAddToCart(requestResult.throwable)
             }
-            adapter.updateItem(result.first, result.first.copy(isProcessing = false), Bundle().apply {
-                putBoolean(ProductViewHolder.PAYLOAD_IS_PROCESSING, false)
-            })
+            adapter.updateItem(result.first, result.first.copy(isProcessing = false))
         })
     }
 
@@ -454,8 +467,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun Throwable.showErrorToaster() {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, this)
-        }
-                ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         showErrorToaster(errorMessage)
     }
 

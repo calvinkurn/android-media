@@ -18,6 +18,10 @@ class PlainHeaderViewHolder(itemView: View?) : AbstractViewHolder<PlainHeaderUiM
         }
     }
 
+    override fun bind(element: PlainHeaderUiModel?, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     private fun setupHeader(header: String) {
         (itemView as? Typography)?.text = header
     }

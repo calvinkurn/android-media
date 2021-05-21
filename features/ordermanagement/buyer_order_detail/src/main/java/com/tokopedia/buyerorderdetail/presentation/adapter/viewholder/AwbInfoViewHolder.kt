@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.Utils
@@ -25,6 +26,12 @@ class AwbInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiM
             this.element = it
             setupAwbNumber(it.awbNumber)
         }
+    }
+
+    override fun bind(element: ShipmentInfoUiModel.AwbInfoUiModel?, payloads: MutableList<Any>) {
+        itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+        bind(element)
+        itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
     }
 
     private fun setupClickListener() {

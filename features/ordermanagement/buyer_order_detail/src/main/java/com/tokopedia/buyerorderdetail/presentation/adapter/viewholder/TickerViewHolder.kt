@@ -25,6 +25,10 @@ class TickerViewHolder(itemView: View?) : AbstractViewHolder<TickerUiModel>(item
         }
     }
 
+    override fun bind(element: TickerUiModel?, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
         RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
     }

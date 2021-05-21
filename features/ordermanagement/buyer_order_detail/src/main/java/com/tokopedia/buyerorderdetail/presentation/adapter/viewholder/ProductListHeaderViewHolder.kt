@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
@@ -27,6 +28,28 @@ class ProductListHeaderViewHolder(itemView: View?) : AbstractViewHolder<ProductL
             setupShopBadge(it.shopBadge)
             setupShopName(it.shopName)
         }
+    }
+
+    override fun bind(element: ProductListUiModel.ProductListHeaderUiModel?, payloads: MutableList<Any>) {
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val oldItem = it.first
+                val newItem = it.second
+                if (oldItem is ProductListUiModel.ProductListHeaderUiModel && newItem is ProductListUiModel.ProductListHeaderUiModel) {
+                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    this.element = newItem
+                    if (oldItem.shopBadge != newItem.shopBadge) {
+                        setupShopBadge(newItem.shopBadge)
+                    }
+                    if (oldItem.shopName != newItem.shopName) {
+                        setupShopName(newItem.shopName)
+                    }
+                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    return
+                }
+            }
+        }
+        super.bind(element, payloads)
     }
 
     override fun onClick(v: View?) {

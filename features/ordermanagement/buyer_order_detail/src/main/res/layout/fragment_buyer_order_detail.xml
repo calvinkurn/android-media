@@ -39,7 +39,8 @@
         android:layout_height="@dimen/layout_lvl0"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail"
+        app:layout_constraintVertical_bias="0.5" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshBuyerOrderDetail"
@@ -69,12 +70,14 @@
         app:layout_constraintTop_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/actionButtonWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3">
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:animateLayoutChanges="true">
 
             <com.tokopedia.unifycomponents.UnifyImageButton
                 android:id="@+id/btnBuyerOrderDetailSecondaryActions"

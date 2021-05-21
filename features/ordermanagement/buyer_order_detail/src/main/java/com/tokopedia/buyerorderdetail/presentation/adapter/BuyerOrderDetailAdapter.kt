@@ -135,11 +135,11 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         visitables.addAll(newItems)
     }
 
-    fun updateItem(oldItem: Visitable<BuyerOrderDetailTypeFactory>, newItem: Visitable<BuyerOrderDetailTypeFactory>, payload: Bundle) {
+    fun updateItem(oldItem: Visitable<BuyerOrderDetailTypeFactory>, newItem: Visitable<BuyerOrderDetailTypeFactory>) {
         val index = visitables.indexOf(oldItem)
         if (index != -1) {
             visitables[index] = newItem
-            notifyItemChanged(index, payload)
+            notifyItemChanged(index, oldItem to newItem)
         }
     }
 }

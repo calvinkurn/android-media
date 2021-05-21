@@ -22,7 +22,7 @@ class BuyerOrderDetailDiffUtilCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldItems.getOrNull(oldItemPosition) == oldItems.getOrNull(newItemPosition)
+        return oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {

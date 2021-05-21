@@ -8,6 +8,8 @@ object BuyerOrderDetailConst {
     const val ACTION_BUTTON_KEY_FINISH_ORDER = "finish_order"
     const val ACTION_BUTTON_KEY_BACK = "back"
     const val ACTION_BUTTON_KEY_HELP = "help"
+    const val ACTION_BUTTON_KEY_BUY_AGAIN = "buy_again"
+    const val ACTION_BUTTON_KEY_SEE_SIMILAR_PRODUCTS = "see_similar_products"
 
     const val SECTION_HEADER_PRODUCT_LIST = "Daftar Produk"
     const val SECTION_HEADER_SHIPMENT_INFO = "Info Pengiriman"
