@@ -1130,24 +1130,6 @@ object DynamicProductDetailTracking {
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
-        fun eventClickReportOnHelpPopUpAtc() {
-            TrackApp.getInstance().gtm.sendGeneralEvent(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_REPORT_ON_HELP_POP_UP_ATC,
-                    ProductTrackingConstant.Label.EMPTY_LABEL
-            )
-        }
-
-        fun eventClickCloseOnHelpPopUpAtc() {
-            TrackApp.getInstance().gtm.sendGeneralEvent(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
-                    ProductTrackingConstant.Label.EMPTY_LABEL
-            )
-        }
-
         fun eventAddToCartRecommendationATCClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String) {
             val valueLoginOrNotLogin = if (!isSessionActive)
                 " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
@@ -1695,16 +1677,6 @@ object DynamicProductDetailTracking {
             )
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
-
-        fun eventViewHelpPopUpWhenAtc() {
-            TrackApp.getInstance().gtm.sendGeneralEvent(
-                    ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.VIEW_HELP_POP_UP_WHEN_ATC,
-                    ProductTrackingConstant.Label.EMPTY_LABEL
-            )
-        }
-
     }
 
     object TradeIn {

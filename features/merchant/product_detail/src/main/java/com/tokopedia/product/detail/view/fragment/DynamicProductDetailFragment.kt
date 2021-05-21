@@ -1391,7 +1391,7 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
             data.doSuccessOrFail({
                 if (it.data.errorReporter.eligible) {
                     logException(Throwable(it.data.errorReporter.texts.submitTitle))
-                    showDialogErrorAtc(it.data)
+                    view?.showToasterError(it.data.errorReporter.texts.submitTitle, ctaText = getString(R.string.label_oke_pdp))
                 } else {
                     onSuccessAtc(it.data)
                 }
@@ -2098,33 +2098,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         if (isAdded) {
             initToolBarMethod?.invoke()
             setNavToolBarCartCounter()
-        }
-    }
-
-    private fun onErrorSubmitHelpTicket(e: Throwable?) {
-        hideProgressDialog()
-        view?.let {
-            it.showToasterError(ErrorHandler.getErrorMessage(it.context, e), ctaText = getString(R.string.label_oke_pdp))
-        }
-    }
-
-    private fun onSuccessSubmitHelpTicket(result: SubmitTicketResult) {
-        hideProgressDialog()
-        if (result.status) {
-            activity?.also {
-                val successTicketDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-                successTicketDialog.apply {
-                    setTitle(result.texts.submitTitle)
-                    setDescription(result.texts.submitDescription)
-                    setPrimaryCTAText(result.texts.successButton)
-                    setPrimaryCTAClickListener {
-                        this.dismiss()
-                    }
-                    show()
-                }
-            }
-        } else {
-            view?.showToasterError(result.message, ctaText = getString(R.string.label_oke_pdp))
         }
     }
 
@@ -3306,30 +3279,6 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
         intent.putExtra(TradeInParams.PARAM_PERMISSION_GIVEN, true)
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
         startActivityForResult(intent, ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST)
-    }
-
-    private fun showDialogErrorAtc(result: AddToCartDataModel) {
-        activity?.also { activity ->
-            val createTicketDialog = DialogUnify(activity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            createTicketDialog.apply {
-                setTitle(result.errorReporter.texts.submitTitle)
-                setDescription(result.errorReporter.texts.submitDescription)
-                setSecondaryCTAText(result.errorReporter.texts.cancelButton)
-                setSecondaryCTAClickListener {
-                    this.dismiss()
-                    DynamicProductDetailTracking.Click.eventClickCloseOnHelpPopUpAtc()
-                }
-                setPrimaryCTAText(result.errorReporter.texts.submitButton)
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                    DynamicProductDetailTracking.Click.eventClickReportOnHelpPopUpAtc()
-                    showProgressDialog()
-                    viewModel.hitSubmitTicket(result, this@DynamicProductDetailFragment::onErrorSubmitHelpTicket, this@DynamicProductDetailFragment::onSuccessSubmitHelpTicket)
-                }
-                show()
-            }
-            DynamicProductDetailTracking.Impression.eventViewHelpPopUpWhenAtc()
-        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
