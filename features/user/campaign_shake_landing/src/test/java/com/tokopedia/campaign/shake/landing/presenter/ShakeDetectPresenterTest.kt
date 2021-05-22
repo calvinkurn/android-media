@@ -184,6 +184,10 @@ class ShakeDetectPresenterTest {
         every {
             presenter.isLogin
         } returns loggedIn
+
+        every {
+            presenter.isLogin
+        } returns loggedIn
     }
 
     @Test
