@@ -1,12 +1,9 @@
 package com.tokopedia.minicart.cartlist
 
-import android.content.Context
 import android.content.res.Resources
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.minicart.R
@@ -21,10 +18,10 @@ class MiniCartListBottomSheet @Inject constructor() {
 
     lateinit var viewModel: MiniCartListViewModel
 
-    fun show(shopIds: List<String>, fragmentManager: FragmentManager, activity: FragmentActivity) {
-        initializeInjector(activity)
-        initializeViewModel(activity)
-        initializeView(activity, fragmentManager)
+    fun show(shopIds: List<String>, fragment: Fragment, onDismiss: () -> Unit) {
+        initializeInjector(fragment)
+        initializeViewModel(fragment)
+        initializeView(fragment, onDismiss)
         initializeCartData(shopIds)
     }
 
@@ -32,41 +29,45 @@ class MiniCartListBottomSheet @Inject constructor() {
         viewModel.getCartList(shopIds)
     }
 
-    private fun initializeViewModel(activity: FragmentActivity) {
-        viewModel = ViewModelProvider(activity, viewModelFactory).get(MiniCartListViewModel::class.java)
-        viewModel.cartListUiModel.observe(activity, {
-            Toast.makeText(activity, "SHOW CART LIST!", Toast.LENGTH_SHORT).show()
+    private fun initializeViewModel(fragment: Fragment) {
+        viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartListViewModel::class.java)
+        viewModel.cartListUiModel.observe(fragment, {
+            Toast.makeText(fragment.activity, "SHOW CART LIST!", Toast.LENGTH_SHORT).show()
         })
     }
 
-    private fun initializeView(activity: FragmentActivity, fragmentManager: FragmentManager) {
-        val bottomSheet = BottomSheetUnify().apply {
-            showCloseIcon = false
-            setTitle("Title")
-            showHeader = true
-            isDragable = true
-            showKnob = true
-            isHideable = true
-            customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+    private fun initializeView(fragment: Fragment, onDismiss: () -> Unit) {
+        fragment.activity?.let { fragmentActivity ->
+            val bottomSheet = BottomSheetUnify().apply {
+                showCloseIcon = false
+                setTitle("Title")
+                showHeader = true
+                isDragable = true
+                showKnob = true
+                isHideable = true
+                customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+            }
+
+            bottomSheet.setOnDismissListener {
+                onDismiss.invoke()
+            }
+
+            val view = View.inflate(fragmentActivity, R.layout.layout_bottomsheet_mini_cart_list, null)
+
+            bottomSheet.setChild(view)
+            bottomSheet.show(fragment.parentFragmentManager, this.javaClass.simpleName)
         }
-
-        bottomSheet.setOnDismissListener {
-
-        }
-
-        val view = View.inflate(activity, R.layout.layout_bottomsheet_mini_cart_list, null)
-
-        bottomSheet.setChild(view)
-        bottomSheet.show(fragmentManager, this.javaClass.simpleName)
     }
 
-    private fun initializeInjector(context: Context) {
-        val baseAppComponent = context.applicationContext
-        if (baseAppComponent is BaseMainApplication) {
-            DaggerMiniCartListComponent.builder()
-                    .baseAppComponent(baseAppComponent.baseAppComponent)
-                    .build()
-                    .inject(this)
+    private fun initializeInjector(fragment: Fragment) {
+        fragment.activity?.let {
+            val baseAppComponent = it.applicationContext
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerMiniCartListComponent.builder()
+                        .baseAppComponent(baseAppComponent.baseAppComponent)
+                        .build()
+                        .inject(this)
+            }
         }
     }
 

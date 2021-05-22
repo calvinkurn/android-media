@@ -16,7 +16,8 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     val miniCartWidgetUiModel: LiveData<MiniCartWidgetUiModel>
         get() = _miniCartWidgetUiModel
 
-    fun getLatestState() {
+    fun getLatestState(shopIds: List<String>) {
+        getMiniCartWidgetDataUseCase.setParams(shopIds)
         getMiniCartWidgetDataUseCase.execute(onSuccess = {
             _miniCartWidgetUiModel.value = MiniCartWidgetUiModel(
                     state = MiniCartWidgetUiModel.STATE_NORMAL,

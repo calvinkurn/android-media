@@ -4,12 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
@@ -29,7 +29,6 @@ class MiniCartWidget @JvmOverloads constructor(
     lateinit var miniCartListBottomSheet: MiniCartListBottomSheet
 
     private var view: View? = null
-    private var fragmentManager: FragmentManager? = null
     private var totalAmount: TotalAmount? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
@@ -42,38 +41,47 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, activity: FragmentActivity, listener: MiniCartWidgetListener) {
-        val application = activity.application
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener) {
+        val application = fragment.activity?.application
         initializeInjector(application)
-        initializeView(shopIds, activity)
+        initializeView(shopIds, fragment)
+        initializeListener(listener)
+        initializeViewModel(fragment)
+        updateData(shopIds)
+    }
 
-        viewModel = ViewModelProvider(activity, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
+    private fun initializeListener(listener: MiniCartWidgetListener) {
         miniCartWidgetListener = listener
-        fragmentManager = activity.supportFragmentManager
-        viewModel.miniCartWidgetUiModel.observe(activity, {
+    }
+
+    private fun initializeViewModel(fragment: Fragment) {
+        viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
+        viewModel.miniCartWidgetUiModel.observe(fragment, {
             renderWidget(it)
         })
     }
 
-    private fun initializeView(shopIds: List<String>, activity: FragmentActivity) {
+    private fun initializeView(shopIds: List<String>, fragment: Fragment) {
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         totalAmount?.let {
             it.enableAmountChevron(true)
             it.amountChevronView.setOnClickListener {
-                fragmentManager?.let {
-                    miniCartListBottomSheet.show(shopIds, it, activity)
-                }
+                miniCartListBottomSheet.show(shopIds, fragment, ::onMiniCartBottomSheetDismissed)
             }
         }
         totalAmount?.isTotalAmountLoading = true
+    }
+
+    private fun onMiniCartBottomSheetDismissed() {
+        miniCartWidgetListener?.onCartItemsUpdated(MiniCartSimplifiedData())
     }
 
     /*
     * Function to trigger update mini cart data
     * This will trigger view model to fetch latest data from backend and update the UI
     * */
-    fun updateData() {
-        viewModel.getLatestState()
+    fun updateData(shopIds: List<String>) {
+        viewModel.getLatestState(shopIds)
     }
 
     /*
