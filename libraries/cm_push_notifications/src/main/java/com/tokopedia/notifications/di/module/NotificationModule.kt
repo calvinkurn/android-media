@@ -57,12 +57,11 @@ import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
     @Provides
     @CMNotificationScope
     fun provideAtcUseCase(
-            @Named(ATC_MUTATION_QUERY) query: String,
             useCase: RxUseCase,
             mapper: AddToCartDataMapper,
             chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
     ): AddToCartUseCase {
-        return AddToCartUseCase(query, useCase, mapper, chosenAddressAddToCartRequestHelper)
+        return AddToCartUseCase(useCase, mapper, chosenAddressAddToCartRequestHelper)
     }
 
     @Provides

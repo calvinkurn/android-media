@@ -45,6 +45,7 @@ class MiniCartListBottomSheet @Inject constructor() {
                 isDragable = true
                 showKnob = true
                 isHideable = true
+                clearContentPadding = true
                 customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
             }
 
