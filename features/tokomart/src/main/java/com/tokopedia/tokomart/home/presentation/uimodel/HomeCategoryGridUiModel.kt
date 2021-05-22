@@ -6,7 +6,7 @@ data class HomeCategoryGridUiModel(
     val id: String,
     val title: String,
     val categoryList: List<HomeCategoryItemUiModel>
-): HomeLayoutUiModel {
+): TokoMartHomeLayoutUiModel(id) {
     override fun type(typeFactory: TokoMartHomeTypeFactory): Int {
         return typeFactory.type(this)
     }
