@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -48,7 +49,7 @@ class AddToCartUseCase @Inject constructor(private val graphqlRepository: Graphq
             throw RuntimeException("Parameters has not been initialized!")
         }
 
-        val request = GraphqlRequest(QUERY, AddToCartGqlResponse::class.java, getParams())
+        val request = GraphqlRequest(QUERY_ADD_TO_CART, AddToCartGqlResponse::class.java, getParams())
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<AddToCartGqlResponse>()
 
         val result = addToCartDataMapper.mapAddToCartResponse(response)
@@ -101,41 +102,6 @@ class AddToCartUseCase @Inject constructor(private val graphqlRepository: Graphq
                     userId = userId
             )
         }
-
-        val QUERY = """
-            mutation add_to_cart_v2(${'$'}param: ATCV2Params) {
-              add_to_cart_v2(
-                param:${'$'}param) {
-                    error_message
-                    status
-                    data {
-                      success
-                      cart_id
-                      product_id
-                      quantity
-                      notes
-                      shop_id
-                      customer_id
-                      warehouse_id
-                      tracker_attribution
-                      tracker_list_name
-                      uc_ut_param
-                      is_trade_in
-                      message
-                    }
-                    error_reporter {
-                      eligible
-                      texts {
-                        submit_title
-                        submit_description
-                        submit_button
-                        cancel_button
-                      }
-                    }
-                }
-            }
-        """.trimIndent()
-
     }
 
 }
