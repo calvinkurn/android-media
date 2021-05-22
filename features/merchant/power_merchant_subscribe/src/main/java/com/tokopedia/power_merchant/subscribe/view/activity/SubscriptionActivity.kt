@@ -22,10 +22,15 @@ import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
+import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_pm_subsription.*
 import javax.inject.Inject
 
@@ -37,6 +42,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val sharedViewModel: PowerMerchantSharedViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSharedViewModel::class.java)
@@ -67,21 +75,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         fetchPmBasicInfo()
         setupView()
         observePmBasicInfo()
-    }
-
-    private fun observePmBasicInfo() {
-        observe(sharedViewModel.powerMerchantBasicInfo) {
-            when (it) {
-                is Success -> setOnSuccessGetBasicInfo(it.data)
-                is Fail -> {
-                    showErrorState()
-                }
-            }
-        }
-    }
-
-    private fun setOnSuccessGetBasicInfo(data: PowerMerchantBasicInfoUiModel) {
-        setupViewPager(data)
+        observeShopModerationStatus()
     }
 
     override fun getComponent(): PowerMerchantSubscribeComponent {
@@ -148,6 +142,46 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     override fun hideActivationProgress() {
 
+    }
+
+    private fun observeShopModerationStatus() {
+        sharedViewModel.getShopModerationStatus(userSession.shopId.toLongOrZero())
+        observe(sharedViewModel.shopModerationStatus) {
+            if (it is Success) {
+                showModerationShopTicker(it.data)
+            }
+        }
+    }
+
+    private fun observePmBasicInfo() {
+        observe(sharedViewModel.powerMerchantBasicInfo) {
+            when (it) {
+                is Success -> setOnSuccessGetBasicInfo(it.data)
+                is Fail -> {
+                    showErrorState()
+                }
+            }
+        }
+    }
+
+    private fun showModerationShopTicker(data: ModerationShopStatusUiModel) {
+        if (!data.isModeratedShop) {
+            tickerPmContainer.gone()
+            return
+        }
+
+        tickerPmContainer.visible()
+        val tickerTitle = getString(R.string.pm_moderated_shop_ticker_title)
+        val tickerDescription = getString(R.string.pm_moderated_shop_ticker_description)
+        val tickersData = listOf(TickerData(tickerTitle, tickerDescription, Ticker.TYPE_WARNING, false))
+        tickerPmView.run {
+            val adapter = TickerPagerAdapter(context, tickersData)
+            addPagerView(adapter, tickersData)
+        }
+    }
+
+    private fun setOnSuccessGetBasicInfo(data: PowerMerchantBasicInfoUiModel) {
+        setupViewPager(data)
     }
 
     private fun initInjector() {

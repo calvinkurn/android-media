@@ -14,6 +14,24 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_height="60dp" />
 
+    <RelativeLayout
+        android:id="@+id/tickerPmContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarPmSubscription"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/tickerPmView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tickerShapeType="full"
+            app:tickerType="warning" />
+    </RelativeLayout>
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgPmHeaderBackdrop"
         android:layout_width="@dimen/layout_lvl0"
@@ -22,7 +40,7 @@
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarPmSubscription"
+        app:layout_constraintTop_toBottomOf="@+id/tickerPmContainer"
         app:unify_image_corner_radius="0"
         tools:src="@drawable/bg_pm_pro_registration_header" />
 
@@ -57,7 +75,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgPmHeaderBackdrop" />
+        app:layout_constraintTop_toBottomOf="@+id/imgPmHeaderBackdrop"
+        tools:layout_height="40dp" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPagerPmSubscription"

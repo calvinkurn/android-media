@@ -274,4 +274,6 @@
     <string name="pm_options_tnc_text">Dengan melanjutkan, saya setuju dengan S&amp;K yang berlaku</string>
     <string name="pm_registration_success_message">Tokomu berhasil jadi Power Merchant!</string>
     <string name="pm_pro_registration_success_message">Tokomu berhasil jadi Power Merchant PRO!</string>
+    <string name="pm_moderated_shop_ticker_title">Tokomu sedang dalam pengawasan Tokopedia</string>
+    <string name="pm_moderated_shop_ticker_description">Tunggu hingga toko kembali aktif untuk daftar jadi Power Merchant</string>
 </resources>
