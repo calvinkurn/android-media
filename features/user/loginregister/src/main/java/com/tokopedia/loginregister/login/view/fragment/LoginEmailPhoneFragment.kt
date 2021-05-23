@@ -1184,7 +1184,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         return isEnableEncryptConfig
     }
 
-    fun isEnableEncryption(): Boolean {
+    open fun isEnableEncryption(): Boolean {
         return isEnableEncryptRollout() && isEnableEncryptConfig()
     }
 
