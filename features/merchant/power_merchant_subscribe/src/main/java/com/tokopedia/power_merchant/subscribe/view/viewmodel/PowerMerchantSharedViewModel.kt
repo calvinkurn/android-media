@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
-import com.tokopedia.gm.common.domain.interactor.GetPMStatusAndShopInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetShopModerationStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
 import com.tokopedia.power_merchant.subscribe.view_old.util.PowerMerchantRemoteConfig
@@ -22,7 +22,7 @@ import javax.inject.Inject
  */
 
 class PowerMerchantSharedViewModel @Inject constructor(
-        private val getPMStatusAndShopInfo: Lazy<GetPMStatusAndShopInfoUseCase>,
+        private val getPmBasicInfo: Lazy<GetPMBasicInfoUseCase>,
         private val getShopModerationStatusUseCase: Lazy<GetShopModerationStatusUseCase>,
         private val remoteConfig: Lazy<PowerMerchantRemoteConfig>,
         private val dispatchers: CoroutineDispatchers
@@ -40,7 +40,7 @@ class PowerMerchantSharedViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val isFreeShippingEnabled = remoteConfig.get().isFreeShippingEnabled()
-                val data = getPMStatusAndShopInfo.get().executeOnBackground()
+                val data = getPmBasicInfo.get().executeOnBackground()
                 return@withContext data.copy(isFreeShippingEnabled = isFreeShippingEnabled)
             }
             _powerMerchantBasicInfo.value = Success(result)

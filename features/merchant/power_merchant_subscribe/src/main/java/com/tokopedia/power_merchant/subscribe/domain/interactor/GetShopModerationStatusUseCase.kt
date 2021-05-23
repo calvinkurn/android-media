@@ -27,7 +27,7 @@ class GetShopModerationStatusUseCase @Inject constructor(
             val data = gqlResponse.getData<GetShopInfoByIdResponse>(GetShopInfoByIdResponse::class.java)
             val shopStatusId: Int? = data?.shopInfoById?.result?.firstOrNull()?.statusInfo?.shopStatus
             if (shopStatusId != null) {
-                return ModerationShopStatusUiModel(3)
+                return ModerationShopStatusUiModel(shopStatusId)
             } else {
                 throw RuntimeException()
             }

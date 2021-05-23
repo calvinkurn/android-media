@@ -15,7 +15,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
-import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
@@ -64,9 +63,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject
-    lateinit var interruptHelper: PMShopScoreInterruptHelper
 
     private val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
@@ -578,9 +574,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val isPmActive = pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val widgets = mutableListOf<BaseWidgetUiModel>()
-        /*if (!pmSettingInfo?.tickers.isNullOrEmpty() && isAutoExtendEnabled) {
-            widgets.add(WidgetTickerUiModel(pmSettingInfo?.tickers.orEmpty()))
-        }*/
+        val tickerList = pmBasicInfo?.tickers
+        if (!tickerList.isNullOrEmpty()) {
+            widgets.add(WidgetTickerUiModel(tickerList))
+        }
         if (!isAutoExtendEnabled) {
             widgets.add(WidgetCancelDeactivationSubmissionUiModel(getExpiredTimeFmt()))
         }
