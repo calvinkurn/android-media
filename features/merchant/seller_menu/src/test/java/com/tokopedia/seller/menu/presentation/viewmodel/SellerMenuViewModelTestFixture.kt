@@ -152,7 +152,8 @@ open class SellerMenuViewModelTestFixture {
             isAutoTopUp: Boolean = true,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
-            shopScore: Int = 70
+            shopScore: Int = 70,
+            shopAge: Int = 65
     ): ShopInfoUiModel {
 
         val shopInfoResponse = PartialShopSettingSuccessInfo(
@@ -171,7 +172,7 @@ open class SellerMenuViewModelTestFixture {
                 shopInfoResponse,
                 topAdsInfoResponse,
                 userSession
-        ), shopScore = shopScore)
+        ), shopScore = shopScore, shopAge = shopAge)
     }
 
     protected fun createNotificationResponse(
