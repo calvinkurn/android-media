@@ -21,7 +21,6 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.matchers.withRecyclerView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matcher
 
 open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
@@ -38,12 +37,12 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     protected var sellerBroadcastProductCarouselChatReplies = GetExistingChatPojo()
     protected var sellerProductAttachment = ChatAttachmentResponse()
     protected var sellerProductVariantAttachment = ChatAttachmentResponse()
+    protected var sellerProductVariantAttachmentWithParentId = ChatAttachmentResponse()
 
     private val templateChats = listOf(
             "I am seller", "Yes, this product is ready"
     )
 
-    @ExperimentalCoroutinesApi
     override fun before() {
         super.before()
         setupDefaultResponse()
@@ -97,6 +96,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         )
         sellerProductVariantAttachment = AndroidFileUtil.parse(
                 "seller/success_get_chat_attachments_with_product_variant.json",
+                ChatAttachmentResponse::class.java
+        )
+        sellerProductVariantAttachmentWithParentId = AndroidFileUtil.parse(
+                "seller/success_get_chat_attachments_with_product_variant_parentid.json",
                 ChatAttachmentResponse::class.java
         )
     }

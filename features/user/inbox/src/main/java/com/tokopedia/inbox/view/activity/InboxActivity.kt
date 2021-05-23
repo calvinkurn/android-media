@@ -48,7 +48,7 @@ import javax.inject.Inject
  * How to go to this page
  * Applink: [com.tokopedia.applink.ApplinkConst.INBOX]
  *
- * This page accept 2 optional query parameters:
+ * This page accept 3 optional query parameters:
  * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE]
  * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_ROLE]
  * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_SOURCE]
@@ -247,6 +247,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupToolbar() {
+        toolbar?.let { this.lifecycle.addObserver(it) }
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null

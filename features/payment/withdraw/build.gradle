@@ -15,6 +15,7 @@ buildscript {
     }
 }
 dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
