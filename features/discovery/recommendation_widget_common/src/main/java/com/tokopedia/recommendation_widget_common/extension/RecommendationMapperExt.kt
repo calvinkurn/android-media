@@ -21,7 +21,7 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
 
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget{
     return RecommendationWidget(
-            recommendation.mapIndexed { index, recommendation ->
+            recommendationItemList = recommendation.mapIndexed { index, recommendation ->
                 RecommendationItem(
                         productId = recommendation.id.toInt(),
                         name = recommendation.name,
