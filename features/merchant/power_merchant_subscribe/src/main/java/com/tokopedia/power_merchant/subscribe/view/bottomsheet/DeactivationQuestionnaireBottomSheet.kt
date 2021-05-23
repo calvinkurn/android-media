@@ -170,7 +170,8 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
 
     private fun getDeactivationQuestionnaire() {
         childView?.progressPmDeactivation?.visible()
-        val pmTireType = arguments?.getInt(KEY_PM_TIRE_TYPE, PMConstant.ShopTierType.POWER_MERCHANT) ?: PMConstant.ShopTierType.POWER_MERCHANT
+        val pmTireType = arguments?.getInt(KEY_PM_TIRE_TYPE, PMConstant.ShopTierType.POWER_MERCHANT)
+                ?: PMConstant.ShopTierType.POWER_MERCHANT
         mViewModel.getPMCancellationQuestionnaireData(pmTireType)
     }
 
@@ -191,9 +192,11 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
 
         childView?.run {
             val expiredDateStr = arguments?.getString(KEY_PM_EXPIRED_DATE).orEmpty()
+            val currentFormat = "dd MMMM yyyy hh:mm:ss"
+            val newDateFormat = "dd MMMM yyyy, hh:mm"
             val expiredDateFmt = DateFormatUtils.formatDate(
-                    DateFormatUtils.FORMAT_YYYY_MM_DD,
-                    DateFormatUtils.FORMAT_D_MMMM_YYYY,
+                    currentFormat,
+                    newDateFormat,
                     expiredDateStr
             )
             tvPmDeactivationInfo?.text = context.getString(R.string.pm_label_deactivation_questionnaire_intro_desc, expiredDateFmt).parseAsHtml()

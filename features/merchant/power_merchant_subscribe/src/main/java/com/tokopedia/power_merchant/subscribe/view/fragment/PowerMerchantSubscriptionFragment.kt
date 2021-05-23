@@ -18,6 +18,7 @@ import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
@@ -74,6 +75,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private val recyclerView: RecyclerView?
         get() = super.getRecyclerView(view)
 
+    private var isModeratedShop = false
     private var upgradePmProWidgetPosition: Int = RecyclerView.NO_POSITION
     private var cancelPmDeactivationWidgetPosition: Int = RecyclerView.NO_POSITION
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
@@ -102,6 +104,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         observePowerMerchantBasicInfo()
         observePmActiveState()
         observePmRegistrationPage()
+        observeShopModerationStatus()
     }
 
     override fun onItemClicked(t: BaseWidgetUiModel?) {}
@@ -147,6 +150,19 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         submitPmRegistration(PMConstant.ShopTierType.POWER_MERCHANT_PRO)
     }
 
+    fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean, nextShopTireType: Int) {
+        val shopInfo = pmBasicInfo?.shopInfo ?: return
+        when {
+            isModeratedShop -> showModeratedShopBottomSheet()
+            isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed, nextShopTireType)
+            term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
+            term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
+            term is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
+            term is RegistrationTermUiModel.Niv -> showNivTermBottomSheet(shopInfo.nivPmProThreshold)
+            term is RegistrationTermUiModel.Kyc -> submitKYC(tncAgreed)
+        }
+    }
+
     private fun showPmProDeactivationBottomSheet() {
         val bottomSheet = PowerMerchantProDeactivationBottomSheet.createInstance()
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
@@ -179,16 +195,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         bottomSheet.show(childFragmentManager)
     }
 
-    fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean, nextShopTireType: Int) {
-        val shopInfo = pmBasicInfo?.shopInfo ?: return
-        when {
-            isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed, nextShopTireType)
-            term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
-            term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
-            term is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
-            term is RegistrationTermUiModel.Niv -> showNivTermBottomSheet(shopInfo.nivPmProThreshold)
-            term is RegistrationTermUiModel.Kyc -> submitKYC(tncAgreed)
-        }
+    private fun showModeratedShopBottomSheet() {
+        val title: String = getString(R.string.pm_bottom_sheet_moderated_shop_title)
+        val description: String = getString(R.string.pm_bottom_sheet_moderated_shop_description)
+        val ctaText: String = getString(R.string.pm_content_slider_last_slide_button)
+        val illustrationUrl: String = PMConstant.Images.PM_INACTIVE
+
+        showNotificationBottomSheet(title, description, ctaText, illustrationUrl)
     }
 
     private fun setupView() = view?.run {
@@ -537,6 +550,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun submitPmRegistration(nextShopTireType: Int) {
+        if (isModeratedShop) {
+            showModeratedShopBottomSheet()
+            return
+        }
+
         val currentPmTire = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
         val currentShopTireType = getShopTireByPmTire(currentPmTire)
 
@@ -575,7 +593,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val widgets = mutableListOf<BaseWidgetUiModel>()
         val tickerList = pmBasicInfo?.tickers
-        if (!tickerList.isNullOrEmpty()) {
+        if (!tickerList.isNullOrEmpty() && !isModeratedShop) {
             widgets.add(WidgetTickerUiModel(tickerList))
         }
         if (!isAutoExtendEnabled) {
@@ -628,6 +646,14 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 }
             }
         })
+    }
+
+    private fun observeShopModerationStatus() {
+        observe(sharedViewModel.shopModerationStatus) {
+            if (it is Success) {
+                isModeratedShop = it.data.isModeratedShop
+            }
+        }
     }
 
     private fun getAutoExtendEnabled(): Boolean {
