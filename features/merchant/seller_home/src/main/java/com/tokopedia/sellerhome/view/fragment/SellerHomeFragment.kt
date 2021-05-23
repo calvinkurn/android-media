@@ -1,5 +1,8 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
@@ -367,20 +370,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendRecommendationItemClickEvent(element: RecommendationWidgetUiModel, item: RecommendationItemUiModel) {
         SellerHomeTracking.sendRecommendationItemClickEvent(element.dataKey, item)
-    }
-
-    override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
-        if (!isAdded || context == null) return
-
-        val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
-                ?: PostFilterBottomSheet.newInstance()
-        postFilterBottomSheet.init(requireContext(), element.postFilter) {
-            recyclerView?.post {
-                val copiedWidget = element.copy().apply { data = null }
-                notifyWidgetChanged(copiedWidget)
-                getPostData(listOf(element))
-            }
-        }.show(childFragmentManager)
     }
 
     override fun showRecommendationWidgetCoachMark(view: View) {
