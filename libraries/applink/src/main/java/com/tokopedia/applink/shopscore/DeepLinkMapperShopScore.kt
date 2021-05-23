@@ -56,7 +56,7 @@ object DeepLinkMapperShopScore {
         return UriUtil.buildUriAppendParams(applink, param)
     }
 
-    private fun isEnableNewShopScore(context: Context): Boolean {
+    fun isEnableNewShopScore(context: Context): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHOP_SCORE))
     }
