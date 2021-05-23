@@ -305,7 +305,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             menu?.findItem(INFO_MENU_ID)?.isVisible = false
         } else {
             menu?.findItem(PENALTY_WARNING_MENU_ID)?.isVisible = true
-            menu?.findItem(INFO_MENU_ID)?.isVisible = true
+            if (!viewModel.userSession.isShopOfficialStore)
+                menu?.findItem(INFO_MENU_ID)?.isVisible = true
         }
     }
 
@@ -313,7 +314,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         if (menu?.findItem(PENALTY_WARNING_MENU_ID)?.isVisible == true)
             if (!isNewSeller) shopScorePenaltyTracking.impressMenuPenalty()
 
-        if (menu?.findItem(INFO_MENU_ID)?.isVisible == true) shopScorePenaltyTracking.impressMenuInfoPage()
+        if (menu?.findItem(INFO_MENU_ID)?.isVisible == true)
+            if (!viewModel.userSession.isShopOfficialStore) shopScorePenaltyTracking.impressMenuInfoPage()
     }
 
     private fun showPenaltyBadge() {

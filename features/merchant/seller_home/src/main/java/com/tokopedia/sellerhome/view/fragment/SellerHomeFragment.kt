@@ -192,6 +192,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
+    private val tickerImpressHolder = ImpressHolder()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -940,7 +941,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showErrorViewByException(throwable: Throwable) = view?.run {
         val errorType =
-                when(throwable) {
+                when (throwable) {
                     is MessageErrorException -> null
                     is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
                     else -> GlobalError.SERVER_ERROR
@@ -1198,11 +1199,26 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     if (!RouteManager.route(context, linkUrl.toString())) {
-                        if (itemData is TickerUiModel)
+                        if (itemData is TickerUiModel) {
                             RouteManager.route(context, itemData.redirectUrl)
+                        }
                     }
+                    SellerHomeTracking.sendHomeTickerCtaClickEvent(getShopStatusStr())
                 }
             })
+            addOnImpressionListener(tickerImpressHolder) {
+                SellerHomeTracking.sendHomeTickerImpressionEvent(getShopStatusStr())
+            }
+        }
+    }
+
+    private fun getShopStatusStr(): String {
+        val isOfficialStore = userSession.isShopOfficialStore
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        return when {
+            isOfficialStore -> "OS"
+            isPowerMerchant -> "PM"
+            else -> "RM"
         }
     }
 

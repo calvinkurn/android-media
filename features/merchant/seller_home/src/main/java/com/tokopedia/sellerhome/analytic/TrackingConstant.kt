@@ -103,10 +103,13 @@ object TrackingConstant {
 
     //performance
     const val CLICK_SHOP_SCORE = "clickShopScore"
+    const val ACTION_CLICK_LEARN_MORE = "click - pelajari selengkapnya"
     const val ACTION_SHOP_SCORE = "click - performa toko"
     const val ACTION_SHOP_SCORE_NEW_SELLER = "click - performa"
+    const val IMPRESS_LEARN_MORE = "impression - pelajari selengkapnya"
     const val IMPRESS_ACTION_SHOP_SCORE_NEW_SELLER = "impression - performa"
     const val IMPRESS_ACTION_SHOP_SCORE = "impression - performa toko"
+    const val CATEGORY_COMMUNICATION_PERIOD_HOME = "communication period - home"
     const val CATEGORY_SHOP_SCORE_NEW_SELLER = "toko saya"
     const val CATEGORY_SHOP_SCORE = "lainnya"
     const val NEW_SELLER = "new seller -"

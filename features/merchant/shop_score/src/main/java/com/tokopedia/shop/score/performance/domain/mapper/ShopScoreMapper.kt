@@ -57,6 +57,7 @@ import com.tokopedia.shop.score.common.getLocale
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.IndexOutOfBoundsException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -407,7 +408,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 val rawValueFormatted = if (roundNextMinValue.rem(1) == 0.0) {
                                     roundNextMinValue.roundToInt().toString()
                                 } else {
-                                    String.format("%.1f", roundNextMinValue)
+                                    getNumberFormatted(roundNextMinValue)
                                 }
                                 Pair("$rawValueFormatted $minuteText", minuteText)
                             }
@@ -416,7 +417,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 val minValueFormatted = if (minValueFormattedPercent.rem(1) == 0.0) {
                                     minValueFormattedPercent.roundToInt().toString()
                                 } else {
-                                    String.format("%.1f", minValueFormattedPercent)
+                                    getNumberFormatted(minValueFormattedPercent)
                                 }
                                 Pair("$minValueFormatted$percentText", percentText)
                             }
@@ -439,7 +440,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                     val rawValueFormatted = if (rawValuePercent.rem(1) == 0.0) {
                                         rawValuePercent.roundToInt().toString()
                                     } else {
-                                        String.format("%.1f", rawValuePercent)
+                                        getNumberFormatted(rawValuePercent)
                                     }
                                     rawValueFormatted
                                 }
@@ -447,7 +448,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                     val rawValueFormatted = if (shopScoreDetail.rawValue.rem(1) == 0.0) {
                                         shopScoreDetail.rawValue.roundToInt().toString()
                                     } else {
-                                        String.format("%.1f", shopScoreDetail.rawValue)
+                                        getNumberFormatted(shopScoreDetail.rawValue)
                                     }
                                     rawValueFormatted
                                 }
@@ -685,5 +686,15 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
     private fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
         val sdf = SimpleDateFormat(pattern, locale)
         return sdf.format(timeMillis)
+    }
+
+    private fun getNumberFormatted(valueResponse: Double): String {
+        return try {
+            val number = valueResponse.toString().split(".").getOrNull(0) ?: ""
+            val decimalNumber = valueResponse.toString().split(".").getOrNull(1)?.getOrNull(0) ?: ""
+            "$number.$decimalNumber"
+        } catch (e: IndexOutOfBoundsException) {
+            String.format("%.1f", valueResponse)
+        }
     }
 }
