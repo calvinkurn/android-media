@@ -18,7 +18,8 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
-import com.tokopedia.discovery2.usecase.DiscoveryDataUseCase
+import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryDataUseCase
+import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryInjectCouponDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -73,6 +74,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     @Inject
     lateinit var quickCouponUseCase: QuickCouponUseCase
+
+    @Inject
+    lateinit var discoveryInjectCouponDataUseCase: DiscoveryInjectCouponDataUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -253,4 +257,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun checkAddressVisibility() = chooseAddressVisibilityLiveData
     fun getAddressVisibilityValue() = chooseAddressVisibilityLiveData.value ?: false
+
+    fun sendCouponInjectDataForLoggedInUsers() {
+        launchCatchError(
+                block = {
+                    if (userSession.isLoggedIn) {
+                        discoveryInjectCouponDataUseCase.sendDiscoveryInjectCouponData()
+                    }
+                },
+                onError = {
+                    discoveryPageInfo.value = Fail(it)
+                }
+        )
+    }
 }
