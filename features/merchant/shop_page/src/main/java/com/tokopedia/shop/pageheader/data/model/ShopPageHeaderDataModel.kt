@@ -18,5 +18,6 @@ data class ShopPageHeaderDataModel(
         var shopStatus: Int = -1,
         var broadcaster: Broadcaster.Config = Broadcaster.Config(),
         var shopSnippetUrl: String = "",
-        var shopCoreUrl: String = ""
+        var shopCoreUrl: String = "",
+        var shopBadge: String = ""
 )
