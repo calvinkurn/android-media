@@ -20,7 +20,6 @@ class MiniCartSimplifiedMapper @Inject constructor() {
     private fun mapMiniCartWidgetData(data: Data): MiniCartWidgetData {
         return MiniCartWidgetData().apply {
             totalProductCount = data.totalProductCount
-            totalProductError = data.totalProductError
             totalProductPrice = data.totalProductPrice
         }
     }
