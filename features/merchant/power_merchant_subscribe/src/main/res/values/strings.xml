@@ -130,7 +130,7 @@
     <string name="power_merchant_click_to_reload">Ketuk ikon untuk memuat ulang</string>
     <string name="power_merchant_success_free_shipping_description">Yuk, aktivasi fitur Bebas Ongkir untuk meningkatkan penjualan tokomu.</string>
     <string name="pm_power_merchant">Power Merchant</string>
-    <string name="pm_power_merchant_pro">Power Merchant Pro</string>
+    <string name="pm_power_merchant_pro">Power Merchant PRO</string>
     <string name="pm_power_merchant_status">Power Merchant Status :</string>
     <string name="pm_active">Aktif</string>
     <string name="pm_inactive">Tidak Aktif</string>
@@ -197,7 +197,7 @@
     <string name="pm_shop_performance_sum"><![CDATA[Performa Toko : <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_shop_performance_sum_new_seller"><![CDATA[Proyeksi Performa Toko : <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_shop_score_threshold_description"><![CDATA[Pertahankan skor performa toko <b>min. %1$d poin</b> untuk tetap menjadi Power Merchant setelah %2$s.]]></string>
-    <string name="pm_shop_score_threshold_description_final_period"><![CDATA[Pertahankan skor <b>min. %1$d poin</b> agar %2$s-mu tetap aktif, ya.]]></string>
+    <string name="pm_shop_score_threshold_description_final_period"><![CDATA[Pertahankan skor <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu tetap aktif, ya.]]></string>
     <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>level %1$d</b> untuk mendapatkan paket keuntungan <b>%2$s</b> pada periode update berikutnya. Pelajari Selengkapnya]]></string>
     <string name="pm_next_update_pm_pro_info"><![CDATA[Pengecekan status PM PRO akan dilakukan setiap 30 hari. Toko dengan skor <b>di bawah %1$d</b> berpotensi diturunkan menjadi PM.]]></string>
     <string name="pm_label_next_three_months_pm_grade_update">Update selanjutnya: %1$s</string>
@@ -226,11 +226,10 @@
     <string name="pm_rate_4_star">Puas</string>
     <string name="pm_rate_5_star">Sangat Puas</string>
     <string name="pm_all_questionnaire_must_be_answered">Anda belum menjawab semua pertanyaan</string>
-    <string name="pm_number_of_order"><![CDATA[Jumlah Pesanan: <font color=\"%1$s\">%2$d</font>]]></string>
-    <string name="pm_number_of_minimum_order">Jumlah min. %1$d pesanan</string>
-    <string name="pm_number_of_order_threshold">Tingkatkan jumlah pesanan min. %1$d, ya!</string>
+    <string name="pm_number_of_order"><![CDATA[Pesanan Selesai: <font color=\"%1$s\">%2$d</font>]]></string>
+    <string name="pm_number_of_minimum_order">Min. %1$d pesanan dalam 30 hari terakhir</string>
     <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
-    <string name="pm_niv_threshold_term">Pendapatan bersih min. %1$s</string>
+    <string name="pm_niv_threshold_term">Min. %1$s dalam 30 hari terakhir</string>
     <string name="pm_free_shipping_description">Biaya Bebas Ongkir yang lebih murah</string>
     <string name="pm_search_ranking_description">Peringkat pencarian lebih tinggi</string>
     <string name="pm_discount_shipping_fee">Diskon biaya pengiriman Same Day &amp; Instan</string>

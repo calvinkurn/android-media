@@ -50,7 +50,7 @@ object PMRegistrationTermHelper {
         } else {
             val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
             title = context.getString(R.string.pm_number_of_order, textColor, shopInfo.itemSoldOneMonth)
-            description = context.getString(R.string.pm_number_of_order_threshold, shopInfo.itemSoldPmProThreshold)
+            description = context.getString(R.string.pm_number_of_minimum_order, shopInfo.itemSoldPmProThreshold)
         }
         return RegistrationTermUiModel.Order(
                 title = title,

@@ -34,13 +34,35 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
     private fun showTopedIllustration(element: WidgetShopGradeUiModel) {
         val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
         val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val illustrationSize: Pair<Int, Int>
         val imgUrl = when {
-            isPmPro && isPmActive -> PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
-            isPmPro && !isPmActive -> PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
-            !isPmPro && isPmActive -> PMConstant.Images.IMG_TOPED_PM_ACTIVE
-            else -> PMConstant.Images.IMG_TOPED_PM_INACTIVE
+            isPmPro && isPmActive -> {
+                illustrationSize = Pair(R.dimen.gmc_dimen_128dp, R.dimen.gmc_dimen_134dp)
+                PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
+            }
+            isPmPro && !isPmActive -> {
+                illustrationSize = Pair(R.dimen.gmc_dimen_136dp, R.dimen.gmc_dimen_132dp)
+                PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
+            }
+            !isPmPro && isPmActive -> {
+                illustrationSize = Pair(R.dimen.gmc_dimen_112dp, R.dimen.gmc_dimen_122dp)
+                PMConstant.Images.IMG_TOPED_PM_ACTIVE
+            }
+            else -> {
+                illustrationSize = Pair(R.dimen.gmc_dimen_112dp, R.dimen.gmc_dimen_114dp)
+                PMConstant.Images.IMG_TOPED_PM_INACTIVE
+            }
         }
         itemView.imgPmShopGradeIllustration.loadImageWithoutPlaceholder(imgUrl)
+        setTopedImageSize(illustrationSize)
+    }
+
+    private fun setTopedImageSize(illustrationSize: Pair<Int, Int>) = with(itemView.imgPmShopGradeIllustration) {
+        val imageWidth = context.resources.getDimensionPixelSize(illustrationSize.first)
+        val imageHeight = context.resources.getDimensionPixelSize(illustrationSize.second)
+        layoutParams.width = imageWidth
+        layoutParams.height = imageHeight
+        requestLayout()
     }
 
     private fun setupShopScore(element: WidgetShopGradeUiModel) = with(itemView) {
@@ -52,7 +74,8 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
 
         tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), getShopScoreFmt(element.shopScore)).parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
-        val thresholdInfo = context.getString(R.string.pm_shop_score_threshold_description_final_period, element.threshold, getPmTireLabel(element.pmTierType))
+        val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        val thresholdInfo = context.getString(R.string.pm_shop_score_threshold_description_final_period, textColor, element.threshold, getPmTireLabel(element.pmTierType))
         tvPmShopGradeThreshold.text = thresholdInfo.parseAsHtml()
 
         val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE

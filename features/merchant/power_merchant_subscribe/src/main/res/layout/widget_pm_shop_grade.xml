@@ -129,7 +129,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeScore"
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="body_2"
-        tools:text="Pertahankan skor min. 60 poin untuk tetap menjadi Power Merchant setelah 31 Mei 2021." />
+        tools:text="@string/pm_shop_score_threshold_description_final_period" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icPmShopScoreTips"

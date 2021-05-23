@@ -12,8 +12,12 @@
     <dimen name="gmc_dimen_76dp">76dp</dimen>
     <dimen name="gmc_dimen_80dp">80dp</dimen>
     <dimen name="gmc_dimen_112dp">112dp</dimen>
+    <dimen name="gmc_dimen_114dp">114dp</dimen>
+    <dimen name="gmc_dimen_122dp">122dp</dimen>
     <dimen name="gmc_dimen_128dp">128dp</dimen>
+    <dimen name="gmc_dimen_132dp">132dp</dimen>
     <dimen name="gmc_dimen_134dp">134dp</dimen>
+    <dimen name="gmc_dimen_136dp">136dp</dimen>
     <dimen name="gmc_dimen_162dp">162dp</dimen>
     <dimen name="gmc_dimen_176dp">176dp</dimen>
     <dimen name="gmc_dimen_200dp">200dp</dimen>
