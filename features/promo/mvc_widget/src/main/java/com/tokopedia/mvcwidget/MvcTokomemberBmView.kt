@@ -68,7 +68,7 @@ fun expand(v: View) {
         }
     }
 
-    a.duration = (targetHeight / v.context.resources.displayMetrics.density).toLong()
+    a.duration = ((targetHeight / v.context.resources.displayMetrics.density) * 0.5).toLong()
     v.startAnimation(a)
 }
 
@@ -89,7 +89,7 @@ fun collapse(v: View) {
         }
     }
 
-    a.duration = ((initialHeight / v.context.resources.displayMetrics.density).toLong())
+    a.duration = (((initialHeight / v.context.resources.displayMetrics.density) * 1).toLong())
     v.startAnimation(a)
 }
 

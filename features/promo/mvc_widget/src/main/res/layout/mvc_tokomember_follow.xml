@@ -52,7 +52,8 @@
                 android:id="@+id/container_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
+                android:layout_marginBottom="@dimen/dp_12"
+                android:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvSubTitle"
@@ -108,11 +109,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
                 android:orientation="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:visibility="visible">
 
                 <View
@@ -127,10 +128,11 @@
                     android:layout_gravity="center"
                     android:drawableEnd="@drawable/ic_arrow_down_grey"
                     android:drawablePadding="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_8"
                     android:textColor="@color/Unify_N700"
-                    app:typographyType="body_3"
+                    app:typographyType="small"
                     app:typographyWeight="reguler"
-                    tools:text="Lihat Selengkapnya" />
+                    android:text="@string/mvc_text_collapse" />
 
             </LinearLayout>
 

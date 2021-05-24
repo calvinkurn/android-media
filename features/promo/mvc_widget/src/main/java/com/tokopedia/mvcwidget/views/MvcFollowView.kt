@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.promoui.common.dpToPx
@@ -59,10 +58,7 @@ class MvcFollowViewContainer @JvmOverloads constructor(
                         }
                     }
                     FollowWidgetType.MEMBERSHIP_OPEN -> {
-                        twoActionView.visibility = View.VISIBLE
-                        oneActionView.visibility = View.GONE
-                        twoActionView.setData(followWidget, shopId, source)
-                        divider.visibility = View.VISIBLE
+                        commonViewVisibility(followWidget,shopId,source)
 
                         if (!widgetImpression.sentJadiMemberImpression) {
                             Tracker.viewWidgetImpression(FollowWidgetType.MEMBERSHIP_OPEN, shopId, UserSession(context).userId, source)
@@ -70,10 +66,7 @@ class MvcFollowViewContainer @JvmOverloads constructor(
                         }
                     }
                     FollowWidgetType.MEMBERSHIP_CLOSE -> {
-                        twoActionView.visibility = View.VISIBLE
-                        oneActionView.visibility = View.GONE
-                        twoActionView.setData(followWidget, shopId, source)
-                        divider.visibility = View.VISIBLE
+                        commonViewVisibility(followWidget,shopId,source)
 
                         if (!widgetImpression.sentJadiMemberImpression) {
                             Tracker.viewWidgetImpression(FollowWidgetType.MEMBERSHIP_CLOSE, shopId, UserSession(context).userId, source)
@@ -83,6 +76,13 @@ class MvcFollowViewContainer @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    private fun commonViewVisibility(followWidget: FollowWidget, shopId: String, source: Int) {
+        twoActionView.visibility = View.VISIBLE
+        oneActionView.visibility = View.GONE
+        twoActionView.setData(followWidget, shopId, source)
+        divider.visibility = View.VISIBLE
     }
 
 }
@@ -163,10 +163,16 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             FollowWidgetType.MEMBERSHIP_OPEN -> {
                 collapsableContainer.visibility = View.GONE
                 containerContent.visibility = View.VISIBLE
+                btnSecond.text = context.resources.getString(R.string.mvc_jadi_member)
             }
             FollowWidgetType.MEMBERSHIP_CLOSE -> {
                 collapsableContainer.visibility = View.VISIBLE
                 containerContent.visibility = View.GONE
+                btnSecond.text = context.resources.getString(R.string.mvc_mulai_belanja)
+
+                if (mvcSource == MvcSource.PDP || mvcSource == MvcSource.REWARDS) {
+                    btnSecond.visibility = View.GONE
+                }
             }
         }
 

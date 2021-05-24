@@ -3,6 +3,7 @@ package com.tokopedia.mvcwidget
 import androidx.annotation.IntDef
 import com.tokopedia.mvcwidget.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.MvcSource.Companion.PDP
+import com.tokopedia.mvcwidget.MvcSource.Companion.REWARDS
 import com.tokopedia.mvcwidget.MvcSource.Companion.SHOP
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
@@ -370,12 +371,14 @@ object Tracker {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(DEFAULT, SHOP, PDP)
+@IntDef(DEFAULT, SHOP, PDP, REWARDS)
 annotation class MvcSource {
 
     companion object {
         const val DEFAULT = 0
         const val SHOP = 1
         const val PDP = 2
+        const val REWARDS = 3
+
     }
 }

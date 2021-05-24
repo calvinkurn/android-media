@@ -162,7 +162,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
             val shopApplink = item?.shopInfo?.appLink
             val shopId = item?.shopInfo?.id
             if (shopName != null && shopApplink != null && shopId != null) {
-                it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, 0, shopApplink, shopName))
+                it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, 3, shopApplink, shopName))
             }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
         }
