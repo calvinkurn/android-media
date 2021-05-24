@@ -36,6 +36,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.*
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
 import java.net.UnknownHostException
 import java.util.*
@@ -208,6 +209,16 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
 
         setupRecyclerView()
+        setupPmProUpgradeView()
+    }
+
+    private fun setupPmProUpgradeView() = view?.run {
+        viewPmUpgradePmPro.setOnClickListener {
+            val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
+            val indexOfUpgradePmProWidget = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
+            layoutManager?.scrollToPositionWithOffset(indexOfUpgradePmProWidget, 0)
+            hideUpgradePmProStickyView()
+        }
     }
 
     private fun setupRecyclerView() = view?.run {
@@ -217,13 +228,19 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 return super.scrollVerticallyBy(dy, recycler, state)
             }
         }
-
         recyclerView?.layoutManager = layManager
         recyclerView?.gone()
     }
 
     private fun setOnVerticalScrolled() {
-
+        val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
+        val lastVisible = layoutManager?.findLastVisibleItemPosition() ?: RecyclerView.NO_POSITION
+        val indexOfUpgradePmProWidget = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
+        if (lastVisible != RecyclerView.NO_POSITION && lastVisible < indexOfUpgradePmProWidget) {
+            showUpgradePmProStickyView()
+        } else {
+            hideUpgradePmProStickyView()
+        }
     }
 
     private fun getExpiredTimeFmt(): String {
@@ -652,7 +669,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
                 && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
         view?.viewPmUpgradePmPro?.isVisible = shouldShowView
-        hideUpgradePmProStickyView() //temp
     }
 
     private fun hideUpgradePmProStickyView() {
