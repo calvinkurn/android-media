@@ -17,7 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.consts.Resources.Green_G100
+import com.tokopedia.notifcenter.data.consts.Resources.Green_G600_96
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G200
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G600
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N200
@@ -70,7 +70,7 @@ abstract class BaseNotificationItemViewHolder(
         val color: Int = if (element.isRead) {
             MethodChecker.getColor(container.context, Unify_N0)
         } else {
-            MethodChecker.getColor(container.context, Green_G100)
+            MethodChecker.getColor(container.context, Green_G600_96)
         }
         container.setBackgroundColor(color)
     }
