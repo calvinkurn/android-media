@@ -218,6 +218,8 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setAllItemError(true);
         }
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
+        shipmentCartItemModel.setFirstProductErrorIndex(groupShop.getFirstProductErrorIndex());
+        shipmentCartItemModel.setProductErrorCount(groupShop.getProductErrorCount());
         if (orderIndex > 0) {
             shipmentCartItemModel.setOrderNumber(orderIndex);
         }

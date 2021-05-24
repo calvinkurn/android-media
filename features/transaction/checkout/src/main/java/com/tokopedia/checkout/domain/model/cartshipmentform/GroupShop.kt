@@ -9,6 +9,8 @@ import kotlinx.android.parcel.Parcelize
 data class GroupShop(
         var isError: Boolean = false,
         var errorMessage: String = "",
+        var firstProductErrorIndex: Int = -1,
+        var productErrorCount: Int = 0,
         var shop: Shop = Shop(),
         var shopShipments: List<ShopShipment> = emptyList(),
         var products: List<Product> = emptyList(),

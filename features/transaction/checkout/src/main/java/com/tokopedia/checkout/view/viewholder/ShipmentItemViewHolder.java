@@ -455,6 +455,45 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
+
+        if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getProductErrorCount() > 0 && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
+            layoutWarningAndError.setVisibility(View.VISIBLE);
+            tickerError.setTextDescription("Ada produk error " + shipmentCartItemModel.getProductErrorCount());
+            tickerError.setTickerType(Ticker.TYPE_ERROR);
+            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerError.setCloseButtonVisibility(View.GONE);
+            tickerError.setOnClickListener(v -> {
+                if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
+                    shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
+                    showAllProductListener(shipmentCartItemModel).onClick(tickerError);
+                    return;
+                }
+                scrollToErrorProduct(shipmentCartItemModel);
+            });
+            tickerError.setVisibility(View.VISIBLE);
+            layoutError.setVisibility(View.VISIBLE);
+        }
+        if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
+            scrollToErrorProduct(shipmentCartItemModel);
+        }
+    }
+
+    private void scrollToErrorProduct(ShipmentCartItemModel shipmentCartItemModel) {
+        rvCartItem.post(() -> {
+            int firstProductErrorIndex = shipmentCartItemModel.getFirstProductErrorIndex() - 1;
+            View child = rvCartItem.getChildAt(firstProductErrorIndex);
+            float dy = 0;
+            if (child != null) {
+                dy = child.getY();
+                View parent = null;
+                while (rvCartItem != parent) {
+                    parent = ((View) child.getParent());
+                    dy += parent.getY();
+                }
+            }
+            shipmentCartItemModel.setTriggerScrollToErrorProduct(false);
+            mActionListener.scrollToPositionWithOffset(getAdapterPosition(), dy * -1);
+        });
     }
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {

@@ -130,7 +130,10 @@ class ShipmentMapper @Inject constructor() {
                         shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                         shop = mapShopData(it.shop)
                         shopShipments = mapShopShipments(it.shopShipments)
-                        products = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
+                        val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
+                        products = mapProducts.first
+                        productErrorCount = mapProducts.second
+                        firstProductErrorIndex = mapProducts.third
                         isDisableChangeCourier = it.isDisableChangeCourier
                         boMetadata = it.boMetadata
                     }
@@ -143,9 +146,17 @@ class ShipmentMapper @Inject constructor() {
                             groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
                             shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
                             isDisablePPP: Boolean,
-                            shopTypeInfoData: ShopTypeInfoData): MutableList<Product> {
+                            shopTypeInfoData: ShopTypeInfoData): Triple<MutableList<Product>, Int, Int> {
         val productListResult = arrayListOf<Product>()
-        groupShop.products.forEach {
+        var i = 0
+        var firstErrorIndex = -1
+        var productErrorCount = 0
+        val p = arrayListOf<com.tokopedia.checkout.data.model.response.shipmentaddressform.Product>()
+        p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
+        p.forEachIndexed { index, it ->
             val productResult = Product().apply {
                 analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
                         it,
@@ -158,9 +169,22 @@ class ShipmentMapper @Inject constructor() {
                 if (it.tradeInInfo.isValidTradeIn) {
                     productPrice = it.tradeInInfo.newDevicePrice.toLong()
                 }
-                isError = !it.errors.isNullOrEmpty()
-                errorMessage = if (it.errors.isNotEmpty()) it.errors[0] else ""
-                errorMessageDescription = if (it.errors.size >= 2) it.errors[1] else ""
+                i++
+                if (i == 4) {
+                    isError = true
+                    errorMessage = "error testing"
+                    errorMessageDescription = ""
+                } else {
+                    isError = !it.errors.isNullOrEmpty()
+                    errorMessage = if (it.errors.isNotEmpty()) it.errors[0] else ""
+                    errorMessageDescription = if (it.errors.size >= 2) it.errors[1] else ""
+                }
+                if (isError) {
+                    productErrorCount++
+                    if (firstErrorIndex == -1) {
+                        firstErrorIndex = index
+                    }
+                }
                 productId = it.productId
                 cartId = it.cartId
                 productName = it.productName
@@ -211,7 +235,7 @@ class ShipmentMapper @Inject constructor() {
             }
             productListResult.add(productResult)
         }
-        return productListResult
+        return Triple(productListResult, productErrorCount, firstErrorIndex)
     }
 
     private fun mapAnalyticsProductCheckoutData(product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,

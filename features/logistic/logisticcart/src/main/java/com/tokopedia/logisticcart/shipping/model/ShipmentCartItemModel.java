@@ -17,6 +17,9 @@ public class ShipmentCartItemModel implements Parcelable {
     private boolean isError;
     private String errorTitle;
     private String errorDescription;
+    private int firstProductErrorIndex = -1;
+    private int productErrorCount = 0;
+    private boolean triggerScrollToErrorProduct;
 
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
@@ -99,6 +102,8 @@ public class ShipmentCartItemModel implements Parcelable {
         isError = in.readByte() != 0;
         errorTitle = in.readString();
         errorDescription = in.readString();
+        firstProductErrorIndex = in.readInt();
+        productErrorCount = in.readInt();
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
         shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
@@ -154,6 +159,8 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorTitle);
         dest.writeString(errorDescription);
+        dest.writeInt(firstProductErrorIndex);
+        dest.writeInt(productErrorCount);
         dest.writeParcelable(shipmentCartData, flags);
         dest.writeParcelable(selectedShipmentDetailData, flags);
         dest.writeTypedList(shopShipmentList);
@@ -296,6 +303,30 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setErrorDescription(String errorDescription) {
         this.errorDescription = errorDescription;
+    }
+
+    public int getFirstProductErrorIndex() {
+        return firstProductErrorIndex;
+    }
+
+    public void setFirstProductErrorIndex(int firstProductErrorIndex) {
+        this.firstProductErrorIndex = firstProductErrorIndex;
+    }
+
+    public int getProductErrorCount() {
+        return productErrorCount;
+    }
+
+    public void setProductErrorCount(int productErrorCount) {
+        this.productErrorCount = productErrorCount;
+    }
+
+    public boolean isTriggerScrollToErrorProduct() {
+        return triggerScrollToErrorProduct;
+    }
+
+    public void setTriggerScrollToErrorProduct(boolean triggerScrollToErrorProduct) {
+        this.triggerScrollToErrorProduct = triggerScrollToErrorProduct;
     }
 
     public long getShopId() {

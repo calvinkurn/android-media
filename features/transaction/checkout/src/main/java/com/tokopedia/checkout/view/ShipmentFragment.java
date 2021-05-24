@@ -3035,6 +3035,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void scrollToPositionWithOffset(int position, float dy) {
+        RecyclerView.LayoutManager layoutManager = rvShipment.getLayoutManager();
+        if (layoutManager != null) {
+            ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(position, (int) dy);
+        }
+    }
+
+    @Override
     public void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(lastSelectedCourierOrder);
         if (shipmentCartItemModel != null) {

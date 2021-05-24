@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_invoice_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,10 +12,6 @@
         android:id="@+id/layout_warning_and_error"
         layout="@layout/layout_item_warning_and_error"
         tools:visibility="gone" />
-
-    <include
-        layout="@layout/item_shipment_seller_info"
-        tools:visibility="visible" />
 
     <!-- Need to wrap with frame layout since need a feature that only available on frame layout for API below 23 -->
     <FrameLayout
@@ -27,6 +24,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             tools:ignore="UselessParent">
+
+            <include
+                layout="@layout/item_shipment_seller_info"
+                tools:visibility="visible" />
 
             <include
                 layout="@layout/item_cart_product"
