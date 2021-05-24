@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.common.util
 import android.content.Context
 import android.util.TypedValue
 
+@Deprecated("this object class has been in latest release")
 object NavToolbarExt {
     fun getToolbarHeight(context: Context): Int {
         val tv = TypedValue()

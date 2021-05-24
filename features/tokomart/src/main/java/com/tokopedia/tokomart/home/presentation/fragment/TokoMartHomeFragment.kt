@@ -24,7 +24,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -33,6 +32,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.view.HomeMainToolbar
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.domain.model.Data
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
@@ -85,7 +85,6 @@ class TokoMartHomeFragment: Fragment() {
     private var startToTransitionOffset = 0
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
-
 
     private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this), TokoMartHomeListDiffer()) }
 
@@ -185,7 +184,6 @@ class TokoMartHomeFragment: Fragment() {
         navToolbar?.show()
         navToolbar?.let { toolbar ->
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
-            rvHome?.setItemViewCacheSize(20)
             rvHome?.addOnScrollListener(NavRecyclerViewScrollListener(
                     navToolbar = toolbar,
                     startTransitionPixel = homeMainToolbarHeight,

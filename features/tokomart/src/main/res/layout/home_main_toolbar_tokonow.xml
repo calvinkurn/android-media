@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    tools:layout_height="100dp"
+    app:contentInsetStart="0dp"
+    app:contentInsetEnd="0dp"
+    app:contentInsetStartWithNavigation="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        tools:layout_height="100dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_8">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/nav_icon_back"
+            android:layout_marginStart="4dp"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_centerVertical="true"
+            app:layout_goneMarginStart="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_20"/>
+
+        <LinearLayout
+            android:id="@+id/layout_search"
+            android:layout_toStartOf="@+id/btn_wishlist"
+            android:layout_toEndOf="@+id/nav_icon_back"
+            android:layout_width="match_parent"
+            android:background="@drawable/toolbar_bg_corner"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2">
+
+            <ImageView
+                android:id="@+id/search_magnify_icon"
+                android:layout_marginStart="4dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/et_search"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:hint="@string/search_tokopedia"
+                android:inputType="none"
+                android:focusable="false"
+                android:enabled="true"
+                android:textSize="@dimen/sp_16"
+                android:maxLines="1"
+                android:textColorHint="@color/Unify_N700_68"
+                android:background="@null"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btn_wishlist"
+            android:contentDescription="@string/content_desc_btn_wishlist"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/icon_toolbar"
+            android:layout_height="@dimen/icon_toolbar"
+            android:scaleType="center"
+            android:layout_toStartOf="@+id/btn_inbox" />
+
+        <ImageView
+            android:id="@+id/btn_inbox"
+            android:contentDescription="@string/content_desc_btn_inbox"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/icon_toolbar"
+            android:layout_height="@dimen/icon_toolbar"
+            android:scaleType="center"
+            android:layout_toStartOf="@+id/btn_notification" />
+
+        <ImageView
+            android:id="@+id/btn_notification"
+            android:contentDescription="@string/content_desc_btn_notification"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/icon_toolbar"
+            android:layout_height="@dimen/icon_toolbar"
+            android:scaleType="center"/>
+
+    </RelativeLayout>
+</androidx.appcompat.widget.Toolbar>
