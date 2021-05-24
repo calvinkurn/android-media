@@ -5,6 +5,7 @@ import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.detail_old.domain.model.ShopScoreResponse
@@ -67,7 +68,7 @@ class ShopScoreDetailViewModelTest {
         every { userSession.isGoldMerchant } returns false
 
         coEvery { getShopScoreUseCase.execute(shopId) } returns response.data
-        every { getShopInfoPeriodUseCase.requestParams } returns GetShopInfoPeriodUseCase.createParams(shopId.toIntOrZero())
+        every { getShopInfoPeriodUseCase.requestParams } returns GetShopInfoPeriodUseCase.createParams(shopId.toLongOrZero())
         coEvery { getShopInfoPeriodUseCase.executeOnBackground() } returns shopInfoPeriodUiModel
 
         viewModel.getShopScoreDetail()

@@ -53,8 +53,8 @@ class GetShopInfoPeriodUseCase @Inject constructor(
         """.trimIndent()
 
         @JvmStatic
-        fun createParams(shopID: Int): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopID)
+        fun createParams(shopID: Long): RequestParams = RequestParams.create().apply {
+            putLong(SHOP_ID, shopID)
         }
     }
 
@@ -62,7 +62,7 @@ class GetShopInfoPeriodUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopInfoPeriodUiModel {
         val shopInfoPeriodWrapperResponse = ShopInfoPeriodWrapperResponse()
-        val shopId = requestParams.getInt(SHOP_ID, 0)
+        val shopId = requestParams.getLong(SHOP_ID, 0)
 
         val shopInfoParam = mapOf(SHOP_INFO_INPUT to ParamShopInfoByID(shopIDs = listOf(shopId)))
         val periodTypeParam = mapOf(SHOP_ID_PM to shopId, SOURCE to GOLD_MERCHANT_SOURCE)
