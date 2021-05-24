@@ -50,36 +50,30 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun addTotalFee() {
-        val totalFee = TotalFee(getTotalOrderAmountStr(), arrayListOf())
-        getPreviousVAOrderAmount()?.let {
-            totalFee.feeDetailList.add(it)
-        }
+        val totalFee = TotalFee(thanksPageData.orderAmountStr, arrayListOf())
+        var fee = 0L
         thanksPageData.feeDetailList?.forEach {
+            fee += it.amount
             val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false)
             totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr))
+        }
+        if (thanksPageData.combinedAmount > 0) {
+            getPreviousVAOrderAmount(fee)?.let {
+                totalFee.feeDetailList.add(it)
+            }
         }
         if (totalFee.feeDetailList.isNotEmpty())
             visitableList.add(totalFee)
     }
 
-    private fun getPreviousVAOrderAmount(): FeeDetail? {
+    private fun getPreviousVAOrderAmount(totalFee: Long): FeeDetail? {
         return if (thanksPageData.combinedAmount > 0) {
-            val previousAmount = thanksPageData.combinedAmount - thanksPageData.orderAmount
+            val previousAmount = thanksPageData.combinedAmount - thanksPageData.orderAmount - totalFee
             val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(previousAmount,
                     false)
             FeeDetail(PREV_ORDER_AMOUNT_VA, formattedAmountStr)
         } else {
             null
-        }
-    }
-
-    private fun getTotalOrderAmountStr(): String {
-        return if (thanksPageData.combinedAmount > 0) {
-            CurrencyFormatUtil
-                    .convertPriceValueToIdrFormat(thanksPageData.combinedAmount, false)
-        } else {
-            CurrencyFormatUtil
-                    .convertPriceValueToIdrFormat(thanksPageData.orderAmount, false)
         }
     }
 
@@ -96,7 +90,15 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName,
                     paymentDetail.amountStr, paymentDetail.gatewayCode))
         }
-        visitableList.add(PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList))
+
+        val totalPayment: String = if (thanksPageData.combinedAmount > 0)
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.combinedAmount,
+                    false)
+        else CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.amount,
+                false)
+
+        val paymentInfo = PaymentInfo(totalPayment, paymentModeList = paymentModeMapList)
+        visitableList.add(paymentInfo)
     }
 
     private fun addCashBackEarned() {
