@@ -19,8 +19,6 @@ object DeeplinkMapperMarketplace {
     fun getRegisteredNavigationMarketplace(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         return when {
-            deeplink.startsWith(ApplinkConst.MINI_CART_EXAMPLE) ->
-                ApplinkConstInternalMarketplace.MINI_CART_EXAMPLE
             deeplink.startsWith(ApplinkConst.CART) ->
                 ApplinkConstInternalMarketplace.CART
             deeplink.startsWith(ApplinkConst.CHECKOUT) ->
