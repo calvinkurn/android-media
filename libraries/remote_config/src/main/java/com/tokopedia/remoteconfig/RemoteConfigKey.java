@@ -209,7 +209,7 @@ public class RemoteConfigKey {
     public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
-    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
+    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled_v2";
 
     public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
 

@@ -62,7 +62,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         }
     }
 
-    private fun submitCreditCard(mapParam: HashMap<String, String>) {
+    fun submitCreditCard(mapParam: HashMap<String, String>) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 submitCCUseCase.setMapParam(mapParam)
@@ -101,6 +101,19 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         return mapParam
     }
 
+    fun createPcidssParamFromApplink(clientNumber: String, operatorId: String,
+                                     productId: String, userId: String, signature: String, token: String): HashMap<String, String> {
+        val mapParam = HashMap<String, String>()
+        mapParam[PARAM_ACTION] = VALUE_ACTION
+        mapParam[PARAM_MASKED_NUMBER] = clientNumber
+        mapParam[PARAM_OPERATOR_ID] = operatorId
+        mapParam[PARAM_PRODUCT_ID] = productId
+        mapParam[PARAM_USER_ID] = userId
+        mapParam[PARAM_PCIDSS] = signature
+        mapParam[PARAM_TOKEN] = token
+        return mapParam
+    }
+
     companion object {
         private const val CATEGORY_ID = "categoryId"
         const val PARAM_CLIENT_NUMBER = "client_number"
@@ -110,6 +123,8 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         const val PARAM_ACTION = "action"
         const val VALUE_ACTION = "init_data"
         const val PARAM_PCIDSS = "pcidss_signature"
+        const val PARAM_TOKEN = "token"
+        const val PARAM_MASKED_NUMBER = "masked_number"
 
         const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
 
