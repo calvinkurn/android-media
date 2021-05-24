@@ -211,5 +211,11 @@ interface TopChatContract {
         fun getSmartReplyWidget(msgId: String)
         fun initUserLocation(userLocation: LocalCacheModel?)
         fun getProductIdPreview(): List<String>
+        fun getAttachmentsPreview(): List<SendablePreview>
+        fun sendSrwBubble(
+                messageId: String, question: QuestionUiModel,
+                products: List<SendablePreview>, opponentId: String,
+                onSendingMessage: () -> Unit
+        )
     }
 }

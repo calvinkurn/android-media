@@ -103,6 +103,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.custom.*
@@ -149,7 +150,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
         RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
         TopchatProductAttachmentListener, UploadImageBroadcastListener,
-        SrwQuestionViewHolder.Listener, ReplyBoxTextListener {
+        SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -790,7 +791,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 this, this, this, this,
                 this, this, this, this,
                 this, this, this, this,
-                this, this
+                this, this, this
         )
     }
 
@@ -1994,10 +1995,26 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun trackClickSrwQuestion(element: QuestionUiModel) {
+    override fun onClickSrwBubbleQuestion(
+            products: List<SendablePreview>, question: QuestionUiModel
+    ) {
+        sendSrwQuestion(products, question)
+    }
+
+    override fun trackClickSrwQuestion(question: QuestionUiModel) {
         val productIds = presenter.getProductIdPreview()
         val trackProductIds = productIds.joinToString(separator = ", ")
-        analytics.eventClickSrw(shopId, session.userId, trackProductIds, element)
+        analytics.eventClickSrw(shopId, session.userId, trackProductIds, question)
+    }
+
+
+    override fun trackClickSrwBubbleQuestion(
+            products: List<SendablePreview>, question: QuestionUiModel
+    ) {
+        val productIds = products.filterIsInstance<SendableProductPreview>()
+                .map { it.productId }
+        val trackProductIds = productIds.joinToString(separator = ", ")
+        analytics.eventClickSrw(shopId, session.userId, trackProductIds, question)
     }
 
     private fun delaySendSrwQuestion(question: QuestionUiModel) {
@@ -2008,11 +2025,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         onSendAndReceiveMessage()
         val startTime = SendableViewModel.generateStartTime()
         val srwState = rvSrw?.getStateInfo()
-        adapter.addSrwBubbleUiModel(srwState)
+        adapter.addSrwBubbleUiModel(srwState, presenter.getAttachmentsPreview().toList())
         presenter.sendAttachmentsAndSrw(
                 messageId,
                 question,
                 startTime,
+                opponentId,
+                onSendingMessage()
+        )
+    }
+
+    private fun sendSrwQuestion(
+            products: List<SendablePreview>,
+            question: QuestionUiModel
+    ) {
+        onSendAndReceiveMessage()
+        presenter.sendSrwBubble(
+                messageId,
+                question,
+                products,
                 opponentId,
                 onSendingMessage()
         )

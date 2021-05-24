@@ -2,12 +2,12 @@ package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
 import androidx.annotation.StringRes
-import androidx.annotation.VisibleForTesting
 import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -31,7 +31,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
@@ -57,10 +56,9 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
-import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.data.Resource
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -79,7 +77,6 @@ import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -205,6 +202,10 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun getProductIdPreview(): List<String> {
         return attachmentsPreview.filterIsInstance<SendableProductPreview>()
                 .map { it.productId }
+    }
+
+    override fun getAttachmentsPreview(): List<SendablePreview> {
+        return attachmentsPreview
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -361,7 +362,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startUploadImages(image: ImageUploadViewModel) {
-        if(isEnableUploadImageService()) {
+        if (isEnableUploadImageService()) {
             addDummyToService(image)
             startUploadImageWithService(image)
         } else {
@@ -524,6 +525,20 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
+    override fun sendSrwBubble(
+            messageId: String, question: QuestionUiModel,
+            products: List<SendablePreview>, opponentId: String,
+            onSendingMessage: () -> Unit
+    ) {
+        if (networkMode == MODE_WEBSOCKET) {
+            val startTime = SendableViewModel.generateStartTime()
+            topchatSendMessageWithWebsocket(
+                    messageId, question.content, startTime,
+                    opponentId, question.intent, products
+            )
+        }
+    }
+
 
     /**
      * send with websocket but with param [intention]
@@ -537,6 +552,20 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(
                 TopChatWebSocketParam.generateParamSendMessage(
                         messageId, sendMessage, startTime, attachmentsPreview, intention
+                )
+        )
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
+    }
+
+    private fun topchatSendMessageWithWebsocket(
+            messageId: String, sendMessage: String,
+            startTime: String, opponentId: String,
+            intention: String?, products: List<SendablePreview>
+    ) {
+        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
+        sendMessageWebSocket(
+                TopChatWebSocketParam.generateParamSendMessage(
+                        messageId, sendMessage, startTime, products, intention
                 )
         )
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))

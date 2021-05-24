@@ -114,8 +114,11 @@ class SrwLinearLayout : FrameLayout {
         this.listener = listener
     }
 
-    fun initialize(srwState: SrwState) {
-//        typeFactory.srwQuestionListener = srwState.li
+    fun initialize(
+            srwState: SrwState,
+            srwBubbleListener: SrwQuestionViewHolder.Listener?
+    ) {
+        typeFactory.srwQuestionListener = srwBubbleListener
         this.listener = srwState.listener
         this.isExpanded = srwState.isExpanded
         srwState.latestState?.let {

@@ -52,7 +52,8 @@ open class TopChatTypeFactoryImpl constructor(
         private val searchListener: SearchListener,
         private val broadcastHandlingListener: BroadcastSpamHandlerViewHolder.Listener,
         private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener,
-        private val reviewListener: ReviewViewHolder.Listener
+        private val reviewListener: ReviewViewHolder.Listener,
+        private val srwBubbleListener: SrwBubbleViewHolder.Listener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -213,7 +214,7 @@ open class TopChatTypeFactoryImpl constructor(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            SrwBubbleViewHolder.LAYOUT -> SrwBubbleViewHolder(parent)
+            SrwBubbleViewHolder.LAYOUT -> SrwBubbleViewHolder(parent, srwBubbleListener)
             TopchatBannedProductAttachmentViewHolder.LAYOUT -> TopchatBannedProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatImageAnnouncementViewHolder.LAYOUT -> TopchatImageAnnouncementViewHolder(parent, imageAnnouncementListener)
             BroadcastSpamHandlerViewHolder.LAYOUT -> BroadcastSpamHandlerViewHolder(parent, broadcastHandlingListener)

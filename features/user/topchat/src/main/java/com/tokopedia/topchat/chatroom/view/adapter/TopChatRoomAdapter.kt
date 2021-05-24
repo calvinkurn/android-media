@@ -35,6 +35,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 /**
  * @author : Steven 02/01/19
@@ -379,9 +380,12 @@ class TopChatRoomAdapter constructor(
         }
     }
 
-    fun addSrwBubbleUiModel(srwState: SrwLinearLayout.SrwState?) {
+    fun addSrwBubbleUiModel(
+            srwState: SrwLinearLayout.SrwState?,
+            products: List<SendablePreview>
+    ) {
         srwState ?: return
-        val uiModel = SrwBubbleUiModel(srwState)
+        val uiModel = SrwBubbleUiModel(srwState, products)
         visitables.add(offset, uiModel)
         notifyItemInserted(offset)
         offset++
