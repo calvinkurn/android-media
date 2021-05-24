@@ -166,7 +166,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "200", listOf("success"), null, null), null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "200", listOf("success"), null, null), null, true, null, null, null, null))
 
             viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
 
@@ -182,7 +182,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "123", listOf("not success"), null, null), null, false, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(ResultStatus(code = "123", listOf("not success"), null, null), null, false, null, null, null, null))
 
             viewModelShopPageProductListViewModel.getNewMerchantVoucher("123")
 
@@ -232,7 +232,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             // merchant voucher use case
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null, null))
 
 
             // shop featured product use case
@@ -395,7 +395,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             // merchant voucher use case
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -453,7 +453,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             // merchant voucher use case
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null, null))
 
 
             // shop featured product use case
@@ -512,7 +512,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             // merchant voucher use case
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -570,7 +570,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             // merchant voucher use case
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -626,7 +626,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             // merchant voucher use case
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null, null))
 
             // shop featured product use case
             coEvery {
@@ -684,7 +684,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             // merchant voucher use case
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null, null))
 
 
             // shop featured product use case
@@ -743,7 +743,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             // merchant voucher use case
             coEvery {
                 mvcSummaryUseCase.getResponse(any())
-            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null))
+            } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(null, null, true, null, null, null, null))
 
             // shop featured product use case
             coEvery {
