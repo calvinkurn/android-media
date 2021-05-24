@@ -42,12 +42,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         viewModelProvider.get(PaymentListViewModel::class.java)
     }
 
-    private val loader: LoaderDialog? by lazy {
-        context?.let {
-            return@lazy LoaderDialog(it)
-        }
-        null
-    }
+    private var loader: LoaderDialog?= null
 
     override fun getScreenName() = ""
 
@@ -75,6 +70,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun loadInitialDeferredTransactions() {
+        context?.let { loader = LoaderDialog(it) }
         (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
         viewModel.getPaymentListCount()
     }
@@ -85,10 +81,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                 is Success -> renderPaymentList(it.data)
                 is Fail -> showErrorUi(it.throwable)
                 is EmptyState -> showEmptyState()
-                is LoadingState -> {
-                    handleSwipeRefresh(true)
-                    loader?.dialog?.dismiss()
-                }
+                is LoadingState -> handleSwipeRefresh(true)
                 is ProgressState -> showProgressForDelayedFetch()
                 else -> handleSwipeRefresh(false)
             }
@@ -142,7 +135,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun renderPaymentList(data: ArrayList<BasePaymentModel>) {
         handleSwipeRefresh(false)
-        loader?.dialog?.dismiss()
+        hideLoader()
         noPendingTransactionEmptyState.gone()
         paymentListGlobalError.gone()
         recycler_view.visible()
@@ -151,7 +144,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun showErrorUi(throwable: Throwable) {
         handleSwipeRefresh(false)
-        loader?.dialog?.dismiss()
+        hideLoader()
         noPendingTransactionEmptyState.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
@@ -237,8 +230,14 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun showProgressForDelayedFetch() {
         handleSwipeRefresh(false)
-        context?.let { loader?.show() }
+        loader?.show()
     }
+
+    private fun hideLoader() {
+        loader?.dialog?.dismiss()
+        loader = null
+    }
+
 
     companion object {
         const val ACTION_HOW_TO_PAY_REDIRECTION = 1
