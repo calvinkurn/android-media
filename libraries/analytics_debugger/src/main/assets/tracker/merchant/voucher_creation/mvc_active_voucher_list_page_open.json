@@ -5,9 +5,9 @@
     {
       "event" : "openScreen",
       "screenName" : "/voucherlistactive",
-      "isLoggedInStatus" : "{{.+}}",
+      "isLoggedInStatus" : ".+",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{.+}}",
+      "userId" : ".+",
       "businessUnit" : "physical goods"
     }
   ]

@@ -6,10 +6,10 @@
       "event" : "clickAdsPromo",
       "eventCategory" : "ads and promotion",
       "eventAction" : "click detail submission mvc - create",
-      "eventLabel" : "{{.*}}",
+      "eventLabel" : ".*",
       "screenName" : "/adspromotion",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{.+}}",
+      "userId" : ".+",
       "businessUnit ": "physical goods"
     }
   ]

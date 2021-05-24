@@ -5,9 +5,9 @@
     {
       "event" : "openScreen",
       "screenName" : "/voucherdetailpage - dibatalkan",
-      "isLoggedInStatus" : "{{.+}}",
+      "isLoggedInStatus" : ".+",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{.+}}",
+      "userId" : ".+",
       "businessUnit" : "physical goods"
     }
   ]

@@ -6,10 +6,10 @@
       "event" : "clickAdsCreation",
       "eventCategory" : "voucher creation - review",
       "eventAction" : "voucher success - share now",
-      "eventLabel" : "{{.*}}",
+      "eventLabel" : ".*",
       "screenName" : "/vouchercreation - review",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{.+}}",
+      "userId" : ".+",
       "businessUnit ": "physical goods"
     }
   ]

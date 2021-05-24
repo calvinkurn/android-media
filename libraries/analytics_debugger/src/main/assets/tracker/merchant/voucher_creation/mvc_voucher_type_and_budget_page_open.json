@@ -5,9 +5,9 @@
     {
       "event" : "openScreen",
       "screenName" : "/vouchercreation - type & budget",
-      "isLoggedInStatus" : "{{.+}}",
+      "isLoggedInStatus" : ".+",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{.+}}",
+      "userId" : ".+",
       "businessUnit" : "physical goods"
     }
   ]

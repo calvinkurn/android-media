@@ -6,10 +6,10 @@
       "event" : "viewVoucherListIris",
       "eventCategory" : "voucher list history",
       "eventAction" : "impression error state",
-      "eventLabel" : "{{.*}}",
+      "eventLabel" : ".*",
       "screenName" : "/voucherlisthistory",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{.+}}",
+      "userId" : ".+",
       "businessUnit ": "physical goods"
     }
   ]

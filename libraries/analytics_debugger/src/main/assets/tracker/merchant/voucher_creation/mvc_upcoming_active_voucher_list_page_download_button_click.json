@@ -6,10 +6,10 @@
       "event" : "clickVoucherList",
       "eventCategory" : "voucher list active",
       "eventAction" : "download - mendatang",
-      "eventLabel" : "{{.*}}",
+      "eventLabel" : ".*",
       "screenName" : "/voucherlistactive",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{.+}}",
+      "userId" : ".+",
       "businessUnit": "physical goods"
     }
   ]

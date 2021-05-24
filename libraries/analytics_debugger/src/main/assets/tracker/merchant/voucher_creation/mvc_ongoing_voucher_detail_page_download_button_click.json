@@ -6,10 +6,10 @@
       "event" : "clickVoucherDetail",
       "eventCategory" : "voucher detail page - berlangsung",
       "eventAction" : "click download voucher",
-      "eventLabel" : "{{.*}}",
+      "eventLabel" : ".*",
       "screenName" : "/voucherdetailpage - berlangsung",
       "currentSite" : "tokopediaseller",
-      "userId" : "{{.+}}",
+      "userId" : ".+",
       "businessUnit": "physical goods"
     }
   ]

@@ -6,10 +6,10 @@
       "event": "clickVoucherList",
       "eventCategory": "voucher list active",
       "eventAction": "click download voucher",
-      "eventLabel": "{{.*}}",
+      "eventLabel": ".*",
       "screenName": "/voucherlistactive",
       "currentSite": "tokopediaseller",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "businessUnit": "physical goods"
     }
   ]
