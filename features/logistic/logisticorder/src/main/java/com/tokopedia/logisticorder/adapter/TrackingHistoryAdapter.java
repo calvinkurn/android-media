@@ -13,9 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
+import com.tokopedia.logisticorder.utils.TrackingPageUtil;
+import com.tokopedia.unifycomponents.ImageUnify;
 
 import java.util.List;
 
@@ -27,10 +30,12 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
     private List<TrackHistoryModel> trackingHistoryData;
     private DateUtil dateUtil;
+    private Long orderId;
 
-    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil) {
+    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil, Long orderId) {
         this.trackingHistoryData = trackingHistoryData;
         this.dateUtil = dateUtil;
+        this.orderId = orderId;
     }
 
     @NonNull
@@ -48,7 +53,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         holder.time.setText(dateUtil.getFormattedTime(trackingHistoryData.get(position).getTime()));
         setTitleColor(holder, position);
 
-        holder.comment.setVisibility(View.GONE);
+//        holder.comment.setVisibility(View.GONE);
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
         if (position == trackingHistoryData.size() - 1) {
@@ -58,6 +63,17 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_primary_color));
             holder.dotTrail.setVisibility(View.VISIBLE);
             holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.tracking_primary_color));
+        }
+
+        if (!trackingHistoryData.get(position).getProof().getImageId().isEmpty()) {
+            holder.imageProof.setVisibility(View.GONE);
+        } else {
+            holder.imageProof.setVisibility(View.VISIBLE);
+            String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small");
+            Glide.with(holder.context)
+                    .load(url)
+                    .dontAnimate()
+                    .into(holder.imageProof);
         }
     }
 
@@ -91,6 +107,8 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private TextView comment;
 
+        private ImageUnify imageProof;
+
         TrackingHistoryViewHolder(Context context, View itemView) {
             super(itemView);
 
@@ -107,6 +125,8 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             dotTrail = itemView.findViewById(R.id.dot_trail);
 
             comment = itemView.findViewById(R.id.comment);
+
+            imageProof = itemView.findViewById(R.id.img_proof);
 
         }
     }

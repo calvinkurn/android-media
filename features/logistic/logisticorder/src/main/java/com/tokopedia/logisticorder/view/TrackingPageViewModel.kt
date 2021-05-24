@@ -20,8 +20,7 @@ import javax.inject.Inject
 
 class TrackingPageViewModel @Inject constructor(
         private val repo: TrackingPageRepository,
-        private val mapper: TrackingPageMapperNew,
-        private val getDeliveryImageUseCase: GetDeliveryImageUseCase) : ViewModel() {
+        private val mapper: TrackingPageMapperNew) : ViewModel() {
 
     private val _trackingData = MutableLiveData<Result<TrackingDataModel>>()
     val trackingData: LiveData<Result<TrackingDataModel>>
@@ -55,9 +54,6 @@ class TrackingPageViewModel @Inject constructor(
             _retryAvailability.value = Success(retryAvailability)
         }
     }
-
-    fun getDeliveryImage(orderId: String, )
-
 
     private val onErrorGetTrackingData = CoroutineExceptionHandler { _, throwable ->
         _trackingData.value = Fail(throwable)

@@ -313,7 +313,7 @@ class TrackingPageFragment: BaseDaggerFragment() {
         } else {
             trackingHistory?.visibility = View.VISIBLE
             trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil)
+            trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil, mOrderId?.toLong())
         }
     }
 

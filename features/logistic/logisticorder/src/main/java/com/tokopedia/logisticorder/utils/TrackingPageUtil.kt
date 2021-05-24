@@ -1,14 +1,12 @@
-package com.tokopedia.logisticorder.usecase
+package com.tokopedia.logisticorder.utils
 
 import com.tokopedia.url.TokopediaUrl
-import javax.inject.Inject
 
-class GetDeliveryImageUseCase @Inject constructor() {
+object TrackingPageUtil {
 
     val PATH_IMAGE_LOGISTIC = "logistic/tracking/get-delivery-image"
 
     fun getDeliveryImage(imageId: String, orderId: Long, size: String): String? {
-        val PATH_IMAGE_LOGISTIC = "logistic/tracking/get-delivery-image"
         val baseUrl = TokopediaUrl.getInstance().API + PATH_IMAGE_LOGISTIC
         return "$baseUrl?order_id=$orderId&image_id=$imageId&size=$size"
     }
