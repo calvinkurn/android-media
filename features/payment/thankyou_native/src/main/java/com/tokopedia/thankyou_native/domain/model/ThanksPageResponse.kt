@@ -420,5 +420,19 @@ data class ThankPageTopTickerData(
         @SerializedName("ticker_cta_url")
         val tickerCTAUrl : String?,
         @SerializedName("ticker_cta_title")
-        val tickerCTATitle : String?
-)
+        val tickerCTATitle: String?,
+        @SerializedName("ticker_cta_applink")
+        val tickerCTAApplink: String?
+) {
+    fun getURL(): String? {
+        return if (!tickerCTAApplink.isNullOrEmpty()) {
+            tickerCTAApplink
+        } else {
+            tickerCTAUrl
+        }
+    }
+
+    fun isAppLink() : Boolean{
+        return !tickerCTAApplink.isNullOrEmpty()
+    }
+}
