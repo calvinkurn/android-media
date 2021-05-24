@@ -94,6 +94,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.GEOLOCATION
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.INBOX
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
@@ -104,7 +105,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRO
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.INBOX
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
@@ -124,6 +124,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.HOTEL_INTERNAL_O
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INSURANCE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
@@ -131,7 +132,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.TRACK
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
@@ -139,10 +139,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_S
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_MENU
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.SELLER_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.VOUCHER_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.WELCOME
@@ -185,7 +183,6 @@ object DeeplinkDFMapper : CoroutineScope {
     // it should have the same name with the folder of dynamic feature
     const val DF_BASE = "df_base"
     const val DF_BASE_SELLER_APP = "df_base_sellerapp"
-    private const val DF_RECHARGE_BRIZZI = "df_recharge_brizzi"
     const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_CONTENT_AFFILIATE = "df_content_affiliate"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
@@ -553,7 +550,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_CONTENT_DRAFT_POST) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.SHOP_POST_EDIT) }, DF_BASE_SELLER_APP, R.string.applink_af_title_create_post))
-            add(DFP({ it.startsWithPattern(ApplinkConst.PLAY_BROADCASTER) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
+            add(DFP({ it.startsWithPattern(PLAY_BROADCASTER) }, DF_BASE_SELLER_APP, R.string.applink_title_play_broadcaster))
 
             // Logistic
             add(DFP({ it.startsWith(SELLER_COD_ACTIVATION) }, DF_BASE_SELLER_APP, R.string.path_shop_setting_cod_activation))
@@ -666,11 +663,11 @@ object DeeplinkDFMapper : CoroutineScope {
                                             fallbackUrl: String = ""): String? {
         getSplitManager(context)?.let {
             val hasInstalled = it.installedModules.contains(moduleId)
-            if (hasInstalled) {
+            return if (hasInstalled) {
                 trackDFUsageOnce(context.applicationContext, moduleId, deeplink)
-                return null
+                null
             } else {
-                return UriUtil.buildUri(
+                UriUtil.buildUri(
                         DYNAMIC_FEATURE_INSTALL,
                         moduleId,
                         moduleName,
@@ -712,7 +709,7 @@ object DeeplinkDFMapper : CoroutineScope {
      *          cfg -> setOf(hotel)
      * Output:  DFP list {DFP(hotel)}
      */
-    private fun getTurnOnDeeplinkDFPattern(context: Context, dfpList: List<DFP>?): List<DFP>? {
+    private fun getTurnOnDeeplinkDFPattern(context: Context, dfpList: List<DFP>?): List<DFP> {
         val turnedOnDfSet = getDFFilterMap(context)
         if (turnedOnDfSet == null || turnedOnDfSet.isEmpty()) {
             return listOf()
@@ -738,7 +735,7 @@ object DeeplinkDFMapper : CoroutineScope {
      * Example return: setOf{shop_settings, hotel}
      */
     private fun getDFFilterMap(context: Context): Set<String>? {
-        try {
+        return try {
             val set: HashSet<String> = hashSetOf()
             val reader = BufferedReader(InputStreamReader(context.assets.open("df.cfg")))
             var line: String? = reader.readLine()
@@ -748,9 +745,9 @@ object DeeplinkDFMapper : CoroutineScope {
                 }
                 line = reader.readLine()
             }
-            return set
+            set
         } catch (e: FileNotFoundException) {
-            return null
+            null
         }
     }
 

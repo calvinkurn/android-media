@@ -10,9 +10,9 @@
     </style>
 
     <style name="TelcoTextInputLayoutColorLine" parent="Theme.Design.Light"> <!-- stackoverflow.com/questions/35767158/ -->
-        <item name="colorControlNormal">#DDDDDD</item>
+        <item name="colorControlNormal">@color/Unify_N100</item>
         <item name="colorControlActivated">@color/Unify_G500</item>
         <item name="colorControlHighlight">@color/Unify_G500</item>
-        <item name="android:textColorHint">#e0e0e0</item>
+        <item name="android:textColorHint">@color/Unify_N100</item>
     </style>
 </resources>

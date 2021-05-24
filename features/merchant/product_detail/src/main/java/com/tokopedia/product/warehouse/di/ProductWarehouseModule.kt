@@ -2,14 +2,13 @@ package com.tokopedia.product.warehouse.di
 
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.ProductDetailScope
-import com.tokopedia.product.detail.di.ProductDetailUserModule
 import com.tokopedia.product.detail.di.ProductRestModule
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@Module(includes = [ProductDetailUserModule::class, ProductRestModule::class])
+@Module(includes = [ProductRestModule::class])
 class ProductWarehouseModule {
     @ProductDetailScope
     @Provides
