@@ -51,34 +51,4 @@
         app:unifyEmptyStateType="section"
         tools:visibility="gone" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loaderPaymentList"
-        android:layout_width="@dimen/unify_space_32"
-        android:layout_height="@dimen/unify_space_32"
-        android:layout_marginBottom="@dimen/unify_space_8"
-        app:layout_constraintBottom_toTopOf="@+id/tvLoadingText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:loader_type="circular" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvLoadingText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tunggu sebentar"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/loadingDialogGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="loaderPaymentList, tvLoadingText" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

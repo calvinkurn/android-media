@@ -17,6 +17,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
 import com.tokopedia.pms.paymentlist.domain.data.*
@@ -39,6 +40,13 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     private val viewModel: PaymentListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
         viewModelProvider.get(PaymentListViewModel::class.java)
+    }
+
+    private val loader: LoaderDialog? by lazy {
+        context?.let {
+            return@lazy LoaderDialog(it)
+        }
+        null
     }
 
     override fun getScreenName() = ""
@@ -79,7 +87,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                 is EmptyState -> showEmptyState()
                 is LoadingState -> {
                     handleSwipeRefresh(true)
-                    loadingDialogGroup.gone()
+                    loader?.dialog?.dismiss()
                 }
                 is ProgressState -> showProgressForDelayedFetch()
                 else -> handleSwipeRefresh(false)
@@ -134,7 +142,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun renderPaymentList(data: ArrayList<BasePaymentModel>) {
         handleSwipeRefresh(false)
-        loadingDialogGroup.gone()
+        loader?.dialog?.dismiss()
         noPendingTransactionEmptyState.gone()
         paymentListGlobalError.gone()
         recycler_view.visible()
@@ -143,7 +151,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun showErrorUi(throwable: Throwable) {
         handleSwipeRefresh(false)
-        loadingDialogGroup.gone()
+        loader?.dialog?.dismiss()
         noPendingTransactionEmptyState.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
@@ -229,7 +237,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun showProgressForDelayedFetch() {
         handleSwipeRefresh(false)
-        loadingDialogGroup.visible()
+        context?.let { loader?.show() }
     }
 
     companion object {
