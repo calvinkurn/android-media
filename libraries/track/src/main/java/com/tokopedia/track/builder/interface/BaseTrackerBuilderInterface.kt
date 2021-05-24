@@ -18,7 +18,8 @@ interface BaseTrackerBuilderInterface {
                                   eventAction: String,
                                   eventLabel: String,
                                   list: String,
-                                  products: List<BaseTrackerConst.Product>
+                                  products: List<BaseTrackerConst.Product>,
+                                  buildCustomList: ((BaseTrackerConst.Product) -> String)? = null
     ): BaseTrackerBuilderInterface
 
     fun constructBasicPromotionClick(event: String,
@@ -33,7 +34,8 @@ interface BaseTrackerBuilderInterface {
                                    eventAction: String,
                                    eventLabel: String,
                                    list: String,
-                                   products: List<BaseTrackerConst.Product>
+                                   products: List<BaseTrackerConst.Product>,
+                                   buildCustomList: ((BaseTrackerConst.Product) -> String)? = null
     ): BaseTrackerBuilderInterface
 
     fun constructBasicGeneralClick(event: String,
