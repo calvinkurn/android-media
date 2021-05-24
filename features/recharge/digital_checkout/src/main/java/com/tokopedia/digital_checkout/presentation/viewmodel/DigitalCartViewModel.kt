@@ -35,6 +35,7 @@ import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseDataNullException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -78,8 +79,8 @@ class DigitalCartViewModel @Inject constructor(
     val isNeedOtp: LiveData<String>
         get() = _isNeedOtp
 
-    private val _isSuccessCancelVoucherCart = MutableLiveData<Result<Boolean>>()
-    val isSuccessCancelVoucherCart: LiveData<Result<Boolean>>
+    private val _isSuccessCancelVoucherCart = MutableLiveData<Result<CancelVoucherData>>()
+    val isSuccessCancelVoucherCart: LiveData<Result<CancelVoucherData>>
         get() = _isSuccessCancelVoucherCart
 
     private val _totalPrice = MutableLiveData<Double>()
@@ -209,17 +210,17 @@ class DigitalCartViewModel @Inject constructor(
         _showLoading.postValue(false)
     }
 
-    fun cancelVoucherCart() {
-        cancelVoucherUseCase.execute(onSuccessCancelVoucher(), onErrorCancelVoucher())
+    fun cancelVoucherCart(promoCode: String) {
+        cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(), onErrorCancelVoucher())
     }
 
     private fun onSuccessCancelVoucher(): (CancelVoucherData.Response) -> Unit {
         return {
             if (it.response.success) {
                 setPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
-                _isSuccessCancelVoucherCart.postValue(Success(true))
+                _isSuccessCancelVoucherCart.postValue(Success(it.response))
             } else {
-                _isSuccessCancelVoucherCart.postValue(Fail(Throwable("")))
+                _isSuccessCancelVoucherCart.postValue(Fail(MessageErrorException(it.response.error)))
             }
         }
     }

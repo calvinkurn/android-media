@@ -118,9 +118,12 @@ object DigitalCheckoutQueries {
     """.trimIndent()
 
     fun getCancelVoucherCartQuery() = """
-        mutation {
-          clearCacheAutoApplyV2(serviceID: "819380128012836") {
+        mutation clearCacheAutoApplyStack(${'$'}promoCode:[String], ${'$'}isOCC: Boolean) {
+          clearCacheAutoApplyStack(serviceID:"819380128012836", promoCode: ${'$'}promoCode, isOCC: ${'$'}isOCC) { 
             Success
+            ticker_message
+            default_empty_promo_message
+            error
           }
         }
     """.trimIndent()

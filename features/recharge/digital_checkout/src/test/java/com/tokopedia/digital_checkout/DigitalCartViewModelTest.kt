@@ -420,42 +420,44 @@ class DigitalCartViewModelTest {
     fun onCancelVoucher_onSuccess_dataIsSuccess() {
         // given
         val cancelVoucherData = CancelVoucherData(success = true)
-        coEvery { digitalCancelVoucherUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(CancelVoucherData.Response) -> Unit>().invoke(CancelVoucherData.Response(cancelVoucherData))
+        coEvery { digitalCancelVoucherUseCase.execute(any(), any(), any()) } coAnswers {
+            secondArg<(CancelVoucherData.Response) -> Unit>().invoke(CancelVoucherData.Response(cancelVoucherData))
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart()
+        digitalCartViewModel.cancelVoucherCart("")
 
         // then
         assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Success)
-        assert((digitalCartViewModel.isSuccessCancelVoucherCart.value as Success).data)
+        assert((digitalCartViewModel.isSuccessCancelVoucherCart.value as Success).data.success)
     }
 
     @Test
     fun onCancelVoucher_onSuccess_dataIsFailure() {
         // given
         val cancelVoucherData = CancelVoucherData(success = false)
-        coEvery { digitalCancelVoucherUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(CancelVoucherData.Response) -> Unit>().invoke(CancelVoucherData.Response(cancelVoucherData))
+        coEvery { digitalCancelVoucherUseCase.execute(any(), any(), any()) } coAnswers {
+            secondArg<(CancelVoucherData.Response) -> Unit>().invoke(CancelVoucherData.Response(cancelVoucherData))
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart()
+        digitalCartViewModel.cancelVoucherCart("")
 
         // then
         assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Fail)
+        assert((digitalCartViewModel.isSuccessCancelVoucherCart.value as Fail).throwable.message == errorMessage)
     }
 
     @Test
     fun onCancelVoucher_onFailed() {
         // given
-        coEvery { digitalCancelVoucherUseCase.execute(any(), any()) } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
+        val errorMessage = "this is error"
+        coEvery { digitalCancelVoucherUseCase.execute(any(), any(), any()) } coAnswers {
+            thirdArg<(Throwable) -> Unit>().invoke(Throwable(errorMessage))
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart()
+        digitalCartViewModel.cancelVoucherCart("")
 
         // then
         assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Fail)
