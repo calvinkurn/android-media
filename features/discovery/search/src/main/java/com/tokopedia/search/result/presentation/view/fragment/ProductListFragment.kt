@@ -1490,7 +1490,7 @@ class ProductListFragment: BaseDaggerFragment(),
             dialog.setDescription(getString(R.string.search_power_merchant_pro_desc))
             dialog.setPrimaryCTAText(getString(R.string.search_power_merchant_pro_button_text))
             dialog.setPrimaryCTAClickListener { dialog.dismiss() }
-            dialog.setImageDrawable(R.drawable.search_pm_pro_illustration)
+            dialog.setImageUrl(SearchConstant.ImageUrl.POWER_MERCHANT_PRO_ILLUSTRATION_URL)
             dialog.show()
         }
     }
