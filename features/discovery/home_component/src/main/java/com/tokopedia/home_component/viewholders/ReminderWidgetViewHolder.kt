@@ -49,6 +49,7 @@ class ReminderWidgetViewHolder(
             if(element.data.reminders.isEmpty()){
                 home_reminder_recommendation_loading.show()
                 if (!disableNetwork){
+                    reminderWidgetListener?.getReminderWidgetData(element)
                     performanceMonitoring?.stopTrace()
                 }
                 performanceMonitoring = null

@@ -186,7 +186,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         for (frag in fragments) {
             when (frag.fragment) {
                 is TopAdsRecommendationFragment -> {
-                    (frag.fragment as TopAdsRecommendationFragment).checkButtonVisibility()
+                    (frag.fragment as TopAdsRecommendationFragment).checkBtnVisibilityAndSetTracker()
                 }
             }
         }

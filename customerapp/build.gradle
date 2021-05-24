@@ -422,6 +422,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
 
     implementation rootProject.ext.unifyDependencies.empty_state
+    implementation rootProject.ext.unifyDependencies.accordion
 }
 
 apply plugin: 'com.google.gms.google-services'
