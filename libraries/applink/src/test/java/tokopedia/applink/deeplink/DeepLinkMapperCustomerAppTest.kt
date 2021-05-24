@@ -1770,4 +1770,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
+    @Test
+    fun `check buyer cancellation request appLink should return tokopedia internal buyer cancellation request applink in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://buyer/cancellationrequest"
+        val appLink = ApplinkConst.ORDER_BUYER_CANCELLATION_REQUEST_PAGE
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
 }
