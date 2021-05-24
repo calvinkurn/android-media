@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info_header.view.*
 
 class OrderStatusHeaderViewHolder(
@@ -76,7 +77,9 @@ class OrderStatusHeaderViewHolder(
 
     private fun setupPreOrderLabel(preOrder: OrderStatusUiModel.OrderStatusHeaderUiModel.PreOrderUiModel) {
         if (preOrder.isPreOrder && preOrder.value.isNotBlank()) {
-            itemView.labelBuyerOrderDetailPreOrder.setLabel(itemView.context.getString(R.string.label_pre_order_duration, preOrder.value))
+            itemView.labelBuyerOrderDetailPreOrder?.setLabel(itemView.context.getString(R.string.label_pre_order_duration, preOrder.value))
+        } else {
+            itemView.labelBuyerOrderDetailPreOrder?.gone()
         }
     }
 }

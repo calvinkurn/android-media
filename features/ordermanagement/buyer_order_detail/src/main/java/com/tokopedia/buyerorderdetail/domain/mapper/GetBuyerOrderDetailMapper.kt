@@ -265,7 +265,6 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
     private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): ShipmentInfoUiModel.ReceiverAddressInfoUiModel {
         return ShipmentInfoUiModel.ReceiverAddressInfoUiModel(
                 receiverAddress = composeReceiverAddress(receiver.street, receiver.district, receiver.city, receiver.province, receiver.postal),
-                receiverAddressNote = "Lantai 29", //TODO: remove this
                 receiverName = receiver.name,
                 receiverPhoneNumber = receiver.phone
         )
@@ -274,9 +273,5 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
     private fun composeReceiverAddress(street: String, district: String, city: String, province: String, postal: String): String {
         return StringBuilder().append(street).append(", ").append(district).append(", ").append(city)
                 .append(", ").append(province).append(" ").append(postal).toString()
-    }
-
-    private fun composeTickerDescription(title: String, notes: String): String {
-        return StringBuilder().append(title).append(". ").append(notes).toString()
     }
 }

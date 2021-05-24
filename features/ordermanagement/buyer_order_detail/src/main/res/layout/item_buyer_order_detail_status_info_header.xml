@@ -39,6 +39,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
+        app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailStatusOrder"
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailSeeDetail"
         app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailStatusOrder"

@@ -61,19 +61,6 @@
         app:typographyType="body_3"
         tools:text="Tokopedia Tower, Mailing Room Jl. Letjen S Parman Kav.77 Slipi, Jakarta Barat 14410" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvBuyerOrderDetailReceiverAddressNoteValue"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:textColor="@color/Unify_N700_68"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailReceiverAddressValue"
-        app:typographyType="body_3"
-        tools:text="Lantai 29" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"

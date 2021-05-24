@@ -21,7 +21,6 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipme
             setupReceiverName(it.receiverName)
             setupReceiverPhoneNumber(it.receiverPhoneNumber)
             setupReceiverAddress(it.receiverAddress)
-            setupReceiverAddressNote(it.receiverAddressNote)
         }
     }
 
@@ -41,9 +40,6 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipme
                     if (oldItem.receiverAddress != newItem.receiverAddress) {
                         setupReceiverAddress(newItem.receiverAddress)
                     }
-                    if (oldItem.receiverAddressNote != newItem.receiverAddressNote) {
-                        setupReceiverAddressNote(newItem.receiverAddressNote)
-                    }
                     itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
@@ -62,10 +58,6 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipme
 
     private fun setupReceiverAddress(receiverAddress: String) {
         itemView.tvBuyerOrderDetailReceiverAddressValue?.text = receiverAddress
-    }
-
-    private fun setupReceiverAddressNote(receiverAddressNote: String) {
-        itemView.tvBuyerOrderDetailReceiverAddressNoteValue?.text = composeReceiverAddressNote(receiverAddressNote)
     }
 
     private fun composeReceiverAddressNote(receiverAddressNote: String): SpannableString {

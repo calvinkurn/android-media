@@ -14,7 +14,6 @@ data class ShipmentInfoUiModel(
 ) {
     data class ReceiverAddressInfoUiModel(
             val receiverAddress: String,
-            val receiverAddressNote: String,
             val receiverName: String,
             val receiverPhoneNumber: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
