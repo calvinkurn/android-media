@@ -95,16 +95,6 @@
                     android:textColor="@color/Unify_N200"
                     tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
 
-                <TextView
-                    android:id="@+id/comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_5"
-                    android:layout_marginRight="@dimen/dp_5"
-                    android:paddingBottom="@dimen/dp_5"
-                    android:paddingTop="@dimen/dp_5"
-                    tools:text="Loren Ipsum lasnlsandlsnaldsakndlsandlsanldnsalkdnlsandlksnalkdnlsakndlsandlknsalkdnlaksndlkasndlkaslkdnsalkndlkansdklnaldnalsndlasdlknsaldnlndsa" />
-                
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/img_proof"
                     android:layout_width="58dp"

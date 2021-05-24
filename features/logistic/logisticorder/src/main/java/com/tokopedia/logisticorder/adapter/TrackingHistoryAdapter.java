@@ -56,13 +56,18 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 //        holder.comment.setVisibility(View.GONE);
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
-        if (position == trackingHistoryData.size() - 1) {
-            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_secondary_color));
-            holder.dotTrail.setVisibility(View.GONE);
-        } else {
+
+        if (position == 0) {
             holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_primary_color));
             holder.dotTrail.setVisibility(View.VISIBLE);
             holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.tracking_primary_color));
+        } else if (position == trackingHistoryData.size() - 1) {
+            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_secondary_color));
+            holder.dotTrail.setVisibility(View.GONE);
+        } else {
+            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_secondary_color));
+            holder.dotTrail.setVisibility(View.VISIBLE);
+            holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.tracking_secondary_color));
         }
 
         if (trackingHistoryData.get(position).getProof().getImageId().isEmpty()) {
@@ -105,8 +110,6 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private View dotTrail;
 
-        private TextView comment;
-
         private ImageUnify imageProof;
 
         TrackingHistoryViewHolder(Context context, View itemView) {
@@ -123,8 +126,6 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             dot = itemView.findViewById(R.id.dot_image);
 
             dotTrail = itemView.findViewById(R.id.dot_trail);
-
-            comment = itemView.findViewById(R.id.comment);
 
             imageProof = itemView.findViewById(R.id.img_proof);
 
