@@ -38,7 +38,7 @@ class ShopScoreDetailViewModel @Inject constructor(
                 getShopScoreUseCase.execute(userSession.shopId)
             }
             val shopInfoPeriodData = async {
-                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLong())
                 getShopInfoPeriodUseCase.executeOnBackground()
             }
             _shopScoreData.postValue(Success(Pair(mapper.mapToShopScoreDetailData(shopScoreDetailData.await().result),
