@@ -6,7 +6,6 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.tokomart.category.domain.model.CategoryDetail
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
-import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.usecase.RequestParams
 import io.mockk.slot
@@ -19,13 +18,12 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     protected val requestParamsSlot = slot<RequestParams>()
     protected val requestParams by lazy { requestParamsSlot.captured }
 
-    protected fun createExpectedMandatoryTokonowQueryParams(page: Int): Map<String, String> = mapOf(
+    protected fun createExpectedMandatoryTokonowQueryParams(page: Int): Map<String, String> =
+            createPaginationQueryParams(page) + createMandatoryTokonowQueryParams()
+
+    protected fun createPaginationQueryParams(page: Int) = mapOf(
             SearchApiConst.PAGE to page.toString(),
             SearchApiConst.USE_PAGE to true.toString(),
-            SearchApiConst.NAVSOURCE to TOKONOW_DIRECTORY,
-            SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
-            SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-            SearchApiConst.SRP_PAGE_ID to defaultCategoryId.toString(),
     )
 
     protected fun `Then assert request params map`(

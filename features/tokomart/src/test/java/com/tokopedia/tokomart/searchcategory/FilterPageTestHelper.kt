@@ -12,13 +12,13 @@ import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.Assert.assertThat
-import java.lang.AssertionError
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class FilterPageTestHelper(
         private val baseViewModel: BaseSearchCategoryViewModel,
         private val getFilterUseCase: UseCase<DynamicFilterModel>,
         private val getProductCountUseCase: UseCase<String>,
+        private val callback: Callback,
 ) {
     private val dynamicFilterModel = "filter/filter.json".jsonToObject<DynamicFilterModel>()
     private val mockApplyFilterMapParam = mutableMapOf<String, String>()
@@ -29,6 +29,7 @@ class FilterPageTestHelper(
         val filterRequestParamsSlot = slot<RequestParams>()
         val filterRequestParams by lazy { filterRequestParamsSlot.captured }
 
+        callback.`Given first page API will be successful`()
         `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel, filterRequestParamsSlot)
 
@@ -81,6 +82,7 @@ class FilterPageTestHelper(
     }
 
     fun `test open filter page cannot be spammed`() {
+        callback.`Given first page API will be successful`()
         `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel)
 
@@ -98,6 +100,7 @@ class FilterPageTestHelper(
     }
 
     fun `test dismiss filter page`() {
+        callback.`Given first page API will be successful`()
         `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel)
         `Given view open filter page`()
@@ -116,6 +119,7 @@ class FilterPageTestHelper(
     }
 
     fun `test open filter page second time should not call API again`() {
+        callback.`Given first page API will be successful`()
         `Given view already created`()
         `Given get filter API will be successful`(dynamicFilterModel)
         `Given view open filter page`()
@@ -130,19 +134,25 @@ class FilterPageTestHelper(
         baseViewModel.onViewDismissFilterPage()
     }
 
-    fun `test apply filter from filter page`(testInterface: ApplyFilterTestInterface) {
+    fun `test apply filter from filter page`(testInterface: Callback) {
         val requestParamsSlot = slot<RequestParams>()
         val requestParams by lazy { requestParamsSlot.captured }
 
-        `Given view already created`()
-        `Given get filter API will be successful`(dynamicFilterModel)
-        `Given view open filter page`()
-        `Given mock apply filter param`(dynamicFilterModel)
+        `Given view setup from created until open filter page`()
 
         `When view apply filter`()
 
         testInterface.`Then assert first page use case is called twice`(requestParamsSlot)
         `Then verify query params is updated from filter`(requestParams)
+    }
+
+    private fun `Given view setup from created until open filter page`() {
+        callback.`Given first page API will be successful`()
+        `Given get filter API will be successful`(dynamicFilterModel)
+
+        `Given view already created`()
+        `Given view open filter page`()
+        `Given mock apply filter param`(dynamicFilterModel)
     }
 
     private fun `Given mock apply filter param`(dynamicFilterModel: DynamicFilterModel) {
@@ -183,11 +193,9 @@ class FilterPageTestHelper(
         val requestParams by lazy { requestParamsSlot.captured }
         val successResponse = "10rb+"
 
-        `Given view already created`()
-        `Given get filter API will be successful`(dynamicFilterModel)
         `Given get product count API will be successful`(requestParamsSlot, successResponse)
-        `Given view open filter page`()
-        `Given mock apply filter param`(dynamicFilterModel)
+
+        `Given view setup from created until open filter page`()
 
         `When view get product count`()
 
@@ -233,11 +241,8 @@ class FilterPageTestHelper(
         val requestParamsSlot = slot<RequestParams>()
         val requestParams by lazy { requestParamsSlot.captured }
 
-        `Given view already created`()
-        `Given get filter API will be successful`(dynamicFilterModel)
         `Given get product count API will fail`(requestParamsSlot)
-        `Given view open filter page`()
-        `Given mock apply filter param`(dynamicFilterModel)
+        `Given view setup from created until open filter page`()
 
         `When view get product count`()
 
@@ -253,7 +258,8 @@ class FilterPageTestHelper(
         }
     }
 
-    interface ApplyFilterTestInterface {
+    interface Callback {
+        fun `Given first page API will be successful`()
         fun `Then assert first page use case is called twice`(requestParamsSlot: CapturingSlot<RequestParams>)
     }
 }

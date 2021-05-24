@@ -531,13 +531,13 @@
   "quick_filter": {
     "filter": [
       {
-        "title": "COD",
+        "title": "Semua Susu",
         "options": [
           {
-            "name": "COD",
-            "key": "cod",
+            "name": "Susu segar",
+            "key": "sc",
             "icon": "",
-            "value": "true",
+            "value": "1324",
             "isNew": false,
             "inputType": "checkbox",
             "totalData": "",
@@ -547,10 +547,10 @@
             "child": []
           },
           {
-            "name": "Gratis Ongkir",
-            "key": "free_shipping",
+            "name": "Susu biasa",
+            "key": "sc",
             "icon": "",
-            "value": "true",
+            "value": "1234",
             "isNew": false,
             "inputType": "checkbox",
             "totalData": "",
@@ -560,10 +560,10 @@
             "child": []
           },
           {
-            "name": "Official Store",
-            "key": "official",
-            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
-            "value": "true",
+            "name": "Susu kental manis",
+            "key": "sc",
+            "icon": "",
+            "value": "1112",
             "isNew": false,
             "inputType": "checkbox",
             "totalData": "",

@@ -3,7 +3,6 @@ package com.tokopedia.tokomart.search.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.usecase.RequestParams
 import io.mockk.slot
@@ -17,11 +16,12 @@ open class BaseSearchPageLoadTest: SearchTestFixtures() {
     protected val requestParamsSlot = slot<RequestParams>()
     protected val requestParams by lazy { requestParamsSlot.captured }
 
-    protected fun createExpectedMandatoryTokonowQueryParams(page: Int): Map<String, String> = mapOf(
-            SearchApiConst.PAGE to page.toString(),
-            SearchApiConst.USE_PAGE to true.toString(),
-            SearchApiConst.SOURCE to TOKONOW,
-            SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+    protected fun createExpectedMandatoryTokonowQueryParams(page: Int) =
+            createPaginationQueryParams(page) + createMandatoryTokonowQueryParams()
+
+    protected fun createPaginationQueryParams(page: Int) = mapOf(
+        SearchApiConst.PAGE to page.toString(),
+        SearchApiConst.USE_PAGE to true.toString(),
     )
 
     protected fun `Then assert request params map`(

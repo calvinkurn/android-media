@@ -229,22 +229,31 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun configureL3BottomSheet(filter: Filter?) {
-        if (filter != null) {
-            categoryChooserBottomSheet = CategoryChooserBottomSheet()
-            categoryChooserBottomSheet?.show(
-                    parentFragmentManager,
-                    getViewModel().queryParam,
-                    filter,
-                    this,
-            )
-        } else {
-            categoryChooserBottomSheet?.dismiss()
-            categoryChooserBottomSheet = null
-        }
+        if (filter != null)
+            openCategoryChooserFilterPage(filter)
+        else
+            dismissCategoryChooserFilterPage()
+    }
+
+    private fun openCategoryChooserFilterPage(filter: Filter) {
+        if (categoryChooserBottomSheet != null) return
+
+        categoryChooserBottomSheet = CategoryChooserBottomSheet()
+        categoryChooserBottomSheet?.show(
+                parentFragmentManager,
+                getViewModel().queryParam,
+                filter,
+                this,
+        )
+    }
+
+    private fun dismissCategoryChooserFilterPage() {
+        categoryChooserBottomSheet?.dismiss()
+        categoryChooserBottomSheet = null
     }
 
     override fun getResultCount(selectedOption: Option) {
-
+        getViewModel().onViewGetProductCount(selectedOption)
     }
 
     override fun onApplyCategory(selectedOption: Option) {

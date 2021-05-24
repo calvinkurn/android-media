@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
@@ -131,5 +132,25 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
         val actualParamsValue = requestParams.parameters[selectedQuickFilterKey]
 
         assertThat(actualParamsValue, nullValue())
+    }
+
+    @Test
+    fun `click quick filter to open L3 filter bottom sheet`() {
+        val requestParamsSlot = slot<RequestParams>()
+        `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
+        `Given view already created`()
+
+        val quickFilterVisitable = categoryViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val selectedQuickFilter = quickFilterVisitable.quickFilterItemList[0]
+
+        `When quick filter selected`(selectedQuickFilter)
+
+        `Then assert L3 Bottomsheet filter is open with filter`(selectedQuickFilter.filter)
+    }
+
+    private fun `Then assert L3 Bottomsheet filter is open with filter`(selectedFilter: Filter) {
+        val isL3FilterPageOpen = categoryViewModel.isL3FilterPageOpenLiveData.value
+
+        assertThat(isL3FilterPageOpen, shouldBe(selectedFilter))
     }
 }

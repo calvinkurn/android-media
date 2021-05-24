@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -56,6 +57,11 @@ open class SearchTestFixtures {
             firstArg<(SearchModel) -> Unit>().invoke(searchModel)
         }
     }
+
+    protected fun createMandatoryTokonowQueryParams() = mapOf(
+        SearchApiConst.SOURCE to TOKONOW,
+        SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+    )
 
     protected fun `Given view already created`() {
         searchViewModel.onViewCreated()

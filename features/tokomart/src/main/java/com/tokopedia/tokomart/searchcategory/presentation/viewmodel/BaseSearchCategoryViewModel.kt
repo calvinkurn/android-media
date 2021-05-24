@@ -220,6 +220,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun openL3FilterPage(selectedFilter: Filter) {
+        if (isL3FilterPageOpenMutableLiveData.value != null) return
+
         isL3FilterPageOpenMutableLiveData.value = selectedFilter
     }
 
@@ -373,6 +375,11 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun onGetProductCountFailed(throwable: Throwable) {
         onGetProductCountSuccess("0")
+    }
+
+    fun onViewGetProductCount(option: Option) {
+        val mapParameter = queryParam + mapOf(option.key to option.value)
+        onViewGetProductCount(mapParameter)
     }
 
     protected data class HeaderDataView(
