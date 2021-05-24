@@ -91,7 +91,6 @@ class MiniCartWidget @JvmOverloads constructor(
     fun updateData(miniCartWidgetData: MiniCartWidgetData) {
         renderWidget(MiniCartWidgetUiModel(
                 state = MiniCartWidgetUiModel.STATE_NORMAL,
-                totalProductError = miniCartWidgetData.totalProductError,
                 totalProductPrice = miniCartWidgetData.totalProductPrice,
                 totalProductCount = miniCartWidgetData.totalProductCount
         ))
