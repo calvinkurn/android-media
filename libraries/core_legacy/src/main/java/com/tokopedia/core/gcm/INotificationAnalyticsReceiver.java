@@ -10,6 +10,4 @@ import rx.Observable;
 
 public interface INotificationAnalyticsReceiver {
     void onNotificationReceived(Observable<Bundle> bundle);
-
-    Bundle buildAnalyticNotificationData(Bundle bundle);
 }

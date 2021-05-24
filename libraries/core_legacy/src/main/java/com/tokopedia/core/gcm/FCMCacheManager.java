@@ -14,13 +14,6 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class FCMCacheManager {
-    public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
-    public static final long GCM_ID_EXPIRED_TIME = TimeUnit.DAYS.toMillis(3);
-    private final String NOTIFICATION_CODE = "tkp_code";
-    private static final String GCM_STORAGE = "GCM_STORAGE";
-    public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
-    private LocalCacheHandler cache;
-    private Context context;
 
     public static void storeRegId(String id, Context context) {
         new UserSession(context).setDeviceId(id);
