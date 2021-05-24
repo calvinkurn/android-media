@@ -15,17 +15,17 @@ class MiniCartShopViewHolder(private val view: View,
                              private val listener: MiniCartListActionListener)
     : AbstractViewHolder<MiniCartShopUiModel>(view) {
 
-    private val iuImageFulfill by lazy {
-        view.findViewById<ImageUnify>(R.id.iu_image_fulfill)
+    private val iuImageFulfill: ImageUnify? by lazy {
+        view.findViewById(R.id.iu_image_fulfill)
     }
-    private val tvFulfillDistrict by lazy {
-        view.findViewById<Typography>(R.id.tv_fulfill_district)
+    private val tvFulfillDistrict: Typography? by lazy {
+        view.findViewById(R.id.tv_fulfill_district)
     }
-    private val separatorEstimatedTimeArrival by lazy {
-        view.findViewById<View>(R.id.separator_estimated_time_arrival)
+    private val separatorEstimatedTimeArrival: View? by lazy {
+        view.findViewById(R.id.separator_estimated_time_arrival)
     }
-    private val textEstimatedTimeArrival by lazy {
-        view.findViewById<Typography>(R.id.text_estimated_time_arrival)
+    private val textEstimatedTimeArrival: Typography? by lazy {
+        view.findViewById(R.id.text_estimated_time_arrival)
     }
 
     companion object {
@@ -40,23 +40,25 @@ class MiniCartShopViewHolder(private val view: View,
 
     private fun renderEstimatedTimeArrival(element: MiniCartShopUiModel) {
         if (element.estimatedTimeArrival.isNotBlank()) {
-            textEstimatedTimeArrival.text = element.estimatedTimeArrival
-            separatorEstimatedTimeArrival.show()
+            textEstimatedTimeArrival?.text = element.estimatedTimeArrival
+            separatorEstimatedTimeArrival?.show()
         } else {
-            separatorEstimatedTimeArrival.gone()
+            separatorEstimatedTimeArrival?.gone()
         }
     }
 
     private fun renderShopLocation(element: MiniCartShopUiModel) {
-        tvFulfillDistrict.text = element.shopLocation
+        tvFulfillDistrict?.text = element.shopLocation
     }
 
     private fun renderShopBadge(element: MiniCartShopUiModel) {
-        if (element.shopBadgeUrl.isNotBlank()) {
-            ImageHandler.loadImageWithoutPlaceholder(iuImageFulfill, element.shopBadgeUrl)
-            iuImageFulfill.show()
-        } else {
-            iuImageFulfill.gone()
+        iuImageFulfill?.let {
+            if (element.shopBadgeUrl.isNotBlank()) {
+                ImageHandler.loadImageWithoutPlaceholder(it, element.shopBadgeUrl)
+                it.show()
+            } else {
+                it.gone()
+            }
         }
     }
 

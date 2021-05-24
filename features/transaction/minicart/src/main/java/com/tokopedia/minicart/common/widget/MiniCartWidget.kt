@@ -55,7 +55,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun initializeViewModel(fragment: Fragment) {
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
-        viewModel.miniCartWidgetUiModel.observe(fragment, {
+        viewModel.miniCartWidgetUiModel.observe(fragment.viewLifecycleOwner, {
             renderWidget(it)
         })
     }
@@ -69,7 +69,9 @@ class MiniCartWidget @JvmOverloads constructor(
                 miniCartListBottomSheet.show(shopIds, fragment, ::onMiniCartBottomSheetDismissed)
             }
         }
-        totalAmount?.isTotalAmountLoading = true
+        if (totalAmount?.isTotalAmountLoading == false) {
+            totalAmount?.isTotalAmountLoading = true
+        }
     }
 
     private fun onMiniCartBottomSheetDismissed() {
@@ -106,7 +108,6 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun renderWidget(miniCartWidgetUiModel: MiniCartWidgetUiModel) {
-        totalAmount?.isTotalAmountLoading = false
         totalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetUiModel.totalProductPrice, false))

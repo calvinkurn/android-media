@@ -9,8 +9,4 @@ import dagger.Provides
 @Module
 class MiniCartListModule {
 
-    @ActivityScope
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
 }

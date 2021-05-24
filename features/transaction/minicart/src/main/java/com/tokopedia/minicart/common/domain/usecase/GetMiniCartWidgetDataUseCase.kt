@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.common.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -10,7 +11,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetMiniCartWidgetDataUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class GetMiniCartWidgetDataUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                                        private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<MiniCartData>() {
 
     private var params: Map<String, Any>? = null

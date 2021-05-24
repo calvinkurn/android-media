@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
@@ -46,7 +44,7 @@ class MiniCartListBottomSheet :
 
     private fun initializeViewModel(fragment: Fragment) {
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartListViewModel::class.java)
-        viewModel.miniCartUiModel.observe(fragment, {
+        viewModel.miniCartUiModel.observe(fragment.viewLifecycleOwner, {
             Toast.makeText(fragment.activity, "SHOW CART LIST!", Toast.LENGTH_SHORT).show()
             bottomSheet?.setTitle(it.title)
             miniCartWidget?.updateData(it.miniCartWidgetData)
