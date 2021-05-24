@@ -29,7 +29,7 @@ class MiniCartWidget @JvmOverloads constructor(
     lateinit var miniCartListBottomSheet: MiniCartListBottomSheet
 
     private var view: View? = null
-    private var totalAmount: TotalAmount? = null
+    var totalAmount: TotalAmount? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
     lateinit var viewModel: MiniCartWidgetViewModel
@@ -41,13 +41,15 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener) {
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true) {
         val application = fragment.activity?.application
         initializeInjector(application)
         initializeView(shopIds, fragment)
         initializeListener(listener)
         initializeViewModel(fragment)
-        updateData(shopIds)
+        if (autoInitializeData) {
+            updateData(shopIds)
+        }
     }
 
     private fun initializeListener(listener: MiniCartWidgetListener) {
