@@ -19,7 +19,6 @@ import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tkpd.atc_variant.di.AtcVariantComponent
 import com.tkpd.atc_variant.di.DaggerAtcVariantComponent
 import com.tkpd.atc_variant.util.ATC_LOGIN_REQUEST_CODE
-import com.tkpd.atc_variant.util.AtcVariantMapper
 import com.tkpd.atc_variant.views.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapter
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapterTypeFactoryImpl
@@ -29,16 +28,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.common.ProductCartHelper
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.showToasterError
-import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -236,15 +233,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 onSuccessOcs(result)
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
-//                sendTrackingATC(cartId)
                 ProductCartHelper.goToOneClickCheckout(getAtcActivity())
             }
             ProductDetailCommonConstant.BUY_BUTTON -> {
-//                sendTrackingATC(cartId)
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
-//                sendTrackingATC(cartId)
                 onSuccessAtc(result.errorMessage.firstOrNull())
             }
         }
@@ -261,7 +255,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                         ctaText = getString(R.string.atc_variant_oke_label))
             })
         } else {
-//                    sendTrackingATC(cartId)
             goToCheckout()
         }
     }
@@ -308,8 +301,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewModel.onVariantClicked(variantOptions.variantCategoryKey, variantOptions.variantId, variantOptions.imageOriginal, variantOptions.level)
     }
 
-    override fun getStockWording(): String {
-        return ""
+    override fun onVariantGuideLineClicked(url: String) {
+        goToImagePreview(arrayListOf(url))
     }
 
     override fun addToCartClick(buttonText: String) {
@@ -323,6 +316,16 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton, false)
         doAtc(atcKey)
+    }
+
+    private fun goToImagePreview(listOfImage:ArrayList<String>) {
+        context?.let {
+            startActivity(ImagePreviewActivity.getCallingIntent(it, listOfImage, arrayListOf("variant")))
+        }
+    }
+
+    override fun onVariantImageClicked(url: String) {
+        goToImagePreview(arrayListOf(url))
     }
 
     private fun doAtc(buttonAction: Int) {

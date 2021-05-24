@@ -45,6 +45,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation project(rootProject.ext.features.productDetailCommon)
+    implementation project(rootProject.ext.libraries.imagePreview)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.dagger

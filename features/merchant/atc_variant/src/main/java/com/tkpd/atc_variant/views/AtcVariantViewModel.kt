@@ -11,7 +11,6 @@ import com.tkpd.atc_variant.usecase.GetProductVariantAggregatorUseCase
 import com.tkpd.atc_variant.util.AtcCommonMapper
 import com.tkpd.atc_variant.util.AtcCommonMapper.asFail
 import com.tkpd.atc_variant.util.AtcCommonMapper.asSuccess
-import com.tkpd.atc_variant.util.AtcVariantMapper
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
@@ -25,6 +24,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams

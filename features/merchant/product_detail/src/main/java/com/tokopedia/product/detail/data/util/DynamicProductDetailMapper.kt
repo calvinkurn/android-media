@@ -4,10 +4,11 @@ import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
@@ -253,5 +254,32 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return "${localData.district_id}|${localData.postal_code}|${latlong}"
+    }
+
+    fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): Pair<Boolean, MutableMap<String, String>> {
+        val shouldAutoSelect = variantData.autoSelectedOptionIds()
+        val isParent = selectedChild == null
+        val selectedOptionIds =  when {
+            isParent -> {
+                if (shouldAutoSelect.isNotEmpty()) {
+                    //if product parent and able to auto select, do auto select
+                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
+                } else {
+                    //if product parent, dont update selected variant
+                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+                }
+            }
+            selectedChild?.isBuyable == true -> {
+                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
+            }
+            shouldAutoSelect.isNotEmpty() -> {
+                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
+            }
+            else -> {
+                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+            }
+        }
+
+        return shouldAutoSelect.isNotEmpty() to selectedOptionIds
     }
 }

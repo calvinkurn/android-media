@@ -1,8 +1,7 @@
-package com.tkpd.atc_variant.util
+package com.tokopedia.product.detail.common
 
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild

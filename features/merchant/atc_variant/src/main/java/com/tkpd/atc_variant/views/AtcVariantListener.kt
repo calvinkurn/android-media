@@ -8,9 +8,9 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  */
 interface AtcVariantListener {
     fun onVariantClicked(variantOptions: VariantOptionWithAttribute)
-    fun getStockWording(): String
 
     fun onVariantGuideLineClicked(url: String) {}
     fun onSelectionChanged(view: View, position: Int) {}
     fun onVariantGuideLineHide(): Boolean = false
+    fun onVariantImageClicked(url:String)
 }

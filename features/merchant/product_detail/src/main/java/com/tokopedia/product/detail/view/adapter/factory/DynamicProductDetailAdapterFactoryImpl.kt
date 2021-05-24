@@ -100,6 +100,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return PdpComparisonWidgetViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductSingleVariantDataModel): Int {
+        return 0
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)

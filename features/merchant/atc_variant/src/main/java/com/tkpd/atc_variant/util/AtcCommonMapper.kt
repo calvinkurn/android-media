@@ -3,6 +3,7 @@ package com.tkpd.atc_variant.util
 import com.tkpd.atc_variant.data.uidata.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant

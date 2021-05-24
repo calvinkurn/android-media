@@ -81,6 +81,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
+    val productSingleVariant: ProductSingleVariantDataModel?
+        get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? ProductSingleVariantDataModel
+
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
 

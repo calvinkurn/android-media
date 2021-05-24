@@ -51,6 +51,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
+import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
@@ -333,6 +334,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun processVariant(data: ProductVariant, mapOfSelectedVariant: MutableMap<String, String>?) {
         launchCatchError(dispatcher.io, block = {
+            val test = ProductDetailVariantLogic.determineVariant(mapOfSelectedVariant
+                    ?: mapOf(), data)
             _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
         }) {}
     }

@@ -30,7 +30,6 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
     private val txtVariantSelectedOption = view.findViewById<TextView>(R.id.txt_variant_selected_option)
-    private val txtVariantStockWording = view.findViewById<TextView>(R.id.txt_variant_stock_wording)
     private val txtVariantCategoryName = view.findViewById<TextView>(R.id.txt_variant_category_name)
     private val txtVariantGuideline = view.findViewById<TextView>(R.id.txt_variant_guideline)
     private val rvVariant = view.findViewById<RecyclerView>(R.id.rv_atc_variant)
@@ -47,7 +46,6 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
     fun bind(data: VariantCategory, isOptionChanged: Boolean) {
         if (isOptionChanged) {
             setSelectedOptionText(data)
-            setStockText(data)
 
             if (data.variantOptions.firstOrNull()?.hasCustomImages == true) {
                 rvVariant.layoutManager = GridLayoutManager(view.context, 5)
@@ -74,7 +72,6 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
 
     fun bind(data: VariantCategory) {
         setSelectedOptionText(data)
-        setStockText(data)
 
         if (data.variantGuideline.isNotEmpty() && !listener.onVariantGuideLineHide()) {
             txtVariantGuideline.show()
@@ -102,15 +99,6 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
         } else {
             txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
             txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-        }
-    }
-
-    private fun setStockText(data: VariantCategory) {
-        if (data.isLeaf && listener.getStockWording() != "") {
-            txtVariantStockWording.show()
-            txtVariantStockWording.text = MethodChecker.fromHtml(listener.getStockWording())
-        } else {
-            txtVariantStockWording.hide()
         }
     }
 

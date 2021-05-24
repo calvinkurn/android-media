@@ -38,7 +38,7 @@ class AtcVariantAdapterTypeFactoryImpl(private val variantListener: AtcVariantLi
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            AtcVariantHeaderViewHolder.LAYOUT -> AtcVariantHeaderViewHolder(view)
+            AtcVariantHeaderViewHolder.LAYOUT -> AtcVariantHeaderViewHolder(view, variantListener)
             AtcVariantQuantityViewHolder.LAYOUT -> AtcVariantQuantityViewHolder(view)
             AtcVariantShimmeringViewHolder.LAYOUT -> AtcVariantShimmeringViewHolder(view)
             AtcVariantComponentViewHolder.LAYOUT -> AtcVariantComponentViewHolder(view, variantListener)

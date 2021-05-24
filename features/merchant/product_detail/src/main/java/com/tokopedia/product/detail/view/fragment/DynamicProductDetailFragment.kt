@@ -62,7 +62,6 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.*
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
@@ -80,7 +79,6 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.*
@@ -140,7 +138,6 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -1376,11 +1373,11 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 
     private fun observeInitialVariantData() {
         viewLifecycleOwner.observe(viewModel.initialVariantData) {
-            if (pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected() == true) {
+            if (!isAutoSelectVariant) {
                 pdpUiUpdater?.updateVariantData(it)
             } else {
                 //If variant did auto select, we have to update the UI
-                updateVariantDataToExistingProductData(it)
+                 updateVariantDataToExistingProductData(it)
             }
         }
     }
@@ -1947,25 +1944,22 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 pdpUiUpdater?.updateVariantError()
                 updateUi()
             } else {
-                autoSelectVariant()
-                viewModel.processVariant(data, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant)
+                val selectedOptionIds = autoSelectVariant(productId)
+                viewModel.processVariant(data, selectedOptionIds)
             }
         }
     }
 
-    private fun autoSelectVariant() {
+    private fun autoSelectVariant(productId: String?): MutableMap<String,String> {
         viewModel.variantData?.let {
             //Auto select variant will be execute when there is only 1 child left
-            val isOnlyHaveOneVariantLeftData = it.autoSelectedOptionIds()
-            if (isOnlyHaveOneVariantLeftData.isNotEmpty()) {
-                isAutoSelectVariant = true
-                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(it, isOnlyHaveOneVariantLeftData)
-            } else {
-                // If there's still many variant others, just render variant as is
-                isAutoSelectVariant = false
-                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(it)
-            }
+            val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
+            val pairAutoSelectAndSelectedOptionIds = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
+            isAutoSelectVariant = pairAutoSelectAndSelectedOptionIds.first
+
+            pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = pairAutoSelectAndSelectedOptionIds.second
         }
+        return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
     }
 
     private fun showAddToCartDoneBottomSheet() {

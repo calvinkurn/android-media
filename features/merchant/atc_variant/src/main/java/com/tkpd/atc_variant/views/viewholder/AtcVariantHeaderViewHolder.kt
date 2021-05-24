@@ -7,6 +7,7 @@ import com.tkpd.atc_variant.data.uidata.ProductHeaderData
 import com.tkpd.atc_variant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atc_variant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atc_variant.util.PAYLOAD_UPDATE_PRICE_ONLY
+import com.tkpd.atc_variant.views.AtcVariantListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,7 +22,7 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by Yehezkiel on 07/05/21
  */
 
-class AtcVariantHeaderViewHolder(private val view: View) : AbstractViewHolder<VariantHeaderDataModel>(view) {
+class AtcVariantHeaderViewHolder(private val view: View, private val listener: AtcVariantListener) : AbstractViewHolder<VariantHeaderDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.atc_variant_header_viewholder
@@ -74,6 +75,12 @@ class AtcVariantHeaderViewHolder(private val view: View) : AbstractViewHolder<Va
 
     private fun loadImage(imgUrl: String) {
         productImage.loadImage(imgUrl)
+        productImage?.run {
+            loadImage(imgUrl)
+            setOnClickListener {
+                listener.onVariantImageClicked(imgUrl)
+            }
+        }
     }
 
     private fun renderNoCampaign(price: String) = with(view) {
