@@ -47,8 +47,8 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
             penaltyViewModel.setSortTypeFilterData(sortTypeFilter)
 
             verifyGetShopPenaltyDetailUseCaseCaseCalled()
-            val actualResult = (penaltyViewModel.shopPenaltyDetailData.observeAwaitValue(time = 60) as Success).data
-            assertTrue(penaltyViewModel.shopPenaltyDetailData.observeAwaitValue(time = 60) is Success)
+            val actualResult = (penaltyViewModel.shopPenaltyDetailData.observeAwaitValue(time = 30) as Success).data
+            assertTrue(penaltyViewModel.shopPenaltyDetailData.observeAwaitValue(time = 30) is Success)
             assertNotNull(actualResult)
         }
     }
