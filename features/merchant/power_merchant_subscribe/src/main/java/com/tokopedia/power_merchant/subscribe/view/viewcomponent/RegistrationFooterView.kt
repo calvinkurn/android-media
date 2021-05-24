@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.view_pm_registration_footer.view.*
 
 class RegistrationFooterView : ConstraintLayout {
 
+    private var checkedListener: ((Boolean) -> Unit)? = null
+
     constructor (context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -51,11 +53,7 @@ class RegistrationFooterView : ConstraintLayout {
         }
     }
 
-    fun showRegistrationProgress() {
-        btnPmRegister.isLoading = true
-    }
-
-    fun hideRegistrationProgress() {
-        btnPmRegister.isLoading = false
+    fun setOnTickboxCheckedListener(callback: (Boolean) -> Unit) {
+        this.checkedListener = callback
     }
 }
