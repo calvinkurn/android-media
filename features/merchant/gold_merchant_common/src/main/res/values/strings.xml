@@ -2,4 +2,30 @@
     <string name="app_name">GmCommon</string>
     <string name="bottom_sheet_idle_title">Yaah, Fitur %s hanya dapat diakses Power Merchant aktif</string>
     <string name="bottom_sheet_idle_desc">Skor performa tokomu kurang dari 65 poin. Segera tingkatkan performa toko untuk menggunakan %s dan fitur eksklusif Power Merchant lainnya kembali.</string>
+    <string name="sah_label_pm_shop_level">Level:</string>
+    <string name="sah_max_shop_score">/100</string>
+    <string name="sah_label_core">Skor:</string>
+    <string name="gmc_power_merchant_bottom_sheet_title">Mulai %1$s, Performa Toko kamu \ndiperbarui!</string>
+    <string name="gmc_check_your_shop_performance">Cek Performa Tokomu</string>
+    <string name="gmc_pm_grade_title">Kamu mendapatkan Power \nMerchant %1$s!</string>
+    <string name="gmc_pm_grade_description">Grade ini dikonversi dari badge Reputasimu. Pertahankan Performa untuk tetap di grade ini, ya!</string>
+    <string name="gmc_pm_grade_description_risk_tobe_inactive"><![CDATA[Grade ini dikonversi dari badge Reputasimu. Tingkatkan skor <font color="%1$s"><b>min. %2$d</b></font> agar Power Merchant tetap aktif.]]></string>
+    <string name="gmc_pm_grade_no_reputation_description">Pertahankan Performa untuk tetap di grade ini, ya!</string>
+    <string name="gmc_pm_grade_no_reputation_description_at_risk"><![CDATA[Tingkatkan skor <font color="%1$s"><b>min. %2$d</b></font> agar Power Merchant tetap aktif, ya!]]></string>
+    <string name="gmc_pm_potential_grade_title">Dengan gabung Power Merchant, kamu berpotensi jadi PM %1$s!</string>
+    <string name="gmc_pm_potential_grade_description">Dengan skor baru, kamu bisa daftar Power Merchant dengan keuntungan %1$s sesuai Reputasimu, lho!</string>
+    <string name="gmc_pm_potential_grade_no_reputation_title">Kamu bisa jadi Power Merchant %1$s!</string>
+    <string name="gmc_pm_potential_grade_no_reputation_description">Daftar Power Merchant dan kamu bisa dapat keuntungan Power Merchant %1$s!</string>
+    <string name="gmc_pm_regular_merchant_registration">Mau meningkatkan kepuasan pembeli dan dapat berbagai keuntungan menarik Tokopedia? Pelajari skema barunya, yuk!</string>
+    <string name="gmc_level">Level %1$s</string>
+    <string name="gmc_new_seller_potential_inactive_interrupt_title">Mulai %1$s kamu berpotensi kehilangan Power Merchant</string>
+    <string name="gmc_new_seller_potential_inactive_interrupt_description">Jika Power Merchant kamu tetap nonaktif di %1$s, kamu akan kembali jadi Regular Merchant. Tingkatkan Performa untuk tetap dapat keuntungan Power Merchant, ya!</string>
+    <string name="gmc_new_seller_end_of_tenure_interrupt_title">Mulai %1$s, tokomu akan dinilai dari Performa Toko!</string>
+    <string name="gmc_new_seller_end_of_tenure_interrupt_description">Pelajari dan tingkatkan Performa supaya menarik banyak calon pembeli, yuk!</string>
+    <string name="pm_on_back_pressed_disabled_message">Baca hingga akhir untuk lanjut</string>
+    <string name="gmc_shop_score_consent_approved_message">Kamu sudah membaca dan paham perubahan skema Perfoma Toko.</string>
+    <string name="gmc_oke">Oke</string>
+    <string name="gmc_pm_pro_interrupt_action_approved">Hore! Kamu bisa menikmati berbagai keuntungan Power Merchant PRO mulai 14 Juni 2021.</string>
+    <string name="gmc_pm_pro_interrupt_action_stay">Kamu tetap menjadi Power Merchant dengan skema keanggotaan baru berlaku 14 Juni 2021.</string>
+    <string name="gmc_pm_pro_interrupt_action_agreed"><![CDATA[Kamu menyetujui Syarat & Ketentuan skema keanggotaan baru yang berlaku mulai 14 Juni 2021.]]></string>
 </resources>
