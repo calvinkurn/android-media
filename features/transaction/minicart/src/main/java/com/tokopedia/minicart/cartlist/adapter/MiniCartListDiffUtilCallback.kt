@@ -14,10 +14,12 @@ class MiniCartListDiffUtilCallback(private val oldList: List<Any>,
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        // Todo : add logic
         return false
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        // Todo : add logic
         return false
     }
 
