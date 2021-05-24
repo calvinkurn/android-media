@@ -17,10 +17,12 @@ import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewMo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
+@ExperimentalCoroutinesApi
 abstract class ShopPenaltyViewModelTestFixture {
 
     @get:Rule
