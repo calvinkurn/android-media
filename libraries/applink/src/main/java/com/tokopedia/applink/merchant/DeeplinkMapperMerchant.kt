@@ -8,7 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
@@ -354,7 +354,7 @@ object DeeplinkMapperMerchant {
 
     fun isProductDetailPageDeeplink(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
-        return deeplink.startsWithPattern(ApplinkConst.PRODUCT_INFO) && uri.pathSegments.size == 1 && uri.lastPathSegment.toIntOrZero() != 0
+        return deeplink.startsWithPattern(ApplinkConst.PRODUCT_INFO) && uri.pathSegments.size == 1 && uri.lastPathSegment.toLongOrZero() != 0L
     }
 
     fun isProductDetailAffiliatePageDeeplink(deeplink: String): Boolean {
@@ -390,6 +390,7 @@ object DeeplinkMapperMerchant {
     }
 
     fun goToInboxUnified(): Boolean {
+        if(GlobalConfig.isSellerApp()) return false
         return try {
             val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                     AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
