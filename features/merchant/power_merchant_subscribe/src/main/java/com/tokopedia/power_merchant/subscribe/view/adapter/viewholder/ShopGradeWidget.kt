@@ -6,10 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
@@ -119,13 +116,21 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
         }
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl, R.drawable.bg_pm_registration_header)
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
+        val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
+        if (isPmStatusActive) {
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_active)
+        } else {
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_inactive)
+        }
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
     }
 
     private fun getPMStatusLabel(pmStatus: String): String {
         return when (pmStatus) {
-            PMStatusConst.INACTIVE -> itemView.context.getString(R.string.pm_inactive)
-            else -> itemView.context.getString(R.string.pm_active)
+            PMStatusConst.ACTIVE -> itemView.context.getString(R.string.pm_active)
+            else -> itemView.context.getString(R.string.pm_inactive)
         }
     }
 }

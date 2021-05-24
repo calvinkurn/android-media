@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
-            android:background="@drawable/bg_pm_status"
+            android:background="@drawable/bg_pm_status_label_active"
             android:paddingStart="@dimen/spacing_lvl2"
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingEnd="@dimen/spacing_lvl2"
