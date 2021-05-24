@@ -52,7 +52,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -563,7 +562,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setPaddings() {
         bottomSheetTitle.hide()
-        bottomSheetWrapper.setPadding(0, 16.toPx(), 0, 0)
     }
 
     private fun isReviewComplete(): Boolean {
@@ -678,6 +676,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             this.dialog?.window?.decorView?.findViewById<View>(com.google.android.material.R.id.touch_outside)?.setOnClickListener {
                 handleDismiss()
             }
+        }
+        setCloseClickListener {
+            handleDismiss()
         }
     }
 

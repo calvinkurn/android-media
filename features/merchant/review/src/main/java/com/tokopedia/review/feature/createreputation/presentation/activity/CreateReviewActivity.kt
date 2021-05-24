@@ -197,9 +197,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     private fun showWriteFormBottomSheet() {
         createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), utmSource)
         createReviewBottomSheet?.apply {
-            isDragable = true
-            showKnob = true
-            showCloseIcon = false
+            clearContentPadding = true
             show(supportFragmentManager, "BottomSheet Tag")
         }
     }
