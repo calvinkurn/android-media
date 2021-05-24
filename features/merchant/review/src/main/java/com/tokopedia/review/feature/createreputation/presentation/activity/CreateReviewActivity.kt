@@ -45,14 +45,14 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         startPerformanceMonitoring()
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+        if (isNewView()) {
             setTranslucentTheme()
         } else {
             setWhiteTheme()
             setToolbar()
         }
         super.onCreate(savedInstanceState)
-        if (InboxUnifiedRemoteConfig.isInboxUnified()) {
+        if (isNewView()) {
             handleDimming()
             hideToolbar()
             showWriteFormBottomSheet()
@@ -67,7 +67,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun getNewFragment(): Fragment? {
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+        if (isNewView()) {
             return null
         }
         setToolbar()
@@ -83,7 +83,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun onBackPressed() {
-        if(!InboxUnifiedRemoteConfig.isInboxUnified()) {
+        if (!InboxUnifiedRemoteConfig.isInboxUnified()) {
             createReviewFragment?.let {
                 CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
                 it.showCancelDialog()
@@ -209,5 +209,9 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
                     .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
         }
         supportActionBar?.elevation = 0f
+    }
+
+    private fun isNewView(): Boolean {
+        return InboxUnifiedRemoteConfig.isInboxUnified() && !isEditMode
     }
 }
