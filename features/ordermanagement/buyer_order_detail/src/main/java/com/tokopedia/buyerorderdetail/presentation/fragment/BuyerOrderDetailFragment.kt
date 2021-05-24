@@ -146,7 +146,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> onRequestCancelActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> onTrackShipmentActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button.url)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> onReceiveConfirmationActionButtonClicked(button)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_VIEW_COMPLAINT -> onViewComplaintActionButtonClicked(button.url)
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER, BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> onReceiveConfirmationActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> onHelpActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> onBuyAgainAllProductButtonClicked()
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_GIVE_REVIEW -> onGiveReviewActionButtonClicked(button.url)
@@ -215,6 +216,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
         }
         bottomSheetReceiveConfirmation?.finishLoading()
+    }
+
+    private fun onViewComplaintActionButtonClicked(url: String) {
+        RouteManager.route(context, url)
     }
 
     private fun onReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {

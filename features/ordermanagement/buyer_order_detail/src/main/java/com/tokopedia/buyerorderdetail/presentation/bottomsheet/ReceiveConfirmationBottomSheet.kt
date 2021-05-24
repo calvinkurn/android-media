@@ -59,7 +59,7 @@ class ReceiveConfirmationBottomSheet(
 
     private fun onPrimaryButtonClicked() {
         actionButton.popUp.actionButton.firstOrNull()?.let {
-            if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK) {
+            if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK || it.key.isBlank()) {
                 dismiss()
             } else {
                 disableDismiss()
@@ -70,7 +70,7 @@ class ReceiveConfirmationBottomSheet(
 
     private fun onSecondaryButtonClicked() {
         actionButton.popUp.actionButton.lastOrNull()?.let {
-            if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK) {
+            if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK || it.key.isBlank()) {
                 dismiss()
             } else {
                 disableDismiss()
