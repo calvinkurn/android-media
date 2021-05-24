@@ -5,11 +5,27 @@ import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWLESS
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWMORE
+import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
 
 class MiniCartListViewHolderMapper @Inject constructor() {
 
-    fun mapUiModel(miniCartData: MiniCartData): MutableList<Visitable<*>> {
+    fun mapUiModel(miniCartData: MiniCartData): MiniCartUiModel {
+        return MiniCartUiModel().apply {
+            title = miniCartData.data.headerTitle
+            miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
+            visitables = mapVisitables(miniCartData)
+        }
+    }
+
+    private fun mapMiniCartWidgetData(miniCartData: MiniCartData): MiniCartWidgetData {
+        return MiniCartWidgetData().apply {
+            totalProductCount = miniCartData.data.totalProductCount
+            totalProductPrice = miniCartData.data.totalProductPrice
+        }
+    }
+
+    private fun mapVisitables(miniCartData: MiniCartData): MutableList<Visitable<*>> {
         var miniCartTickerErrorUiModel: MiniCartTickerErrorUiModel? = null
         var miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel? = null
         var miniCartShopUiModel: MiniCartShopUiModel? = null
