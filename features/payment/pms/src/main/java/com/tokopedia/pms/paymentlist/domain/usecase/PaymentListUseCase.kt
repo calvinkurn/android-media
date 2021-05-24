@@ -14,7 +14,7 @@ class PaymentListUseCase @Inject constructor(
 ) : GraphqlUseCase<DataPaymentList>(graphqlRepository) {
 
     fun getPaymentList(
-        onSuccess: (PaymentList) -> Unit,
+        onSuccess: (PaymentList?) -> Unit,
         onError: (Throwable) -> Unit, cursor: String,
     ) {
         this.setTypeClass(DataPaymentList::class.java)

@@ -1,13 +1,13 @@
 package com.tokopedia.pms.paymentlist.domain.gql
 
-const val GQL_PAYMENT_LIST_QUERY = """query paymentList(${'$'}lang : String!, ${'$'}cursor : String!){
+const val GQL_PAYMENT_LIST_QUERY = """
+    query paymentList(${'$'}lang : String!, ${'$'}cursor : String!){
     paymentList(lang: ${'$'}lang, cursor:${'$'}cursor, perPage:20) {
         last_cursor
         has_next_page
         payment_list {
           transaction_id
           transaction_date
-          transaction_expire
           transaction_expire_unix
           merchant_code
           payment_amount
@@ -36,15 +36,16 @@ const val GQL_PAYMENT_LIST_QUERY = """query paymentList(${'$'}lang : String!, ${
           show_cancel_button
           show_help_page
           ticker_message
+          show_ticker_message
           app_link
         }
     }
 }
 """
 
-const val GQL_GET_CANCEL_QUERY =
-    """query cancelDetail(${'$'}transactionID: String!, ${'$'}merchantCode: String!) {
-  cancelDetail(transactionID: ${'$'}transactionID, merchantCode: ${'$'}merchantCode) {
+const val GQL_GET_CANCEL_QUERY = """
+    query cancelDetail(${'$'}transactionID: String!, ${'$'}merchantCode: String!) {
+    cancelDetail(transactionID: ${'$'}transactionID, merchantCode: ${'$'}merchantCode) {
       success
       hasRefund
       refundCCAmount
@@ -64,10 +65,23 @@ const val GQL_CANCEL_PAYMENT_MUTATION =
 }
 """
 
-const val GQL_EDIT_KLIC_BCA =
-    """mutation editKlikbca(${'$'}transactionID: String!, ${'$'}merchantCode:String!, ${'$'}newKlikbcaUserID: String!){
-                    editKlikbca(transactionID: ${'$'}transactionID, merchantCode:${'$'}merchantCode, newKlikbcaUserID: ${'$'}newKlikbcaUserID){
-                          success
-                            message
-             }  
-            }"""
+const val GQL_EDIT_KLIC_BCA = """
+    mutation editKlikbca(${'$'}transactionID: String!,
+     ${'$'}merchantCode:String!,${'$'}newKlikbcaUserID: String!){
+        editKlikbca(transactionID: ${'$'}transactionID, merchantCode:${'$'}merchantCode,
+         newKlikbcaUserID: ${'$'}newKlikbcaUserID){
+           success
+           message
+    }  
+}
+"""
+
+const val GQL_GET_LIST_COUNT = """
+    query {
+        notifications{
+            buyerOrderStatus {
+            paymentStatus
+            }
+        }
+    }
+"""

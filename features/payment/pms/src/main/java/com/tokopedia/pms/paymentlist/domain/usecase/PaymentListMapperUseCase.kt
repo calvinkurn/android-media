@@ -32,6 +32,15 @@ class PaymentListMapperUseCase @Inject constructor(
         return mapList(list)
     }
 
+    /*
+    * mapper to combine Virtual Account transactions having same payment code and gateway name.
+    * @param paymentList: list from gql response
+    * indexCount: maintain the current index of item present in BasePaymentModel
+    * indexMap : maps payment code with List of indexes having same payment code in already
+    * combined BasePaymentModel list. This list is use to access previous payment which needs to
+    * be combined with current being processed.
+    * Otherwise simply add in the returning list.
+    * */
     private fun mapList(paymentList: List<PaymentListInside>): ArrayList<BasePaymentModel> {
         val paymentListModels = arrayListOf<BasePaymentModel>()
         val indexMap = HashMap<String, ArrayList<Int>>()
@@ -168,16 +177,13 @@ class PaymentListMapperUseCase @Inject constructor(
 
     private fun getCreditCardPaymentModel(paymentListInside: PaymentListInside): CreditCardPaymentModel {
         paymentListInside.apply {
-            // @TODO uncomment
-            //val tm = if (isShowTickerMessage) tickerMessage else ""
-
+            val label = if (isShowTickerMessage) tickerMessage else ""
             return CreditCardPaymentModel(
-                tickerMessage, transactionId, merchantCode,
+                label, transactionId, merchantCode,
                 transactionExpireUnix, transactionDate, paymentAmount, isShowCancelButton,
                 productName
             )
         }
-
     }
 
     private fun getKlicBCAPaymentModel(paymentListInside: PaymentListInside): KlicBCAPaymentModel {
@@ -212,21 +218,6 @@ class PaymentListMapperUseCase @Inject constructor(
     private fun isStoreTransfer(insideModel: PaymentListInside) =
         insideModel.isIsVa.not() && insideModel.isIsKlikbca.not() && insideModel.paymentCode?.isNotEmpty() == true
 
-
-    /*private fun getLabelDynamicViewDetailPayment(
-        paymentListInside: PaymentListInside,
-    ): String {
-        if (paymentListInside.isIsKlikbca) {
-            return context.getString(R.string.payment_label_klikbcaid)
-        }
-        return if (paymentListInside.isIsVa) {
-            context.getString(R.string.payment_label_virtual_account_number)
-        } else context.getString(R.string.payment_label_payment_code)
-    }
-
-    private fun getPaymentImage(paymentModel: PaymentListInside) =
-        if (TextUtils.isEmpty(paymentModel.bankImg)) paymentModel.gatewayImg else paymentModel.bankImg
-*/
     private fun isBankTransfer(paymentListInside: PaymentListInside) =
         paymentListInside.destBankAccount != null && !TextUtils.isEmpty(paymentListInside.destBankAccount.accNo)
                 && paymentListInside.userBankAccount != null && !TextUtils.isEmpty(paymentListInside.userBankAccount.accNo)

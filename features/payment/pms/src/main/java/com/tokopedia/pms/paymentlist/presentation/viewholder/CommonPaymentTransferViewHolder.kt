@@ -17,24 +17,15 @@ import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFr
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_INVOICE_PAGE_REDIRECTION
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.cardIcon
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.cardMenu
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.cardTitle
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.goToHowToPay
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.ivGatewayImage
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.tvPaymentCode
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.tvPaymentGatewayName
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.tvPaymentTransactionDate
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.tvTotalAmountHeading
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.tvTotalPaymentAmount
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.tvTransactionExpireTime
+import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.*
 
 class CommonPaymentTransferViewHolder(
     val view: View,
     val actionItemListener: (Int, BasePaymentModel) -> Unit
 ) : RecyclerView.ViewHolder(view) {
 
-    private val defaultCardTitle = view.context.getString(com.tokopedia.pms.R.string.pms_deferred_payment_card_title)
+    private val defaultCardTitle =
+        view.context.getString(com.tokopedia.pms.R.string.pms_deferred_payment_card_title)
 
     private fun bindVA(item: VirtualAccountPaymentModel) {
         bindTransactionHeaderData(defaultCardTitle, item.expiryDate, item.expiryTime)
@@ -80,16 +71,21 @@ class CommonPaymentTransferViewHolder(
             tvPaymentGatewayName.text = item.gatewayName
             if (item.paymentCode.isNotEmpty())
                 tvPaymentCode.text = item.paymentCode
-            if (item.shouldShowHowToPay) goToHowToPay.visible() else  goToHowToPay.gone()
+            if (item.shouldShowHowToPay) goToHowToPay.visible() else goToHowToPay.gone()
         }
     }
 
-    private fun bindTransactionHeaderData(cardHeading: String, expiryDate: String, expiryTime: Long) {
+    private fun bindTransactionHeaderData(
+        cardHeading: String,
+        expiryDate: String,
+        expiryTime: Long
+    ) {
         view.apply {
             cardTitle.text = cardHeading
             cardIcon.urlSrc = CARD_ICON_URL
             tvPaymentTransactionDate.text = expiryDate
-            tvTransactionExpireTime.text =  DateFormatUtils.getFormattedDate(expiryTime, "dd MMM, HH:mm")
+            tvTransactionExpireTime.text =
+                DateFormatUtils.getFormattedDate(expiryTime, "dd MMM, HH:mm")
         }
     }
 
@@ -108,6 +104,7 @@ class CommonPaymentTransferViewHolder(
     }
 
     fun bind(item: BasePaymentModel) {
+        handleActionList(item.actionList.size == 0)
         when (item) {
             is VirtualAccountPaymentModel -> bindVA(item)
             is KlicBCAPaymentModel -> bindKlicBCA(item)
@@ -115,9 +112,14 @@ class CommonPaymentTransferViewHolder(
         }
     }
 
+    private fun handleActionList(isActionListEmpty: Boolean) {
+        if (isActionListEmpty) view.cardMenu.gone() else view.cardMenu.visible()
+    }
+
     companion object {
         private val LAYOUT_ID = R.layout.common_transfer_payment_list_item
-        private const val CARD_ICON_URL = "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png"
+        private const val CARD_ICON_URL =
+            "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png"
 
         fun getViewHolder(
             inflater: LayoutInflater,

@@ -1,24 +1,17 @@
 package com.tokopedia.pms.paymentlist.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.pms.paymentlist.domain.data.CancelPayment
-import com.tokopedia.pms.paymentlist.domain.data.PaymentList
 import com.tokopedia.pms.paymentlist.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
-import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
-import com.tokopedia.pms.paymentlist.domain.usecase.CancelPaymentUseCase
-import com.tokopedia.pms.paymentlist.domain.usecase.PaymentCancelDetailUseCase
-import com.tokopedia.pms.paymentlist.domain.usecase.PaymentListMapperUseCase
-import com.tokopedia.pms.paymentlist.domain.usecase.PaymentListUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.pms.paymentlist.domain.data.*
+import com.tokopedia.pms.paymentlist.domain.usecase.*
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class PaymentListViewModel @Inject constructor(
+    private val getPaymentListCountUseCase: GetPaymentListCountUseCase,
     private val paymentListUseCase: PaymentListUseCase,
     private val cancelPaymentDetailUseCase: PaymentCancelDetailUseCase,
     private val cancelPaymentUseCase: CancelPaymentUseCase,
@@ -26,26 +19,49 @@ class PaymentListViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private var isHasNextPage: Boolean = true
-    private var lastCursor = ""
+    private var gqlPaymentList = arrayListOf<PaymentListInside>()
 
-    private val _paymentListResultLiveData = MutableLiveData<Result<ArrayList<BasePaymentModel>>>()
-    val paymentListResultLiveData: LiveData<Result<ArrayList<BasePaymentModel>>> =
+    private val _paymentListResultLiveData =
+        MutableLiveData<PaymentResult<ArrayList<BasePaymentModel>>>()
+    val paymentListResultLiveData: LiveData<PaymentResult<ArrayList<BasePaymentModel>>> =
         _paymentListResultLiveData
-    private val _cancelPaymentDetailLiveData = MutableLiveData<Result<CancelDetailWrapper>>()
-    val cancelPaymentDetailLiveData: LiveData<Result<CancelDetailWrapper>> =
+    private val _cancelPaymentDetailLiveData = MutableLiveData<PaymentResult<CancelDetailWrapper>>()
+    val cancelPaymentDetailLiveData: LiveData<PaymentResult<CancelDetailWrapper>> =
         _cancelPaymentDetailLiveData
-    private val _cancelPaymentLiveData = MutableLiveData<Result<CancelPayment>>()
-    val cancelPaymentLiveData: LiveData<Result<CancelPayment>> = _cancelPaymentLiveData
+    private val _cancelPaymentLiveData = MutableLiveData<PaymentResult<CancelPayment>>()
+    val cancelPaymentLiveData: LiveData<PaymentResult<CancelPayment>> = _cancelPaymentLiveData
 
-    fun getPaymentList() {
+
+    fun getPaymentListCount() {
+        _paymentListResultLiveData.postValue(LoadingState)
+        getPaymentListCountUseCase.getPaymentCount(
+            ::onCountReceived,
+            ::onCountFailed
+        )
+    }
+
+    private fun onCountReceived(count: Int) {
+        if (count >= 20) _paymentListResultLiveData.postValue(ProgressState)
+        else _paymentListResultLiveData.postValue(LoadingState)
+        getPaymentList("")
+
+        Log.e("PMS:onCountReceived", count.toString())
+    }
+
+    private fun onCountFailed(throwable: Throwable) {
+        _paymentListResultLiveData.postValue(LoadingState)
+        getPaymentList("")
+        Log.e("PMS:onCountReceived", throwable.message.toString())
+    }
+
+    private fun getPaymentList(lastCursor: String = "") {
+        Log.e("PMS:getPaymentList", "start ${System.currentTimeMillis()}")
         paymentListUseCase.cancelJobs()
-        if (isHasNextPage)
-            paymentListUseCase.getPaymentList(
-                ::onPaymentListSuccess,
-                ::onPaymentListError,
-                lastCursor
-            )
+        paymentListUseCase.getPaymentList(
+            ::onPaymentListSuccess,
+            ::onPaymentListError,
+            lastCursor
+        )
     }
 
     fun getCancelPaymentDetail(transactionId: String, merchantCode: String, productName: String?) {
@@ -69,15 +85,31 @@ class PaymentListViewModel @Inject constructor(
         )
     }
 
-    private fun onPaymentListSuccess(paymentList: PaymentList) {
-        lastCursor = paymentList.lastCursor
-        isHasNextPage = paymentList.isHasNextPage
-        if (paymentList.paymentList.isNullOrEmpty())
-            onPaymentListError(NullPointerException("EMPTY"))
-        else mapper.mapResponseToRenderPaymentList(paymentList.paymentList,
-            onSuccess = {
-                _paymentListResultLiveData.postValue(Success(it))
-            }, onError = { onPaymentListError(it) })
+    private fun onPaymentListSuccess(paymentList: PaymentList?) {
+        paymentList?.let {
+            if (it.paymentList.isNullOrEmpty().not())
+                gqlPaymentList.addAll(it.paymentList)
+
+            if (it.isHasNextPage) getPaymentList(it.lastCursor)
+            else combinePendingTransactions()
+
+        }
+    }
+
+    private fun combinePendingTransactions() {
+        Log.e("PMS:getPaymentList", "mapper ${System.currentTimeMillis()} ${gqlPaymentList.size}")
+        if (gqlPaymentList.isNullOrEmpty())
+            _paymentListResultLiveData.postValue(EmptyState)
+        else
+            mapper.mapResponseToRenderPaymentList(gqlPaymentList,
+                onSuccess = {
+                    Log.e("PMS:getPaymentList", "end ${System.currentTimeMillis()} ${it.size}")
+                    showCombinedPaymentList(it)
+                }, onError = { onPaymentListError(it) })
+    }
+
+    private fun showCombinedPaymentList(list: ArrayList<BasePaymentModel>) {
+        _paymentListResultLiveData.postValue(Success(list))
     }
 
     private fun onCancelPaymentDetailSuccess(cancelDetail: CancelDetailWrapper) {
@@ -108,7 +140,6 @@ class PaymentListViewModel @Inject constructor(
     }
 
     fun refreshPage() {
-        isHasNextPage = true
-        lastCursor = ""
+        gqlPaymentList.clear()
     }
 }

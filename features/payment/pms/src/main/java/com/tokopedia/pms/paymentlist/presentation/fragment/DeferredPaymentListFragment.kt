@@ -19,17 +19,12 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.di.PaymentListComponent
-import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
-import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
-import com.tokopedia.pms.paymentlist.domain.data.CancelPayment
-import com.tokopedia.pms.paymentlist.domain.data.VirtualAccountPaymentModel
+import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionActionSheet
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionDetailSheet
 import com.tokopedia.pms.paymentlist.viewmodel.PaymentListViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_payment_list.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -72,9 +67,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun loadInitialDeferredTransactions() {
-        swipe_refresh_layout.isRefreshing = true
         (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
-        viewModel.getPaymentList()
+        viewModel.getPaymentListCount()
     }
 
     private fun observeViewModels() {
@@ -82,6 +76,10 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
             when (it) {
                 is Success -> renderPaymentList(it.data)
                 is Fail -> showErrorUi(it.throwable)
+                is EmptyState -> showEmptyState()
+                is LoadingState -> handleSwipeRefresh(true)
+                is ProgressState -> showProgressForDelayedFetch()
+                else -> handleSwipeRefresh(false)
             }
         })
         viewModel.cancelPaymentDetailLiveData.observe(viewLifecycleOwner, {
@@ -132,24 +130,25 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun renderPaymentList(data: ArrayList<BasePaymentModel>) {
-        swipe_refresh_layout.isRefreshing = false
-        recycler_view.visible()
+        handleSwipeRefresh(false)
         noPendingTransactionEmptyState.gone()
         paymentListGlobalError.gone()
+        recycler_view.visible()
         (recycler_view.adapter as DeferredPaymentListAdapter).addItems(data)
     }
 
     private fun showErrorUi(throwable: Throwable) {
-        swipe_refresh_layout.isRefreshing = false
+        handleSwipeRefresh(false)
+        noPendingTransactionEmptyState.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
-            is NullPointerException -> showEmptyState()
             else -> setGlobalErrors(GlobalError.SERVER_ERROR)
         }
     }
 
     private fun showEmptyState() {
+        handleSwipeRefresh(false)
         noPendingTransactionEmptyState.visible()
         noPendingTransactionEmptyState.setPrimaryCTAClickListener {
             RouteManager.route(context, ApplinkConst.HOME)
@@ -217,6 +216,15 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     fun showToast(toastMessage: String?, toastType: Int) {
         Toaster.make(recycler_view, toastMessage ?: "", Toaster.LENGTH_LONG, toastType)
+    }
+
+    fun handleSwipeRefresh(show: Boolean) {
+        swipe_refresh_layout.isRefreshing = show
+    }
+
+    private fun showProgressForDelayedFetch() {
+        handleSwipeRefresh(false)
+        showToast("Tunggu sebentar ya", Toaster.TYPE_NORMAL)
     }
 
     companion object {
