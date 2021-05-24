@@ -535,7 +535,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(it, null, ""))
 
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_error_refresh",
@@ -854,7 +854,7 @@ open class HomeRevampViewModel @Inject constructor(
         injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
             _injectCouponTimeBasedResult.value = Result.success(injectCouponTimeBasedUseCase.get().executeOnBackground().data)
         }){
-            _injectCouponTimeBasedResult.postValue(Result.error(it))
+            _injectCouponTimeBasedResult.postValue(Result.error(error = it, messageString = ""))
         }
     }
 
@@ -1100,14 +1100,14 @@ open class HomeRevampViewModel @Inject constructor(
                     updateCarouselPlayWidget {
                         it.copy(widgetUiModel = playWidgetTools.get().updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
                     }
-                    _playWidgetReminderObservable.postValue(Result.error(Throwable()))
+                    _playWidgetReminderObservable.postValue(Result.error(error = Throwable(), messageString = ""))
                 }
             }
         }) { throwable ->
             updateCarouselPlayWidget {
                 it.copy(widgetUiModel = playWidgetTools.get().updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
             }
-            _playWidgetReminderObservable.postValue(Result.error(throwable))
+            _playWidgetReminderObservable.postValue(Result.error(error = throwable, messageString = ""))
         }
     }
 
@@ -1495,7 +1495,7 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         }) {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(error = it, data = null, messageString = ""))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_error_init_flow",
@@ -1503,7 +1503,7 @@ open class HomeRevampViewModel @Inject constructor(
                             "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
                     ))
         }.invokeOnCompletion {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(error = Throwable(), data = null, messageString = ""))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_cancelled_init_flow",

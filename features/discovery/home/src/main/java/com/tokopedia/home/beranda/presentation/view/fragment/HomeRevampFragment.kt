@@ -1159,9 +1159,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun observeUpdateNetworkStatusData() {
-        getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status, _, throwable) ->
+        getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status, _, throwable, messageString) ->
             resetImpressionListener()
-            val errorString = getErrorString(throwable ?: Throwable(getString(R.string.home_error_connection)))
+            val errorString = if (messageString.isNotEmpty())
+                    messageString
+                else getErrorString(throwable
+                        ?: Throwable(getString(R.string.home_error_connection)))
+
             when {
                 status === Result.Status.SUCCESS -> {
                     hideLoading()

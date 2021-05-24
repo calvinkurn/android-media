@@ -16,53 +16,57 @@
 
 package com.tokopedia.home.beranda.helper
 
-data class Result<out T>(val status: Status, val data: T?, val error: Throwable?) {
+data class Result<out T>(val status: Status, val data: T?, val error: Throwable?, val messageString: String = "") {
     companion object {
         fun <T> success(data: T?): Result<T> {
             return Result(
-                    Status.SUCCESS,
-                    data,
-                    null
+                    status = Status.SUCCESS,
+                    data = data,
+                    error = null
             )
         }
 
-        fun <T> error(error: Throwable, data: T? = null): Result<T> {
+        fun <T> error(error: Throwable, data: T? = null, messageString: String): Result<T> {
             return Result(
-                    Status.ERROR,
-                    data,
-                    error
+                    status = Status.ERROR,
+                    data = data,
+                    error = error,
+                    messageString = messageString
             )
         }
 
         fun <T> loading(data: T?): Result<T> {
             return Result(
-                    Status.LOADING,
-                    data,
-                    null
+                    status = Status.LOADING,
+                    data = data,
+                    error = null
             )
         }
 
-        fun <T> errorPagination(error: Throwable, data: T? = null): Result<T> {
+        fun <T> errorPagination(error: Throwable, data: T? = null, messageString: String): Result<T> {
             return Result(
-                    Status.ERROR_PAGINATION,
-                    data,
-                    error
+                    status = Status.ERROR_PAGINATION,
+                    data = data,
+                    error = error,
+                    messageString = messageString
             )
         }
 
-        fun <T> errorAtf(error: Throwable, data: T? = null): Result<T> {
+        fun <T> errorAtf(error: Throwable, data: T? = null, messageString: String): Result<T> {
             return Result(
-                    Status.ERROR_ATF,
-                    data,
-                    error
+                    status = Status.ERROR_ATF,
+                    data = data,
+                    error = error,
+                    messageString = messageString
             )
         }
 
-        fun <T> errorGeneral(error: Throwable, data: T? = null): Result<T> {
+        fun <T> errorGeneral(error: Throwable, data: T? = null, messageString: String): Result<T> {
             return Result(
-                    Status.ERROR_GENERAL,
-                    data,
-                    error
+                    status = Status.ERROR_GENERAL,
+                    data = data,
+                    error = error,
+                    messageString = messageString
             )
         }
     }
