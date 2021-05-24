@@ -1,7 +1,7 @@
 package com.tokopedia.flight.common.data.repository
 
-import com.tokopedia.flight.cancellationV2.data.CancellationAttachmentUploadEntity
-import com.tokopedia.flight.cancellationV2.data.FlightCancellationCloudDataSource
+import com.tokopedia.flight.cancellation.data.CancellationAttachmentUploadEntity
+import com.tokopedia.flight.cancellation.data.FlightCancellationCloudDataSource
 import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource
 import com.tokopedia.flight.orderlist.domain.FlightOrderRepositoryImpl

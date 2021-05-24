@@ -1,6 +1,6 @@
 package com.tokopedia.flight.common.domain
 
-import com.tokopedia.flight.cancellationV2.data.CancellationAttachmentUploadEntity
+import com.tokopedia.flight.cancellation.data.CancellationAttachmentUploadEntity
 import com.tokopedia.flight.orderlist.domain.FlightOrderRepository
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
