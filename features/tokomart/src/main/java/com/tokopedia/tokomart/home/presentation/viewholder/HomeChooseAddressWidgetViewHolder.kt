@@ -31,7 +31,7 @@ class HomeChooseAddressWidgetViewHolder(
     private var coachMark: CoachMark2? = null
 
     override fun bind(element: HomeChooseAddressWidgetUiModel?) {
-        itemView.setPadding(16.toPx(), NavToolbarExt.getFullToolbarHeight(itemView.context) - 16, 0, 8.toPx())
+        itemView.setPadding(16.toPx(), NavToolbarExt.getFullToolbarHeight(itemView.context) - 12, 0, 8.toPx())
         setupChooseAddressWidget()
     }
 
