@@ -114,6 +114,16 @@ class SrwLinearLayout : FrameLayout {
         this.listener = listener
     }
 
+    fun initialize(srwState: SrwState) {
+//        typeFactory.srwQuestionListener = srwState.li
+        this.listener = srwState.listener
+        this.isExpanded = srwState.isExpanded
+        srwState.latestState?.let {
+            updateStatus(it)
+            renderSrwState()
+        }
+    }
+
     fun isAllowToShow(): Boolean {
         return chatSmartReplyQuestion.hasQuestion
     }
@@ -273,9 +283,9 @@ class SrwLinearLayout : FrameLayout {
     }
 
     class SrwState(
-            private val isExpanded: Boolean,
-            private val listener: Listener? = null,
-            private val latestState: Resource<ChatSmartReplyQuestionResponse>? = null
+            val isExpanded: Boolean,
+            val listener: Listener? = null,
+            val latestState: Resource<ChatSmartReplyQuestionResponse>? = null
     )
 
     companion object {

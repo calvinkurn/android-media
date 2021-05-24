@@ -5,7 +5,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
 
 data class SrwBubbleUiModel(
-        private val srwHangingState: SrwLinearLayout.SrwState
+        val srwHangingState: SrwLinearLayout.SrwState
 ) : Visitable<TopChatTypeFactory> {
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="end">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
+    <com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
+        android:id="@+id/chat_srw_bubble"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SRW BUBBLE" />
-</LinearLayout>
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</FrameLayout>
