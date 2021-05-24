@@ -472,12 +472,12 @@
   "category_filter": {
     "filter": [
       {
-        "title": "Makanan Sarapan",
+        "title": "Olahan susu dan telur",
         "options": [
           {
-            "name": "Makanan Sarapan",
+            "name": "Susu",
             "key": "sc",
-            "icon": "https://ecs7.tokopedia.net/img/attachment/2020/3/16/77305583/77305583_8ac3a7e4-1530-4004-a31c-06dc5d6ac185.png",
+            "icon": "",
             "value": "1333",
             "isNew": false,
             "inputType": "checkbox",
@@ -486,14 +486,9 @@
             "valMin": "",
             "hexColor": "",
             "child": []
-          }
-        ]
-      },
-      {
-        "title": "Susu",
-        "options": [
+          },
           {
-            "name": "Susu",
+            "name": "Telur",
             "key": "sc",
             "icon": "https://ecs7.tokopedia.net/img/attachment/2019/5/28/3944/3944_e637b7e4-ed47-4570-bbec-0358d2ba02ee.png",
             "value": "1232",
@@ -504,17 +499,12 @@
             "valMin": "",
             "hexColor": "",
             "child": []
-          }
-        ]
-      },
-      {
-        "title": "Kopi",
-        "options": [
+          },
           {
-            "name": "Kopi",
+            "name": "Telur dari susu",
             "key": "sc",
             "icon": "https://ecs7.tokopedia.net/img/attachment/2019/12/26/77305583/77305583_0fef3b63-055a-4513-badd-d91cf636f72d.png",
-            "value": "1222",
+            "value": "1432",
             "isNew": false,
             "inputType": "checkbox",
             "totalData": "",

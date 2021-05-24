@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.search.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.jsonToObject
@@ -22,7 +23,9 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
 
     @Test
     fun `when view created, category filter isSelected should be based on query params`() {
-        val selectedFilterOption = searchModel.categoryFilter.filter[1].options[0]
+        val selectedFilterOption = OptionHelper.copyOptionAsExclude(
+                searchModel.categoryFilter.filter[0].options[1]
+        )
         val queryParamWithFilter = mapOf(
                 SearchApiConst.Q to defaultKeyword,
                 selectedFilterOption.key to selectedFilterOption.value,
@@ -91,7 +94,7 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
             requestParams: RequestParams,
             selectedCategoryFilter: CategoryFilterItemDataView
     ) {
-        val selectedCategoryFilterKey = selectedCategoryFilter.option.key
+        val selectedCategoryFilterKey = OptionHelper.getKeyRemoveExclude(selectedCategoryFilter.option)
         val actualParamsValue = getTokonowQueryParam(requestParams)[selectedCategoryFilterKey].toString()
 
         assertThat(actualParamsValue, shouldBe(selectedCategoryFilter.option.value))
@@ -128,9 +131,33 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
             requestParams: RequestParams,
             selectedCategoryFilter: CategoryFilterItemDataView
     ) {
-        val selectedQuickFilterKey = selectedCategoryFilter.option.key
+        val selectedQuickFilterKey = OptionHelper.getKeyRemoveExclude(selectedCategoryFilter.option)
         val actualParamsValue = requestParams.parameters[selectedQuickFilterKey]
 
         assertThat(actualParamsValue, nullValue())
+    }
+
+    @Test
+    fun `apply new click category filter should remove existing category filter`() {
+        val requestParamsSlot = slot<RequestParams>()
+        val queryParamWithCategoryFilter = mapOf(
+                SearchApiConst.Q to defaultKeyword,
+                SearchApiConst.SC to "1324",
+        )
+
+        `Given search view model`(queryParamWithCategoryFilter)
+        `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
+        `Given view already created`()
+
+        val categoryFilterVisitable = searchViewModel.visitableListLiveData.value.getCategoryFilterDataView()
+        val selectedCategoryFilter = categoryFilterVisitable.categoryFilterItemList[1]
+
+        `When category filter selected`(selectedCategoryFilter, true)
+
+        `Then verify get search first page is called twice`()
+        `Then verify request params contains the applied category filter`(
+                requestParamsSlot.captured,
+                selectedCategoryFilter
+        )
     }
 }

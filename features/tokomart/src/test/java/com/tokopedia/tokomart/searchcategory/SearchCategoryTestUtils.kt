@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.searchcategory
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -15,7 +16,6 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountData
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
@@ -57,13 +57,16 @@ fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue
 
     val categoryFilterDataView = this as CategoryFilterDataView
     val categoryFilterItemList = categoryFilterDataView.categoryFilterItemList
-    val expectedCategoryFilter = categoryFilterDataValue.filter
+    val expectedCategoryFilter = categoryFilterDataValue.filter[0].options
     assertThat(categoryFilterItemList.size, shouldBe(expectedCategoryFilter.size))
 
-    expectedCategoryFilter.forEachIndexed { index, categoryFilter ->
+    expectedCategoryFilter.forEachIndexed { index, categoryOption ->
         val categoryFilterItemDataView = categoryFilterItemList[index]
+        val expectedCategoryOption = OptionHelper.copyOptionAsExclude(categoryOption)
 
-        assertThat(categoryFilterItemDataView.option, shouldBe(categoryFilter.options[0]))
+        assertThat(categoryFilterItemDataView.option.key, shouldBe(expectedCategoryOption.key))
+        assertThat(categoryFilterItemDataView.option.value, shouldBe(expectedCategoryOption.value))
+        assertThat(categoryFilterItemDataView.option.name, shouldBe(expectedCategoryOption.name))
     }
 }
 

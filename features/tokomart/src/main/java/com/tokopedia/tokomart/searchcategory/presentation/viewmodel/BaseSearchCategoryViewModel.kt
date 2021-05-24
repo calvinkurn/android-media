@@ -15,6 +15,8 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
@@ -93,7 +95,7 @@ abstract class BaseSearchCategoryViewModel(
         tokonowQueryParam.appendMandatoryParams()
         tokonowQueryParam.appendDeviceParam()
         tokonowQueryParam.appendPaginationParam()
-        tokonowQueryParam.putAll(queryParam)
+        tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
 
         return tokonowQueryParam
     }
@@ -122,10 +124,7 @@ abstract class BaseSearchCategoryViewModel(
                 headerDataView.quickFilterDataValue.filter +
                 headerDataView.categoryFilterDataValue.filter
 
-        filterController.initFilterController(
-                queryParamMutable,
-                filterList
-        )
+        filterController.initFilterController(queryParamMutable, filterList)
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         clearVisitableListLiveData()
@@ -144,19 +143,27 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.addFooter()
     }
 
-    protected open fun createHeaderVisitableList(headerDataView: HeaderDataView) = listOf(
-            ChooseAddressDataView(),
-            DummyDataViewGenerator.generateBannerDataView(),
-            TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
-            CategoryFilterDataView(createCategoryFilterItemList(headerDataView)),
-            QuickFilterDataView(createQuickFilterItemList(headerDataView)),
-            ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText),
-    )
+    protected open fun createHeaderVisitableList(headerDataView: HeaderDataView): List<Visitable<*>> {
+        val headerList = mutableListOf(
+                ChooseAddressDataView(),
+                DummyDataViewGenerator.generateBannerDataView(),
+                TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
+        )
 
-    private fun createCategoryFilterItemList(headerDataView: HeaderDataView) =
-            headerDataView.categoryFilterDataValue.filter.map {
-                val option = it.options.getOrNull(0) ?: Option()
-                CategoryFilterItemDataView(option, filterController.getFilterViewState(option))
+        val categoryFilter = headerDataView.categoryFilterDataValue.filter.getOrNull(0)
+        if (categoryFilter != null) {
+            headerList.add(CategoryFilterDataView(createCategoryFilterItemList(categoryFilter)))
+        }
+
+        headerList.add(QuickFilterDataView(createQuickFilterItemList(headerDataView)))
+        headerList.add(ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText))
+
+        return headerList
+    }
+
+    private fun createCategoryFilterItemList(categoryFilter: Filter) =
+            categoryFilter.options.map {
+                CategoryFilterItemDataView(it, filterController.getFilterViewState(it))
             }
 
     private fun createQuickFilterItemList(headerDataView: HeaderDataView) =
@@ -192,10 +199,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun getSortFilterItemType(isSelected: Boolean) =
-            if (isSelected)
-                ChipsUnify.TYPE_SELECTED
-            else
-                ChipsUnify.TYPE_NORMAL
+            if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
 
     private fun onFilterChipSelected(option: Option, isFilterApplied: Boolean) {
         filterController.setFilter(
@@ -340,6 +344,9 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     fun onCategoryFilterClicked(option: Option, isSelected: Boolean) {
+        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(option))
+        filterController.refreshMapParameter(queryParam)
+
         onFilterChipSelected(option, isSelected)
     }
 
@@ -361,10 +368,10 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createGetProductCountRequestParams(mapParameter: Map<String, String>): RequestParams {
         val getProductCountParams = mutableMapOf<String, Any>()
-        getProductCountParams.putAll(mapParameter)
         getProductCountParams.appendMandatoryParams()
         getProductCountParams.appendDeviceParam()
         getProductCountParams[SearchApiConst.ROWS] = 0
+        getProductCountParams.putAll(FilterHelper.createParamsWithoutExcludes(mapParameter))
 
         val getProductCountRequestParams = RequestParams.create()
         getProductCountRequestParams.putAll(getProductCountParams)
@@ -397,13 +404,18 @@ abstract class BaseSearchCategoryViewModel(
         onViewReloadPage()
     }
 
-    protected data class HeaderDataView(
+    protected class HeaderDataView(
             val title: String = "",
             val hasSeeAllCategoryButton: Boolean = false,
             val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
-            val categoryFilterDataValue: DataValue = DataValue(),
+            categoryFilterDataValue: DataValue = DataValue(),
             val quickFilterDataValue: DataValue = DataValue(),
-    )
+    ) {
+        val categoryFilterDataValue =
+                DataValue(
+                        filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
+                )
+    }
 
     protected data class ContentDataView(
             val productList: List<Product> = listOf(),
