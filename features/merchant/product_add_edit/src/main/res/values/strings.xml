@@ -377,6 +377,8 @@
     <string name="action_product_limitation_item_goto_productlist">Ke Daftar Produk</string>
     <string name="title_product_limitation_item_upgradepm">Tingkatkan kuota dengan upgrade ke Power Merchant</string>
     <string name="label_product_limitation_item_upgradepm">Kuota produkmu akan bertambah dan dapatkan juga keuntungan lainnya!</string>
+    <string name="title_product_limitation_item_upgradepmpro">Tingkatkan kuota dengan upgrade ke Power Merchant Pro</string>
+    <string name="label_product_limitation_item_upgradepmpro">Semakin banyak produk yang terjual, semakin banyak kuota produk untuk tokomu!</string>
     <string name="title_product_limitation_item_usevariant">Gunakan fitur Varian untuk produk yang mirip</string>
     <string name="label_product_limitation_item_usevariant">Tambah produk sebagai varian di dalam produk yang mirip di tokomu.</string>
     <string name="title_product_limitation_item_delete">Hapus produk yang kurang diminati pembeli</string>
