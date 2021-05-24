@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticorder.domain.response.TrackOrder
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.logisticorder.usecase.GetDeliveryImageUseCase
 import com.tokopedia.logisticorder.usecase.TrackingPageRepository
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
@@ -18,7 +19,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TrackingPageViewModel @Inject constructor(
-        private val repo: TrackingPageRepository, private val mapper: TrackingPageMapperNew) : ViewModel() {
+        private val repo: TrackingPageRepository,
+        private val mapper: TrackingPageMapperNew,
+        private val getDeliveryImageUseCase: GetDeliveryImageUseCase) : ViewModel() {
 
     private val _trackingData = MutableLiveData<Result<TrackingDataModel>>()
     val trackingData: LiveData<Result<TrackingDataModel>>
@@ -53,6 +56,7 @@ class TrackingPageViewModel @Inject constructor(
         }
     }
 
+    fun getDeliveryImage(orderId: String, )
 
 
     private val onErrorGetTrackingData = CoroutineExceptionHandler { _, throwable ->
