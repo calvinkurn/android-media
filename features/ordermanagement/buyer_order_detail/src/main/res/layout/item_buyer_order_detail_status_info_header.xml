@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/layout_lvl0"
     android:layout_marginTop="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4">
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:animateLayoutChanges="true">
 
     <View
         android:id="@+id/buyerOrderDetailIndicator"
@@ -25,11 +25,26 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailSeeDetail"
+        app:layout_constraintEnd_toStartOf="@id/labelBuyerOrderDetailPreOrder"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
         app:typographyType="heading_5"
         tools:text="Menunggu Konfirmasi" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelBuyerOrderDetailPreOrder"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailStatusOrder"
+        app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailSeeDetail"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailStatusOrder"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailStatusOrder"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="PO: 1001 Malam" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailSeeDetail"

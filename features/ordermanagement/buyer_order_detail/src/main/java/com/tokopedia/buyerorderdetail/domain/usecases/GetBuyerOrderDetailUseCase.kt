@@ -52,6 +52,11 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   action_key
                   action_url
                 }
+                preorder {
+                  is_preorder
+                  label
+                  value
+                }
                 deadline {
                   label
                   value

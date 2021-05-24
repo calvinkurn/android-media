@@ -13,11 +13,18 @@ data class OrderStatusUiModel(
             val indicatorColor: String,
             val orderId: String,
             val orderStatus: String,
-            val orderStatusId: String
+            val orderStatusId: String,
+            val preOrder: PreOrderUiModel
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
+
+        data class PreOrderUiModel(
+                val isPreOrder: Boolean,
+                val label: String,
+                val value: String
+        )
     }
 
     data class OrderStatusInfoUiModel(

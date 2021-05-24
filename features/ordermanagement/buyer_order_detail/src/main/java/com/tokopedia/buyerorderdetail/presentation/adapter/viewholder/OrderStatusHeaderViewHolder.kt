@@ -29,6 +29,7 @@ class OrderStatusHeaderViewHolder(
             orderId = it.orderId
             setupIndicatorColor(it.indicatorColor)
             setupStatusHeader(it.orderStatus)
+            setupPreOrderLabel(it.preOrder)
         }
     }
 
@@ -45,6 +46,9 @@ class OrderStatusHeaderViewHolder(
                     }
                     if (oldItem.orderStatus != newItem.orderStatus) {
                         setupStatusHeader(newItem.orderStatus)
+                    }
+                    if (oldItem.preOrder != newItem.preOrder) {
+                        setupPreOrderLabel(newItem.preOrder)
                     }
                     itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
@@ -68,5 +72,11 @@ class OrderStatusHeaderViewHolder(
 
     private fun setupStatusHeader(orderStatus: String) {
         itemView.tvBuyerOrderDetailStatusOrder?.text = orderStatus
+    }
+
+    private fun setupPreOrderLabel(preOrder: OrderStatusUiModel.OrderStatusHeaderUiModel.PreOrderUiModel) {
+        if (preOrder.isPreOrder && preOrder.value.isNotBlank()) {
+            itemView.labelBuyerOrderDetailPreOrder.setLabel(itemView.context.getString(R.string.label_pre_order_duration, preOrder.value))
+        }
     }
 }

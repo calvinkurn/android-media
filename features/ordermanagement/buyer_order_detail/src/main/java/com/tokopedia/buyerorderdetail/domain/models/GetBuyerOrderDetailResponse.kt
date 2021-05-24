@@ -16,6 +16,8 @@ data class GetBuyerOrderDetailResponse(
                 val button: Button = Button(),
                 @SerializedName("cashback_info")
                 val cashbackInfo: String = "",
+                @SerializedName("preorder")
+                val preOrder: PreOrder = PreOrder(),
                 @SerializedName("deadline")
                 val deadline: Deadline = Deadline(),
                 @SerializedName("dot_menus")
@@ -79,6 +81,15 @@ data class GetBuyerOrderDetailResponse(
                     )
                 }
             }
+
+            data class PreOrder(
+                    @SerializedName("is_preorder")
+                    val isPreOrder: Boolean = false,
+                    @SerializedName("label")
+                    val label: String = "",
+                    @SerializedName("value")
+                    val value: String = ""
+            )
 
             data class Deadline(
                     @SerializedName("color")

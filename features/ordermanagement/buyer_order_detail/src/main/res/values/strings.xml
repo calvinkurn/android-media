@@ -27,4 +27,5 @@
     <string name="label_understand">Mengerti</string>
     <string name="label_contact_help_center">Hubungi Pusat Bantuan</string>
     <string name="label_see">Lihat</string>
+    <string name="label_pre_order_duration">PO: %1$s</string>
 </resources>

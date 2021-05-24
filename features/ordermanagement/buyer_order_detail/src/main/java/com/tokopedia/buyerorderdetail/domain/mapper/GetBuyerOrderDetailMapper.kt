@@ -10,7 +10,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
     fun mapDomainModelToUiModel(buyerOrderDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail): BuyerOrderDetailUiModel {
         return BuyerOrderDetailUiModel(
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
-                orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
+                orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
                 productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId),
                 shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment)
@@ -24,9 +24,9 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapOrderStatusUiModel(orderStatus: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.OrderStatus, tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo, invoice: String, invoiceUrl: String, deadline: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Deadline, paymentDate: String, orderId: String): OrderStatusUiModel {
+    private fun mapOrderStatusUiModel(orderStatus: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.OrderStatus, tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo, preOrder: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.PreOrder, invoice: String, invoiceUrl: String, deadline: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Deadline, paymentDate: String, orderId: String): OrderStatusUiModel {
         return OrderStatusUiModel(
-                orderStatusHeaderUiModel = mapOrderStatusHeaderUiModel(orderStatus, orderId),
+                orderStatusHeaderUiModel = mapOrderStatusHeaderUiModel(orderStatus, preOrder, orderId),
                 orderStatusInfoUiModel = mapOrderStatusInfoUiModel(invoice, invoiceUrl, deadline, paymentDate),
                 ticker = mapTicker(tickerInfo)
         )
@@ -125,12 +125,13 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         }
     }
 
-    private fun mapOrderStatusHeaderUiModel(orderStatus: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.OrderStatus, orderId: String): OrderStatusUiModel.OrderStatusHeaderUiModel {
+    private fun mapOrderStatusHeaderUiModel(orderStatus: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.OrderStatus, preOrder: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.PreOrder, orderId: String): OrderStatusUiModel.OrderStatusHeaderUiModel {
         return OrderStatusUiModel.OrderStatusHeaderUiModel(
                 indicatorColor = orderStatus.indicatorColor,
                 orderId = orderId,
                 orderStatus = orderStatus.statusName,
-                orderStatusId = orderStatus.id
+                orderStatusId = orderStatus.id,
+                preOrder = mapPreOrderUiModel(preOrder)
         )
     }
 
@@ -146,6 +147,14 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         return OrderStatusUiModel.OrderStatusInfoUiModel.InvoiceUiModel(
                 invoice = invoice,
                 url = invoiceUrl
+        )
+    }
+
+    private fun mapPreOrderUiModel(preOrder: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.PreOrder): OrderStatusUiModel.OrderStatusHeaderUiModel.PreOrderUiModel {
+        return OrderStatusUiModel.OrderStatusHeaderUiModel.PreOrderUiModel(
+                isPreOrder = preOrder.isPreOrder,
+                label = preOrder.label,
+                value = preOrder.value
         )
     }
 
