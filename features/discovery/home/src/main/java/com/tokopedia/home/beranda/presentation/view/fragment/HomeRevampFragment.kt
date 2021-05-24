@@ -1143,9 +1143,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun observeErrorEvent() {
         getHomeViewModel().errorEventLiveData.observe(viewLifecycleOwner, Observer { data: Event<Throwable> ->
-            run {
-                showToaster(getErrorString(data.peekContent()), TYPE_ERROR)
-            }
+            showToaster(getErrorString(data.peekContent()), TYPE_ERROR)
         })
     }
 
@@ -1161,30 +1159,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun observeUpdateNetworkStatusData() {
-        getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status) ->
+        getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status, _, throwable) ->
             resetImpressionListener()
+            val errorString = getErrorString(throwable ?: Throwable(getString(R.string.home_error_connection)))
             when {
                 status === Result.Status.SUCCESS -> {
                     hideLoading()
                 }
                 status === Result.Status.ERROR -> {
                     hideLoading()
-                    showNetworkError(getErrorString(Throwable(getString(R.string.home_error_connection))))
+                    showNetworkError(errorString)
                     onPageLoadTimeEnd()
                 }
                 status === Result.Status.ERROR_PAGINATION -> {
                     hideLoading()
-                    showNetworkError(getErrorString(Throwable(getString(R.string.home_error_connection))))
+                    showNetworkError(errorString)
                 }
                 status === Result.Status.ERROR_ATF -> {
                     hideLoading()
-                    showNetworkError(getErrorString(Throwable(getString(R.string.home_error_connection))))
+                    showNetworkError(errorString)
                     adapter?.resetChannelErrorState()
                     adapter?.resetAtfErrorState()
                 }
                 status == Result.Status.ERROR_GENERAL -> {
-                    showNetworkError(getErrorString(Throwable(getString(R.string.home_error_connection))))
-                    NetworkErrorHelper.showEmptyState(activity, root, getErrorString(Throwable(getString(R.string.home_error_connection)))) { onRefresh() }
+                    showNetworkError(errorString)
+                    NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                     onPageLoadTimeEnd()
                 }
                 else -> {
