@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -17,10 +18,7 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
@@ -208,7 +206,24 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         swipeRefreshPm.setOnRefreshListener {
             reloadPageContent()
         }
+
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() = view?.run {
+        val layManager = object : LinearLayoutManager(context) {
+            override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
+                setOnVerticalScrolled()
+                return super.scrollVerticallyBy(dy, recycler, state)
+            }
+        }
+
+        recyclerView?.layoutManager = layManager
         recyclerView?.gone()
+    }
+
+    private fun setOnVerticalScrolled() {
+
     }
 
     private fun getExpiredTimeFmt(): String {
@@ -270,7 +285,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.run {
             val message = getString(R.string.pm_cancel_pm_deactivation_success)
             val actionText = getString(R.string.power_merchant_ok_label)
-            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(R.dimen.layout_lvl5)
+            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
             Toaster.build(rootView, message, Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL, actionText)
                     .show()
@@ -588,6 +603,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
+        showUpgradePmProStickyView()
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val isPmActive = pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
@@ -630,6 +646,17 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         recyclerView?.post {
             recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
         }
+    }
+
+    private fun showUpgradePmProStickyView() {
+        val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
+                && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
+        view?.viewPmUpgradePmPro?.isVisible = shouldShowView
+        hideUpgradePmProStickyView() //temp
+    }
+
+    private fun hideUpgradePmProStickyView() {
+        view?.viewPmUpgradePmPro?.gone()
     }
 
     private fun observePmRegistrationPage() {
