@@ -3,6 +3,9 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.searchcategory.CategoryChooserFilterTestHelper
 import com.tokopedia.tokomart.searchcategory.jsonToObject
+import com.tokopedia.usecase.RequestParams
+import io.mockk.CapturingSlot
+import io.mockk.verify
 import org.junit.Test
 
 class CategoryCategoryChooserFilterTest: CategoryTestFixtures(), CategoryChooserFilterTestHelper.Callback {
@@ -21,8 +24,17 @@ class CategoryCategoryChooserFilterTest: CategoryTestFixtures(), CategoryChooser
         )
     }
 
-    override fun `Given first page API will be successful`() {
+    override fun `Given first page use case will be successful`() {
         `Given get category first page use case will be successful`(categoryModel)
+    }
+
+    override fun `Then assert first page use case is called twice`(
+            requestParamsSlot: CapturingSlot<RequestParams>
+    ) {
+        verify (exactly = 2) {
+            getCategoryFirstPageUseCase.cancelJobs()
+            getCategoryFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))
+        }
     }
 
     @Test
@@ -42,5 +54,10 @@ class CategoryCategoryChooserFilterTest: CategoryTestFixtures(), CategoryChooser
         val mandatoryParams = createMandatoryTokonowQueryParams()
 
         categoryChooserFilterPageTestHelper.`test get filter count failed from category chooser`(mandatoryParams)
+    }
+
+    @Test
+    fun `test apply filter from category chooser`() {
+        categoryChooserFilterPageTestHelper.`test apply filter from category chooser`()
     }
 }

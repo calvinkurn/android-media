@@ -118,7 +118,10 @@ abstract class BaseSearchCategoryViewModel(
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.productList.size
 
-        val filterList = headerDataView.quickFilterDataValue.filter + headerDataView.categoryFilterDataValue.filter
+        val filterList =
+                headerDataView.quickFilterDataValue.filter +
+                headerDataView.categoryFilterDataValue.filter
+
         filterController.initFilterController(
                 queryParamMutable,
                 filterList
@@ -380,6 +383,18 @@ abstract class BaseSearchCategoryViewModel(
     fun onViewGetProductCount(option: Option) {
         val mapParameter = queryParam + mapOf(option.key to option.value)
         onViewGetProductCount(mapParameter)
+    }
+
+    fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
+        filterController.setFilter(
+                option = chosenCategoryFilter,
+                isFilterApplied = true,
+                isCleanUpExistingFilterWithSameKey = chosenCategoryFilter.isCategoryOption
+        )
+
+        refreshQueryParamFromFilterController()
+
+        onViewReloadPage()
     }
 
     protected data class HeaderDataView(

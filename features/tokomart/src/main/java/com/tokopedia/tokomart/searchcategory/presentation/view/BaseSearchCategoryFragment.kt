@@ -1,9 +1,11 @@
 package com.tokopedia.tokomart.searchcategory.presentation.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DimenRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
@@ -127,7 +129,7 @@ abstract class BaseSearchCategoryFragment:
     protected open fun RecyclerView.addProductItemDecoration() {
         try {
             val context = context ?: return
-            val spacing = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+            val spacing = context.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
 
             if (itemDecorationCount >= 1)
                 invalidateItemDecorations()
@@ -137,6 +139,8 @@ abstract class BaseSearchCategoryFragment:
 
         }
     }
+
+    private fun Context.getDimensionPixelSize(@DimenRes id: Int) = resources.getDimensionPixelSize(id)
 
     protected open fun observeViewModel() {
         getViewModel().visitableListLiveData.observe(viewLifecycleOwner, this::submitList)
@@ -257,7 +261,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onApplyCategory(selectedOption: Option) {
-
+        getViewModel().onViewApplyFilterFromCategoryChooser(selectedOption)
     }
 
     override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {

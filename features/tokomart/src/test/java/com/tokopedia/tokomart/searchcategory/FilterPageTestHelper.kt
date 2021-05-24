@@ -134,7 +134,7 @@ class FilterPageTestHelper(
         baseViewModel.onViewDismissFilterPage()
     }
 
-    fun `test apply filter from filter page`(testInterface: Callback) {
+    fun `test apply filter from filter page`() {
         val requestParamsSlot = slot<RequestParams>()
         val requestParams by lazy { requestParamsSlot.captured }
 
@@ -142,7 +142,7 @@ class FilterPageTestHelper(
 
         `When view apply filter`()
 
-        testInterface.`Then assert first page use case is called twice`(requestParamsSlot)
+        callback.`Then assert first page use case is called twice`(requestParamsSlot)
         `Then verify query params is updated from filter`(requestParams)
     }
 
@@ -194,7 +194,6 @@ class FilterPageTestHelper(
         val successResponse = "10rb+"
 
         `Given get product count API will be successful`(requestParamsSlot, successResponse)
-
         `Given view setup from created until open filter page`()
 
         `When view get product count`()

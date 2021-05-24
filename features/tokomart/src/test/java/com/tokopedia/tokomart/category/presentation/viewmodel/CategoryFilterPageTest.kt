@@ -65,7 +65,7 @@ class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
 
     @Test
     fun `apply filter from filter page`() {
-        filterPageTestHelper.`test apply filter from filter page`(this)
+        filterPageTestHelper.`test apply filter from filter page`()
     }
 
     @Test

@@ -5,12 +5,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.CapturingSlot
+import io.mockk.InternalPlatformDsl.toStr
 import io.mockk.every
 import io.mockk.slot
 import org.junit.Assert.assertThat
@@ -30,7 +32,7 @@ class CategoryChooserFilterTestHelper(
             if (it != null) isOpenCount++
         }
 
-        callback.`Given first page API will be successful`()
+        callback.`Given first page use case will be successful`()
         `Given view already created`()
         `Given view will observe is L3 Category filter open live data`(observer)
 
@@ -101,7 +103,7 @@ class CategoryChooserFilterTestHelper(
     }
 
     private fun `Given view setup from created until open category chooser`() {
-        callback.`Given first page API will be successful`()
+        callback.`Given first page use case will be successful`()
         `Given view already created`()
 
         val categoryL3QuickFilterDataView =
@@ -128,7 +130,9 @@ class CategoryChooserFilterTestHelper(
         categoryL3QuickFilterDataView.sortFilterItem.chevronListener!!.invoke()
     }
 
-    private fun `Given view choose option from category chooser`(categoryL3QuickFilterDataView: SortFilterItemDataView) {
+    private fun `Given view choose option from category chooser`(
+            categoryL3QuickFilterDataView: SortFilterItemDataView
+    ) {
         chosenCategoryFilter = categoryL3QuickFilterDataView.filter.options[2]
     }
 
@@ -179,7 +183,35 @@ class CategoryChooserFilterTestHelper(
         }
     }
 
+    fun `test apply filter from category chooser`() {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+
+        `Given view setup from created until open category chooser`()
+
+        `When view apply filter from category chooser`()
+
+        callback.`Then assert first page use case is called twice`(requestParamsSlot)
+        `Then verify query params is updated from category filter`(requestParams)
+    }
+
+    private fun `When view apply filter from category chooser`() {
+        baseViewModel.onViewApplyFilterFromCategoryChooser(chosenCategoryFilter)
+    }
+
+    private fun `Then verify query params is updated from category filter`(requestParams: RequestParams) {
+        val queryParams = getTokonowQueryParam(requestParams)
+        val reason = "Query param key \"${chosenCategoryFilter.key}\" value is incorrect"
+
+        assertThat(
+                reason,
+                queryParams[chosenCategoryFilter.key].toString(),
+                shouldBe(chosenCategoryFilter.value)
+        )
+    }
+
     interface Callback {
-        fun `Given first page API will be successful`()
+        fun `Given first page use case will be successful`()
+        fun `Then assert first page use case is called twice`(requestParamsSlot: CapturingSlot<RequestParams>)
     }
 }
