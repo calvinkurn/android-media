@@ -10,7 +10,7 @@ class DataMapper {
 
     suspend fun recommWidgetToListOfVisitables(recommendationWidget: RecommendationWidget): List<RecommendationWrapper> {
         val recommendationList = ArrayList<RecommendationWrapper>()
-        for (i in 0..5) {
+        for (i in 0..9) {
             recommendationList.add(
                 RecommendationWrapper(
                     recommendationWidget.recommendationItemList[i],
@@ -28,7 +28,7 @@ class DataMapper {
             productImageUrl = element.imageUrl,
             isTopAds = element.isTopAds,
             ratingCount = element.rating,
-            hasThreeDots = true,
+            hasThreeDots = false,
             shopRating = element.ratingAverage,
             isShopRatingYellow = true,
             shopLocation = element.location,
