@@ -29,6 +29,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navi
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewHolder
@@ -178,6 +180,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.CarouselErrorLoad, ::CarouselErrorLoadViewHolder, ::CarouselErrorLoadViewModel)
             initializeComponent(ComponentsList.ProductListErrorLoad, ::ErrorLoadViewHolder, ::ErrorLoadViewModel)
 
+            //Category Best Seller
+            initializeComponent(ComponentsList.CategoryBestSeller, ::CategoryBestSellerViewHolder, ::CategoryBestSellerViewModel)
 
         }
 

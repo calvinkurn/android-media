@@ -6,8 +6,8 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
-import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
+import com.tokopedia.topchat.chatlist.domain.websocket.TopchatWebSocket
 import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketParser
 import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChatListWebSocketViewModel @Inject constructor(
-        webSocket: DefaultTopChatWebSocket,
+        webSocket: TopchatWebSocket,
         webSocketParser: WebSocketParser,
         webSocketStateHandler: WebSocketStateHandler,
         private val userSession: UserSessionInterface,

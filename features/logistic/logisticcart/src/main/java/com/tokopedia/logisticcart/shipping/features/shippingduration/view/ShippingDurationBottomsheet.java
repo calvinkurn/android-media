@@ -25,6 +25,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.di.Shipping
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
@@ -249,8 +250,8 @@ public class ShippingDurationBottomsheet implements ShippingDurationContract.Vie
     }
 
     @Override
-    public void showData(List<ShippingDurationUiModel> shippingDurationUiModelList, LogisticPromoUiModel promoViewModel) {
-        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationUiModelList, promoViewModel, isDisableOrderPrioritas);
+    public void showData(List<ShippingDurationUiModel> shippingDurationUiModelList, LogisticPromoUiModel promoViewModel, PreOrderModel preOrderModel) {
+        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationUiModelList, promoViewModel, isDisableOrderPrioritas, preOrderModel);
         if (promoViewModel != null && promoViewModel.getEtaData() != null && promoViewModel.getEtaData().getTextEta().isEmpty() && promoViewModel.getEtaData().getErrorCode() == 1)
             shippingDurationAdapter.initiateShowcase();
         boolean hasCourierPromo = checkHasCourierPromo(shippingDurationUiModelList);

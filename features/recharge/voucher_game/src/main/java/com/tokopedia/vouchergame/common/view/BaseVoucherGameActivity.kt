@@ -63,11 +63,7 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), TopupBillsMenuBott
     }
 
     override fun onOrderListClicked() {
-        if (userSession.isLoggedIn) {
-            RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
-        } else {
-            RouteManager.route(this, ApplinkConst.LOGIN)
-        }
+        RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
     }
 
     override fun onPromoClicked() {

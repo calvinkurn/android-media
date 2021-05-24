@@ -1,9 +1,7 @@
 package com.tokopedia.catalog.model.util
 
 import com.tokopedia.catalog.model.datamodel.*
-import com.tokopedia.catalog.model.raw.CatalogResponseData
-import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
-import com.tokopedia.catalog.model.raw.TopSpecificationsComponentData
+import com.tokopedia.catalog.model.raw.*
 
 object CatalogDetailMapper {
 
@@ -33,6 +31,16 @@ object CatalogDetailMapper {
                 CatalogConstant.CATALOG_PRODUCT_LIST -> {
                     listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type,
                             catalogId = catalogGetDetailModular.basicInfo.id, catalogUrl = catalogGetDetailModular.basicInfo.url))
+                }
+
+                CatalogConstant.VIDEO -> {
+                    val crudeVideoData = component.data
+                    val videoArray = arrayListOf<VideoComponentData>()
+                    crudeVideoData?.forEachIndexed { _, componentData ->
+                        videoArray.add(VideoComponentData(componentData.url,
+                                componentData.type,componentData.videoId,componentData.thumbnail,componentData.title,componentData.author))
+                    }
+                    listOfComponents.add(CatalogVideoDataModel(name = component.name, type = component.type , videosList = videoArray ))
                 }
             }
         }

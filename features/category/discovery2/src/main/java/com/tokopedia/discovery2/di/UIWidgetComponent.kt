@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.di
 
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
@@ -47,5 +48,6 @@ interface UIWidgetComponent {
     fun inject(discoveryPlayWidgetViewModel: DiscoveryPlayWidgetViewModel)
     fun inject(carouselErrorLoadViewModel: CarouselErrorLoadViewModel)
     fun inject(errorLoadViewModel: ErrorLoadViewModel)
+    fun inject(categoryBestSellerViewModel: CategoryBestSellerViewModel)
 
 }

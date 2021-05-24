@@ -83,4 +83,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     CarouselErrorLoad(R.layout.discovery_carousel_error_load, ComponentNames.CarouselErrorLoad.componentName),
     ProductListErrorLoad(R.layout.discovery_product_list_error_load, ComponentNames.ProductListErrorLoad.componentName),
+    //Category Best Seller
+    CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
+
 }

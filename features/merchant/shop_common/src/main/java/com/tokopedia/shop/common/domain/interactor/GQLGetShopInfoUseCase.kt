@@ -58,6 +58,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         const val FIELD_CLOSED_INFO = "closed_info"
         const val FIELD_CREATE_INFO = "create_info"
         const val FIELD_SHOP_SNIPPET = "shop-snippet"
+        const val FIELD_OTHER_GOLD_OS = "other-goldos"
         const val FIELD_OS = "os"
         const val FIELD_GOLD = "gold"
         const val FIELD_TOP_CONTENT = "topContent"

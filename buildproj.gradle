@@ -59,6 +59,7 @@ subprojects {
         resolutionStrategy {
             dependencySubstitution {
                 force "androidx.appcompat:appcompat:${supportLibraryVersion}"
+                force("org.objenesis:objenesis:2.6")
                 substitute module('com.squareup.okhttp3:okhttp') with module(rootProject.ext.networkDependencies.okHttp)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-common') with module("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}")

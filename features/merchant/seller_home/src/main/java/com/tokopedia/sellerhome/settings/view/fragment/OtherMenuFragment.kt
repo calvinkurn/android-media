@@ -33,16 +33,10 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
+import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
@@ -63,6 +57,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -72,7 +68,7 @@ import javax.inject.Inject
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
-        private const val APPLINK_FORMAT = "%s?url=%s%s"
+        private const val APPLINK_FORMAT = "%s?url=%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
@@ -113,8 +109,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var isDefaultDarkStatusBar = true
 
     private var canShowErrorToaster = true
-
-    private var thematicIllustration: AppCompatImageView? = null
 
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
@@ -163,7 +157,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
-    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this, userSession = userSession)
 
     override fun onItemClicked(settingUiModel: SettingUiModel) {}
 
@@ -372,11 +366,15 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT,
                         iconUnify = IconUnify.PRODUCT_INFO
                 ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
+                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.HOSTNAME}${SellerBaseUrl.RESO_INBOX_SELLER}")
                     val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
+                PrintingMenuItemUiModel(
+                        resources.getString(R.string.setting_menu_product_package),
+                        IconUnify.PACKAGE
+                ) { goToPrintingPage() },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_finance_service),
                         null,
@@ -391,7 +389,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
                         iconUnify = IconUnify.SHOP_INFO
                 ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
+                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.SELLER_HOSTNAME}${SellerBaseUrl.SELLER_EDU}")
                     val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
@@ -464,7 +462,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         view.run {
             statusBarBackground?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
         }
-        thematicIllustration = view.findViewById(R.id.iv_other_menu_thematic)
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let {
@@ -517,7 +514,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 otherMenuViewModel.setIsStatusBarInitialState(false)
             }
             shopStatusHeader?.gone()
-            thematicIllustration?.gone()
+            shopStatusHeaderIcon?.gone()
             bg_white_other_menu?.gone()
         } else {
             if (!isInitialStatusBar) {
@@ -525,7 +522,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 otherMenuViewModel.setIsStatusBarInitialState(true)
             }
             shopStatusHeader?.visible()
-            thematicIllustration?.visible()
+            shopStatusHeaderIcon?.visible()
             bg_white_other_menu?.visible()
         }
     }
@@ -560,6 +557,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             putExtra(EXTRA_SHOP_ID, userSession.shopId)
         }
         startActivity(shopFavouriteListIntent)
+    }
+
+    private fun goToPrintingPage() {
+        val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
+        val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, url)
+        RouteManager.getIntent(context, applink)?.let {
+            context?.startActivity(it)
+        }
     }
 
     private fun isActivityResumed(): Boolean {
