@@ -337,9 +337,15 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
         setupActionButtons(data.actionButtonsUiModel)
+        setupToolbarChatIcon(containsAskSellerButton(data.actionButtonsUiModel))
         adapter.updateItems(data)
         contentVisibilityAnimator.showContent()
         stopLoadTimeMonitoring()
+    }
+
+    private fun containsAskSellerButton(actionButtonsUiModel: ActionButtonsUiModel): Boolean {
+        return actionButtonsUiModel.primaryActionButton.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER ||
+                actionButtonsUiModel.secondaryActionButtons.any { it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER }
     }
 
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
@@ -410,6 +416,26 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             actionButtonAnimator.showActionButtons()
         } else {
             actionButtonAnimator.hideActionButtons()
+        }
+    }
+
+    private fun setupToolbarChatIcon(containAskSellerButton: Boolean) {
+        if (containAskSellerButton) {
+            toolbarBuyerOrderDetail?.apply {
+                rightContentView.removeAllViews()
+                rightIcons?.clear()
+            }
+        } else {
+            toolbarBuyerOrderDetail?.apply {
+                addRightIcon(R.drawable.ic_buyer_order_detail_chat)
+                rightIcons?.firstOrNull()?.setOnClickListener {
+                    viewModel.buyerOrderDetailResult.value?.let {
+                        if (it is Success) {
+                            navigator.goToAskSeller(it.data)
+                        }
+                    }
+                }
+            }
         }
     }
 
