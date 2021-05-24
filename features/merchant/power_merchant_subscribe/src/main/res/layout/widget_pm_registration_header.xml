@@ -21,8 +21,7 @@
         <ImageView
             android:id="@+id/imgPmHeaderImage"
             android:layout_width="@dimen/pm_spacing_140dp"
-            android:layout_height="@dimen/pm_spacing_140dp"
-            tools:src="@drawable/img_pm_registration_header" />
+            android:layout_height="@dimen/pm_spacing_140dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmHeaderTitle"

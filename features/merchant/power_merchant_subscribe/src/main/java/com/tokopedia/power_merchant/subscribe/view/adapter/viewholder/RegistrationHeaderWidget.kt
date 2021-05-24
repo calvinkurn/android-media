@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetRegistrationHeaderUiModel
@@ -30,7 +29,6 @@ class RegistrationHeaderWidget(itemView: View) : AbstractViewHolder<WidgetRegist
         with(itemView) {
             val shopInfo = element.shopInfo
             viewPmHeaderBackground.setBackgroundResource(R.drawable.bg_pm_registration_header)
-            imgPmHeaderImage.loadImageDrawable(R.drawable.img_pm_registration_header)
             tvPmHeaderNewSellerLabel.visibility = if (shopInfo.isNewSeller) View.VISIBLE else View.GONE
 
             setTickerVisibility(shopInfo)
