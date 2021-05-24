@@ -1420,12 +1420,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         product,
                         shopId,
                         {
-                            onCarouselProductShowcaseItemSuccessAddToCart(
+                            sendCarouselProductShowcaseAddToCartTracker(
                                     it,
                                     shopHomeProductUiModel,
                                     parentPosition,
                                     shopHomeCarousellProductUiModel
                             )
+                            view?.let { view ->
+                                NetworkErrorHelper.showGreenCloseSnackbar(view, it.message.first())
+                            }
                         },
                         {
                             if (!ShopUtil.isExceptionIgnored(it)) {
@@ -1445,12 +1448,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 )
             }
         } else {
+            sendCarouselProductShowcaseAddToCartTracker(
+                    null,
+                    shopHomeProductUiModel,
+                    parentPosition,
+                    shopHomeCarousellProductUiModel
+            )
             redirectToLoginPage()
         }
     }
 
-    private fun onCarouselProductShowcaseItemSuccessAddToCart(
-            dataModelAtc: DataModel,
+    private fun sendCarouselProductShowcaseAddToCartTracker(
+            dataModelAtc: DataModel?,
             shopHomeProductUiModel: ShopHomeProductUiModel?,
             parentPosition: Int,
             shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?
@@ -1463,12 +1472,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductUiModel.name ?: "",
                     shopHomeProductUiModel.id ?: "",
                     shopHomeProductUiModel.displayedPrice ?: "",
-                    dataModelAtc.quantity,
+                    dataModelAtc?.quantity ?: 1,
                     shopName,
                     parentPosition + 1,
                     shopHomeCarouselProductUiModel?.header?.title ?: "",
                     userId,
-                    dataModelAtc.cartId,
+                    dataModelAtc?.cartId.orEmpty(),
                     CustomDimensionShopPageAttribution.create(
                             shopId,
                             isOfficialStore,
@@ -1480,9 +1489,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             shopHomeProductUiModel.isShowFreeOngkir
                     )
             )
-        }
-        view?.let { view ->
-            NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
         }
     }
 
