@@ -64,7 +64,7 @@ class TkpdAuthenticator(
                         updateRequestWithNewToken(originalRequest)
                     }
                 } catch (ex: Exception) {
-                    networkRouter.logRefreshTokenException(formatThrowable(ex), "failed_authenticate", path, userSession.accessToken)
+                    networkRouter.logRefreshTokenException(formatThrowable(ex), "failed_authenticate", path, trimToken(userSession.accessToken))
                     null
                 }
             else {
@@ -74,11 +74,18 @@ class TkpdAuthenticator(
             }
         } else {
             if(responseCount(response)!=0) {
-                networkRouter.logRefreshTokenException("", "response_count", "", "")
+                networkRouter.logRefreshTokenException("", "response_count_not_logged_in", "", "")
                 return null
             }
         }
         return response.request()
+    }
+
+    private fun trimToken(accessToken: String): String {
+        if(accessToken.isNotEmpty() && accessToken.length >= 10) {
+            return accessToken.takeLast(10)
+        }
+        return accessToken
     }
 
     private fun responseCount(response: Response): Int {
