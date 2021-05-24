@@ -181,7 +181,11 @@ internal data class SearchShopModel(
 
                 @SerializedName("ga_key")
                 @Expose
-                val gaKey: String = ""
+                val gaKey: String = "",
+
+                @SerializedName("is_pm_pro")
+                @Expose
+                val isPMPro: Boolean = false,
         ) {
 
             data class ShopItemProduct(
