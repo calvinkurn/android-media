@@ -26,6 +26,7 @@ class BuyerOrderDetailNavigator(
     companion object {
         private const val KEY_URL = "url"
         private const val TELEPHONY_URI = "tel:"
+        private const val PREFIX_HTTP = "http"
     }
 
     private fun composeCallIntentData(phoneNumber: String): Uri {
@@ -151,9 +152,13 @@ class BuyerOrderDetailNavigator(
     }
 
     fun openAppLink(appLink: String) {
-        val intent: Intent = RouteManager.getIntent(activity, appLink)
-        activity.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
-        applyTransition()
+        if (appLink.startsWith(PREFIX_HTTP)) {
+            openWebView(appLink)
+        } else {
+            val intent: Intent = RouteManager.getIntent(activity, appLink)
+            activity.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+            applyTransition()
+        }
     }
 
     fun openWebView(url: String) {
