@@ -39,7 +39,7 @@ class CreditCardTransferViewHolder(
 
     private fun setTickerMessage(label: String) {
         view.deferredPaymentLabel.run {
-            if (label.isNotEmpty()) gone() else {
+            if (label.isEmpty()) gone() else {
                 text = label
                 visible()
             }
