@@ -10,16 +10,26 @@
         </fulfillment>
     </action>
 
+
     <action intentName="actions.intent.OPEN_APP_FEATURE">
+        <parameter name="feature">
+            <entity-set-reference entitySetId="ShowcaseEntitySet" />
+        </parameter>
+
         <fulfillment
             fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="tokopedia-android-internal://merchant/shop-showcase-add">
-        </fulfillment>
+            urlTemplate="tokopedia-android-internal://merchant/shop-showcase-add" />
     </action>
+    
+    <entity-set entitySetId="ShowcaseEntitySet">
+        <entity identifier="createNewShowcase" name="Create new showcase" />
+    </entity-set>
 
+
+    
     <!-- Commenting lines below as we are still waiting for GET_ORDER intent to be accepted first. -->
     <!-- GET_THING intent is still not supporting Indonesian locale (id-ID), so we commented these lines -->
-    <!-- to enable and speed up review process for Sellerapp while waiting for the confirmation from the Google Team -->
+    <!-- to enable and speed up review process for Sellerapp while waiting for the confirmation from the Google Team -->cus
 <!--    <action intentName="actions.intent.GET_THING">-->
 <!--        <fulfillment-->
 <!--            fulfillmentMode="actions.fulfillment.DEEPLINK"-->
