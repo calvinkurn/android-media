@@ -2,8 +2,10 @@ package com.tokopedia.logisticorder.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
@@ -21,6 +28,8 @@ import com.tokopedia.logisticorder.utils.TrackingPageUtil;
 import com.tokopedia.unifycomponents.ImageUnify;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Created by kris on 5/11/18. Tokopedia
@@ -77,6 +86,19 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small");
             Glide.with(holder.context)
                     .load(url)
+                    .addListener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            Log.d("WHY FAILED -- ", e.toString());
+                            Timber.d(e);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
                     .dontAnimate()
                     .into(holder.imageProof);
         }
