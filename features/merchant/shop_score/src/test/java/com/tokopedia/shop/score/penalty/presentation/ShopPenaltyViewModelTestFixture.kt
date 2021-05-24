@@ -3,33 +3,24 @@ package com.tokopedia.shop.score.penalty.presentation
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
-import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltySummaryTypesUseCase
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
-import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
-@ExperimentalCoroutinesApi
 abstract class ShopPenaltyViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var penaltyMapper: PenaltyMapper
@@ -40,8 +31,6 @@ abstract class ShopPenaltyViewModelTestFixture {
     @RelaxedMockK
     lateinit var getShopPenaltyDetailUseCase: GetShopPenaltyDetailUseCase
 
-    lateinit var coroutineDispatchers: CoroutineDispatchers
-
     lateinit var penaltyViewModel: ShopPenaltyViewModel
 
     protected lateinit var lifecycle: LifecycleRegistry
@@ -49,8 +38,7 @@ abstract class ShopPenaltyViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        coroutineDispatchers = CoroutineDispatchersProvider
-        penaltyViewModel = ShopPenaltyViewModel(coroutineDispatchers, getShopPenaltySummaryTypesUseCase, getShopPenaltyDetailUseCase, penaltyMapper)
+        penaltyViewModel = ShopPenaltyViewModel(CoroutineTestDispatchersProvider, getShopPenaltySummaryTypesUseCase, getShopPenaltyDetailUseCase, penaltyMapper)
         lifecycle = LifecycleRegistry(mockk()).apply {
             handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         }
