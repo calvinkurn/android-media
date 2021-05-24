@@ -8,7 +8,10 @@ import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import kotlinx.android.synthetic.main.item_buyer_order_detail_courier_driver_info.view.*
 
-class CourierDriverInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUiModel.CourierDriverInfoUiModel>(itemView) {
+class CourierDriverInfoViewHolder(
+        itemView: View?,
+        private val navigator: BuyerOrderDetailNavigator
+) : AbstractViewHolder<ShipmentInfoUiModel.CourierDriverInfoUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_courier_driver_info
@@ -65,9 +68,7 @@ class CourierDriverInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipment
     }
 
     private fun callDriver() {
-        element?.let {
-            BuyerOrderDetailNavigator.goToCallingPage(itemView.context, it.phoneNumber)
-        }
+        element?.let { navigator.goToCallingPage(it.phoneNumber) }
     }
 
     private fun setupDriverPhoto(photoUrl: String) {

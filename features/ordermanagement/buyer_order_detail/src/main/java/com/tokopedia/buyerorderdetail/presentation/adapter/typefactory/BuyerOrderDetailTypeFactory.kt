@@ -4,11 +4,14 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorderdetail.presentation.model.*
 
 class BuyerOrderDetailTypeFactory(
-        private val productViewListener: ProductViewHolder.ProductViewListener) : BaseAdapterTypeFactory() {
+        private val productViewListener: ProductViewHolder.ProductViewListener,
+        private val navigator: BuyerOrderDetailNavigator
+) : BaseAdapterTypeFactory() {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
         return AwbInfoViewHolder.LAYOUT
@@ -73,20 +76,20 @@ class BuyerOrderDetailTypeFactory(
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
-            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent)
+            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent)
-            OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent)
-            OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent)
+            OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent, navigator)
+            OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent, navigator)
             PaymentGrandTotalViewHolder.LAYOUT -> PaymentGrandTotalViewHolder(parent)
             PaymentInfoItemViewHolder.LAYOUT -> PaymentInfoItemViewHolder(parent)
             PlainHeaderViewHolder.LAYOUT -> PlainHeaderViewHolder(parent)
-            ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent)
-            ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener)
+            ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
+            ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, navigator)
             ReceiverAddressInfoViewHolder.LAYOUT -> ReceiverAddressInfoViewHolder(parent)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
-            TickerViewHolder.LAYOUT -> TickerViewHolder(parent)
+            TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator)
             else -> super.createViewHolder(parent, type)
         }
     }

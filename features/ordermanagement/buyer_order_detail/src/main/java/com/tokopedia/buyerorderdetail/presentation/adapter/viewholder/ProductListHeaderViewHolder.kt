@@ -10,7 +10,10 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.item_buyer_order_detail_product_list_header.view.*
 
-class ProductListHeaderViewHolder(itemView: View?) : AbstractViewHolder<ProductListUiModel.ProductListHeaderUiModel>(itemView), View.OnClickListener {
+class ProductListHeaderViewHolder(
+        itemView: View?,
+        private val navigator: BuyerOrderDetailNavigator
+) : AbstractViewHolder<ProductListUiModel.ProductListHeaderUiModel>(itemView), View.OnClickListener {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_header
@@ -61,9 +64,7 @@ class ProductListHeaderViewHolder(itemView: View?) : AbstractViewHolder<ProductL
     }
 
     private fun goToShopPage() {
-        element?.let {
-            BuyerOrderDetailNavigator.goToShopPage(itemView.context, it.shopId)
-        }
+        element?.let { navigator.goToShopPage(it.shopId) }
     }
 
     private fun setupClickListener() {

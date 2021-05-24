@@ -9,7 +9,10 @@ import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info_header.view.*
 
-class OrderStatusHeaderViewHolder(itemView: View?) : AbstractViewHolder<OrderStatusUiModel.OrderStatusHeaderUiModel>(itemView) {
+class OrderStatusHeaderViewHolder(
+        itemView: View?,
+        private val navigator: BuyerOrderDetailNavigator
+) : AbstractViewHolder<OrderStatusUiModel.OrderStatusHeaderUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_status_info_header
@@ -54,7 +57,7 @@ class OrderStatusHeaderViewHolder(itemView: View?) : AbstractViewHolder<OrderSta
     private fun setupSeeOrderStatusDetail() {
         itemView.tvBuyerOrderDetailSeeDetail?.apply {
             setOnClickListener {
-                BuyerOrderDetailNavigator.goToTrackOrderPage(context, orderId)
+                navigator.goToTrackOrderPage(orderId)
             }
         }
     }

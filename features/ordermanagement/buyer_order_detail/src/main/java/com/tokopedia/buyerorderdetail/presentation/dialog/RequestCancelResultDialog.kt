@@ -1,14 +1,15 @@
 package com.tokopedia.buyerorderdetail.presentation.dialog
 
 import android.content.Context
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.url.TokopediaUrl
 
-class RequestCancelResultDialog {
+class RequestCancelResultDialog(
+        private val navigator: BuyerOrderDetailNavigator
+) {
     private var dialog: DialogUnify? = null
     private var title: String = ""
     private var body: String = ""
@@ -27,14 +28,13 @@ class RequestCancelResultDialog {
         setSecondaryCTAText(context.getString(R.string.label_contact_help_center))
         setSecondaryCTAClickListener {
             dismiss()
-            goToTokopediaCareWebview(context)
+            goToTokopediaCareWebview()
         }
         return this
     }
 
-    private fun goToTokopediaCareWebview(context: Context) {
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                TokopediaUrl.getInstance().MOBILEWEB + BuyerOrderDetailConst.PATH_TOKOPEDIA_CARE))
+    private fun goToTokopediaCareWebview() {
+        navigator.openWebView(TokopediaUrl.getInstance().MOBILEWEB + BuyerOrderDetailConst.PATH_TOKOPEDIA_CARE)
     }
 
     fun show(context: Context) {

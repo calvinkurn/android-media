@@ -45,4 +45,8 @@ object BuyerOrderDetailConst {
     const val PATH_TOKOPEDIA_CARE = "help"
 
     const val DAGGER_ATC_QUERY_NAME = "atcMultiQuery"
+
+    const val REQUEST_CODE_IGNORED = 100
+    const val REQUEST_CODE_REQUEST_CANCEL_ORDER = 101
+    const val REQUEST_CODE_CREATE_RESOLUTION = 102
 }

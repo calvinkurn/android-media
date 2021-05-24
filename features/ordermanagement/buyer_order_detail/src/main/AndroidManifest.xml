@@ -6,7 +6,7 @@
         <activity
             android:name=".presentation.activity.BuyerOrderDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/BuyerOrderDetailActivityTheme"
+            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

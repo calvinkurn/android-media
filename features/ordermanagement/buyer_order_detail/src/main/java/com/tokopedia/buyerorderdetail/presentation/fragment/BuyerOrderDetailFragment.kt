@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
@@ -47,7 +46,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
-import kotlinx.android.synthetic.main.fragment_buyer_order_detail.emptyStateBuyerOrderDetail
 import kotlinx.android.synthetic.main.fragment_buyer_order_detail.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -62,9 +60,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 arguments = extras
             }
         }
-
-        const val REQUEST_CODE_REQUEST_CANCEL_ORDER = 101
-        const val REQUEST_CODE_CREATE_RESOLUTION = 102
 
         const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
@@ -88,7 +83,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         SaveInstanceCacheManager(requireContext())
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this)
+        BuyerOrderDetailTypeFactory(this, navigator)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -103,7 +98,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         createSecondaryActionButtonClickListener()
     }
     private val requestCancelResultDialog: RequestCancelResultDialog by lazy {
-        RequestCancelResultDialog()
+        RequestCancelResultDialog(navigator)
+    }
+    private val navigator: BuyerOrderDetailNavigator by lazy {
+        BuyerOrderDetailNavigator(requireActivity())
     }
 
     private val buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring?
@@ -135,8 +133,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        activity?.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
         when (requestCode) {
-            REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
+            BuyerOrderDetailConst.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
+            BuyerOrderDetailConst.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
         }
     }
 
@@ -173,38 +173,29 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         viewModel.addSingleToCart(productCopy)
     }
 
-    override fun onSeeSimilarProductsButtonClicked(url: String) {
-        RouteManager.route(context, url)
-    }
-
     private fun loadInitialData() {
         showLoadIndicator()
         loadBuyerOrderDetail()
     }
 
     private fun onAskSellerActionButtonClicked() {
-        context?.let { context ->
-            viewModel.buyerOrderDetailResult.value?.let {
-                if (it is Success) {
-                    BuyerOrderDetailNavigator.goToAskSeller(context, it.data)
-                }
+        viewModel.buyerOrderDetailResult.value?.let {
+            if (it is Success) {
+                navigator.goToAskSeller(it.data)
             }
         }
     }
 
     private fun onRequestCancelActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        BuyerOrderDetailNavigator.goToRequestCancellationPage(this, viewModel.buyerOrderDetailResult.value, button, cacheManager)
+        navigator.goToRequestCancellationPage(this, viewModel.buyerOrderDetailResult.value, button, cacheManager)
     }
 
     private fun onTrackShipmentActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        context?.let { context ->
-            viewModel.buyerOrderDetailResult.value?.let {
-                if (it is Success) {
-                    BuyerOrderDetailNavigator.goToTrackShipmentPage(
-                            context,
-                            it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                            button.url)
-                }
+        viewModel.buyerOrderDetailResult.value?.let {
+            if (it is Success) {
+                navigator.goToTrackShipmentPage(
+                        it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                        button.url)
             }
         }
     }
@@ -212,14 +203,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun onComplaintActionButtonClicked(complaintUrl: String) {
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
-                BuyerOrderDetailNavigator.goToCreateResolution(this, complaintUrl)
+                navigator.goToCreateResolution(this, complaintUrl)
             }
         }
         bottomSheetReceiveConfirmation?.finishLoading()
     }
 
     private fun onViewComplaintActionButtonClicked(url: String) {
-        RouteManager.route(context, url)
+        navigator.openAppLink(url)
     }
 
     private fun onReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
@@ -231,7 +222,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        BuyerOrderDetailNavigator.goToHelpPage(this, button.url)
+        navigator.openWebView(button.url)
     }
 
     private fun onBuyAgainAllProductButtonClicked() {
@@ -240,7 +231,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun onGiveReviewActionButtonClicked(url: String) {
-        RouteManager.route(context, url)
+        navigator.openAppLink(url)
     }
 
     private fun setupViews() {
@@ -369,7 +360,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         val msg = StringUtils.convertListToStringDelimiter(data.atcMulti.buyAgainData.message, ",")
         if (data.atcMulti.buyAgainData.success == 1) {
             showCommonToaster(msg, getString(R.string.label_see)) {
-                RouteManager.route(context, ApplinkConst.CART)
+                navigator.openAppLink(ApplinkConst.CART)
             }
         } else {
             showErrorToaster(msg)
@@ -549,6 +540,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             loadBuyerOrderDetail()
         }
         dismissBottomSheets()
+    }
+
+    private fun handleComplaintResult() {
+        loadBuyerOrderDetail()
     }
 
     private fun stopLoadTimeMonitoring() {

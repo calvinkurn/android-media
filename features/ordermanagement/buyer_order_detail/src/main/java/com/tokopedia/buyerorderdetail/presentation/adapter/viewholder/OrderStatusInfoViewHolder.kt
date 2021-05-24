@@ -10,7 +10,10 @@ import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info.view.*
 
-class OrderStatusInfoViewHolder(itemView: View?) : BaseToasterViewHolder<OrderStatusUiModel.OrderStatusInfoUiModel>(itemView), View.OnClickListener {
+class OrderStatusInfoViewHolder(
+        itemView: View?,
+        private val navigator: BuyerOrderDetailNavigator
+) : BaseToasterViewHolder<OrderStatusUiModel.OrderStatusInfoUiModel>(itemView), View.OnClickListener {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_status_info
@@ -100,7 +103,7 @@ class OrderStatusInfoViewHolder(itemView: View?) : BaseToasterViewHolder<OrderSt
 
     private fun goToPrintInvoicePage() {
         element?.let {
-            BuyerOrderDetailNavigator.goToPrintInvoicePage(itemView.context, it.invoice.url)
+            navigator.goToPrintInvoicePage(it.invoice.url)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -29,6 +30,22 @@ class BuyerOrderDetailActivity: BaseSimpleActivity(), HasComponent<BuyerOrderDet
     override fun onCreate(savedInstanceState: Bundle?) {
         initLoadMonitoring()
         super.onCreate(savedInstanceState)
+        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun initLoadMonitoring() {

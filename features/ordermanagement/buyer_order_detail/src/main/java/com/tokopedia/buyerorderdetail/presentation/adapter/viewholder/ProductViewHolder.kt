@@ -17,7 +17,8 @@ import kotlinx.android.synthetic.main.item_buyer_order_detail_product_list_item.
 
 class ProductViewHolder(
         itemView: View?,
-        private val listener: ProductViewListener
+        private val listener: ProductViewListener,
+        private val navigator: BuyerOrderDetailNavigator
 ) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView), View.OnClickListener {
 
     companion object {
@@ -84,9 +85,7 @@ class ProductViewHolder(
     }
 
     private fun goToProductSnapshotPage() {
-        element?.let {
-            BuyerOrderDetailNavigator.goToProductSnapshotPage(itemView.context, it.orderId, it.orderDetailId)
-        }
+        element?.let { navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId) }
     }
 
     private fun onActionButtonClicked() {
@@ -106,7 +105,7 @@ class ProductViewHolder(
 
     private fun seeSimilarProducts() {
         element?.let {
-            listener.onSeeSimilarProductsButtonClicked(it.button.url)
+            navigator.openAppLink(it.button.url)
         }
     }
 
@@ -160,6 +159,5 @@ class ProductViewHolder(
 
     interface ProductViewListener {
         fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel)
-        fun onSeeSimilarProductsButtonClicked(url: String)
     }
 }

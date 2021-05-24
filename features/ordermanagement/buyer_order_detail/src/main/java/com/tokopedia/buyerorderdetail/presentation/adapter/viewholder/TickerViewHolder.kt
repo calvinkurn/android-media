@@ -2,15 +2,17 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
-class TickerViewHolder(itemView: View?) : AbstractViewHolder<TickerUiModel>(itemView), TickerCallback {
+class TickerViewHolder(
+        itemView: View?,
+        private val navigator: BuyerOrderDetailNavigator
+) : AbstractViewHolder<TickerUiModel>(itemView), TickerCallback {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_ticker
@@ -30,7 +32,7 @@ class TickerViewHolder(itemView: View?) : AbstractViewHolder<TickerUiModel>(item
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-        RouteManager.route(itemView.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+        navigator.openWebView(linkUrl.toString())
     }
 
     override fun onDismiss() {}
