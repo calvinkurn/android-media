@@ -166,7 +166,6 @@
             <include
                 android:id="@+id/shimmering_create_review_form"
                 layout="@layout/bottomsheet_create_review_loading"
-                android:visibility="visible"
                 tools:visibility="gone" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

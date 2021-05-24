@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.createreputation.analytics
 
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -239,6 +240,28 @@ object CreateReviewTracking {
         tracker.sendScreenAuthenticated(screenName)
     }
 
+    fun eventViewDialog(dialogType: CreateReviewDialogType, title: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                mapDialogTypeToViewDialogEventAction(dialogType),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_DIALOG, title, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventClickDialogOption(dialogType: CreateReviewDialogType, title: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                mapDialogTypeToClickDialogEventAction(dialogType),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_DIALOG, title, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
+    }
+
     private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {
         val eventMap = HashMap<String, Any>()
         eventMap[ReviewTrackingConstant.EVENT] = event
@@ -248,7 +271,34 @@ object CreateReviewTracking {
         return eventMap
     }
 
+    private fun createEventMap(event: String, category: String, action: String, label: String, productId: String, userId: String): HashMap<String, Any>? {
+        val eventMap = HashMap<String, Any>()
+        eventMap[ReviewTrackingConstant.EVENT] = event
+        eventMap[ReviewTrackingConstant.EVENT_CATEGORY] = category
+        eventMap[ReviewTrackingConstant.EVENT_ACTION] = action
+        eventMap[ReviewTrackingConstant.EVENT_LABEL] = label
+        eventMap[ReviewTrackingConstant.KEY_USER_ID] = userId
+        eventMap[CreateReviewTrackingConstants.KEY_BUSINESS_UNIT] = CreateReviewTrackingConstants.BUSINESS_UNIT
+        eventMap[CreateReviewTrackingConstants.KEY_CURRENT_SITE] = CreateReviewTrackingConstants.CURRENT_SITE
+        eventMap[CreateReviewTrackingConstants.KEY_PRODUCT_ID] = productId
+        return eventMap
+    }
+
     private fun getEditMarker(isEditReview: Boolean): String? {
         return if (isEditReview) " - edit" else ""
+    }
+
+    private fun mapDialogTypeToViewDialogEventAction(dialogType: CreateReviewDialogType): String {
+        return when(dialogType) {
+            CreateReviewDialogType.CreateReviewSendRatingOnlyDialog -> CreateReviewTrackingConstants.EVENT_ACTION_VIEW_SEND_RATING_DIALOG
+            CreateReviewDialogType.CreateReviewUnsavedDialog -> CreateReviewTrackingConstants.EVENT_ACTION_VIEW_UNSAVED_DIALOG
+        }
+    }
+
+    private fun mapDialogTypeToClickDialogEventAction(dialogType: CreateReviewDialogType): String {
+        return when(dialogType) {
+            CreateReviewDialogType.CreateReviewSendRatingOnlyDialog -> CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_RATING_OPTION
+            CreateReviewDialogType.CreateReviewUnsavedDialog -> CreateReviewTrackingConstants.EVENT_ACTION_CLICK_STAY_OPTION
+        }
     }
 }

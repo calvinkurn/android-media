@@ -251,6 +251,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         return userSessionInterface.name
     }
 
+    fun getUserId(): String {
+        return userSessionInterface.userId
+    }
+
     fun isUserEligible(): Boolean {
         return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
     }

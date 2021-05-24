@@ -32,6 +32,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
+import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductData
@@ -42,6 +43,7 @@ import com.tokopedia.review.feature.createreputation.presentation.fragment.Creat
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewTemplateListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.*
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
@@ -123,7 +125,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews()
-        showLoading()
         setOnTouchOutsideListener()
         observeGetForm()
         observeIncentive()
@@ -381,7 +382,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
-        hideLoading()
         with(data.productrevGetForm) {
             when {
                 !validToReview -> {
@@ -397,6 +397,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             setProductDetail(productData)
             CreateReviewTracking.reviewOnViewTracker(orderID, productId.toString())
         }
+        hideLoading()
     }
 
     private fun onSuccessGetOvoIncentive(ovoDomain: ProductRevIncentiveOvoDomain?) {
@@ -534,8 +535,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun getOrderId(): String {
-        return (createReviewViewModel.getReputationDataForm.value as? Success<ProductRevGetForm>)?.data?.productrevGetForm?.orderID
-                ?: ""
+        return (createReviewViewModel.getReputationDataForm.value as? Success<ProductRevGetForm>)?.data?.productrevGetForm?.orderID ?: ""
     }
 
     private fun clearFocusAndHideSoftInput(view: View?) {
@@ -582,13 +582,20 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun showSendRatingOnlyDialog() {
-        showDialog(getString(R.string.review_form_send_rating_only_dialog_title), getString(R.string.review_form_send_rating_only_body), getString(R.string.review_form_send_rating_only_exit), { dismiss() }, getString(R.string.review_form_send_rating_only), {
+        val title = getString(R.string.review_form_send_rating_only_dialog_title)
+        showDialog(title, getString(R.string.review_form_send_rating_only_body), getString(R.string.review_form_send_rating_only_exit), { dismiss() }, getString(R.string.review_form_send_rating_only), {
             submitNewReview()
+            CreateReviewTracking.eventClickDialogOption(CreateReviewDialogType.CreateReviewSendRatingOnlyDialog, title, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
         })
+        CreateReviewTracking.eventViewDialog(CreateReviewDialogType.CreateReviewSendRatingOnlyDialog, title, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
     }
 
     private fun showReviewUnsavedWarningDialog() {
-        showDialog(getString(R.string.review_form_dismiss_form_dialog_title), getString(R.string.review_form_dismiss_form_dialog_body), getString(R.string.review_edit_dialog_exit), { dismiss() }, getString(R.string.review_form_dismiss_form_dialog_stay), {})
+        val title = getString(R.string.review_form_dismiss_form_dialog_title)
+        showDialog(title, getString(R.string.review_form_dismiss_form_dialog_body), getString(R.string.review_edit_dialog_exit), { dismiss() }, getString(R.string.review_form_dismiss_form_dialog_stay), {
+            CreateReviewTracking.eventClickDialogOption(CreateReviewDialogType.CreateReviewUnsavedDialog, title, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
+        })
+        CreateReviewTracking.eventViewDialog(CreateReviewDialogType.CreateReviewUnsavedDialog, title, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
     }
 
     private fun showIncentivesExitWarningDialog() {
@@ -670,6 +677,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setOnTouchOutsideListener() {
         setShowListener {
+            CreateReviewTracking.openScreen(CreateReviewTrackingConstants.SCREEN_NAME)
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
             isCancelable = false
             dialog?.setCanceledOnTouchOutside(false)
@@ -722,10 +730,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         }
     }
 
-    private fun showLoading() {
-        loadingView?.show()
-    }
-
     private fun hideLoading() {
         loadingView?.hide()
     }
@@ -769,5 +773,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         reviewFormCoordinatorLayout?.let {
             Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, getString(R.string.review_oke)).show()
         }
+    }
+
+    private fun getReputationId(): String {
+        return (createReviewViewModel.getReputationDataForm.value as? Success)?.data?.productrevGetForm?.reputationID.toString()
     }
 }
