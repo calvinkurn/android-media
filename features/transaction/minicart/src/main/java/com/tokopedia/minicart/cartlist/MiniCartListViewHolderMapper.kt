@@ -51,8 +51,6 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
-                miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
-                miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
             }
         }
 

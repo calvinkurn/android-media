@@ -50,6 +50,7 @@ class MiniCartListBottomSheet :
             Toast.makeText(fragment.activity, "SHOW CART LIST!", Toast.LENGTH_SHORT).show()
             bottomSheet?.setTitle(it.title)
             miniCartWidget?.updateData(it.miniCartWidgetData)
+            adapter?.clearAllElements()
             adapter?.addVisitableList(it.visitables)
         })
     }
