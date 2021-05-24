@@ -27,6 +27,7 @@ import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.custom.NavigationHeader
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.ext.getRoleName
+import com.tokopedia.inbox.view.navigator.InboxFragmentFactory
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inbox.viewmodel.InboxViewModel
@@ -48,7 +49,7 @@ import javax.inject.Inject
  * How to go to this page
  * Applink: [com.tokopedia.applink.ApplinkConst.INBOX]
  *
- * This page accept 2 optional query parameters:
+ * This page accept 3 optional query parameters:
  * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE]
  * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_ROLE]
  * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_SOURCE]
@@ -85,7 +86,7 @@ import javax.inject.Inject
  * note: Do not hardcode applink.
  * use variables provided in [com.tokopedia.applink.ApplinkConst]
  */
-class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
+open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
 
     private var source = ""
 
@@ -146,11 +147,13 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupInjector() {
-        DaggerInboxComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
+        createDaggerComponent()
                 .inject(this)
     }
+
+    protected open fun createDaggerComponent() = DaggerInboxComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
 
     private fun setupLastPreviousState() {
         InboxConfig.setRole(cacheState.role)
@@ -247,6 +250,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupToolbar() {
+        setupToolbarLifecycle()
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null
@@ -263,6 +267,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
             toolbar?.setToolbarContentType(TOOLBAR_TYPE_TITLE)
             toolbar?.setToolbarTitle(title)
         }
+    }
+
+    protected open fun setupToolbarLifecycle() {
+        toolbar?.let { this.lifecycle.addObserver(it) }
     }
 
     private fun updateToolbarIcon(hasChatSearch: Boolean = false) {
@@ -442,8 +450,12 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                 this,
                 R.id.fragment_contaier,
                 supportFragmentManager,
-                InboxFragmentFactoryImpl()
+                createFragmentFactory()
         )
+    }
+
+    protected open fun createFragmentFactory(): InboxFragmentFactory {
+        return InboxFragmentFactoryImpl()
     }
 
     private fun setupBackground() {

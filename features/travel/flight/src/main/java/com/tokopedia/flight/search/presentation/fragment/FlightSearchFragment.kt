@@ -358,8 +358,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
-    override fun onSelectedFromDetail(selectedId: String) {
+    override fun onSelectedFromDetail(detailBottomSheet: FlightDetailBottomSheet, selectedId: String) {
         flightSearchViewModel.onSearchItemClicked(selectedId = selectedId)
+        if (detailBottomSheet.isAdded && detailBottomSheet.isVisible) detailBottomSheet.dismiss()
     }
 
     fun setSearchPassData(flightSearchPassDataModel: FlightSearchPassDataModel) {
