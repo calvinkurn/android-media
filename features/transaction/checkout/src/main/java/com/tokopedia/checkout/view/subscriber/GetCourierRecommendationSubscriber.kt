@@ -81,7 +81,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                         if (productData.shipperId == shipperId && productData.shipperProductId == spId) {
                             view.updateCourierBottomssheetHasData(
                                     shippingDurationUiModel.shippingCourierViewModelList,
-                                    itemPosition, shipmentCartItemModel
+                                    itemPosition, shipmentCartItemModel, shippingRecommendationData.preOrderModel
                             )
                             return
                         }

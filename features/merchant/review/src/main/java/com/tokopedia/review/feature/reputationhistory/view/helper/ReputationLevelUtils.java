@@ -11,11 +11,11 @@ import com.tokopedia.review.R;
  */
 public class ReputationLevelUtils {
 
-    private static final int MEDAL_NONE = com.tokopedia.design.R.drawable.ic_icon_repsis_medal;
-    private static final int MEDAL_BRONZE = com.tokopedia.design.R.drawable.ic_icon_repsis_medal_bronze;
-    private static final int MEDAL_SILVER = com.tokopedia.design.R.drawable.ic_icon_repsis_medal_silver;
-    private static final int MEDAL_GOLD = com.tokopedia.design.R.drawable.ic_icon_repsis_medal_gold;
-    private static final int MEDAL_DIAMOND = com.tokopedia.design.R.drawable.ic_icon_repsis_medal_diamond;
+    private static final int MEDAL_NONE = R.drawable.ic_icon_repsis_medal;
+    private static final int MEDAL_BRONZE = R.drawable.ic_icon_repsis_medal_bronze;
+    private static final int MEDAL_SILVER = R.drawable.ic_icon_repsis_medal_silver;
+    private static final int MEDAL_GOLD = R.drawable.ic_icon_repsis_medal_gold;
+    private static final int MEDAL_DIAMOND = R.drawable.ic_icon_repsis_medal_diamond;
     private static final int SIZE = R.dimen.dp_20;
 
     public static final int MEDAL_TYPE_0 = 0;

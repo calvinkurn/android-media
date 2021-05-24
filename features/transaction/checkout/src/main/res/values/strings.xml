@@ -123,5 +123,6 @@
     <string name="label_drop_off_empty_description">Aktifkan dulu lokasimu untuk bisa cari Indomaret terdekat</string>
     <string name="label_drop_off_cta">Cari Indomaret</string>
     <string name="checkout_label_per_insurance_price">per barang</string>
+    <string name="label_ticker_trade_in">Tukar Tambah</string>
     <string name="checkout_label_reload_shipping">Refresh</string>
 </resources>
