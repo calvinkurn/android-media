@@ -661,20 +661,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun getPotentialBenefitWidgetData(): WidgetPotentialUiModel {
-        return WidgetPotentialUiModel(listOf(
-                PotentialItemUiModel(
-                        resDrawableIcon = R.drawable.ic_pm_benefit_01,
-                        description = getString(R.string.pm_potential_benefit_01)
-                ),
-                PotentialItemUiModel(
-                        resDrawableIcon = R.drawable.ic_pm_benefit_02,
-                        description = getString(R.string.pm_potential_benefit_02)
-                ),
-                PotentialItemUiModel(
-                        resDrawableIcon = R.drawable.ic_pm_benefit_03,
-                        description = getString(R.string.pm_potential_benefit_03)
-                )
-        ))
+        return WidgetPotentialUiModel(listOf())
     }
 
     private fun showDeactivationQuestionnaire() {
