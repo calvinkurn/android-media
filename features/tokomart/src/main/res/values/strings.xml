@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tokomart_common_empty_state_title">Yaah, saat ini TokoNOW! belum bisa antar ke tempatmu</string>
+    <string name="tokomart_common_empty_state_desc_1">TokoNOW! melayani kebutuhan belanja harianmu hanya dalam 2 jam pengiriman untuk menjamin tetap fresh.</string>
+    <string name="tokomart_common_empty_state_desc_2">Saat ini, kami baru melayani kota %s. Tunggu TokoNOW! tersedia di kotamu, ya!</string>
+    <string name="tokomart_common_empty_state_button_change_address">Ubah Alamat</string>
+    <string name="tokomart_common_empty_state_button_return">Belanja di Tokopedia</string>
+</resources>
