@@ -4,6 +4,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -140,7 +142,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private val isNewLazyLoad by lazy {
-        remoteConfig.isSellerHomeDashboardNewLazyLoad()
+        Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
     }
 
     private var notifCenterCount = 0
@@ -314,9 +316,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
-            recyclerView?.layoutAnimation = null
-        }
+        setRecyclerViewLayoutAnimation()
 
         setViewBackground()
     }
@@ -1133,6 +1133,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (!isAnyLoadingWidget) {
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
+        }
+    }
+
+    private fun setRecyclerViewLayoutAnimation() {
+        if (isNewLazyLoad) {
+            context?.let {
+                val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(it, R.anim.seller_home_rv_layout_animation)
+                recyclerView?.layoutAnimation = animation
+            }
         }
     }
 
