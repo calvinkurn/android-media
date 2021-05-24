@@ -10,7 +10,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class InboxNotificationUseCase @Inject constructor(
+open class InboxNotificationUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<InboxNotificationResponse>,
         private val dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
