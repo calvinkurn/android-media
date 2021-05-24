@@ -540,7 +540,39 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         assertSrwCollapsed()
     }
 
-    // TODO: assert srw is expanded when reattach product after preview is closed in collapsed state
+    /**
+     * SRW should expanded when reattach product
+     * when previous product preview is collapsed and canceled
+     */
+    @Test
+    fun srw_should_expanded_when_reattach_product() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
+                .respondWith(
+                        Instrumentation.ActivityResult(
+                                Activity.RESULT_OK, getAttachProductData(1)
+                        )
+                )
+
+        // When
+        clickComposeArea()
+        clickCloseAttachmentPreview(0)
+        pressBack()
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwContentIsVisible()
+        assertSrwExpanded()
+    }
+
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
 
     private fun putProductAttachmentIntent(intent: Intent) {
