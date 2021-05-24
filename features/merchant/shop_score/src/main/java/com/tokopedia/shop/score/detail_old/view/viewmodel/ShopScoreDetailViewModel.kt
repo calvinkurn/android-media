@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.score.detail_old.domain.usecase.GetShopScoreUseCase
 import com.tokopedia.shop.score.detail_old.view.mapper.ShopScoreDetailMapper
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailData
@@ -38,7 +39,7 @@ class ShopScoreDetailViewModel @Inject constructor(
                 getShopScoreUseCase.execute(userSession.shopId)
             }
             val shopInfoPeriodData = async {
-                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLong())
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
                 getShopInfoPeriodUseCase.executeOnBackground()
             }
             _shopScoreData.postValue(Success(Pair(mapper.mapToShopScoreDetailData(shopScoreDetailData.await().result),
