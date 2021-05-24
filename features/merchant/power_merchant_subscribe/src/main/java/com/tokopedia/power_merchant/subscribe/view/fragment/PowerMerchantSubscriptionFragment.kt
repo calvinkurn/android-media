@@ -531,7 +531,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             return
         }
 
-        RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+        val isPmPro = currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val appLink = if (isPmPro) {
+            PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
+        } else {
+            PMConstant.AppLink.KYC_POWER_MERCHANT
+        }
+        RouteManager.route(context, appLink)
     }
 
     private fun showErrorToaster(message: String, actionText: String) {

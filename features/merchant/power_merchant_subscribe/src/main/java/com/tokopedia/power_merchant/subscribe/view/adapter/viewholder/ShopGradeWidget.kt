@@ -34,19 +34,19 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
         val illustrationSize: Pair<Int, Int>
         val imgUrl = when {
             isPmPro && isPmActive -> {
-                illustrationSize = Pair(R.dimen.gmc_dimen_128dp, R.dimen.gmc_dimen_134dp)
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp)
                 PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
             }
             isPmPro && !isPmActive -> {
-                illustrationSize = Pair(R.dimen.gmc_dimen_136dp, R.dimen.gmc_dimen_132dp)
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp)
                 PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
             }
             !isPmPro && isPmActive -> {
-                illustrationSize = Pair(R.dimen.gmc_dimen_112dp, R.dimen.gmc_dimen_122dp)
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp)
                 PMConstant.Images.IMG_TOPED_PM_ACTIVE
             }
             else -> {
-                illustrationSize = Pair(R.dimen.gmc_dimen_112dp, R.dimen.gmc_dimen_114dp)
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp)
                 PMConstant.Images.IMG_TOPED_PM_INACTIVE
             }
         }
