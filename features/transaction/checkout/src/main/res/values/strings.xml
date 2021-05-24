@@ -125,4 +125,8 @@
     <string name="checkout_label_per_insurance_price">per barang</string>
     <string name="label_ticker_trade_in">Tukar Tambah</string>
     <string name="checkout_label_reload_shipping">Refresh</string>
+    <string name="checkout_disabled_items_description">Yaah, ada %1d barang tidak bisa diproses. Kamu tetap bisa lanjut bayar yang lain.</string>
+    <string name="checkout_shipping">Pengiriman</string>
+    <string name="checkout_label_failed_get_shipping">Gagal menampilkan pengiriman</string>
+    <string name="checkout_label_see_error_product">Lihat</string>
 </resources>

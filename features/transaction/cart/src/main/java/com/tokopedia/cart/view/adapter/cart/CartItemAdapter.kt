@@ -54,8 +54,8 @@ class CartItemAdapter(private val actionListener: ActionListener,
     }
 
     override fun onNeedToRefreshSingleShop(parentPosition: Int) {
-        actionListener.onNeedToRefreshSingleShop(parentPosition)
         actionListener.onNeedToRecalculate()
+        actionListener.onNeedToRefreshSingleShop(parentPosition)
     }
 
     override fun onNeedToRefreshAllShop() {

@@ -66,7 +66,7 @@ class ShipmentMapper @Inject constructor() {
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
             isHasError = checkCartHasError(this)
             popUpMessage = shipmentAddressFormDataResponse.popUpMessage
-            errorTicker = shipmentAddressFormDataResponse.errorTicker
+            errorTicker = "shipmentAddressFormDataResponse.errorTicker"
             shipmentAddressFormDataResponse.tickers.firstOrNull()?.let {
                 tickerData = mapTickerData(it)
             }
@@ -156,6 +156,12 @@ class ShipmentMapper @Inject constructor() {
         p.addAll(groupShop.products)
         p.addAll(groupShop.products)
         p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
+        p.addAll(groupShop.products)
         p.forEachIndexed { index, it ->
             val productResult = Product().apply {
                 analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
@@ -170,7 +176,7 @@ class ShipmentMapper @Inject constructor() {
                     productPrice = it.tradeInInfo.newDevicePrice.toLong()
                 }
                 i++
-                if (i == 4) {
+                if (i == 9) {
                     isError = true
                     errorMessage = "error testing"
                     errorMessageDescription = ""

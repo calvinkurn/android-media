@@ -286,16 +286,19 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         for (cartShopHolderData in dataList) {
             if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
-                    cartShopHolderData.shopGroupAvailableData?.isError == false &&
-                    (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
+                    cartShopHolderData.shopGroupAvailableData?.isError == false) {
                 var shopWeight = 0.0
-                cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
-                    for (cartItemHolderData in it) {
-                        if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
-                            allCartItemDataList.add(cartItemHolderData)
-                            val quantity = cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0
-                            val weight = cartItemHolderData.cartItemData?.originData?.weightPlan ?: 0.0
-                            shopWeight += quantity * weight
+                if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
+                    cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
+                        for (cartItemHolderData in it) {
+                            if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
+                                allCartItemDataList.add(cartItemHolderData)
+                                val quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
+                                        ?: 0
+                                val weight = cartItemHolderData.cartItemData?.originData?.weightPlan
+                                        ?: 0.0
+                                shopWeight += quantity * weight
+                            }
                         }
                     }
                 }

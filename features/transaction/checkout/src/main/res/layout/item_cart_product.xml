@@ -22,41 +22,14 @@
         android:background="@color/Unify_N100"
         android:visibility="gone" />
 
-    <LinearLayout
-        android:id="@+id/ll_shipping_warning_container"
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/checkout_ticker_product_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/checkout_module_bg_error"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_16"
-        android:visibility="visible"
-        tools:ignore="UselessParent"
-        tools:visbility="visible">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_error_shipment_item_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/checkout_module_message_cart_error"
-            android:visibility="gone"
-            app:typographyType="body_3"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_error_shipment_item_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            android:fontFamily="sans-serif"
-            android:text="@string/checkout_module_message_cart_error"
-            android:textColor="@color/Unify_N700_44"
-            android:textSize="@dimen/sp_10"
-            android:visibility="gone"
-            app:typographyType="small"
-            tools:visibility="visible" />
-
-    </LinearLayout>
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        app:tickerType="error" />
 
     <RelativeLayout
         android:id="@+id/rl_product_info"
@@ -149,6 +122,7 @@
             android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
+            tools:ignore="RtlSymmetry"
             tools:text="Rp200.000" />
 
         <com.google.android.flexbox.FlexboxLayout
@@ -210,9 +184,9 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_marginTop="@dimen/dp_8"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_link_text"
@@ -260,29 +234,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:orientation="vertical"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_alignParentRight="true">
+            android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_item_per_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:typographyType="heading_6"
-                app:typographyWeight="bold"
                 android:layout_gravity="end"
                 android:text="@string/ppp_more"
-                android:textColor="@color/Unify_N700_96" />
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_6"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_ppp_per_insurance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_2"
-                app:typographyType="small"
-                android:text="@string/checkout_label_per_insurance_price"
                 android:layout_gravity="end"
-                android:textColor="@color/Unify_N700_68" />
+                android:layout_marginTop="@dimen/dp_2"
+                android:text="@string/checkout_label_per_insurance_price"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="small" />
 
         </LinearLayout>
     </RelativeLayout>

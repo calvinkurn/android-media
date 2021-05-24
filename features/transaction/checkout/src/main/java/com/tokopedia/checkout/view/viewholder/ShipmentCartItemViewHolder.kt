@@ -5,7 +5,10 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.text.TextUtils
 import android.view.View
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
@@ -13,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.utils.WeightFormatterUtil
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -33,10 +38,8 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private val mTvPPPLinkText: TextView = itemView.findViewById(R.id.text_link_text)
     private val mTvPPPPrice: TextView = itemView.findViewById(R.id.text_protection_desc)
     private val mCbPPP: CheckboxUnify = itemView.findViewById(R.id.checkbox_ppp)
-    private val mLlShippingWarningContainer: LinearLayout = itemView.findViewById(R.id.ll_shipping_warning_container)
     private val mSeparatorMultipleProductSameStore: View = itemView.findViewById(R.id.v_separator_multiple_product_same_store)
-    private val tvErrorShipmentItemTitle: TextView = itemView.findViewById(R.id.tv_error_shipment_item_title)
-    private val tvErrorShipmentItemDescription: TextView = itemView.findViewById(R.id.tv_error_shipment_item_description)
+    private val tickerError: Ticker = itemView.findViewById(R.id.checkout_ticker_product_error)
     private val productTicker: Ticker = itemView.findViewById(R.id.product_ticker)
     private val mTextVariant: Typography = itemView.findViewById(R.id.text_variant)
     private val mLayoutProductInfo: FlexboxLayout = itemView.findViewById(R.id.layout_product_info)
@@ -142,23 +145,21 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     private fun showShipmentWarning(cartItemModel: CartItemModel) {
         if (!TextUtils.isEmpty(cartItemModel.errorMessage)) {
-            tvErrorShipmentItemTitle.text = cartItemModel.errorMessage
-            tvErrorShipmentItemTitle.visibility = View.VISIBLE
-            mLlShippingWarningContainer.visibility = View.VISIBLE
             if (!TextUtils.isEmpty(cartItemModel.errorMessageDescription)) {
-                tvErrorShipmentItemDescription.text = cartItemModel.errorMessageDescription
-                tvErrorShipmentItemDescription.visibility = View.VISIBLE
+                tickerError.tickerTitle = cartItemModel.errorMessage
+                tickerError.setTextDescription(cartItemModel.errorMessageDescription)
             } else {
-                tvErrorShipmentItemDescription.visibility = View.GONE
+                tickerError.setTextDescription(cartItemModel.errorMessage)
             }
+            tickerError.visible()
         } else {
-            mLlShippingWarningContainer.visibility = View.GONE
+            tickerError.gone()
         }
         disableItemView()
     }
 
     private fun hideShipmentWarning() {
-        mLlShippingWarningContainer.visibility = View.GONE
+        tickerError.gone()
         enableItemView()
     }
 

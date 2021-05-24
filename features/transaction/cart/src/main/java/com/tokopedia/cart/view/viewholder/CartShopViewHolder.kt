@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_INFORMATION
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -57,7 +56,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun renderShopName(cartShopHolderData: CartShopHolderData) {
         val shopName = cartShopHolderData.shopGroupAvailableData?.shopName
         binding.tvShopName.text = shopName
-        binding.tvShopName.setOnClickListener { v: View? ->
+        binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
                     cartShopHolderData.shopGroupAvailableData?.shopId,
                     cartShopHolderData.shopGroupAvailableData?.shopName)
@@ -174,7 +173,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             } else {
                 cbSelectShop.isEnabled = true
                 flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
-                llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                llShopContainer.setBackgroundColor(ContextCompat.getColor(llShopContainer.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 llWarningAndError.layoutError.gone()
             }
         }
@@ -182,44 +181,48 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderWarningItemHeader(data: CartShopHolderData) {
         with(binding.llWarningAndError) {
-            if (data.shopGroupAvailableData?.isWarning == true) {
-                val warningDescription = data.shopGroupAvailableData?.warningDescription
-                if (warningDescription?.isNotBlank() == true) {
-                    tickerWarning.tickerTitle = data.shopGroupAvailableData?.warningTitle
-                    tickerWarning.setTextDescription(warningDescription)
-                } else {
+            when {
+                data.shopGroupAvailableData?.isWarning == true -> {
+                    val warningDescription = data.shopGroupAvailableData?.warningDescription
+                    if (warningDescription?.isNotBlank() == true) {
+                        tickerWarning.tickerTitle = data.shopGroupAvailableData?.warningTitle
+                        tickerWarning.setTextDescription(warningDescription)
+                    } else {
+                        tickerWarning.tickerTitle = null
+                        tickerWarning.setTextDescription(data.shopGroupAvailableData?.warningTitle
+                                ?: "")
+                    }
+                    tickerWarning.tickerType = TYPE_WARNING
+                    tickerWarning.tickerShape = SHAPE_LOOSE
+                    tickerWarning.closeButtonVisibility = View.GONE
+                    tickerWarning.show()
+                    tickerWarning.post {
+                        binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.llWarningAndError.tickerWarning.requestLayout()
+                    }
+                    layoutWarning.show()
+                }
+                data.shopGroupAvailableData?.shopTicker?.isNotEmpty() == true -> {
                     tickerWarning.tickerTitle = null
-                    tickerWarning.setTextDescription(data.shopGroupAvailableData?.warningTitle
-                            ?: "")
+                    tickerWarning.setTextDescription(data.shopGroupAvailableData?.shopTicker ?: "")
+                    tickerWarning.tickerType = TYPE_WARNING
+                    tickerWarning.tickerShape = SHAPE_LOOSE
+                    tickerWarning.closeButtonVisibility = View.GONE
+                    tickerWarning.show()
+                    tickerWarning.post {
+                        binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.llWarningAndError.tickerWarning.requestLayout()
+                    }
+                    layoutError.gone()
+                    layoutWarning.show()
+                    root.show()
                 }
-                tickerWarning.tickerType = TYPE_WARNING
-                tickerWarning.tickerShape = SHAPE_LOOSE
-                tickerWarning.closeButtonVisibility = View.GONE
-                tickerWarning.show()
-                tickerWarning.post {
-                    binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                    binding.llWarningAndError.tickerWarning.requestLayout()
+                else -> {
+                    tickerWarning.gone()
+                    layoutWarning.gone()
                 }
-                layoutWarning.show()
-            } else if (data.shopGroupAvailableData?.shopTicker?.isNotEmpty() == true) {
-                tickerWarning.tickerTitle = null
-                tickerWarning.setTextDescription(data.shopGroupAvailableData?.shopTicker ?: "")
-                tickerWarning.tickerType = TYPE_INFORMATION
-                tickerWarning.tickerShape = SHAPE_LOOSE
-                tickerWarning.closeButtonVisibility = View.GONE
-                tickerWarning.show()
-                tickerWarning.post {
-                    binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                    binding.llWarningAndError.tickerWarning.requestLayout()
-                }
-                layoutError.gone()
-                layoutWarning.show()
-                root.show()
-            } else {
-                tickerWarning.gone()
-                layoutWarning.gone()
             }
         }
     }
@@ -306,7 +309,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 with(binding.llWarningAndError) {
                     tickerWarning.tickerTitle = null
                     tickerWarning.setTextDescription(descriptionText.replace(ShopGroupAvailableData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, NumberFormat.getNumberInstance(Locale("in", "id")).format(extraWeight)))
-                    tickerWarning.tickerType = TYPE_INFORMATION
+                    tickerWarning.tickerType = TYPE_WARNING
                     tickerWarning.tickerShape = SHAPE_LOOSE
                     tickerWarning.closeButtonVisibility = View.GONE
                     tickerWarning.show()

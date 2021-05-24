@@ -50,6 +50,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.TextFieldUnify;
@@ -103,7 +104,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Ticker tickerError;
     private LinearLayout layoutWarning;
     private Typography tvShopName;
-    private LinearLayout llShippingWarningContainer;
+    private LinearLayout layoutWarningAndError;
+
+    // Custom Error Ticker
+    private CardUnify customTickerError;
+    private Typography customTickerDescription;
+    private Typography customTickerAction;
+
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
@@ -147,9 +154,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvLabelInsurance;
     private ImageView imgShopBadge;
     private LinearLayout llShippingOptionsContainer;
-    private LinearLayout layoutWarningAndError;
-    private TextView tvErrorShipmentItemTitle;
-    private TextView tvErrorShipmentItemDescription;
+    private Ticker tickerProductError;
     private FrameLayout flDisableContainer;
     private Ticker productTicker;
     private ConstraintLayout layoutTradeInShippingInfo;
@@ -236,8 +241,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tickerError = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.ticker_error);
         layoutWarning = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.layout_warning);
         layoutWarning.setVisibility(View.GONE);
+        layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
-        llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
+        customTickerError = itemView.findViewById(R.id.checkout_custom_ticker_error);
+        customTickerDescription = itemView.findViewById(R.id.checkout_custom_ticker_description);
+        customTickerAction = itemView.findViewById(R.id.checkout_custom_ticker_action);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         tvProductPrice = itemView.findViewById(R.id.tv_product_price);
@@ -283,9 +291,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvLabelInsurance = itemView.findViewById(R.id.tv_label_insurance);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         llShippingOptionsContainer = itemView.findViewById(R.id.ll_shipping_options_container);
-        layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
-        tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
-        tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
+        tickerProductError = itemView.findViewById(R.id.checkout_ticker_product_error);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
         separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
@@ -389,6 +395,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
         renderErrorAndWarning(shipmentCartItemModel);
+        renderCustomError(shipmentCartItemModel);
         renderShippingVibrationAnimation(shipmentCartItemModel);
     }
 
@@ -455,14 +462,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
+    }
 
+    private void renderCustomError(ShipmentCartItemModel shipmentCartItemModel) {
         if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getProductErrorCount() > 0 && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
-            layoutWarningAndError.setVisibility(View.VISIBLE);
-            tickerError.setTextDescription("Ada produk error " + shipmentCartItemModel.getProductErrorCount());
-            tickerError.setTickerType(Ticker.TYPE_ERROR);
-            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerError.setCloseButtonVisibility(View.GONE);
-            tickerError.setOnClickListener(v -> {
+            customTickerDescription.setText(itemView.getContext().getString(R.string.checkout_disabled_items_description, shipmentCartItemModel.getProductErrorCount()));
+            customTickerAction.setOnClickListener(v -> {
                 if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
                     shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
                     showAllProductListener(shipmentCartItemModel).onClick(tickerError);
@@ -470,11 +475,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
                 scrollToErrorProduct(shipmentCartItemModel);
             });
-            tickerError.setVisibility(View.VISIBLE);
-            layoutError.setVisibility(View.VISIBLE);
-        }
-        if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
-            scrollToErrorProduct(shipmentCartItemModel);
+            customTickerError.setVisibility(View.VISIBLE);
+            if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
+                scrollToErrorProduct(shipmentCartItemModel);
+            }
+        } else {
+            customTickerError.setVisibility(View.GONE);
         }
     }
 
@@ -1777,23 +1783,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void showShipmentWarning(CartItemModel cartItemModel) {
         if (!TextUtils.isEmpty(cartItemModel.getErrorMessage())) {
-            tvErrorShipmentItemTitle.setText(cartItemModel.getErrorMessage());
-            tvErrorShipmentItemTitle.setVisibility(View.VISIBLE);
-            llShippingWarningContainer.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(cartItemModel.getErrorMessageDescription())) {
-                tvErrorShipmentItemDescription.setText(cartItemModel.getErrorMessageDescription());
-                tvErrorShipmentItemDescription.setVisibility(View.VISIBLE);
+                tickerProductError.setTickerTitle(cartItemModel.getErrorMessage());
+                tickerProductError.setTextDescription(cartItemModel.getErrorMessageDescription());
             } else {
-                tvErrorShipmentItemDescription.setVisibility(View.GONE);
+                tickerProductError.setTextDescription(cartItemModel.getErrorMessage());
             }
+            tickerProductError.setVisibility(View.VISIBLE);
         } else {
-            llShippingWarningContainer.setVisibility(View.GONE);
+            tickerProductError.setVisibility(View.GONE);
         }
         disableItemView();
     }
 
     private void hideShipmentWarning() {
-        llShippingWarningContainer.setVisibility(View.GONE);
+        tickerProductError.setVisibility(View.GONE);
         enableItemView();
     }
 

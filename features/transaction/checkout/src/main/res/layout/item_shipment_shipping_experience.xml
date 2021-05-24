@@ -26,7 +26,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:ignore="UselessParent">
 
             <!--Shipping: Trade In Pickup-->
             <include
@@ -348,7 +349,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Unify_N700_68"
-                    app:typographyType="body_3"
+                    app:typographyType="small"
                     app:typographyWeight="reguler"
                     tools:text="Rp25.000" />
 
@@ -455,13 +456,13 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_failed_shipping_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Pengiriman"
+                    android:text="@string/checkout_shipping"
                     android:textColor="@color/Unify_N700_96"
                     app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
                     app:layout_constraintStart_toStartOf="parent"
@@ -474,7 +475,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl1"
-                    android:text="Gagal menampilkan pengiriman"
+                    android:text="@string/checkout_label_failed_get_shipping"
                     android:textColor="@color/Unify_R600"
                     app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
                     app:layout_constraintStart_toStartOf="parent"
@@ -499,7 +500,6 @@
                     android:id="@+id/btn_reload_shipping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_lvl4"
                     android:text="@string/checkout_label_reload_shipping"
                     android:textColor="@color/Unify_G500"
                     app:layout_constraintBottom_toBottomOf="parent"
