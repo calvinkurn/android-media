@@ -22,6 +22,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
@@ -127,6 +128,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
         btnWishlist.setImageDrawable(wishlistCrossfader)
         btnNotification.setImageDrawable(notifCrossfader)
+        // hide the third button
+        btnNotification.hide()
         btnInbox.setImageDrawable(inboxCrossfader)
 
         if (toolbarType == TOOLBAR_DARK_TYPE) {
