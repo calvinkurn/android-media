@@ -79,6 +79,7 @@ const val GQL_NAV_TOP_ADS: String ="""query displayTopAds(${'$'}params: String) 
         uri
         owner_id
         is_owner
+        pm_pro_shop
         badges {
           title
           image_url

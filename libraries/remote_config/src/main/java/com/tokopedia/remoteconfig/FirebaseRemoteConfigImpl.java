@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.config.GlobalConfig;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -41,7 +42,17 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public Set<String> getKeysByPrefix(String prefix) {
         if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getKeysByPrefix(prefix);
+            Set<String> set = firebaseRemoteConfig.getKeysByPrefix(prefix);
+            if (isDebug()) {
+                Map<String, ?> map = sharedPrefs.getAll();
+                String key = "";
+                for (Map.Entry<String,?> entry : map.entrySet())
+                    key = entry.getKey();
+                    if (key.startsWith(prefix)){
+                        set.add(key);
+                    }
+            }
+            return set;
         }
 
         return null;
