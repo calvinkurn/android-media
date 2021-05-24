@@ -17,7 +17,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.consts.Resources.Green_G100
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G200
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G600
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N200
