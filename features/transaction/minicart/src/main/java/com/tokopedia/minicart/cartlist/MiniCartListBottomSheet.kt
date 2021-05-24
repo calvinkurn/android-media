@@ -74,8 +74,8 @@ class MiniCartListBottomSheet :
 
             miniCartWidget = view.findViewById(R.id.mini_cart_widget)
             miniCartWidget?.initialize(shopIds, fragment, this, false)
-            miniCartWidget?.totalAmount?.amountChevronView?.setOnClickListener {
-
+            miniCartWidget?.setTotalAmountChevronListener {
+                // Todo : open summary bottomsheet
             }
 
             intializeRecyclerView(view, fragment)

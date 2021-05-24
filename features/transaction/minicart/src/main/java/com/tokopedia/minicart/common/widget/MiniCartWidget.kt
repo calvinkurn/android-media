@@ -26,8 +26,9 @@ class MiniCartWidget @JvmOverloads constructor(
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var view: View? = null
-    var totalAmount: TotalAmount? = null
+    private var totalAmount: TotalAmount? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
+    private lateinit var totalAmountChevronListener: () -> Unit
 
     lateinit var viewModel: MiniCartWidgetViewModel
 
@@ -65,8 +66,12 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.let {
             it.enableAmountChevron(true)
             it.amountChevronView.setOnClickListener {
-                val miniCartListBottomSheet = MiniCartListBottomSheet()
-                miniCartListBottomSheet.show(shopIds, fragment, ::onMiniCartBottomSheetDismissed)
+                if (::totalAmountChevronListener.isInitialized) {
+                    totalAmountChevronListener.invoke()
+                } else {
+                    val miniCartListBottomSheet = MiniCartListBottomSheet()
+                    miniCartListBottomSheet.show(shopIds, fragment, ::onMiniCartBottomSheetDismissed)
+                }
             }
         }
         if (totalAmount?.isTotalAmountLoading == false) {
@@ -96,6 +101,10 @@ class MiniCartWidget @JvmOverloads constructor(
                 totalProductPrice = miniCartWidgetData.totalProductPrice,
                 totalProductCount = miniCartWidgetData.totalProductCount
         ))
+    }
+
+    fun setTotalAmountChevronListener(totalAmountChevronListener: () -> Unit) {
+        this.totalAmountChevronListener = totalAmountChevronListener
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
