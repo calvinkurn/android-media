@@ -10,6 +10,7 @@ object BuyerOrderDetailConst {
     const val ACTION_BUTTON_KEY_HELP = "help"
     const val ACTION_BUTTON_KEY_BUY_AGAIN = "buy_again"
     const val ACTION_BUTTON_KEY_SEE_SIMILAR_PRODUCTS = "see_similar_products"
+    const val ACTION_BUTTON_KEY_GIVE_REVIEW = "give_review"
 
     const val SECTION_HEADER_PRODUCT_LIST = "Daftar Produk"
     const val SECTION_HEADER_SHIPMENT_INFO = "Info Pengiriman"

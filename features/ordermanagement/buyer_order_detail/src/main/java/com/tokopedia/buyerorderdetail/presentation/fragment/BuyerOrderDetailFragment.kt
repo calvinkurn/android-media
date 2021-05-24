@@ -149,6 +149,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> onReceiveConfirmationActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> onHelpActionButtonClicked(button)
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> onBuyAgainAllProductButtonClicked()
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_GIVE_REVIEW -> onGiveReviewActionButtonClicked(button.url)
         }
     }
 
@@ -231,6 +232,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun onBuyAgainAllProductButtonClicked() {
         btnBuyerOrderDetailPrimaryActions?.isLoading = true
         viewModel.addMultipleToCart()
+    }
+
+    private fun onGiveReviewActionButtonClicked(url: String) {
+        RouteManager.route(context, url)
     }
 
     private fun setupViews() {
