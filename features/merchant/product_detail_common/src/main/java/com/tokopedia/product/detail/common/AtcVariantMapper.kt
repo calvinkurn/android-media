@@ -10,10 +10,25 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 /**
  * Created by Yehezkiel on 10/05/21
+ * Mapper merely regarding variant logic
  */
 
 object AtcVariantMapper {
 
+    fun getSelectedVariantName(listOfVariantCategory: List<VariantCategory>?, selectedChild: VariantChild?): String {
+        val selected = listOfVariantCategory?.mapNotNull { it.getSelectedOption()?.variantName }?.joinToString()
+                ?: ""
+        return if (selected.isEmpty()) {
+            selectedChild?.name?.split("-")?.lastOrNull() ?: ""
+        } else {
+            selected
+        }
+    }
+
+    /**
+     * Determine wether variant is select fully or not
+     * fully means select 2 of 2 variant / 1 of 1 variant
+     */
     fun isPartiallySelectedOptionId(selectedOptionIds: Map<String, String>?): Boolean {
         if (selectedOptionIds == null) return false
 
@@ -85,7 +100,7 @@ object AtcVariantMapper {
 
     private fun updateSelectedOptionsIds(variantData: ProductVariant, updatedSelectedOptionsId: List<String>, mapOfSelectedVariant: MutableMap<String, String>?) {
         variantData.variants.forEachIndexed { index, variant ->
-            mapOfSelectedVariant?.set(variant.pv.toString(), updatedSelectedOptionsId[index])
+            mapOfSelectedVariant?.set(variant.pv.toString(), updatedSelectedOptionsId.getOrNull(index) ?: "0")
         }
     }
 

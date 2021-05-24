@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.data.uidata.PartialButtonDataModel
-import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tkpd.atc_variant.di.AtcVariantComponent
 import com.tkpd.atc_variant.di.DaggerAtcVariantComponent
 import com.tkpd.atc_variant.util.ATC_LOGIN_REQUEST_CODE
@@ -27,6 +26,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
@@ -115,7 +115,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         isHideable = true
         clearContentPadding = true
 
-        updateBottomSheetTitle("Pilih varian")
+        updateBottomSheetTitle(getString(R.string.title_bottomsheet_choose_atc_variant))
 
         setShowListener {
             bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -139,7 +139,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     private fun updateBottomSheetTitle(value: String) {
-        setTitle(context?.getString(R.string.title_bottomsheet_atc_variant, value) ?: "")
+        val strings = if (value.isEmpty()) {
+            getString(R.string.title_bottomsheet_choose_atc_variant)
+        } else {
+            value
+        }
+        setTitle(context?.getString(R.string.title_bottomsheet_atc_variant, strings) ?: "")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -158,21 +163,22 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         })
 
         observeInitialVisitablesData()
+        observeTitleChanged()
         observeButtonState()
         observeCart()
         observeWishlist()
+    }
+
+    private fun observeTitleChanged() {
+        viewModel.titleVariantName.observe(viewLifecycleOwner, {
+            updateBottomSheetTitle(it)
+        })
     }
 
     private fun observeInitialVisitablesData() {
         viewModel.initialData.observe(viewLifecycleOwner, {
             if (it is Success) {
                 adapter.submitList(it.data)
-
-                (it.data.firstOrNull { it is VariantComponentDataModel } as? VariantComponentDataModel)?.getSelectedVariantName()?.also { title ->
-                    if (title.isNotEmpty()) {
-                        updateBottomSheetTitle(title)
-                    }
-                }
             }
         })
     }
@@ -318,7 +324,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         doAtc(atcKey)
     }
 
-    private fun goToImagePreview(listOfImage:ArrayList<String>) {
+    private fun goToImagePreview(listOfImage: ArrayList<String>) {
         context?.let {
             startActivity(ImagePreviewActivity.getCallingIntent(it, listOfImage, arrayListOf("variant")))
         }
@@ -345,6 +351,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 return@let
             }
 
+            if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
+                goToWishlist()
+                return@let
+            }
+
             if (isPartialySelected) {
                 showErrorVariantUnselected()
                 return@let
@@ -366,6 +377,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     sharedData?.trackerListNamePdp ?: ""
             )
         }
+    }
+
+    private fun goToWishlist() {
+        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
     }
 
     private fun checkLogin(): Boolean {

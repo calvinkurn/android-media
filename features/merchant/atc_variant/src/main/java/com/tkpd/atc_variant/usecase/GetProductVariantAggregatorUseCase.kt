@@ -165,7 +165,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         return mapToUiData(data)
     }
 
-    fun mapToUiData(data: ProductVariantAggregator): ProductVariantAggregatorUiData {
+    private fun mapToUiData(data: ProductVariantAggregator): ProductVariantAggregatorUiData {
         return ProductVariantAggregatorUiData(
                 data.variantData,
                 data.cardRedirection.data.associateBy({ it.productId }, { it }),

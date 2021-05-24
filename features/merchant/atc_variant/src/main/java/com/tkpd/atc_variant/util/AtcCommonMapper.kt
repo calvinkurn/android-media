@@ -28,12 +28,10 @@ object AtcCommonMapper {
         val shouldAutoSelect = variantData.autoSelectedOptionIds()
         return when {
             isParent -> {
-                if (shouldAutoSelect.isNotEmpty()) {
-                    //if product parent and able to auto select, do auto select
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
-                } else {
-                    //if product parent, dont update selected variant
+                if (selectedChild == null) {
                     AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+                } else {
+                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
                 }
             }
             selectedChild?.isBuyable == true -> {
@@ -63,11 +61,8 @@ object AtcCommonMapper {
 
         var idCounter = 0L
         val result: MutableList<AtcVariantVisitable> = mutableListOf()
-        val isInitialState = initialSelectedVariant.values.all {
-            it == "0"
-        }
 
-        val headerData = generateHeaderDataModel(selectedChild, isInitialState, totalStock)
+        val headerData = generateHeaderDataModel(selectedChild)
         result.add(
                 VariantHeaderDataModel(
                         position = idCounter,
@@ -124,7 +119,7 @@ object AtcCommonMapper {
                         //update image only when exist
                         it.copy(productImage = variantImage)
                     } else {
-                        val headerData = generateHeaderDataModel(selectedChild = selectedVariantChild)
+                        val headerData = generateHeaderDataModel(selectedVariantChild)
                         it.copy(productImage = headerData.first, headerData = headerData.second)
                     }
                 }
@@ -159,24 +154,19 @@ object AtcCommonMapper {
     /**
      * @isInitialState means user not yet select any variant, so we need to calculate total stock
      */
-    private fun generateHeaderDataModel(selectedChild: VariantChild?,
-                                        isInitialState: Boolean = false,
-                                        totalStock: Int = 0): Pair<String, ProductHeaderData> {
+    private fun generateHeaderDataModel(selectedChild: VariantChild?): Pair<String, ProductHeaderData> {
         val productImage = selectedChild?.picture?.original ?: ""
         val headerData = ProductHeaderData(
+                productId = selectedChild?.productId ?: "",
                 productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted()
                         ?: "",
                 productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage?.toInt()
                         ?: 0,
-                productCampaignIdentifier = selectedChild?.campaign?.campaignIdentifier
-                        ?: 0,
+                isCampaignActive = selectedChild?.campaign?.isActive ?: false,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
                 productStockWording = selectedChild?.stock?.stockWordingHTML
-                        ?: "",
-                isProductBuyable = selectedChild?.isBuyable ?: false,
-                totalStock = totalStock,
-                isInitialState = isInitialState
+                        ?: ""
         )
         return productImage to headerData
     }

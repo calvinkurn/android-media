@@ -34,13 +34,14 @@ data class ProductVariant(
 
         /**
          *  Pair(isParent, VariantChild)
-         *  if child is null means the product is parent, so we need to auto select the first child
+         *  if child is null means the product is parent, so we need to auto select
+         *  get first child buyable if parent, if all child not buyable, get te first child
          */
-        fun getFirstChildIfParent(selectedVariantId: String?): Pair<Boolean, VariantChild?> {
+        fun autoSelectChildIfGivenIdIsParent(selectedVariantId: String?): Pair<Boolean, VariantChild?> {
                 val child = getChildByProductId(selectedVariantId)
                 val isParent = child == null
 
-                return isParent to (child ?: children.firstOrNull())
+                return isParent to (child ?: children.firstOrNull{ it.isBuyable } ?: children.firstOrNull())
         }
 
         fun getChildByProductId(selectedVariantId: String?): VariantChild? {

@@ -77,13 +77,19 @@ class AtcVariantViewModel @Inject constructor(
     val addWishlistResult: LiveData<Result<Boolean>>
         get() = _addWishlistResult
 
+    private val _titleVariantName = MutableLiveData<String>()
+    val titleVariantName: LiveData<String>
+        get() = _titleVariantName
+
+    private var isShopOwner: Boolean = false
+
     fun onVariantClicked(selectedOptionKey: String,
                          selectedOptionId: String,
                          variantImage: String, // only use when user click partially to update the image
                          variantLevel: Int) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
 
-            val selectedVariantIds = updateSelectedOptionIds(selectedOptionKey, selectedOptionId)
+            val selectedVariantIds = updateSelectedOptionIdsVisitable(selectedOptionKey, selectedOptionId)
 
             //Run variant logic to determine selected , empty , flash sale, etc
             val processedVariant = AtcVariantMapper.processVariant(getVariantData(),
@@ -110,6 +116,7 @@ class AtcVariantViewModel @Inject constructor(
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false)
 
             _initialData.postValue(list.asSuccess())
+            _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedVariantChild))
 
             if (!isPartiallySelected) {
                 // if user only select 1 of 2 variant, no need to update the button
@@ -127,6 +134,18 @@ class AtcVariantViewModel @Inject constructor(
 
     fun getVariantData(): ProductVariant? {
         return aggregatorData.value?.variantData
+    }
+
+    /**
+     * Get current selected variant option id
+     * if user already choose 2, the result will be sometng like this (warna, merah), (ukuran,L)
+     * if user only choose 1 level of 2, the result will be like (warna,merah), (ukuran,0)
+     */
+    fun getSelectedOptionIds(): MutableMap<String, String>? {
+        val variantDataModel = (_initialData.value as Success).data.firstOrNull {
+            it is VariantComponentDataModel
+        } as? VariantComponentDataModel
+        return variantDataModel?.mapOfSelectedVariant
     }
 
     fun updateActivityResult(listVariant: List<VariantCategory>? = null,
@@ -149,21 +168,10 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Get current selected variant option id
-     * if user already choose 2, the result will be sometng like this (warna, merah), (ukuran,L)
-     * if user only choose 1 level of 2, the result will be like (warna,merah), (ukuran,0)
-     */
-    fun getSelectedOptionIds(): MutableMap<String, String>? {
-        val variantDataModel = (_initialData.value as Success).data.firstOrNull {
-            it is VariantComponentDataModel
-        } as? VariantComponentDataModel
-        return variantDataModel?.mapOfSelectedVariant
-    }
-
     fun decideInitialValue(aggregatorParams: ProductVariantBottomSheetParams) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             _initialData.postValue(listOf(VariantShimmeringDataModel(99L)).asSuccess())
+            isShopOwner = aggregatorParams.isShopOwner
             /**
              * If data completely provided from previous page, use that
              * if not call GQL
@@ -179,19 +187,24 @@ class AtcVariantViewModel @Inject constructor(
 
             //Get selected child by product id, if product parent auto select first child
             //If parent just update the header and ignore the variant selection
-            val pairParentAndChild = aggregatorResult.variantData.getFirstChildIfParent(aggregatorParams.productId)
-            val isParent = pairParentAndChild.first
-            val selectedChild = pairParentAndChild.second
+            val pairIsParentAndChild = aggregatorResult.variantData.autoSelectChildIfGivenIdIsParent(aggregatorParams.productId)
+            val isParent = pairIsParentAndChild.first
+            val selectedChild = pairIsParentAndChild.second
 
             //Get cart redirection , and warehouse by selected product id to render button and toko cabang
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorResult.cardRedirection)
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorResult.cardRedirection, isShopOwner)
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
+
+            //generate variant component and data, initial render need to determine selected option
+            val selectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(isParent, aggregatorResult.variantData, selectedChild)
+            val processedVariant = AtcVariantMapper.processVariant(aggregatorResult.variantData, selectedOptionIds)
 
             //Generate visitables
             val visitables = generateVisitable(selectedChild, selectedWarehouse?.isFulfillment
-                    ?: false, aggregatorParams.isTokoNow, isParent, aggregatorResult.variantData)
+                    ?: false, selectedOptionIds, processedVariant, aggregatorParams.isTokoNow, aggregatorResult.variantData)
 
             if (visitables != null) {
+                _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedChild))
                 _initialData.postValue(visitables.asSuccess())
             } else {
                 _initialData.postValue(Throwable().asFail())
@@ -208,10 +221,6 @@ class AtcVariantViewModel @Inject constructor(
         addWishListUseCase.createObservable(productId,
                 userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-//                if (!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
-////                    val extras = mapOf("wishlist_status" to ADD_WISHLIST).toString()
-////                    ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
-//                }
                 _addWishlistResult.postValue(Throwable(errorMessage ?: "").asFail())
             }
 
@@ -349,10 +358,6 @@ class AtcVariantViewModel @Inject constructor(
             val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
                 val errorMessage = result.errorMessage.firstOrNull() ?: ""
-//                if (errorMessage.isNotBlank()) {
-//                    ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
-//                            ?: "", deviceId)
-//                }
                 _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
@@ -378,10 +383,6 @@ class AtcVariantViewModel @Inject constructor(
             val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
                 val errorMessage = result.getAtcErrorMessage() ?: ""
-//                if (errorMessage.isNotBlank()) {
-//                    ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
-//                            ?: "", deviceId)
-//                }
                 _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
@@ -389,13 +390,17 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun generateVisitable(selectedVariantChild: VariantChild?, isFulfillment: Boolean, isTokoNow: Boolean, isParent: Boolean, variantData: ProductVariant): List<AtcVariantVisitable>? {
-        val selectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(isParent, variantData, selectedVariantChild)
+    private fun generateVisitable(selectedVariantChild: VariantChild?,
+                                  isFulfillment: Boolean,
+                                  selectedOptionIds: MutableMap<String, String>,
+                                  processedVariant: List<VariantCategory>?,
+                                  isTokoNow: Boolean,
+                                  variantData: ProductVariant): List<AtcVariantVisitable>? {
         return AtcCommonMapper.mapToVisitable(
                 selectedChild = selectedVariantChild,
                 isTokoNow = isTokoNow,
                 initialSelectedVariant = selectedOptionIds,
-                processedVariant = AtcVariantMapper.processVariant(variantData, selectedOptionIds),
+                processedVariant = processedVariant,
                 selectedProductFulfillment = isFulfillment,
                 totalStock = variantData.totalStockChilds)
     }
@@ -405,7 +410,7 @@ class AtcVariantViewModel @Inject constructor(
      *  - Before update (warna, 0), (ukuran, 0)
      *  - After update (warna, merah), (ukuran, 0)
      */
-    private fun updateSelectedOptionIds(selectedOptionKey: String, selectedOptionId: String): MutableMap<String, String>? {
+    private fun updateSelectedOptionIdsVisitable(selectedOptionKey: String, selectedOptionId: String): MutableMap<String, String>? {
         val variantDataModel = (_initialData.value as Success).data.firstOrNull {
             it is VariantComponentDataModel
         } as? VariantComponentDataModel

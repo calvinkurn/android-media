@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -57,19 +56,14 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
     }
 
     private fun loadDescription(headerData: ProductHeaderData) {
-        if (headerData.productCampaignIdentifier == 0) {
-            renderNoCampaign(headerData.productMainPrice)
-        } else {
+        if (headerData.isCampaignActive) {
             renderCampaignActive(headerData)
+        } else {
+            renderNoCampaign(headerData.productMainPrice)
         }
 
-        if (headerData.isInitialState) {
-            productStock.text = view.context.getString(R.string.atc_variant_total_stock_empty_label, headerData.totalStock.toString())
-            productStock.show()
-        } else {
-            productStock.shouldShowWithAction(headerData.productStockWording != "") {
-                productStock.text = MethodChecker.fromHtml(headerData.productStockWording ?: "")
-            }
+        productStock.shouldShowWithAction(headerData.productStockWording != "") {
+            productStock.text = MethodChecker.fromHtml(headerData.productStockWording ?: "")
         }
     }
 

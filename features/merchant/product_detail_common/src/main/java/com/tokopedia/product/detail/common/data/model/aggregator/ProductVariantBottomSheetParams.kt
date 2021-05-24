@@ -19,7 +19,7 @@ data class ProductVariantBottomSheetParams(
 
         //Basic info pdp
         var categoryName: String = "",
-        var categoryId:String = "",
+        var categoryId: String = "",
         var isTradein: Boolean = false,
         var isCheckImei: Boolean = false,
         var minimumShippingPrice: Int = 30000,
@@ -28,4 +28,5 @@ data class ProductVariantBottomSheetParams(
         var trackerListNamePdp: String = "",
         var shopTypeString: String = "",
         var shopName: String = "",
+        var isShopOwner: Boolean = false
 )

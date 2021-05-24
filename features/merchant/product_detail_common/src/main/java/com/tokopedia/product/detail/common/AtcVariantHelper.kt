@@ -33,6 +33,7 @@ object AtcVariantHelper {
                         warehouseId: String,
                         pdpSession: String,
                         isTokoNow: Boolean,
+                        isShopOwner:Boolean,
                         isCheckImeiRemoteConfig:Boolean,
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
@@ -46,6 +47,7 @@ object AtcVariantHelper {
                 whId = warehouseId,
                 pdpSession = pdpSession,
                 isTokoNow = isTokoNow,
+                isShopOwner = isShopOwner,
                 variantAggregator = ProductVariantAggregatorUiData(
                         variantData = productVariant,
                         cardRedirection = cartRedirection,

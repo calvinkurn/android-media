@@ -16,6 +16,7 @@ class PartialAtcButtonView private constructor(val view: View,
 
     private val btnBuy = view.findViewById<UnifyButton>(R.id.btn_buy_variant)
     private val btnAtc = view.findViewById<UnifyButton>(R.id.btn_atc_variant)
+    private var isShopOwner: Boolean = false
 
     var visibility: Boolean = false
         set(value) {
@@ -30,6 +31,7 @@ class PartialAtcButtonView private constructor(val view: View,
     }
 
     fun renderButtonView(isProductBuyable: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null) {
+        this.isShopOwner = isShopOwner
         val onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton(onSuccessGetCartType, isShopOwner, isProductBuyable, cartTypeData)
     }
@@ -38,7 +40,7 @@ class PartialAtcButtonView private constructor(val view: View,
         val shouldRenderCartRedirection = !GlobalConfig.isSellerApp() && isCartRedirectionNotEmpty
         val shouldRenderFallbackButton = !GlobalConfig.isSellerApp() && !isCartRedirectionNotEmpty
 
-        if (isShopOwner) {
+        if (isShopOwner || cartRedirectionData?.hideFloatingButton == true) {
             visibility = false
             return
         }

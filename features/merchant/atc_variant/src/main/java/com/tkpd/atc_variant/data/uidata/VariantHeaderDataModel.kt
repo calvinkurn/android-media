@@ -52,14 +52,10 @@ data class VariantHeaderDataModel(
 }
 
 data class ProductHeaderData(
+        val productId: String = "",
         val productMainPrice: String = "",
         val productDiscountedPercentage: Int = 0,
-        val productCampaignIdentifier: Int = 0,
+        val isCampaignActive: Boolean = false,
         val productSlashPrice: String = "",
-        val productStockWording: String = "",
-        val isProductBuyable: Boolean = false,
-        val isShopOwner: Boolean = false,
-        val totalStock: Int = 0,
-        //Not of variant has been selected or partially selected
-        val isInitialState: Boolean = false
+        val productStockWording: String = ""
 )

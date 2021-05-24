@@ -2943,7 +2943,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                         productInfoP1 = viewModel.getDynamicProductInfoP1!!,
                         warehouseId = warehouseId ?: "",
                         pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-                        isTokoNow = false,
+                        isTokoNow = true,
+                        isShopOwner = viewModel.isShopOwner(),
                         isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
                         productVariant = viewModel.variantData ?: ProductVariant(),
                         warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
@@ -2951,6 +2952,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
+            }
+        }
 
 //                AtcVariantHelper.goToAtcVariant(
 //                        context = it,
@@ -2960,8 +2963,8 @@ class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataMod
 //                ) { data, code ->
 //                    startActivityForResult(data, code)
 //                }
-            }
-        }
+//            }
+//        }
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
