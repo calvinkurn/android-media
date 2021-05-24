@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableType
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterAirlineViewHolder;
-import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat;
+import com.tokopedia.flight.search.presentation.model.statistics.AirlineStat;
 
 /**
  * Created by alvarisi on 12/21/17.
