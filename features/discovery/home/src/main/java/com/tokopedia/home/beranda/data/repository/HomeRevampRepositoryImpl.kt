@@ -146,6 +146,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 homeData.atfData = null
                 isAtfSuccess = false
                 homeData.atfErrorString = ErrorHandler.getErrorMessage(applicationContext, e as MessageErrorException)
+                emit(Result.errorAtf(error = e, data = null))
             }
 
             /**
@@ -297,9 +298,9 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 if (homeData.atfData == null ||
                         (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
                         homeData.atfData?.dataList?.isEmpty() == true) {
-                    emit(Result.errorGeneral(Throwable(),null, ""))
+                    emit(Result.errorGeneral(Throwable(),null))
                 } else {
-                    emit(Result.error(Throwable(), null, ""))
+                    emit(Result.error(Throwable(), null))
                 }
                 saveToDatabase(homeData)
             }
@@ -333,7 +334,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                      * Because there is no content that we can show, we showing error page
                      */
                     if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
-                        emit(Result.errorPagination(error = e as MessageErrorException,data = null, messageString = ""))
+                        emit(Result.errorPagination(error = e as MessageErrorException, data = null))
                     }
                     saveToDatabase(homeData)
                 }
