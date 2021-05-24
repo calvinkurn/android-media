@@ -193,5 +193,6 @@ object ApplinkConstInternalOrder {
 
     const val INTERNAL_ORDER_SNAPSHOT = "${DeeplinkConstant.SCHEME_INTERNAL}://$PATH_SNAPSHOT/$HOST_ORDER"
 
+    // buyer request cancel
     const val INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PATH_CANCELLATION_REQUEST"
 }
