@@ -51,7 +51,6 @@ class GetMiniCartWidgetDataUseCase @Inject constructor(private val graphqlReposi
             data {
               errors
               total_product_count
-              total_product_error
               total_product_price
             }
           }
