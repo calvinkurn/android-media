@@ -14,5 +14,9 @@ class LoginEmailPhoneFragmentStub: LoginEmailPhoneFragment() {
         }
     }
 
+    override fun refreshRolloutVariant() {
+        // do nothing
+    }
+
     override fun isEnableEncryption(): Boolean = true
 }
