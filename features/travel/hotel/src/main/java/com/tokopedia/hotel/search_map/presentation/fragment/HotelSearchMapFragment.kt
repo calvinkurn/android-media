@@ -80,7 +80,7 @@ import javax.inject.Inject
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener,
-        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveListener, SubmitFilterListener {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, SubmitFilterListener, GoogleMap.OnCameraMoveStartedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,6 +116,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private val snapHelper: SnapHelper = PagerSnapHelper()
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
@@ -345,29 +346,59 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
-    override fun onCameraMove() {
-        showFindNearHereView()
+    override fun onCameraMoveStarted(reason: Int) {
+        when (reason) {
+            GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE -> {
+                showFindNearHereView()
+            }
+            else -> hideFindNearHereView()
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
         allMarker.forEach {
             if (it.tag == marker.tag) {
                 cardListPosition = it.tag as Int
-                rvHorizontalPropertiesHotelSearchMap.scrollToPosition(cardListPosition)
+                rvHorizontalPropertiesHotelSearchMap.scrollToCenterPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
-                with(hotelSearchMapViewModel.searchParam) {
-                    if (cardListPosition >= 0) {
-                        trackingHotelUtil.hotelOnScrollName(
-                                context,
-                                searchDestinationName,
-                                searchDestinationType,
-                                this, hotelProperties[cardListPosition], cardListPosition,
-                                SEARCH_SCREEN_NAME)
-                    }
+                putPriceMarkerOnTop(cardListPosition)
+                if (cardListPosition != -1 &&
+                        cardListPosition != lastHorizontalTrackingPositionSent &&
+                        adapterCardList.data[cardListPosition] is Property && !adapterCardList.data.isNullOrEmpty()) {
+
+                    lastHorizontalTrackingPositionSent = cardListPosition
+                    trackingHotelUtil.hotelViewHotelListMapImpression(context,
+                            searchDestinationName,
+                            searchDestinationType,
+                            hotelSearchMapViewModel.searchParam,
+                            listOf(adapterCardList.data[cardListPosition]),
+                            cardListPosition,
+                            SEARCH_SCREEN_NAME)
                 }
             }
         }
         return true
+    }
+
+    fun RecyclerView.scrollToCenterPosition(position: Int){
+        if(::linearLayoutManager.isInitialized) {
+            try {
+                rvHorizontalPropertiesHotelSearchMap.scrollToPosition(position)
+                rvHorizontalPropertiesHotelSearchMap.post {
+                    val itemView = linearLayoutManager.findViewByPosition(position)
+                    if(itemView != null){
+                        val snapDistance: IntArray = snapHelper.calculateDistanceToFinalSnap(linearLayoutManager, itemView) ?: intArrayOf()
+                        if(snapDistance.isNotEmpty()){
+                            if (snapDistance[0] != 0 || snapDistance[1] != 0) {
+                                rvHorizontalPropertiesHotelSearchMap.scrollBy(snapDistance[0], snapDistance[1])
+                            }
+                        }
+                    }
+                }
+            }catch (e: Exception){
+                rvHorizontalPropertiesHotelSearchMap.smoothScrollToPosition(position)
+            }
+        }
     }
 
     override fun onItemClicked(property: Property, position: Int) {
@@ -523,6 +554,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                val opacity = (slideOffset - 1f).unaryMinus() - 0.5f
+                rvHorizontalPropertiesHotelSearchMap.alpha = opacity
+
+                if (slideOffset == 0.0f) {
+                    rvHorizontalPropertiesHotelSearchMap.alpha = 1f
+                }
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -541,9 +578,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         }
                     }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                        if (searchPropertiesMap.isNullOrEmpty()){
+                        if (searchPropertiesMap.isNullOrEmpty()) {
                             googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
-                        }else{
+                        } else {
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[0],
                                     MAPS_ZOOM_OUT))
                         }
@@ -673,7 +710,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun initRecyclerViewMap() {
         rvHorizontalPropertiesHotelSearchMap.adapter = adapterCardList
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvHorizontalPropertiesHotelSearchMap.layoutManager = linearLayoutManager
 
         if (rvHorizontalPropertiesHotelSearchMap.onFlingListener == null) {
@@ -690,16 +727,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
-                    with(hotelSearchMapViewModel.searchParam) {
-                        if (cardListPosition >= 0) {
-                            trackingHotelUtil.hotelOnScrollName(
-                                    context,
-                                    searchDestinationName,
-                                    searchDestinationType,
-                                    this, hotelProperties[cardListPosition], cardListPosition,
-                                    SEARCH_SCREEN_NAME)
-                        }
-                    }
+                    putPriceMarkerOnTop(cardListPosition)
                 }
             }
 
@@ -717,7 +745,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                             searchDestinationType,
                             hotelSearchMapViewModel.searchParam,
                             listOf(adapterCardList.data[currentPosition]),
-                            0,
+                            currentPosition,
                             SEARCH_SCREEN_NAME)
 
                 }
@@ -738,7 +766,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isScrollGesturesEnabled = true
 
             googleMap.setOnMarkerClickListener(this)
-            googleMap.setOnCameraMoveListener(this)
+            googleMap.setOnCameraMoveStartedListener(this)
 
             mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
                 override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
@@ -795,7 +823,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             btnGetRadiusHotelSearchMap.addItem(wrapper)
         }
         btnGetRadiusHotelSearchMap.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
-        btnGetRadiusHotelSearchMap.gone()
     }
 
     private fun onSearchByMap() {
@@ -1376,6 +1403,20 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun isHotelListShowingError(): Boolean =
             adapter.list.size > 0 && adapter.list[0] is ErrorNetworkModel
+
+    private fun putPriceMarkerOnTop(position: Int){
+        resetStackPriceMarker()
+        if(!allMarker.isNullOrEmpty() && position != -1){
+            allMarker[position].zIndex = 1.0f
+        }
+    }
+    private fun resetStackPriceMarker(){
+        if(!allMarker.isNullOrEmpty()) {
+            allMarker.forEach {
+                it.zIndex = 0.0f
+            }
+        }
+    }
 
     companion object {
         private const val COACHMARK_MAP_STEP_POSITION = 0

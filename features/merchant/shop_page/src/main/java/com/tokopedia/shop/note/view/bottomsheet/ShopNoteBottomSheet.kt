@@ -3,9 +3,12 @@ package com.tokopedia.shop.note.view.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.accordion.AccordionDataUnify
+import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -17,12 +20,12 @@ import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
-import com.tokopedia.shop.note.data.ShopNoteBottomSheetUiModel
-import com.tokopedia.shop.note.view.adapter.ShopNoteBottomSheetAdapter
 import com.tokopedia.shop.note.view.viewmodel.ShopNoteBottomSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.net.ConnectException
@@ -51,10 +54,9 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     private var viewModel: ShopNoteBottomSheetViewModel? = null
 
     private var buyerShopId: String? = null
-    private var rvNote: RecyclerView? = null
-    private var adapter: ShopNoteBottomSheetAdapter? = null
     private var loader: LoaderUnify? = null
     private var globalError: GlobalError? = null
+    private var accordion: AccordionUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,18 +79,14 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     private fun setupUi() {
         LayoutInflater.from(context).inflate(LAYOUT, null)?.apply {
             loader = findViewById(R.id.loader)
-            rvNote = findViewById(R.id.rv_note)
             globalError = findViewById(R.id.global_error)
+            accordion = findViewById(R.id.accordion)
             setTitle(getString(R.string.shop_note_title))
             setChild(this)
             setCloseClickListener {
                 dismiss()
             }
         }
-
-        adapter = ShopNoteBottomSheetAdapter()
-        rvNote?.adapter = adapter
-        rvNote?.layoutManager = LinearLayoutManager(context)
 
         showKnob = true
         showCloseIcon = !showKnob
@@ -112,10 +110,12 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
     private fun setupObserver() {
         viewModel?.shopNotes?.observe(viewLifecycleOwner) { result ->
             loader?.gone()
-            rvNote?.show()
+            accordion?.show()
             when(result) {
                 is Success -> {
-                    adapter?.setItemsAndAnimateChanges(mapToShopNoteUiModel(result.data))
+                    result.data.forEach { model ->
+                        setAccordion(model)
+                    }
                 }
                 is Fail -> {
                     handleError(result.throwable)
@@ -125,27 +125,28 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun setAccordion(model: ShopNoteModel) {
+        context?.let {
+            val tpContent = Typography(it)
+            tpContent.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            tpContent.text = MethodChecker.fromHtml(model.content)
+            accordion?.addGroup(AccordionDataUnify(
+                    model.title ?: "",
+                    "",
+                    null,
+                    null,
+                    tpContent,
+                    false
+            ).setContentPadding(16.toPx(), 4.toPx(), 16.toPx(), 4.toPx()))
+        }
+    }
+
     private fun getShopNotes() {
         buyerShopId?.run {
             viewModel?.getShopNotes(this)
             loader?.show()
-            rvNote?.gone()
+            accordion?.gone()
         }
-    }
-
-    private fun mapToShopNoteUiModel(response: List<ShopNoteModel>): List<ShopNoteBottomSheetUiModel> {
-        val notes = mutableListOf<ShopNoteBottomSheetUiModel>()
-        val responseSize = response.size - 1
-        response.forEachIndexed { position, model ->
-            notes.add(
-                    ShopNoteBottomSheetUiModel(
-                            title = model.title.orEmpty(),
-                            description = model.content.orEmpty(),
-                            isTheLastPosition = position == responseSize
-                    )
-            )
-        }
-        return notes
     }
 
     private fun handleError(throwable: Throwable) {
@@ -182,7 +183,7 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
             globalError?.gone()
             getShopNotes()
         }
-        rvNote?.gone()
+        accordion?.gone()
         globalError?.show()
     }
 }
