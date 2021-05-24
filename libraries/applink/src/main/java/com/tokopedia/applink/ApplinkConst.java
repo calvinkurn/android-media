@@ -20,6 +20,7 @@ public interface ApplinkConst {
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail";
     String HOME_CATEGORY = "tokopedia://home/category";
+    String HOME_HOT_HOST = "hot";
     String HOME_HOTLIST = "tokopedia://hot";
     String HOST_CATEGORY_P = "p";
     String MESSAGE = "tokopedia://message";
@@ -47,11 +48,14 @@ public interface ApplinkConst {
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
+    String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
+    String ADD_PATH = "add";
     String PRODUCT_ADD = "tokopedia://product/add";
     String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
+    String CART_HOST = "cart";
     String CART = "tokopedia://cart";
     String ATC_EXTERNAL = "tokopedia://cart?product_id={product_id}";
     String CHECKOUT = "tokopedia://checkout";
@@ -60,12 +64,14 @@ public interface ApplinkConst {
     String SELLER_STATUS = "tokopedia://seller/status";
     String SELLER_HISTORY = "tokopedia://seller/history";
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
+    String REVIEW_HOST = "review";
     String REPUTATION = "tokopedia://review";
     String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
     String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
+    String REVIEW_REMINDER_HOST = "review-reminder";
     String REVIEW_REMINDER = "tokopedia://review-reminder";
     String WEBVIEW = "tokopedia://webview";
     String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
@@ -111,9 +117,12 @@ public interface ApplinkConst {
     String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
     String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String ORDER_HISTORY = "tokopedia://product-order-history";
+    String ORDER_HISTORY_SHOP = "tokopedia://product-order-history/{shop_id}";
+    String TOPCHAT_HOST = "topchat";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOP_CHAT = "tokopedia://topchat";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
+    String TOPCHAT_OLD_HOST = "topchatold";
     String TOPCHAT_OLD = "tokopedia://topchatold";
     /**
      * Go to chat room and chat with seller use one of the pattern below:
@@ -139,13 +148,11 @@ public interface ApplinkConst {
             "?customMessage={customMessage}";
     String TOPCHAT_ASKBUYER = "tokopedia://topchat/askbuyer/{toUserId}?customMessage" +
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
+    String CHATBOT_HOST = "chatbot";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String CHAT_BOT = "tokopedia://chatbot";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
-    String WALLET_HOME = "tokopedia://wallet";
-    String WALLET_ACTIVATION = "tokopedia://wallet/activation";
-    String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
     String BROWSER = "tokopedia://browser";
     String FAVORITE = "tokopedia://home/favorite";
     String SUB_PROMO = "tokopedia://sale/{slug}/{category_slug}";
@@ -181,7 +188,9 @@ public interface ApplinkConst {
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
+    String HOTEL_HOST = "hotel";
     String HOTEL = "tokopedia://hotel";
+    String HOTEL_SRP = "tokopedia://hotel/result";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String TRAVEL_SUBHOMEPAGE_HOME = "tokopedia://travelentertainment/home";
 
@@ -192,6 +201,7 @@ public interface ApplinkConst {
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
     String TRAVEL_AND_ENTERTAINMENT_ORDER = "tokopedia://travelent/order";
     String SNAPSHOT_ORDER = "tokopedia://snapshot/order";
+    String ORDER_BUYER_CANCELLATION_REQUEST_PAGE = "tokopedia://buyer/cancellationrequest";
 
     String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
     String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
@@ -286,7 +296,8 @@ public interface ApplinkConst {
     String CONTENT_DRAFT_POST = "tokopedia://content/draft/{draft_id}";
     String INTEREST_PICK = "tokopedia://interestpick";
     String KOL_COMMENT = "tokopedia://kolcomment/{id}";
-    String KOL_YOUTUBE = "tokopedia://kolyoutube/{youtube_url}";
+    String KOL_YOUTUBE_HOST_BASE = "kolyoutube";
+    String KOL_YOUTUBE = "tokopedia://" + KOL_YOUTUBE_HOST_BASE+ "/{youtube_url}";
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
@@ -324,6 +335,7 @@ public interface ApplinkConst {
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
     String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String PAYLATER = "tokopedia://fintech/paylater";
+    String INBOX_HOST = "inbox";
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
@@ -333,6 +345,7 @@ public interface ApplinkConst {
 
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
 
+    String CATEGORY_HOST = "category";
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";
     String QRSCAN = "tokopedia://scanqr";
@@ -352,7 +365,8 @@ public interface ApplinkConst {
     String SALAM_UMRAH_PACKET = "tokopedia://s/umroh/paket/{category_id}";
     String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
-    String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+    String SALAM_UMRAH_SHOP_ID = "7298319";
+    String SALAM_UMRAH_SHOP = "tokopedia://shop/" + SALAM_UMRAH_SHOP_ID;
     String THANK_YOU_PAGE_NATIVE = "tokopedia://payment/thankyou";
     String THANKYOU_PAGE_NATIVE = "tokopedia://payment/thankyou?payment_id={payment_id}&merchant={merchant_code}";
 
@@ -367,6 +381,7 @@ public interface ApplinkConst {
 
     String SELLER_MIGRATION = "tokopedia://seller/seller-migration";
 
+    String ACCOUNT_HOST = "account";
     String ACCOUNT = "tokopedia://account";
 
     interface Discovery {
@@ -381,6 +396,7 @@ public interface ApplinkConst {
     }
 
     interface Digital {
+        String CATEGORY_EXPLORE_HOST = "category-explore";
         String DIGITAL_BROWSE = "tokopedia://category-explore";
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL = "tokopedia://digital";
@@ -556,33 +572,7 @@ public interface ApplinkConst {
         String ORDER_MARKETPLACE_DETAIL_WAITING_INVOICE = "tokopedia://marketplace/order?payment_id={payment_id}&cart_string={cart_string}";
         String ORDER_OMS_DETAIL_UPSTREAM = "tokopedia://order/{order_id}?upstream={upstream}";
 
-        String EXTRA_SHOP_ID = "shop_id";
-        String EXTRA_PRODUCT_ID = "product_id";
-        String EXTRA_NOTES = "notes";
-        String EXTRA_QUANTITY = "quantity";
-        String EXTRA_SELECTED_VARIANT_ID = "selected_variant_id";
-        String EXTRA_ACTION = "action";
-        String EXTRA_PRODUCT_IMAGE = "product_image";
-        String EXTRA_SHOP_TYPE = "shop_type";
-        String EXTRA_SHOP_NAME = "shop_name";
-        String EXTRA_OCS = "ocs";
-        String EXTRA_NEED_REFRESH = "extra_need_refresh";
-        String TRACKER_ATTRIBUTION = "tracker_attribution";
-        String TRACKER_LIST_NAME = "tracker_list_name";
-        String EXTRA_REFERENCE = "reference";
-        String EXTRA_IS_LEASING = "is_leasing";
-        String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
-        String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
-        String EXTRA_CUSTOM_DIMENSION40 = "custom_dimension40";
-        String EXTRA_LAYOUT_NAME = "layout_name";
-        String EXTRA_ATC_EXTERNAL_SOURCE = "atc_external_source";
-
-        String EXTRA_CATEGORY_ID = "category_id";
-        String EXTRA_CATEGORY_NAME = "category_name";
         String EXTRA_CART_ID = "cart_id";
-        String EXTRA_PRODUCT_TITLE = "product_title";
-        String EXTRA_PRODUCT_PRICE = "product_price";
-        String EXTRA_PRODUCT_CONDITION = "product_condition";
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
 
         String ORDER_LIST = "tokopedia-android-internal://transaction/order-list";
@@ -631,6 +621,8 @@ public interface ApplinkConst {
         String PARAM_ROLE = "role";
         String VALUE_ROLE_BUYER = "buyer";
         String VALUE_ROLE_SELLER = "seller";
+
+        String PARAM_SOURCE = "source";
     }
 
     interface GeneralInfo {

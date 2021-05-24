@@ -26,6 +26,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.unifyDependencies.principles
 
@@ -36,6 +37,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.navigationUiKtx
     api rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

@@ -157,7 +157,11 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
-    fun mapToProductCardModel(shopProductUiModel: ShopProductUiModel, isWideContent: Boolean): ProductCardModel {
+    fun mapToProductCardModel(
+            shopProductUiModel: ShopProductUiModel,
+            isWideContent: Boolean,
+            isShowThreeDots: Boolean = true
+    ): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
         } catch (ignored: Exception) {
@@ -183,7 +187,7 @@ object ShopPageProductListMapper {
                 labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                hasThreeDots = true,
+                hasThreeDots = isShowThreeDots,
                 pdpViewCount = shopProductUiModel.pdpViewCount,
                 stockBarLabel = shopProductUiModel.stockLabel,
                 stockBarPercentage = shopProductUiModel.stockBarPercentage,

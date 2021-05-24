@@ -9,7 +9,9 @@ mutation hachikoRedeem($catalogId: Int!, $isGift: Int!, $giftUserId: Int!, $gift
       description
       cta
       cta_desktop
+      appLink
     }
     reward_points
+    redeemMessage
   }
 }

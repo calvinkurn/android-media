@@ -274,14 +274,14 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
             spStatusInfoIcon!!.gone()
         } else if (boxType.equals(DEFAULT, ignoreCase = true)) {
 
-            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_info_icon_green))
+            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.saldodetails.R.drawable.ic_info_icon_green))
             spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.sp_bg_rounded_corners_green)
         } else if (boxType.equals(WARNING, ignoreCase = true)) {
-            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_info_icon_yellow))
-            spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.design.R.drawable.bg_rounded_corner_warning)
+            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.saldodetails.R.drawable.ic_info_icon_yellow))
+            spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_warning)
         } else if (boxType.equals(DANGER, ignoreCase = true)) {
-            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_info_icon_red))
-            spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.design.R.drawable.bg_rounded_corner_danger)
+            spStatusInfoIcon!!.setImageDrawable(MethodChecker.getDrawable(activity, com.tokopedia.saldodetails.R.drawable.ic_info_icon_red))
+            spKYCStatusLayout!!.background = resources.getDrawable(com.tokopedia.saldodetails.R.drawable.bg_rounded_corner_danger)
         }
     }
 

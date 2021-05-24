@@ -311,7 +311,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 result.uploadId
             }
             is UploadResult.Error -> {
-                ""
+                result.message
             }
         }
     }
