@@ -70,7 +70,7 @@ abstract class BaseNotificationItemViewHolder(
         val color: Int = if (element.isRead) {
             MethodChecker.getColor(container.context, Unify_N0)
         } else {
-            MethodChecker.getColor(container.context, Green_G100)
+            MethodChecker.getColor(container.context, R.color.notifcenter_dms_unread_notification)
         }
         container.setBackgroundColor(color)
     }
