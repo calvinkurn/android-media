@@ -268,6 +268,16 @@ class SrwLinearLayout : FrameLayout {
         loadingState?.hide()
     }
 
+    fun getStateInfo(): SrwState {
+        return SrwState(isExpanded, listener, latestState)
+    }
+
+    class SrwState(
+            private val isExpanded: Boolean,
+            private val listener: Listener? = null,
+            private val latestState: Resource<ChatSmartReplyQuestionResponse>? = null
+    )
+
     companion object {
         private val LAYOUT = R.layout.partial_topchat_srw
     }

@@ -2007,6 +2007,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun sendSrwQuestion(question: QuestionUiModel) {
         onSendAndReceiveMessage()
         val startTime = SendableViewModel.generateStartTime()
+        val srwState = rvSrw?.getStateInfo()
+        adapter.addSrwBubbleUiModel(srwState)
         presenter.sendAttachmentsAndSrw(
                 messageId,
                 question,

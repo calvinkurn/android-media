@@ -22,12 +22,14 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+import com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
@@ -49,6 +51,7 @@ class TopChatRoomAdapter constructor(
     private var topMostHeaderDateIndex: Int? = null
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val handler = Handler(Looper.getMainLooper())
+    private var offset = 0
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -374,6 +377,24 @@ class TopChatRoomAdapter constructor(
         handler.post {
             postResetReviewState(lastKnownPosition, review)
         }
+    }
+
+    fun addSrwBubbleUiModel(srwState: SrwLinearLayout.SrwState?) {
+        srwState ?: return
+        val uiModel = SrwBubbleUiModel(srwState)
+        visitables.add(offset, uiModel)
+        notifyItemInserted(offset)
+        offset++
+    }
+
+    override fun addElement(item: Visitable<*>) {
+        val indexToAdd = if (visitables.size < offset) {
+            visitables.size
+        } else {
+            offset
+        }
+        visitables.add(indexToAdd, item)
+        notifyItemInserted(indexToAdd)
     }
 
     private fun postResetReviewState(lastKnownPosition: Int, review: ReviewUiModel) {
