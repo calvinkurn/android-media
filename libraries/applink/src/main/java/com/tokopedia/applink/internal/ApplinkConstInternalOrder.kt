@@ -55,6 +55,7 @@ object ApplinkConstInternalOrder {
     const val MENUNGGU_KONFIRMASI = "5"
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
+    const val PATH_CANCELLATION_REQUEST = "cancellationrequest"
 
     // snapshot
     const val PARAM_ORDER_DETAIL_ID = "order_detail_id"
@@ -92,7 +93,7 @@ object ApplinkConstInternalOrder {
 
     const val CANCELLED = "$INTERNAL_SELLER/cancelled"
 
-    const val CANCELLATION_REQUEST = "$INTERNAL_SELLER/cancellationrequest"
+    const val CANCELLATION_REQUEST = "$INTERNAL_SELLER/$PATH_CANCELLATION_REQUEST"
 
     const val WAITING_PICKUP = "$INTERNAL_SELLER/waiting-pickup"
 
@@ -191,4 +192,6 @@ object ApplinkConstInternalOrder {
     const val PATH_SNAPSHOT = "snapshot"
 
     const val INTERNAL_ORDER_SNAPSHOT = "${DeeplinkConstant.SCHEME_INTERNAL}://$PATH_SNAPSHOT/$HOST_ORDER"
+
+    const val INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PATH_CANCELLATION_REQUEST"
 }
