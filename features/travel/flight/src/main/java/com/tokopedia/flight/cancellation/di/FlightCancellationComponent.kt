@@ -18,4 +18,7 @@ interface FlightCancellationComponent {
     fun inject(flightCancellationReasonFragment: FlightCancellationReasonFragment)
     fun inject(flightCancellationChooseReasonFragment: FlightCancellationChooseReasonFragment)
     fun inject(flightCancellationReviewFragment: FlightCancellationReviewFragment)
+
+    // Inject for cancellation navigation fragment
+    fun inject(flightCancellationPassengerFragment: com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationPassengerFragment)
 }

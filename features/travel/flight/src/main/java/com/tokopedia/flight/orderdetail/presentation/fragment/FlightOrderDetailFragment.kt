@@ -20,8 +20,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.flight.R
-import com.tokopedia.flight.cancellation.presentation.activity.FlightCancellationPassengerActivity
 import com.tokopedia.flight.cancellation.presentation.fragment.FlightCancellationPassengerFragment
+import com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity
 import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationListActivity
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailBrowserActivity
@@ -280,7 +280,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         }
 
         /* Render Insurance View */
-        if(data.insurances.isNotEmpty()) {
+        if (data.insurances.isNotEmpty()) {
             flightOrderDetailInsurance.visibility = View.VISIBLE
             flightOrderDetailInsurance.listener = object : FlightOrderDetailButtonsView.Listener {
                 override fun onTopButtonClicked() {}
@@ -289,8 +289,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
             }
 
-            data.insurances.forEach{
-                when(it.id){
+            data.insurances.forEach {
+                when (it.id) {
                     CODE_TRAVEL_INSURANCE -> isTravelInsurance = true
                     CODE_ZERO_CANCELLATION_INSURANCE -> isZeroCancellation = true
                 }
@@ -314,7 +314,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     )
             )
             flightOrderDetailInsurance.buildView()
-        }else{
+        } else {
             flightOrderDetailInsurance.visibility = View.GONE
         }
 
@@ -413,7 +413,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun navigateToCancellationPage(cancellationItems: List<FlightCancellationJourney>) {
-        val intent = FlightCancellationPassengerActivity.createIntent(
+//        val intent = FlightCancellationPassengerActivity.createIntent(
+//                requireContext(),
+//                flightOrderDetailViewModel.orderId,
+//                cancellationItems
+//        )
+        val intent = FlightCancellationActivity.createIntent(
                 requireContext(),
                 flightOrderDetailViewModel.orderId,
                 cancellationItems

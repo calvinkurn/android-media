@@ -91,7 +91,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
 
     /* Navigation Component */
-    implementation rootProject.ext.miscDependencies.navigationSafeArgs
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.navigationUiKtx
 
