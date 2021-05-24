@@ -540,6 +540,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         assertSrwCollapsed()
     }
 
+    // TODO: assert srw is expanded when reattach product after preview is closed in collapsed state
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
 
     private fun putProductAttachmentIntent(intent: Intent) {

@@ -253,6 +253,7 @@ class SrwLinearLayout : FrameLayout {
             listener?.trackViewSrw()
         }
         srwContentContainer?.show()
+        updateState()
     }
 
     private fun hideSrwContent() {
