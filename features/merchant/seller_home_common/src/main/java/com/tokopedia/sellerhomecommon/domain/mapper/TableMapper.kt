@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import android.graphics.Color
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
@@ -54,7 +55,7 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
                     val rowColumn: TableRowsUiModel = when (col.type) {
                         COLUMN_TEXT -> TableRowsUiModel.RowColumnText(col.value, width, firstTextColumn == col)
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
-                        else -> TableRowsUiModel.RowColumnHtml(col.value, width, firstTextColumn == col) //it's COLUMN_HTML
+                        else -> TableRowsUiModel.RowColumnHtml(col.value, width, firstTextColumn == col, getColorFromHtml(col.value)) //it's COLUMN_HTML
                     }
                     rows.add(rowColumn)
                 }
@@ -80,4 +81,49 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
             return@map TableHeaderUiModel(header.title, headerWidth, header == firstHeader)
         }
     }
+
+    /**
+     * A dumb but feasible way to parse html formatted string and get the text color value.
+     * Make sure that the html string passed should not contains full html documents
+     *
+     * @param   htmlString  Html formatted string
+     * @return  color of the text from html string
+     */
+    private fun getColorFromHtml(htmlString: String): Int? {
+        return try {
+            // Example: <font color = "red">Example Text</font>
+            val colorFromFontTagRegex = "<(.*)font(.+)color*=*(.+)".toRegex()
+            // Example: <span style=color:#d6001c;><b>Habis</b></span>
+            val colorFromStyleTagRegex = "(<+)(.+)style*=*(\"*)(.+)color*:*(.+)".toRegex()
+
+            val colorString =
+                    when {
+                        htmlString.matches(colorFromFontTagRegex) -> getColorFromFontTag(htmlString)
+                        htmlString.matches(colorFromStyleTagRegex) -> getColorFromStyleAttribute(htmlString)
+                        else -> null
+                    }
+
+            if (colorString.isNullOrEmpty()) {
+                null
+            } else {
+                Color.parseColor(colorString)
+            }
+        } catch (ex: Exception) {
+            null
+        }
+    }
+
+    private fun getColorFromFontTag(htmlString: String): String {
+        val colorFromFont = htmlString.substringAfter("color")
+        val indexOfFirstApostrophe = colorFromFont.indexOf("\"")
+        val indexOfSecondApostrophe = colorFromFont.indexOf("\"", indexOfFirstApostrophe + 1)
+        return colorFromFont.substring(indexOfFirstApostrophe + 1, indexOfSecondApostrophe)
+    }
+
+    private fun getColorFromStyleAttribute(htmlString: String): String {
+        return htmlString.substringAfter("background-color").substringAfter("color")
+                .substringBefore("\"").substringBefore(";")
+                .replace("[^A-Za-z0-9#]+".toRegex(), "")
+    }
+
 }
