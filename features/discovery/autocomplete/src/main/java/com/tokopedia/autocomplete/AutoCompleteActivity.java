@@ -24,6 +24,7 @@ import com.tokopedia.autocomplete.searchbar.SearchBarView;
 import com.tokopedia.autocomplete.suggestion.SuggestionFragment;
 import com.tokopedia.autocomplete.suggestion.SuggestionViewUpdateListener;
 import com.tokopedia.autocomplete.util.UrlParamHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
@@ -52,6 +53,8 @@ public class AutoCompleteActivity extends BaseActivity
 
     protected SuggestionFragment suggestionFragment;
     protected InitialStateFragment initialStateFragment;
+
+    private String baseSRPApplink = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +106,23 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void handleIntent(Intent intent) {
         SearchParameter searchParameter = getSearchParameterFromIntentUri(intent);
+        baseSRPApplink = getBaseSRPApplink(searchParameter);
+        removeBaseSRPApplink(searchParameter);
 
         handleIntentAutoComplete(searchParameter);
 
         if (intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             autocompleteTracking.eventSearchShortcut();
         }
+    }
+
+    private String getBaseSRPApplink(SearchParameter searchParameter) {
+        return searchParameter.get(SearchApiConst.BASE_SRP_APPLINK);
+    }
+
+    private void removeBaseSRPApplink(SearchParameter searchParameter) {
+        searchParameter.remove(SearchApiConst.BASE_SRP_APPLINK);
+
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
@@ -177,9 +191,16 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private String createSearchResultApplink() {
-        return ApplinkConstInternalDiscovery.SEARCH_RESULT
-                + "?"
-                + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
+        if (baseSRPApplink.isEmpty()) {
+            return ApplinkConstInternalDiscovery.SEARCH_RESULT
+                    + "?"
+                    + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
+        }
+        else {
+            return baseSRPApplink
+                    + "?"
+                    + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
+        }
     }
 
     private void sendVoiceSearchGTM(String keyword) {
