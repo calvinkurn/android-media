@@ -159,6 +159,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 totalShowcase
               }
               shopType
+              badgeURL
             }
             merchantVoucher {
                 vouchers {

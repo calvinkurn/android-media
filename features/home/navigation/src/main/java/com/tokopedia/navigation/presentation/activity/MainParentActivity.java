@@ -392,12 +392,14 @@ public class MainParentActivity extends BaseActivity implements
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
             this.currentFragment = fragment;
-            if (fragment instanceof OfficialHomeContainerFragment) {
-                if (getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY).equals(OS_KEY_MOBILE)) {
+            if (fragment instanceof OfficialHomeContainerFragment
+                    && getIntent().getExtras() != null
+                    && getIntent().getExtras().get(OfficialHomeContainerFragment.KEY_CATEGORY) != null) {
+                String keyCategory = getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY, "");
+                if (keyCategory.equals(OS_KEY_MOBILE)) {
                     ((OfficialHomeContainerFragment) fragment).selectFirstTab();
                 } else {
-                    String categoryId = getIntent().getExtras().getString(OfficialHomeContainerFragment.KEY_CATEGORY);
-                    ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(categoryId);
+                    ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(keyCategory);
                 }
             }
             selectFragment(fragment);
