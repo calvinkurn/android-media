@@ -268,6 +268,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {
-        getViewModel().onCategoryFilterClicked(option, isSelected)
+        getViewModel().onViewClickCategoryFilterChip(option, isSelected)
     }
 }

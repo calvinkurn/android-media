@@ -343,7 +343,7 @@ abstract class BaseSearchCategoryViewModel(
         isFilterPageOpenMutableLiveData.value = false
     }
 
-    fun onCategoryFilterClicked(option: Option, isSelected: Boolean) {
+    fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
         queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(option))
         filterController.refreshMapParameter(queryParam)
 

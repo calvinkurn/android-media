@@ -80,7 +80,7 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
             selectedCategoryFilter: CategoryFilterItemDataView,
             isSelected: Boolean
     ) {
-        searchViewModel.onCategoryFilterClicked(selectedCategoryFilter.option, isSelected)
+        searchViewModel.onViewClickCategoryFilterChip(selectedCategoryFilter.option, isSelected)
     }
 
     private fun `Then verify get search first page is called twice`() {
