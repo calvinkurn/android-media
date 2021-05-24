@@ -102,6 +102,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         }
     }
 
+    fun deleteKeyLocally(key:String){
+        editor?.let {
+            it.remove(key)
+            it.commit()
+        }
+    }
+
     fun fetchByType(listener: RemoteConfig.Listener?) {
         editor.clear().commit()
         fetch(listener)

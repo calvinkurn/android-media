@@ -34,13 +34,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
 
     companion object{
-        private const val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=1"
-        private const val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
-        private const val DEFAULT_BANNER_APPLINK_3 = ApplinkConst.PROMO
-
-        private const val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja500new.jpg"
-        private const val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros500new.jpg"
-        private const val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo500new.jpg"
         private const val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
         private const val PROMO_NAME_LEGO_6_AUTO_IMAGE = "/ - p%s - lego banner 6 auto - %s - %s"
 
@@ -501,7 +494,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createReminderWidget(source: ReminderEnum){
-        if (!isCache) visitableList.add(ReminderWidgetModel(source=source))
+        if (!isCache) visitableList.add(ReminderWidgetModel(source=source, id = generateReminderWidgetId(source)))
+    }
+
+    private fun generateReminderWidgetId(source: ReminderEnum): String {
+        val numberOfExistingSource = visitableList.filter {
+            it is ReminderWidgetModel && it.source.name == source.name
+        }.size
+        return source.name+(numberOfExistingSource+1)
     }
 
     private fun createRechargeBUWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
