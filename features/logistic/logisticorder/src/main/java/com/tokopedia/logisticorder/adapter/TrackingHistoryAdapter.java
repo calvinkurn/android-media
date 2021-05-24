@@ -65,7 +65,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.tracking_primary_color));
         }
 
-        if (!trackingHistoryData.get(position).getProof().getImageId().isEmpty()) {
+        if (trackingHistoryData.get(position).getProof().getImageId().isEmpty()) {
             holder.imageProof.setVisibility(View.GONE);
         } else {
             holder.imageProof.setVisibility(View.VISIBLE);
