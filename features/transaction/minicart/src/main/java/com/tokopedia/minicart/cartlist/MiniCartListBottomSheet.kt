@@ -8,20 +8,25 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.di.DaggerMiniCartListComponent
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidget
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
-class MiniCartListBottomSheet @Inject constructor() {
+class MiniCartListBottomSheet @Inject constructor() : MiniCartWidgetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var viewModel: MiniCartListViewModel
+    private var bottomSheet: BottomSheetUnify? = null
+    private var miniCartWidget: MiniCartWidget? = null
 
     fun show(shopIds: List<String>, fragment: Fragment, onDismiss: () -> Unit) {
         initializeInjector(fragment)
+        initializeView(shopIds, fragment, onDismiss)
         initializeViewModel(fragment)
-        initializeView(fragment, onDismiss)
         initializeCartData(shopIds)
     }
 
@@ -31,32 +36,37 @@ class MiniCartListBottomSheet @Inject constructor() {
 
     private fun initializeViewModel(fragment: Fragment) {
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartListViewModel::class.java)
-        viewModel.cartListUiModel.observe(fragment, {
+        viewModel.miniCartUiModel.observe(fragment, {
             Toast.makeText(fragment.activity, "SHOW CART LIST!", Toast.LENGTH_SHORT).show()
+            bottomSheet?.setTitle(it.title)
+            miniCartWidget?.updateData(it.miniCartWidgetData)
         })
     }
 
-    private fun initializeView(fragment: Fragment, onDismiss: () -> Unit) {
+    private fun initializeView(shopIds: List<String>, fragment: Fragment, onDismiss: () -> Unit) {
         fragment.activity?.let { fragmentActivity ->
-            val bottomSheet = BottomSheetUnify().apply {
+            bottomSheet = BottomSheetUnify().apply {
                 showCloseIcon = false
-                setTitle("Title")
                 showHeader = true
                 isDragable = true
                 showKnob = true
                 isHideable = true
                 clearContentPadding = true
                 customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-            }
-
-            bottomSheet.setOnDismissListener {
-                onDismiss.invoke()
+                setOnDismissListener {
+                    onDismiss.invoke()
+                }
             }
 
             val view = View.inflate(fragmentActivity, R.layout.layout_bottomsheet_mini_cart_list, null)
+            bottomSheet?.setChild(view)
+            bottomSheet?.show(fragment.parentFragmentManager, this.javaClass.simpleName)
 
-            bottomSheet.setChild(view)
-            bottomSheet.show(fragment.parentFragmentManager, this.javaClass.simpleName)
+            miniCartWidget = view.findViewById(R.id.mini_cart_widget)
+            miniCartWidget?.initialize(shopIds, fragment, this, false)
+            miniCartWidget?.totalAmount?.amountChevronView?.setOnClickListener {
+
+            }
         }
     }
 
@@ -70,6 +80,10 @@ class MiniCartListBottomSheet @Inject constructor() {
                         .inject(this)
             }
         }
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        // no-op
     }
 
 }
