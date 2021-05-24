@@ -11,7 +11,6 @@ import javax.inject.Inject
 class MiniCartWidgetViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
                                                   private val getMiniCartWidgetDataUseCase: GetMiniCartWidgetDataUseCase) : BaseViewModel(executorDispatchers.main) {
 
-    // Cart List UI Model
     private val _miniCartWidgetUiModel = MutableLiveData<MiniCartWidgetUiModel>()
     val miniCartWidgetUiModel: LiveData<MiniCartWidgetUiModel>
         get() = _miniCartWidgetUiModel

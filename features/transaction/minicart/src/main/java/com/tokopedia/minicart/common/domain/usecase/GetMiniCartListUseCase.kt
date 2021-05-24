@@ -18,7 +18,7 @@ class GetMiniCartListUseCase @Inject constructor(private val graphqlRepository: 
 
     fun setParams(shopIds: List<String>) {
         params = mapOf(
-                "dummy" to 1,
+//                "dummy" to 1,
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_ADDITIONAL to mapOf(
                         PARAM_KEY_SHOP_IDS to shopIds,
