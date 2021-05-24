@@ -79,9 +79,9 @@ class DigitalCartViewModel @Inject constructor(
     val isNeedOtp: LiveData<String>
         get() = _isNeedOtp
 
-    private val _isSuccessCancelVoucherCart = MutableLiveData<Result<CancelVoucherData>>()
-    val isSuccessCancelVoucherCart: LiveData<Result<CancelVoucherData>>
-        get() = _isSuccessCancelVoucherCart
+    private val _cancelVoucherData = MutableLiveData<Result<CancelVoucherData>>()
+    val cancelVoucherData: LiveData<Result<CancelVoucherData>>
+        get() = _cancelVoucherData
 
     private val _totalPrice = MutableLiveData<Double>()
     val totalPrice: LiveData<Double>
@@ -218,16 +218,16 @@ class DigitalCartViewModel @Inject constructor(
         return {
             if (it.response.success) {
                 setPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
-                _isSuccessCancelVoucherCart.postValue(Success(it.response))
+                _cancelVoucherData.postValue(Success(it.response))
             } else {
-                _isSuccessCancelVoucherCart.postValue(Fail(MessageErrorException(it.response.error)))
+                _cancelVoucherData.postValue(Fail(MessageErrorException(it.response.error)))
             }
         }
     }
 
     private fun onErrorCancelVoucher(): (Throwable) -> Unit {
         return {
-            _isSuccessCancelVoucherCart.postValue(Fail(it))
+            _cancelVoucherData.postValue(Fail(it))
         }
     }
 

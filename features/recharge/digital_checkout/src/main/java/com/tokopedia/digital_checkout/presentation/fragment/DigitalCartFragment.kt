@@ -180,7 +180,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             closeViewWithMessageAlert(it ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
         })
 
-        viewModel.isSuccessCancelVoucherCart.observe(viewLifecycleOwner, Observer {
+        viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     checkoutBottomViewWidget.promoButtonDescription = it.data.defaultEmptyPromoMessage

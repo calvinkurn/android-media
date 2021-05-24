@@ -428,8 +428,8 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.cancelVoucherCart("")
 
         // then
-        assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Success)
-        assert((digitalCartViewModel.isSuccessCancelVoucherCart.value as Success).data.success)
+        assert(digitalCartViewModel.cancelVoucherData.value is Success)
+        assert((digitalCartViewModel.cancelVoucherData.value as Success).data.success)
     }
 
     @Test
@@ -444,8 +444,8 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.cancelVoucherCart("")
 
         // then
-        assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Fail)
-        assert((digitalCartViewModel.isSuccessCancelVoucherCart.value as Fail).throwable.message == errorMessage)
+        assert(digitalCartViewModel.cancelVoucherData.value is Fail)
+        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message == errorMessage)
     }
 
     @Test
@@ -460,7 +460,7 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.cancelVoucherCart("")
 
         // then
-        assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Fail)
+        assert(digitalCartViewModel.cancelVoucherData.value is Fail)
     }
 
     @Test
