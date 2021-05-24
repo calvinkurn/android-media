@@ -226,7 +226,10 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun setFilterProductCount(countText: String) {
-        val productCountText = "$countText produk"
+        val productCountText = String.format(
+                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                countText
+        )
 
         sortFilterBottomSheet?.setResultCountText(productCountText)
         categoryChooserBottomSheet?.setResultCountText(productCountText)
