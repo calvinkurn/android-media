@@ -8,7 +8,6 @@ import com.tokopedia.shop.score.performance.domain.mapper.ShopScoreMapper
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.domain.usecase.GetShopPerformanceUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -21,9 +20,6 @@ abstract class ShopPerformanceViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     protected lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
