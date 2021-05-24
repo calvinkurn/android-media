@@ -198,6 +198,7 @@ include "features:transaction:checkout"
 include "features:transaction:promo_checkout_marketplace"
 include "features:transaction:sellerorder"
 include "features:transaction:oneclickcheckout"
+include "features:transaction:minicart"
 
 include "features:communication:push-notification-common"
 
