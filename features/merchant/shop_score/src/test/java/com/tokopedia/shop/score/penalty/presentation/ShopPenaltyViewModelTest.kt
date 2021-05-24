@@ -9,10 +9,12 @@ import com.tokopedia.shop.score.util.observeAwaitValue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
 
     @Test
