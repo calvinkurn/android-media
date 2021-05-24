@@ -77,7 +77,10 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                 is Success -> renderPaymentList(it.data)
                 is Fail -> showErrorUi(it.throwable)
                 is EmptyState -> showEmptyState()
-                is LoadingState -> handleSwipeRefresh(true)
+                is LoadingState -> {
+                    handleSwipeRefresh(true)
+                    loadingDialogGroup.gone()
+                }
                 is ProgressState -> showProgressForDelayedFetch()
                 else -> handleSwipeRefresh(false)
             }
@@ -131,6 +134,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun renderPaymentList(data: ArrayList<BasePaymentModel>) {
         handleSwipeRefresh(false)
+        loadingDialogGroup.gone()
         noPendingTransactionEmptyState.gone()
         paymentListGlobalError.gone()
         recycler_view.visible()
@@ -139,6 +143,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun showErrorUi(throwable: Throwable) {
         handleSwipeRefresh(false)
+        loadingDialogGroup.gone()
         noPendingTransactionEmptyState.gone()
         when (throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
@@ -214,17 +219,17 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         }
     }
 
-    fun showToast(toastMessage: String?, toastType: Int) {
+    private fun showToast(toastMessage: String?, toastType: Int) {
         Toaster.make(recycler_view, toastMessage ?: "", Toaster.LENGTH_LONG, toastType)
     }
 
-    fun handleSwipeRefresh(show: Boolean) {
+    private fun handleSwipeRefresh(show: Boolean) {
         swipe_refresh_layout.isRefreshing = show
     }
 
     private fun showProgressForDelayedFetch() {
         handleSwipeRefresh(false)
-        showToast("Tunggu sebentar ya", Toaster.TYPE_NORMAL)
+        loadingDialogGroup.visible()
     }
 
     companion object {

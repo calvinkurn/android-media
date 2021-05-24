@@ -1,6 +1,5 @@
 package com.tokopedia.pms.paymentlist.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -41,21 +40,21 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun onCountReceived(count: Int) {
-        if (count >= 20) _paymentListResultLiveData.postValue(ProgressState)
+        if (count >= 40) _paymentListResultLiveData.postValue(ProgressState)
         else _paymentListResultLiveData.postValue(LoadingState)
         getPaymentList("")
 
-        Log.e("PMS:onCountReceived", count.toString())
+        //Log.e("PMS:onCountReceived", count.toString())
     }
 
     private fun onCountFailed(throwable: Throwable) {
         _paymentListResultLiveData.postValue(LoadingState)
         getPaymentList("")
-        Log.e("PMS:onCountReceived", throwable.message.toString())
+        //Log.e("PMS:onCountReceived", throwable.message.toString())
     }
 
     private fun getPaymentList(lastCursor: String = "") {
-        Log.e("PMS:getPaymentList", "start ${System.currentTimeMillis()}")
+        //Log.e("PMS:getPaymentList", "start ${System.currentTimeMillis()}")
         paymentListUseCase.cancelJobs()
         paymentListUseCase.getPaymentList(
             ::onPaymentListSuccess,
@@ -97,13 +96,13 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun combinePendingTransactions() {
-        Log.e("PMS:getPaymentList", "mapper ${System.currentTimeMillis()} ${gqlPaymentList.size}")
+        //Log.e("PMS:getPaymentList", "mapper ${System.currentTimeMillis()} ${gqlPaymentList.size}")
         if (gqlPaymentList.isNullOrEmpty())
             _paymentListResultLiveData.postValue(EmptyState)
         else
             mapper.mapResponseToRenderPaymentList(gqlPaymentList,
                 onSuccess = {
-                    Log.e("PMS:getPaymentList", "end ${System.currentTimeMillis()} ${it.size}")
+                    //Log.e("PMS:getPaymentList", "end ${System.currentTimeMillis()} ${it.size}")
                     showCombinedPaymentList(it)
                 }, onError = { onPaymentListError(it) })
     }
