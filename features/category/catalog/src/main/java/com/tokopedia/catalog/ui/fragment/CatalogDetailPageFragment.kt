@@ -127,11 +127,11 @@ class CatalogDetailPageFragment : Fragment(),
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
         activity?.let { observer ->
+            userSession = UserSession(observer)
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
             showShimmer()
-            userSession = UserSession(observer)
         }
 
         setupRecyclerView(view)

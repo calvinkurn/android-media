@@ -17,7 +17,7 @@ class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUs
     fun getProductCatalog(catalogId: String, userId : String, device : String) {
         viewModelScope.launchCatchError(
                 block = {
-                    catalogDetailUseCase.getCatalogDetail(catalogId,catalogDetailDataModel)
+                    catalogDetailUseCase.getCatalogDetail(catalogId,userId,device,catalogDetailDataModel)
                 },
                 onError = {
                     catalogDetailDataModel.value = Fail(it)

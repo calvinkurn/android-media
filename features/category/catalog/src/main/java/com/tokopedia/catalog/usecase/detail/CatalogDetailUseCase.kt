@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 class CatalogDetailUseCase @Inject constructor(private val catalogDetailRepository: CatalogDetailRepository) {
 
-    suspend fun getCatalogDetail(catalogID : String ,
+    suspend fun getCatalogDetail(catalogId : String , userId : String, device : String,
                                  catalogDetailDataModel: MutableLiveData<Result<CatalogDetailDataModel>>)  {
-        val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogID)
+        val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogId, userId, device)
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
         if(data != null)
             catalogDetailDataModel.value = Success(mapIntoModel(data))
