@@ -666,8 +666,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun showUpgradePmProStickyView() {
+        val isAutoExtendEnabled = getAutoExtendEnabled()
         val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
                 && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
+                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue() && isAutoExtendEnabled
         view?.viewPmUpgradePmPro?.isVisible = shouldShowView
     }
 
