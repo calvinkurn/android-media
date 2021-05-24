@@ -55,7 +55,6 @@
 
         <activity
             android:name=".note.view.activity.ShopNoteDetailActivity"
-            android:exported="true"
             android:label="@string/note_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
