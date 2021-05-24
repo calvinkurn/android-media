@@ -206,7 +206,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
     private var rv: RecyclerView? = null
-    private var rvSrw: SrwLinearLayout? = null
+    private var rvSrw: SrwFrameLayout? = null
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
     private var sendButton: IconUnify? = null
@@ -240,7 +240,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initSrw() {
-        rvSrw?.initialize(this, object : SrwLinearLayout.Listener {
+        rvSrw?.initialize(this, object : SrwFrameLayout.Listener {
             override fun onRetrySrw() {
                 presenter.getSmartReplyWidget(messageId)
             }

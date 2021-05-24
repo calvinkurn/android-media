@@ -31,7 +31,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
-class SrwLinearLayout : FrameLayout {
+class SrwFrameLayout : FrameLayout {
 
     private var chatSmartReplyQuestion = ChatSmartReplyQuestion()
     private val typeFactory = SrwTypeFactoryImpl()
@@ -297,7 +297,7 @@ class SrwLinearLayout : FrameLayout {
 }
 
 /**
- * Adapter used specifically for [SrwLinearLayout]
+ * Adapter used specifically for [SrwFrameLayout]
  */
 class SrwAdapter(
         srwTypeFactory: SrwTypeFactory

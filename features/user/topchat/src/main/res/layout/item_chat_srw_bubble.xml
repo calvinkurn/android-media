@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="end">
 
-    <com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
+    <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
         android:id="@+id/chat_srw_bubble"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

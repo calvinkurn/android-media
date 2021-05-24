@@ -29,7 +29,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselLis
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
-import com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
+import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
@@ -381,7 +381,7 @@ class TopChatRoomAdapter constructor(
     }
 
     fun addSrwBubbleUiModel(
-            srwState: SrwLinearLayout.SrwState?,
+            srwState: SrwFrameLayout.SrwState?,
             products: List<SendablePreview>
     ) {
         srwState ?: return

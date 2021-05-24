@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
-import com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
+import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 class SrwBubbleViewHolder constructor(
@@ -13,7 +13,7 @@ class SrwBubbleViewHolder constructor(
         private val listener: Listener?
 ) : AbstractViewHolder<SrwBubbleUiModel>(itemView) {
 
-    private val srwLayout: SrwLinearLayout? = itemView?.findViewById(R.id.chat_srw_bubble)
+    private val srwLayout: SrwFrameLayout? = itemView?.findViewById(R.id.chat_srw_bubble)
 
     interface Listener {
         fun trackClickSrwBubbleQuestion(

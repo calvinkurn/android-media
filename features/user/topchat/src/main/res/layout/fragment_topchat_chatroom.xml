@@ -179,7 +179,7 @@
                     android:paddingEnd="@dimen/dp_topchat_14"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <com.tokopedia.topchat.chatroom.view.custom.SrwLinearLayout
+                <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
                     android:id="@+id/rv_srw"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
