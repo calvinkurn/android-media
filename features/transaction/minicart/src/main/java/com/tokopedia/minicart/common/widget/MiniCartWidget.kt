@@ -25,9 +25,6 @@ class MiniCartWidget @JvmOverloads constructor(
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var miniCartListBottomSheet: MiniCartListBottomSheet
-
     private var view: View? = null
     var totalAmount: TotalAmount? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
@@ -68,6 +65,7 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.let {
             it.enableAmountChevron(true)
             it.amountChevronView.setOnClickListener {
+                val miniCartListBottomSheet = MiniCartListBottomSheet()
                 miniCartListBottomSheet.show(shopIds, fragment, ::onMiniCartBottomSheetDismissed)
             }
         }

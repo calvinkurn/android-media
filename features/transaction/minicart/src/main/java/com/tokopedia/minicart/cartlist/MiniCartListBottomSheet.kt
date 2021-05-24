@@ -5,8 +5,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
+import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.di.DaggerMiniCartListComponent
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
@@ -14,7 +20,9 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
-class MiniCartListBottomSheet @Inject constructor() : MiniCartWidgetListener {
+class MiniCartListBottomSheet :
+        MiniCartWidgetListener,
+        MiniCartListActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -22,6 +30,8 @@ class MiniCartListBottomSheet @Inject constructor() : MiniCartWidgetListener {
     lateinit var viewModel: MiniCartListViewModel
     private var bottomSheet: BottomSheetUnify? = null
     private var miniCartWidget: MiniCartWidget? = null
+    private var rvMiniCartList: RecyclerView? = null
+    private var adapter: MiniCartListAdapter? = null
 
     fun show(shopIds: List<String>, fragment: Fragment, onDismiss: () -> Unit) {
         initializeInjector(fragment)
@@ -40,6 +50,7 @@ class MiniCartListBottomSheet @Inject constructor() : MiniCartWidgetListener {
             Toast.makeText(fragment.activity, "SHOW CART LIST!", Toast.LENGTH_SHORT).show()
             bottomSheet?.setTitle(it.title)
             miniCartWidget?.updateData(it.miniCartWidgetData)
+            adapter?.addVisitableList(it.visitables)
         })
     }
 
@@ -67,6 +78,8 @@ class MiniCartListBottomSheet @Inject constructor() : MiniCartWidgetListener {
             miniCartWidget?.totalAmount?.amountChevronView?.setOnClickListener {
 
             }
+
+            intializeRecyclerView(view, fragment)
         }
     }
 
@@ -82,8 +95,28 @@ class MiniCartListBottomSheet @Inject constructor() : MiniCartWidgetListener {
         }
     }
 
+    private fun intializeRecyclerView(view: View, fragment: Fragment) {
+        rvMiniCartList = view.findViewById(R.id.rv_mini_cart_list)
+        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this)
+        adapter = MiniCartListAdapter(adapterTypeFactory)
+        rvMiniCartList?.adapter = adapter
+        rvMiniCartList?.layoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
+    }
+
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         // no-op
+    }
+
+    override fun onDeleteClicked() {
+
+    }
+
+    override fun onQuantityChanged() {
+
+    }
+
+    override fun onNotesChanged() {
+
     }
 
 }
