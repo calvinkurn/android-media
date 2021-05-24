@@ -173,12 +173,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     }
                   }
                 }
-                meta {
-                  is_os
-                  is_pm
-                  is_bebas_ongkir
-                  bo_image_url
-                }
               }
             }
         """

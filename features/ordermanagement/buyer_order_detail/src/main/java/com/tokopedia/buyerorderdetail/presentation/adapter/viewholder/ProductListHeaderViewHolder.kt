@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -28,7 +29,7 @@ class ProductListHeaderViewHolder(
     override fun bind(element: ProductListUiModel.ProductListHeaderUiModel?) {
         element?.let {
             this.element = it
-            setupShopBadge(it.shopBadge)
+            setupShopBadge(it.shopBadgeUrl)
             setupShopName(it.shopName)
         }
     }
@@ -41,8 +42,8 @@ class ProductListHeaderViewHolder(
                 if (oldItem is ProductListUiModel.ProductListHeaderUiModel && newItem is ProductListUiModel.ProductListHeaderUiModel) {
                     itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = newItem
-                    if (oldItem.shopBadge != newItem.shopBadge) {
-                        setupShopBadge(newItem.shopBadge)
+                    if (oldItem.shopBadgeUrl != newItem.shopBadgeUrl) {
+                        setupShopBadge(newItem.shopBadgeUrl)
                     }
                     if (oldItem.shopName != newItem.shopName) {
                         setupShopName(newItem.shopName)
@@ -75,11 +76,11 @@ class ProductListHeaderViewHolder(
         }
     }
 
-    private fun setupShopBadge(shopBadge: Int) {
-        when (shopBadge) {
-            0 -> hideShopBadge()
-            1 -> showPowerMerchantBadge()
-            2 -> showOfficialShopBadge()
+    private fun setupShopBadge(shopBadgeUrl: String) {
+        if (shopBadgeUrl.isBlank()) {
+            hideShopBadge()
+        } else {
+            showShopBadge(shopBadgeUrl)
         }
     }
 
@@ -91,11 +92,9 @@ class ProductListHeaderViewHolder(
         itemView.icBuyerOrderDetailSeeShopBadge?.gone()
     }
 
-    private fun showPowerMerchantBadge() {
-        itemView.icBuyerOrderDetailSeeShopBadge?.setImage(IconUnify.BADGE_PM_FILLED)
-    }
-
-    private fun showOfficialShopBadge() {
-        itemView.icBuyerOrderDetailSeeShopBadge?.setImage(IconUnify.BADGE_OS_FILLED)
+    private fun showShopBadge(url: String) {
+        itemView.icBuyerOrderDetailSeeShopBadge?.let {
+            ImageHandler.loadImage2(it, url, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
+        }
     }
 }

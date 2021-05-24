@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/spacing_lvl4"
     android:layout_marginTop="@dimen/buyer_order_detail_header_top_margin"
     android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:animateLayoutChanges="true"
     android:paddingBottom="6dp">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -52,14 +52,13 @@
         app:typographyType="heading_6"
         tools:text="Rockerpower Shopz" />
 
-    <com.tokopedia.iconunify.IconUnify
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icBuyerOrderDetailSeeShopBadge"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:translationY="-1.3dp"
-        app:icon_name="BADGE_PM_FILLED"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailShopName"
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailShopName"
         app:layout_constraintHorizontal_bias="1"

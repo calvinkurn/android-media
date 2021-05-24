@@ -10,7 +10,7 @@ data class ProductListUiModel(
 ) {
     data class ProductListHeaderUiModel(
             val header: String,
-            val shopBadge: Int,
+            val shopBadgeUrl: String,
             val shopId: String,
             val shopName: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {

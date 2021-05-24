@@ -12,7 +12,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
-                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.meta, buyerOrderDetail.orderId),
+                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId),
                 shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment)
         )
     }
@@ -42,10 +42,10 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta, orderId: String): ProductListUiModel {
+    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String): ProductListUiModel {
         return ProductListUiModel(
                 productList = mapProductList(products, orderId),
-                productListHeaderUiModel = mapProductListHeaderUiModel(shop, meta)
+                productListHeaderUiModel = mapProductListHeaderUiModel(shop)
         )
     }
 
@@ -194,10 +194,10 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapProductListHeaderUiModel(shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta): ProductListUiModel.ProductListHeaderUiModel {
+    private fun mapProductListHeaderUiModel(shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop): ProductListUiModel.ProductListHeaderUiModel {
         return ProductListUiModel.ProductListHeaderUiModel(
                 header = BuyerOrderDetailConst.SECTION_HEADER_PRODUCT_LIST,
-                shopBadge = mapShopBadge(meta.isOs, meta.isPm),
+                shopBadgeUrl = shop.badgeUrl,
                 shopName = shop.shopName,
                 shopId = shop.shopId
         )

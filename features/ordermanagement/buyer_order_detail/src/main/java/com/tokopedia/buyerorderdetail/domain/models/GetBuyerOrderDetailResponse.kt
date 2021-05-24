@@ -24,8 +24,6 @@ data class GetBuyerOrderDetailResponse(
                 val invoice: String = "",
                 @SerializedName("invoice_url")
                 val invoiceUrl: String = "",
-                @SerializedName("meta")
-                val meta: Meta = Meta(),
                 @SerializedName("order_id")
                 val orderId: String = "0",
                 @SerializedName("order_status")
@@ -100,17 +98,6 @@ data class GetBuyerOrderDetailResponse(
                     val popup: Button.Popup = Button.Popup(),
                     @SerializedName("url")
                     val url: String = ""
-            )
-
-            data class Meta(
-                    @SerializedName("is_os")
-                    val isOs: Boolean = false,
-                    @SerializedName("is_pm")
-                    val isPm: Boolean = false,
-                    @SerializedName("is_bebas_ongkir")
-                    val isBebasOngkir: Boolean = false,
-                    @SerializedName("bo_image_url")
-                    val boImageUrl: String = "false"
             )
 
             data class OrderStatus(
@@ -222,24 +209,15 @@ data class GetBuyerOrderDetailResponse(
                         @SerializedName("street")
                         val street: String = ""
                 )
-
-                data class ShippingInfo(
-                        @SerializedName("notes")
-                        val notes: String = "",
-                        @SerializedName("title")
-                        val title: String = "",
-                        @SerializedName("url_detail")
-                        val urlDetail: String = "",
-                        @SerializedName("url_text")
-                        val urlText: String = ""
-                )
             }
 
             data class Shop(
                     @SerializedName("shop_id")
                     val shopId: String = "0",
                     @SerializedName("shop_name")
-                    val shopName: String = ""
+                    val shopName: String = "",
+                    @SerializedName("badge_url")
+                    val badgeUrl: String = ""
             )
 
             data class TickerInfo(
