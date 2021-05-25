@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bg_container_pm_status"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/bg_header_bronze"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/containerDescPmSection"/>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/potentialPowerMerchantWidget"
             android:layout_width="match_parent"
