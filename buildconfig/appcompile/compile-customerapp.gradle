@@ -117,6 +117,7 @@ include "features:logistic:logisticcart"
 include "features:logistic:manageaddress"
 include "features:logistic:editshipping"
 include "features:logistic:localizationchooseaddress"
+include "features:logistic:localizationchooseaddress_common"
 
 include "features:media:mediauploader"
 include "features:media:media-common"
@@ -199,6 +200,7 @@ include "features:transaction:checkout"
 include "features:transaction:promo_checkout_marketplace"
 include "features:transaction:sellerorder"
 include "features:transaction:oneclickcheckout"
+include "features:transaction:minicart"
 
 include "features:communication:push-notification-common"
 

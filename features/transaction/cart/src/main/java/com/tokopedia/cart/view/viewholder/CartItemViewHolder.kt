@@ -155,7 +155,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     private fun renderActionDelete(data: CartItemHolderData) {
         binding.btnDeleteCart.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemDeleteButtonClicked(data, adapterPosition, parentPosition)
+                actionListener?.onCartItemDeleteButtonClicked(data)
             }
         }
         binding.btnDeleteCart.show()
@@ -253,7 +253,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun createProductInfoText(it: String): Typography {
         return Typography(itemView.context).apply {
-            setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
+            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             setType(Typography.BODY_3)
             text = if (binding.layoutProductInfo.childCount > 0) ", $it" else it
         }
@@ -448,17 +448,17 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
                     setNotesWidth()
                 }
-                tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             } else {
                 // No notes at all
                 etRemark.visibility = View.GONE
                 tvLabelRemarkTitle.visibility = View.GONE
                 tvRemark.visibility = View.GONE
                 tvNoteCharCounter.visibility = View.GONE
-                tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
+                tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_add_note)
                 tvLabelRemarkOption.visibility = View.VISIBLE
                 etRemark.setText("")
-                tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 tvLabelRemarkOption.setPadding(0, 0, 0, 0)
             }
         }
@@ -500,12 +500,12 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         }
         qtyEditorCart.setSubstractListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-                actionListener?.onCartItemQuantityMinusButtonClicked(data, adapterPosition, parentPosition)
+                actionListener?.onCartItemQuantityMinusButtonClicked()
             }
         }
         qtyEditorCart.setAddClickListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-                actionListener?.onCartItemQuantityPlusButtonClicked(data, adapterPosition, parentPosition)
+                actionListener?.onCartItemQuantityPlusButtonClicked()
             }
         }
         qtyEditorCart.editText.setOnFocusChangeListener { v, hasFocus ->
@@ -543,10 +543,10 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         val textMoveToWishlist = binding.textMoveToWishlist
         if (data.cartItemData?.originData?.isWishlisted == true && action.id == ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
-            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             textMoveToWishlist.setOnClickListener { }
         } else if (data.cartItemData?.originData?.isWishlisted == false && action.id == ACTION_WISHLIST) {
-            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             textMoveToWishlist.setOnClickListener {
                 actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
                         ?: 0, binding.iuImageProduct)
@@ -577,7 +577,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             val needToUpdateView = cartItemHolderData?.cartItemData?.updatedData?.quantity != qty
             if (needToUpdateView) {
                 if (qty <= 0) {
-                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition, needToUpdateView)
+                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition)
                 }
                 binding.qtyEditorCart.setValue(qty)
             }

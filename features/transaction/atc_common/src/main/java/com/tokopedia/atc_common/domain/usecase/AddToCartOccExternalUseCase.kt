@@ -1,8 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.AtcConstant.MUTATION_ATC_OCC_EXTERNAL
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.atc_common.data.model.response.AddToCartOccExternalGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.analytics.AddToCartOccExternalAnalytics
@@ -10,6 +8,8 @@ import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -19,7 +19,7 @@ import javax.inject.Named
 class AddToCartOccExternalUseCase @Inject constructor(@Named(MUTATION_ATC_OCC_EXTERNAL) private val query: String,
                                                       private val graphqlUseCase: GraphqlUseCase,
                                                       private val addToCartDataMapper: AddToCartDataMapper,
-                                                      private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AddToCartDataModel>() {
+                                                      private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_PRODUCT_ID = "REQUEST_PARAM_KEY_PRODUCT_ID"
@@ -56,7 +56,7 @@ class AddToCartOccExternalUseCase @Inject constructor(@Named(MUTATION_ATC_OCC_EX
         return mapOf(
                 PARAM to mapOf(
                         PARAM_PRODUCT_ID to productId,
-                        PARAM_KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+                        KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
                 )
         )
     }
