@@ -37,6 +37,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.chatcommon)

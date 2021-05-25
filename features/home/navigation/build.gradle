@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.accountHome)
