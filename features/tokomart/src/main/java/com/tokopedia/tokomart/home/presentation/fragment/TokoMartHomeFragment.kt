@@ -38,7 +38,7 @@ class TokoMartHomeFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeLiveData()
-        getLayoutData()
+        getHomeLayout()
     }
 
     override fun onAttach(context: Context) {
@@ -61,12 +61,22 @@ class TokoMartHomeFragment: Fragment() {
     }
 
     private fun observeLiveData() {
-        observe(viewModel.homeLayout) {
-            if (it is Success) adapter.submitList(it.data)
+        observe(viewModel.homeLayoutList) {
+            if (it is Success) {
+                adapter.submitList(it.data)
+                // TO-DO: Lazy Load Data
+                viewModel.getLayoutData()
+            }
+        }
+
+        observe(viewModel.homeLayoutData) {
+            if(it is Success) {
+                adapter.submitList(it.data)
+            }
         }
     }
 
-    private fun getLayoutData() {
+    private fun getHomeLayout() {
         viewModel.getHomeLayout()
     }
 }
