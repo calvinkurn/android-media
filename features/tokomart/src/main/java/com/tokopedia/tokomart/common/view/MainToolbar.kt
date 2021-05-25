@@ -35,7 +35,6 @@ open class MainToolbar : Toolbar {
     protected var userSession: UserSessionInterface? = null
     protected var screenName: String? = ""
 
-    private var wishlistNewPage = false
     private var badgeViewCart: BadgeView? = null
     private var remoteConfig: RemoteConfig? = null
 
@@ -53,7 +52,7 @@ open class MainToolbar : Toolbar {
         init(context, attrs)
     }
 
-    fun setInboxNumber(badgeNumber: Int) {
+    fun setCartCounter(badgeNumber: Int) {
         if (btnCart != null) {
             if (badgeViewCart == null) badgeViewCart = BadgeView(context)
             badgeViewCart?.bindTarget(btnCart)
@@ -86,7 +85,7 @@ open class MainToolbar : Toolbar {
         btnSharing?.setOnClickListener { _ ->
             if (userSession!!.isLoggedIn) {
                 searchBarAnalytics?.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName)
-                if (wishlistNewPage) RouteManager.route(context, ApplinkConst.NEW_WISHLIST) else RouteManager.route(context, ApplinkConst.WISHLIST)
+                // to do : open bottomsheet?
             } else {
                 searchBarAnalytics?.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName)
                 RouteManager.route(context, ApplinkConst.LOGIN)
@@ -95,7 +94,7 @@ open class MainToolbar : Toolbar {
         btnCart?.setOnClickListener { _ ->
             if (userSession!!.isLoggedIn) {
                 searchBarAnalytics?.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
-                RouteManager.route(context, ApplinkConst.INBOX)
+                RouteManager.route(context, ApplinkConst.CART)
             } else {
                 searchBarAnalytics?.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
                 RouteManager.route(context, ApplinkConst.LOGIN)

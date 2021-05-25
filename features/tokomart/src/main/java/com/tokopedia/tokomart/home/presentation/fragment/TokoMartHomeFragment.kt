@@ -222,6 +222,7 @@ class TokoMartHomeFragment: Fragment() {
         oldToolbar?.setAfterInflationCallable(afterInflationCallable)
         oldToolbar?.show()
         navToolbar?.gone()
+        viewModel.getNotification()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -277,7 +278,7 @@ class TokoMartHomeFragment: Fragment() {
     private fun isNavOld(): Boolean {
         return try {
 //            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
-            false
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             true
@@ -366,6 +367,11 @@ class TokoMartHomeFragment: Fragment() {
         observe(viewModel.searchHint) {
             setHint(it)
         }
+
+        // only used to count the old toolbar's notif
+        observe(viewModel.notificationCounter) {
+            oldToolbar?.setCartCounter(it.totalCart)
+        }
     }
 
     private fun getHomeLayout() {
@@ -451,7 +457,6 @@ class TokoMartHomeFragment: Fragment() {
                                 isFirstInstall(),
                                 shouldShowTransition(),
                                 durationAutoTransition)
-                        oldToolbar?.setInboxNumber(30)
                     },
                     ifNavRevamp = {
                         navToolbar?.setupSearchbar(

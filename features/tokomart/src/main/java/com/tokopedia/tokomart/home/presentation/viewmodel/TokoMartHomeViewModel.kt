@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
+import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.ADDITIONAL_WIDGETS
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
@@ -25,6 +27,7 @@ class TokoMartHomeViewModel @Inject constructor(
         private val getHomeLayoutListUseCase: GetHomeLayoutListUseCase,
         private val getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase,
         private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
+        private val getNotificationUseCase: GetNotificationUseCase,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -34,10 +37,14 @@ class TokoMartHomeViewModel @Inject constructor(
         get() = _homeLayoutData
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
+    val notificationCounter: LiveData<TopNavNotificationModel>
+        get() = _notificationCounter
 
     private val _homeLayoutList = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _homeLayoutData = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _searchHint = MutableLiveData<SearchPlaceholder>()
+    private val _notificationCounter = MutableLiveData<TopNavNotificationModel>()
+
 
     private var layoutList = listOf<Visitable<*>>()
 
@@ -75,6 +82,14 @@ class TokoMartHomeViewModel @Inject constructor(
             getKeywordSearchUseCase.params = getKeywordSearchUseCase.createParams(isFirstInstall, deviceId, userId)
             val data = getKeywordSearchUseCase.executeOnBackground()
             _searchHint.postValue(data.searchData)
+        }) {}
+    }
+
+    // only used to count the old toolbar's notif
+    fun getNotification() {
+        launchCatchError(coroutineContext, block = {
+            val topNavNotificationModel = getNotificationUseCase.executeOnBackground()
+            _notificationCounter.postValue(topNavNotificationModel)
         }) {}
     }
 
