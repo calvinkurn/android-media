@@ -19,7 +19,9 @@ import kotlinx.android.synthetic.main.widget_pm_registration_header.view.*
  */
 
 class RegistrationHeaderWidget(
-        itemView: View) : AbstractViewHolder<WidgetRegistrationHeaderUiModel>(itemView) {
+        itemView: View,
+        private val listener: Listener
+) : AbstractViewHolder<WidgetRegistrationHeaderUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_pm_registration_header
@@ -32,14 +34,11 @@ class RegistrationHeaderWidget(
         setupTermsList(element)
     }
 
-    private fun setupView(element: WidgetRegistrationHeaderUiModel) {
-        with(itemView) {
-            val shopInfo = element.shopInfo
-            viewPmHeaderBackground.setBackgroundResource(R.drawable.bg_pm_registration_header)
-            tvPmHeaderNewSellerLabel.visibility = if (shopInfo.isNewSeller) View.VISIBLE else View.GONE
-
-            setTickerVisibility(shopInfo)
+    private fun setupView(element: WidgetRegistrationHeaderUiModel) = with(itemView) {
+        tvPmHeaderTerms.setOnSectionHeaderClickListener { isExpanded ->
+            setOnExpandChanged(isExpanded, element)
         }
+        tvPmHeaderTerms.setEligibility(getPmEligibilityStatus(element))
     }
 
     private fun getPmEligibilityStatus(element: WidgetRegistrationHeaderUiModel): Boolean {
@@ -60,15 +59,16 @@ class RegistrationHeaderWidget(
         }
     }
 
+    private fun showTermList(terms: List<RegistrationTermUiModel>) {
+        termAdapter.setItems(terms)
+        termAdapter.notifyDataSetChanged()
+    }
+
     private fun setTickerVisibility(shopInfo: PMShopInfoUiModel) {
-        val isEligibleShopScore = !shopInfo.isNewSeller && shopInfo.isEligibleShopScore
+        val isEligibleShopScore = !shopInfo.isNewSeller && (shopInfo.isEligibleShopScore() || shopInfo.isEligibleShopScorePmPro())
         val hasActiveProduct = shopInfo.isNewSeller && shopInfo.hasActiveProduct
         val isTickerVisible = shopInfo.kycStatusId == KYCStatusId.PENDING && (isEligibleShopScore || hasActiveProduct)
-        itemView.tickerPmHeader.visibility = if (isTickerVisible) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
+        itemView.tickerPmHeader.isVisible = isTickerVisible
     }
 
     private fun setupTermsList(element: WidgetRegistrationHeaderUiModel) {
@@ -76,7 +76,12 @@ class RegistrationHeaderWidget(
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }
-            adapter = RegistrationTermAdapter(element.terms)
+            adapter = termAdapter
         }
+        showTermList(element.registrationTerms)
+    }
+
+    interface Listener {
+
     }
 }

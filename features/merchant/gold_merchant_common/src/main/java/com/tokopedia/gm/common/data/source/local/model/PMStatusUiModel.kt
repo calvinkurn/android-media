@@ -8,7 +8,6 @@ import com.tokopedia.gm.common.constant.PMConstant
 
 data class PMStatusUiModel(
         val status: String = "",
-        val pmTier: Int = PMConstant.PMTierType.NA,
         val expiredTime: String = "",
         val isOfficialStore: Boolean = false,
         val autoExtendEnabled: Boolean = true
