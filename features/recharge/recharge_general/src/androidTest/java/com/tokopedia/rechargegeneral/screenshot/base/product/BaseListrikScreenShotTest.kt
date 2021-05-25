@@ -1,4 +1,4 @@
-package com.tokopedia.rechargegeneral.screenshot.base
+package com.tokopedia.rechargegeneral.screenshot.base.product
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -8,24 +8,34 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.RechargeGeneralLoginMockResponseConfig
+import com.tokopedia.rechargegeneral.RechargeGeneralMockResponseConfig
 import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralInputViewHolder
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGeneralProductSelectViewHolder
+import com.tokopedia.rechargegeneral.screenshot.base.BaseRechargeGeneralScreenShotTest
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
 
 abstract class BaseListrikScreenShotTest: BaseRechargeGeneralScreenShotTest() {
 
-    override fun getMockConfig(): MockModelConfig = RechargeGeneralLoginMockResponseConfig(RechargeGeneralProduct.LISTRIK)
-
+    override fun getMockConfig(): MockModelConfig {
+        return when (isLogin()) {
+            true -> RechargeGeneralLoginMockResponseConfig(RechargeGeneralProduct.LISTRIK)
+            false -> RechargeGeneralMockResponseConfig(RechargeGeneralProduct.LISTRIK)
+        }
+    }
     override fun getMenuId(): Int = 113
 
     override fun getCategoryId(): Int = 3
 
+    override fun filePrefix(): String = "rg_listrik"
+
     override fun run_specific_product_test() {
         select_operator()
-        select_phone_number()
+        if (isLogin()) {
+            select_phone_number()
+        }
         select_product()
     }
 

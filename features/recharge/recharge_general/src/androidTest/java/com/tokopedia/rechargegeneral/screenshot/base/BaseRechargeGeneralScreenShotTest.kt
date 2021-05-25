@@ -23,6 +23,7 @@ import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.StringBuilder
 
 abstract class BaseRechargeGeneralScreenShotTest {
 
@@ -41,7 +42,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
             putExtra(RechargeGeneralActivity.PARAM_CATEGORY_ID, getCategoryId())
         }
         mActivityRule.launchActivity(intent)
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        instrumentAuthLogin()
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -51,19 +52,19 @@ abstract class BaseRechargeGeneralScreenShotTest {
 
         // ss visible screen
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "visible_screen_pdp")
+            takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
         }
 
         // ss full layout
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val test = mActivityRule.activity.findViewById<SwipeToRefresh>(R.id.recharge_general_swipe_refresh_layout)
-            takeScreenShotVisibleViewInScreen(test, filePrefix(), "swipe_to_refresh")
+            takeScreenShotVisibleViewInScreen(test, generatePrefix(), "swipe_to_refresh")
         }
 
         // ss operator select
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val operatorView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_select)
-            takeScreenShotVisibleViewInScreen(operatorView, filePrefix(), "operator_select")
+            takeScreenShotVisibleViewInScreen(operatorView, generatePrefix(), "operator_select")
         }
 
         Thread.sleep(3000)
@@ -73,18 +74,23 @@ abstract class BaseRechargeGeneralScreenShotTest {
                 R.id.rv_digital_product,
                 0,
                 getRecyclerViewItemCount(R.id.rv_digital_product),
-                "${filePrefix()}-rv_digital_product")
+                "${generatePrefix()}-rv_digital_product")
 
         run_specific_product_test()
         see_promo()
     }
 
-    abstract fun run_specific_product_test()
-
     private fun see_promo() {
-        findViewAndScreenShot(R.id.product_view_pager, filePrefix(), "view_pager")
-        findViewAndScreenShot(R.id.tab_layout, filePrefix(), "tab_layout")
+        findViewAndScreenShot(R.id.product_view_pager, generatePrefix(), "view_pager")
+        if (isLogin())
+            findViewAndScreenShot(R.id.tab_layout, generatePrefix(), "tab_layout")
     }
+
+    private fun instrumentAuthLogin() {
+        if (isLogin()) InstrumentationAuthHelper.loginInstrumentationTestUser1()
+    }
+
+    abstract fun run_specific_product_test()
 
     abstract fun getMockConfig(): MockModelConfig
 
@@ -94,7 +100,23 @@ abstract class BaseRechargeGeneralScreenShotTest {
 
     abstract fun forceDarkMode(): Boolean
 
+    abstract fun isLogin(): Boolean
+
     abstract fun filePrefix(): String
+
+    protected fun generatePrefix(): String {
+        val prefix = StringBuilder()
+        prefix.append(filePrefix())
+        prefix.append( when (isLogin()) {
+            true -> "-login"
+            false -> "-nonlogin"
+        })
+        prefix.append( when (forceDarkMode()) {
+            true -> "-dark"
+            false -> "-light"
+        })
+        return prefix.toString()
+    }
 
     protected fun getRecyclerViewItemCount(resId: Int): Int {
         val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(resId)
