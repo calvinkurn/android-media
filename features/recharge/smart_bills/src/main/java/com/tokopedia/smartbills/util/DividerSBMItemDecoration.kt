@@ -17,6 +17,10 @@ class DividerSBMItemDecoration(context: Context) : RecyclerView.ItemDecoration()
     lateinit var mDivider: Drawable
 
     init {
+        initDivider(context)
+    }
+
+    fun initDivider(context: Context){
         mDivider = context.getResources().getDrawable(com.tokopedia.abstraction.R.drawable.bg_line_separator_thin)
     }
 
