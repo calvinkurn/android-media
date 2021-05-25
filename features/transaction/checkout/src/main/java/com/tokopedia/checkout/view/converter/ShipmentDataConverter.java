@@ -194,6 +194,8 @@ public class ShipmentDataConverter {
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
             shipmentCartItemModel.setDisableChangeCourier(groupShop.isDisableChangeCourier());
+            shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
+            shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getDescription());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -204,6 +206,7 @@ public class ShipmentDataConverter {
         if (shipmentCartItemModel.isAllItemError()) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 cartItemModel.setError(true);
+                cartItemModel.setShopError(true);
             }
         }
     }

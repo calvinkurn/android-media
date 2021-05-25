@@ -94,6 +94,10 @@ public class ShipmentCartItemModel implements Parcelable {
     private boolean isShippingBorderRed;
     private boolean isDisableChangeCourier;
 
+    // Courier Selection Error
+    private String courierSelectionErrorTitle;
+    private String courierSelectionErrorDescription;
+
     public ShipmentCartItemModel() {
     }
 
@@ -151,6 +155,8 @@ public class ShipmentCartItemModel implements Parcelable {
         hasSetDropOffLocation = in.readByte() != 0;
         listPromoCodes = in.createStringArrayList();
         isDisableChangeCourier = in.readByte() != 0;
+        courierSelectionErrorTitle = in.readString();
+        courierSelectionErrorDescription = in.readString();
     }
 
     @Override
@@ -208,6 +214,8 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeByte((byte) (hasSetDropOffLocation ? 1 : 0));
         dest.writeStringList(listPromoCodes);
         dest.writeByte((byte) (isDisableChangeCourier ? 1 : 0));
+        dest.writeString(courierSelectionErrorTitle);
+        dest.writeString(courierSelectionErrorDescription);
     }
 
     @Override
@@ -735,6 +743,22 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setDisableChangeCourier(boolean disableChangeCourier) {
         isDisableChangeCourier = disableChangeCourier;
+    }
+
+    public String getCourierSelectionErrorTitle() {
+        return courierSelectionErrorTitle;
+    }
+
+    public void setCourierSelectionErrorTitle(String courierSelectionErrorTitle) {
+        this.courierSelectionErrorTitle = courierSelectionErrorTitle;
+    }
+
+    public String getCourierSelectionErrorDescription() {
+        return courierSelectionErrorDescription;
+    }
+
+    public void setCourierSelectionErrorDescription(String courierSelectionErrorDescription) {
+        this.courierSelectionErrorDescription = courierSelectionErrorDescription;
     }
 
     @Override

@@ -7,9 +7,9 @@ import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations

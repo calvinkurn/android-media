@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.viewholder
 
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.text.TextUtils
 import android.view.View
@@ -48,7 +46,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     fun bindViewHolder(cartItem: CartItemModel, listener: ShipmentItemListener?) {
         shipmentItemListener = listener
-        if (cartItem.isError) {
+        if (cartItem.isError && !cartItem.isShopError) {
             showShipmentWarning(cartItem)
         } else {
             hideShipmentWarning()
@@ -117,8 +115,8 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     private fun renderPurchaseProtection(cartItem: CartItemModel) {
-        mRlPurchaseProtection.visibility = if (cartItem.isProtectionAvailable) View.VISIBLE else View.GONE
-        if (cartItem.isProtectionAvailable) {
+        mRlPurchaseProtection.visibility = if (cartItem.isProtectionAvailable && !cartItem.isError) View.VISIBLE else View.GONE
+        if (cartItem.isProtectionAvailable && !cartItem.isError) {
             mIconTooltip.setOnClickListener { shipmentItemListener?.navigateToWebView(cartItem.protectionLinkUrl) }
             mTvPPPLinkText.text = cartItem.protectionTitle
             mTvPPPPrice.text = cartItem.protectionSubTitle
@@ -175,10 +173,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     private fun setImageFilterGrayScale() {
-        val matrix = ColorMatrix()
-        matrix.setSaturation(0f)
-        val disabledColorFilter = ColorMatrixColorFilter(matrix)
-        mIvProductImage.colorFilter = disabledColorFilter
         mIvProductImage.imageAlpha = IMAGE_ALPHA_DISABLED
     }
 
@@ -193,7 +187,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     }
 
     private fun setImageFilterNormal() {
-        mIvProductImage.colorFilter = null
         mIvProductImage.imageAlpha = IMAGE_ALPHA_ENABLED
     }
 

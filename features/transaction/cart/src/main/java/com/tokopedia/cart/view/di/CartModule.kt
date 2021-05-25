@@ -9,7 +9,6 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.R
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
@@ -18,10 +17,10 @@ import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers

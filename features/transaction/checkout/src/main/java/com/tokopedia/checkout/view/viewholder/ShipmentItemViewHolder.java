@@ -111,6 +111,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography customTickerDescription;
     private Typography customTickerAction;
 
+    private LinearLayout llFrameItemProductContainer;
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
@@ -246,6 +247,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         customTickerError = itemView.findViewById(R.id.checkout_custom_ticker_error);
         customTickerDescription = itemView.findViewById(R.id.checkout_custom_ticker_description);
         customTickerAction = itemView.findViewById(R.id.checkout_custom_ticker_action);
+        llFrameItemProductContainer = itemView.findViewById(R.id.ll_frame_item_product_container);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         tvProductPrice = itemView.findViewById(R.id.tv_product_price);
@@ -589,7 +591,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     @SuppressLint("StringFormatInvalid")
     private void renderFirstCartItem(CartItemModel cartItemModel) {
-        if (cartItemModel.isError()) {
+        if (cartItemModel.isError() && !cartItemModel.isShopError()) {
             showShipmentWarning(cartItemModel);
         } else {
             hideShipmentWarning();
@@ -663,8 +665,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderPurchaseProtection(CartItemModel cartItemModel) {
-        rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
-        if (cartItemModel.isProtectionAvailable()) {
+        rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() && !cartItemModel.isError() ? View.VISIBLE : View.GONE);
+        if (cartItemModel.isProtectionAvailable() && !cartItemModel.isError()) {
             mIconTooltip.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl()));
             tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
@@ -716,7 +718,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutTradeInShippingInfo.setVisibility(View.GONE);
 
         if (shipmentCartItemModel.isError()) {
-            renderErrorCourierState();
+            renderErrorCourierState(shipmentCartItemModel);
             return;
         }
 
@@ -745,7 +747,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderErrorCourierState() {
+    private void renderErrorCourierState(ShipmentCartItemModel shipmentCartItemModel) {
         llShippingOptionsContainer.setVisibility(View.VISIBLE);
         layoutStateNoSelectedShipping.setVisibility(View.GONE);
         layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
@@ -753,8 +755,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
         layoutStateFailedShipping.setVisibility(View.GONE);
 
-        labelErrorShippingTitle.setText("Pengiriman tidak tersedia");
-        labelErrorShippingDescription.setText("Error yang aneh dan panjang sekali, Error yang aneh dan panjang sekali, Error yang aneh dan panjang sekali");
+        labelErrorShippingTitle.setText(shipmentCartItemModel.getCourierSelectionErrorTitle());
+        labelErrorShippingDescription.setText(shipmentCartItemModel.getCourierSelectionErrorDescription());
         layoutStateHasErrorShipping.setVisibility(View.VISIBLE);
 
         llShippingExperienceStateLoading.setVisibility(View.GONE);
@@ -1820,10 +1822,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void setImageFilterGrayScale() {
-        ColorMatrix matrix = new ColorMatrix();
-        matrix.setSaturation(0);
-        ColorMatrixColorFilter disabledColorFilter = new ColorMatrixColorFilter(matrix);
-        ivProductImage.setColorFilter(disabledColorFilter);
         ivProductImage.setImageAlpha(IMAGE_ALPHA_DISABLED);
     }
 
@@ -1838,7 +1836,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void setImageFilterNormal() {
-        ivProductImage.setColorFilter(null);
         ivProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
     }
 

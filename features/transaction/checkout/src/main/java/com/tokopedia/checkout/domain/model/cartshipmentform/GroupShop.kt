@@ -31,5 +31,6 @@ data class GroupShop(
         var listPromoCodes: List<String> = emptyList(),
         var shipmentInformationData: ShipmentInformationData = ShipmentInformationData(),
         var isDisableChangeCourier: Boolean = false,
-        var boMetadata: BoMetadata = BoMetadata()
+        var boMetadata: BoMetadata = BoMetadata(),
+        var courierSelectionErrorData: CourierSelectionErrorData = CourierSelectionErrorData()
 ) : Parcelable

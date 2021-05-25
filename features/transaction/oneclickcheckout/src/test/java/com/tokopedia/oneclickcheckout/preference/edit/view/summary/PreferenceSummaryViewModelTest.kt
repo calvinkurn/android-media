@@ -1,6 +1,8 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.localizationchooseaddress.util.ChosenAddress
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
@@ -11,8 +13,6 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.create.FakeCreatePr
 import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.FakeDeletePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

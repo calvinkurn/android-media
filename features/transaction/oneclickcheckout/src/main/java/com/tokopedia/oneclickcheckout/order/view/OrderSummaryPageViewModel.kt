@@ -4,6 +4,7 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.util.ChosenAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
@@ -25,7 +26,6 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequ
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.processor.*
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper

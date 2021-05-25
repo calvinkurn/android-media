@@ -63,7 +63,7 @@ class ShipmentMapper @Inject constructor() {
             campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
             lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply?.data)
             promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
-            errorTicker = "shipmentAddressFormDataResponse.errorTicker"
+            errorTicker = shipmentAddressFormDataResponse.errorTicker
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
             isHasError = checkCartHasError(this)
             popUpMessage = shipmentAddressFormDataResponse.popUpMessage
@@ -93,7 +93,7 @@ class ShipmentMapper @Inject constructor() {
         for (groupAddress in shipmentAddressFormDataResponse.groupAddress) {
             groupAddressListResult.add(
                     GroupAddress().apply {
-                        isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty() || true
+                        isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                         errorMessage = convertToString(groupAddress.errors)
                         userAddress = mapUserAddress(groupAddress)
                         groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
@@ -110,7 +110,7 @@ class ShipmentMapper @Inject constructor() {
         groupAddress.groupShop.forEach {
             groupShopListResult.add(
                     GroupShop().apply {
-                        isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty() || true
+                        isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                         errorMessage = convertToString(it.errors)
                         shippingId = it.shippingId
                         spId = it.spId
@@ -136,6 +136,7 @@ class ShipmentMapper @Inject constructor() {
                         firstProductErrorIndex = mapProducts.third
                         isDisableChangeCourier = it.isDisableChangeCourier
                         boMetadata = it.boMetadata
+                        courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
                     }
             )
         }
@@ -148,21 +149,9 @@ class ShipmentMapper @Inject constructor() {
                             isDisablePPP: Boolean,
                             shopTypeInfoData: ShopTypeInfoData): Triple<MutableList<Product>, Int, Int> {
         val productListResult = arrayListOf<Product>()
-        var i = 0
         var firstErrorIndex = -1
         var productErrorCount = 0
-        val p = arrayListOf<com.tokopedia.checkout.data.model.response.shipmentaddressform.Product>()
-        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-//        p.addAll(groupShop.products)
-        p.forEachIndexed { index, it ->
+        groupShop.products.forEachIndexed { index, it ->
             val productResult = Product().apply {
                 analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
                         it,
@@ -175,16 +164,9 @@ class ShipmentMapper @Inject constructor() {
                 if (it.tradeInInfo.isValidTradeIn) {
                     productPrice = it.tradeInInfo.newDevicePrice.toLong()
                 }
-                i++
-                if (i == 9) {
-                    isError = true
-                    errorMessage = "error testing"
-                    errorMessageDescription = ""
-                } else {
-                    isError = !it.errors.isNullOrEmpty()
-                    errorMessage = if (it.errors.isNotEmpty()) it.errors[0] else ""
-                    errorMessageDescription = if (it.errors.size >= 2) it.errors[1] else ""
-                }
+                isError = !it.errors.isNullOrEmpty()
+                errorMessage = if (it.errors.isNotEmpty()) it.errors[0] else ""
+                errorMessageDescription = if (it.errors.size >= 2) it.errors[1] else ""
                 if (isError) {
                     productErrorCount++
                     if (firstErrorIndex == -1) {
