@@ -26,6 +26,7 @@ object BuyerConsts {
     const val PARAM_STATUS_ID = "status_id"
     const val PARAM_STATUS_INFO = "status_info"
     const val PARAM_CACHE_ID = "cache_id"
+    const val PARAM_CACHE_MANAGER_ID = "cache_manager_id"
     const val CANCEL_BUYER_REQUEST_TWO_LAYER = 105
     const val ACTION_OK = "OK"
     const val LAINNYA = "lainnya"

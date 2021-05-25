@@ -81,7 +81,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         BuyerOrderDetailContentAnimator(swipeRefreshBuyerOrderDetail, rvBuyerOrderDetail)
     }
     private val cacheManager: SaveInstanceCacheManager by lazy {
-        SaveInstanceCacheManager(requireContext())
+        SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
         BuyerOrderDetailTypeFactory(this, navigator)

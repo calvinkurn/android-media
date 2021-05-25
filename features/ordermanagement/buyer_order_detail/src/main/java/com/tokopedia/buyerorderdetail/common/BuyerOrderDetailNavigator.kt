@@ -123,6 +123,7 @@ class BuyerOrderDetailNavigator(
                 val cacheId = cacheManager.generateUniqueRandomNumber()
                 cacheManager.put(cacheId, payload)
                 intent.putExtra(BuyerOrderDetailConst.PARAM_CACHE_ID, cacheId)
+                intent.putExtra(BuyerOrderDetailConst.PARAM_CACHE_MANAGER_ID, cacheManager.id)
                 fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_REQUEST_CANCEL_ORDER)
                 applyTransition()
             }

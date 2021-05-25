@@ -18,10 +18,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<OrderDetailsComponent> {
 
     override fun getNewFragment(): Fragment? {
-        val cacheManager = SaveInstanceCacheManager(this)
         val bundle = Bundle()
         val cacheId = intent.getStringExtra(BuyerConsts.PARAM_CACHE_ID).orEmpty()
-        if (cacheId.isNotEmpty()) {
+        val cacheManagerId = intent.getStringExtra(BuyerConsts.PARAM_CACHE_MANAGER_ID).orEmpty()
+        if (cacheId.isNotEmpty() && cacheManagerId.isNotEmpty()) {
+            val cacheManager = SaveInstanceCacheManager(this, cacheManagerId)
             bundle.putAll(cacheManager.get(cacheId, Bundle::class.java, bundle))
         } else if (intent.extras != null) {
             bundle.putAll(intent.extras ?: Bundle())

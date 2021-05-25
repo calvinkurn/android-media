@@ -20,6 +20,7 @@ object BuyerOrderDetailConst {
 
     const val PARAM_BODY_CANCEL_REQUESTED = "body_cancel_requested"
     const val PARAM_CACHE_ID = "cache_id"
+    const val PARAM_CACHE_MANAGER_ID = "cache_manager_id"
     const val PARAM_INVOICE = "param_invoice"
     const val PARAM_IS_CANCEL_ALREADY_REQUESTED = "is_cancel_already_requested"
     const val PARAM_JSON_LIST_PRODUCT = "param_json_list_product"
