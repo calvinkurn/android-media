@@ -3,11 +3,14 @@ package com.tokopedia.seller.menu.common.view.uimodel.base
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoUiModel
 
 
 sealed class ShopType(@LayoutRes val shopTypeLayoutRes: Int,
                       @DrawableRes val shopTypeHeaderRes: Int,
-                      @DrawableRes val shopTypeHeaderIconRes: Int? = null) {
+                      @DrawableRes val shopTypeHeaderIconRes: Int? = null,
+                      val userShopInfoUiModel: UserShopInfoUiModel? = null
+) {
 
     companion object {
         val REGULAR_MERCHANT_LAYOUT = R.layout.setting_shop_status_regular
@@ -30,4 +33,11 @@ sealed class PowerMerchantStatus : ShopType(POWER_MERCHANT_LAYOUT, POWER_MERCHAN
 sealed class RegularMerchant : ShopType(REGULAR_MERCHANT_LAYOUT, REGULAR_MERCHANT_HEADER) {
     object NeedUpgrade: RegularMerchant()
     object NeedVerification: RegularMerchant()
+}
+
+sealed class PowerMerchantProStatus : ShopType(POWER_MERCHANT_LAYOUT, POWER_MERCHANT_HEADER) {
+    object Advanced: PowerMerchantProStatus()
+    object Expert: PowerMerchantProStatus()
+    object Ultimate: PowerMerchantProStatus()
+    object NotActive: PowerMerchantProStatus()
 }
