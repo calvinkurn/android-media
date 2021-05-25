@@ -2,8 +2,8 @@ package com.tokopedia.applink.salam
 
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperSalam{
@@ -32,7 +32,7 @@ object DeeplinkMapperSalam{
     }
 
     fun getRemoteConfigSalamUmrahEnabler(context: Context): Boolean{
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SALAM_UMRAH))
     }
 }

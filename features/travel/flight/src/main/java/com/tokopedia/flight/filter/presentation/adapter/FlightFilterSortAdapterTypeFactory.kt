@@ -8,7 +8,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.adapter.viewholder.*
 import com.tokopedia.flight.filter.presentation.model.*
-import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 
 /**
  * @author by jessica on 2020-02-20

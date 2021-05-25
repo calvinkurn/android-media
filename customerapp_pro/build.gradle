@@ -264,6 +264,8 @@ android {
 
 dependencies {
 
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation project(rootProject.ext.features.customer_mid_app)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.coreNetwork)
@@ -306,7 +308,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.measurementApi
 
     if (rootProject.ext.debugToolsEnabled) {
@@ -375,8 +376,6 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation 'com.facebook.fresco:fresco:1.10.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore

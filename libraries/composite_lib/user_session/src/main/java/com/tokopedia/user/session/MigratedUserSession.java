@@ -81,9 +81,6 @@ public class MigratedUserSession {
     }
 
     private void internalCleanKey(String prefName, String keyName) {
-        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
-        prefName = newKeys.first;
-        keyName = newKeys.second;
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.remove(keyName).apply();

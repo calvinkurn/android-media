@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -263,3 +264,8 @@ inline fun FragmentManager.commit(
 
 val List<GraphqlError>.defaultErrorMessage: String
     get() = mapNotNull { it.message }.joinToString(separator = ", ")
+
+
+fun dismissToaster() {
+    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+}
