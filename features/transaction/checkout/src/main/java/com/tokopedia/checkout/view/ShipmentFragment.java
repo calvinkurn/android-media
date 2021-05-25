@@ -62,7 +62,7 @@ import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
-import com.tokopedia.localizationchooseaddress.util.ChosenAddress;
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;

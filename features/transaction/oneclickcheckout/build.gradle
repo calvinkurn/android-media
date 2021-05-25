@@ -75,6 +75,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
