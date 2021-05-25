@@ -38,7 +38,6 @@ interface KYCConstant {
         const val KTP_RETAKE = 1
         const val FACE_RETAKE = 2
         const val USER_EXIT = -9
-        const val KYC_OVERLAY_COLOR = "#ae000000"
         const val KYC_AB_KEYWORD = "Liveness Detection 2"
         const val QUERY_GET_KYC_PROJECT_INFO = "get_kyc_project_info"
     }
