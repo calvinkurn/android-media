@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.manageaddress.di.shoplocation.DaggerShopLocationComponent
-import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
+import com.tokopedia.manageaddress.di.DaggerShopLocationComponent
+import com.tokopedia.manageaddress.di.ShopLocationComponent
 
 /**
  * Deeplink: SHOP_SETTINGS_ADDRESS

@@ -3,7 +3,9 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaResponse
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaWrapper
@@ -19,7 +21,9 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiM
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.*
+import com.tokopedia.seller.menu.domain.query.ShopScoreLevelResponse
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
+import com.tokopedia.seller.menu.domain.usecase.GetShopScoreLevelUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -40,6 +44,8 @@ open class SellerMenuViewModelTestFixture {
     private lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
     private lateinit var getSellerMenuNotifications: GetSellerNotificationUseCase
     private lateinit var getShopScoreUseCase: GetShopScoreUseCase
+    private lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+    private lateinit var getShopScoreLevelUseCase: GetShopScoreLevelUseCase
     private lateinit var userSession: UserSessionInterface
 
     protected lateinit var viewModel: SellerMenuViewModel
@@ -50,16 +56,28 @@ open class SellerMenuViewModelTestFixture {
         getProductListMetaUseCase = mockk(relaxed = true)
         getSellerMenuNotifications = mockk(relaxed = true)
         getShopScoreUseCase = mockk(relaxed = true)
+        getShopInfoPeriodUseCase = mockk(relaxed = true)
+        getShopScoreLevelUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
 
         viewModel = SellerMenuViewModel(
-            getAllShopInfoUseCase,
-            getProductListMetaUseCase,
-            getSellerMenuNotifications,
-            getShopScoreUseCase,
-            userSession,
-            coroutineTestRule.dispatchers
+                getAllShopInfoUseCase,
+                getShopInfoPeriodUseCase,
+                getProductListMetaUseCase,
+                getSellerMenuNotifications,
+                getShopScoreUseCase,
+                getShopScoreLevelUseCase,
+                userSession,
+                coroutineTestRule.dispatchers
         )
+    }
+
+    protected fun onGetShopInfoPeriodUseCase_thenReturn(response: ShopInfoPeriodUiModel) {
+        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } returns response
+    }
+
+    protected fun onGetGetShopInfoPeriodUseCase_thenReturnError(error: Throwable) {
+        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } throws error
     }
 
     protected fun onGetAllShopInfoUseCase_thenReturn(response: Pair<PartialSettingResponse, PartialSettingResponse>) {
@@ -76,6 +94,14 @@ open class SellerMenuViewModelTestFixture {
 
     protected fun onGetShopScore_thenReturn(error: Throwable) {
         coEvery { getShopScoreUseCase.getData(any()) } throws error
+    }
+
+    protected fun onGetShopScoreLevel_thenReturn(shopId: String, shopScoreLevel: ShopScoreLevelResponse.ShopScoreLevel.Result) {
+        coEvery { getShopScoreLevelUseCase.execute(shopId) } returns shopScoreLevel
+    }
+
+    protected fun onGetShopScoreLevel_thenReturn(shopId: String, error: Throwable) {
+        coEvery { getShopScoreLevelUseCase.execute(shopId) } throws  error
     }
 
     protected fun onGetProductListMeta_thenReturn(tabs: List<Tab>) {
@@ -95,64 +121,66 @@ open class SellerMenuViewModelTestFixture {
     }
 
     protected fun onGetNotifications_thenReturn(error: Throwable) {
-        coEvery { getSellerMenuNotifications.executeOnBackground() } throws  error
+        coEvery { getSellerMenuNotifications.executeOnBackground() } throws error
     }
 
     protected fun createShopSettingsResponse(
-        totalFollowers: Long = 35000,
-        topAdsBalance: Float = 2000f,
-        isAutoTopUp: Boolean = true,
-        shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
-        shopType: PowerMerchantStatus = PowerMerchantStatus.Active
+            totalFollowers: Long = 35000,
+            topAdsBalance: Float = 2000f,
+            isAutoTopUp: Boolean = true,
+            shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
+            shopType: PowerMerchantStatus = PowerMerchantStatus.Active
     ): Pair<PartialSettingResponse, PartialSettingResponse> {
         val shopInfoResponse = PartialShopSettingSuccessInfo(
-            shopType,
-            totalFollowers,
-            shopBadgeUrl
+                shopType,
+                totalFollowers,
+                shopBadgeUrl
         )
 
         val topAdsInfoResponse = PartialTopAdsSettingSuccessInfo(
-            OthersBalance(),
-            topAdsBalance,
-            isAutoTopUp
+                OthersBalance(),
+                topAdsBalance,
+                isAutoTopUp
         )
 
         return Pair(shopInfoResponse, topAdsInfoResponse)
     }
 
     protected fun createShopInfoUiModel(
-        totalFollowers: Long = 35000,
-        topAdsBalance: Float = 2000f,
-        isAutoTopUp: Boolean = true,
-        shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
-        shopType: PowerMerchantStatus = PowerMerchantStatus.Active
+            totalFollowers: Long = 35000,
+            topAdsBalance: Float = 2000f,
+            isAutoTopUp: Boolean = true,
+            shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
+            shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
+            shopScore: Int = 70,
+            shopAge: Int = 65
     ): ShopInfoUiModel {
 
         val shopInfoResponse = PartialShopSettingSuccessInfo(
-            shopType,
-            totalFollowers,
-            shopBadgeUrl
+                shopType,
+                totalFollowers,
+                shopBadgeUrl
         )
 
         val topAdsInfoResponse = PartialTopAdsSettingSuccessInfo(
-            OthersBalance(),
-            topAdsBalance,
-            isAutoTopUp
+                OthersBalance(),
+                topAdsBalance,
+                isAutoTopUp
         )
 
         return ShopInfoUiModel(SettingShopInfoUiModel(
-            shopInfoResponse,
-            topAdsInfoResponse,
-            userSession
-        ))
+                shopInfoResponse,
+                topAdsInfoResponse,
+                userSession
+        ), shopScore = shopScore, shopAge = shopAge)
     }
 
     protected fun createNotificationResponse(
-        newOrder: Int,
-        readyToShip: Int,
-        totalUnread: Int,
-        talk: Int,
-        inResolution: Int
+            newOrder: Int,
+            readyToShip: Int,
+            totalUnread: Int,
+            talk: Int,
+            inResolution: Int
     ): SellerMenuNotificationResponse {
         val orderStatus = SellerOrderStatus(newOrder, readyToShip, inResolution)
         val notifCenterTotalUnread = NotifCenterTotalUnread(totalUnread)
