@@ -5,11 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.raw.ComparisionModel
-import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
@@ -26,7 +24,7 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
         const val CATALOG_DETAIL = 0
         const val CATALOG_FEATURE = 1
         const val FIRST_POSITION = 0
-        const val HYPHEN = "- -"
+        const val EMPTY_VALUE = "- -"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -73,7 +71,7 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
             itemView.findViewById<CardUnify>(R.id.comparision_card).setOnClickListener {
                 comparisionCatalog?.id?.let {catalogId ->
                     if(catalogId.isNotEmpty()){
-                        RouteManager.route(itemView.context,"${CatalogConstant.CATALOG_URL}${catalogId}")
+
                     }
                 }
             }
@@ -107,7 +105,7 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
         if(model != null && !model.key.isNullOrEmpty()){
             typography.text = model.key
         }else {
-            typography.text = HYPHEN
+            typography.text = EMPTY_VALUE
         }
     }
 
@@ -115,7 +113,7 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
         if(model != null && !model.value.isNullOrEmpty()){
             typography.text = model.value
         }else {
-            typography.text = HYPHEN
+            typography.text = EMPTY_VALUE
         }
     }
 }
