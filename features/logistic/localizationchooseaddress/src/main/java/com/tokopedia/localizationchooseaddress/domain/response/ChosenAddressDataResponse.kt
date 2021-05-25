@@ -29,6 +29,13 @@ data class ChosenAddressDataResponse (
         var error: ErrorChosenAddress = ErrorChosenAddress()
 )
 
+data class Tokonow(
+        @SerializedName("shop_id")
+        var shopId: Long = 0,
+        @SerializedName("warehouse_id")
+        var warehouseId: Long = 0
+)
+
 data class ErrorChosenAddress(
         @SerializedName("code")
         var code: Int = 0,

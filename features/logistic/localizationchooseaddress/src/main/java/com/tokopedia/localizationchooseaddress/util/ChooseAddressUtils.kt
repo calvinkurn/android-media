@@ -81,7 +81,8 @@ object ChooseAddressUtils {
         return validate
     }
 
-    fun setLocalizingAddressData(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String, postalCode: String): LocalCacheModel {
+    fun setLocalizingAddressData(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
+                                 postalCode: String, shopId: String, warehouseId: String): LocalCacheModel {
         return LocalCacheModel(
                 address_id = addressId,
                 city_id = cityId,
@@ -89,14 +90,17 @@ object ChooseAddressUtils {
                 lat = lat,
                 long = long,
                 label = label,
-                postal_code = postalCode
+                postal_code = postalCode,
+                shop_id = shopId,
+                warehouse_id = warehouseId
         )
     }
 
-    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String, postalCode: String) {
+    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
+                                             postalCode: String) {
         if (isRollOutUser(context)) {
             val chooseAddressPref = ChooseAddressSharePref(context)
-            val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode)
+            val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, "", "")
             chooseAddressPref.setLocalCache(localData)
         }
     }
