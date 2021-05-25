@@ -28,6 +28,8 @@ import com.tokopedia.logisticorder.uimodel.TrackHistoryModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
 import com.tokopedia.logisticorder.utils.TrackingPageUtil;
 import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -85,10 +87,11 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             holder.imageProof.setVisibility(View.GONE);
         } else {
             holder.imageProof.setVisibility(View.VISIBLE);
+            UserSessionInterface userSession = new UserSession(holder.context);
             String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small");
             GlideUrl glideUrl = new GlideUrl(url, new LazyHeaders.Builder()
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("Cookie", "")
+                    .addHeader("Cookie", userSession.getAccessToken())
                     .build());
 
             Glide.with(holder.context)

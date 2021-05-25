@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.logisticorder.domain.response.GetDeliveryImageResponse
 import com.tokopedia.logisticorder.domain.response.TrackOrder
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
@@ -11,11 +12,13 @@ import com.tokopedia.logisticorder.usecase.GetDeliveryImageUseCase
 import com.tokopedia.logisticorder.usecase.TrackingPageRepository
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import rx.Subscriber
 import javax.inject.Inject
 
 class TrackingPageViewModel @Inject constructor(
@@ -33,6 +36,10 @@ class TrackingPageViewModel @Inject constructor(
     private val _retryAvailability = MutableLiveData<Result<RetryAvailabilityResponse>>()
     val retryAvailability: LiveData<Result<RetryAvailabilityResponse>>
         get() = _retryAvailability
+
+    private val _getDeliveryImage = MutableLiveData<Result<GetDeliveryImageResponse>>()
+    val getDeliveryImage: LiveData<Result<GetDeliveryImageResponse>>
+        get() = _getDeliveryImage
 
     fun getTrackingData(orderId: String) {
         viewModelScope.launch(onErrorGetTrackingData) {
