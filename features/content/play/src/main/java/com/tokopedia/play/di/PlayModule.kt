@@ -6,12 +6,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.atc_common.AtcConstant
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.data.websocket.PlaySocket.Companion.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.data.websocket.revamp.PlayWebSocket
@@ -95,11 +95,10 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    internal fun provideAddToCartUseCase(@Named(AtcConstant.MUTATION_ADD_TO_CART) query: String,
-                                         graphqlUseCase: GraphqlUseCase,
+    internal fun provideAddToCartUseCase(graphqlUseCase: GraphqlUseCase,
                                          atcMapper: AddToCartDataMapper,
-                                         chosenAddressHelper: ChosenAddressAddToCartRequestHelper): AddToCartUseCase {
-        return AddToCartUseCase(query, graphqlUseCase, atcMapper, chosenAddressHelper)
+                                         chosenAddressHelper: ChosenAddressRequestHelper): AddToCartUseCase {
+        return AddToCartUseCase(graphqlUseCase, atcMapper, chosenAddressHelper)
     }
 
     @Provides

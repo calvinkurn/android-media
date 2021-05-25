@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
@@ -39,13 +40,14 @@ class MiniCartListBottomSheet :
     }
 
     private fun initializeCartData(shopIds: List<String>) {
+        showLoading()
         viewModel.getCartList(shopIds)
     }
 
     private fun initializeViewModel(fragment: Fragment) {
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartListViewModel::class.java)
         viewModel.miniCartUiModel.observe(fragment.viewLifecycleOwner, {
-            Toast.makeText(fragment.activity, "SHOW CART LIST!", Toast.LENGTH_SHORT).show()
+            hideLoading()
             bottomSheet?.setTitle(it.title)
             miniCartWidget?.updateData(it.miniCartWidgetData)
             adapter?.clearAllElements()
@@ -74,8 +76,8 @@ class MiniCartListBottomSheet :
 
             miniCartWidget = view.findViewById(R.id.mini_cart_widget)
             miniCartWidget?.initialize(shopIds, fragment, this, false)
-            miniCartWidget?.totalAmount?.amountChevronView?.setOnClickListener {
-
+            miniCartWidget?.setTotalAmountChevronListener {
+                // Todo : open summary bottomsheet
             }
 
             intializeRecyclerView(view, fragment)
@@ -101,6 +103,19 @@ class MiniCartListBottomSheet :
         rvMiniCartList?.adapter = adapter
         rvMiniCartList?.layoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
     }
+
+    private fun showLoading() {
+        adapter?.let {
+            it.removeErrorNetwork()
+            it.setLoadingModel(LoadingModel())
+            it.showLoading()
+        }
+    }
+
+    private fun hideLoading() {
+        adapter?.hideLoading()
+    }
+
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         // no-op

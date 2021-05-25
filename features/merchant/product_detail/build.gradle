@@ -85,6 +85,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.chatcommon)
