@@ -24,10 +24,5 @@
         </gradient>
       </aapt:attr>
     </path>
-    <path
-        android:strokeWidth="1"
-        android:pathData="M0,63.5L344,63.5"
-        android:fillColor="#00000000"
-        android:strokeColor="#E5E7E9"/>
   </group>
 </vector>
