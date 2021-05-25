@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
@@ -45,6 +46,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
 
     private val sharedViewModel: PowerMerchantSharedViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSharedViewModel::class.java)
@@ -223,6 +227,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val tabIndex = tabPmSubscription.tabLayout.selectedTabPosition
                 setOnTabIndexSelected(data, tabIndex)
+                sendTrackerOnPMTabClicked(tabIndex)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -238,6 +243,13 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         val defaultTabIndex = if (data.shopInfo.isEligiblePmPro) 1 else 0
         setOnTabIndexSelected(data, defaultTabIndex)
         tabPmSubscription.tabLayout.getTabAt(defaultTabIndex)?.select()
+    }
+
+    private fun sendTrackerOnPMTabClicked(tabIndex: Int) {
+        val pmTabIndex = 0
+        if (tabIndex == pmTabIndex) {
+            powerMerchantTracking.sendEventClickTabPowerMerchant()
+        }
     }
 
     private fun setupActiveState(data: PowerMerchantBasicInfoUiModel) {
@@ -317,6 +329,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
             setTnCVisibility(needTnC)
+            setOnTickboxCheckedListener {
+                powerMerchantTracking.sendEventClickTickBox()
+            }
             setOnCtaClickListener { tncAgreed ->
                 if (isPmProSelected) {
                     pmProRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed, PMConstant.ShopTierType.POWER_MERCHANT_PRO)

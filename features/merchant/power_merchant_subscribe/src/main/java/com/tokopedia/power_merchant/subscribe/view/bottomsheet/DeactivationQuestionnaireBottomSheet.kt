@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.QuestionnaireAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
@@ -59,6 +60,9 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
 
     private val mViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -243,6 +247,7 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
 
         showButtonProgress()
         mViewModel.submitPmDeactivation(answers)
+        powerMerchantTracking.sendEventClickSubmitQuestionnaire()
     }
 
     private fun showButtonProgress() = childView?.run {

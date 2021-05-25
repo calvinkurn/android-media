@@ -6,6 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.model.ExpandableItemUiModel
 import kotlinx.android.synthetic.main.item_pm_expandable_widget_item.view.*
 
@@ -13,7 +14,10 @@ import kotlinx.android.synthetic.main.item_pm_expandable_widget_item.view.*
  * Created By @ilhamsuaib on 04/03/21
  */
 
-class ExpandableItemViewHolder(itemView: View) : AbstractViewHolder<ExpandableItemUiModel>(itemView) {
+class ExpandableItemViewHolder(
+        itemView: View,
+        private val powerMerchantTracking: PowerMerchantTracking
+) : AbstractViewHolder<ExpandableItemUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.item_pm_expandable_widget_item
@@ -27,6 +31,7 @@ class ExpandableItemViewHolder(itemView: View) : AbstractViewHolder<ExpandableIt
                 icPmExpandableItemIcon.visible()
                 setOnClickListener {
                     RouteManager.route(context, element.urlOrAppLink)
+                    powerMerchantTracking.sendEventClickPowerMerchantBenefitItem(element.text)
                 }
             } else {
                 icPmExpandableItemIcon.gone()

@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
@@ -15,6 +14,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantDateFormatter
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_deactivation.*
@@ -72,7 +72,7 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
         showWarningTicker(expiredDate)
 
         btnCancel.setOnClickListener {
-            powerMerchantTracking.eventCancelMembershipBottomSheet()
+            powerMerchantTracking.sendEventClickConfirmToStopPowerMerchant()
             listener?.onClickCancelButton()
         }
 

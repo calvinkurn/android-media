@@ -9,7 +9,7 @@ import com.tokopedia.user_identification_common.KYCConstant
 
 object PMConstant {
 
-    const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-ui"
+    const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-android-ui"
     const val TRANSITION_PERIOD_START_DATE = "31 Mei 2021"
 
     object Images {

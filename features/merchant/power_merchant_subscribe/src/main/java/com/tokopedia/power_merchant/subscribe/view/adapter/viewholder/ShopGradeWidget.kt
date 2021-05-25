@@ -9,6 +9,7 @@ import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
 
@@ -16,7 +17,10 @@ import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
  * Created By @ilhamsuaib on 03/03/21
  */
 
-class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiModel>(itemView) {
+class ShopGradeWidget(
+        itemView: View,
+        private val powerMerchantTracking: PowerMerchantTracking
+) : AbstractViewHolder<WidgetShopGradeUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
@@ -80,6 +84,7 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
         icPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         tvPmShopScoreTips.setOnClickListener {
             RouteManager.route(context, Constant.Url.URL_SHOP_PERFORMANCE_TIPS)
+            powerMerchantTracking.sendEventClickTipsToImproveShopScore()
         }
     }
 

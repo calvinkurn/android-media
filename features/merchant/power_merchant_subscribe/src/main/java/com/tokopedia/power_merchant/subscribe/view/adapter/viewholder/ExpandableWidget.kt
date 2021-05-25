@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactory
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetExpandableUiModel
@@ -20,7 +21,8 @@ import kotlinx.android.synthetic.main.widget_pm_expandable.view.*
 
 class ExpandableWidget(
         itemView: View,
-        private val listener: Listener
+        private val listener: Listener,
+        private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetExpandableUiModel>(itemView) {
 
     companion object {
@@ -73,7 +75,7 @@ class ExpandableWidget(
     }
 
     private fun setupExpandableItem(element: WidgetExpandableUiModel) {
-        val expandableAdapter = BaseListAdapter<Visitable<ExpandableAdapterFactory>, ExpandableAdapterFactoryImpl>(ExpandableAdapterFactoryImpl())
+        val expandableAdapter = BaseListAdapter<Visitable<ExpandableAdapterFactory>, ExpandableAdapterFactoryImpl>(ExpandableAdapterFactoryImpl(powerMerchantTracking))
 
         with(itemView.rvPmExpandableItem) {
             isVisible = element.items.isNotEmpty()

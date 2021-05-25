@@ -9,6 +9,9 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 24/05/21
  */
 
+/**
+ * Data Layer : https://mynakama.tokopedia.com/datatracker/requestdetail/1389
+ */
 class PowerMerchantTracking @Inject constructor(
         private val userSession: UserSessionInterface
 ) {
@@ -167,6 +170,72 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
+    fun sendEventShowPopupSuccessRegister() {
+        val event = createEvent(
+                event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+                category = TrackingConstant.getPowerMerchantCategory(),
+                action = TrackingConstant.ACTION_POPUP_SUCCESS_REGISTER,
+                label = ""
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventShowPopupImproveShopPerformance() {
+        val event = createEvent(
+                event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+                category = TrackingConstant.getPowerMerchantCategory(),
+                action = TrackingConstant.ACTION_POPUP_IMPROVE_SHOP_PERFORMANCE,
+                label = ""
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventShowPopupAddNewProduct() {
+        val event = createEvent(
+                event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+                category = TrackingConstant.getPowerMerchantCategory(),
+                action = TrackingConstant.ACTION_POPUP_ADD_NEW_PRODUCT,
+                label = ""
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickTabPowerMerchant() {
+        val event = createEvent(
+                event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+                category = TrackingConstant.getPowerMerchantCategory(),
+                action = TrackingConstant.ACTION_CLICK_TAB_POWER_MERCHANT,
+                label = getShopStatus()
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventPopupUnableToRegisterShopModeration() {
+        val event = createEvent(
+                event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+                category = TrackingConstant.getPowerMerchantCategory(),
+                action = TrackingConstant.ACTION_POPUP_UNABLE_TO_REGISTER_SHOP_MODERATION,
+                label = ""
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickAcknowledgeShopModeration() {
+        val event = createEvent(
+                event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+                category = TrackingConstant.getPowerMerchantCategory(),
+                action = TrackingConstant.ACTION_CLICK_ACKNOWLEDGE_SHOP_MODERATION,
+                label = ""
+        )
+
+        sendEvent(event)
+    }
+
     private fun getShopStatus(): String {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
@@ -181,7 +250,7 @@ class PowerMerchantTracking @Inject constructor(
             event: String, category: String,
             action: String, label: String
     ): MutableMap<String, Any> {
-        val map =  TrackAppUtils.gtmData(
+        val map = TrackAppUtils.gtmData(
                 event, category, action, label
         )
         map[TrackingConstant.KEY_BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS

@@ -119,6 +119,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         } else {
             showRegularPmDeactivationBottomSheet()
         }
+
+        powerMerchantTracking.sendEventClickStopPowerMerchant()
     }
 
     override fun cancelPmDeactivationSubmission(position: Int) {
@@ -200,7 +202,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val ctaText: String = getString(R.string.pm_content_slider_last_slide_button)
         val illustrationUrl: String = PMConstant.Images.PM_INACTIVE
 
-        showNotificationBottomSheet(title, description, ctaText, illustrationUrl)
+        showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
+            powerMerchantTracking.sendEventClickAcknowledgeShopModeration()
+        })
+
+        powerMerchantTracking.sendEventPopupUnableToRegisterShopModeration()
     }
 
     private fun setupView() = view?.run {
@@ -443,6 +449,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
 
             fetchPowerMerchantBasicInfo()
+
+            powerMerchantTracking.sendEventShowPopupSuccessRegister()
         }
     }
 
@@ -512,6 +520,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                     RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
                 }
         )
+
+        powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
     private fun showNivTermBottomSheet(nivThreshold: Long) {
@@ -527,6 +537,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                     RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
                 }
         )
+
+        powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
     private fun submitKYC(isTncChecked: Boolean) {
@@ -567,7 +579,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
             RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
+            powerMerchantTracking.sendEventClickLearnMoreShopPerformancePopUp()
         })
+
+        powerMerchantTracking.sendEventShowPopupImproveShopPerformance()
+        powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
     private fun showActiveProductTermBottomSheet() {
@@ -578,7 +594,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
             RouteManager.route(context, ApplinkConst.SellerApp.PRODUCT_ADD)
+            powerMerchantTracking.sendEventClickAddOneProductPopUp()
         })
+
+        powerMerchantTracking.sendEventShowPopupAddNewProduct()
+        powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
     private fun submitPmRegistrationOnEligible(isTncChecked: Boolean, nextShopTireType: Int) {
@@ -589,6 +609,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             return
         }
 
+        powerMerchantTracking.sendEventClickUpgradePowerMerchant()
         showActivationProgress()
         submitPmRegistration(nextShopTireType)
     }
@@ -764,7 +785,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         return WidgetShopGradeUiModel(
                 isNewSeller = shopInfo?.isNewSeller.orTrue(),
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
-                shopScore = pmBasicInfo?.shopInfo?.shopScore.orZero(),
+                shopScore = shopInfo?.shopScore.orZero(),
                 threshold = shopScoreThreshold,
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
