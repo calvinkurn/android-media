@@ -74,12 +74,12 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         imageIssuer.visibility = View.VISIBLE
         ImageHandler.LoadImage(imageIssuer, attributesEmoneyInquiry.imageIssuer)
 
-        textLabelCardNumber.text = resources.getString(R.string.emoney_card_info_label_card_number)
+        textLabelCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_label_card_number)
         textCardNumber.text = attributesEmoneyInquiry.formattedCardNumber
         textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textCardNumber.setTypeface(textCardNumber.typeface, Typeface.BOLD)
 
-        textLabelBalance.text = resources.getString(R.string.emoney_card_info_label_card_balance)
+        textLabelBalance.text = resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
         textRemainingBalance.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
         textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
@@ -93,7 +93,7 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
 
     fun showLoading() {
         viewInvisible()
-        resources.getString(R.string.emoney_card_info_label_card_balance)
+        resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
         textLabelBalance.measure(0, 0)
         val paramsTextLabelBalance = textLabelBalance.layoutParams
         paramsTextLabelBalance.width = textLabelBalance.measuredWidth
@@ -113,12 +113,12 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
 
     fun removeCardInfo() {
         viewVisible()
-        textLabelCardNumber.text = resources.getString(R.string.emoney_card_info_label_card_number)
-        textCardNumber.text = resources.getString(R.string.emoney_card_info_is_not_available_yet)
+        textLabelCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_label_card_number)
+        textCardNumber.text = resources.getString(R.string.emoney_nfc_card_info_is_not_available_yet)
         textCardNumber.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textCardNumber.typeface = Typeface.DEFAULT
-        textLabelBalance.text = resources.getString(R.string.emoney_card_info_label_card_balance)
-        textRemainingBalance.text = resources.getString(R.string.emoney_card_info_is_not_available_yet)
+        textLabelBalance.text = resources.getString(R.string.emoney_nfc_card_info_label_card_balance)
+        textRemainingBalance.text = resources.getString(R.string.emoney_nfc_card_info_is_not_available_yet)
         textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
         textDate.text = ""
         imageIssuer.setImageDrawable(null)

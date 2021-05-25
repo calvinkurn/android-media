@@ -17,14 +17,18 @@ class NFCDisabledView @JvmOverloads constructor(@NotNull context: Context, attrs
                                                 defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    val buttonActivateNFC: UnifyButton
+    lateinit var buttonActivateNFC: UnifyButton
 
     init {
+        inflateNFCDisableView()
+    }
+
+    fun inflateNFCDisableView(){
         val view = View.inflate(context, R.layout.view_nfc_emoney_disabled, this)
         buttonActivateNFC = view.findViewById<UnifyButton>(R.id.button_activate_nfc)
         val imageInactiveNFC = view.findViewById<ImageView>(R.id.img_inactive_nfc)
         imageInactiveNFC.loadImage(resources.getString(R.string.emoney_nfc_inactive_link)){
-           setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+            setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
         }
     }
 }

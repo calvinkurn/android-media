@@ -41,7 +41,7 @@
                 app:corners="16" />
 
             <View
-                android:layout_width="@dimen/dp_local_1"
+                android:layout_width="@dimen/nfc_common_dp_local_1"
                 android:layout_height="match_parent"
                 android:background="@color/Unify_N75" />
 
@@ -57,7 +57,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl2"
-                    android:text="@string/emoney_card_info_label_card_number"
+                    android:text="@string/emoney_nfc_card_info_label_card_number"
                     android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3" />
 
@@ -81,7 +81,7 @@
                 <com.elyeproj.loaderviewlibrary.LoaderTextView
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:id="@+id/text_card_number_loader"
-                    android:layout_width="@dimen/dp_local_168"
+                    android:layout_width="@dimen/nfc_common_dp_local_168"
                     android:layout_height="@dimen/unify_space_12"
                     android:visibility="gone"
                     app:corners="16" />
@@ -92,7 +92,7 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_local_1"
+            android:layout_height="@dimen/nfc_common_dp_local_1"
             android:background="@color/Unify_N75" />
 
         <LinearLayout
@@ -111,7 +111,7 @@
                 android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:gravity="center"
                 android:textColor="@color/Unify_N700_68"
-                android:text="@string/emoney_card_info_label_card_balance"
+                android:text="@string/emoney_nfc_card_info_label_card_balance"
                 app:typographyType="body_3"
                 />
 

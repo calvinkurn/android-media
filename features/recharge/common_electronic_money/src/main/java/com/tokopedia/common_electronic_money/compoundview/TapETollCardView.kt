@@ -56,9 +56,9 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         globalError.hide()
         textTitle.show()
         textLabel.show()
-        textTitle.text = resources.getString(R.string.emoney_reading_card_label_title)
+        textTitle.text = resources.getString(R.string.emoney_nfc_reading_card_label_title)
         textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
-        textLabel.text = resources.getString(R.string.emoney_reading_card_label_message)
+        textLabel.text = resources.getString(R.string.emoney_nfc_reading_card_label_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
         lottieAnimationView.setAnimation("emoney_loading.json")
@@ -71,9 +71,9 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         globalError.hide()
         textTitle.show()
         textLabel.show()
-        textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
+        textTitle.text = resources.getString(R.string.emoney_nfc_tap_card_instruction_title)
         textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
-        textLabel.text = resources.getString(R.string.emoney_tap_card_instruction_message)
+        textLabel.text = resources.getString(R.string.emoney_nfc_tap_card_instruction_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
         lottieAnimationView.setAnimation("emoney_animation.json")
@@ -92,7 +92,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showErrorState(errorMessageTitle: String, errorMessageLabel: String,
                        imageUrl:String, isButtonShow: Boolean,
-                       isSocketTimeOutMandiri: Boolean
+                       mandiriGetSocketTimeout: Boolean
     ) {
         textTitle.text = errorMessageTitle
         textLabel.text = errorMessageLabel
@@ -109,7 +109,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         }
 
         buttonTryAgain.apply {
-            if(isSocketTimeOutMandiri){
+            if(mandiriGetSocketTimeout){
                 text = resources.getString(R.string.emoney_nfc_tap_card_button_socket_label)
                 setOnClickListener {
                     listener.goToHome()

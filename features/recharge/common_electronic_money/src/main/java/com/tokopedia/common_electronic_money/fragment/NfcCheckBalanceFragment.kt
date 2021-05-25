@@ -181,7 +181,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                             imageUrl: String = "",
                             isButtonShow: Boolean = true,
                             isGlobalErrorShow: Boolean = false,
-                            isSocketTimeoutMandiri: Boolean = false
+                            mandiriGetSocketTimeout: Boolean = false
     ) {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
@@ -201,7 +201,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         } else {
             tapETollCardView.showInitialState()
             tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,
-                    imageUrl, isButtonShow, isSocketTimeoutMandiri)
+                    imageUrl, isButtonShow, mandiriGetSocketTimeout)
         }
 
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)

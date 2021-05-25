@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/img_inactive_nfc"
-        android:layout_width="@dimen/dp_local_360"
-        android:layout_height="@dimen/dp_local_230" />
+        android:layout_width="@dimen/nfc_common_dp_local_360"
+        android:layout_height="@dimen/nfc_common_dp_local_230" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
         android:id="@+id/button_activate_nfc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/emoney_activate_nfc"
+        android:text="@string/emoney_nfc_activate_nfc"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
 

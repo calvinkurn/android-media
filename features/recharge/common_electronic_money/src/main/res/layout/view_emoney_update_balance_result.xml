@@ -22,7 +22,7 @@
         android:layout_margin="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:padding="@dimen/spacing_lvl4"
-        android:text="@string/emoney_button_topup"
+        android:text="@string/emoney_nfc_button_topup"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />

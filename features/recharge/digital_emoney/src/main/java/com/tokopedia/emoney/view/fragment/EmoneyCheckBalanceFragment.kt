@@ -119,7 +119,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else if(CardUtils.isBrizziCard(intent)) {
             processBrizzi(intent)
         } else {
-            showError(resources.getString(com.tokopedia.emoney.R.string.emoney_card_isnot_supported),
+            showError(resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_card_isnot_supported),
                     resources.getString(com.tokopedia.emoney.R.string.emoney_nfc_not_supported),
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_card_is_not_supported),
                     false
@@ -146,7 +146,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                             resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
                             isButtonShow = true,
                             isGlobalErrorShow = false,
-                            isSocketTimeoutMandiri = true
+                            mandiriGetSocketTimeout = true
                     )
                 } else if((throwable is UnknownHostException) || errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
                     showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
@@ -213,12 +213,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 tapETollCardView.visibility = View.GONE
 
                 AlertDialog.Builder(it)
-                        .setMessage(getString(R.string.emoney_please_activate_nfc_from_settings))
-                        .setPositiveButton(getString(R.string.emoney_activate)) { p0, p1 ->
+                        .setMessage(getString(R.string.emoney_nfc_please_activate_nfc_from_settings))
+                        .setPositiveButton(getString(R.string.emoney_nfc_activate)) { p0, p1 ->
                             emoneyAnalytics.onActivateNFCFromSetting()
                             navigateToNFCSettings()
                         }
-                        .setNegativeButton(getString(R.string.emoney_cancel)) { p0, p1 ->
+                        .setNegativeButton(getString(R.string.emoney_nfc_cancel)) { p0, p1 ->
                             emoneyAnalytics.onCancelActivateNFCFromSetting()
                             nfcDisabledView.visibility = View.VISIBLE
                         }.show()

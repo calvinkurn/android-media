@@ -9,7 +9,7 @@
         android:id="@+id/nfc_checkout_toolbar"
         android:layout_width="match_parent"
         app:unify_header_is_show_back_button="true"
-        app:unify_header_title="@string/emoney_toolbar_title_etoll_check_balance"
+        app:unify_header_title="@string/emoney_nfc_toolbar_title_etoll_check_balance"
         app:unify_header_is_show_shadow="false"
         android:layout_height="?attr/actionBarSize"/>
 
