@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:includeFontPadding="false"
-        android:inputType="text"
+        android:inputType="textNoSuggestions"
         android:textAlignment="center"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -21,7 +21,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 25/03/19
  */
-abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.TravelMenuListener {
+abstract class HotelBaseActivity : BaseSimpleActivity(), TravelMenuBottomSheet.TravelMenuListener {
 
     private lateinit var hotelComponent: HotelComponent
 
@@ -67,8 +67,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.Tr
             if (shouldShowMenuWhite()) {
                 menuInflater.inflate(R.menu.hotel_base_menu_white, menu)
                 optionMenu = menu?.findItem(R.id.action_overflow_menu_white)
-            }
-            else {
+            } else {
                 menuInflater.inflate(R.menu.hotel_base_menu, menu)
                 optionMenu = menu?.findItem(R.id.action_overflow_menu)
             }
@@ -89,12 +88,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), TravelMenuBottomSheet.Tr
     }
 
     override fun onOrderListClicked() {
-        if (userSessionInterface.isLoggedIn) {
-            RouteManager.route(this, ApplinkConst.HOTEL_ORDER)
-        } else {
-            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN_HOTEl)
-        }
+        RouteManager.route(this, ApplinkConst.HOTEL_ORDER)
     }
 
     override fun onPromoClicked() {

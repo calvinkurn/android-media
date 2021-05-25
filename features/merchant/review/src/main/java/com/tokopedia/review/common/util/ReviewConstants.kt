@@ -131,6 +131,10 @@ object ReviewConstants {
     const val SELLER_REVIEW_REPLY_PLT_PREPARE_METRICS = "seller_review_reply_plt_prepare_metrics"
     const val SELLER_REVIEW_REPLY_PLT_NETWORK_METRICS = "seller_review_reply_plt_network_metrics"
     const val SELLER_REVIEW_REPLY_PLT_RENDER_METRICS = "seller_review_reply_plt_render_metrics"
+
+    const val IV_MORE_FOCUS_SERVICE_PM = "https://images.tokopedia.net/img/android/shop_score/iv_more_focus_shop_service_pm@3x.png"
+    const val IV_MORE_FOCUS_SERVICE_RM = "https://images.tokopedia.net/img/android/shop_score/iv_more_focus_shop_service_rm@3x.png"
+    const val IV_MORE_INTEREST_BUYER = "https://images.tokopedia.net/img/android/shop_score/iv_more_interest_buyer@3x.png"
 }
 
 

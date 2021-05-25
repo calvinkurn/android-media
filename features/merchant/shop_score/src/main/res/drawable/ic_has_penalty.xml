@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="@dimen/width_card_header_penalty"
+    android:height="@dimen/height_card_header_penalty"
+    android:viewportWidth="328"
+    android:viewportHeight="152">
+  <group>
+    <clip-path
+        android:pathData="M0,0h328v152h-328z"/>
+    <path
+        android:pathData="M0,8C0,3.582 3.582,0 8,0H320C324.418,0 328,3.582 328,8V144C328,148.418 324.418,152 320,152H8C3.582,152 0,148.418 0,144V8Z">
+      <aapt:attr name="android:fillColor">
+        <gradient 
+            android:startY="60.2473"
+            android:startX="362.287"
+            android:endY="57.7774"
+            android:endX="-50.3898"
+            android:type="linear">
+          <item android:offset="0" android:color="@color/card_header_has_penalty_dms_color_1"/>
+          <item android:offset="1" android:color="@color/card_header_has_penalty_dms_color_2"/>
+        </gradient>
+      </aapt:attr>
+    </path>
+    <path
+        android:pathData="M22.884,-21.5a141.593,121.5 0,1 0,283.186 0a141.593,121.5 0,1 0,-283.186 0z"
+        android:strokeAlpha="0.46"
+        android:fillColor="@color/card_header_has_penalty_dms_color_3"
+        android:fillAlpha="0.46"/>
+  </group>
+</vector>

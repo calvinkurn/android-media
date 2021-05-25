@@ -26,8 +26,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -57,7 +55,6 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -107,6 +104,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredVie
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.custom.*
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -115,7 +113,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
-import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
@@ -173,7 +170,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     lateinit var sellerReviewHelper: TopChatSellerReviewHelper
 
     private lateinit var fpm: PerformanceMonitoring
-    private lateinit var alertDialog: Dialog
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
     private var indexFromInbox = -1
@@ -353,7 +349,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         setupPresenter(savedInstanceState)
         setupArguments(savedInstanceState)
         setupAttachmentsPreview(savedInstanceState)
-        setupAlertDialog()
+        hideLoading()
         setupAnalytic()
         setupBeforeReplyTime()
         loadInitialData()
@@ -496,11 +492,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
+        var id = product.parentId
+        if(id == "0") {
+            id = product.productId
+        }
         val intent = RouteManager.getIntent(
                 context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
-                product.productId, product.shopId.toString()
+                id, product.shopId.toString()
         )
-        presenter.addOngoingUpdateProductStock(product, adapterPosition, parentMetaData)
+        presenter.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
 
@@ -536,13 +536,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initProductPreview(savedInstanceState)
         initInvoicePreview(savedInstanceState)
         presenter.initAttachmentPreview()
-    }
-
-    private fun setupAlertDialog() {
-        if (!::alertDialog.isInitialized) {
-            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        }
-        hideLoading()
     }
 
     private fun onSuccessGetMessageId(): (String) -> Unit {
@@ -586,7 +579,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         checkCanAttachVoucher()
         orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(
-                chatRoom, onToolbarClicked(), this, alertDialog
+                chatRoom, onToolbarClicked(), this
         )
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
@@ -726,21 +719,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onRetrySendImage(element: ImageUploadViewModel) {
-        val bottomSheetBuilder = CheckedBottomSheetBuilder(activity).setMode(BottomSheetBuilder.MODE_LIST)
-        bottomSheetBuilder.addItem(InboxMessageConstant.RESEND, R.string.resend, null)
-        bottomSheetBuilder.addItem(InboxMessageConstant.DELETE, R.string.delete, null)
-        bottomSheetBuilder.expandOnStart(true).setItemClickListener {
-            UploadImageChatService.removeDummyOnList(element)
-            when (it.itemId) {
-                InboxMessageConstant.RESEND -> {
-                    removeDummy(element)
-                    resendImage(element)
-                }
-                InboxMessageConstant.DELETE -> {
-                    removeDummy(element)
-                }
-            }
-        }.createDialog().show()
+        context?.let {
+            val bs = TopchatBottomSheetBuilder.getErrorUploadImageBs(it,
+                    onRetryClicked = {
+                        removeDummy(element)
+                        resendImage(element)
+                    },
+                    onDeleteClicked = {
+                        removeDummy(element)
+                    }
+            )
+            bs.show(childFragmentManager, "Retry Image Upload")
+        }
     }
 
     private fun resendImage(element: ImageUploadViewModel) {
@@ -1093,7 +1083,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             ) ?: return
             var productName = data.getStringExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME)
             val updateProductResult = presenter.onGoingStockUpdate[productId] ?: return
-            val variantResult = getVariantResultUpdateStock(data, productId)
+            val variantResult = getVariantResultUpdateStock(
+                    data, updateProductResult.product.productId)
             variantResult?.let {
                 stockCount = variantResult.stockCount
                 status = variantResult.status.name
@@ -1289,13 +1280,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun showDialogConfirmToAbortUpload() {
-        context?.run {
-            topChatRoomDialog.createAbortUploadImage(
-                    this, alertDialog,
-                    View.OnClickListener {
-                        finishActivity()
-                    }
-            ).show()
+        context?.let {
+            topChatRoomDialog.createAbortUploadImage(it) {
+                finishActivity()
+            }.show()
         }
     }
 
