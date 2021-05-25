@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/bg_header_bronze" />
+                    app:srcCompat="@drawable/ic_pm_section_green" />
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/ic_pm_badge_eligible_status"
