@@ -1638,18 +1638,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isError()) {
+            String errorTitle = shipmentCartItemModel.getErrorTitle();
             String errorDescription = shipmentCartItemModel.getErrorDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
-                tickerError.setTickerTitle(shipmentCartItemModel.getErrorTitle());
-                tickerError.setTextDescription(errorDescription);
+            if (!TextUtils.isEmpty(errorTitle)) {
+                if (!TextUtils.isEmpty(errorDescription)) {
+                    tickerError.setTickerTitle(errorTitle);
+                    tickerError.setTextDescription(errorDescription);
+                } else {
+                    tickerError.setTextDescription(errorTitle);
+                }
+                tickerError.setTickerType(Ticker.TYPE_ERROR);
+                tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+                tickerError.setCloseButtonVisibility(View.GONE);
+                tickerError.setVisibility(View.VISIBLE);
+                layoutError.setVisibility(View.VISIBLE);
             } else {
-                tickerError.setTextDescription(shipmentCartItemModel.getErrorTitle());
+                tickerError.setVisibility(View.GONE);
+                layoutError.setVisibility(View.GONE);
+                layoutWarningAndError.setVisibility(View.GONE);
             }
-            tickerError.setTickerType(Ticker.TYPE_ERROR);
-            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerError.setCloseButtonVisibility(View.GONE);
-            tickerError.setVisibility(View.VISIBLE);
-            layoutError.setVisibility(View.VISIBLE);
 
             flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item));
             cbPPP.setEnabled(false);

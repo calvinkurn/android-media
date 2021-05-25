@@ -63,10 +63,10 @@ class ShipmentMapper @Inject constructor() {
             campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
             lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply?.data)
             promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
+            errorTicker = "shipmentAddressFormDataResponse.errorTicker"
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
             isHasError = checkCartHasError(this)
             popUpMessage = shipmentAddressFormDataResponse.popUpMessage
-            errorTicker = "shipmentAddressFormDataResponse.errorTicker"
             shipmentAddressFormDataResponse.tickers.firstOrNull()?.let {
                 tickerData = mapTickerData(it)
             }
@@ -93,7 +93,7 @@ class ShipmentMapper @Inject constructor() {
         for (groupAddress in shipmentAddressFormDataResponse.groupAddress) {
             groupAddressListResult.add(
                     GroupAddress().apply {
-                        isError = !groupAddress.errors.isNullOrEmpty()
+                        isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty() || true
                         errorMessage = convertToString(groupAddress.errors)
                         userAddress = mapUserAddress(groupAddress)
                         groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
@@ -110,7 +110,7 @@ class ShipmentMapper @Inject constructor() {
         groupAddress.groupShop.forEach {
             groupShopListResult.add(
                     GroupShop().apply {
-                        isError = !it.errors.isNullOrEmpty()
+                        isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty() || true
                         errorMessage = convertToString(it.errors)
                         shippingId = it.shippingId
                         spId = it.spId
@@ -153,15 +153,15 @@ class ShipmentMapper @Inject constructor() {
         var productErrorCount = 0
         val p = arrayListOf<com.tokopedia.checkout.data.model.response.shipmentaddressform.Product>()
         p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
-        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
+//        p.addAll(groupShop.products)
         p.forEachIndexed { index, it ->
             val productResult = Product().apply {
                 analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(

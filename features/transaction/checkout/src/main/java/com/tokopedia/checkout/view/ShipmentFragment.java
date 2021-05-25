@@ -487,17 +487,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
 
-//        if (shipmentDonationModel != null) {
-//            shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
-//            if (shipmentDonationModel.isChecked()) {
-//                checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
-//            }
-//        }
-//
-//        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
-//            shipmentAdapter.updateEgold(false);
-//            shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
-//        }
+        if (shipmentDonationModel != null) {
+            shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+            if (shipmentDonationModel.isChecked() && shipmentDonationModel.isEnabled()) {
+                checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
+            }
+        }
+
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
+            shipmentAdapter.updateEgold(false);
+            shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
+        }
 
         if (shipmentCartItemModelList.size() > 0) {
             // Don't show donation, egold, promo section if all shop is error
@@ -508,17 +508,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
             if (errorShopCount == 0 || errorShopCount < shipmentCartItemModelList.size()) {
-                if (shipmentDonationModel != null) {
-                    shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
-                    if (shipmentDonationModel.isChecked()) {
-                        checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
-                    }
-                }
-
-                if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
-                    shipmentAdapter.updateEgold(false);
-                    shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
-                }
                 if (lastApplyUiModel != null && !lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
                     PromoRevampAnalytics.INSTANCE.eventCartViewPromoMessage(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
                 }

@@ -568,10 +568,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         RecipientAddressModel newAddress = shipmentDataConverter
                 .getRecipientAddressModel(cartShipmentAddressFormData);
+        newAddress.setEnabled(!shipmentTickerErrorModel.isError());
         setRecipientAddressModel(newAddress);
 
         if (cartShipmentAddressFormData.getDonation() != null) {
-            setShipmentDonationModel(shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData));
+            ShipmentDonationModel shipmentDonationModel = shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData);
+            shipmentDonationModel.setEnabled(!shipmentTickerErrorModel.isError());
+            setShipmentDonationModel(shipmentDonationModel);
         } else {
             setShipmentDonationModel(null);
         }
@@ -591,7 +594,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             mTrackerPurchaseProtection.eventImpressionOfProduct();
         }
 
-        setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
+        EgoldAttributeModel egoldAttributes = cartShipmentAddressFormData.getEgoldAttributes();
+        if (egoldAttributes != null) {
+            egoldAttributes.setEnabled(!shipmentTickerErrorModel.isError());
+        }
+        setEgoldAttributeModel(egoldAttributes);
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
