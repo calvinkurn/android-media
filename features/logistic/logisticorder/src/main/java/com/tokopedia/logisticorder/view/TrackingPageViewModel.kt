@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.logisticorder.domain.response.GetDeliveryImageResponse
 import com.tokopedia.logisticorder.domain.response.TrackOrder
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
@@ -18,12 +19,14 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Subscriber
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 class TrackingPageViewModel @Inject constructor(
         private val repo: TrackingPageRepository,
-        private val mapper: TrackingPageMapperNew) : ViewModel() {
+        private val mapper: TrackingPageMapperNew, private val getDeliveryImageUseCase: GetDeliveryImageUseCase) : ViewModel() {
 
     private val _trackingData = MutableLiveData<Result<TrackingDataModel>>()
     val trackingData: LiveData<Result<TrackingDataModel>>
@@ -62,6 +65,14 @@ class TrackingPageViewModel @Inject constructor(
         }
     }
 
+    fun getDeliveryImage(imageId: String, orderId: Long, size: String) {
+        viewModelScope.launch(onErrorGetDeliveryImage) {
+            getDeliveryImageUseCase.getDeliveryImageUrl(imageId, orderId, size)
+            val result = convertToRedeemedResponse(getDeliveryImageUseCase.executeOnBackground())
+            _getDeliveryImage.value = Success(result)
+        }
+    }
+
     private val onErrorGetTrackingData = CoroutineExceptionHandler { _, throwable ->
         _trackingData.value = Fail(throwable)
     }
@@ -72,5 +83,13 @@ class TrackingPageViewModel @Inject constructor(
 
     private val onErrorRetryAvailability = CoroutineExceptionHandler { _, throwable ->
         _retryAvailability.value = Fail(throwable)
+    }
+
+    private val onErrorGetDeliveryImage = CoroutineExceptionHandler { _, throwable ->
+        _retryAvailability.value = Fail(throwable)
+    }
+
+    private fun convertToRedeemedResponse(typeRestResponseMap: Map<Type, RestResponse?>): GetDeliveryImageResponse {
+        return typeRestResponseMap[GetDeliveryImageResponse::class.java]?.getData() as GetDeliveryImageResponse
     }
 }

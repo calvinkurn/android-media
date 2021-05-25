@@ -3,6 +3,7 @@ package com.tokopedia.logisticorder.view
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -186,6 +187,12 @@ class TrackingPageFragment: BaseDaggerFragment() {
                 is Fail -> showError(it.throwable)
             }
         })
+
+        viewModel.getDeliveryImage.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> Log.d("IMAGENYA", it.data.image.toString())
+            }
+        })
     }
 
     private fun fetchData() {
@@ -212,6 +219,8 @@ class TrackingPageFragment: BaseDaggerFragment() {
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
         mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking()
+
+        viewModel.getDeliveryImage("1e906057-9ed0-422a-8f15-c3133b1e9763", 166826912, "small")
     }
 
     private fun showLoading() {
