@@ -18,6 +18,7 @@
         app:layout_constraintWidth_percent="0.925">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/titleShopStatus"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/regular_merchant"
@@ -25,40 +26,9 @@
             android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
-            app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/rightRectangle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:paddingTop="@dimen/sah_dimen_1dp"
-            android:paddingRight="@dimen/sah_dimen_1dp"
-            android:paddingBottom="@dimen/sah_dimen_1dp"
-            app:layout_constraintWidth_percent="0.3"
-            app:srcCompat="@drawable/ic_setting_shop_regular_rectangle"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <View
-            android:id="@+id/badgeBorder"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintWidth_percent="0.06"
-            app:layout_constraintStart_toStartOf="@id/rightRectangle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            android:background="@drawable/setting_image_circular"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/sah_dimen_19dp"
-            android:layout_height="@dimen/sah_dimen_17dp"
-            android:layout_margin="@dimen/setting_shop_badge_border_margin"
-            app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
-            app:layout_constraintEnd_toEndOf="@id/badgeBorder"
-            app:layout_constraintStart_toStartOf="@id/badgeBorder"
-            app:layout_constraintTop_toTopOf="@id/badgeBorder"
-            app:srcCompat="@drawable/ic_power_merchant" />
+            app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/regularMerchantStatus"
@@ -67,9 +37,9 @@
             android:gravity="center_vertical"
             android:text="@string/setting_verifikasi"
             android:textColor="@color/Unify_G500"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            app:layout_constraintStart_toEndOf="@id/badgeBorder"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.constraintlayout.widget.Guideline
