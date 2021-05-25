@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
-import androidx.annotation.NonNull
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +19,10 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterMod
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.widget.MiniCartWidget
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
@@ -47,7 +49,8 @@ abstract class BaseSearchCategoryFragment:
         CategoryFilterListener,
         QuickFilterListener,
         SortFilterBottomSheet.Callback,
-        CategoryChooserBottomSheet.Callback {
+        CategoryChooserBottomSheet.Callback,
+        MiniCartWidgetListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -60,6 +63,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
+    protected var miniCartWidget: MiniCartWidget? = null
 
     protected abstract val toolbarPageName: String
 
@@ -77,6 +81,7 @@ abstract class BaseSearchCategoryFragment:
         findViews(view)
 
         configureNavToolbar()
+        configureMiniCart()
         configureRecyclerView()
         observeViewModel()
 
@@ -86,6 +91,7 @@ abstract class BaseSearchCategoryFragment:
     protected open fun findViews(view: View) {
         navToolbar = view.findViewById(R.id.tokonowSearchCategoryNavToolbar)
         recyclerView = view.findViewById(R.id.tokonowSearchCategoryRecyclerView)
+        miniCartWidget = view.findViewById(R.id.tokonowSearchCategoryMiniCart)
     }
 
     protected open fun configureNavToolbar() {
@@ -106,6 +112,17 @@ abstract class BaseSearchCategoryFragment:
 
     protected fun IconBuilder.addGlobalNav(): IconBuilder = this
             .addIcon(ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+
+    protected open fun configureMiniCart() {
+        val shopIds = listOf("123")
+
+        miniCartWidget?.initialize(
+                shopIds = shopIds,
+                fragment = this,
+                listener = this,
+                autoInitializeData = false,
+        )
+    }
 
     protected open fun configureRecyclerView() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, VERTICAL)
@@ -281,7 +298,11 @@ abstract class BaseSearchCategoryFragment:
     private fun updateMiniCartWidget(miniCartWidgetData: MiniCartWidgetData?) {
         miniCartWidgetData ?: return
 
-        // Update mini cart widget here
+        miniCartWidget?.updateData(miniCartWidgetData)
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+
     }
 
     override fun onResume() {
