@@ -111,7 +111,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
                         0)
             } else {
-                showError(NfcCardErrorTypeDef.FAILED_READ_CARD,
+                showError(ErrorHandler.getErrorMessage(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD)),
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
                         true)
@@ -164,7 +164,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
-            showError(it, resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+            showError(ErrorHandler.getErrorMessage(context, it), resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
                     true
             )

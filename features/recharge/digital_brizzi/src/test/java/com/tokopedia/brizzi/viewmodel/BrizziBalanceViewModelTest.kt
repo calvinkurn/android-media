@@ -109,7 +109,7 @@ class BrizziBalanceViewModelTest {
 
         //then
         assertNotNull(brizziBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, brizziBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (brizziBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test
@@ -129,7 +129,7 @@ class BrizziBalanceViewModelTest {
 
         //then
         assertNotNull(brizziBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, brizziBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (brizziBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test

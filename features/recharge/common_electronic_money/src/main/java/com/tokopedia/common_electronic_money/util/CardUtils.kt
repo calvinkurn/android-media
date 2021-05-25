@@ -6,6 +6,8 @@ import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.hexStringToByteArray
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.toHex
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 
 /**
  * Author errysuprayogi on 15,May,2020
@@ -14,6 +16,8 @@ class CardUtils {
 
     companion object {
 
+        private const val BRIZZI_TAG = "BRIZZI"
+        private const val EMONEY_TAG = "EMONEY"
         private const val PREFIX_SELECT_COMMAND = "00A4040008"
         private const val EMONEY_AID = "0000000000000001"
         private const val SUCCESSFULLY_EXECUTED = "9000"
@@ -43,6 +47,7 @@ class CardUtils {
                     return toHex(bytes) == EMONEY_SUCCESSFULLY_EXECUTED
                 }
             } catch (e: Exception) {
+                ServerLogger.log(Priority.P2, EMONEY_TAG, mapOf("err" to "ERROR_EMONEY_CHECKER: ${e.message}"))
                 e.printStackTrace()
             }
             return false
@@ -60,6 +65,7 @@ class CardUtils {
                     return toHex(bytes) == BRIZZI_SUCCESSFULLY_EXECUTED
                 }
             } catch (e: Exception) {
+                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_BRIZZI_CHECKER: ${e.message}"))
                 e.printStackTrace()
             }
             return false

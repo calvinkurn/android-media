@@ -151,7 +151,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
             })
 
             brizziBalanceViewModel.errorCardMessage.observe(this, Observer {
-                showError(it, resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                showError(ErrorHandler.getErrorMessage(context, it), resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
                         true)
             })

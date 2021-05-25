@@ -10,6 +10,7 @@ import com.tokopedia.common_electronic_money.util.SingleLiveEvent
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -21,7 +22,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
     : BaseViewModel(dispatcher) {
 
     val issuerId = SingleLiveEvent<Int>()
-    val errorCardMessage = SingleLiveEvent<String>()
+    val errorCardMessage = SingleLiveEvent<Throwable>()
     val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
     val errorInquiryBalance = SingleLiveEvent<Throwable>()
 
@@ -60,15 +61,15 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
                     } else {
                         isoDep.close()
-                        errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+                        errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
                 } catch (e: IOException) {
                     isoDep.close()
-                    errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+                    errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
         } else {
-            errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+            errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }
 
@@ -114,15 +115,15 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         getEmoneyInquiryBalance(PARAM_SEND_COMMAND, balanceRawQuery, id, mapAttributes)
                     } else {
                         isoDep.close()
-                        errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+                        errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     }
                 }
             } catch (e: IOException) {
                 isoDep.close()
-                errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+                errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             }
         } else {
-            errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+            errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }
 

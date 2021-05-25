@@ -10,6 +10,7 @@ import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
@@ -185,7 +186,7 @@ class EmoneyBalanceViewModelTest {
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
 
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (emoneyBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test
@@ -199,7 +200,7 @@ class EmoneyBalanceViewModelTest {
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (emoneyBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test
@@ -213,7 +214,7 @@ class EmoneyBalanceViewModelTest {
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (emoneyBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test
@@ -245,7 +246,7 @@ class EmoneyBalanceViewModelTest {
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (emoneyBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test
@@ -277,7 +278,7 @@ class EmoneyBalanceViewModelTest {
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (emoneyBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test
@@ -309,7 +310,7 @@ class EmoneyBalanceViewModelTest {
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (emoneyBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test
@@ -324,6 +325,6 @@ class EmoneyBalanceViewModelTest {
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (emoneyBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 }
