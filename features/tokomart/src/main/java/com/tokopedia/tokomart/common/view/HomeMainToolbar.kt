@@ -1,14 +1,11 @@
 package com.tokopedia.tokomart.common.view
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.TransitionDrawable
-import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
@@ -18,16 +15,12 @@ import android.widget.ImageView
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater.OnInflateFinishedListener
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.helper.ViewHelper
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.tokomart.R
 import kotlinx.android.synthetic.main.home_main_toolbar_tokonow.view.*
 import kotlinx.coroutines.*
@@ -39,41 +32,25 @@ import kotlin.text.Charsets.UTF_8
 @Deprecated( message = "this class is used as oldtoolbar")
 class HomeMainToolbar : MainToolbar, CoroutineScope {
 
-    private var KEY_BUNDLE_TOOLBAR_TYPE: String = "key_bundle_toolbar_type"
+    companion object {
+        const val TOOLBAR_LIGHT_TYPE = 0
+        const val TOOLBAR_DARK_TYPE = 1
+        private const val HOME_SOURCE = "home"
+        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+    }
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
-    private var toolbarType: Int = 0
-
-    private var shadowApplied: Boolean = false
-
-    private lateinit var wishlistCrossfader: TransitionDrawable
-
-    private lateinit var notifCrossfader: TransitionDrawable
-
-    private lateinit var inboxCrossfader: TransitionDrawable
-
-    private lateinit var wishlistBitmapWhite: Drawable
-
-    private lateinit var notifBitmapWhite: Drawable
-
-    private lateinit var inboxBitmapWhite: Drawable
-
-    private lateinit var wishlistBitmapGrey: Drawable
-
-    private lateinit var notifBitmapGrey: Drawable
-
-    private lateinit var inboxBitmapGrey: Drawable
-
     private lateinit var searchMagnifierIcon: Drawable
-
-    private var afterInflationCallable: Callable<Any?>? = null
-
     private lateinit var animationJob: Job
-
+    private var toolbarType: Int = 0
+    private var shadowApplied: Boolean = false
+    private var afterInflationCallable: Callable<Any?>? = null
     private var viewHomeMainToolBar: View? = null
-
-    private var navToolbar: IconUnify? = null
+    private var iconCart: Drawable? = null
+    private var iconSharing: Drawable? = null
+    private var iconBackButton: Drawable? = null
 
     constructor(context: Context) : super(context)
 
@@ -81,7 +58,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    fun setViewAttributesAfterInflation(){
+    private fun setViewAttributesAfterInflation(){
         showShadow()
 
         setBackgroundAlpha(0f)
@@ -89,8 +66,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         toolbarType = TOOLBAR_LIGHT_TYPE
         launch {
             //main
-            val result = initializeinBackground()
-            result.await()
+            initializeinBackground()
             setImageDrawables()
             findViewById<ImageView>(R.id.search_magnify_icon).setImageDrawable(searchMagnifierIcon)
             //..........
@@ -101,50 +77,21 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         afterInflationCallable = callable
     }
 
-    fun initializeinBackground() : Deferred<Unit> = async(Dispatchers.IO){
-            initToolbarIcon()
+    suspend fun initializeinBackground() : Unit = withContext(Dispatchers.IO) {
+        initToolbarIcon()
     }
 
     private fun initToolbarIcon() {
-        wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
-        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_notification_pressed_24)
-        inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
         searchMagnifierIcon = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_search_bar)
-
-        wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
-        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_notification_normal_24)
-        inboxBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_grey)
-
-        wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
-        notifCrossfader = TransitionDrawable(arrayOf<Drawable>(notifBitmapGrey, notifBitmapWhite))
-        inboxCrossfader = TransitionDrawable(arrayOf<Drawable>(inboxBitmapGrey, inboxBitmapWhite))
+        iconSharing = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_sharing_old_toolbar)
+        iconCart = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_cart_old_toolbar)
+        iconBackButton = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_back_button_old_toolbar)
     }
 
-    fun setImageDrawables(){
-        wishlistCrossfader.startTransition(0)
-        notifCrossfader.startTransition(0)
-        inboxCrossfader.startTransition(0)
-
-        btnWishlist?.setImageDrawable(wishlistCrossfader)
-        btnInbox?.setImageDrawable(inboxCrossfader)
-
-        if (toolbarType == TOOLBAR_DARK_TYPE) {
-            wishlistCrossfader.resetTransition()
-            notifCrossfader.resetTransition()
-            inboxCrossfader.resetTransition()
-
-            wishlistCrossfader.reverseTransition(0)
-            notifCrossfader.reverseTransition(0)
-            inboxCrossfader.reverseTransition(0)
-        } else if (toolbarType == TOOLBAR_LIGHT_TYPE) {
-            wishlistCrossfader.resetTransition()
-            notifCrossfader.resetTransition()
-            inboxCrossfader.resetTransition()
-
-            wishlistCrossfader.startTransition(0)
-            notifCrossfader.startTransition(0)
-            inboxCrossfader.startTransition(0)
-        }
+    private fun setImageDrawables(){
+        btnSharing?.setImageDrawable(iconSharing)
+        btnCart?.setImageDrawable(iconCart)
+        btnBack?.setImageDrawable(iconBackButton)
     }
 
     fun hideShadow() {
@@ -197,36 +144,23 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     fun switchToDarkToolbar() {
-        if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
-            wishlistCrossfader.reverseTransition(200)
-            notifCrossfader.reverseTransition(200)
-            inboxCrossfader.reverseTransition(200)
-
-            toolbarType = TOOLBAR_DARK_TYPE
-        } else if (!crossfaderIsInitialized()) {
-            initToolbarIcon()
+        if (toolbarType != TOOLBAR_DARK_TYPE) {
             toolbarType = TOOLBAR_DARK_TYPE
         }
-        setBackButtonColorBasedOnTheme()
     }
 
-    private fun crossfaderIsInitialized() =
-            ::wishlistCrossfader.isInitialized
-                    && ::notifCrossfader.isInitialized
-                    && ::inboxCrossfader.isInitialized
+    fun switchToLightToolbar() {
+        if (toolbarType != TOOLBAR_LIGHT_TYPE ) {
+            toolbarType = TOOLBAR_LIGHT_TYPE
+        }
+    }
 
     private fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context, drawableId) as Drawable
-        } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
+        return BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
     private fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
-        var drawable = ContextCompat.getDrawable(context, drawableId)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = DrawableCompat.wrap(drawable!!).mutate()
-        }
-
+        val drawable = ContextCompat.getDrawable(context, drawableId)
         val bitmap = Bitmap.createBitmap(drawable!!.intrinsicWidth,
                 drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -234,20 +168,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         drawable.draw(canvas)
 
         return bitmap
-    }
-
-    fun switchToLightToolbar() {
-        if (toolbarType != TOOLBAR_LIGHT_TYPE && crossfaderIsInitialized()) {
-            wishlistCrossfader.reverseTransition(200)
-            notifCrossfader.reverseTransition(200)
-            inboxCrossfader.reverseTransition(200)
-
-            toolbarType = TOOLBAR_LIGHT_TYPE
-        } else if (!crossfaderIsInitialized()) {
-            initToolbarIcon()
-            toolbarType = TOOLBAR_LIGHT_TYPE
-        }
-        setBackButtonColorBasedOnTheme()
     }
 
     fun isShadowApplied() : Boolean {
@@ -318,18 +238,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         }
     }
 
-    fun startHintAnimation() {
-        if (::animationJob.isInitialized) {
-            animationJob.start()
-        }
-    }
-
-    fun stopHintAnimation() {
-        if (::animationJob.isInitialized) {
-            animationJob.cancel()
-        }
-    }
-
     private fun setHintSingle(hint: HintData, isFirstInstall: Boolean) {
         editTextSearch?.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
         editTextSearch?.setOnClickListener {
@@ -357,37 +265,5 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         catch (e: Throwable) {
             value
         }
-    }
-
-    private fun toolbarThemeCondition(lightCondition: () -> Unit = {}, darkCondition: () -> Unit = {}) {
-        if (toolbarType == NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE) lightCondition.invoke()
-        if (toolbarType == NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE) darkCondition.invoke()
-    }
-
-    private fun getDarkIconColor() = ContextCompat.getColor(context, com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon)
-
-    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-
-    private fun setBackButtonColorBasedOnTheme() {
-        navToolbar = findViewById(com.tokopedia.searchbar.R.id.nav_icon_back)
-        toolbarThemeCondition(
-                lightCondition = {
-                    navToolbar?.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getDarkIconColor())
-                },
-                darkCondition = {
-                    navToolbar?.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getLightIconColor())
-                }
-        )
-        navToolbar?.setOnClickListener {
-            (context as? Activity)?.onBackPressed()
-        }
-    }
-
-    companion object {
-        const val TOOLBAR_LIGHT_TYPE = 0
-        const val TOOLBAR_DARK_TYPE = 1
-        private const val HOME_SOURCE = "home"
-
-        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
 }

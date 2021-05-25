@@ -1,24 +1,22 @@
 package com.tokopedia.tokomart.common.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.SearchBarConstant
-import com.tokopedia.searchbar.util.NotifAnalytics
-import com.tokopedia.searchbar.util.NotifPreference
+import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.common.view.badge.BadgeView
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,23 +24,22 @@ import com.tokopedia.user.session.UserSessionInterface
 /**
  * Created by meta on 22/06/18.
  */
-@Deprecated("")
+@Deprecated( message = "this class is used as oldtoolbar")
 open class MainToolbar : Toolbar {
-    private var wishlistNewPage = false
-    var btnWishlist: ImageView? = null
-        protected set
-    var btnInbox: ImageView? = null
-        protected set
+
+    protected var btnSharing: ImageView? = null
+    protected var btnCart: ImageView? = null
+    protected var btnBack: ImageView? = null
     protected var editTextSearch: TextView? = null
-    private var badgeViewInbox: BadgeView? = null
-    private var badgeViewNotification: BadgeView? = null
     protected var searchBarAnalytics: SearchBarAnalytics? = null
     protected var userSession: UserSessionInterface? = null
-    protected var notifPreference: NotifPreference? = null
-    protected var remoteConfig: RemoteConfig? = null
-    protected var notifAnalytics: NotifAnalytics? = null
-    var searchApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE
     protected var screenName: String? = ""
+
+    private var wishlistNewPage = false
+    private var badgeViewCart: BadgeView? = null
+    private var remoteConfig: RemoteConfig? = null
+
+    var searchApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -57,78 +54,64 @@ open class MainToolbar : Toolbar {
     }
 
     fun setInboxNumber(badgeNumber: Int) {
-        if (btnInbox != null) {
-            if (badgeViewInbox == null) badgeViewInbox = BadgeView(context)
-            badgeViewInbox!!.bindTarget(btnInbox)
-            badgeViewInbox!!.badgeGravity = Gravity.END or Gravity.TOP
-            badgeViewInbox!!.badgeNumber = badgeNumber
+        if (btnCart != null) {
+            if (badgeViewCart == null) badgeViewCart = BadgeView(context)
+            badgeViewCart?.bindTarget(btnCart)
+            badgeViewCart?.badgeGravity = Gravity.END or Gravity.TOP
+            badgeViewCart?.badgeNumber = badgeNumber
         }
     }
 
-    protected fun init(context: Context, attrs: AttributeSet?) {
-        notifAnalytics = NotifAnalytics()
+    fun hideBtnSharing() {
+        btnSharing?.hide()
+    }
+
+    private fun init(context: Context, attrs: AttributeSet?) {
         userSession = UserSession(context)
-        notifPreference = NotifPreference(context)
         searchBarAnalytics = SearchBarAnalytics()
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-        wishlistNewPage = firebaseRemoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_WISHLIST_PAGE, true)
-        if (attrs != null) {
-            val ta = context.obtainStyledAttributes(attrs, R.styleable.MainToolbar, 0, 0)
-            screenName = try {
-                ta.getString(R.styleable.MainToolbar_screenName)
-            } finally {
-                ta.recycle()
-            }
-        }
         inflateResource(context)
     }
 
     protected fun actionAfterInflation(context: Context?, view: View) {
-        btnInbox = view.findViewById(R.id.btn_inbox)
-        btnWishlist = view.findViewById(R.id.btn_wishlist)
+        btnSharing = view.findViewById(R.id.btn_sharing)
+        btnCart = view.findViewById(R.id.btn_cart)
+        btnBack = view.findViewById(R.id.btn_back)
         editTextSearch = view.findViewById(R.id.et_search)
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        if (resources.configuration.screenLayout and
-                Configuration.SCREENLAYOUT_SIZE_MASK >=
-                Configuration.SCREENLAYOUT_SIZE_LARGE) {
-            editTextSearch?.setTextSize(18f)
+
+        if (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            editTextSearch?.textSize = 18f
         }
-        btnWishlist?.setOnClickListener(OnClickListener { v: View? ->
+
+        btnSharing?.setOnClickListener { _ ->
             if (userSession!!.isLoggedIn) {
-                searchBarAnalytics!!.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName)
+                searchBarAnalytics?.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName)
                 if (wishlistNewPage) RouteManager.route(context, ApplinkConst.NEW_WISHLIST) else RouteManager.route(context, ApplinkConst.WISHLIST)
             } else {
-                searchBarAnalytics!!.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName)
+                searchBarAnalytics?.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName)
                 RouteManager.route(context, ApplinkConst.LOGIN)
             }
-        })
-        btnInbox?.setOnClickListener(OnClickListener { v: View? ->
+        }
+        btnCart?.setOnClickListener { _ ->
             if (userSession!!.isLoggedIn) {
-                searchBarAnalytics!!.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
+                searchBarAnalytics?.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
                 RouteManager.route(context, ApplinkConst.INBOX)
             } else {
-                searchBarAnalytics!!.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
+                searchBarAnalytics?.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
                 RouteManager.route(context, ApplinkConst.LOGIN)
             }
-        })
-        editTextSearch?.setOnClickListener(OnClickListener { v: View? ->
-            searchBarAnalytics!!.eventTrackingSearchBar(screenName, "")
+        }
+        editTextSearch?.setOnClickListener{ _ ->
+            searchBarAnalytics?.eventTrackingSearchBar(screenName, "")
             RouteManager.route(context, searchApplink)
-        })
-    }
-
-    fun setQuerySearch(querySearch: String?) {
-        if (editTextSearch != null) {
-            editTextSearch!!.hint = querySearch
+        }
+        btnBack?.setOnClickListener {
+            (context as? Activity)?.onBackPressed()
         }
     }
 
     open fun inflateResource(context: Context) {
         inflate(context, R.layout.main_toolbar, this)
         actionAfterInflation(context, this)
-    }
-
-    companion object {
-        private const val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
     }
 }

@@ -216,7 +216,6 @@ class TokoMartHomeFragment: Fragment() {
                     IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
             ).addIcon(IconList.ID_SHARE) {}
                     .addIcon(IconList.ID_CART) {}
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
             toolbar.setIcon(icons)
         }
         activity?.let {
