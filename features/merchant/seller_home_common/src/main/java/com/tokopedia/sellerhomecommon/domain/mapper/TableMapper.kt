@@ -121,7 +121,8 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
     }
 
     private fun getColorFromStyleAttribute(htmlString: String): String {
-        return htmlString.substringAfter("background-color").substringAfter("color")
+        val colorWithoutBackgroundColor = htmlString.replace("background-color", "")
+        return colorWithoutBackgroundColor.substringAfter("color")
                 .substringBefore("\"").substringBefore(";")
                 .replace("[^A-Za-z0-9#]+".toRegex(), "")
     }
