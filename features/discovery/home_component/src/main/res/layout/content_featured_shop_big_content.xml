@@ -27,21 +27,21 @@
             android:id="@+id/featured_shop_product_logo_shop"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:foreground="@drawable/featured_shop_border_image"
+            android:background="@drawable/featured_shop_border_image"
             app:layout_constraintBottom_toBottomOf="@+id/featured_shop_product_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/featured_shop_product_image"
-            tools:background="@color/Unify_R600" />
+            />
 
         <ImageView
             android:id="@+id/featured_shop_product_shop_badge"
             android:layout_width="22dp"
             android:layout_height="22dp"
-            android:foreground="@drawable/featured_shop_border_image"
+            android:background="@drawable/featured_shop_border_image"
             app:layout_constraintBottom_toBottomOf="@+id/featured_shop_product_logo_shop"
             app:layout_constraintEnd_toEndOf="@+id/featured_shop_product_logo_shop"
-            tools:background="@color/Unify_G500" />
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/featured_shop_product_shop_topads"
