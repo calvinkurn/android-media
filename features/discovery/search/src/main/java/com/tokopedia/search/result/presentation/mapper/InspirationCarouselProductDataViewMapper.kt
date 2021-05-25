@@ -48,20 +48,12 @@ class InspirationCarouselProductDataViewMapper {
     private fun convertInspirationCarouselProductBadgeToBadgesItemList(
             badgesList: List<InspirationCarouselProductBadge>,
     ): List<BadgeItemDataView> {
-        val badgeItemList: MutableList<BadgeItemDataView> = ArrayList()
-        for (badgeModel in badgesList) {
-            badgeItemList.add(convertInspirationCarouselProductBadgeToBadgeItem(badgeModel))
+        return badgesList.map { badgeModel ->
+            BadgeItemDataView(
+                    title = badgeModel.title,
+                    imageUrl = badgeModel.imageUrl,
+                    isShown = badgeModel.isShown,
+            )
         }
-        return badgeItemList
-    }
-
-    private fun convertInspirationCarouselProductBadgeToBadgeItem(
-            badgeModel: InspirationCarouselProductBadge,
-    ): BadgeItemDataView {
-        return BadgeItemDataView(
-                title = badgeModel.title,
-                imageUrl = badgeModel.imageUrl,
-                isShown = badgeModel.isShown,
-        )
     }
 }
