@@ -28,4 +28,6 @@ object CreateReviewTrackingConstants {
     const val EVENT_LABEL_VIEW_DIALOG = "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_ACTION_CLICK_SEND_RATING_OPTION = "click - kirim rating on pop up"
     const val EVENT_ACTION_CLICK_STAY_OPTION = "click - tetap disini on pop up"
+    const val EVENT_ACTION_CLICK_TEMPLATE = "click - review template"
+    const val EVENT_LABEL_CLICK_TEMPLATE = "template:%s;reputation_id:%s;order_id:%s;product_id:%s;"
 }

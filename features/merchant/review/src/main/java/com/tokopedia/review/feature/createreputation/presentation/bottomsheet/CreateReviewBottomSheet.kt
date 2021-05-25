@@ -248,6 +248,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onTemplateSelected(template: String) {
         textArea?.append(context?.getString(R.string.review_form_templates_formatting, template)
                 ?: template)
+        CreateReviewTracking.eventClickReviewTemplate(template, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
     }
 
     override fun onResume() {
@@ -406,6 +407,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this, "") }
             }
             hideTemplates()
+            ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, "")
             incentivesTicker?.apply {
                 setHtmlDescription(it.subtitle)
                 setOnClickListener { _ ->

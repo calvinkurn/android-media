@@ -262,6 +262,17 @@ object CreateReviewTracking {
         ))
     }
 
+    fun eventClickReviewTemplate(templateText: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_TEMPLATE,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_TEMPLATE, templateText, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
+    }
+
     private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {
         val eventMap = HashMap<String, Any>()
         eventMap[ReviewTrackingConstant.EVENT] = event
