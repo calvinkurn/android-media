@@ -4,7 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.categorylist.domain.model.GetCategoryListResponse
-import com.tokopedia.tokomart.categorylist.domain.query.GetCategoryList
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -15,10 +14,38 @@ class GetCategoryListUseCase @Inject constructor(
     companion object {
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_DEPTH = "depth"
+
+        private val QUERY = """
+            query TokonowCategoryTree(${'$'}warehouseID:String!, ${'$'}depth:Int!){
+                TokonowCategoryTree(warehouseID:${'$'}warehouseID, depth:${'$'}depth){
+                    header{
+                        process_time
+                        messages
+                        reason
+                        error_code
+                    }
+                    data{
+                      id
+                      name
+                      url
+                      applinks
+                      imageUrl
+                      child {
+                        id
+                        name
+                        url
+                        applinks
+                        imageUrl
+                        parentID
+                      }
+                    }
+                  }
+                }
+        """.trimIndent()
     }
 
     init {
-        setGraphqlQuery(GetCategoryList.QUERY)
+        setGraphqlQuery(QUERY)
         setTypeClass(GetCategoryListResponse::class.java)
     }
 
