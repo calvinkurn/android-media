@@ -8,7 +8,7 @@ import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetU
 class TokoMartHomeAdapter(
     typeFactory: TokoMartHomeAdapterTypeFactory,
     differ: TokoMartHomeListDiffer
-): BaseTokoMartListAdapter<Visitable<*>, TokoMartHomeAdapterTypeFactory>(typeFactory, differ) {
+) : BaseTokoMartListAdapter<Visitable<*>, TokoMartHomeAdapterTypeFactory>(typeFactory, differ) {
 
     fun updateHomeChooseAddressWidget(isRefresh: Boolean) {
         val items = data.toMutableList()

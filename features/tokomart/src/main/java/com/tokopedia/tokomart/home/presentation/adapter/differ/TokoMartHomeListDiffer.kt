@@ -14,7 +14,7 @@ class TokoMartHomeListDiffer : BaseTokoMartDiffer() {
         val newItem = newList[newItemPosition]
 
         return if (oldItem is TokoMartHomeLayoutUiModel && newItem is TokoMartHomeLayoutUiModel) {
-            oldItem.layoutId == newItem.layoutId
+            oldItem.channelId == newItem.channelId
         } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
             oldItem.visitableId() == newItem.visitableId()
         } else {

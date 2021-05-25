@@ -1,25 +1,17 @@
 package com.tokopedia.tokomart.home.constant
 
-import androidx.annotation.IntDef
+import androidx.annotation.StringDef
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(
-    HomeLayoutType.SECTION,
-    HomeLayoutType.ALL_CATEGORY,
-    HomeLayoutType.DYNAMIC_CHANNEL,
-    HomeLayoutType.SLIDER_BANNER,
-    HomeLayoutType.SLIDER_PRODUCT,
-    HomeLayoutType.CHOOSE_ADDRESS_WIDGET,
-    HomeLayoutType.SLIDER_PRODUCT_PERSONALIZED
+@StringDef(
+    HomeLayoutType.BANNER_CAROUSEL,
+    HomeLayoutType.CATEGORY,
+    HomeLayoutType.LEGO_3_IMAGE
 )
 annotation class HomeLayoutType {
     companion object {
-        const val SECTION = 0
-        const val ALL_CATEGORY = 1
-        const val DYNAMIC_CHANNEL = 2
-        const val SLIDER_BANNER = 3
-        const val SLIDER_PRODUCT = 4
-        const val CHOOSE_ADDRESS_WIDGET = 5
-        const val SLIDER_PRODUCT_PERSONALIZED = 6
+        const val BANNER_CAROUSEL = "banner_carousel_v2"
+        const val CATEGORY = "category_tokonow"
+        const val LEGO_3_IMAGE = "lego_3_image"
     }
 }

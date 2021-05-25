@@ -67,8 +67,8 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
             // endregion
 
             // region Global Home Component
+            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(view, null, null)
             BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, null, null)
-            // add global home view holder here
             // endregion
             else -> super.createViewHolder(view, type)
         }

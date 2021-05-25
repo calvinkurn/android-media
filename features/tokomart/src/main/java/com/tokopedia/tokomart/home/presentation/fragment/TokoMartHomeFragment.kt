@@ -75,6 +75,8 @@ class TokoMartHomeFragment: Fragment() {
     @Inject
     lateinit var viewModel: TokoMartHomeViewModel
 
+    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this), TokoMartHomeListDiffer()) }
+
     private var oldToolbar: HomeMainToolbar? = null
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
@@ -85,8 +87,6 @@ class TokoMartHomeFragment: Fragment() {
     private var startToTransitionOffset = 0
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
-
-    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this), TokoMartHomeListDiffer()) }
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -134,7 +134,9 @@ class TokoMartHomeFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setup()
-        getLayoutData()
+        setupRecyclerView()
+        observeLiveData()
+        getHomeLayout()
         getSearchHint()
     }
 
@@ -347,10 +349,17 @@ class TokoMartHomeFragment: Fragment() {
     }
 
     private fun observeLiveData() {
-        observe(viewModel.homeLayout) {
-            if (it is Success) adapter.submitList(it.data)
-            if (!isChooseAddressWidgetShowed(false)) {
-                adapter.removeHomeChooseAddressWidget()
+        observe(viewModel.homeLayoutList) {
+            if (it is Success) {
+                adapter.submitList(it.data)
+                // TO-DO: Lazy Load Data
+                viewModel.getLayoutData()
+            }
+        }
+
+        observe(viewModel.homeLayoutData) {
+            if(it is Success) {
+                adapter.submitList(it.data)
             }
         }
 
@@ -359,7 +368,7 @@ class TokoMartHomeFragment: Fragment() {
         }
     }
 
-    private fun getLayoutData() {
+    private fun getHomeLayout() {
         viewModel.getHomeLayout()
     }
 

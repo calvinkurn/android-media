@@ -4,7 +4,6 @@ import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeTypeFactory
 
 data class HomeChooseAddressWidgetUiModel(
         val id: String,
-        val title: String,
         val isRefresh: Boolean = false,
         val isMyShop: Boolean = false
 ) : TokoMartHomeLayoutUiModel(id)  {
