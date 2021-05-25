@@ -6,14 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.categorylist.presentation.activity.TokoMartCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokomart.categorylist.presentation.bottomsheet.TokoMartCategoryListBottomSheet
 
 class TokoMartCategoryListFragment: Fragment() {
 
     companion object {
 
-        fun newInstance(): TokoMartCategoryListFragment {
-            return TokoMartCategoryListFragment()
+        fun newInstance(warehouseId: String): TokoMartCategoryListFragment {
+            return TokoMartCategoryListFragment().apply {
+                arguments = Bundle().apply {
+                    putString(PARAM_WAREHOUSE_ID, warehouseId)
+                }
+            }
         }
     }
 
@@ -23,7 +28,12 @@ class TokoMartCategoryListFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val categoryListBottomSheet = TokoMartCategoryListBottomSheet.newInstance()
-        categoryListBottomSheet.show(childFragmentManager)
+        showCategoryListBottomSheet()
+    }
+
+    private fun showCategoryListBottomSheet() {
+        val warehouseId = arguments?.getString(PARAM_WAREHOUSE_ID).orEmpty()
+        TokoMartCategoryListBottomSheet.newInstance(warehouseId)
+            .show(childFragmentManager)
     }
 }

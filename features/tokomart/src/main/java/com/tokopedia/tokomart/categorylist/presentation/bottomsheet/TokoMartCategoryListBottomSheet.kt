@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.categorylist.di.component.DaggerTokoMartCategoryListComponent
+import com.tokopedia.tokomart.categorylist.presentation.activity.TokoMartCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapter
 import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapterTypeFactory
 import com.tokopedia.tokomart.categorylist.presentation.adapter.decoration.TokoMartCategoryListDecoration
@@ -27,8 +28,13 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
     companion object {
         private val TAG = TokoMartCategoryListBottomSheet::class.simpleName
 
-        fun newInstance(): TokoMartCategoryListBottomSheet {
-            return TokoMartCategoryListBottomSheet()
+
+        fun newInstance(warehouseId: String): TokoMartCategoryListBottomSheet {
+            return TokoMartCategoryListBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(PARAM_WAREHOUSE_ID, warehouseId)
+                }
+            }
         }
     }
 
@@ -101,6 +107,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
     }
 
     private fun getCategoryList() {
-        viewModel.getCategoryList()
+        val warehouseId = arguments?.getString(PARAM_WAREHOUSE_ID).orEmpty()
+        viewModel.getCategoryList(warehouseId)
     }
 }

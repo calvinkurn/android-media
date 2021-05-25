@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel
+import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel.CategoryType
 import kotlinx.android.synthetic.main.item_tokomart_category_child.view.*
 
 class CategoryListChildViewHolder(itemView: View): AbstractViewHolder<CategoryListChildUiModel>(itemView) {

@@ -28,7 +28,7 @@ class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategor
         itemView.apply {
             textTitle.text = data.title
             textSeeAll.setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalTokoMart.CATEGORY_LIST)
+                RouteManager.route(context, ApplinkConstInternalTokoMart.CATEGORY_LIST, "1")
             }
 
             with(rvCategory) {

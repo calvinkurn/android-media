@@ -11,8 +11,13 @@ data class CategoryListChildUiModel(
     val appLink: String? = null,
     val textWeight: Int = Typography.REGULAR,
     @ColorRes val textColorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700,
-    val appLink: String? = null
+    val type: CategoryType = CategoryType.CHILD_CATEGORY_ITEM
 ) : CategoryListUiModel() {
+    enum class CategoryType {
+        CHILD_CATEGORY_ITEM,
+        ALL_CATEGORY_TEXT
+    }
+
     override fun type(typeFactory: TokoMartCategoryListTypeFactory): Int {
         return typeFactory.type(this)
     }

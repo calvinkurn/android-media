@@ -36,7 +36,7 @@
 
                 <data
                     android:host="@string/host_tokomart"
-                    android:path="@string/path_tokomart_category_list"
+                    android:pathPattern="@string/path_tokomart_category_list"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

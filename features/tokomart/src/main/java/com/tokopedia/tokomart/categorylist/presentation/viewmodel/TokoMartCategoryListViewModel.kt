@@ -18,12 +18,16 @@ class TokoMartCategoryListViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
 
+    companion object {
+        private const val CATEGORY_LEVEL_DEPTH = 2
+    }
+
     val categoryList: LiveData<Result<List<CategoryListItemUiModel>>>
         get() = _categoryList
 
     private val _categoryList = MutableLiveData<Result<List<CategoryListItemUiModel>>>()
 
-    fun getCategoryList() {
+    fun getCategoryList(warehouseId: String) {
         launchCatchError(block = {
             val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
             val data = CategoryListMapper.mapToUiModel(response)

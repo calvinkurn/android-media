@@ -2,4 +2,5 @@
 <resources>
     <string name="tokomart_category_list_bottom_sheet_title">Semua kategori di TokoNOW!</string>
     <string name="tokomart_see_all">Lihat Semua</string>
+    <string name="tokomart_all_category_text_format">Semua Produk %1$s</string>
 </resources>

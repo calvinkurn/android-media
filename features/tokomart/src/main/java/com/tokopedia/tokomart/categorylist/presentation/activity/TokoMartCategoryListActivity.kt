@@ -6,5 +6,12 @@ import com.tokopedia.tokomart.categorylist.presentation.fragment.TokoMartCategor
 
 class TokoMartCategoryListActivity: BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment = TokoMartCategoryListFragment.newInstance()
+    companion object {
+        const val PARAM_WAREHOUSE_ID = "warehouse_id"
+    }
+
+    override fun getNewFragment(): Fragment {
+        val warehouseId = intent?.data?.getQueryParameter(PARAM_WAREHOUSE_ID).orEmpty()
+        return TokoMartCategoryListFragment.newInstance(warehouseId)
+    }
 }

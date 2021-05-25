@@ -26,7 +26,9 @@ object CategoryListMapper {
             id = category.id,
             name = category.name,
             textWeight = Typography.BOLD,
-            textColorId = com.tokopedia.unifyprinciples.R.color.Unify_G500
+            textColorId = com.tokopedia.unifyprinciples.R.color.Unify_G500,
+            appLink = category.appLinks,
+            type = CategoryType.ALL_CATEGORY_TEXT
         )
 
         categoryList.addAll(childList)
