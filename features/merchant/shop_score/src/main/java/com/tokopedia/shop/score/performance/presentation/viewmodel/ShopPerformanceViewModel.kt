@@ -8,6 +8,7 @@ import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.score.performance.domain.mapper.ShopScoreMapper
 import com.tokopedia.shop.score.performance.domain.model.ShopLevelTooltipParam
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreLevelParam
@@ -32,7 +33,7 @@ class ShopPerformanceViewModel @Inject constructor(
         private val getShopPerformanceUseCase: GetShopPerformanceUseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    val shopInfoLevel: LiveData<Result<ShopInfoLevelUiModel>>
+    val shopInfoLevel: LiveData<ShopInfoLevelUiModel>
         get() = _shopInfoLevel
 
     val shopPerformanceDetail: LiveData<ShopPerformanceDetailUiModel>
@@ -46,7 +47,7 @@ class ShopPerformanceViewModel @Inject constructor(
 
     private val _shopPerformancePage = MutableLiveData<Result<Pair<List<BaseShopPerformance>, ShopScoreWrapperResponse>>>()
 
-    private val _shopInfoLevel = MutableLiveData<Result<ShopInfoLevelUiModel>>()
+    private val _shopInfoLevel = MutableLiveData<ShopInfoLevelUiModel>()
     private val _shopPerformanceDetail = MutableLiveData<ShopPerformanceDetailUiModel>()
 
     private val _shopInfoPeriod = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
@@ -54,7 +55,7 @@ class ShopPerformanceViewModel @Inject constructor(
     fun getShopInfoPeriod() {
         launchCatchError(block = {
             val dataShopInfo = withContext(dispatchers.io) {
-                shopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                shopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
                 shopInfoPeriodUseCase.executeOnBackground()
             }
             _shopInfoPeriod.postValue(Success(dataShopInfo))
@@ -79,19 +80,15 @@ class ShopPerformanceViewModel @Inject constructor(
         })
     }
 
-    fun getShopPerformanceDetail(titlePerformance: String) {
+    fun getShopPerformanceDetail(identifierPerformance: String) {
         launch {
-            _shopPerformanceDetail.value = shopScoreMapper.mapToShopPerformanceDetail(titlePerformance)
+            _shopPerformanceDetail.value = shopScoreMapper.mapToShopPerformanceDetail(identifierPerformance)
         }
     }
 
     fun getShopInfoLevel(level: Int) {
-        launchCatchError(block = {
-            _shopInfoLevel.value = Success(shopScoreMapper.mapToShopInfoLevelUiModel(level))
-        }, onError = {
-            _shopInfoLevel.postValue(Fail(it))
-        })
+        launch {
+            _shopInfoLevel.value = shopScoreMapper.mapToShopInfoLevelUiModel(level)
+        }
     }
-
-
 }

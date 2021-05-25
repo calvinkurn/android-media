@@ -22,7 +22,9 @@
     <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
         android:exported="true"
         android:label="Tokopedia"
+        android:resizeableActivity="true"
         android:launchMode="singleTask"
+        android:theme="@style/TokopediaTransparentStatus"
         android:windowSoftInputMode="adjustPan"
         android:screenOrientation="portrait">
 

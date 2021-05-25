@@ -6,15 +6,15 @@
       "buoList": [],
       "customProperties": {
         "nameValuePairs": {
-          "product_id": "{{.*}}",
-          "price": "{{.*}}",
-          "Category Level 1": "{{.*}}",
-          "userId": "{{.*}}",
-          "currency": "{{.*}}"
+          "product_id": ".*",
+          "price": ".*",
+          "Category Level 1": ".*",
+          "userId": ".*",
+          "currency": ".*"
         }
       },
       "eventName": "ADD_TO_WISHLIST",
-      "isStandardEvent": "{{true|false}}",
+      "isStandardEvent": "true|false",
       "standardProperties": {
         "nameValuePairs": {}
       }

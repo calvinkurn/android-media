@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_parameter_performance_shop_score.view
 
 class ItemParameterFaqAdapter: RecyclerView.Adapter<ItemParameterFaqAdapter.ItemParameterFaqViewHolder>() {
 
-    private var itemParameterFaqList = mutableListOf<ItemParameterFaqUiModel>()
+    private val itemParameterFaqList = mutableListOf<ItemParameterFaqUiModel>()
 
     fun setParameterFaqList(parameterFaqList: List<ItemParameterFaqUiModel>) {
         if (parameterFaqList.isNullOrEmpty()) return

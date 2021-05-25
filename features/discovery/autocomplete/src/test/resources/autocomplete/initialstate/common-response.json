@@ -48,21 +48,6 @@
           "id": "0",
           "template": "list_single_line",
           "image_url": "https://ecs7.tokopedia.net/img/autocomplete/icTime-3x.png",
-          "applink": "tokopedia://search?q=momo&source=universe&st=product",
-          "url": "/search?q=momo&source=universe&st=product",
-          "title": "momo",
-          "subtitle": "",
-          "icon_title": "",
-          "icon_subtitle": "",
-          "label": "",
-          "label_type": "",
-          "shortcut_image": "https://ecs7.tokopedia.net/img/autocomplete/ic-close-3x.png",
-          "type": "keyword"
-        },
-        {
-          "id": "0",
-          "template": "list_single_line",
-          "image_url": "https://ecs7.tokopedia.net/img/autocomplete/icTime-3x.png",
           "applink": "tokopedia://search?q=samsung&source=universe&st=product",
           "url": "/search?q=samsung&source=universe&st=product",
           "title": "samsung",
@@ -88,6 +73,21 @@
           "label_type": "",
           "shortcut_image": "",
           "type": "shop"
+        },
+        {
+          "id": "25544",
+          "template": "list_double_line",
+          "image_url": "https://images.tokopedia.net/img/blog/promo/2019/04/pascabayar_color-copy%408x.png",
+          "applink": "tokopedia://discovery/tukar-tambah-samsung",
+          "url": "https://www.tokopedia.com/discovery/tukar-tambah-samsung",
+          "title": "Tukar Tambah ke HP Samsung",
+          "subtitle": "",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/845f9be9-d0d7-46ea-9c7d-d3333633f0e2.png",
+          "type": "curated"
         }
       ]
     },

@@ -14,6 +14,6 @@ data class PMStatusUiModel(
         val autoExtendEnabled: Boolean = true
 ) {
     companion object {
-        const val PM_AUTO_EXTEND_OFF = "off"
+        const val AUTO_EXTEND_STATUS = "off"
     }
 }

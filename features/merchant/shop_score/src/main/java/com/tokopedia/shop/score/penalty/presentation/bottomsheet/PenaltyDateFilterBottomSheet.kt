@@ -11,6 +11,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.format
+import com.tokopedia.shop.score.common.getLocale
 import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
 import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
@@ -20,6 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.max
 
@@ -31,8 +33,6 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
     private var calendarView: CalendarPickerView? = null
 
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.RANGE
-
-    private var selectedDates = mutableListOf<Date>()
 
     private var calenderFilterListener: CalenderListener? = null
 
@@ -54,6 +54,18 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
                 show(it, PenaltyDateFilterBottomSheetTag)
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getDataFromArguments()
+    }
+
+    private fun getDataFromArguments() {
+        val startDateParam = arguments?.getString(KEY_START_DATE_PENALTY) ?: ""
+        val endDateParam = arguments?.getString(KEY_END_DATE_PENALTY) ?: ""
+        minDate = SimpleDateFormat(PATTERN_DATE_PARAM, getLocale()).parse(startDateParam)
+        maxDate = SimpleDateFormat(PATTERN_DATE_PARAM, getLocale()).parse(endDateParam)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,10 +92,13 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
 
     private fun setDefaultSelectedDate() {
         calendarView?.let { cpv ->
-            minDate = Date(getNowTimeStamp())
             minDate?.let {
                 selectDate(cpv, it)
                 selectStartDate(it)
+            }
+            maxDate?.let {
+                selectDate(cpv, it)
+                selectEndDate(it)
             }
         }
     }
@@ -93,18 +108,15 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
         try {
             cpv.selectDate(date, smoothScroll)
         } catch (e: IllegalArgumentException) {
-            Timber.w(e)
         }
     }
 
     private fun setupCalendarView() {
         val initMinDate = getNPastMonthTimeStamp(3)
         val initMaxDate = Date(getNowTimeStamp())
-
         calendarView?.let { cpv ->
             cpv.init(initMinDate, initMaxDate, emptyList()).inMode(mode)
-            cpv.scrollToDate(initMaxDate)
-
+            cpv.scrollToDate(initMinDate)
             cpv.selectDateClickListener()
         }
     }
@@ -142,7 +154,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
                             maxDate = date
                             selectEndDate(date)
                             GlobalScope.launch(Dispatchers.Main) {
-                                delay(300)
+                                delay(DELAY_SELECTED_FILTER_DATE_PENALTY)
                                 calenderFilterListener?.onSaveCalendarClicked(Pair(startDateParam, startDateEditText), Pair(endDateParam, endDateEditText))
                                 dismissAllowingStateLoss()
                             }
@@ -168,10 +180,18 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
     companion object {
         const val PenaltyDateFilterBottomSheetTag = "PenaltyDateFilterBottomSheetTag"
         const val PATTER_DATE_EDT = "dd MMM yyyy"
-        const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
+        const val PATTERN_DATE_PARAM = "yyyy-MM-dd"
+        const val KEY_START_DATE_PENALTY = "key_start_date_penalty"
+        const val KEY_END_DATE_PENALTY = "key_end_date_penalty"
+        const val DELAY_SELECTED_FILTER_DATE_PENALTY = 300L
 
-        fun newInstance(): PenaltyDateFilterBottomSheet {
-            return PenaltyDateFilterBottomSheet()
+        fun newInstance(startDate: String, endDate: String): PenaltyDateFilterBottomSheet {
+            return PenaltyDateFilterBottomSheet().apply {
+                val args = Bundle()
+                args.putString(KEY_START_DATE_PENALTY, startDate)
+                args.putString(KEY_END_DATE_PENALTY, endDate)
+                arguments = args
+            }
         }
     }
 

@@ -5,57 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <com.tokopedia.shop.score.penalty.presentation.widget.StickySingleHeaderView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarPenaltyPage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            app:elevation="@dimen/layout_lvl0">
-
-            <include layout="@layout/card_shop_score_total_penalty" />
-
-            <include layout="@layout/item_detail_penalty_filter" />
-
-            <com.tokopedia.sortfilter.SortFilter
-                android:id="@+id/sortFilterDetailPenalty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                app:sort_filter_relationship="AND"
-                app:sort_filter_type="advanced" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/containerPenaltyPage"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPenaltyPage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvPenaltyPage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:clipToPadding="false"
-                android:orientation="vertical"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    </com.tokopedia.shop.score.penalty.presentation.widget.StickySingleHeaderView>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <include layout="@layout/item_shimmer_penalty" />
-
-        <include layout="@layout/item_shop_penalty_error_state" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

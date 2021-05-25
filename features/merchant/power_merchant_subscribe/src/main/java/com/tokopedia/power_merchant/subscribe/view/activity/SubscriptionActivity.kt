@@ -11,7 +11,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.gm.common.constant.KYCStatusId
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
@@ -20,19 +21,8 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
-import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
-import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
-import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
-import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_pm_subsription.*
-import javax.inject.Inject
+import java.net.URLEncoder
 
 /**
  * Created By @ilhamsuaib on 25/02/21
@@ -140,48 +130,12 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     }
 
-    override fun hideActivationProgress() {
-
-    }
-
-    private fun observeShopModerationStatus() {
-        sharedViewModel.getShopModerationStatus(userSession.shopId.toLongOrZero())
-        observe(sharedViewModel.shopModerationStatus) {
-            if (it is Success) {
-                showModerationShopTicker(it.data)
-            }
-        }
-    }
-
-    private fun observePmBasicInfo() {
-        observe(sharedViewModel.powerMerchantBasicInfo) {
-            when (it) {
-                is Success -> setOnSuccessGetBasicInfo(it.data)
-                is Fail -> {
-                    showErrorState()
-                }
-            }
-        }
-    }
-
-    private fun showModerationShopTicker(data: ModerationShopStatusUiModel) {
-        if (!data.isModeratedShop) {
-            tickerPmContainer.gone()
-            return
-        }
-
-        tickerPmContainer.visible()
-        val tickerTitle = getString(R.string.pm_moderated_shop_ticker_title)
-        val tickerDescription = getString(R.string.pm_moderated_shop_ticker_description)
-        val tickersData = listOf(TickerData(tickerTitle, tickerDescription, Ticker.TYPE_WARNING, false))
-        tickerPmView.run {
-            val adapter = TickerPagerAdapter(context, tickersData)
-            addPagerView(adapter, tickersData)
-        }
-    }
-
-    private fun setOnSuccessGetBasicInfo(data: PowerMerchantBasicInfoUiModel) {
-        setupViewPager(data)
+    private fun openPowerMerchantWebView() {
+        val url = "%s?navHide=true"
+        val encodedUrl = URLEncoder.encode(String.format(url, PMConstant.Urls.POWER_MERCHANT_PAGE), "UTF-8")
+        val applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(this, applink)
+        finish()
     }
 
     private fun initInjector() {

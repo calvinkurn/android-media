@@ -5,10 +5,6 @@ import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-/**
- * Created by Irfan Khoirul on 21/08/18.
- */
-
 @Parcelize
 data class ShopGroupAvailableData(
 
@@ -23,10 +19,7 @@ data class ShopGroupAvailableData(
         var warningDescription: String? = null,
         var shopName: String? = null,
         var shopId: String? = null,
-        var shopType: String? = null,
-        var isGoldMerchant: Boolean = false,
-        var isOfficialStore: Boolean = false,
-        var shopBadge: String? = null,
+        var shopTypeInfo: ShopTypeInfoData = ShopTypeInfoData(),
         var isFulfillment: Boolean = false,
         var fulfillmentName: String? = null,
         var fulfillmentBadgeUrl: String = "",
@@ -40,6 +33,7 @@ data class ShopGroupAvailableData(
         var totalItem: Int = 0,
 
         var preOrderInfo: String = "",
+        var isFreeShippingExtra: Boolean = false,
         var freeShippingBadgeUrl: String = "",
         var incidentInfo: String = "",
         var estimatedTimeArrival: String = ""

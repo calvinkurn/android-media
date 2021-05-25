@@ -4,8 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemFaqAdapter
@@ -14,15 +12,13 @@ import com.tokopedia.shop.score.performance.presentation.adapter.SectionFaqListe
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import kotlinx.android.synthetic.main.section_faq_shop_score.view.*
 
-class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFaqListener): AbstractViewHolder<SectionFaqUiModel>(view), ItemFaqListener {
+class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFaqListener) : AbstractViewHolder<SectionFaqUiModel>(view), ItemFaqListener {
 
     companion object {
         val LAYOUT = R.layout.section_faq_shop_score
     }
 
     private var itemFaqAdapter: ItemFaqAdapter? = null
-
-    private val impressHolderHelpCenterFaq = ImpressHolder()
 
     override fun bind(element: SectionFaqUiModel?) {
         with(itemView) {
@@ -41,9 +37,7 @@ class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFa
                 sectionFaqListener.onHelpCenterClicked()
             }
 
-            tv_label_help_center?.addOnImpressionListener(impressHolderHelpCenterFaq) {
-                sectionFaqListener.onImpressHelpCenter()
-            }
+            sectionFaqListener.onImpressHelpCenter()
         }
     }
 

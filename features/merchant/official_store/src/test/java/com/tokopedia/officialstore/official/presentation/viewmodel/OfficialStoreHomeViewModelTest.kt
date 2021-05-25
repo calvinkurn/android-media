@@ -2,7 +2,7 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.officialstore.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
@@ -84,7 +84,7 @@ class OfficialStoreHomeViewModelTest {
                 addWishListUseCase,
                 topAdsWishlishedUseCase,
                 removeWishListUseCase,
-                TestDispatcherProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -145,10 +145,10 @@ class OfficialStoreHomeViewModelTest {
     fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation() {
         val page = 1
         val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
-        val listOfRecom = RecommendationWidget()
+        val listOfRecom = mutableListOf(RecommendationWidget())
 
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first().get(0)
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
 
         viewModel.loadMoreProducts(categoryId, page)
@@ -157,7 +157,7 @@ class OfficialStoreHomeViewModelTest {
             getRecommendationUseCase.createObservable(any())
         }
         print(viewModel.productRecommendation.value)
-        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, listOfRecom)
+        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, listOfRecom[0])
     }
 
     @Test

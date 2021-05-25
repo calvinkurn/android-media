@@ -4,6 +4,5 @@
     android:id="@+id/chipSuggestion"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/spacing_lvl3"
     android:layout_marginEnd="@dimen/spacing_lvl3"
     app:chipSize="small" />

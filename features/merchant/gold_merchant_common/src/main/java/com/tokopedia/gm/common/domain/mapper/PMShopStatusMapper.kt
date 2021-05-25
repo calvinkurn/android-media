@@ -14,7 +14,7 @@ import javax.inject.Inject
 class PMShopStatusMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(shopStatus: PMShopStatusDataModel): PMStatusUiModel {
-        val statusOff = PMStatusUiModel.PM_AUTO_EXTEND_OFF
+        val statusOff = PMStatusUiModel.AUTO_EXTEND_STATUS
         return PMStatusUiModel(
                 status = shopStatus.powerMerchant?.status.orEmpty(),
                 pmTier = shopStatus.powerMerchant?.pmTire ?: PMConstant.PMTierType.POWER_MERCHANT,

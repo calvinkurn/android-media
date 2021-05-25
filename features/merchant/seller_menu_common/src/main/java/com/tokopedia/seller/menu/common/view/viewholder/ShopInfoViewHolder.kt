@@ -7,15 +7,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
@@ -37,12 +36,12 @@ import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
 class ShopInfoViewHolder(
-    itemView: View,
-    private val listener: ShopInfoListener?,
-    private val trackingListener: SettingTrackingListener,
-    private val userSession: UserSessionInterface?,
-    private val sellerMenuTracker: SellerMenuTracker?
-): AbstractViewHolder<ShopInfoUiModel>(itemView) {
+        itemView: View,
+        private val listener: ShopInfoListener?,
+        private val trackingListener: SettingTrackingListener,
+        private val userSession: UserSessionInterface?,
+        private val sellerMenuTracker: SellerMenuTracker?
+) : AbstractViewHolder<ShopInfoUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -60,8 +59,6 @@ class ShopInfoViewHolder(
     }
 
     private val context by lazy { itemView.context }
-
-    private val shopScoreImpressHolder = ImpressHolder()
 
     override fun bind(uiModel: ShopInfoUiModel) {
         with(uiModel.shopInfo) {
@@ -136,11 +133,20 @@ class ShopInfoViewHolder(
     }
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
-        itemView.shopScore.text = uiModel.shopScore.toString()
-        itemView.shopScoreLayout.setOnClickListener {
-            listener?.onScoreClicked()
-        }
-        itemView.shopScoreLayout.addOnImpressionListener(shopScoreImpressHolder) {
+        val shopAgeSixty = 60
+        with(itemView) {
+            if (uiModel.shopAge < shopAgeSixty) {
+                shopScore.text = getString(R.string.seller_menu_shop_score_empty_label)
+                shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                shopScoreMaxLabel?.hide()
+            } else {
+                shopScore.text = uiModel.shopScore.toString()
+                shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                shopScoreMaxLabel?.show()
+            }
+            shopScoreLayout.setOnClickListener {
+                listener?.onScoreClicked()
+            }
             listener?.onScoreImpressed()
         }
     }
@@ -200,7 +206,7 @@ class ShopInfoViewHolder(
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.shopType
         val itemView: View = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
-        val shopStatusLayout: View? = when(shopType) {
+        val shopStatusLayout: View? = when (shopType) {
             is RegularMerchant -> {
                 itemView.apply {
                     setRegularMerchantShopStatus(shopType)
@@ -240,9 +246,9 @@ class ShopInfoViewHolder(
         }
     }
 
-    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
+    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant): View {
         regularMerchantStatus.run {
-            text = when(regularMerchant) {
+            text = when (regularMerchant) {
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
                 is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)
             }
@@ -251,12 +257,12 @@ class ShopInfoViewHolder(
         return this
     }
 
-    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus) : View {
+    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus): View {
         var statusText = context.resources.getString(R.string.setting_on_verification)
         var textColor = GREY_TEXT_COLOR
         var statusDrawable = GREY_TIP
         var powerMerchantDrawableIcon = GREY_POWER_MERCHANT_ICON
-        when(powerMerchantStatus) {
+        when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 statusText = context.resources.getString(R.string.setting_active)
                 textColor = GREEN_TEXT_COLOR

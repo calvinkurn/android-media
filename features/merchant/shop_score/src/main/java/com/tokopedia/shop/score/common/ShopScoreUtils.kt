@@ -4,17 +4,17 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
-import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.shop.score.R
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,6 +29,14 @@ object ShopScoreUtils {
             ShopScoreConstant.SHOP_SCORE_LEVEL_FOUR -> R.drawable.ic_four_level_white
             else -> R.drawable.ic_no_level
         }
+    }
+}
+
+fun GlobalError.setTypeGlobalError(throwable: Throwable?) {
+    if (throwable is IOException) {
+        setType(GlobalError.NO_CONNECTION)
+    } else {
+        setType(GlobalError.SERVER_ERROR)
     }
 }
 
@@ -58,14 +66,6 @@ fun getNowTimeStamp(): Long {
 fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
     val sdf = SimpleDateFormat(pattern, locale)
     return sdf.format(timeMillis)
-}
-
-fun String.formatDate(pattern: String, locale: Locale = getLocale()): String {
-    val fromSimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale)
-    val parseDate = fromSimpleDateFormat.parse(this)
-    val convertFormatDate = SimpleDateFormat(pattern, locale)
-    val formatDateText = parseDate?.let { convertFormatDate.format(it) } ?: ""
-    return formatDateText
 }
 
 fun getLocale(): Locale {

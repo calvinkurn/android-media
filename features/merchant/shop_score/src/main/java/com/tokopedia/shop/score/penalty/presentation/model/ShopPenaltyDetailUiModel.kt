@@ -3,10 +3,12 @@ package com.tokopedia.shop.score.penalty.presentation.model
 import androidx.annotation.ColorRes
 
 data class ShopPenaltyDetailUiModel(val titleDetail: String = "",
-                                    val dateDetail: String = "",
+                                    val startDateDetail: String = "",
+                                    val descStatusPenalty: String = "",
                                     val summaryDetail: String = "",
                                     val deductionPointPenalty: String = "",
-                                    val statusDate: String = "",
+                                    val endDateDetail: String = "",
+                                    val prefixDateDetail: String = "",
                                     val stepperPenaltyDetailList: List<StepperPenaltyDetail> = listOf()) {
 
     data class StepperPenaltyDetail(

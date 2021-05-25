@@ -18,6 +18,7 @@ class OtherMenuAdapterTypeFactory(
     private val trackingListener: SettingTrackingListener,
     private val shopInfoListener: ShopInfoViewHolder.ShopInfoListener? = null,
     private val shopInfoErrorListener: ShopInfoErrorViewHolder.ShopInfoErrorListener? = null,
+    private val shopTickerShopScoreListener: TickerShopScoreViewHolder.TickerShopScoreListener? = null,
     private val sellerMenuTracker: SellerMenuTracker? = null,
     private val userSession: UserSessionInterface? = null
 ) : BaseAdapterTypeFactory(), OtherMenuTypeFactory {
@@ -43,6 +44,7 @@ class OtherMenuAdapterTypeFactory(
             SellerFeatureViewHolder.LAYOUT -> SellerFeatureViewHolder(parent, sellerMenuTracker)
             SellerSettingsTitleViewHolder.LAYOUT -> SellerSettingsTitleViewHolder(parent)
             LoadingViewholder.LAYOUT -> SellerLoadingViewHolder(parent)
+            TickerShopScoreViewHolder.LAYOUT -> TickerShopScoreViewHolder(parent, shopTickerShopScoreListener)
             else -> super.createViewHolder(parent, type)
         }
     }

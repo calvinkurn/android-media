@@ -429,6 +429,32 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendHomeTickerCtaClickEvent(shopType: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SHOP_SCORE,
+                category = TrackingConstant.ACTION_CLICK_LEARN_MORE,
+                action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
+                label = shopType
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendHomeTickerImpressionEvent(shopType: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.VIEW_SHOP_SCORE_IRIS,
+                category = TrackingConstant.IMPRESS_LEARN_MORE,
+                action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
+                label = shopType
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }

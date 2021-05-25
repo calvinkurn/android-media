@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_height="wrap_content"
     android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -17,7 +17,7 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_stepper_penalty"
-        android:layout_width="@dimen/width_divider_stepper_penalty_detail"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/spacing_lvl1"
         app:layout_constraintBottom_toBottomOf="@id/ic_dot_stepper"
         app:layout_constraintStart_toEndOf="@id/ic_dot_stepper"

@@ -8,7 +8,7 @@ import com.tokopedia.otp.notif.domain.usecase.ChangeStatusPushNotifUseCase
 import com.tokopedia.otp.notif.domain.usecase.DeviceStatusPushNotifUseCase
 import com.tokopedia.otp.notif.domain.usecase.VerifyPushNotifExpUseCase
 import com.tokopedia.otp.notif.domain.usecase.VerifyPushNotifUseCase
-import com.tokopedia.otp.verification.DispatcherProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -45,7 +45,7 @@ class NotifViewModelTest {
     @RelaxedMockK
     lateinit var verifyPushNotifExpResultObserver: Observer<Result<VerifyPushNotifExpData>>
 
-    private val dispatcherProviderTest = DispatcherProviderTest()
+    private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
     private lateinit var viewmodel: NotifViewModel
 

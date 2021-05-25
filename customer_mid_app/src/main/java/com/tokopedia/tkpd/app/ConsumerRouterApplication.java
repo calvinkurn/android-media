@@ -11,8 +11,6 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -65,6 +63,8 @@ import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -90,14 +90,8 @@ import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
-import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
-import com.tokopedia.tkpdreactnative.react.ReactUtils;
-import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
-import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
@@ -111,10 +105,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.inject.Inject;
-
-import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -133,12 +125,10 @@ import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
-        ReactApplication,
         AbstractionRouter,
         ApplinkRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
-        ReactNativeRouter,
         NetworkRouter,
         OmsModuleRouter,
         TkpdAppsFlyerRouter,
@@ -150,13 +140,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private static final String ENABLE_ASYNC_GCM_LEGACY = "android_async_gcm_legacy";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     protected CacheManager cacheManager;
-    @Inject
-    Lazy<ReactNativeHost> reactNativeHost;
-    @Inject
-    Lazy<ReactUtils> reactUtils;
-    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
+
     private OmsComponent omsComponent;
-    private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
     private TetraDebugger tetraDebugger;
     private Iris mIris;
@@ -244,10 +229,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
     }
 
-    private void initDaggerInjector() {
-        getReactNativeComponent().inject(this);
-    }
-
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(ConsumerRouterApplication.this);
         WeaveInterface irisInitializeWeave = new WeaveInterface() {
@@ -303,11 +284,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NFCSubscriber.onNewIntent(context, intent);
     }
 
-    @Override
-    public boolean getEnableFingerprintPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP);
-    }
 
     @Override
     public Interceptor getChuckerInterceptor() {
@@ -346,28 +322,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendLoginEmitter(String userId) {
-        reactUtils.get().sendLoginEmitter(userId);
-    }
-
-    private ReactNativeComponent getReactNativeComponent() {
-        if (daggerReactNativeBuilder == null) {
-            daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
-                    .appComponent(getApplicationComponent())
-                    .reactNativeModule(new ReactNativeModule(ConsumerRouterApplication.this));
-        }
-        if (reactNativeComponent == null)
-            reactNativeComponent = daggerReactNativeBuilder.build();
-        return reactNativeComponent;
-    }
-
-    @Override
-    public ReactNativeHost getReactNativeHost() {
-        if (reactNativeHost == null) initDaggerInjector();
-        return reactNativeHost.get();
-    }
-
-    @Override
     public void onForceLogout(Activity activity) {
         forceLogout();
         Intent intent = new Intent(context, ConsumerSplashScreen.class);
@@ -402,9 +356,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void sendAnalyticsAnomalyResponse(String title,
                                              String accessToken, String refreshToken,
                                              String response, String request) {
-        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
-                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
-                ";response=" + response + ";request=" + request);
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "USER_ANOMALY_REPONSE");
+        messageMap.put("title", title);
+        messageMap.put("accessToken", accessToken);
+        messageMap.put("refreshToken", refreshToken);
+        messageMap.put("response", refreshToken);
+        messageMap.put("request", request);
+        ServerLogger.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
     }
 
     @Override
@@ -513,10 +472,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                                           String trainReservationCode,
                                                           String galaCode) {
         return Observable.just(new VoucherViewModel());
-    }
-
-    public UseCase<String> setCreditCardSingleAuthentication() {
-        return new CreditCardFingerPrintUseCase();
     }
 
     @Override

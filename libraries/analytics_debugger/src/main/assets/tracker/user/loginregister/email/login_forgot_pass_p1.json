@@ -6,7 +6,7 @@
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on lupa kata sandi",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     }
   ]

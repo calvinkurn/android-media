@@ -91,12 +91,12 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:src="@drawable/bottom_sheet_filter_bottom_bar_shadow" />
+        android:src="@color/Unify_N75" />
 
     <ViewStub
         android:id="@+id/view_stub_content_layout"

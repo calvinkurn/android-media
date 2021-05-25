@@ -2,7 +2,7 @@ package com.tokopedia.saldodetails.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.date.util.SaldoDatePickerUtil
+import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.response.model.DepositActivityResponse

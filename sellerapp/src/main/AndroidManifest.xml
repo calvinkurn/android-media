@@ -20,8 +20,8 @@
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher_sellerapp_ramadhan"
-        android:roundIcon="@mipmap/ic_sellerapp_launcher_ramadhan_round"
+        android:icon="@mipmap/ic_launcher_sellerapp"
+        android:roundIcon="@mipmap/ic_launcher_sellerapp_round"
         android:label="@string/app_name"
         android:hasCode="true"
         android:supportsRtl="true"
@@ -34,7 +34,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.Sellerapp.Launcher">
+            android:theme="@style/Theme.Tokopedia3.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,10 +50,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.PlainGreen">
         </activity>
-
-        <activity
-            android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait"/>
 
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
@@ -263,10 +259,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <data android:scheme="sellerapp" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="tokopedia"
                     android:sspPattern="//.*?.*redirect_to_sellerapp=true.*" />
-                <data android:scheme="sellerapp" />
             </intent-filter>
         </activity>
         <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"

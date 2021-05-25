@@ -70,13 +70,14 @@
             app:layout_constraintTop_toBottomOf="@id/tv_end_date_status_penalty" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_title_transaction_penalty"
+            android:id="@+id/tv_title_type_penalty"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_96"
             android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="@id/tv_end_date_status_penalty"
             app:layout_constraintTop_toBottomOf="@id/separator_status_penalty"
+            app:layout_constraintEnd_toStartOf="@id/ic_transaction_penalty_to_detail"
             app:typographyType="heading_5"
             tools:text="Pelanggaran Produk" />
 
@@ -86,8 +87,9 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            app:layout_constraintStart_toStartOf="@id/tv_title_transaction_penalty"
-            app:layout_constraintTop_toBottomOf="@id/tv_title_transaction_penalty"
+            app:layout_constraintStart_toStartOf="@id/tv_title_type_penalty"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_type_penalty"
+            app:layout_constraintEnd_toStartOf="@id/ic_transaction_penalty_to_detail"
             app:typographyType="body_3"
             tools:text="INV/20210126/XX/V/553738285" />
 
@@ -98,7 +100,7 @@
             android:layout_height="@dimen/spacing_lvl5"
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintEnd_toEndOf="@id/tv_date_status_penalty"
-            app:layout_constraintTop_toTopOf="@id/tv_title_transaction_penalty"
+            app:layout_constraintTop_toTopOf="@id/tv_title_type_penalty"
             app:layout_constraintBottom_toBottomOf="@id/tv_invoice_transaction_penalty" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -270,8 +270,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.run {
             val message = getString(R.string.pm_cancel_pm_deactivation_success)
             val actionText = getString(R.string.power_merchant_ok_label)
-            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(R.dimen.layout_lvl5)
-            Toaster.build(rootView, message, Toaster.LENGTH_LONG,
+            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+            Toaster.build(rvPmRegistration, message, Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL, actionText)
                     .show()
         }
@@ -584,7 +584,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun fetchPmActiveState() {
-        mViewModel.getPmActiveData()
+        mViewModel.getPmActiveStateData()
     }
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
@@ -727,9 +727,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         )
     }
 
-    private fun showDeactivationQuestionnaire(pmTireType: Int) {
-        val pmExpirationDate = pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
-        val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance(pmExpirationDate, pmTireType)
+    private fun getPotentialBenefitWidgetData(): WidgetPotentialUiModel {
+        return WidgetPotentialUiModel(listOf())
+    }
+
+    private fun showDeactivationQuestionnaire() {
+        val bottomSheet = DeactivationBottomSheet.createInstance()
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         bottomSheet.setOnDeactivationSuccess {

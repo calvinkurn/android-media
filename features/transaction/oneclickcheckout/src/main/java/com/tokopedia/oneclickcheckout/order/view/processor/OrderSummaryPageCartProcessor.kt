@@ -1,10 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>,
                                                         private val getOccCartUseCase: GetOccCartUseCase,
                                                         private val updateCartOccUseCase: UpdateCartOccUseCase,
-                                                        private val executorDispatchers: ExecutorDispatchers) {
+                                                        private val executorDispatchers: CoroutineDispatchers) {
 
     suspend fun atcOcc(productId: String, userId: String): OccGlobalEvent {
         OccIdlingResource.increment()
@@ -33,7 +33,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_USER_ID, userId)
                         }).toBlocking().single()
-                if (response.isDataError()) {
+                if (response.isStatusError()) {
                     return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
                             ?: "")
                 }
@@ -83,9 +83,9 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
 
     fun generateUpdateCartParam(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment): UpdateCartOccRequest? {
         val orderProduct = orderCart.product
-        if (orderPreference.isValid && orderPreference.preference.profileId > 0) {
+        if (orderPreference.isValid && orderPreference.preference.address.addressId > 0) {
             val cart = UpdateCartOccCartRequest(
-                    orderCart.cartId.toString(),
+                    orderCart.cartId,
                     orderProduct.quantity.orderQuantity,
                     orderProduct.notes,
                     orderProduct.productId.toString(),
@@ -121,10 +121,16 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         return null
     }
 
+    internal fun shouldSkipShippingValidationWhenUpdateCart(orderShipment: OrderShipment): Boolean {
+        return (orderShipment.getRealShipperId() <= 0 || orderShipment.getRealShipperProductId() <= 0)
+    }
+
     suspend fun updateCartIgnoreResult(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment) {
         withContext(executorDispatchers.io) {
             try {
-                val param = generateUpdateCartParam(orderCart, orderPreference, orderShipment, orderPayment)
+                val param = generateUpdateCartParam(orderCart, orderPreference, orderShipment, orderPayment)?.copy(
+                        skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment)
+                )
                 if (param != null) {
                     // ignore result
                     updateCartOccUseCase.executeSuspend(param)

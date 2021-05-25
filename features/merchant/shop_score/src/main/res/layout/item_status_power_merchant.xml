@@ -15,18 +15,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:background="@drawable/bg_header_gold">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_pm_badge_current_status"
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_pm_badge_current_status"
                 android:layout_width="@dimen/layout_lvl5"
                 android:layout_height="@dimen/layout_lvl5"
                 android:layout_marginStart="@dimen/spacing_lvl4"
+                app:icon_name="BADGE_PM_FILLED"
                 app:layout_constraintBottom_toBottomOf="@id/tv_pm_reputation_value"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_pm_reputation_score_label"
-                tools:src="@drawable/ic_pm_gold_badge" />
+                app:layout_constraintTop_toTopOf="@id/tv_pm_reputation_score_label" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_pm_reputation_score_label"
@@ -34,10 +33,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_12"
-                android:text="@string/current_regarding_penalty_pm_label"
+                android:text="@string/title_header_pm_section"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_pm_badge_current_status"
+                app:layout_constraintStart_toEndOf="@id/ic_pm_badge_current_status"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small" />
 
@@ -49,7 +48,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl1"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/iv_pm_badge_current_status"
+                app:layout_constraintStart_toEndOf="@id/ic_pm_badge_current_status"
                 app:layout_constraintTop_toBottomOf="@id/tv_pm_reputation_score_label"
                 app:typographyType="heading_4"
                 tools:text="@string/example_regarding_penalty_pm_value" />
@@ -80,51 +79,48 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/potentialPowerMerchantWidget">
 
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_speaker_potential_pm"
-                android:layout_width="@dimen/spacing_lvl5"
-                android:layout_height="@dimen/spacing_lvl5"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                app:icon_color_light_enable="@color/Unify_G500"
-                app:icon_name="SPEAKER"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_update_date_potential_pm"
+                android:id="@+id/tv_title_content_pm_section"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginTop="@dimen/spacing_lvl4"
-                app:layout_constraintStart_toEndOf="@id/ic_speaker_potential_pm"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2"
-                tools:text="@string/example_next_update_pm_status" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:typographyType="heading_5"
+                android:text="@string/title_content_pm_section"
+                android:textColor="@color/Unify_N700_96" />
 
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_info_potential_pm"
-                android:layout_width="@dimen/spacing_lvl4"
-                android:layout_height="@dimen/spacing_lvl4"
-                android:layout_marginStart="@dimen/spacing_lvl2"
-                app:icon_color_light_enable="@color/Unify_N200"
-                app:icon_name="INFORMATION"
-                app:layout_constraintBottom_toBottomOf="@id/tv_update_date_potential_pm"
-                app:layout_constraintStart_toEndOf="@id/tv_update_date_potential_pm"
-                app:layout_constraintTop_toTopOf="@id/tv_update_date_potential_pm" />
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierTitleContentPMSection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:constraint_referenced_ids="tv_title_content_pm_section"
+                app:barrierDirection="bottom" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_desc_potential_pm"
+                android:id="@+id/tv_desc_content_pm_section"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginStart="@dimen/dp_12"
                 android:paddingBottom="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/tv_update_date_potential_pm"
-                app:layout_constraintTop_toBottomOf="@id/tv_update_date_potential_pm"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMSection"
                 app:typographyType="body_2"
-                tools:text="@string/example_desc_pm_status" />
+                tools:text="@string/desc_content_pm_section" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

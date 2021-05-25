@@ -1,12 +1,12 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.GMCommonUrl
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_GREEN_TIMER
@@ -15,19 +15,17 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ItemTimerNewSel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
 
+
 class ItemTimerNewSellerViewHolder(view: View,
-                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener): AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
+                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener) : AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.timer_new_seller_before_transition
     }
 
-    private val impressHolderWatchVideo = ImpressHolder()
-    private val impressHolderBtnLearn = ImpressHolder()
-
     override fun bind(element: ItemTimerNewSellerUiModel?) {
         with(itemView) {
-            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER  else  BG_GREEN_TIMER)
+            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
             timerNewSeller?.targetDate = element?.effectiveDate
 
             tv_shop_performance_new_seller?.text = getString(R.string.title_shop_performance_become_existing_seller,
@@ -41,18 +39,12 @@ class ItemTimerNewSellerViewHolder(view: View,
     private fun setBtnPerformanceClickListener(element: ItemTimerNewSellerUiModel?) {
         with(itemView) {
             btn_shop_performance_learn?.let { btn ->
-                btn.addOnImpressionListener(impressHolderBtnLearn) {
-                    itemTimerNewSellerListener.onImpressBtnLearnPerformance()
-                }
+                itemTimerNewSellerListener.onImpressBtnLearnPerformance()
                 btn.setOnClickListener {
                     if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
-                        itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
+                        itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
                     } else {
-                        if (element?.isTenureDate == true) {
-                            itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
-                        } else {
-                            itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
-                        }
+                        itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
                     }
                 }
             }
@@ -61,13 +53,16 @@ class ItemTimerNewSellerViewHolder(view: View,
 
     private fun setIconVideoClickListener() {
         with(itemView) {
-            watchVideoGroup?.apply {
-                addOnImpressionListener(impressHolderWatchVideo) {
-                    itemTimerNewSellerListener.onImpressWatchVideo()
-                }
-                setOnClickListener {
-                    itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
-                }
+            tv_watch_video?.setOnClickListener {
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
+            }
+
+            ic_video_shop_performance_learn?.setOnClickListener {
+                itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
+            }
+
+            if (tv_watch_video?.isVisible == true || ic_video_shop_performance_learn?.isVisible == true) {
+                itemTimerNewSellerListener.onImpressWatchVideo()
             }
         }
     }

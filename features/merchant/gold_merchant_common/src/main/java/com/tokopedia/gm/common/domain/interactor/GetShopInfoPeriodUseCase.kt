@@ -11,6 +11,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
+import java.io.IOException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class GetShopInfoPeriodUseCase @Inject constructor(
@@ -50,8 +53,8 @@ class GetShopInfoPeriodUseCase @Inject constructor(
         """.trimIndent()
 
         @JvmStatic
-        fun createParams(shopID: Int): RequestParams = RequestParams.create().apply {
-            putLong(SHOP_ID, shopID.toLong())
+        fun createParams(shopID: Long): RequestParams = RequestParams.create().apply {
+            putLong(SHOP_ID, shopID)
         }
     }
 
@@ -85,7 +88,11 @@ class GetShopInfoPeriodUseCase @Inject constructor(
             }
             return shopScoreCommonMapper.mapToGetShopInfo(shopInfoPeriodWrapperResponse)
         } catch (e: Throwable) {
-            throw MessageErrorException(e.message)
+            if (e is SocketTimeoutException || e is UnknownHostException) {
+                throw IOException(e.message)
+            } else {
+                throw Exception(e.message)
+            }
         }
     }
 }

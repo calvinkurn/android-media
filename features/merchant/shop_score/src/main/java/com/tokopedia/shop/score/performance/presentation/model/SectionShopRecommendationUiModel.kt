@@ -8,7 +8,9 @@ data class SectionShopRecommendationUiModel(val recommendationShopList: List<Ite
             val iconRecommendationUrl: String = "",
             val titleRecommendation: String = "",
             val descRecommendation: String = "",
-            val appLinkRecommendation: String = "")
+            val appLinkRecommendation: String = "",
+            val identifier: String = ""
+    )
 
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)
