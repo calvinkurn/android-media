@@ -27,6 +27,10 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
         private const val COLUMN_HTML = 4
 
         private const val MAX_ROWS_PER_PAGE = 5
+
+        private const val COLOR = "color"
+        private const val BACKGROUND_COLOR = "background-color"
+        private const val APOSTROPHE = "\""
     }
 
     override fun mapRemoteDataToUiData(response: GetTableDataResponse, isFromCache: Boolean): List<TableDataUiModel> {
@@ -84,7 +88,7 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
 
     /**
      * A dumb but feasible way to parse html formatted string and get the text color value.
-     * Make sure that the html string passed should not contains full html documents
+     * Make sure that the html string passed should not contain full html documents
      *
      * @param   htmlString  Html formatted string
      * @return  color of the text from html string
@@ -114,15 +118,17 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
     }
 
     private fun getColorFromFontTag(htmlString: String): String {
-        val colorFromFont = htmlString.substringAfter("color")
-        val indexOfFirstApostrophe = colorFromFont.indexOf("\"")
-        val indexOfSecondApostrophe = colorFromFont.indexOf("\"", indexOfFirstApostrophe + 1)
+        // If font tag was used, get the value by delimiting between the apostrophes of color value
+        val colorFromFont = htmlString.substringAfter(COLOR)
+        val indexOfFirstApostrophe = colorFromFont.indexOf(APOSTROPHE)
+        val indexOfSecondApostrophe = colorFromFont.indexOf(APOSTROPHE, indexOfFirstApostrophe + 1)
         return colorFromFont.substring(indexOfFirstApostrophe + 1, indexOfSecondApostrophe)
     }
 
     private fun getColorFromStyleAttribute(htmlString: String): String {
-        val colorWithoutBackgroundColor = htmlString.replace("background-color", "")
-        return colorWithoutBackgroundColor.substringAfter("color")
+        // We remove background-color style attribute to be able to substring the color of the text only
+        val colorWithoutBackgroundColor = htmlString.replace(BACKGROUND_COLOR, "")
+        return colorWithoutBackgroundColor.substringAfter(COLOR)
                 .substringBefore("\"").substringBefore(";")
                 .replace("[^A-Za-z0-9#]+".toRegex(), "")
     }
