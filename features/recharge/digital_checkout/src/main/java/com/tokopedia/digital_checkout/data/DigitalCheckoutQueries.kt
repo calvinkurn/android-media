@@ -118,8 +118,8 @@ object DigitalCheckoutQueries {
     """.trimIndent()
 
     fun getCancelVoucherCartQuery() = """
-        mutation clearCacheAutoApplyStack(${'$'}promoCode:[String], ${'$'}isOCC: Boolean) {
-          clearCacheAutoApplyStack(serviceID:"819380128012836", promoCode: ${'$'}promoCode, isOCC: ${'$'}isOCC) { 
+        mutation clearCacheAutoApplyStack(${'$'}serviceID: String!, ${'$'}promoCode:[String], ${'$'}isOCC: Boolean) {
+          clearCacheAutoApplyStack(serviceID:${'$'}serviceID, promoCode: ${'$'}promoCode, isOCC: ${'$'}isOCC) { 
             Success
             ticker_message
             default_empty_promo_message

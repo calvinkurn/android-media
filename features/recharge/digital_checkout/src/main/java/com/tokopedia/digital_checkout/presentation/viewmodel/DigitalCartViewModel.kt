@@ -220,7 +220,7 @@ class DigitalCartViewModel @Inject constructor(
                 setPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
                 _cancelVoucherData.postValue(Success(it.response))
             } else {
-                _cancelVoucherData.postValue(Fail(MessageErrorException(it.response.error)))
+                _cancelVoucherData.postValue(Fail(MessageErrorException("")))
             }
         }
     }

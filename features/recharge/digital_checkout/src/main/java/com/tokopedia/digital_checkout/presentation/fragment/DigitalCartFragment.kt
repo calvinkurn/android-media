@@ -183,7 +183,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    checkoutBottomViewWidget.promoButtonDescription = it.data.defaultEmptyPromoMessage
+                    if (it.data.defaultEmptyPromoMessage.isNotEmpty()) {
+                        checkoutBottomViewWidget.promoButtonDescription = it.data.defaultEmptyPromoMessage
+                    }
                 }
                 is Fail -> onFailedCancelVoucher(it.throwable)
             }
@@ -367,7 +369,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
         checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.ACTIVE
-        var message: String = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+        var message: String = getString(R.string.digital_checkout_error_remove_coupon_message)
         if (!throwable.message.isNullOrEmpty()) {
             message = ErrorHandler.getErrorMessage(activity, throwable)
         }

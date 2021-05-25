@@ -33,4 +33,6 @@
     <string name="digital_checkout_empty_state_btn">Coba Lagi</string>
     <string name="digital_checkout_promo_title">Makin hemat pakai promo</string>
     <string name="digital_checkout_summary_title">Ringkasan Pembayaran</string>
+
+    <string name="digital_checkout_error_remove_coupon_message">Oops, belum berhasil hapus kupon. Coba lagi, yuk!</string>
 </resources>
