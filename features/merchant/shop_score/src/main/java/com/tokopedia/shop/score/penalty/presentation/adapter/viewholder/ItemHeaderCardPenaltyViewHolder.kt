@@ -24,6 +24,8 @@ class ItemHeaderCardPenaltyViewHolder(view: View,
         with(itemView) {
             itemHeaderCardPenaltyListener.impressLearnMorePenaltyPage()
 
+            separator_multiple_dots?.setBackgroundResource(R.drawable.ic_line_separator)
+
             tvContentPenalty?.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
                 itemHeaderCardPenaltyListener.onMoreInfoHelpPenaltyClicked()
             }
