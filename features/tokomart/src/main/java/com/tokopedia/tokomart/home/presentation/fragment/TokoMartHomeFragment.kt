@@ -27,11 +27,23 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_REVAMP
+import com.tokopedia.tokomart.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
+import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
+import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
+import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
+import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokomart.common.view.HomeMainToolbar
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.domain.model.Data
@@ -41,6 +53,7 @@ import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeF
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokomart_home.*
@@ -51,20 +64,9 @@ import javax.inject.Inject
 class TokoMartHomeFragment: Fragment() {
 
     companion object {
-        private const val TOOLBAR_DARK_TYPE = 0
-        private const val TOOLBAR_LIGHT_TYPE = 1
-        private const val REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH = "android_user_first_install_search"
-        private const val REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH = "android_user_duration_auto_transition_search"
-        private const val KEY_FIRST_INSTALL_SEARCH_TOKONOW = "KEY_FIRST_INSTALL_SEARCH_TOKONOW"
-        private const val KEY_FIRST_INSTALL_TIME_SEARCH_TOKONOW = "KEY_IS_FIRST_INSTALL_TIME_SEARCH_TOKONOW"
-        private const val AB_TEST_AUTO_TRANSITION_KEY = "auto_transition"
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
-        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
-        private const val HOME_SOURCE = "home"
-        private const val ROLLANCE_EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        private const val ROLLANCE_VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        private const val ROLLANCE_VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+        const val SOURCE = "tokonow"
 
         fun newInstance() = TokoMartHomeFragment()
     }
@@ -87,12 +89,13 @@ class TokoMartHomeFragment: Fragment() {
     private var startToTransitionOffset = 0
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
+    private var isRefreshWidget = false
 
     private val homeMainToolbarHeight: Int
         get() {
             var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
             context?.let {
-                if (!isNavRevamp() && oldToolbar != null) {
+                if (isNavOld() && oldToolbar != null) {
                     height = oldToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
                     oldToolbar?.let {
                         if (!it.isShadowApplied()) {
@@ -169,8 +172,6 @@ class TokoMartHomeFragment: Fragment() {
         ivHeaderBackground = view?.findViewById(R.id.view_background_image)
         navToolbar = view?.findViewById(R.id.navToolbar)
         oldToolbar = view?.findViewById(R.id.toolbar)
-        navToolbar?.bringToFront()
-        oldToolbar?.bringToFront()
         navAbTestCondition (
                 ifNavRevamp = {
                     setupNewNav()
@@ -191,12 +192,8 @@ class TokoMartHomeFragment: Fragment() {
                     startTransitionPixel = homeMainToolbarHeight,
                     toolbarTransitionRangePixel = searchBarTransitionRange,
                     navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                        override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
-                        }
-
-                        override fun onSwitchToLightToolbar() { /* nothing to do */
-                        }
-
+                        override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
+                        override fun onSwitchToLightToolbar() { /* nothing to do */ }
                         override fun onSwitchToDarkToolbar() {
                             navAbTestCondition(
                                     ifNavRevamp = {
@@ -204,18 +201,16 @@ class TokoMartHomeFragment: Fragment() {
                                     }
                             )
                         }
-
                         override fun onYposChanged(yOffset: Int) {
                             ivHeaderBackground?.y = -(yOffset.toFloat())
                         }
                     },
-                    fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+                    fixedIconColor = TOOLBAR_LIGHT_TYPE
             ))
-            // set icon top nav
-            val icons = IconBuilder(
-                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
-            ).addIcon(IconList.ID_SHARE) {}
+            val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                    .addIcon(IconList.ID_SHARE) {}
                     .addIcon(IconList.ID_CART) {}
+                    .addIcon(IconList.ID_NAV_GLOBAL) {}
             toolbar.setIcon(icons)
         }
         activity?.let {
@@ -279,14 +274,14 @@ class TokoMartHomeFragment: Fragment() {
         }
     }
 
-    private fun isNavRevamp(): Boolean {
-//        return try {
-//            val rollanceNavType = RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD)
-//            rollanceNavType.equals(ROLLANCE_VARIANT_REVAMP, ignoreCase = true)
-//        } catch (e: java.lang.Exception) {
-//            false
-//        }
-        return false
+    private fun isNavOld(): Boolean {
+        return try {
+//            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
+            false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            true
+        }
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -295,7 +290,7 @@ class TokoMartHomeFragment: Fragment() {
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
-        if (isNavRevamp()) {
+        if (!isNavOld()) {
             ifNavRevamp.invoke()
         } else {
             ifNavOld.invoke()
@@ -330,21 +325,24 @@ class TokoMartHomeFragment: Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        rvHome?.setItemViewCacheSize(20)
-        rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                evaluateHomeComponentOnScroll(recyclerView, dy)
+        context?.let {
+            rvHome?.setPadding(16.toPx(), NavToolbarExt.getFullToolbarHeight(it) - 8, 0, 8.toPx())
+            rvHome?.setItemViewCacheSize(20)
+            rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    evaluateHomeComponentOnScroll(recyclerView, dy)
 
-                val offset = recyclerView.computeVerticalScrollOffset()
-                navAbTestCondition(
-                        ifNavOld = {
-                            ivHeaderBackground?.y = -(offset.toFloat())
-                            calculateSearchBarView(recyclerView.computeVerticalScrollOffset())
-                        }
-                )
-            }
-        })
+                    val offset = recyclerView.computeVerticalScrollOffset()
+                    navAbTestCondition(
+                            ifNavOld = {
+                                ivHeaderBackground?.y = -(offset.toFloat())
+                                calculateSearchBarView(recyclerView.computeVerticalScrollOffset())
+                            }
+                    )
+                }
+            })
+        }
     }
 
     private fun observeLiveData() {
@@ -353,6 +351,9 @@ class TokoMartHomeFragment: Fragment() {
                 adapter.submitList(it.data)
                 // TO-DO: Lazy Load Data
                 viewModel.getLayoutData()
+
+                if (!isChooseAddressWidgetShowed(true))
+                    adapter.removeHomeChooseAddressWidget()
             }
         }
 
@@ -383,7 +384,8 @@ class TokoMartHomeFragment: Fragment() {
                         it
                 )
                 if (isUpdated) {
-                    adapter.updateHomeChooseAddressWidget(true)
+                    isRefreshWidget = !isRefreshWidget
+                    adapter.updateHomeChooseAddressWidget(isRefreshWidget)
                 }
             }
         }
@@ -413,8 +415,8 @@ class TokoMartHomeFragment: Fragment() {
     private fun isFirstInstall(): Boolean {
         context?.let {
             if (!userSession.isLoggedIn && isShowFirstInstallSearch) {
-                val sharedPrefs = it.getSharedPreferences(KEY_FIRST_INSTALL_SEARCH_TOKONOW, Context.MODE_PRIVATE)
-                var firstInstallCacheValue = sharedPrefs.getLong(KEY_FIRST_INSTALL_TIME_SEARCH_TOKONOW, 0)
+                val sharedPrefs = it.getSharedPreferences(SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                var firstInstallCacheValue = sharedPrefs.getLong(SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH, 0)
                 if (firstInstallCacheValue == 0L) return false
                 firstInstallCacheValue += (30 * 60000).toLong()
                 val now = Date()
@@ -434,8 +436,8 @@ class TokoMartHomeFragment: Fragment() {
 
     private fun saveFirstInstallTime() {
         context?.let {
-            sharedPrefs = it.getSharedPreferences(KEY_FIRST_INSTALL_SEARCH_TOKONOW, Context.MODE_PRIVATE)
-            sharedPrefs?.edit()?.putLong(KEY_FIRST_INSTALL_TIME_SEARCH_TOKONOW, 0)?.apply()
+            sharedPrefs = it.getSharedPreferences(SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs?.edit()?.putLong(SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH, 0)?.apply()
         }
     }
 
@@ -463,7 +465,7 @@ class TokoMartHomeFragment: Fragment() {
                                 searchbarClickCallback = {
                                     RouteManager.route(context,
                                             ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                                            HOME_SOURCE,
+                                            SOURCE,
                                             data.keyword.safeEncodeUtf8(),
                                             isFirstInstall().toString())
                                 },
@@ -501,5 +503,4 @@ class TokoMartHomeFragment: Fragment() {
             ""
         }
     }
-
 }

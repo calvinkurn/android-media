@@ -2,7 +2,6 @@ package com.tokopedia.tokomart.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
-import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokomart.home.constant.HomeAdditionalWidgetId
 import com.tokopedia.tokomart.home.constant.HomeLayoutType

@@ -16,13 +16,11 @@
         android:contentDescription="@string/home_header_background_content_description"
         android:src="@drawable/ic_header_background"/>
 
-    <View
-        android:id="@+id/status_bar_bg"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHome"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_25"
-        android:layout_gravity="top"
-        android:background="@color/Unify_G500"
-        android:visibility="invisible" />
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants" />
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/navToolbar"
@@ -53,9 +51,11 @@
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvHome"
+    <View
+        android:id="@+id/status_bar_bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:descendantFocusability="beforeDescendants" />
+        android:layout_height="@dimen/dp_25"
+        android:layout_gravity="top"
+        android:background="@color/Unify_G500"
+        android:visibility="visible" />
 </FrameLayout>
