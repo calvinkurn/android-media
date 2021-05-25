@@ -44,6 +44,8 @@ data class GroupShop(
         val shipmentInformation: ShipmentInformation = ShipmentInformation(),
         @SerializedName("is_disable_change_courier")
         val isDisableChangeCourier: Boolean = false,
+        @SerializedName("auto_courier_selection")
+        val autoCourierSelection: Boolean = false,
         @SerializedName("bo_metadata")
         val boMetadata: BoMetadata = BoMetadata(),
         @SerializedName("courier_selection_error")

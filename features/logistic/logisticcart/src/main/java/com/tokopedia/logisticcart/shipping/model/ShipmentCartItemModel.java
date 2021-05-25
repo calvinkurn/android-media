@@ -93,6 +93,7 @@ public class ShipmentCartItemModel implements Parcelable {
     private boolean isTriggerShippingVibrationAnimation;
     private boolean isShippingBorderRed;
     private boolean isDisableChangeCourier;
+    private boolean autoCourierSelection;
 
     // Courier Selection Error
     private String courierSelectionErrorTitle;
@@ -155,6 +156,7 @@ public class ShipmentCartItemModel implements Parcelable {
         hasSetDropOffLocation = in.readByte() != 0;
         listPromoCodes = in.createStringArrayList();
         isDisableChangeCourier = in.readByte() != 0;
+        autoCourierSelection = in.readByte() != 0;
         courierSelectionErrorTitle = in.readString();
         courierSelectionErrorDescription = in.readString();
     }
@@ -214,6 +216,7 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeByte((byte) (hasSetDropOffLocation ? 1 : 0));
         dest.writeStringList(listPromoCodes);
         dest.writeByte((byte) (isDisableChangeCourier ? 1 : 0));
+        dest.writeByte((byte) (autoCourierSelection ? 1 : 0));
         dest.writeString(courierSelectionErrorTitle);
         dest.writeString(courierSelectionErrorDescription);
     }
@@ -278,6 +281,7 @@ public class ShipmentCartItemModel implements Parcelable {
         newShipmentCartItemModel.setListPromoCodes(shipmentCartItemModel.getListPromoCodes());
         newShipmentCartItemModel.setShopTypeInfoData(shipmentCartItemModel.getShopTypeInfoData());
         newShipmentCartItemModel.setDisableChangeCourier(shipmentCartItemModel.isDisableChangeCourier());
+        newShipmentCartItemModel.setAutoCourierSelection(shipmentCartItemModel.isAutoCourierSelection());
         return newShipmentCartItemModel;
     }
 
@@ -743,6 +747,14 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setDisableChangeCourier(boolean disableChangeCourier) {
         isDisableChangeCourier = disableChangeCourier;
+    }
+
+    public boolean isAutoCourierSelection() {
+        return autoCourierSelection;
+    }
+
+    public void setAutoCourierSelection(boolean autoCourierSelection) {
+        this.autoCourierSelection = autoCourierSelection;
     }
 
     public String getCourierSelectionErrorTitle() {

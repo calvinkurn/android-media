@@ -135,6 +135,7 @@ class ShipmentMapper @Inject constructor() {
                         productErrorCount = mapProducts.second
                         firstProductErrorIndex = mapProducts.third
                         isDisableChangeCourier = it.isDisableChangeCourier
+                        autoCourierSelection = it.autoCourierSelection
                         boMetadata = it.boMetadata
                         courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
                     }

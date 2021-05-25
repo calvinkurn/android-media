@@ -28,10 +28,10 @@ class CheckoutTokoNowTest {
 
     private val gtmLogDBSource = GtmLogDBSource(context)
 
-    private fun setup(ratesResponse: Int = R.raw.ratesv3_tokonow_default_response) {
+    private fun setup(safResponse: Int = R.raw.saf_tokonow_default_response, ratesResponse: Int = R.raw.ratesv3_tokonow_default_response) {
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
-            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, R.raw.saf_tokonow_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, safResponse), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, ratesResponse), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_tokonow_default_response), MockModelConfig.FIND_BY_CONTAINS)
@@ -63,8 +63,31 @@ class CheckoutTokoNowTest {
     }
 
     @Test
+    fun tokoNowWithFailedDefaultDuration_PassedAnalyticsAndPaymentIntent() {
+        setup(safResponse = R.raw.saf_tokonow_with_failed_default_duration_response)
+        activityRule.launchActivity(null)
+
+        checkoutPage {
+            // Wait for SAF
+            waitForData()
+            // Wait for Rates
+            waitForData()
+            // Wait for Validate Use
+            waitForData()
+            assertHasSingleShipmentSelected(activityRule,
+                    title = "Same Day (Rp0)",
+                    eta = "Estimasi tiba hari ini")
+            clickChoosePaymentButton(activityRule)
+        } validateAnalytics {
+            waitForData()
+            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+            assertGoToPayment()
+        }
+    }
+
+    @Test
     fun tokoNowWithAdditionalPrice_PassedAnalyticsAndPaymentIntent() {
-        setup(R.raw.ratesv3_tokonow_with_additional_price_response)
+        setup(ratesResponse = R.raw.ratesv3_tokonow_with_additional_price_response)
         activityRule.launchActivity(null)
 
         checkoutPage {
@@ -90,7 +113,7 @@ class CheckoutTokoNowTest {
 
     @Test
     fun tokoNowWithNormalPrice_PassedAnalyticsAndPaymentIntent() {
-        setup(R.raw.ratesv3_tokonow_with_normal_price_response)
+        setup(ratesResponse = R.raw.ratesv3_tokonow_with_normal_price_response)
         activityRule.launchActivity(null)
 
         checkoutPage {
