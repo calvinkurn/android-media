@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
@@ -51,10 +52,10 @@ class ItemFeatureRecommendationAdapter(private val itemRecommendationFeatureList
                 ivRecommendedPromo?.loadImage(data.iconRecommendationUrl)
 
                 loadImageWithTarget(context, ShopScoreConstant.IC_SQUIRCLE_RECOMMENDATION_URL, {}, MediaTarget(
-                        findViewById<ImageView>(R.id.ivRecommendedPromo),
-                        onReady = { badgeView, resourceBitmap ->
+                        findViewById<AppCompatImageView>(R.id.ivRecommendedPromo),
+                        onReady = { recommendedPromoView, resourceBitmap ->
                             val bitmapRecommended = BitmapDrawable(resources, resourceBitmap)
-                            badgeView.background = bitmapRecommended
+                            recommendedPromoView.background = bitmapRecommended
                         },
                         onFailed = { _, _ ->
                             ivRecommendedPromo?.hide()
