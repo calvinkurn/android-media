@@ -56,6 +56,7 @@ import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -367,9 +368,12 @@ abstract class TopchatRoomTest {
     protected fun assertSrwContentContainerVisibility(
             visibilityMatcher: Matcher<in View>
     ) {
-        onView(withId(R.id.rv_srw_content_container)).check(
-                matches(visibilityMatcher)
-        )
+        onView(
+                allOf(
+                        withId(R.id.rv_srw_content_container),
+                        isDescendantOfA(withId(R.id.cl_attachment_preview))
+                )
+        ).check(matches(visibilityMatcher))
     }
 
     protected fun assertSrwTitle(
@@ -389,17 +393,23 @@ abstract class TopchatRoomTest {
     protected fun assertSrwErrorVisibility(
             visibilityMatcher: Matcher<in View>
     ) {
-        onView(withId(R.id.ll_srw_partial)).check(
-                matches(visibilityMatcher)
-        )
+        onView(
+                allOf(
+                        withId(R.id.ll_srw_partial),
+                        isDescendantOfA(withId(R.id.cl_attachment_preview))
+                )
+        ).check(matches(visibilityMatcher))
     }
 
     protected fun assertSrwLoadingVisibility(
             visibilityMatcher: Matcher<in View>
     ) {
-        onView(withId(R.id.lu_srw_partial)).check(
-                matches(visibilityMatcher)
-        )
+        onView(
+                allOf(
+                        withId(R.id.lu_srw_partial),
+                        isDescendantOfA(withId(R.id.cl_attachment_preview))
+                )
+        ).check(matches(visibilityMatcher))
     }
 
     protected fun assertSnackbarText(msg: String) {
