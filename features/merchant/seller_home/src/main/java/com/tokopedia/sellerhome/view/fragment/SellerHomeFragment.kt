@@ -248,9 +248,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        pmShopScoreInterruptHelper.onActivityResult(requestCode) {
-            scrollToRecommendationWidget()
-            isEligibleShowRecommendationCoachMark = true
+        view?.let {
+            pmShopScoreInterruptHelper.onActivityResult(requestCode) {
+                scrollToRecommendationWidget()
+                isEligibleShowRecommendationCoachMark = true
+            }
         }
     }
 
