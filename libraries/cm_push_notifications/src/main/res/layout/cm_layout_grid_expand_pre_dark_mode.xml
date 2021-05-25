@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/status_bar_latest_event_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:tag="bigPicture">
 
-    <include layout="@layout/cm_layout_collapsed_pre_dark_mode"/>
+    <include layout="@layout/cm_layout_collapsed_pre_dark_mode" />
 
     <LinearLayout
-        android:layout_marginTop="64dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
         android:orientation="vertical"
         android:weightSum="1">
 
@@ -19,6 +18,7 @@
             android:id="@+id/ll_topGridParent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="2dp"
             android:layout_weight="0.5"
             android:orientation="horizontal">
 
@@ -26,22 +26,29 @@
                 android:id="@+id/iv_gridOne"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitXY" />
+                android:contentDescription="@null"
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/iv_gridTwo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitXY" />
+                android:contentDescription="@null"
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/iv_gridFive"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitXY" />
+                android:contentDescription="@null"
+                android:scaleType="centerCrop" />
 
         </LinearLayout>
 
@@ -49,6 +56,7 @@
             android:id="@+id/ll_bottomGridParent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
             android:layout_weight="0.5"
             android:orientation="horizontal">
 
@@ -56,22 +64,29 @@
                 android:id="@+id/iv_gridThree"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginEnd="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitXY" />
+                android:contentDescription="@null"
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/iv_gridFour"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitXY" />
+                android:contentDescription="@null"
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/iv_gridSix"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitXY" />
+                android:contentDescription="@null"
+                android:scaleType="centerCrop" />
 
         </LinearLayout>
 
