@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tokopedia.logisticorder.R;
@@ -84,12 +86,18 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         } else {
             holder.imageProof.setVisibility(View.VISIBLE);
             String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small");
+            GlideUrl glideUrl = new GlideUrl(url, new LazyHeaders.Builder()
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Cookie", "")
+                    .build());
+
             Glide.with(holder.context)
-                    .load(url)
+                    .load(glideUrl)
                     .addListener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             Log.d("WHY FAILED -- ", e.toString());
+                            System.out.println(e);
                             Timber.d(e);
                             return false;
                         }
