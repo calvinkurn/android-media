@@ -28,7 +28,7 @@ object ApplinkConsInternalDigital {
     const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
     const val SUBHOMEPAGE = "$INTERNAL_RECHARGE/home"
     const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
-    const val ELECTRONIC_MONEY = "$INTERNAL_DIGITAL/electronicmoney"
+    const val ELECTRONIC_MONEY_PDP = "$INTERNAL_DIGITAL/electronicmoney"
 
     const val SMARTCARD = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/smartcard?$PARAM_SMARTCARD={type}&$PARAM_BRIZZI={status}"
     const val INTERNAL_SMARTCARD_EMONEY = "$INTERNAL_DIGITAL/smartcard/emoney?$PARAM_SMARTCARD={type}"
