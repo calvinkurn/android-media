@@ -152,6 +152,7 @@
 /features/transaction/checkout/        		            @tokopedia/android-minionbob-dev
 /features/transaction/oneclickcheckout/        		    @tokopedia/android-minionbob-dev
 /features/transaction/promo_checkout_marketplace/       @tokopedia/android-minionbob-dev
+/features/transaction/minicart/                         @tokopedia/android-minionbob-dev
 /features/logistic/logisticCommon/                		@tokopedia/android-minionbob-dev
 /features/logistic/logisticaddaddress/          		@tokopedia/android-minionbob-dev
 /features/logistic/logisticorder/                    	@tokopedia/android-minionbob-dev

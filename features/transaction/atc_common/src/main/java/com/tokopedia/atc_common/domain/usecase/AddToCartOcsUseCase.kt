@@ -2,13 +2,14 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
 import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -23,7 +24,7 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
                                                    private val gson: Gson,
                                                    private val graphqlUseCase: GraphqlUseCase,
                                                    private val addToCartDataMapper: AddToCartDataMapper,
-                                                   private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AddToCartDataModel>() {
+                                                   private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -56,7 +57,7 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
                         PARAM_UC_UT to ocsRequestParams.utParam,
                         PARAM_IS_TRADE_IN to ocsRequestParams.isTradeIn,
                         PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice,
-                        ChosenAddressAddToCartRequestHelper.PARAM_KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+                        KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
                 )
         )
     }

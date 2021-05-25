@@ -19,6 +19,7 @@
 
     <string name="path_checkout_variant" translatable="false">/checkout-variant</string>
     <string name="path_cart" translatable="false">/cart</string>
+    <string name="path_mini_cart_example" translatable="false">/minicartexample</string>
     <string name="path_checkout" translatable="false">/checkout</string>
     <string name="path_normal_checkout" translatable="false">/normal-checkout</string>
     <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>

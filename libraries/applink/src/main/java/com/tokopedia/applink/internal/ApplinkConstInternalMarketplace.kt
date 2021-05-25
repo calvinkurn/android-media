@@ -29,6 +29,8 @@ object ApplinkConstInternalMarketplace {
     const val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
     // CartActivity
     const val CART = "$INTERNAL_MARKETPLACE/cart"
+    // MiniCartExample
+    const val MINI_CART_EXAMPLE = "$INTERNAL_MARKETPLACE/minicartexample"
     // ShipmentActivity
     const val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
     // CartAddressChoiceActivity
