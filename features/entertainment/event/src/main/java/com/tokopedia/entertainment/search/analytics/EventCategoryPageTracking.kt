@@ -85,41 +85,18 @@ class EventCategoryPageTracking {
 
     fun onClickGridViewProduct(event: EventGridAdapter.EventGrid,
                                listsEvent: List<EventGridAdapter.EventGrid>,
+                               categoryListId: List<CategoryTextBubbleAdapter.CategoryTextBubble>,
                                position: Int,
                                userId: String
     ){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "click page product")
             putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", event.nama_event, position.toString()))
-            putString(ITEM_LIST, "")
+            putString(ITEM_LIST, getCategoryItem(categoryListId, event.category_id, event.nama_event))
             putParcelableArrayList(ITEMS, getProductFromMetaData(event, position))
         }
         eventDataLayer.addGeneralClickedBundle(userId)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VALUE_SELECT_CONTENT, eventDataLayer)
-        getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                Event.KEY, "productClick",
-                Event.CATEGORY, "digital - event",
-                Event.ACTION, "click page product",
-                Event.LABEL, String.format("%s - %s", event.nama_event, position.toString()),
-                Misc.CURRENTSITE, Misc.CURRENTSITEDATA,
-                Misc.BUSINESSUNIT, Misc.BUSINESSUNITDATA,
-                Misc.CATEGORY, Misc.CATEGORYDATA,
-                Misc.SCREENNAME, "",
-                Ecommerce.KEY, DataLayer.mapOf(
-                Click.KEY, DataLayer.mapOf(Click.ACTION_FIELD, DataLayer.mapOf("list", event.nama_event),
-                Product.KEY, DataLayer.listOf(
-                DataLayer.mapOf(
-                        Product.NAME, event.nama_event,
-                        Product.ID, event.id,
-                        Product.PRICE, event.harga_now,
-                        Product.BRAND, "",
-                        Product.CATEGORY, "",
-                        Product.VARIANT, "",
-                        Product.LIST, event.nama_event,
-                        Product.POSITION, position
-                )
-        ))
-        )))
     }
 
     fun onClickCategoryBubble(category: CategoryTextBubbleAdapter.CategoryTextBubble){
@@ -151,7 +128,6 @@ class EventCategoryPageTracking {
         }
         eventDataLayer.addGeneralImpression(userId)
         getTracker().sendEnhanceEcommerceEvent(CommonTrackingEvent.Misc.EVENT_VALUE_VIEW_ITEM, eventDataLayer)
-
     }
 
     private fun getProductFromMetaData(event: EventGridAdapter.EventGrid, position: Int): ArrayList<Bundle>{
@@ -169,6 +145,27 @@ class EventCategoryPageTracking {
             list.add(itemBundle)
         }
         return list
+    }
+
+    private fun getCategoryItem(categoryListIds: List<CategoryTextBubbleAdapter.CategoryTextBubble>,
+                                childCategoryIds: String, productName: String
+    ): String {
+        var categoryItem = ""
+        var childCategory = ""
+
+        if(childCategoryIds.contains(",")){
+            childCategory = childCategoryIds.split(",").firstOrNull() ?: ""
+        } else {
+            childCategory = childCategoryIds
+        }
+
+        for (categoryListId in categoryListIds){
+            if (categoryListId.id.equals(childCategory)){
+                categoryItem = "category page - ${categoryListId.category} - $productName"
+            }
+        }
+
+        return categoryItem
     }
 
     private fun getTracker() : Analytics {

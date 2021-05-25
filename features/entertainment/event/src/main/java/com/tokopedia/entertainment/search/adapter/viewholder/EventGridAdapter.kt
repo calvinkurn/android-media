@@ -75,7 +75,8 @@ class EventGridAdapter(val listener: EventGridListener) : RecyclerView.Adapter<R
             val nama_event: String,
             val harga_start: String,
             val harga_now: String,
-            val app_url: String
+            val app_url: String,
+            val category_id: String = ""
     ) : ImpressHolder()
 
     interface EventGridListener{

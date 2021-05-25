@@ -252,6 +252,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     }
 
     override fun clickCategory(event: EventGridAdapter.EventGrid, listsEvent: List<EventGridAdapter.EventGrid>, position: Int) {
-        EventCategoryPageTracking.getInstance().onClickGridViewProduct(event, listsEvent, position + 1, userSession.userId)
+        EventCategoryPageTracking.getInstance().onClickGridViewProduct(event, listsEvent, categoryTextAdapter.listCategory,
+                position + 1, userSession.userId)
     }
 }

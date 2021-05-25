@@ -96,7 +96,7 @@
       "currentSite": "tokopediadigitalEvent",
       "event": "select_content",
       "userId": ".*",
-      "eventAction": "click product result",
+      "eventAction": "click city result",
       "sessionIris": ".*",
       "eventLabel": ".*"
     }

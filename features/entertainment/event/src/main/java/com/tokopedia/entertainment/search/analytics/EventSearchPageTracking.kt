@@ -129,7 +129,7 @@ class EventSearchPageTracking {
         }
 
         val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION, "click product result")
+            putString(TrackAppUtils.EVENT_ACTION, "click city result")
             putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", location.city, position.toString()))
             putParcelableArrayList(CommonTrackingEvent.Misc.PROMOTION, arrayListOf(itemBundle))
         }
