@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
@@ -24,7 +25,7 @@ class ItemStatusPMViewHolder(view: View,
 
     private fun setupItemPowerMerchant(element: ItemStatusPMUiModel?) {
         with(itemView) {
-            potentialPowerMerchantWidget?.background = ContextCompat.getDrawable(context, R.drawable.bg_header_bronze)
+            potentialPowerMerchantWidget?.background = AppCompatResources.getDrawable(context, R.drawable.bg_header_bronze)
             tv_pm_reputation_value?.text = getString(R.string.title_pm_value)
             element?.descPM?.let {
                 tv_desc_content_pm_section?.setTextMakeHyperlink(it) {

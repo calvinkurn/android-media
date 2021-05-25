@@ -62,6 +62,7 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <FrameLayout
+        android:id="@+id/bg_squircle_recommendation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/cardContent"
@@ -75,8 +76,7 @@
             android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
             android:layout_marginTop="@dimen/layout_lvl1"
             android:adjustViewBounds="true"
-            android:padding="@dimen/dp_12"
-            android:background="@drawable/ic_squircle_recommendation" />
+            android:padding="@dimen/dp_12" />
 
     </FrameLayout>
 
