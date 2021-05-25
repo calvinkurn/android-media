@@ -1,9 +1,10 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
@@ -16,7 +17,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class SearchViewModel @Inject constructor (
-        baseDispatcher: CoroutineDispatchers,
+        private val baseDispatcher: CoroutineDispatchers,
         @Named(SEARCH_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
         @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
@@ -25,12 +26,14 @@ class SearchViewModel @Inject constructor (
         private val getSearchLoadMorePageUseCase: UseCase<SearchModel>,
         getFilterUseCase: UseCase<DynamicFilterModel>,
         getProductCountUseCase: UseCase<String>,
+        getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
         getFilterUseCase,
         getProductCountUseCase,
+        getMiniCartListSimplifiedUseCase,
         chooseAddressWrapper,
 ) {
 
@@ -39,8 +42,8 @@ class SearchViewModel @Inject constructor (
     override fun onViewCreated() {
         getSearchFirstPageUseCase.cancelJobs()
         getSearchFirstPageUseCase.execute(
-                this::onGetSearchFirstPageSuccess,
-                this::onGetSearchFirstPageError,
+                ::onGetSearchFirstPageSuccess,
+                ::onGetSearchFirstPageError,
                 createRequestParams()
         )
     }
@@ -75,8 +78,8 @@ class SearchViewModel @Inject constructor (
     override fun executeLoadMore() {
         getSearchLoadMorePageUseCase.cancelJobs()
         getSearchLoadMorePageUseCase.execute(
-                this::onGetSearchLoadMorePageSuccess,
-                this::onGetSearchLoadMorePageError,
+                ::onGetSearchLoadMorePageSuccess,
+                ::onGetSearchLoadMorePageError,
                 createRequestParams(),
         )
     }

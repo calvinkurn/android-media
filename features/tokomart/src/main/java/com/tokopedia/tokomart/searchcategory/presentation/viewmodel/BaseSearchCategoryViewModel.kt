@@ -17,6 +17,9 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
@@ -42,6 +45,7 @@ abstract class BaseSearchCategoryViewModel(
         queryParamMap: Map<String, String>,
         protected val getFilterUseCase: UseCase<DynamicFilterModel>,
         protected val getProductCountUseCase: UseCase<String>,
+        protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseViewModel(baseDispatcher.io) {
 
@@ -69,6 +73,9 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val isL3FilterPageOpenMutableLiveData = MutableLiveData<Filter?>(null)
     val isL3FilterPageOpenLiveData: LiveData<Filter?> = isL3FilterPageOpenMutableLiveData
+
+    protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartWidgetData?>(null)
+    val miniCartWidgetLiveData: LiveData<MiniCartWidgetData?> = miniCartWidgetMutableLiveData
 
     protected var totalData = 0
     protected var totalFetchedData = 0
@@ -324,8 +331,8 @@ abstract class BaseSearchCategoryViewModel(
 
         getFilterUseCase.cancelJobs()
         getFilterUseCase.execute(
-                this::onGetFilterSuccess,
-                this::onGetFilterFailed,
+                ::onGetFilterSuccess,
+                ::onGetFilterFailed,
                 getFilterRequestParams
         )
     }
@@ -360,8 +367,8 @@ abstract class BaseSearchCategoryViewModel(
     fun onViewGetProductCount(mapParameter: Map<String, String>) {
         getProductCountUseCase.cancelJobs()
         getProductCountUseCase.execute(
-                this::onGetProductCountSuccess,
-                this::onGetProductCountFailed,
+                ::onGetProductCountSuccess,
+                ::onGetProductCountFailed,
                 createGetProductCountRequestParams(mapParameter)
         )
     }
@@ -402,6 +409,23 @@ abstract class BaseSearchCategoryViewModel(
         refreshQueryParamFromFilterController()
 
         onViewReloadPage()
+    }
+
+    open fun onViewResumed() {
+        getMiniCartListSimplifiedUseCase.setParams(listOf())
+
+        getMiniCartListSimplifiedUseCase.execute(::onGetMiniCartDataSuccess, ::onGetMiniCartDataFailed)
+
+//        val miniCartSimplifiedData = getMiniCartListSimplifiedData()
+//        miniCartWidgetMutableLiveData.postValue(miniCartSimplifiedData.miniCartWidgetData)
+    }
+
+    private fun onGetMiniCartDataSuccess(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.miniCartWidgetData
+    }
+
+    private fun onGetMiniCartDataFailed(throwable: Throwable) {
+
     }
 
     protected class HeaderDataView(

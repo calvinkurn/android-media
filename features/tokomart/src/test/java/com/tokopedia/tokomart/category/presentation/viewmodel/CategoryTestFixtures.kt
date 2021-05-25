@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
@@ -27,6 +28,7 @@ open class CategoryTestFixtures {
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
+    protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
 
     protected lateinit var categoryViewModel: CategoryViewModel
@@ -48,6 +50,7 @@ open class CategoryTestFixtures {
                 getCategoryLoadMorePageUseCase,
                 getFilterUseCase,
                 getProductCountUseCase,
+                getMiniCartListSimplifiedUseCase,
                 chooseAddressWrapper,
         )
     }

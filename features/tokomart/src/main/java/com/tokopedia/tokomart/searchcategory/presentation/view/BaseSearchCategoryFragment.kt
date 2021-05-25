@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
+import androidx.annotation.NonNull
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
@@ -17,6 +20,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterMod
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
@@ -143,14 +147,17 @@ abstract class BaseSearchCategoryFragment:
     private fun Context.getDimensionPixelSize(@DimenRes id: Int) = resources.getDimensionPixelSize(id)
 
     protected open fun observeViewModel() {
-        getViewModel().visitableListLiveData.observe(viewLifecycleOwner, this::submitList)
-        getViewModel().hasNextPageLiveData.observe(viewLifecycleOwner, this::updateEndlessScrollListener)
-        getViewModel().isFilterPageOpenLiveData.observe(viewLifecycleOwner, this::openBottomSheetFilter)
-        getViewModel().dynamicFilterModelLiveData.observe(
-                viewLifecycleOwner, this::onDynamicFilterModelChanged
-        )
-        getViewModel().productCountAfterFilterLiveData.observe(viewLifecycleOwner, this::setFilterProductCount)
-        getViewModel().isL3FilterPageOpenLiveData.observe(viewLifecycleOwner, this::configureL3BottomSheet)
+        getViewModel().visitableListLiveData.observe(this::submitList)
+        getViewModel().hasNextPageLiveData.observe(this::updateEndlessScrollListener)
+        getViewModel().isFilterPageOpenLiveData.observe(this::openBottomSheetFilter)
+        getViewModel().dynamicFilterModelLiveData.observe(this::onDynamicFilterModelChanged)
+        getViewModel().productCountAfterFilterLiveData.observe(this::setFilterProductCount)
+        getViewModel().isL3FilterPageOpenLiveData.observe(this::configureL3BottomSheet)
+        getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
+    }
+
+    protected fun <T> LiveData<T>.observe(observer: Observer<T>) {
+        observe(viewLifecycleOwner, observer)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -269,5 +276,17 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {
         getViewModel().onViewClickCategoryFilterChip(option, isSelected)
+    }
+
+    private fun updateMiniCartWidget(miniCartWidgetData: MiniCartWidgetData?) {
+        miniCartWidgetData ?: return
+
+        // Update mini cart widget here
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        getViewModel().onViewResumed()
     }
 }

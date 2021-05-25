@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.category.domain.model.CategoryDetail
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
@@ -14,7 +15,6 @@ import com.tokopedia.tokomart.category.utils.CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
@@ -31,12 +31,14 @@ class CategoryViewModel @Inject constructor (
         private val getCategoryLoadMorePageUseCase: UseCase<CategoryModel>,
         getFilterUseCase: UseCase<DynamicFilterModel>,
         getProductCountUseCase: UseCase<String>,
+        getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
         getFilterUseCase,
         getProductCountUseCase,
+        getMiniCartListSimplifiedUseCase,
         chooseAddressWrapper,
 ) {
 
