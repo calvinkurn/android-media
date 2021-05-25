@@ -19,6 +19,8 @@ class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategor
         @LayoutRes
         val LAYOUT = R.layout.item_tokomart_home_category_grid
 
+        // Temp hardcoded warehouse_id
+        private const val WAREHOUSE_ID = "1"
         private const val GRID_SPAN_COUNT = 2
     }
 
@@ -28,7 +30,7 @@ class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategor
         itemView.apply {
             textTitle.text = data.title
             textSeeAll.setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalTokoMart.CATEGORY_LIST, "1")
+                RouteManager.route(context, ApplinkConstInternalTokoMart.CATEGORY_LIST, WAREHOUSE_ID)
             }
 
             with(rvCategory) {
