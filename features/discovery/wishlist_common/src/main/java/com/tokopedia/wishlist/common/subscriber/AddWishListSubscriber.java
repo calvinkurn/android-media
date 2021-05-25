@@ -1,8 +1,9 @@
 package com.tokopedia.wishlist.common.subscriber;
 
 import android.content.Context;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.network.exception.MessageErrorException;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.wishlist.common.R;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.response.AddWishListResponse;
@@ -29,7 +30,7 @@ public class AddWishListSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorAddWishList(
-                ErrorHandler.getErrorMessage(context, e), productId);
+                ErrorHandler.getErrorMessage(context, new MessageErrorException(e.getMessage())), productId);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,7 +22,7 @@ class UohListUseCase @Inject constructor(private val gqlRepository: GraphqlRepos
             val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<UohListOrder.Data>()
             Success(response.uohOrders)
         } catch (e: Exception) {
-            Fail(e)
+            Fail(MessageErrorException(e.message))
         }
     }
 
