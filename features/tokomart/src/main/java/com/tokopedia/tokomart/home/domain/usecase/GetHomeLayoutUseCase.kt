@@ -15,7 +15,7 @@ class GetHomeLayoutUseCase @Inject constructor(
         // Dummy data
         return listOf(
             HomeLayoutResponse("1", "Promo spesial", HomeLayoutType.SECTION),
-            HomeLayoutResponse("2", "Kategori", HomeLayoutType.ALL_CATEGORY)
+            HomeLayoutResponse("2", "Kategori Barang di TokoMart", HomeLayoutType.ALL_CATEGORY)
         )
     }
 }

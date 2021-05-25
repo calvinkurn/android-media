@@ -1,11 +1,11 @@
-package com.tokopedia.tokomart.home.presentation.adapter.differ
+package com.tokopedia.tokomart.categorylist.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokomart.common.base.adapter.BaseTokoMartDiffer
-import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiModel
+import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel
+import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
 
-class TokoMartHomeListDiffer : BaseTokoMartDiffer() {
+class TokoMartCategoryListDiffer : BaseTokoMartDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 
@@ -13,10 +13,10 @@ class TokoMartHomeListDiffer : BaseTokoMartDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is TokoMartHomeLayoutUiModel && newItem is TokoMartHomeLayoutUiModel) {
-            oldItem.layoutId == newItem.layoutId
-        } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
-            oldItem.visitableId() == newItem.visitableId()
+        return if (oldItem is CategoryListItemUiModel && newItem is CategoryListItemUiModel) {
+            oldItem.id == newItem.id
+        } else if (oldItem is CategoryListChildUiModel && newItem is CategoryListChildUiModel) {
+            oldItem.id == newItem.id
         } else {
             oldItem == newItem
         }

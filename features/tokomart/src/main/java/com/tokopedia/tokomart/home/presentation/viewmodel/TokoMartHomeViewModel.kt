@@ -2,10 +2,10 @@ package com.tokopedia.tokomart.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutUseCase
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapToHomeUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,10 +18,10 @@ class TokoMartHomeViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
 
-    val homeLayout: LiveData<Result<List<HomeLayoutUiModel>>>
+    val homeLayout: LiveData<Result<List<Visitable<*>>>>
         get() = _homeLayout
 
-    private val _homeLayout = MutableLiveData<Result<List<HomeLayoutUiModel>>>()
+    private val _homeLayout = MutableLiveData<Result<List<Visitable<*>>>>()
 
     fun getHomeLayout() {
        launchCatchError(block = {
