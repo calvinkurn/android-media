@@ -297,7 +297,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 val isGoodRating = isGoodRating()
                 updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
-                if (isGoodRating) {
+                if (isGoodRating && !createReviewViewModel.isUserEligible()) {
                     showTemplates()
                 } else {
                     hideTemplates()
@@ -420,6 +420,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             }
             return
         }
+        showTemplates()
         incentivesTicker?.hide()
     }
 
@@ -443,7 +444,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
             layoutManager = StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL)
-            showTemplates()
         }
         templatesAdapter.setData(templates)
     }
