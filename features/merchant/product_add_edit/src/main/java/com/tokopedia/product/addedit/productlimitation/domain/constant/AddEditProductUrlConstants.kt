@@ -16,7 +16,7 @@ class AddEditProductUrlConstants {
         val ACTION_URL_USE_PROMOTION = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
         val ACTION_URL_USE_PROMOTION_WEB = "https://seller.tokopedia.com/promo"
 
-        const val URL_PRODUCT_LIMITATION_EDU = "http://seller.tokopedia.com/edu/kuota-produk"
+        const val URL_PRODUCT_LIMITATION_EDU = "https://seller.tokopedia.com/edu/kuota-produk"
 
     }
 }
