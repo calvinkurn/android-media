@@ -28,7 +28,6 @@ class ItemStatusRMViewHolder(view: View,
         with(itemView) {
             tvTitleEligiblePowerMerchant?.text = element.titleRMEligible
             tvDescEligiblePowerMerchant?.text = element.descRMEligible
-            containerEligiblePowerMerchant?.background = ContextCompat.getDrawable(context, R.drawable.bg_header_bronze)
 
             tv_pm_potential_value?.text = MethodChecker.fromHtml(getString(R.string.desc_pm_potential))
             tv_see_all_benefit_pm?.setOnClickListener {
