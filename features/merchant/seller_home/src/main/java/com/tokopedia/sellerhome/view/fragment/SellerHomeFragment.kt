@@ -248,12 +248,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        view?.let {
-            pmShopScoreInterruptHelper.onActivityResult(requestCode) {
-                scrollToRecommendationWidget()
-                isEligibleShowRecommendationCoachMark = true
-            }
-        }
+        handleInterruptPageOnActivityResult(requestCode, resultCode, data)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -1340,6 +1335,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 )
             }
             return@lazy coachMarkItems
+        }
+    }
+
+    private fun handleInterruptPageOnActivityResult(requestCode: Int) {
+        view?.let {
+            if (::pmShopScoreInterruptHelper.isInitialized) {
+                pmShopScoreInterruptHelper.onActivityResult(requestCode) {
+                    scrollToRecommendationWidget()
+                    isEligibleShowRecommendationCoachMark = true
+                }
+            }
         }
     }
 
