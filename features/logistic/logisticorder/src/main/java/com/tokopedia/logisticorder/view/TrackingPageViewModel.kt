@@ -86,7 +86,7 @@ class TrackingPageViewModel @Inject constructor(
     }
 
     private val onErrorGetDeliveryImage = CoroutineExceptionHandler { _, throwable ->
-        _retryAvailability.value = Fail(throwable)
+        _getDeliveryImage.value = Fail(throwable)
     }
 
     private fun convertToRedeemedResponse(typeRestResponseMap: Map<Type, RestResponse?>): GetDeliveryImageResponse {

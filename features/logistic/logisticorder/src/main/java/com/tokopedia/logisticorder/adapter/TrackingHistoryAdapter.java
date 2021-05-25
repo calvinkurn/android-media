@@ -88,10 +88,11 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         } else {
             holder.imageProof.setVisibility(View.VISIBLE);
             UserSessionInterface userSession = new UserSession(holder.context);
-            String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small");
+            String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small",
+                    userSession.getUserId(), 1, userSession.getDeviceId());
             GlideUrl glideUrl = new GlideUrl(url, new LazyHeaders.Builder()
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("Cookie", userSession.getAccessToken())
+//                    .addHeader("_SID_Tokopedia_Coba_", "YUnhP0RK_oXXdqBp8jgzlzcHnN4uPVfrvv5RpRMXlqWHu7T6mk4Oadod4MEAzFAY3hY8j4qgs6dDZK459Fh_T2cDBZ1dIzZhqlN_Ekgi1sh51jZ_pCSd-jvIiX5Y8z7S")
                     .build());
 
             Glide.with(holder.context)
