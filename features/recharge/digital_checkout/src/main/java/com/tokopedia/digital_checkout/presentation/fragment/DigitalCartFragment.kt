@@ -184,7 +184,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             when (it) {
                 is Success -> {
                     if (it.data.defaultEmptyPromoMessage.isNotEmpty()) {
-                        checkoutBottomViewWidget.promoButtonDescription = it.data.defaultEmptyPromoMessage
+                        checkoutBottomViewWidget.promoButtonTitle = it.data.defaultEmptyPromoMessage
                     }
                 }
                 is Fail -> onFailedCancelVoucher(it.throwable)

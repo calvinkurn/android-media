@@ -34,6 +34,6 @@ class DigitalCancelVoucherUseCase @Inject constructor(
         const val PARAM_PROMO_CODE = "promoCode"
         const val PARAM_IS_OCC = "isOCC"
         const val DEFAULT_VALUE_IS_OCC = false
-        const val DEFAULT_DIGITAL_SERVICE_ID = "819380128012836"
+        const val DEFAULT_DIGITAL_SERVICE_ID = "recharge"
     }
 }
