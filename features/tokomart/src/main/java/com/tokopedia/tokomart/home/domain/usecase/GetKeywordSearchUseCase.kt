@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.tokomart.home.domain.model.KeywordSearchData
+import com.tokopedia.tokomart.home.domain.query.GetKeywordSearch.QUERY
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -19,20 +20,6 @@ class GetKeywordSearchUseCase @Inject constructor(
     }
 
     var params : Map<String, Any> = mapOf()
-    val query = """
-        query universe_placeholder(${'$'}$FIRST_INSTALL: Boolean, ${'$'}$UNIQUE_ID:String){
-            universe_placeholder(navsource:"tokonow", first_install:${'$'}$FIRST_INSTALL, unique_id:${'$'}$UNIQUE_ID){
-                data { 
-                    placeholder 
-                    keyword 
-                    placeholder_list {
-                        placeholder
-                        keyword
-                    }
-                }
-            }
-        }
-    """.trimIndent()
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -52,7 +39,7 @@ class GetKeywordSearchUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): KeywordSearchData {
         graphqlUseCase.clearCache()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setRequestParams(params)
         return graphqlUseCase.executeOnBackground()
     }

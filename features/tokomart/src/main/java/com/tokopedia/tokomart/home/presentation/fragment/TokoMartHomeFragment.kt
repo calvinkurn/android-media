@@ -450,6 +450,7 @@ class TokoMartHomeFragment: Fragment() {
                                 isFirstInstall(),
                                 shouldShowTransition(),
                                 durationAutoTransition)
+                        oldToolbar?.setInboxNumber(30)
                     },
                     ifNavRevamp = {
                         navToolbar?.setupSearchbar(

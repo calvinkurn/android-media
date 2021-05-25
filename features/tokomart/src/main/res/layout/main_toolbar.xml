@@ -84,7 +84,6 @@
                 android:layout_width="@dimen/icon_toolbar"
                 android:layout_height="@dimen/icon_toolbar"
                 android:scaleType="center" />
-
         </LinearLayout>
 
     </RelativeLayout>

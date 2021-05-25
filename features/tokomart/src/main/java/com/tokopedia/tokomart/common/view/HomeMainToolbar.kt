@@ -23,7 +23,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
@@ -37,7 +36,7 @@ import java.util.concurrent.Callable
 import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
 
-@Deprecated("this class is used as oldtoolbar")
+@Deprecated( message = "this class is used as oldtoolbar")
 class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private var KEY_BUNDLE_TOOLBAR_TYPE: String = "key_bundle_toolbar_type"
@@ -126,11 +125,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         notifCrossfader.startTransition(0)
         inboxCrossfader.startTransition(0)
 
-        btnWishlist.setImageDrawable(wishlistCrossfader)
-        btnNotification.setImageDrawable(notifCrossfader)
-        // hide the third button
-        btnNotification.hide()
-        btnInbox.setImageDrawable(inboxCrossfader)
+        btnWishlist?.setImageDrawable(wishlistCrossfader)
+        btnInbox?.setImageDrawable(inboxCrossfader)
 
         if (toolbarType == TOOLBAR_DARK_TYPE) {
             wishlistCrossfader.resetTransition()
@@ -179,7 +175,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     override fun inflateResource(context: Context) {
-
         val asyncLayoutInflater = AsyncLayoutInflater(context)
         val inflateFinishCallBack = OnInflateFinishedListener { view, resid, parent ->
             viewHomeMainToolBar = view
@@ -188,9 +183,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             afterInflationCallable?.call()
             this@HomeMainToolbar.addView(view)
         }
-        if (inflateFinishCallBack != null) {
-            asyncLayoutInflater.inflate(R.layout.home_main_toolbar_tokonow, this@HomeMainToolbar, inflateFinishCallBack)
-        }
+        asyncLayoutInflater.inflate(R.layout.home_main_toolbar_tokonow, this@HomeMainToolbar, inflateFinishCallBack)
     }
 
     fun getViewHomeMainToolBar() : View?{
@@ -277,8 +270,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             } else {
                 setHintSingle(hint, isFirstInstall)
             }
-            editTextSearch.setSingleLine()
-            editTextSearch.ellipsize = TextUtils.TruncateAt.END
+            editTextSearch?.setSingleLine()
+            editTextSearch?.ellipsize = TextUtils.TruncateAt.END
         }
     }
 
@@ -310,14 +303,14 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                             hint = placeholder.placeholder
                             keyword = placeholder.keyword
                         }
-                        editTextSearch.hint = hint
-                        editTextSearch.startAnimation(slideUpIn)
+                        editTextSearch?.hint = hint
+                        editTextSearch?.startAnimation(slideUpIn)
                     }
 
                     override fun onAnimationStart(animation: Animation?) {}
                 })
-                editTextSearch.startAnimation(slideOutUp)
-                editTextSearch.setOnClickListener {
+                editTextSearch?.startAnimation(slideOutUp)
+                editTextSearch?.setOnClickListener {
                     onClickHint(keyword, isFirstInstall)
                 }
                 delay(durationAutoTransition)
@@ -338,14 +331,14 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     private fun setHintSingle(hint: HintData, isFirstInstall: Boolean) {
-        editTextSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
-        editTextSearch.setOnClickListener {
+        editTextSearch?.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
+        editTextSearch?.setOnClickListener {
             onClickHint(hint.keyword, isFirstInstall)
         }
     }
 
     private fun onClickHint(keyword: String, isFirstInstall: Boolean) {
-        searchBarAnalytics.eventTrackingSearchBar(screenName, keyword)
+        searchBarAnalytics?.eventTrackingSearchBar(screenName, keyword)
         if (keyword.isEmpty()) {
             RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
         } else {
