@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
@@ -182,6 +183,7 @@ data class SearchProductModel(
             @Expose
             val name: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: Int = 0,
@@ -324,6 +326,7 @@ data class SearchProductModel(
             @Expose
             val imageUrl700: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -665,6 +668,7 @@ data class SearchProductModel(
             @Expose
             val name: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: Int = 0,

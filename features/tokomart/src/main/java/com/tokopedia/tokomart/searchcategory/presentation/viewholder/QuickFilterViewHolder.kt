@@ -5,9 +5,13 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 
-class QuickFilterViewHolder(itemView: View): AbstractViewHolder<QuickFilterDataView>(itemView) {
+class QuickFilterViewHolder(
+        itemView: View,
+        private val quickFilterListener: QuickFilterListener,
+): AbstractViewHolder<QuickFilterDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -26,12 +30,16 @@ class QuickFilterViewHolder(itemView: View): AbstractViewHolder<QuickFilterDataV
         unifySortFilter?.sortFilterItems?.removeAllViews()
         unifySortFilter?.sortFilterHorizontalScrollView?.scrollX = 0
         unifySortFilter?.addItem(ArrayList(element.quickFilterItemList.map { it.sortFilterItem }))
+        unifySortFilter?.parentListener = {
+            quickFilterListener.openFilterPage()
+        }
         setNewNotification(element)
     }
 
     private fun setNewNotification(element: QuickFilterDataView) {
         element.quickFilterItemList.forEach {
-            it.sortFilterItem.refChipUnify.showNewNotification = it.option.isNew
+            val showNewNotification = it.filter.options.firstOrNull()?.isNew ?: false
+            it.sortFilterItem.refChipUnify.showNewNotification = showNewNotification
         }
     }
 }

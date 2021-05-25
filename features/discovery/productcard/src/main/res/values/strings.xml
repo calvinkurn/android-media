@@ -12,6 +12,9 @@
     <string name="product_card_out_of_stock">Stok Habis</string>
     <string name="home_flashsale_card_ad">Ad</string>
     <string name="product_card_text_notify_me">Ingatkan Saya</string>
+    <string name="product_card_text_add_variant_grid">Pilih Varian</string>
+    <string name="product_card_text_add_other_variant_grid">+ varian lain</string>
+    <string name="product_card_text_variant_quantity_grid">99+ pcs</string>
 
     <string name="content_desc_textViewProductName">text nama produk</string>
     <string name="content_desc_labelDiscount">text diskon</string>
@@ -32,4 +35,6 @@
     <string name="content_desc_imageBanner">image banner</string>
     <string name="content_desc_imagePDPView">image terlihat</string>
     <string name="content_desc_imageShopRating">image rating</string>
+    <string name="content_desc_imageShop">image toko</string>
+    <string name="content_desc_imageTopAds">image topads</string>
 </resources>

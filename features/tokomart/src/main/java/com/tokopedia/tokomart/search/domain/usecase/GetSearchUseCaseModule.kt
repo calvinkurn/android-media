@@ -14,26 +14,17 @@ import javax.inject.Named
 @Module
 class GetSearchUseCaseModule {
 
-    @Provides
-    @SearchScope
-    fun provideMultiRequestGraphqlUseCase() =
-            GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
-
     @SearchScope
     @Provides
     @Named(SEARCH_FIRST_PAGE_USE_CASE)
-    fun provideSearchFirstPageUseCase(
-            graphqlUseCase: MultiRequestGraphqlUseCase,
-    ): UseCase<SearchModel> {
-        return GetSearchFirstPageUseCase(graphqlUseCase)
+    fun provideSearchFirstPageUseCase(): UseCase<SearchModel> {
+        return GetSearchFirstPageUseCase(GraphqlInteractor.getInstance().multiRequestGraphqlUseCase)
     }
 
     @SearchScope
     @Provides
     @Named(SEARCH_LOAD_MORE_PAGE_USE_CASE)
-    fun provideSearchLoadMorePageUseCase(
-            graphqlUseCase: MultiRequestGraphqlUseCase,
-    ): UseCase<SearchModel> {
-        return GetSearchLoadMorePageUseCase(graphqlUseCase)
+    fun provideSearchLoadMorePageUseCase(): UseCase<SearchModel> {
+        return GetSearchLoadMorePageUseCase(GraphqlInteractor.getInstance().multiRequestGraphqlUseCase)
     }
 }

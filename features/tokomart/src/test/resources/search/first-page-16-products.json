@@ -491,16 +491,91 @@
     }
   },
 
+  "category_filter": {
+    "filter": [
+      {
+        "title": "Olahan susu dan telur",
+        "options": [
+          {
+            "name": "Susu",
+            "key": "sc",
+            "icon": "",
+            "value": "1333",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Telur",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/attachment/2019/5/28/3944/3944_e637b7e4-ed47-4570-bbec-0358d2ba02ee.png",
+            "value": "1232",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Telur dari susu",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/attachment/2019/12/26/77305583/77305583_0fef3b63-055a-4513-badd-d91cf636f72d.png",
+            "value": "1432",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      }
+    ]
+  },
+
   "quick_filter": {
     "filter": [
       {
-        "title": "COD",
+        "title": "Semua Susu",
         "options": [
           {
-            "name": "COD",
-            "key": "cod",
+            "name": "Susu segar",
+            "key": "sc",
             "icon": "",
-            "value": "true",
+            "value": "1324",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Susu biasa",
+            "key": "sc",
+            "icon": "",
+            "value": "1234",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Susu kental manis",
+            "key": "sc",
+            "icon": "",
+            "value": "1112",
             "isNew": false,
             "inputType": "checkbox",
             "totalData": "",

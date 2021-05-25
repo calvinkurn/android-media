@@ -41,7 +41,7 @@
         android:scaleType="centerInside"
         android:visibility="gone" />
 
-    <com.tokopedia.design.component.RectangleOverlayView
+    <com.tokopedia.homecredit.view.widget.RectangleOverlayView
         android:id="@+id/cicleOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

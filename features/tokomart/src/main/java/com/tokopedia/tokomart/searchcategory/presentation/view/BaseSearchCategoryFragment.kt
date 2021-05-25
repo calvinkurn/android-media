@@ -1,40 +1,58 @@
 package com.tokopedia.tokomart.searchcategory.presentation.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.annotation.DimenRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
+import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
+import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
+import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
+import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
+import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
-import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
-import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
-import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
         ChooseAddressListener,
-        TitleListener {
+        BannerComponentListener,
+        TitleListener,
+        CategoryFilterListener,
+        QuickFilterListener,
+        SortFilterBottomSheet.Callback,
+        CategoryChooserBottomSheet.Callback {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
     }
 
-    private var searchCategoryAdapter: SearchCategoryAdapter? = null
-    private var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
+    protected var searchCategoryAdapter: SearchCategoryAdapter? = null
+    protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
+    protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
 
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
@@ -111,7 +129,7 @@ abstract class BaseSearchCategoryFragment:
     protected open fun RecyclerView.addProductItemDecoration() {
         try {
             val context = context ?: return
-            val spacing = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+            val spacing = context.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
 
             if (itemDecorationCount >= 1)
                 invalidateItemDecorations()
@@ -122,16 +140,23 @@ abstract class BaseSearchCategoryFragment:
         }
     }
 
+    private fun Context.getDimensionPixelSize(@DimenRes id: Int) = resources.getDimensionPixelSize(id)
+
     protected open fun observeViewModel() {
         getViewModel().visitableListLiveData.observe(viewLifecycleOwner, this::submitList)
         getViewModel().hasNextPageLiveData.observe(viewLifecycleOwner, this::updateEndlessScrollListener)
+        getViewModel().isFilterPageOpenLiveData.observe(viewLifecycleOwner, this::openBottomSheetFilter)
+        getViewModel().dynamicFilterModelLiveData.observe(
+                viewLifecycleOwner, this::onDynamicFilterModelChanged
+        )
+        getViewModel().productCountAfterFilterLiveData.observe(viewLifecycleOwner, this::setFilterProductCount)
+        getViewModel().isL3FilterPageOpenLiveData.observe(viewLifecycleOwner, this::configureL3BottomSheet)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
-        if (visitableList.isNotEmpty())
-            searchCategoryAdapter?.submitList(visitableList)
+        searchCategoryAdapter?.submitList(visitableList)
     }
 
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
@@ -151,5 +176,98 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onSeeAllCategoryClicked() {
 
+    }
+
+    override fun onBannerClick(applink: String) {
+        // TODO: Route to applink
+        Toaster.build(requireView(),
+                "Navigate to Applink",
+                Toaster.TYPE_NORMAL,
+                Toaster.LENGTH_SHORT)
+    }
+
+    override fun openFilterPage() {
+        getViewModel().onViewOpenFilterPage()
+    }
+
+    private fun openBottomSheetFilter(isFilterPageOpen: Boolean) {
+        if (!isFilterPageOpen) return
+
+        val mapParameter = getViewModel().queryParam
+        val dynamicFilterModel = getViewModel().dynamicFilterModelLiveData.value
+
+        sortFilterBottomSheet = SortFilterBottomSheet().also {
+            it.show(
+                    parentFragmentManager,
+                    mapParameter,
+                    dynamicFilterModel,
+                    this
+            )
+
+            it.setOnDismissListener {
+                sortFilterBottomSheet = null
+                getViewModel().onViewDismissFilterPage()
+            }
+        }
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
+        getViewModel().onViewApplySortFilter(applySortFilterModel)
+    }
+
+    override fun getResultCount(mapParameter: Map<String, String>) {
+        getViewModel().onViewGetProductCount(mapParameter)
+    }
+
+    private fun onDynamicFilterModelChanged(dynamicFilterModel: DynamicFilterModel?) {
+        dynamicFilterModel ?: return
+
+        sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
+    }
+
+    protected open fun setFilterProductCount(countText: String) {
+        val productCountText = String.format(
+                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                countText
+        )
+
+        sortFilterBottomSheet?.setResultCountText(productCountText)
+        categoryChooserBottomSheet?.setResultCountText(productCountText)
+    }
+
+    private fun configureL3BottomSheet(filter: Filter?) {
+        if (filter != null)
+            openCategoryChooserFilterPage(filter)
+        else
+            dismissCategoryChooserFilterPage()
+    }
+
+    private fun openCategoryChooserFilterPage(filter: Filter) {
+        if (categoryChooserBottomSheet != null) return
+
+        categoryChooserBottomSheet = CategoryChooserBottomSheet()
+        categoryChooserBottomSheet?.show(
+                parentFragmentManager,
+                getViewModel().queryParam,
+                filter,
+                this,
+        )
+    }
+
+    private fun dismissCategoryChooserFilterPage() {
+        categoryChooserBottomSheet?.dismiss()
+        categoryChooserBottomSheet = null
+    }
+
+    override fun getResultCount(selectedOption: Option) {
+        getViewModel().onViewGetProductCount(selectedOption)
+    }
+
+    override fun onApplyCategory(selectedOption: Option) {
+        getViewModel().onViewApplyFilterFromCategoryChooser(selectedOption)
+    }
+
+    override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {
+        getViewModel().onViewClickCategoryFilterChip(option, isSelected)
     }
 }

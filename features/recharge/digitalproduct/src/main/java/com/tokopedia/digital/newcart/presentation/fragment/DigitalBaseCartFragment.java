@@ -45,6 +45,8 @@ import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigit
 import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.empty_state.EmptyStateUnify;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
@@ -523,7 +525,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                 emptyState.setVisibility(View.VISIBLE);
             } else showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         } catch (Exception e) {
-            Timber.e("P2#OLD_CHECKOUT_DG#EMPTY_STATE#%s", message);
+            Map<String, String> map = new HashMap<>();
+            map.put("type", "EMPTY_STATE");
+            map.put("msg", message);
+            ServerLogger.log(Priority.P2, "OLD_CHECKOUT_DG", map);
         }
     }
 

@@ -2,7 +2,6 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
-import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
@@ -24,21 +23,18 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         `When view load more`()
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
-        `Then assert visitable list footer`(visitableList)
+        `Then assert visitable list footer`(visitableList, categoryModelPage1.categoryDetail.data.navigation)
         `Then assert has next page value`(false)
     }
 
     private fun `Given get category load more page use case will be successful`(categoryModel: CategoryModel) {
         every {
-            getCategoryLoadMorePageUseCase.execute(any(), any(), any())
+            getCategoryLoadMorePageUseCase.execute(any(), any(), capture(requestParamsSlot))
         } answers {
             firstArg<(CategoryModel) -> Unit>().invoke(categoryModel)
         }
-    }
-
-    private fun `Given view already created`() {
-        categoryViewModel.onViewCreated()
     }
 
     private fun `When view load more`() {
@@ -53,9 +49,15 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         val firstProductIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val nextPageProductIndex = firstProductIndex + categoryModelPage1.searchProduct.data.productList.size
         val page2ProductList = categoryModelPage2.searchProduct.data.productList
-        val nextPageVisitableList = visitableList.subList(nextPageProductIndex, nextPageProductIndex + page2ProductList.size)
+        val nextPageVisitableList = visitableList.subList(
+                nextPageProductIndex,
+                nextPageProductIndex + page2ProductList.size
+        )
 
-        verifyProductItemDataViewList(page2ProductList, nextPageVisitableList.filterIsInstance<ProductItemDataView>())
+        verifyProductItemDataViewList(
+                page2ProductList,
+                nextPageVisitableList.filterIsInstance<ProductItemDataView>()
+        )
     }
 
     @Test
@@ -70,6 +72,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
         `When view load more`()
 
         val visitableList = categoryViewModel.visitableListLiveData.value!!
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)

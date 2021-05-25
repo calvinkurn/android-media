@@ -24,7 +24,7 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
-        `Then assert request params map`(createFirstPageMandatoryParams(2))
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(searchModelPage1, searchModelPage2, visitableList)
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
@@ -36,10 +36,6 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         } answers {
             firstArg<(SearchModel) -> Unit>().invoke(searchModel)
         }
-    }
-
-    private fun `Given view already created`() {
-        searchViewModel.onViewCreated()
     }
 
     private fun `When view load more`() {
@@ -54,9 +50,14 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
         val firstProductIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val nextPageProductIndex = firstProductIndex + searchModelPage1.searchProduct.data.productList.size
         val page2ProductList = searchModelPage2.searchProduct.data.productList
-        val nextPageVisitableList = visitableList.subList(nextPageProductIndex, nextPageProductIndex + page2ProductList.size)
+        val nextPageVisitableList = visitableList.subList(
+                nextPageProductIndex, nextPageProductIndex + page2ProductList.size
+        )
 
-        verifyProductItemDataViewList(page2ProductList, nextPageVisitableList.filterIsInstance<ProductItemDataView>())
+        verifyProductItemDataViewList(
+                page2ProductList,
+                nextPageVisitableList.filterIsInstance<ProductItemDataView>()
+        )
     }
 
     @Test
@@ -72,7 +73,7 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
 
         val visitableList = searchViewModel.visitableListLiveData.value!!
 
-        `Then assert request params map`(createFirstPageMandatoryParams(2))
+        `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(searchModelPage1, searchModelPage2, visitableList)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)

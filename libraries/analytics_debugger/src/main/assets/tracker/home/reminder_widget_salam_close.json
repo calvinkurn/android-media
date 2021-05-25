@@ -6,8 +6,8 @@
       "eventCategory": "homepage-salam",
       "event": "clickHomepage",
       "eventAction": "click close on salam",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     }
   ]
 }

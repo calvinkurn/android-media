@@ -1,13 +1,16 @@
 package com.tokopedia.tokomart.search.domain.usecase
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_SOURCE_QUICK_FILTER
 import com.tokopedia.discovery.common.utils.UrlParamUtils
-import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
+import com.tokopedia.tokomart.searchcategory.data.createAceSearchProductRequest
+import com.tokopedia.tokomart.searchcategory.data.createCategoryFilterRequest
+import com.tokopedia.tokomart.searchcategory.data.createQuickFilterRequest
+import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
+import com.tokopedia.tokomart.searchcategory.data.mapper.getCategoryFilter
+import com.tokopedia.tokomart.searchcategory.data.mapper.getQuickFilter
 import com.tokopedia.tokomart.searchcategory.data.mapper.getSearchProduct
-import com.tokopedia.tokomart.searchcategory.domain.model.QuickFilterModel
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetSearchFirstPageUseCase(
@@ -15,24 +18,35 @@ class GetSearchFirstPageUseCase(
 ): UseCase<SearchModel>() {
 
     override suspend fun executeOnBackground(): SearchModel {
-        val params = useCaseRequestParams.parameters
-        val quickFilterParams = createQuickFilterParams(params)
+        val queryParams = getTokonowQueryParam(useCaseRequestParams)
+        val categoryFilterParams = createCategoryFilterParams(queryParams)
+        val quickFilterParams = createQuickFilterParams(queryParams)
 
         graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(createAceSearchProductRequest(UrlParamUtils.generateUrlParamString(params)))
-        graphqlUseCase.addRequest(createQuickFilterRequest(UrlParamUtils.generateUrlParamString(quickFilterParams)))
+        graphqlUseCase.addRequest(createAceSearchProductRequest(queryParams))
+        graphqlUseCase.addRequest(createCategoryFilterRequest(categoryFilterParams))
+        graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 
         return SearchModel(
                 searchProduct = getSearchProduct(graphqlResponse),
-                quickFilter = graphqlResponse.getData<QuickFilterModel?>(QuickFilterModel::class.java)?.filterSortProduct?.data ?: DataValue()
+                categoryFilter = getCategoryFilter(graphqlResponse),
+                quickFilter = getQuickFilter(graphqlResponse),
         )
     }
 
-    private fun createQuickFilterParams(params: Map<String, Any>): Map<String?, Any> {
-        return params.toMutableMap<String?, Any>().also {
-            it[SearchApiConst.SOURCE] = DEFAULT_VALUE_SOURCE_QUICK_FILTER
+    private fun createCategoryFilterParams(queryParams: Map<String?, Any>): Map<String?, Any> {
+        return queryParams.toMutableMap().also {
+//            it[SearchApiConst.SOURCE] = CATEGORY_TOKONOW // Temporary, source should be category tokonow
+            it[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER
+        }
+    }
+
+    private fun createQuickFilterParams(queryParams: Map<String?, Any>): Map<String?, Any> {
+        return queryParams.toMutableMap().also {
+//            it[SearchApiConst.SOURCE] = QUICK_FILTER_TOKONOW // Temporary, source should be quick filter tokonow
+            it[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER
         }
     }
 }
