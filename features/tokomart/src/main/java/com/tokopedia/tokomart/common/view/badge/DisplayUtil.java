@@ -3,10 +3,9 @@ package com.tokopedia.tokomart.common.view.badge;
 import android.content.Context;
 
 /**
- * @author chqiu
- *         Email:qstumn@163.com
+ * this class is used as a component of oldtoolbar
  */
-
+@Deprecated
 public class DisplayUtil {
     public static int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;

@@ -5,9 +5,9 @@ import android.graphics.PointF;
 import java.util.List;
 
 /**
- * Created by chqiu on 2017/3/20.
+ * this class is used as a component of oldtoolbar
  */
-
+@Deprecated
 public class MathUtil {
     public static final double CIRCLE_RADIAN = 2 * Math.PI;
 

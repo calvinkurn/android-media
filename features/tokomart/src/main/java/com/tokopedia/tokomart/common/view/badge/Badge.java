@@ -5,10 +5,9 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 /**
- * @author chqiu
- *         Email:qstumn@163.com
+ * this class is used as a component of oldtoolbar
  */
-
+@Deprecated
 public interface Badge {
 
     Badge setBadgeNumber(int badgeNum);

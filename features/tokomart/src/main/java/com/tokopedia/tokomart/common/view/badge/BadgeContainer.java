@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+/**
+ * this class is used as a component of oldtoolbar
+ */
+@Deprecated
 public class BadgeContainer extends ViewGroup {
 
     @Override

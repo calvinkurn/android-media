@@ -29,10 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author chqiu
- *         Email:qstumn@163.com
+ * this class is used as a component of oldtoolbar
  */
-
+@Deprecated
 public class BadgeView extends View implements Badge {
     protected int mColorBackground;
     protected int mColorBackgroundBorder;

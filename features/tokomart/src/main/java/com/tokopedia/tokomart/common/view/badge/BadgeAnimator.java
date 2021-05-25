@@ -12,11 +12,9 @@ import java.lang.ref.WeakReference;
 import java.util.Random;
 
 /**
- * @author chqiu
- *         Email:qstumn@163.com
- * Animation borrowed from https://github.com/tyrantgit/ExplosionField
+ * this class is used as a component of oldtoolbar
  */
-
+@Deprecated
 public class BadgeAnimator extends ValueAnimator {
     private BitmapFragment[][] mFragments;
     private WeakReference<BadgeView> mWeakBadge;
