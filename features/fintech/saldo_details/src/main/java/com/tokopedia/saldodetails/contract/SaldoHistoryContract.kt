@@ -69,9 +69,9 @@ class SaldoHistoryContract {
 
         fun onSearchClicked(startDate : String, endDate : String)
 
-        fun onEndDateClicked(datePicker: SaldoDatePickerUtil,view : View)
+        fun onEndDateClicked(datePicker: SaldoDatePickerUtil, view : View)
 
-        fun onStartDateClicked(datePicker: SaldoDatePickerUtil,view : View)
+        fun onStartDateClicked(datePicker: SaldoDatePickerUtil, view : View)
 
 //        fun loadMore(lastItemPosition: Int, visibleItem: Int)
 

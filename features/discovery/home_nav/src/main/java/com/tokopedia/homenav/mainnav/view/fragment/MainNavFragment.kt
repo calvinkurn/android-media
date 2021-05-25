@@ -116,7 +116,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
-        viewModel.setUserHaveLogoutData(haveUserLogoutData())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -124,6 +123,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             it.setToolbarTitle(getString(R.string.title_main_nav))
             it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_CLOSE)
             navToolbar = it
+            viewLifecycleOwner.lifecycle.addObserver(it)
         }
         return inflater.inflate(R.layout.fragment_main_nav, container, false)
     }

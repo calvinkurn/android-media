@@ -153,4 +153,8 @@ object DeeplinkMapperOrder {
             else -> ""
         }
     }
+
+    fun getBuyerCancellationRequestInternalAppLink(): String {
+        return ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE
+    }
 }

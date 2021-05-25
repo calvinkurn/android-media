@@ -31,7 +31,7 @@ data class ComponentsItem(
         val title: String? = "",
 
         @SerializedName("lihat_semua")
-        val lihatSemua: LihatSemua? = null,
+        var lihatSemua: LihatSemua? = null,
 
         @SerializedName("properties")
         var properties: Properties? = null,

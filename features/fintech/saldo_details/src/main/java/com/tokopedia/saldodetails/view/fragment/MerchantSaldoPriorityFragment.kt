@@ -261,7 +261,6 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
         }
     }
 
-    // @Todo remove drawables?
     private fun setBoxBackground() {
         context?.let { context ->
             val boxType = sellerDetails!!.boxType

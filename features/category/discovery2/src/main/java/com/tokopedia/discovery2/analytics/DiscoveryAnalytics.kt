@@ -100,6 +100,36 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    override fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int) {
+        if (items.isNotEmpty()) {
+            items.forEach { brandItem ->
+                if(!brandItem.data.isNullOrEmpty()){
+                    brandItem.data?.firstOrNull()?.let {
+                        val componentName = it.parentComponentName ?: EMPTY_STRING
+                        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+                                eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = "${componentName}${if (it.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}")
+                        map[PAGE_TYPE] = pageType
+                        map[PAGE_PATH] = removedDashPageIdentifier
+                        val list = ArrayList<Map<String, Any>>()
+                        val hashMap = HashMap<String, Any>()
+                        it.let {
+                            hashMap[KEY_ID] = it.id ?: 0
+                            hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${it.positionForParentItem + 1} - - ${componentName}${if (it.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
+                            hashMap[KEY_CREATIVE] = it.name ?: EMPTY_STRING
+                            hashMap[KEY_POSITION] = componentPosition + 1
+                        }
+                        list.add(hashMap)
+                        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                                EVENT_PROMO_VIEW to mapOf(
+                                        KEY_PROMOTIONS to list))
+                        map[KEY_E_COMMERCE] = eCommerce
+                        trackingQueue.putEETracking(map as HashMap<String, Any>)
+                    }
+                }
+            }
+        }
+    }
+
     override fun trackCategoryNavigationImpression(componentsItems: ArrayList<ComponentsItem>) {
         if (componentsItems.isNotEmpty()) {
             val list = ArrayList<Map<String, Any>>()
@@ -467,10 +497,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[LIST] = productCardItemList
             productMap[DIMENSION83] = getProductDime83(it)
             addSourceData(productMap)
-            if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
-                productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                        "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
-            }
+            productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
+                    "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
 
         }
         list.add(productMap)
@@ -487,6 +515,14 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         productCardImpressionLabel = EMPTY_STRING
         productCardItemList = EMPTY_STRING
     }
+
+    private fun getLabelCampaign(it: DataItem) =
+            it.labelsGroupList?.filter { labelItem -> labelItem.position == KEY_CAMPAIGN_LABEL }?.let { list ->
+                if (list.isNotEmpty())
+                    list[0].title
+                else
+                    ""
+            } ?: ""
 
     private fun getProductDime83(dataItem: DataItem): String {
         if (dataItem.freeOngkir?.isActive == true) {
@@ -545,10 +581,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 listMap[LIST] = productCardItemList
                 listMap[DIMENSION83] = getProductDime83(it)
                 addSourceData(listMap)
-                if (productTypeName == PRODUCT_SPRINT_SALE || productTypeName == PRODUCT_SPRINT_SALE_CAROUSEL) {
-                    listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
-                            "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
-                }
+                listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
+                        "${if (it.campaignSoldCount.toIntOrZero() > 0) it.pdpView else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
+
             }
             list.add(listMap)
 
@@ -1075,5 +1110,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 PAGE_TYPE to pageType,
                 PAGE_TYPE to removedDashPageIdentifier)
         getTracker().sendGeneralEvent(map)
+    }
+
+    override fun getHostSource(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+    }
+
+    override fun getHostTrackingSource(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
 }

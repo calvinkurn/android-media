@@ -87,8 +87,8 @@ private fun Map.Entry<String, Any>.isNotFilterAndSortKey(): Boolean {
             || key.matchesWithNonFilterPrefix()
 }
 
-private fun String.matchesWithNonFilterPrefix(): Boolean =
-        startsWith(NON_FILTER_SRP_PREFIX) || startsWith(NON_FILTER_USER_PREFIX)
+private fun String?.matchesWithNonFilterPrefix(): Boolean =
+        this != null && (startsWith(NON_FILTER_SRP_PREFIX) || startsWith(NON_FILTER_USER_PREFIX))
 
 private fun Map.Entry<String, Any>.isPriceFilterWithZeroValue(): Boolean {
     return (key == SearchApiConst.PMIN && value.toString() == "0")
@@ -116,7 +116,7 @@ fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
     return sortValue == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
 }
 
-internal fun getSortFilterParamsString(mapParameter: Map<String, Any>): String {
+internal fun getSortFilterParamsString(mapParameter: Map<String?, Any?>): String {
     val sortAndFilterParameter = mapParameter
             .removeWithNonFilterPrefix()
             .minus(nonFilterParameterKeyList)
@@ -124,13 +124,15 @@ internal fun getSortFilterParamsString(mapParameter: Map<String, Any>): String {
     return UrlParamUtils.generateUrlParamString(sortAndFilterParameter)
 }
 
-private fun <T> Map<String, T>.removeWithNonFilterPrefix(): Map<String, T> =
+private fun <T> Map<String?, T?>.removeWithNonFilterPrefix(): Map<String?, T?> =
         filter { !it.key.matchesWithNonFilterPrefix() }
 
-internal fun getFilterParams(mapParameter: Map<String, String>): Map<String, String> {
+@Suppress("UNCHECKED_CAST")
+internal fun getFilterParams(mapParameter: Map<String?, String?>): Map<String, String> {
     return mapParameter
             .removeWithNonFilterPrefix()
             .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
+            as Map<String, String>
 }
 
 internal fun createSearchProductDefaultFilter() = Gson().fromJson(createSearchProductDefaultFilterJSON(), DynamicFilterModel::class.java)

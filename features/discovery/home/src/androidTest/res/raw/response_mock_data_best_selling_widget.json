@@ -1,0 +1,1002 @@
+[
+  {
+    "data": {
+      "productRecommendationWidget": {
+        "data": [
+          {
+            "tID": "xpuJNrAc7AZVI5UbhrH7D_9FmF8=",
+            "source": "custom",
+            "title": "Android Test - Best Selling Widget",
+            "subtitle": "Karena anda mencari product trade bitcoin",
+            "foreignTitle": "Recommendation For You",
+            "widgetUrl": "",
+            "pageName": "best_seller_switching_new",
+            "seeMoreAppLink": "www.google.com",
+            "layoutType": "Comparison-Widget",
+            "pagination": {
+              "currentPage": 1,
+              "nextPage": 2,
+              "prevPage": -1,
+              "hasNext": false
+            },
+            "recommendation": [
+              {
+                "id": 662561175,
+                "name": "Mainan Anak World Dinosaur Soft Series Jumbo 6 pcs 6936",
+                "categoryBreadcrumbs": "Mainan & Hobi/Lainnya/Lainnya",
+                "url": "https://www.tokopedia.com/tokokubyfastop/mainan-anak-world-dinosaur-soft-series-jumbo-6-pcs-6936?src=topads",
+                "appUrl": "tokopedia://product/662561175",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosK7H_epo_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfHmdRHAe7oAHOHpeaH_JpoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32S8jOEe_-6z77h_VPcQJdaZ9z6zJgD_9jFoJNJyRPHuOj73jzqqO29zMxgHBVd_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1Bd_92So1O11_Co8BuRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3FdH1N36IPy8j-M_M208jOE3_CyH_xR3I2mgjOc6IP-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBBR_c2sP7NJ1_Co8BuE_jz-8JO1__V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBVd_c2uHjN1gRxo8jBN_BzSH1O1e_--QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfx5rVYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3p1ObAJfbA1Fou7DUMNwyfVXgcBjy9zB9fVjraUEH_Uhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHseao97?page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokokubyfastop%2Fmainan-anak-world-dinosaur-soft-series-jumbo-6-pcs-6936%3Fsrc%3Dtopads&management_type=2&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=recom_widget_pdp_4&t=android&ob=0",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosK7H_epo_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sHOHmFiy3zwrfo5rM1i6sUfHmdRHAe7oAHOHpeaH_JpoZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9P-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32S8jOEe_-6z77h_VPcQJdaZ9z6zJgD_9jFoJNJyRPHuOj73jzqqO29zMxgHBVd_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1Bd_92So1O11_Co8BuRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3FdH1N36IPy8j-M_M208jOE3_CyH_xR3I2mgjOc6IP-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqBBR_c2sP7NJ1_Co8BuE_jz-8JO1__V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqBVd_c2uHjN1gRxo8jBN_BzSH1O1e_--QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfx5rVYag3oBQSzfq3uRUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3p1ObAJfbA1Fou7DUMNwyfVXgcBjy9zB9fVjraUEH_Uhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHseao97?r=https%3A%2F%2Fwww.tokopedia.com%2Ftokokubyfastop%2Fmainan-anak-world-dinosaur-soft-series-jumbo-6-pcs-6936%3Fsrc%3Dtopads&management_type=2&uid=17211378&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=recom_widget_pdp_4&product_id=662561175&page=1&t=android&ob=0",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sydoAJ7Hp17bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yhosnfHAUO6mFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpJ5H_e5o_KpoA1aoZ4O6AH7o_UO9fHNg_JRHMzjb_Kd6_rWoAjdHZOxyp17b3oBo_jhHcUdoc1Ngu4aHAed9pUFoAKibm-xgVYpyfYagZUEHsyFbsrFoAe7Hp1poAUhH_HObm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-P7B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMPE_92CHjNI__VHu7gD_s--PJNJzMho8_n7_jzsP7h93_zqzV203BPcqVja19xve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9xo8MrO_uzzHJOEu9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QAKh_BydPOxEeMg6qMWE_92gHVKh6IPy8j-M_1ydP7B2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1Ok39PHqMoR_jzzHJOEu926zJBd_uzoH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1Ok19xHqB1a_BzS8JOEZ9B6ucrh_uzCHjBXHA7ibm-Orfua9fBjUstiH_raH_JpopKibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-pqcYF9R-ByfuXPIg2g9ribm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHseao97?management_type=2&t=android&src=recom_widget_pdp_4&ob=0&page=1&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/1/14/5834525/5834525_c9e172dd-8897-4981-ac54-ce5910b84e9e_2048_2048",
+                "price": "Rp7.000",
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 39",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "priceInt": 7000,
+                "discountPercentage": 72,
+                "slashedPrice": "Rp25.000",
+                "slashedPriceInt": 25000,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 693364,
+                  "name": "Toko-Ku by FAS-TOP",
+                  "city": "Jakarta Barat"
+                },
+                "departmentId": 505,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.9",
+                "countReview": 25,
+                "recommendationType": "shop_recentview",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1389445636,
+                "name": "Baju operasi / Baju Bedah / Surgical gown - DRILL - all size, Biru Muda",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Seragam Medis",
+                "url": "https://www.tokopedia.com/sbamedical/baju-operasi-baju-bedah-surgical-gown-drill-all-size-biru-muda?src=topads",
+                "appUrl": "tokopedia://product/1389445636",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_K7H_J76AJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sJR6AeDUMVj9RosQR-BUst7HpeXopKFop1FHpHdoArRo_yDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_Mj7HJN1z_-ouJjO_1zo81Oku_zozVB2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-oJOE_9P6qB-k_BHhqV21gcBHuVVd3BzoPJYJ1_ooepVW_7PzHB2IuMxgu7N0_uzSq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_uzooJY1z_C6zJ7h_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_Co8BVO_S2SP7NEu9Po8j77_jzsH7N133BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozcoO_7zVHjNJZ_VvuJjp_jzSHJY113BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZFhopeabAUOHsuPbm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHNHAjOwe?t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&ob=0&dv=android-3.122&r=https%3A%2F%2Fwww.tokopedia.com%2Fsbamedical%2Fbaju-operasi-baju-bedah-surgical-gown-drill-all-size-biru-muda%3Fsrc%3Dtopads&management_type=2&src=recom_widget_pdp_4&page=1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_K7H_J76AJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sJR6AeDUMVj9RosQR-BUst7HpeXopKFop1FHpHdoArRo_yDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_Mj7HJN1z_-ouJjO_1zo81Oku_zozVB2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-oJOE_9P6qB-k_BHhqV21gcBHuVVd3BzoPJYJ1_ooepVW_7PzHB2IuMxgu7N0_uzSq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_uzooJY1z_C6zJ7h_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_Co8BVO_S2SP7NEu9Po8j77_jzsH7N133BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozcoO_7zVHjNJZ_VvuJjp_jzSHJY113BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZFhopeabAUOHsuPbm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHNHAjOwe?page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fsbamedical%2Fbaju-operasi-baju-bedah-surgical-gown-drill-all-size-biru-muda%3Fsrc%3Dtopads&src=recom_widget_pdp_4&ob=0&t=android&management_type=2&product_id=1389445636&uid=17211378&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&dv=android-3.122",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1doAJhoAKhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yhosnfHAUO6mFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUhbpU5HsU5yf1docefysJWo3HNHi77HsJNb3JFHsHWypeRgAgBHAypgAzjbSCXgaUDUMVj9RosQR-BUst7HpeXopKFop1FHpHdoArRo_yDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_Mj7HJN1z_-ouJjO_1zo81Oku_zozVB2_JoGqMzUZMgsHBgtyfO6Q7BkQfBoe7BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-oJOE_9P6qB-k_BHhqV21gcBHuVVd3BzoPJYJ1_ooepVW_7PzHB2IuMxgu7N0_uzSq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_uzooJY1z_C6zJ7h_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_Co8BVO_S2SP7NEu9Po8j77_jzsH7N133BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozcoO_7zVHjNJZ_VvuJjp_jzSHJY113BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHNHAjOwe?src=recom_widget_pdp_4&ob=0&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&management_type=2&dv=android-3.122&page=1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/22/ce84d6b1-5c92-4219-a023-c47d6e063d4d.png",
+                "price": "Rp90.000",
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 496",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "priceInt": 90000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 6960065,
+                  "name": "sba medical",
+                  "city": "Cimahi"
+                },
+                "departmentId": 2525,
+                "badges": [],
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.8",
+                "countReview": 104,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1345258380,
+                "name": "Hazmat Suit / Baju Hazmat / Baju APD / Coverall - Putih, XL",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Seragam Medis",
+                "url": "https://www.tokopedia.com/dochsmedic/hazmat-suit-baju-hazmat-baju-apd-coverall-putih-xl-49bd?src=topads",
+                "appUrl": "tokopedia://product/1345258380",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_jF6_1aHsyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sHFHAnDUMVj9RosQR-BUst7H_KXopnO6_jF6_1h6_Hdos1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7HJOke9x6qMPR_M2s81Ok3_zvuJJp_MB-r7BW_sCsQABE3BPc8ujagfBvq1BN_c2-H7OkyRB68jjp_32s81NEZ_oo81BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-oJOE_9P6qB-k_BHhqV21gcBHuVVd3BzoPJYJ1_ooepVW_7PzHB2IuMxgu7N0_uzSq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_uzooJY1z_C6zJ7h_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_CoucPO_S2CH1Y1qRPvuVud_OzooJNku3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92oqBuO_OzoH7O1yp-68B1O_1zS8jYJu3BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZFhopeabAUOHsuPbm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHfH_eRwe?page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fdochsmedic%2Fhazmat-suit-baju-hazmat-baju-apd-coverall-putih-xl-49bd%3Fsrc%3Dtopads&management_type=1&ob=0&t=android&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=recom_widget_pdp_4",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_jF6_1aHsyDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sHFHAnDUMVj9RosQR-BUst7H_KXopnO6_jF6_1h6_Hdos1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7HJOke9x6qMPR_M2s81Ok3_zvuJJp_MB-r7BW_sCsQABE3BPc8ujagfBvq1BN_c2-H7OkyRB68jjp_32s81NEZ_oo81BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-oJOE_9P6qB-k_BHhqV21gcBHuVVd3BzoPJYJ1_ooepVW_7PzHB2IuMxgu7N0_uzSq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_uzooJY1z_C6zJ7h_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_CoucPO_S2CH1Y1qRPvuVud_OzooJNku3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92oqBuO_OzoH7O1yp-68B1O_1zS8jYJu3BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZFhopeabAUOHsuPbm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHfH_eRwe?management_type=1&uid=17211378&page=1&dv=android-3.122&ob=0&t=android&src=recom_widget_pdp_4&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&product_id=1345258380&r=https%3A%2F%2Fwww.tokopedia.com%2Fdochsmedic%2Fhazmat-suit-baju-hazmat-baju-apd-coverall-putih-xl-49bd%3Fsrc%3Dtopads",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1NHAjOHsUfbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yhosnfHAUO6mFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpr5H_U5gMzBgcHFgsrWg_Cxgm77yfgsb_BiHpjWop1Rgs1aHMUp6_UpbSCXgaUDUMVj9RosQR-BUst7H_KXopnO6_jF6_1h6_Hdos1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7HJOke9x6qMPR_M2s81Ok3_zvuJJp_MB-r7BW_sCsQABE3BPc8ujagfBvq1BN_c2-H7OkyRB68jjp_32s81NEZ_oo81BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-oJOE_9P6qB-k_BHhqV21gcBHuVVd3BzoPJYJ1_ooepVW_7PzHB2IuMxgu7N0_uzSq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_uzooJY1z_C6zJ7h_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_CoucPO_S2CH1Y1qRPvuVud_OzooJNku3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92oqBuO_OzoH7O1yp-68B1O_1zS8jYJu3BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHfH_eRwe?dv=android-3.122&src=recom_widget_pdp_4&management_type=1&page=1&t=android&ob=0&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/7/12/fdedc0f7-e0ad-4cfc-9b39-757f522b3923.png",
+                "price": "Rp99.900",
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "offers",
+                    "title": "Grosir",
+                    "type": "lightGrey"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 2,1rb",
+                    "type": "textDarkGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  }
+                ],
+                "priceInt": 99900,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 8312135,
+                  "name": "DOCHS MEDIC",
+                  "city": "Bandung"
+                },
+                "departmentId": 2525,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.9",
+                "countReview": 352,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 128GB RAM, 256GB 512GB RAM, 1024B 2048GB RAM, 4096GB 8192GB RAM, 16384GB 32768GB RAM, 65536GB 131072GB RAM, 262144GB 524288GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 530013423,
+                "name": "Kaos polo / kaos kerah / baju polo / polo shirt harga promo - Tulis No Warna, S",
+                "categoryBreadcrumbs": "Fashion Pria/Atasan Pria/Kaos Polo Pria",
+                "url": "https://www.tokopedia.com/liungistgrosir/kaos-polo-kaos-kerah-baju-polo-polo-shirt-harga-promo-tulis-no-warna-s-1a64?src=topads",
+                "appUrl": "tokopedia://product/530013423",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_HpHpKFoAUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sUFHAnDUMVj9RosQR-BUst7H_HXo_rfH_naHpyd6_JRo_HDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7H1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32sP1OJe9PozJVR_1zCP7OJe9PozJVdZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgR2o8jJa_jPoH1h9zMh6HjB7_jzcQJONHAz6zcoR_VPgoV2J3MWqu7gt3_-z8JYAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-8JOEgpuouVJF_92uP7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qBVd_9j7H1NE39xozJBE_M2So1O1ypVo81BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOE_9j7oJNEqp-6uJJO_32so1NJZ_--QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pJRo_jDH_rdomFh6AnN9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7opJp6I7?dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&page=1&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fliungistgrosir%2Fkaos-polo-kaos-kerah-baju-polo-polo-shirt-harga-promo-tulis-no-warna-s-1a64%3Fsrc%3Dtopads&t=android&src=recom_widget_pdp_4&ob=0",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_HpHpKFoAUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sUFHAnDUMVj9RosQR-BUst7H_HXo_rfH_naHpyd6_JRo_HDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7H1B2PfBgHO-N3Ao6QVByZM2xe7jfZ32sP1OJe9PozJVR_1zCP7OJe9PozJVdZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgR2o8jJa_jPoH1h9zMh6HjB7_jzcQJONHAz6zcoR_VPgoV2J3MWqu7gt3_-z8JYAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-8JOEgpuouVJF_92uP7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qBVd_9j7H1NE39xozJBE_M2So1O1ypVo81BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOE_9j7oJNEqp-6uJJO_32so1NJZ_--QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pJRo_jDH_rdomFh6AnN9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7opJp6I7?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=17211378&page=1&ob=0&management_type=1&product_id=530013423&t=android&dv=android-3.122&r=https%3A%2F%2Fwww.tokopedia.com%2Fliungistgrosir%2Fkaos-polo-kaos-kerah-baju-polo-polo-shirt-harga-promo-tulis-no-warna-s-1a64%3Fsrc%3Dtopads&src=recom_widget_pdp_4",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJpHpHdHAeabm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yhosnfHAUO6mFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpy5H_j5o_Jdop1f6m4OH_KRo_yd9pxsgsCBgA-xb_KRHA1WoAzjgZ7No_Udb_1dgcUh63ojosjFyB4h6Aep9pJdoAHibm-xgVYpyfYagZUEoAJpbs1RosJFHsHf6Ajhop1pbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAoAV-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkyRuozJVR_1zCP7OJe9PozJVR_1zC8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMPE_92CHjNI__VHu7gD_s--PJNJzMho8_n7_jzsP7h93_zqzV203BPcqVja19xve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9xo8MrO_uzzHJOEu9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32z8JONoAV68BBd_1z-8jNkgpuoucHh_9B-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32o8jONoAz68MDa_BzCo1Okypu6zJjaZ3dFvZUDUSupg9-wq3ei6iUhopUhH_HR6mUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUSoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEH_Uhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7opJp6I7?page=1&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=recom_widget_pdp_4&ob=0&dv=android-3.122&t=android&management_type=1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/19/5187568/5187568_8cf0ed2a-8705-44de-9528-58db19cd690b_1843_1843",
+                "price": "Rp23.500",
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 4,2rb",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "priceInt": 23500,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 1713252,
+                  "name": "Liungist Clothing",
+                  "city": "Jakarta Barat"
+                },
+                "departmentId": 1809,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.7",
+                "countReview": 5094,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1584034267,
+                "name": "Cover Kamera Samsung S21 Ultra S21 Plus Agard Not Tempered Glass - S21 Ultra, Silver",
+                "categoryBreadcrumbs": "Handphone & Tablet/Aksesoris Handphone/Screen Protector Handphone",
+                "url": "https://www.tokopedia.com/get-wid/cover-kamera-samsung-s21-ultra-s21-plus-agard-not-tempered-glass-s21-ultra-silver?src=topads",
+                "appUrl": "tokopedia://product/1584034267",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6_JaH_nf6_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sUOHAnDUMVj9RosQR-BUst7H_UXo_J7oAH7HAnFHsJposrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7oJOE_92o8jOE_92o8jOE_92o8j7FZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1YJ_92ozVjF392uPVB9u_ogq_nF_uPu8jh1gpC68jV73M2tq7NW1Mhgu7gk3jzVoJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32V8jYJqRx6zVVE_BzCq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zJuN_c2u8JNJ1926zJVR_1z-8JOE3_o-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8jJh_c2sHjYJu_-oqjJF_1zS8JN13_V-QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbArf9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHpJf697?management_type=1&page=1&ob=0&src=recom_widget_pdp_4&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Fget-wid%2Fcover-kamera-samsung-s21-ultra-s21-plus-agard-not-tempered-glass-s21-ultra-silver%3Fsrc%3Dtopads&t=android&dv=android-3.122",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6_JaH_nf6_KDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sUOHAnDUMVj9RosQR-BUst7H_UXo_J7oAH7HAnFHsJposrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H7oJOE_92o8jOE_92o8jOE_92o8j7FZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjV2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1YJ_92ozVjF392uPVB9u_ogq_nF_uPu8jh1gpC68jV73M2tq7NW1Mhgu7gk3jzVoJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32V8jYJqRx6zVVE_BzCq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zJuN_c2u8JNJ1926zJVR_1z-8JOE3_o-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8jJh_c2sHjYJu_-oqjJF_1zS8JN13_V-QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pyObAyfbArf9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUsthHpJf697?dv=android-3.122&uid=17211378&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=recom_widget_pdp_4&ob=0&product_id=1584034267&r=https%3A%2F%2Fwww.tokopedia.com%2Fget-wid%2Fcover-kamera-samsung-s21-ultra-s21-plus-agard-not-tempered-glass-s21-ultra-silver%3Fsrc%3Dtopads&t=android&management_type=1&page=1",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sjhHsJFosjdbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yhosnfHAUO6mFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUhbpU5oa4h6AnFg_U76Z7a6_ypb_zioMUW6_eFgZ7fg_1N6cJagMyNHfUXqSCSUiFiy3zwrfo5rM1i6sehHidOH_e7HpeFHAnaH_HfoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepe7_92o8jOE_92o8jOE_92o8jOE__C-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY2_7zo8jOJ3_Cg8Bu73uPuHOB2HACouOuE_VzSHJNEe9zqqMx0_MOZQVB9zM2qzJ17Z3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjuE_7z08JNJ1926uJV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2ypoZPJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1NJz9BHqBud_jzz8jNJe9PozJBd_92gH7B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OEe_VHqMHa_7zuHjOke_CozcPd_BzgH1BXHA7ibm-Orfua9fBjUstiH_raH_JpopKibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_HhosBY?page=1&t=android&src=recom_widget_pdp_4&dv=android-3.122&management_type=1&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&ob=0",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/7/1800e249-2963-4b6b-940e-6e598a2ff93b.jpg",
+                "price": "Rp60.000",
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 125",
+                    "type": "textDarkGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  }
+                ],
+                "priceInt": 60000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 571133,
+                  "name": "GET-WID Official",
+                  "city": "Jakarta Barat"
+                },
+                "departmentId": 76,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "5.0",
+                "countReview": 68,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1599025223,
+                "name": "STIKER KACA SANDBLAST/STICKER KACA ES - POLOS LEBAR 120",
+                "categoryBreadcrumbs": "Rumah Tangga/Dekorasi/Wall Sticker",
+                "url": "https://www.tokopedia.com/stiker-kacamurah/stiker-kaca-sandblast-sticker-kaca-es-polos-lebar-120?src=topads",
+                "appUrl": "tokopedia://product/1599025223",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEH_eh6AJaHZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6syDUSz2Q31i6sJfH_yFosnao_KDUMoFyaUEH_rFHmFiy3zwrfo5rM1i6seFoadfHpyF6AeaopjOH_HRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oIPvzJ1O_7zCoJN1yRB6qj1p_Bzg81B2PfBgHO-N3Ao6QVByZM2xe7jfZ32uP1OEqRPvzJ7h_Bzso1N1z_CvzJjh_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_zo8jOR_M2ZqjN_H3xqucz2_Vzz8V21_9zvzVJp_1HhQ1YI1_-qzOgt3uP6q7O1gfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1O1__zvuJ1F_jzoH1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZS2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1jF_1zsP1Nk__-ozcrF_32so1N1z92681BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOE_OH7HJOEZ_-6zVJh_32oH1Y1_9B6e7tNUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pjdomFN6_HDH_nOHB7DUMNwyfVXgcBjy9zB9fVjraUEH_Uhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_17oAzY?management_type=1&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&dv=android-3.122&src=recom_widget_pdp_4&r=https%3A%2F%2Fwww.tokopedia.com%2Fstiker-kacamurah%2Fstiker-kaca-sandblast-sticker-kaca-es-polos-lebar-120%3Fsrc%3Dtopads&page=1&ob=0",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEH_eh6AJaHZFiy3zwPIBFgZUEHZFircYpq9z2Qfdi6syDUSz2Q31i6sJfH_yFosnao_KDUMoFyaUEH_rFHmFiy3zwrfo5rM1i6seFoadfHpyF6AeaopjOH_HRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oIPvzJ1O_7zCoJN1yRB6qj1p_Bzg81B2PfBgHO-N3Ao6QVByZM2xe7jfZ32uP1OEqRPvzJ7h_Bzso1N1z_CvzJjh_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_zo8jOR_M2ZqjN_H3xqucz2_Vzz8V21_9zvzVJp_1HhQ1YI1_-qzOgt3uP6q7O1gfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1O1__zvuJ1F_jzoH1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZS2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1jF_1zsP1Nk__-ozcrF_32so1N1z92681BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjOE_OH7HJOEZ_-6zVJh_32oH1Y1_9B6e7tNUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3pjdomFN6_HDH_nOHB7DUMNwyfVXgcBjy9zB9fVjraUEH_Uhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstigcuMUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_17oAzY?page=1&product_id=1599025223&ob=0&src=recom_widget_pdp_4&uid=17211378&management_type=1&t=android&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Fstiker-kacamurah%2Fstiker-kaca-sandblast-sticker-kaca-es-polos-lebar-120%3Fsrc%3Dtopads",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sJ7H_KhHsJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosJfHAyFHs1dbm-Fy9ztUstig3opoaOFbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpHFHmOpr9uxrM15uSViyfOobpUFHsJ5Hi4Nbpypyszsysnfb_-iHcHWoAHOoa7NypHOb3gjHsBxypypgsyOoZNkrcribm-xgVYpyfYagZUEoAnRbsyposndoAUR6_1hHprDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7P7YJz_uvzJJ7_Bzs81Nkz_o6uVBNZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_920P7YJ__V6ucHO_BzVHJYJZ_V617BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-oJOE_9P6qB-k_BHhqV21gcBHuVVd3BzoPJYJ1_ooepVW_7PzHB2IuMxgu7N0_uzSq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_uzooJY1z_C6zJ7h_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z_CozcoO_M2oHjOJgpCoqMHO_BzV8jNNZ9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBk_92v1peF_92-HjNJ1_Voqj7h_Ozo81NAZsjibm-Orfua9fBjUstiH_raH_JpopKibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEH_17oAzY?management_type=1&src=recom_widget_pdp_4&page=1&dv=android-3.122&ob=0&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/2/9/63b4cb06-2b0c-4357-9c35-fd29ac63f655.jpg",
+                "price": "Rp16.000",
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 19rb",
+                    "type": "textDarkGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  }
+                ],
+                "priceInt": 16000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 740135,
+                  "name": "CIPTA ABADI STIKER KACA",
+                  "city": "Bekasi"
+                },
+                "departmentId": 1052,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.9",
+                "countReview": 1294,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1010255803,
+                "name": "baju ok ( Lengan panjang ) - Hijau, S",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Seragam Medis",
+                "url": "https://www.tokopedia.com/hannacollection1/baju-ok-lengan-panjang-hijau-s?src=topads",
+                "appUrl": "tokopedia://product/1010255803",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosJd6AUf6_HDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstRbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sJOo_nDUMVj9RosQR-BUst7HArXH_nf6ArhopedH_jhHpeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uo-r7BW_sCsQABE3BPc8ujagfBvq1Bd_1H7H1Ok392ouV1p_7z0HJNE__-vzJO2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1YJ_92ozVjF392uPVB9u_ogq_nF_uPu8jh1gpC68jV73M2tq7NW1Mhgu7gk3jzVoJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32V8jYJqRx6zVVE_BzCq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zJJp_c2VP7NkgpooucHF_7zVo1O1__C-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8j7a_c2u8jNJgpV68Mrp_1zs8JO1z3BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZFhopeabAUOHsuPbm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sea6AHfwe?r=https%3A%2F%2Fwww.tokopedia.com%2Fhannacollection1%2Fbaju-ok-lengan-panjang-hijau-s%3Fsrc%3Dtopads&src=recom_widget_pdp_4&dv=android-3.122&page=1&ob=0&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&management_type=2",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosJd6AUf6_HDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstRbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sJOo_nDUMVj9RosQR-BUst7HArXH_nf6ArhopedH_jhHpeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uo-r7BW_sCsQABE3BPc8ujagfBvq1Bd_1H7H1Ok392ouV1p_7z0HJNE__-vzJO2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1YJ_92ozVjF392uPVB9u_ogq_nF_uPu8jh1gpC68jV73M2tq7NW1Mhgu7gk3jzVoJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32V8jYJqRx6zVVE_BzCq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zJJp_c2VP7NkgpooucHF_7zVo1O1__C-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8j7a_c2u8jNJgpV68Mrp_1zs8JO1z3BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3prhoZFhopeabAUOHsuPbm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sea6AHfwe?product_id=1010255803&ob=0&management_type=2&src=recom_widget_pdp_4&page=1&dv=android-3.122&r=https%3A%2F%2Fwww.tokopedia.com%2Fhannacollection1%2Fbaju-ok-lengan-panjang-hijau-s%3Fsrc%3Dtopads&uid=17211378&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syh6AKaosjpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoaFiPcBWgZUEH_yhosnfHAUO6mFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpK5HpJ5gMHaofgsosjW6A1NHm7763yFb3Jhy3eWofJpgcJaHpzMH_H7bM2FgaUDUMVj9RosQR-BUst7HArXH_nf6ArhopedH_jhHpeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uo-r7BW_sCsQABE3BPc8ujagfBvq1Bd_1H7H1Ok392ouV1p_7z0HJNE__-vzJO2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325q1YJ_92ozVjF392uPVB9u_ogq_nF_uPu8jh1gpC68jV73M2tq7NW1Mhgu7gk3jzVoJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32V8jYJqRx6zVVE_BzCq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3Hp1Sz-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfB6zJJp_c2VP7NkgpooucHF_7zVo1O1__C-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8j7a_c2u8jNJgpV68Mrp_1zs8JO1z3BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sea6AHfwe?ob=0&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=recom_widget_pdp_4&dv=android-3.122&page=1&t=android&management_type=2",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/8/31/fc27fc69-8590-49f0-a1ad-7a3da234f134.jpg",
+                "price": "Rp125.000",
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 920",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "priceInt": 125000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 8838482,
+                  "name": "Hanna Collection_1",
+                  "city": "Jakarta Barat"
+                },
+                "departmentId": 2525,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.9",
+                "countReview": 168,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 965248395,
+                "name": "Baju OK Gown / OKA GOWN / BAJU MEDIS / BAJU PERAWAT / BAJU OPRASI - Biru",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Seragam Medis",
+                "url": "https://www.tokopedia.com/dealinterior/baju-ok-gown-oka-gown-baju-medis-baju-perawat-baju-oprasi-biru?src=topads",
+                "appUrl": "tokopedia://product/965248395",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_eRoprpHsUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstdbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sJhHAnDUMVj9RosQR-BUst7HA1Xo_KNo_HOHprfoArhoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfB61pzd_32S81OJu9xoqMPN_1zu8JOkgfBHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1j7_92oP7Nk1M261pVt3Bzjq1h119xquJO7_7zzH7OAH3OvzOJa3jP3qVB9_MWoucP2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBouJ77_OzVHJNJ__Voe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12EgJrFq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-HJOJu9u6ucrO_BzoH1OEyp-6zcod_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-o1Y_oAuouJJa_jzsP7OEyp-oqjBdZ3dFvZUDUSupg9-wq3ei6iUhopUhH_HR6mUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUSoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDRH_1DH_r7HiFao_UO9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstNH_Kfwe?dv=android-3.122&src=recom_widget_pdp_4&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&ob=0&management_type=2&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fdealinterior%2Fbaju-ok-gown-oka-gown-baju-medis-baju-perawat-baju-oprasi-biru%3Fsrc%3Dtopads&page=1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEo_eRoprpHsUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstdbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sJhHAnDUMVj9RosQR-BUst7HA1Xo_KNo_HOHprfoArhoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfB61pzd_32S81OJu9xoqMPN_1zu8JOkgfBHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1j7_92oP7Nk1M261pVt3Bzjq1h119xquJO7_7zzH7OAH3OvzOJa3jP3qVB9_MWoucP2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBouJ77_OzVHJNJ__Voe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12EgJrFq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-HJOJu9u6ucrO_BzoH1OEyp-6zcod_MB-r7BX_M2iH72D3Ao6QVByZM2xe7jfZ32-o1Y_oAuouJJa_jzsP7OEyp-oqjBdZ3dFvZUDUSupg9-wq3ei6iUhopUhH_HR6mUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUSoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDRH_1DH_r7HiFao_UO9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstNH_Kfwe?dv=android-3.122&r=https%3A%2F%2Fwww.tokopedia.com%2Fdealinterior%2Fbaju-ok-gown-oka-gown-baju-medis-baju-perawat-baju-oprasi-biru%3Fsrc%3Dtopads&ob=0&t=android&uid=17211378&page=1&management_type=2&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&src=recom_widget_pdp_4&product_id=965248395",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s17oprRHpUabm-xgVY789CBUsthbm-FQRo2PcB5QiUE6mFiPcBWgZUEH_yhosnfHAUO6mFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpr56Z4hHsnfoAHRHi4hHsnfoAHRHB47y3yagM1ayi7aocefb_zMgM1W6_gxHi77H_yR6ABsgsn7yMVwH_UdHV4hHsKFUiFiy3zwrfo5rM1i6seFoZdO6AjOHp1popy7opJfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1N_oIxoqMPN_1zu8JOkgRBozVud_32Sq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_1o-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_zo8jOR_M2ZqjN_H3xqucz2_Vzz8V21_9zvzVJp_1HhQ1YI1_-qzOgt3uP6q7O1gfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1O1__zvuJ1F_jzoH1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZS2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1jF_1zuP1N1gpu6uJ7h_92sHjNJyRx6q1BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjO_OH7o1O1e_-6zcoR_92sHjOkZ9x-QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sjh6AgY?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&page=1&ob=0&src=recom_widget_pdp_4&dv=android-3.122&management_type=2&t=android",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/9/12064372/12064372_4af2fe2b-24d6-4ffe-96a2-416789cf04ba_1280_1280",
+                "price": "Rp100.000",
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 1,5rb",
+                    "type": "textDarkGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  }
+                ],
+                "priceInt": 100000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 7000884,
+                  "name": "Dealinterior",
+                  "city": "Bandung"
+                },
+                "departmentId": 2525,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.9",
+                "countReview": 262,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1111080876,
+                "name": "Obat Anti Rayap Semprot Spray Top Star 500ml",
+                "categoryBreadcrumbs": "Kesehatan/Perlengkapan Kebersihan/Pest Control",
+                "url": "https://www.tokopedia.com/sandalsmaniac/obat-anti-rayap-semprot-spray-top-star-500ml?src=topads",
+                "appUrl": "tokopedia://product/1111080876",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUpoAjf6_UDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstNbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sUFHAnDUMVj9RosQR-BUst7HA1XoAndoAnF6AHaoAH7oiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepzE_Oz0HJNkyR268Bj7_92CoJY1Z9B-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkqRuvzJ1h_OzuP7Y1Z9PoqBJh_920o1B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMPE_92CHjNI__VHu7gD_s--PJNJzMho8_n7_jzsP7h93_zqzV203BPcqVja19xve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9xo8MrO_uzzHJOEu9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32zP7N_oACozcrF_1zCoJOEZ_Co8BJaZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_jzCH7hku_Co8MDO_S2zH1NJqpVvuVu2gBJYvZUDUSupg9-wq3ei6iUhopUhH_HR6mUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUSoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDRH_1DoAy7HaFhHAyN9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HAyNo97?dv=android-3.122&src=recom_widget_pdp_4&r=https%3A%2F%2Fwww.tokopedia.com%2Fsandalsmaniac%2Fobat-anti-rayap-semprot-spray-top-star-500ml%3Fsrc%3Dtopads&page=1&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&ob=0&management_type=1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosUpoAjf6_UDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstNbm-7q3OBUsthosJfHAyFHs1dbm-srcHi6sUFHAnDUMVj9RosQR-BUst7HA1XoAndoAnF6AHaoAH7oiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoepzE_Oz0HJNkyR268Bj7_92CoJY1Z9B-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkqRuvzJ1h_OzuP7Y1Z9PoqBJh_920o1B2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-qMPE_92CHjNI__VHu7gD_s--PJNJzMho8_n7_jzsP7h93_zqzV203BPcqVja19xve7BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9xo8MrO_uzzHJOEu9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-QjdFyBo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32zP7N_oACozcrF_1zCoJOEZ_Co8BJaZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_jzCH7hku_Co8MDO_S2zH1NJqpVvuVu2gBJYvZUDUSupg9-wq3ei6iUhopUhH_HR6mUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUSoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDRH_1DoAy7HaFhHAyN9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUst7HAyNo97?t=android&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fsandalsmaniac%2Fobat-anti-rayap-semprot-spray-top-star-500ml%3Fsrc%3Dtopads&ob=0&uid=17211378&page=1&src=recom_widget_pdp_4&product_id=1111080876",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaHpeNosjabm-xgVY789CBUsthbm-FQRo2PcB5QiUE6ZFiPcBWgZUEH_yhosnfHAUO6mFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJabpUFbf-xHsKfyMJhb_epoMUWocUdHiOxo_UNb_ox63UOoM1pHM1aoiNFQMribm-xgVYpyfYagZUEoAnObseF6AeFHAKpHsepoAyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H78jY1qpC6qMoE_S2goJOEe_zvuJBNZ3BRqujp1SByH7ND3uxGqMVAZ_g-qMWO_7zVH1Y1u9PvuJBR_32zH1OEqpu-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ32S8jOEe_-6z77h_VPcQJdaZ9z6zJgD_9jFoJNJyRPHuOj73jzqqO29zMxgHBVd_7o-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1Bd_92So1O11_Co8BuRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3N6Hc-_Z9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBk19P61peF_1zSHJOJe_zo8jjF_92zHjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1NJe_oHqB1F_920o1NE1_V6zcDh_Ozuq3gzv_7ibm-Orfua9fBjUstiH_raH_JpopKibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAnf6_uY?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&management_type=1&t=android&ob=0&dv=android-3.122&page=1&src=recom_widget_pdp_4",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/20/ba286ba1-436b-4b82-a529-3a9b56e32e26.png",
+                "price": "Rp23.900",
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "offers",
+                    "title": "Grosir",
+                    "type": "lightGrey"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 6,4rb",
+                    "type": "textDarkGrey"
+                  },
+                  {
+                    "position": "price",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  }
+                ],
+                "priceInt": 23900,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 3017510,
+                  "name": "sandals.maniac",
+                  "city": "Jakarta Utara"
+                },
+                "departmentId": 1069,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.9",
+                "countReview": 1581,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1350310320,
+                "name": "Convex Mirror 60cm Kaca Cermin Cembung Safety Simpang Jalan tikungan - Outdoor",
+                "categoryBreadcrumbs": "Pertukangan/Alat Keselamatan/Pita Pembatas & Barikade",
+                "url": "https://www.tokopedia.com/gudangsafetycom/convex-mirror-60cm-kaca-cermin-cembung-safety-simpang-jalan-tikungan-outdoor?src=topads",
+                "appUrl": "tokopedia://product/1350310320",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoprpoprOHAHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHmFiPcBWgZUEH_yhosnfHAUO6mFiyRCsUsthHs1Fbm-xgVYpyfYagZUEoAnFbsKOosKOHsUpHAepHs17bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1NAoA-6uJud_M2-H7Y1e_-vucHa_S2uq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_1o-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_zo8jOR_M2ZqjN_H3xqucz2_Vzz8V21_9zvzVJp_1HhQ1YI1_-qzOgt3uP6q7O1gfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1O1__zvuJ1F_jzoH1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZS2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1jF_1zCP1YJu_-vzVuN_32oP7NJ_9B6uVV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_32CP1NkZ_oozJjp_9208jNJ3_C-QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3peFHsjDoAndHmF7HsUN9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsKR697?page=1&t=android&src=recom_widget_pdp_4&management_type=2&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Fgudangsafetycom%2Fconvex-mirror-60cm-kaca-cermin-cembung-safety-simpang-jalan-tikungan-outdoor%3Fsrc%3Dtopads&ob=0",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEoprpoprOHAHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHmFiPcBWgZUEH_yhosnfHAUO6mFiyRCsUsthHs1Fbm-xgVYpyfYagZUEoAnFbsKOosKOHsUpHAepHs17bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1NAoA-6uJud_M2-H7Y1e_-vucHa_S2uq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_1o-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_zo8jOR_M2ZqjN_H3xqucz2_Vzz8V21_9zvzVJp_1HhQ1YI1_-qzOgt3uP6q7O1gfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1O1__zvuJ1F_jzoH1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZS2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1jF_1zCP1YJu_-vzVuN_32oP7NJ_9B6uVV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_32CP1NkZ_oozJjp_9208jNJ3_C-QsnYUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiyfV79fBjraUE3peFHsjDoAndHmF7HsUN9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsKR697?t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Fgudangsafetycom%2Fconvex-mirror-60cm-kaca-cermin-cembung-safety-simpang-jalan-tikungan-outdoor%3Fsrc%3Dtopads&dv=android-3.122&ob=0&management_type=2&uid=17211378&page=1&src=recom_widget_pdp_4&product_id=1350310320",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srRHprRo_npbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_nDUSz2Q31i6sJfH_yFosnao_KDUSCxPcKi6i-ByRHRb9nXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHm4hHi4aHZ4RHfydH_JaHa7FHAoib_epoAUWy_HhoZ7agcoBgM1Oos-Mo_eXqSCSUiFiy3zwrfo5rM1i6seFHmddo_ydo_UaHpn7HpUOomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfB6epea_BzV8JNkZ_ovuJJa_OzsHjNEu3BHe72kgJxGgMHauMxsQ1N5Z325q1OAZ9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq1j7_92oP7Nk1M261pVt3Bzjq1h119xquJO7_7zzH7OAH3OvzOJa3jP3qVB9_MWoucP2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBouJ77_OzVHJNJ__Voe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12EgJrFq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-HJOJe9uvzV1a_7zu81Ok_9P6zJON_Bzzq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-8jOke9u6qjjp_1z-H7OEqR26zVjFZ3dFvZUDUSupg9-wq3ei6iUhopUhH_HR6mUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUSoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMNwyfVXgcBjy9zB9fVjraUEH_Uhbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMzBgi-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpHsKR697?page=1&t=android&management_type=2&src=recom_widget_pdp_4&ob=0&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/21/73f81123-003b-4342-a315-2dcefe562f54.jpg",
+                "price": "Rp203.000",
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 163",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "priceInt": 203000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 6489562,
+                  "name": "GudangSafetyCom",
+                  "city": "Tangerang"
+                },
+                "departmentId": 4229,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.9",
+                "countReview": 68,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1336098709,
+                "name": "STICKER / STIKER KACA MOTIF BAMBU PUTIH ( GLASS FILM ) - 2",
+                "categoryBreadcrumbs": "Rumah Tangga/Dekorasi/Wall Sticker",
+                "url": "https://www.tokopedia.com/stickerkaca/sticker-stiker-kaca-motif-bambu-putih-glass-film-2?src=topads",
+                "appUrl": "tokopedia://product/1336098709",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpjFH_1fH_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHZFiPcBWgZUEH_yhosnfHAUO6mFiyRCsUsthHp1Fbm-xgVYpyfYagZUEHpjNbsKpHpjaH_1Oo_rhoA1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H78jOE_92o8jOE_92o8jOE_92o8jOE_SB-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgR2o8jJa_jPoH1h9zMh6HjB7_jzcQJONHAz6zcoR_VPgoV2J3MWqu7gt3_-z8JYAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-8JOEgpuouVJF_92uP7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7O_OH7oJOE__uoqj1h_BzuH7O11_V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMHp_c20P7YJgRx6qj17_7z-HjY_Zsjibm-Orfua9fBjUstiH_raH_JpopKibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2Q6_K7bAjNHaFhHA1a9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpop1NH97?dv=android-3.122&r=https%3A%2F%2Fwww.tokopedia.com%2Fstickerkaca%2Fsticker-stiker-kaca-motif-bambu-putih-glass-film-2%3Fsrc%3Dtopads&src=recom_widget_pdp_4&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&management_type=1&ob=0&page=1",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEHpjFH_1fH_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHZFiPcBWgZUEH_yhosnfHAUO6mFiyRCsUsthHp1Fbm-xgVYpyfYagZUEHpjNbsKpHpjaH_1Oo_rhoA1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H78jOE_92o8jOE_92o8jOE_92o8jOE_SB-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgR2o8jJa_jPoH1h9zMh6HjB7_jzcQJONHAz6zcoR_VPgoV2J3MWqu7gt3_-z8JYAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-8JOEgpuouVJF_92uP7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7O_OH7oJOE__uoqj1h_BzuH7O11_V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMHp_c20P7YJgRx6qj17_7z-HjY_Zsjibm-Orfua9fBjUstiH_raH_JpopKibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-sy9zwq3zpUs2Q6_K7bAjNHaFhHA1a9ZFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-jg3yibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpop1NH97?sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&r=https%3A%2F%2Fwww.tokopedia.com%2Fstickerkaca%2Fsticker-stiker-kaca-motif-bambu-putih-glass-film-2%3Fsrc%3Dtopads&management_type=1&product_id=1336098709&t=android&ob=0&dv=android-3.122&page=1&uid=17211378&src=recom_widget_pdp_4",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHNHAJOosJFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_JDUSz2Q31i6sJfH_yFosnao_KDUSCxPcKi6i-ByRHRb9nXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHZ4pbpJRbp1foc1O6A-xb_jRys1WoAgBya7dHprNb_VM6_CxyMUp6AxMyiNkrcribm-xgVYpyfYagZUEHpjNbsKpHpjaH_1Oo_rhoA1DUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1H78jOE_92o8jOE_92o8jOE_92o8jOE_SB-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBkgR2o8jJa_jPoH1h9zMh6HjB7_jzcQJONHAz6zcoR_VPgoV2J3MWqu7gt3_-z8JYAZ9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-8JOEgpuouVJF_92uP7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBX_sCi17BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qj7O_OH7oJOE__uoqj1h_BzuH7O11_V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMHp_c20P7YJgRx6qj17_7z-HjY_Zsjibm-Orfua9fBjUstiH_raH_JpopKibm-pg9opq3YX9fBjUstiyRKf6cUheRzeZ1jEeuCC6_VizugwyMzqgSJNruCmb9xUQs-EHpzsyO-zo17d8_Bs69CMruzirJBNH1VD_R-G3uoc_1WEQuYIy9oEQ7gp33o_gu2gb3-1u3-jyfohQurdQIPe1ugDq_omH3gAqBPXeuoEou2B1JoFqfKNq1ukyuPkyuC5PjVqZO2BQMYRP347z7OJosxtQOUibm-xQcri6i-pg3VayfKibm-XP3Oig9-wQfgwy3zpUsthHiFiQSuWyMua9fVjrOYag9Ji6sJabm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-jg3yi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHprO6_VY?page=1&t=android&dv=android-3.122&management_type=1&src=recom_widget_pdp_4&ob=0&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/17/564e582a-97b5-46ec-8379-1f90abb388fb.jpg",
+                "price": "Rp16.000",
+                "labelgroup": [
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 5,3rb",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "priceInt": 16000,
+                "discountPercentage": 0,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 236923,
+                  "name": "STIKER KACA & KACA FILM",
+                  "city": "Bekasi"
+                },
+                "departmentId": 1052,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "4.9",
+                "countReview": 445,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              },
+              {
+                "id": 1190407953,
+                "name": "Zinus® Kasur 25cm Tight Top OPP Bonnell Spring - Ukuran Single",
+                "categoryBreadcrumbs": "Rumah Tangga/Furniture/Kasur",
+                "url": "https://www.tokopedia.com/zinus/zinus-kasur-25cm-tight-top-opp-bonnell-spring-ukuran-single?src=topads",
+                "appUrl": "tokopedia://product/1190407953",
+                "clickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUE6_rfHsydoAUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHiFiPcBWgZUEH_yhosnfHAUO6mFiyRCsUstOHAnFbm-xgVYpyfYagZUEHpjRbsr7opn76A1dHpKOHp17bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAVoqBjp_uzsH1N1yRB6uJ1O_1zS8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ32-P1N1Z9xozJJ7_jzC8jOE39xo8BJF_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_zo8jOR_M2ZqjN_H3xqucz2_Vzz8V21_9zvzVJp_1HhQ1YI1_-qzOgt3uP6q7O1gfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1O1__zvuJ1F_jzoH1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZS2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_OzsP1NE1_oozVJ7_BzS8jYJu926uVV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_OzzP1NE3_zo8BVN_7zzH7N1gR26qBu2gBJYvZUDUSupg9-wq3ei6iUhopUhH_HR6mUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUSoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDN6AeD6_jabAHRHAVPbm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6syNHpuY?page=1&management_type=1&ob=0&t=android&dv=android-3.122&r=https%3A%2F%2Fwww.tokopedia.com%2Fzinus%2Fzinus-kasur-25cm-tight-top-opp-bonnell-spring-ukuran-single%3Fsrc%3Dtopads&src=recom_widget_pdp_4&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR",
+                "wishlistUrl": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUE6_rfHsydoAUDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthHiFiPcBWgZUEH_yhosnfHAUO6mFiyRCsUstOHAnFbm-xgVYpyfYagZUEHpjRbsr7opn76A1dHpKOHp17bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAVoqBjp_uzsH1N1yRB6uJ1O_1zS8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ32-P1N1Z9xozJJ7_jzC8jOE39xo8BJF_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2Z_zo8jOR_M2ZqjN_H3xqucz2_Vzz8V21_9zvzVJp_1HhQ1YI1_-qzOgt3uP6q7O1gfBHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1O1__zvuJ1F_jzoH1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZS2jzpC2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_OzsP1NE1_oozVJ7_BzS8jYJu926uVV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_OzzP1NE3_zo8BVN_7zzH7N1gR26qBu2gBJYvZUDUSupg9-wq3ei6iUhopUhH_HR6mUDUSoBrRo2QfNwq3ei6i-s8AydysVAPVC-Z_2C1JJNH3-VuBYigV2Mr_Bh1JUW8JxXHStpocos1BJO__xN63HNrcghuc-FZ9jhe3hvrj2g17goZR2W97PxrR25zSogyOoB3BjWyBzuyMzsyRVWupxDPOCzuMh2H7UhgjokufNC1RtO3MueeRC0qAB2z32xuf2x1cYfeu2b3MuXQRPOQpzI_1ef6cx51iUDUMVDgaUEUSoBy9-sqmUDUMNOQ3-BrBY5gBYxgIHi6sJabm-XP3Oig9-wy3zp9R-BrZUEH_UDUMoxPVY2gIHi6BDN6AeD6_jabAHRHAVPbm-X9foxQMz2gcV7guYxgIHi6sJaHZFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMzBgiUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6syNHpuY?page=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fzinus%2Fzinus-kasur-25cm-tight-top-opp-bonnell-spring-ukuran-single%3Fsrc%3Dtopads&product_id=1190407953&t=android&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&uid=17211378&src=recom_widget_pdp_4&dv=android-3.122&ob=0&management_type=1",
+                "trackerImageUrl": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sjRosUf6Aeabm-xgVY789CBUsthbm-FQRo2PcB5QiUEH_UDUSz2Q31i6sJfH_yFosnao_KDUSCxPcKi6i-ByRHRb9nXPcY0QRCBgcBxbMNBPmY2Q3r5yfVsqc15HpnFb9ohP3VagZY3r3-sQ175HsnaHZ4pbpU5H_eRysU7gsjWyfUpoa77oAHdb_jhHAjWyM1agM-iy3yFH_zMbM2FgaUDUMVj9RosQR-BUstp6_rXopeRHAedo_Kp6A1po_eDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7H1Ok3_ooucHh_Bzs81N1z_uozcPEZ3BRqujp1SByH7ND3uxGqMVAZ_g-qjBO_Bz-8JOJe_z6zJVE_92g8JOE1_C617BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fB-oJOE_9P6qB-k_BHhqV21gcBHuVVd3BzoPJYJ1_ooepVW_7PzHB2IuMxgu7N0_uzSq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_uzooJY1z_C6zJ7h_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBG8MzIHcBHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92vucoO_S2zH7OJ1_z6ucPE_7zu8jN113BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92vuVVO_S2goJOE19BvzVJp_BzS8jNku3BM1_7YUiFiP9oBrBY2gmUEUsJRHsJhHprdUiFirfuprfB5QBY2gmUEUModosxiH1o71JB-6jVee_jhyju39f-j3Mgh69VeeiOdZcda8sH7yfoZ1_uo6IjNypBFgSV1ySC-8_VCQJYaZBB_zjOb8MOwzfVp8MYcrOBs1fuq3ZOiuVuigcosr3O96chR1VV3QcjpesVMef29QjV_8suqguCArcWt63BVqMV9qMVeQRgC3jWqg3N5PRu5oJPozAydqcYZUiFiy3hSUstirfuxrMotUiFiQSuWyMua9fYM9fVjraUEH_UDUMNOQ3-BrBYxgIowrMuhUsthHiFiQBYsy3Njq3zxPcuwy3zpUsthHsJDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDigcuMUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6syNHpuY?management_type=1&ob=0&dv=android-3.122&sid=cx68b1CtPII%3AAPA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR&t=android&src=recom_widget_pdp_4&page=1",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/2/147b24f9-cb37-4438-9109-be2fbbaf014f.jpg",
+                "price": "Rp1.045.000",
+                "labelgroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 9",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "priceInt": 1045000,
+                "discountPercentage": 72,
+                "slashedPrice": "Rp3.695.000",
+                "slashedPriceInt": 3695000,
+                "isWishlist": false,
+                "minOrder": 0,
+                "shop": {
+                  "id": 9535594,
+                  "name": "Zinus Official Store",
+                  "city": "Jakarta Timur"
+                },
+                "departmentId": 3701,
+                "badges": [
+                  {
+                    "imageUrl": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png"
+                  }
+                ],
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "rating": 5,
+                "ratingAverage": "5.0",
+                "countReview": 5,
+                "recommendationType": "search",
+                "stock": 0,
+                "isTopads": true,
+                "specificationLabels": [
+                  {
+                    "key": "Dimensions",
+                    "value": "136.6 x 70.6 x 8.6 mm (5.38 x 2.78 x 0.34 in)"
+                  },
+                  {
+                    "key": "Type",
+                    "value": "Super AMOLED"
+                  },
+                  {
+                    "key": "OS",
+                    "value": "Android 4.0.4 (Ice Cream Sandwich), 4.3 (Jelly Bean), TouchWiz UI"
+                  },
+                  {
+                    "key": "Features",
+                    "value": "LED flash"
+                  },
+                  {
+                    "key": "Internal",
+                    "value": "16GB 1GB RAM, 32GB 1GB RAM, 64GB 1GB RAM"
+                  },
+                  {
+                    "key": "WLAN",
+                    "value": "Wi-Fi 802.11 a/b/g/n, dual-band, Wi-Fi Direct, DLNA, hotspot"
+                  },
+                  {
+                    "key": "Battery",
+                    "value": "Removable Li-Ion 2100 mAh battery"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]
