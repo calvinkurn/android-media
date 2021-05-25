@@ -83,7 +83,8 @@ data class DynamicHomeChannel(
             val widgetParam: String = "",
             @SerializedName("token")
             var token: String = "",
-            var timestamp: String = ""
+            var timestamp: String = "",
+            var isCache: Boolean = true
     ) : ImpressHolder() {
 
         private var position: Int = 0

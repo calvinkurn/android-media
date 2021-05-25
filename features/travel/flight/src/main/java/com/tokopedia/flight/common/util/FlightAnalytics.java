@@ -11,11 +11,11 @@ import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel;
 import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel;
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice;
-import com.tokopedia.flight.searchV4.data.cloud.single.Route;
-import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel;
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel;
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel;
-import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum;
+import com.tokopedia.flight.search.data.cloud.single.Route;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -471,7 +471,7 @@ public class FlightAnalytics {
     private Object transformSearchProductViewV2(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
         String isRefundable = "false";
         for (Route route : journeyViewModel.getRouteList()) {
-            if (route.getRefundable()) {
+            if (route.isRefundable()) {
                 isRefundable = "true";
                 break;
             }
@@ -518,7 +518,7 @@ public class FlightAnalytics {
     private Object transformSearchProductClickV2(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
         String isRefundable = "false";
         for (Route route : journeyViewModel.getRouteList()) {
-            if (route.getRefundable()) {
+            if (route.isRefundable()) {
                 isRefundable = "true";
                 break;
             }

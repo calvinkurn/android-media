@@ -66,6 +66,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.changeConstraint
+import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -683,6 +684,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 view?.show()
             }, PlayVideoScalingManager.ANIMATION_DURATION)
 
+            if (map.isKeyboardShown) dismissToaster()
+
             gradientBackgroundViewOnStateChanged(bottomInsets = map)
             toolbarViewOnStateChanged(bottomInsets = map)
             statsInfoViewOnStateChanged(bottomInsets = map)
@@ -808,8 +811,10 @@ class PlayUserInteractionFragment @Inject constructor(
         if (!this::onStatsInfoGlobalLayoutListener.isInitialized) {
             onStatsInfoGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
-                    playFragment.stopRenderMonitoring()
-                    statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if (isAdded) {
+                        playFragment.stopRenderMonitoring()
+                        statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
                 }
             }
             statsInfoView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onStatsInfoGlobalLayoutListener)

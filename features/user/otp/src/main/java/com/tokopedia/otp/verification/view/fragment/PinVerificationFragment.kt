@@ -39,21 +39,6 @@ class PinVerificationFragment : VerificationFragment() {
         }
     }
 
-    override fun redirectAfterValidationSuccessful(bundle: Bundle) {
-        if ((activity as VerificationActivity).isResetPin2FA) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
-                bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
-                bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
-                putExtras(bundle)
-            }
-            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            activity?.startActivity(intent)
-            activity?.finish()
-        } else {
-            super.redirectAfterValidationSuccessful(bundle)
-        }
-    }
-
     private fun setForgotPinFooterSpan(message: String, spannable: Spannable) {
         spannable.setSpan(
                 object : ClickableSpan() {
