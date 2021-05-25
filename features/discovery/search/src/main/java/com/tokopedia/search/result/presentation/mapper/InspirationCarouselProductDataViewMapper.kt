@@ -58,10 +58,10 @@ class InspirationCarouselProductDataViewMapper {
     private fun convertInspirationCarouselProductBadgeToBadgeItem(
             badgeModel: InspirationCarouselProductBadge,
     ): BadgeItemDataView {
-        val badgeItem = BadgeItemDataView()
-        badgeItem.title = badgeModel.title
-        badgeItem.imageUrl = badgeModel.imageUrl
-        badgeItem.isShown = badgeModel.isShown
-        return badgeItem
+        return BadgeItemDataView(
+                title = badgeModel.title,
+                imageUrl = badgeModel.imageUrl,
+                isShown = badgeModel.isShown,
+        )
     }
 }
