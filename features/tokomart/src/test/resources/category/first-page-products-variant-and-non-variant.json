@@ -1,4 +1,36 @@
 {
+  "category_detail": {
+    "header": {
+      "process_time": 0.288540449,
+      "messages": [],
+      "reason": "",
+      "error_code": ""
+    },
+    "data":{
+      "id": "113",
+      "name": "Daging, ikan, makanan laut & protein lainnya",
+      "url": "https://www.tokopedia.com/daging-ikan-makanan-laut-&-protein-lainnya/",
+      "applinks": "tokopedia://tokonow/daging-ikan-makanan-laut-&-protein-lainnya/",
+      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/16/8d6c7fe1-b005-4609-b066-b91c788605c5.png",
+      "navigation":{
+        "prev":{
+          "id": "275",
+          "name": "Telur & olahan susu",
+          "url": "https://www.tokopedia.com/telur-&-olahan-susu",
+          "applinks": "tokopedia://tokonow/telur-&-olahan-susu",
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/18/203d11b9-1aad-4473-a572-6b3b5fc5f14f.png"
+        },
+        "next":{
+          "id": "275",
+          "name": "Bahan makanan kering",
+          "url": "https://www.tokopedia.com/bahan-makanan-kering",
+          "applinks": "tokopedia://tokonow/bahan-makanan-kering",
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/18/203d11b9-1aad-4473-a572-6b3b5fc5f14f.png"
+        }
+      }
+    }
+  },
+
   "ace_search_product_v4": {
     "header": {
       "responseCode": 0,
@@ -78,9 +110,8 @@
           ],
           "rating": 5,
           "countReview": 259,
-          "originalPrice": "Rp7.000",
-          "discountPercentage": 30,
-          "parentId": 1682734974,
+          "originalPrice": "",
+          "discountPercentage": 0,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -120,6 +151,32 @@
               "title": "Bisa Tukar Tambah"
             }
           ],
+          "labelGroupVariant": [
+            {
+              "title": "S",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": "#FFFFFF"
+            },
+            {
+              "title": "M",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "L",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "XL",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            }
+          ],
           "badges": [
             {
               "title": "Official Store",
@@ -129,9 +186,12 @@
           ],
           "rating": 5,
           "countReview": 259,
-          "originalPrice": "",
-          "discountPercentage": 0,
+          "originalPrice": "Rp7.000",
+          "discountPercentage": 30,
+          "minOrder": 1,
+          "childs": [],
           "parentId": 0,
+          "stock": 4,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -189,7 +249,20 @@
             "city": "Jakarta Pusat",
             "isOfficial": true,
             "isPowerBadge": false
-          }
+          },
+          "minOrder": 1,
+          "childs": [
+            1682734981,
+            1682734979,
+            1682734983,
+            1682734976,
+            1682734980,
+            1682734982,
+            1682734977,
+            1682734978
+          ],
+          "parentId": 1682734974,
+          "stock": 13
         },
         {
           "id": 574211652,
@@ -276,32 +349,6 @@
               "title": "Official Store",
               "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
               "show": true
-            }
-          ],
-          "labelGroupVariant": [
-            {
-              "title": "S",
-              "type": "lightGrey",
-              "type_variant": "size",
-              "hex_color": ""
-            },
-            {
-              "title": "M",
-              "type": "lightGrey",
-              "type_variant": "size",
-              "hex_color": ""
-            },
-            {
-              "title": "L",
-              "type": "lightGrey",
-              "type_variant": "size",
-              "hex_color": ""
-            },
-            {
-              "title": "XL",
-              "type": "lightGrey",
-              "type_variant": "size",
-              "hex_color": "#FFFFFF"
             }
           ],
           "rating": 5,

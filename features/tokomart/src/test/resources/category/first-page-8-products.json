@@ -188,6 +188,7 @@
           "countReview": 259,
           "originalPrice": "Rp7.000",
           "discountPercentage": 30,
+          "parentId": 1682734974,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -216,6 +217,7 @@
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
           "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "parentId": 0,
           "freeOngkir": {
             "isActive": false,
             "imgUrl": ""

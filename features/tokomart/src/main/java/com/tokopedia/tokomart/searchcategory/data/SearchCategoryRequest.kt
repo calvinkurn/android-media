@@ -47,6 +47,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             priceInt
             discountPercentage
             originalPrice
+            childs
+            parentId
+            stock
             labelGroups {
               url
               title

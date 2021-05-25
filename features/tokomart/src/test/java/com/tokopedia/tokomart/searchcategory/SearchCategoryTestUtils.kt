@@ -114,6 +114,7 @@ fun verifyProductItemDataViewList(
         assertThat(actualProductDataView.priceInt, shouldBe(expectedProduct.priceInt))
         assertThat(actualProductDataView.discountPercentage, shouldBe(expectedProduct.discountPercentage))
         assertThat(actualProductDataView.originalPrice, shouldBe(expectedProduct.originalPrice))
+        assertThat(actualProductDataView.parentId, shouldBe(expectedProduct.parentId))
         assertLabelGroupDataView(actualProductDataView.labelGroupDataViewList, expectedProduct.labelGroupList)
         assertLabelGroupVariantDataView(
                 actualProductDataView.labelGroupVariantDataViewList,
@@ -151,5 +152,26 @@ private fun assertLabelGroupVariantDataView(
         assertThat(actualLabelGroupVariantDataView.type, shouldBe(labelGroupVariant.type))
         assertThat(actualLabelGroupVariantDataView.typeVariant, shouldBe(labelGroupVariant.typeVariant))
         assertThat(actualLabelGroupVariantDataView.hexColor, shouldBe(labelGroupVariant.hexColor))
+    }
+}
+
+private fun assertATCConfiguration(
+        actualProductDataView: ProductItemDataView,
+        expectedProduct: Product,
+) {
+
+    val hasVariantATC = actualProductDataView.variantATC != null
+    val expectedHasVariantATC = expectedProduct.childs.isNotEmpty()
+    val variantATCReason = "Variant ATC is null should be $expectedHasVariantATC"
+    assertThat(variantATCReason, hasVariantATC, shouldBe(expectedHasVariantATC))
+
+    val hasNonVariantATC = actualProductDataView.nonVariantATC != null
+    val expectedHasNonVariantATC = expectedProduct.childs.isEmpty()
+    val nonVariantATCReason = "Non Variant ATC is null should be $expectedHasNonVariantATC"
+    assertThat(nonVariantATCReason, hasNonVariantATC, shouldBe(expectedHasNonVariantATC))
+
+    if (expectedHasNonVariantATC) {
+        assertThat(actualProductDataView.nonVariantATC?.minQuantity, shouldBe(expectedProduct.minOrder))
+        assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.stock))
     }
 }

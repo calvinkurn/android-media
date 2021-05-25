@@ -233,7 +233,19 @@ data class AceSearchProductModel(
 
             @SerializedName("url")
             @Expose
-            val url: String = ""
+            val url: String = "",
+
+            @SerializedName("childs")
+            @Expose
+            val childs: List<String> = listOf(),
+
+            @SerializedName("parentId")
+            @Expose
+            val parentId: String = "",
+
+            @SerializedName("stock")
+            @Expose
+            val stock: Int = 0,
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()

@@ -28,11 +28,13 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterIt
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.NonVariantATCDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.util.DummyDataViewGenerator
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
@@ -240,33 +242,51 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
-            contentDataView.productList.map { product ->
-                ProductItemDataView(
-                        id = product.id,
-                        imageUrl300 = product.imageUrl300,
-                        name = product.name,
-                        price = product.price,
-                        priceInt = product.priceInt,
-                        discountPercentage = product.discountPercentage,
-                        originalPrice = product.originalPrice,
-                        labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
-                            LabelGroupDataView(
-                                    url = labelGroup.url,
-                                    title = labelGroup.title,
-                                    position = labelGroup.position,
-                                    type = labelGroup.type,
-                            )
-                        },
-                        labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
-                            LabelGroupVariantDataView(
-                                    title = labelGroupVariant.title,
-                                    type = labelGroupVariant.type,
-                                    typeVariant = labelGroupVariant.typeVariant,
-                                    hexColor = labelGroupVariant.hexColor,
-                            )
-                        }
+            contentDataView.productList.map(::mapToProductItemDataView)
+
+    private fun mapToProductItemDataView(product: Product): ProductItemDataView {
+        return ProductItemDataView(
+                id = product.id,
+                imageUrl300 = product.imageUrl300,
+                name = product.name,
+                price = product.price,
+                priceInt = product.priceInt,
+                discountPercentage = product.discountPercentage,
+                originalPrice = product.originalPrice,
+                parentId = product.parentId,
+                variantATC = createVariantATCDataView(product),
+                nonVariantATC = createNonVariantATCDataView(product),
+                labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
+                    LabelGroupDataView(
+                            url = labelGroup.url,
+                            title = labelGroup.title,
+                            position = labelGroup.position,
+                            type = labelGroup.type,
+                    )
+                },
+                labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
+                    LabelGroupVariantDataView(
+                            title = labelGroupVariant.title,
+                            type = labelGroupVariant.type,
+                            typeVariant = labelGroupVariant.typeVariant,
+                            hexColor = labelGroupVariant.hexColor,
+                    )
+                }
+        )
+    }
+
+    private fun createVariantATCDataView(product: Product) =
+            if (product.childs.isNotEmpty())
+                VariantATCDataView()
+            else null
+
+    private fun createNonVariantATCDataView(product: Product) =
+            if (product.childs.isEmpty())
+                NonVariantATCDataView(
+                    minQuantity = product.minOrder,
+                    maxQuantity = product.stock,
                 )
-            }
+            else null
 
     private fun MutableList<Visitable<*>>.addFooter() {
         if (isLastPage())

@@ -78,9 +78,8 @@
           ],
           "rating": 5,
           "countReview": 259,
-          "originalPrice": "Rp7.000",
-          "discountPercentage": 30,
-          "parentId": 1682734974,
+          "originalPrice": "",
+          "discountPercentage": 0,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -120,6 +119,32 @@
               "title": "Bisa Tukar Tambah"
             }
           ],
+          "labelGroupVariant": [
+            {
+              "title": "S",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": "#FFFFFF"
+            },
+            {
+              "title": "M",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "L",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            },
+            {
+              "title": "XL",
+              "type": "lightGrey",
+              "type_variant": "size",
+              "hex_color": ""
+            }
+          ],
           "badges": [
             {
               "title": "Official Store",
@@ -129,9 +154,12 @@
           ],
           "rating": 5,
           "countReview": 259,
-          "originalPrice": "",
-          "discountPercentage": 0,
+          "originalPrice": "Rp7.000",
+          "discountPercentage": 30,
+          "minOrder": 1,
+          "childs": [],
           "parentId": 0,
+          "stock": 4,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -189,7 +217,20 @@
             "city": "Jakarta Pusat",
             "isOfficial": true,
             "isPowerBadge": false
-          }
+          },
+          "minOrder": 1,
+          "childs": [
+            1682734981,
+            1682734979,
+            1682734983,
+            1682734976,
+            1682734980,
+            1682734982,
+            1682734977,
+            1682734978
+          ],
+          "parentId": 1682734974,
+          "stock": 13
         },
         {
           "id": 574211652,
@@ -276,32 +317,6 @@
               "title": "Official Store",
               "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
               "show": true
-            }
-          ],
-          "labelGroupVariant": [
-            {
-              "title": "S",
-              "type": "lightGrey",
-              "type_variant": "size",
-              "hex_color": ""
-            },
-            {
-              "title": "M",
-              "type": "lightGrey",
-              "type_variant": "size",
-              "hex_color": ""
-            },
-            {
-              "title": "L",
-              "type": "lightGrey",
-              "type_variant": "size",
-              "hex_color": ""
-            },
-            {
-              "title": "XL",
-              "type": "lightGrey",
-              "type_variant": "size",
-              "hex_color": "#FFFFFF"
             }
           ],
           "rating": 5,

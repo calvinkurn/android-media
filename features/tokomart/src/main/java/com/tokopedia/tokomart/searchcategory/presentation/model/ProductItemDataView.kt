@@ -11,6 +11,9 @@ data class ProductItemDataView(
         val priceInt: Double = 0.0,
         val discountPercentage: Int = 0,
         val originalPrice: String = "",
+        val parentId: String = "",
+        val variantATC: VariantATCDataView? = null,
+        val nonVariantATC: NonVariantATCDataView? = null,
         val labelGroupDataViewList: List<LabelGroupDataView> = listOf(),
         val labelGroupVariantDataViewList: List<LabelGroupVariantDataView> = listOf(),
 ): Visitable<BaseSearchCategoryTypeFactory> {

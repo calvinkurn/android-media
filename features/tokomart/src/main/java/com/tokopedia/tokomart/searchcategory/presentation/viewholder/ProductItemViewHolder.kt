@@ -8,7 +8,9 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.NonVariantATCDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ProductItemViewHolder(itemView: View): AbstractViewHolder<ProductItemDataView>(itemView) {
@@ -32,8 +34,8 @@ class ProductItemViewHolder(itemView: View): AbstractViewHolder<ProductItemDataV
                         slashedPrice = element.originalPrice,
                         labelGroupList = element.labelGroupDataViewList.mapToLabelGroup(),
                         labelGroupVariantList = element.labelGroupVariantDataViewList.mapToLabelGroupVariant(),
-                        hasAddToCartButton = true,
-                        addToCartButtonType = UnifyButton.Type.MAIN,
+                        variant = element.variantATC?.mapToVariant(),
+                        nonVariant = element.nonVariantATC?.mapToNonVariant(),
                 )
         )
     }
@@ -53,6 +55,18 @@ class ProductItemViewHolder(itemView: View): AbstractViewHolder<ProductItemDataV
                 typeVariant = it.typeVariant,
                 title = it.title,
                 hexColor = it.hexColor,
+        )
+    }
+
+    private fun VariantATCDataView.mapToVariant(): ProductCardModel.Variant {
+        return ProductCardModel.Variant(quantity = this.quantity)
+    }
+
+    private fun NonVariantATCDataView.mapToNonVariant(): ProductCardModel.NonVariant {
+        return ProductCardModel.NonVariant(
+                quantity = this.quantity,
+                maxQuantity = this.maxQuantity,
+                minQuantity = this.minQuantity,
         )
     }
 }
