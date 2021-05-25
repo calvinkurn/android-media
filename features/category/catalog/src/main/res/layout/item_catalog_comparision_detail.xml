@@ -41,7 +41,7 @@
                     android:layout_marginTop="@dimen/unify_space_8"
                     android:layout_marginEnd="@dimen/unify_space_8"
                     android:textColor="@color/Unify_N700_68"
-                    app:typographyType="body_3"
+                    app:typographyType="small"
                     tools:text="Apple" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -51,7 +51,6 @@
                     android:layout_marginStart="@dimen/unify_space_8"
                     android:layout_marginTop="@dimen/unify_space_4"
                     android:layout_marginEnd="@dimen/unify_space_8"
-                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
                     tools:text="iPhone 12 - 64GB" />
 
@@ -62,7 +61,8 @@
                     android:layout_marginStart="@dimen/unify_space_8"
                     android:layout_marginTop="@dimen/unify_space_4"
                     android:layout_marginEnd="@dimen/unify_space_8"
-                    android:ellipsize="end"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
                     tools:text="Rp15.500.000 - Rp16.150.000" />
 
 
@@ -105,7 +105,7 @@
                     android:layout_marginTop="@dimen/unify_space_8"
                     android:layout_marginEnd="@dimen/unify_space_8"
                     android:textColor="@color/Unify_N700_68"
-                    app:typographyType="body_3"
+                    app:typographyType="small"
                     tools:text="Apple" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -115,7 +115,6 @@
                     android:layout_marginStart="@dimen/unify_space_8"
                     android:layout_marginTop="@dimen/unify_space_4"
                     android:layout_marginEnd="@dimen/unify_space_8"
-                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
                     tools:text="iPhone 12 - 64GB" />
 
@@ -126,7 +125,8 @@
                     android:layout_marginStart="@dimen/unify_space_8"
                     android:layout_marginTop="@dimen/unify_space_4"
                     android:layout_marginEnd="@dimen/unify_space_8"
-                    android:ellipsize="end"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
                     tools:text="Rp15.500.000 - Rp16.150.000" />
 
             </LinearLayout>

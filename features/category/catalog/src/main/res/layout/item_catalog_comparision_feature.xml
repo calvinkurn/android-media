@@ -55,7 +55,6 @@
             android:layout_marginTop="@dimen/unify_space_4"
             android:layout_marginEnd="@dimen/unify_space_8"
             tools:text="Dua kamera 12MP Ultra Wide dan Wide"
-            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3" />
 
 
@@ -91,7 +90,6 @@
             android:layout_marginTop="@dimen/unify_space_4"
             android:layout_marginEnd="@dimen/unify_space_8"
             tools:text="Belakang 12MP (Ultra Wide, Wide and Tele) Depan 12MP, 8MP (Ultra Wide, Wide and Tele)"
-            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3" />
 
 
