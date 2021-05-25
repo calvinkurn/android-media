@@ -80,7 +80,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.localizationchooseaddress)
-    implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.promoCheckoutCommon)

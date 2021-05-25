@@ -84,6 +84,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.qrscanner)
