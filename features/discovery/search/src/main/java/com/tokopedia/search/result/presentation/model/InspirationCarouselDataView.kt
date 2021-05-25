@@ -75,6 +75,8 @@ class InspirationCarouselDataView(
                 val discountPercentage: Int = 0,
                 val position: Int = 0,
                 val optionTitle: String = "",
+                val shopLocation: String = "",
+                val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
