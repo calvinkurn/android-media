@@ -59,6 +59,7 @@ object SendWebsocketParam {
         productProfile.addProperty("url", product.productUrl)
         productProfile.addProperty("text", message)
         productProfile.addProperty("status", productPreview.status)
+        productProfile.addProperty("remaining_stock", productPreview.remainingStock)
         productProfile.add("variant", productPreview.generateVariantRequest())
 
         val freeShipping = JsonObject()
