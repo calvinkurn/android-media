@@ -55,6 +55,9 @@ object AtcVariantMapper {
         return hashMap
     }
 
+    /**
+     * Generate list of variant data that ready to render
+     */
     fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>? = mutableMapOf(), level: Int = -1): List<VariantCategory>? {
         val variantChilderValidation = validateVariantChildren(variantData?.children
                 ?: listOf(), variantData?.variants?.size ?: 0)

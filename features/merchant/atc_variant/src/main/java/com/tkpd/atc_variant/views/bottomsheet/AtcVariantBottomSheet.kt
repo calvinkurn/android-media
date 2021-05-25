@@ -304,7 +304,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
-        viewModel.onVariantClicked(variantOptions.variantCategoryKey, variantOptions.variantId, variantOptions.imageOriginal, variantOptions.level)
+        viewModel.onVariantClicked(sharedViewModel.aggregatorParams.value?.isTokoNow ?: false,
+                variantOptions.variantCategoryKey, variantOptions.variantId, variantOptions.imageOriginal, variantOptions.level)
     }
 
     override fun onVariantGuideLineClicked(url: String) {
@@ -332,6 +333,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     override fun onVariantImageClicked(url: String) {
         goToImagePreview(arrayListOf(url))
+    }
+
+    override fun onQuantityUpdate(quantity: Int, productId: String) {
+        viewModel.updateQuantity(quantity, productId)
     }
 
     private fun doAtc(buttonAction: Int) {

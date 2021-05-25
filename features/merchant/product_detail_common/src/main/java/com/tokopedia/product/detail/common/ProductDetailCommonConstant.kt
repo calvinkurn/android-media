@@ -74,6 +74,7 @@ object ProductDetailCommonConstant{
     const val TRADEIN_AFTER_DIAGNOSE = 7
     const val REMIND_ME_BUTTON = 8
     const val CHECK_WISHLIST_BUTTON = 9
+    const val ATC_UPDATE_BUTTON = 10
 
     const val REQUEST_CODE_CHECKOUT = 12382
 

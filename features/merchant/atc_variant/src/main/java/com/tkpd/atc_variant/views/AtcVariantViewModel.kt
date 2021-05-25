@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tkpd.atc_variant.data.uidata.PartialButtonDataModel
 import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tkpd.atc_variant.data.uidata.VariantShimmeringDataModel
+import com.tkpd.atc_variant.usecase.GetAggregatorAndMiniCartUseCase
 import com.tkpd.atc_variant.usecase.GetProductVariantAggregatorUseCase
 import com.tkpd.atc_variant.util.AtcCommonMapper
 import com.tkpd.atc_variant.util.AtcCommonMapper.asFail
@@ -23,6 +24,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -31,7 +34,6 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantB
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.usecase.RequestParams
@@ -47,15 +49,18 @@ import javax.inject.Inject
  */
 class AtcVariantViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
-        private val aggregatorUseCase: GetProductVariantAggregatorUseCase,
+        private val aggregatorMiniCartUseCase: GetAggregatorAndMiniCartUseCase,
         private val addToCartUseCase: AddToCartUseCase,
         private val addToCartOcsUseCase: AddToCartOcsUseCase,
         private val addToCartOccUseCase: AddToCartOccUseCase,
-        private val addWishListUseCase: AddWishListUseCase
+        private val addWishListUseCase: AddWishListUseCase,
+        private val updateCartUseCase: UpdateCartUseCase
 ) : ViewModel() {
 
     //This livedata is only for access variant,cartRedirection, and warehouse locally in viewmodel
-    private val aggregatorData = MutableLiveData<ProductVariantAggregatorUiData>()
+    private var aggregatorData: ProductVariantAggregatorUiData? = null
+    private var minicartData: Map<String, MiniCartItem>? = null
+    private var localQuantityData: MutableMap<String, Int> = mutableMapOf()
 
     private val _initialData = MutableLiveData<Result<List<AtcVariantVisitable>>>()
     val initialData: LiveData<Result<List<AtcVariantVisitable>>>
@@ -83,7 +88,8 @@ class AtcVariantViewModel @Inject constructor(
 
     private var isShopOwner: Boolean = false
 
-    fun onVariantClicked(selectedOptionKey: String,
+    fun onVariantClicked(isTokoNow: Boolean,
+                         selectedOptionKey: String,
                          selectedOptionId: String,
                          variantImage: String, // only use when user click partially to update the image
                          variantLevel: Int) {
@@ -99,10 +105,13 @@ class AtcVariantViewModel @Inject constructor(
 
             val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds?.values?.toList()
                     ?: listOf())
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData.value?.cardRedirection)
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData?.cardRedirection)
 
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
+            val selectedMiniCartItem = getSelectedMiniCartItem(selectedVariantChild?.productId
+                    ?: "")
+            val selectedQuantity = localQuantityData[selectedVariantChild?.productId ?: ""] ?: 0
 
             //We update visitable to re-render selected variant and header
             val list = AtcCommonMapper.updateVisitable(
@@ -113,7 +122,10 @@ class AtcVariantViewModel @Inject constructor(
                     variantImage = variantImage,
                     allChildEmpty = getVariantData()?.getBuyableVariantCount() == 0,
                     selectedVariantChild = selectedVariantChild,
-                    selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false)
+                    selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
+                    miniCartData = selectedMiniCartItem,
+                    isTokoNow = isTokoNow,
+                    selectedQuantity = selectedQuantity)
 
             _initialData.postValue(list.asSuccess())
             _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedVariantChild))
@@ -133,7 +145,7 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun getVariantData(): ProductVariant? {
-        return aggregatorData.value?.variantData
+        return aggregatorData?.variantData
     }
 
     /**
@@ -168,40 +180,43 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    fun updateQuantity(quantity: Int, productId: String) {
+        localQuantityData[productId] = quantity
+    }
+
     fun decideInitialValue(aggregatorParams: ProductVariantBottomSheetParams) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             _initialData.postValue(listOf(VariantShimmeringDataModel(99L)).asSuccess())
             isShopOwner = aggregatorParams.isShopOwner
-            /**
-             * If data completely provided from previous page, use that
-             * if not call GQL
-             */
-            val aggregatorResult = if (aggregatorParams.variantAggregator.isAggregatorEmpty()) {
-                aggregatorUseCase.executeOnBackground(GetProductVariantAggregatorUseCase.createRequestParams(aggregatorParams.productId,
-                        aggregatorParams.pageSource, aggregatorParams.whId, aggregatorParams.pdpSession, UserLocationRequest()))
-            } else {
-                aggregatorParams.variantAggregator
-            }
 
-            aggregatorData.postValue(aggregatorResult)
+            getAggregatorAndMiniCartData(aggregatorParams)
 
             //Get selected child by product id, if product parent auto select first child
             //If parent just update the header and ignore the variant selection
-            val pairIsParentAndChild = aggregatorResult.variantData.autoSelectChildIfGivenIdIsParent(aggregatorParams.productId)
-            val isParent = pairIsParentAndChild.first
-            val selectedChild = pairIsParentAndChild.second
+            val pairIsParentAndChild = aggregatorData?.variantData?.autoSelectChildIfGivenIdIsParent(aggregatorParams.productId)
+            val isParent = pairIsParentAndChild?.first ?: false
+            val selectedChild = pairIsParentAndChild?.second
 
             //Get cart redirection , and warehouse by selected product id to render button and toko cabang
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorResult.cardRedirection, isShopOwner)
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorData?.cardRedirection, isShopOwner)
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 
             //generate variant component and data, initial render need to determine selected option
-            val selectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(isParent, aggregatorResult.variantData, selectedChild)
-            val processedVariant = AtcVariantMapper.processVariant(aggregatorResult.variantData, selectedOptionIds)
+            val initialSelectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(isParent, aggregatorData?.variantData, selectedChild)
+            val processedVariant = AtcVariantMapper.processVariant(aggregatorData?.variantData, initialSelectedOptionIds)
+            val selectedMiniCartItem = getSelectedMiniCartItem(aggregatorParams.productId)
+            val selectedQuantity = localQuantityData[selectedChild?.productId ?: ""] ?: 0
 
             //Generate visitables
-            val visitables = generateVisitable(selectedChild, selectedWarehouse?.isFulfillment
-                    ?: false, selectedOptionIds, processedVariant, aggregatorParams.isTokoNow, aggregatorResult.variantData)
+            val visitables = AtcCommonMapper.mapToVisitable(
+                    selectedChild = selectedChild,
+                    isTokoNow = aggregatorParams.isTokoNow,
+                    initialSelectedVariant = initialSelectedOptionIds,
+                    processedVariant = processedVariant,
+                    selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
+                    totalStock = aggregatorData?.variantData?.totalStockChilds ?: 0,
+                    miniCartData = selectedMiniCartItem,
+                    selectedQuantity = selectedQuantity)
 
             if (visitables != null) {
                 _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedChild))
@@ -214,6 +229,25 @@ class AtcVariantViewModel @Inject constructor(
         }) {
             _buttonData.postValue(it.asFail())
             _initialData.postValue(it.asFail())
+        }
+    }
+
+    private suspend fun getAggregatorAndMiniCartData(aggregatorParams: ProductVariantBottomSheetParams) {
+        /**
+         * If data completely provided from previous page, use that
+         * if not call GQL
+         */
+        if (aggregatorParams.variantAggregator.isAggregatorEmpty() || (aggregatorParams.isTokoNow && aggregatorParams.miniCartData.isNullOrEmpty())) {
+            val result = aggregatorMiniCartUseCase.executeOnBackground(
+                    GetProductVariantAggregatorUseCase.createRequestParams(aggregatorParams.productId,
+                            aggregatorParams.pageSource, aggregatorParams.whId, aggregatorParams.pdpSession, UserLocationRequest()),
+                    aggregatorParams.shopId, aggregatorParams.isTokoNow
+            )
+            aggregatorData = result.variantAggregator
+            minicartData = result.miniCartData
+        } else {
+            aggregatorData = aggregatorParams.variantAggregator
+            minicartData = aggregatorParams.miniCartData
         }
     }
 
@@ -246,7 +280,7 @@ class AtcVariantViewModel @Inject constructor(
         val selectedChild = getVariantData()?.getChildByProductId(productId)
         selectedChild?.isWishlist = true
 
-        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData.value?.cardRedirection)
+        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData?.cardRedirection)
         _buttonData.postValue(generateCartRedir.asSuccess())
     }
 
@@ -255,7 +289,7 @@ class AtcVariantViewModel @Inject constructor(
         val btnColor = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY
 
         //update cart redir localy
-        aggregatorData.value?.cardRedirection?.let {
+        aggregatorData?.cardRedirection?.let {
             it[productId]?.availableButtons = listOf(it[productId]?.availableButtons?.firstOrNull()?.copy(
                     cartType = cartType,
                     color = btnColor,
@@ -275,8 +309,18 @@ class AtcVariantViewModel @Inject constructor(
         val selectedChild = getVariantData()?.getChildByOptionId(getSelectedOptionIds()?.values?.toList()
                 ?: listOf())
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
+        val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
+        var actionButtonCart = actionButton
+        if (selectedMiniCart != null) {
+            selectedMiniCart.quantity = localQuantityData[selectedChild?.productId ?: ""]
+                    ?: selectedChild?.getFinalMinOrder() ?: return
+            actionButtonCart = ProductDetailCommonConstant.ATC_UPDATE_BUTTON
+        }
 
-        when (actionButton) {
+        when (actionButtonCart) {
+            ProductDetailCommonConstant.ATC_UPDATE_BUTTON -> {
+
+            }
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                     productId = selectedChild?.productId?.toLongOrZero() ?: 0L
@@ -353,6 +397,17 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getUpdateCartUseCase(params: List<MiniCartItem>) {
+        withContext(dispatcher.io) {
+            updateCartUseCase.setParams(params)
+            val result = updateCartUseCase.executeOnBackground()
+
+            if (result.error.isEmpty()) {
+
+            }
+        }
+    }
+
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
         withContext(dispatcher.io) {
             val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
@@ -390,21 +445,6 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun generateVisitable(selectedVariantChild: VariantChild?,
-                                  isFulfillment: Boolean,
-                                  selectedOptionIds: MutableMap<String, String>,
-                                  processedVariant: List<VariantCategory>?,
-                                  isTokoNow: Boolean,
-                                  variantData: ProductVariant): List<AtcVariantVisitable>? {
-        return AtcCommonMapper.mapToVisitable(
-                selectedChild = selectedVariantChild,
-                isTokoNow = isTokoNow,
-                initialSelectedVariant = selectedOptionIds,
-                processedVariant = processedVariant,
-                selectedProductFulfillment = isFulfillment,
-                totalStock = variantData.totalStockChilds)
-    }
-
     /**
      * Update selection by key eg:
      *  - Before update (warna, 0), (ukuran, 0)
@@ -424,6 +464,10 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     private fun getSelectedWarehouse(productId: String): WarehouseInfo? {
-        return aggregatorData.value?.nearestWarehouse?.get(productId)
+        return aggregatorData?.nearestWarehouse?.get(productId)
+    }
+
+    private fun getSelectedMiniCartItem(productId: String): MiniCartItem? {
+        return minicartData?.get(productId)
     }
 }

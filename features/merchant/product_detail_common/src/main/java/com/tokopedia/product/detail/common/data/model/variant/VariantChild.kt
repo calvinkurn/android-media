@@ -63,84 +63,84 @@ data class VariantChild(
 
         @SerializedName("thematicCampaign")
         val thematicCampaign: ThematicCampaign? = null
-){
-        val finalMainPrice:Float
-                get() {
-                        return if(campaign?.isActive == true) {
-                                campaign.originalPrice ?: 0F
-                        } else {
-                                price
-                        }
-                }
-
-        val finalPrice: Long
-                get() {
-                        return if (campaign?.isActive == true) {
-                                campaign.discountedPrice?.toLong() ?: 0L
-                        } else {
-                                price.toLong()
-                        }
-                }
-
-        fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
-                ?: 0 else stock?.minimumOrder?.toIntOrNull() ?: 0
-
-        fun getVariantFinalStock() :Int {
-                return if(campaign?.isActive == true) campaign.stock ?: 0 else stock?.stock ?: 0
+) {
+    val finalMainPrice: Float
+        get() {
+            return if (campaign?.isActive == true) {
+                campaign.originalPrice ?: 0F
+            } else {
+                price
+            }
         }
 
-        val isBuyable: Boolean
-                get() = getVariantFinalStock() > 0 && stock?.isBuyable ?: false
-
-        val isFlashSale: Boolean
-                get() = campaign?.isActive == true
-
-        val hasPicture: Boolean
-                get() = picture != null &&
-                        (picture.original?.isNotEmpty() == true
-                                || picture.thumbnail?.isNotEmpty() == true)
-
-        fun getOptionStringList(variantReference: List<Variant>?): List<String> {
-                if (variantReference != null && variantReference.isNotEmpty()) {
-                        val optionStringList = mutableListOf<String>()
-                        optionIds.forEachIndexed { index, option ->
-                                val value: String? = variantReference.get(index).options.find { it.id == option }?.value
-                                value?.let {
-                                        optionStringList.add(it)
-                                }
-                        }
-                        return optionStringList
-                }
-                return listOf()
+    val finalPrice: Long
+        get() {
+            return if (campaign?.isActive == true) {
+                campaign.discountedPrice?.toLong() ?: 0L
+            } else {
+                price.toLong()
+            }
         }
 
-        fun mapVariant(variants: List<Variant>?): ArrayMap<String, ArrayMap<String, String>>? {
-                if (variants == null || variants.isEmpty()) return null
-                val productVariantMap = initArrayMapVariant()
-                for (optionId in optionIds) {
-                        for (variant in variants) {
-                                var isFound = false
-                                for (option in variant.options) {
-                                        if (option.id == optionId) {
-                                                productVariantMap[variant.identifier]?.set("value", option.value)
-                                                productVariantMap[variant.identifier]?.set("hex", option.hex)
-                                                productVariantMap[variant.identifier]?.set("id", option.id.toString())
-                                                isFound = true
-                                                break
-                                        }
-                                }
-                                if (isFound) break
-                        }
-                }
-                return productVariantMap
-        }
+    fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
+            ?: 0 else stock?.minimumOrder?.toIntOrNull() ?: 0
 
-        private fun initArrayMapVariant(): ArrayMap<String, ArrayMap<String, String>> {
-                return ArrayMap<String, ArrayMap<String, String>>().apply {
-                        put("colour", ArrayMap())
-                        put("size", ArrayMap())
+    fun getVariantFinalStock(): Int {
+        return if (campaign?.isActive == true) campaign.stock ?: 0 else stock?.stock ?: 0
+    }
+
+    val isBuyable: Boolean
+        get() = getVariantFinalStock() > 0 && stock?.isBuyable ?: false
+
+    val isFlashSale: Boolean
+        get() = campaign?.isActive == true
+
+    val hasPicture: Boolean
+        get() = picture != null &&
+                (picture.original?.isNotEmpty() == true
+                        || picture.thumbnail?.isNotEmpty() == true)
+
+    fun getOptionStringList(variantReference: List<Variant>?): List<String> {
+        if (variantReference != null && variantReference.isNotEmpty()) {
+            val optionStringList = mutableListOf<String>()
+            optionIds.forEachIndexed { index, option ->
+                val value: String? = variantReference.get(index).options.find { it.id == option }?.value
+                value?.let {
+                    optionStringList.add(it)
                 }
+            }
+            return optionStringList
         }
+        return listOf()
+    }
+
+    fun mapVariant(variants: List<Variant>?): ArrayMap<String, ArrayMap<String, String>>? {
+        if (variants == null || variants.isEmpty()) return null
+        val productVariantMap = initArrayMapVariant()
+        for (optionId in optionIds) {
+            for (variant in variants) {
+                var isFound = false
+                for (option in variant.options) {
+                    if (option.id == optionId) {
+                        productVariantMap[variant.identifier]?.set("value", option.value)
+                        productVariantMap[variant.identifier]?.set("hex", option.hex)
+                        productVariantMap[variant.identifier]?.set("id", option.id.toString())
+                        isFound = true
+                        break
+                    }
+                }
+                if (isFound) break
+            }
+        }
+        return productVariantMap
+    }
+
+    private fun initArrayMapVariant(): ArrayMap<String, ArrayMap<String, String>> {
+        return ArrayMap<String, ArrayMap<String, String>>().apply {
+            put("colour", ArrayMap())
+            put("size", ArrayMap())
+        }
+    }
 }
 
 data class VariantStock(

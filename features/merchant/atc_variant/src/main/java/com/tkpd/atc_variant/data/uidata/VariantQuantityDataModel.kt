@@ -10,13 +10,18 @@ import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 data class VariantQuantityDataModel(
         val position: Long = 0L,
         val productId: String = "",
-        val quantity: Int = 0
+        var quantity: Int = 0,
+        var minOrder: Int = 0,
+        var shouldShowView: Boolean = false,
+        var cartId: String = ""
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
 
     override fun isEqual(newData: AtcVariantVisitable): Boolean {
         return if (newData is VariantQuantityDataModel) {
-            productId == newData.productId &&
+            minOrder == newData.minOrder &&
+                    shouldShowView == newData.shouldShowView &&
+                    productId == newData.productId &&
                     quantity == newData.quantity
         } else {
             false

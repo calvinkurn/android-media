@@ -3,6 +3,7 @@ package com.tkpd.atc_variant.util
 import com.tkpd.atc_variant.data.uidata.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -19,13 +20,13 @@ object AtcCommonMapper {
 
     /**
      * Generate selected option ids for initial variant selection state
-     * if product parent, we dont want to select the variant except it has abillity to auto select
+     * if product parent, select first buyable child, if all child empty, select the first one
      * if product not buyable, also ignore
      *
      * auto select will run if there is only 1 child left buyable
      */
-    fun determineSelectedOptionIds(isParent: Boolean, variantData: ProductVariant, selectedChild: VariantChild?): MutableMap<String, String> {
-        val shouldAutoSelect = variantData.autoSelectedOptionIds()
+    fun determineSelectedOptionIds(isParent: Boolean, variantData: ProductVariant?, selectedChild: VariantChild?): MutableMap<String, String> {
+        val shouldAutoSelect = variantData?.autoSelectedOptionIds() ?: listOf()
         return when {
             isParent -> {
                 if (selectedChild == null) {
@@ -56,7 +57,9 @@ object AtcCommonMapper {
                        initialSelectedVariant: MutableMap<String, String>,
                        processedVariant: List<VariantCategory>?,
                        selectedProductFulfillment: Boolean,
-                       totalStock: Int): List<AtcVariantVisitable>? {
+                       totalStock: Int,
+                       miniCartData: MiniCartItem?,
+                       selectedQuantity: Int): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
@@ -83,14 +86,17 @@ object AtcCommonMapper {
             idCounter += 1
         }
 
-        if (isTokoNow) {
-            result.add(
-                    VariantQuantityDataModel(
-                            position = idCounter,
-                            productId = selectedChild?.productId ?: "")
-            ).also {
-                idCounter += 1
-            }
+        result.add(
+                VariantQuantityDataModel(
+                        position = idCounter,
+                        productId = selectedChild?.productId ?: "",
+                        quantity = miniCartData?.quantity
+                                ?: selectedQuantity,
+                        minOrder = selectedChild?.getFinalMinOrder() ?: 0,
+                        shouldShowView = isTokoNow && selectedChild?.isBuyable == true,
+                        cartId = miniCartData?.cartId ?: "")
+        ).also {
+            idCounter += 1
         }
 
         return result
@@ -103,7 +109,10 @@ object AtcCommonMapper {
                         allChildEmpty: Boolean,
                         selectedVariantChild: VariantChild?,
                         variantImage: String,
-                        selectedProductFulfillment: Boolean): List<AtcVariantVisitable> {
+                        selectedProductFulfillment: Boolean,
+                        miniCartData: MiniCartItem?,
+                        isTokoNow: Boolean,
+                        selectedQuantity: Int): List<AtcVariantVisitable> {
 
         return oldList.map {
             when (it) {
@@ -113,6 +122,14 @@ object AtcCommonMapper {
                                     ?: mutableMapOf(),
                             isEmptyStock = allChildEmpty,
                             isTokoCabang = selectedProductFulfillment)
+                }
+                is VariantQuantityDataModel -> {
+                    it.copy(productId = selectedVariantChild?.productId ?: "",
+                            quantity = miniCartData?.quantity
+                                    ?: selectedQuantity,
+                            minOrder = selectedVariantChild?.getFinalMinOrder() ?: 0,
+                            shouldShowView = isTokoNow && selectedVariantChild?.isBuyable == true,
+                            cartId = miniCartData?.cartId ?: "")
                 }
                 is VariantHeaderDataModel -> {
                     if (isPartiallySelected) {
