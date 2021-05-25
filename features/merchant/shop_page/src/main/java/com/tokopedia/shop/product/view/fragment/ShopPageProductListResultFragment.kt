@@ -56,7 +56,8 @@ import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_VALUE_ETALASE_TYPE
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
+//import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -419,7 +420,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG,
+                                SHOP_PAGE_BUYER_FLOW_TAG,
                                 this::observeLiveData.name,
                                 ShopPageProductListResultViewModel::shopInfoResp.name,
                                 userId,
@@ -440,7 +441,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG,
+                                SHOP_PAGE_BUYER_FLOW_TAG,
                                 this::observeLiveData.name,
                                 ShopPageProductListResultViewModel::shopSortFilterData.name,
                                 userId,
@@ -478,7 +479,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG,
+                                SHOP_PAGE_BUYER_FLOW_TAG,
                                 this::observeLiveData.name,
                                 ShopPageProductListResultViewModel::productData.name,
                                 userId,

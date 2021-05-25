@@ -62,7 +62,8 @@ import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopPageConstant.START_PAGE
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
+//import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_RENDER
@@ -1193,7 +1194,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG,
+                                SHOP_PAGE_BUYER_FLOW_TAG,
                                 this::observeViewModelLiveData.name,
                                 ShopPageProductListViewModel::productListData.name,
                                 userId,

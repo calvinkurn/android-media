@@ -70,7 +70,7 @@ import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
@@ -452,7 +452,7 @@ class NewShopPageFragment :
                     val throwable = result.throwable
                     if (!isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_HEADER_BUYER_FLOW_TAG,
+                                SHOP_PAGE_BUYER_FLOW_TAG,
                                 this::observeLiveData.name,
                                 NewShopPageViewModel::shopPageP1Data.name,
                                 userId,
@@ -512,7 +512,7 @@ class NewShopPageFragment :
                     val throwable = result.throwable
                     if (!isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_HEADER_BUYER_FLOW_TAG,
+                                SHOP_PAGE_BUYER_FLOW_TAG,
                                 this::observeLiveData.name,
                                 NewShopPageViewModel::shopIdFromDomainData.name,
                                 userId,

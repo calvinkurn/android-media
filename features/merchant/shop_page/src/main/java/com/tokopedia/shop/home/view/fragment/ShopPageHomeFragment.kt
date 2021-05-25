@@ -71,7 +71,8 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.*
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
+//import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_RENDER
@@ -471,7 +472,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                SHOP_PAGE_BUYER_FLOW_TAG,
                                 this::observeLiveData.name,
                                 ShopHomeViewModel::shopHomeLayoutData.name,
                                 userId,
@@ -512,7 +513,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                SHOP_PAGE_BUYER_FLOW_TAG,
                                 this::observeLiveData.name,
                                 ShopHomeViewModel::productListData.name,
                                 userId,
@@ -1195,7 +1196,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             {
                                 if (!ShopUtil.isExceptionIgnored(it)) {
                                     ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                            SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                            SHOP_PAGE_BUYER_FLOW_TAG,
                                             ShopHomeViewModel::addProductToCartOcc.name,
                                             "",
                                             userId,
@@ -1224,7 +1225,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             {
                                 if (!ShopUtil.isExceptionIgnored(it)) {
                                     ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                            SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                            SHOP_PAGE_BUYER_FLOW_TAG,
                                             ShopHomeViewModel::addProductToCart.name,
                                             "",
                                             userId,
@@ -1439,7 +1440,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         {
                             if (!ShopUtil.isExceptionIgnored(it)) {
                                 ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                        SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
+                                        SHOP_PAGE_BUYER_FLOW_TAG,
                                         ShopHomeViewModel::addProductToCart.name,
                                         "",
                                         userId,
