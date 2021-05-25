@@ -58,7 +58,8 @@ object VariantMapper {
             priceBefore = priceBefore,
             priceBeforeInt = priceBeforeInt,
             dropPercentage = dropPercentage,
-            isActive = isActive
+            isActive = isActive,
+            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
