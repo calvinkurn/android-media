@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -30,6 +31,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
+    private var ivTest: ImageView? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private lateinit var totalAmountChevronListener: () -> Unit
 
@@ -37,6 +39,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     init {
         view = inflate(context, R.layout.widget_mini_cart, this)
+        ivTest = view?.findViewById(R.id.iv_test)
     }
 
     /*
@@ -80,6 +83,7 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.context?.let {
             val chatIcon = getIconUnifyDrawable(it, IconUnify.CHAT, ContextCompat.getColor(it, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)
+            ivTest?.setImageDrawable(chatIcon)
         }
         if (totalAmount?.isTotalAmountLoading == false) {
             totalAmount?.isTotalAmountLoading = true
