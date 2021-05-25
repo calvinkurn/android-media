@@ -15,8 +15,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub
-import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
-import com.tokopedia.loginregister.login.behaviour.data.RegisterCheckUseCaseStub
+import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.behaviour.di.DaggerBaseAppComponentStub
 import com.tokopedia.loginregister.login.behaviour.di.DaggerLoginComponentStub
 import com.tokopedia.loginregister.login.behaviour.di.LoginComponentStub
@@ -26,6 +25,7 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
 import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -63,6 +63,39 @@ open class LoginBase {
     @Inject
     lateinit var discoverUseCaseStub: DiscoverUseCaseStub
 
+    @Inject
+    lateinit var loginTokenV2UseCaseStub: LoginTokenV2UseCaseStub
+
+    @Inject
+    lateinit var generatePublicKeyUseCaseStub: GeneratePublicKeyUseCaseStub
+
+    @Inject
+    lateinit var getProfileUseCaseStub: GetProfileUseCaseStub
+
+    @Inject
+    lateinit var activateUserUseCaseStub: ActivateUserUseCaseStub
+
+    @Inject
+    lateinit var dynamicBannerUseCaseStub: DynamicBannerUseCaseStub
+
+    @Inject
+    lateinit var getAdminTypeUseCaseStub: GetAdminTypeUseCaseStub
+
+    @Inject
+    lateinit var getFacebookCredentialUseCaseStub: GetFacebookCredentialUseCaseStub
+
+    @Inject
+    lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
+
+    @Inject
+    lateinit var statusPinUseCaseStub: StatusPinUseCaseStub
+
+    @Inject
+    lateinit var tickerInfoUseCaseStub: TickerInfoUseCaseStub
+
+    @Inject
+    lateinit var userSessionStub: UserSessionInterface
+
     @ExperimentalCoroutinesApi
     @Before
     open fun before() {
@@ -85,12 +118,15 @@ open class LoginBase {
     }
 
     protected fun setRegisterCheckDefaultResponse() {
-        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "email", view = "yoris.prayogo@tokopedia.com")
+        val data = RegisterCheckData(isExist = true, useHash = true , userID = "123456", registerType = "email", view = "yoris.prayogo@tokopedia.com")
         registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
     }
 
     protected fun setDefaultDiscover() {
-        val mockProviders = arrayListOf(DiscoverItemDataModel("1", "Test Providers", "cek url", "", ""))
+        val mockProviders = arrayListOf(
+                DiscoverItemDataModel("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
+                DiscoverItemDataModel("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
+        )
         val response = DiscoverDataModel(mockProviders, "")
         discoverUseCaseStub.response = response
     }
@@ -109,8 +145,8 @@ open class LoginBase {
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
         fragmentTransactionIdling = FragmentTransactionIdle(
-                activity.supportFragmentManager,
-                LoginActivityStub.TAG
+            activity.supportFragmentManager,
+            LoginActivityStub.TAG
         )
     }
 
@@ -165,6 +201,11 @@ open class LoginBase {
 
     fun inputEmailOrPhone(value: String) {
         val viewInteraction = onView(withId(R.id.input_email_phone)).check(matches(isDisplayed()))
+        viewInteraction.perform(ViewActions.typeText(value))
+    }
+
+    fun inputPassword(value: String) {
+        val viewInteraction = onView(withId(R.id.text_field_input)).check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.typeText(value))
     }
 

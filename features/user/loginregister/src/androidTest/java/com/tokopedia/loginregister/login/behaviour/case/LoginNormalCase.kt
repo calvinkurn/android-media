@@ -242,9 +242,9 @@ class LoginNormalCase : LoginBase() {
         runTest {
             val viewDevOpts = onView(withText("Developer Options"))
             if (GlobalConfig.isAllowDebuggingTools()) {
-                viewDevOpts.check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+                viewDevOpts.check(matches(isDisplayed()))
             } else {
-                viewDevOpts.check(ViewAssertions.matches(not(ViewMatchers.isDisplayed())))
+                viewDevOpts.check(matches(not(isDisplayed())))
             }
         }
     }
