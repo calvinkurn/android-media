@@ -76,8 +76,7 @@ class UpgradePmProWidget(
             setExpandedChanged(false)
         } else {
             val threshold = element.shopInfo.shopScorePmProThreshold
-            val charging = "1,5%."
-            tvPmUpgradeBenefitDescription.text = context.resources.getString(R.string.pm_pro_upgrade_not_eligible_description, threshold, charging).parseAsHtml()
+            tvPmUpgradeBenefitDescription.text = context.resources.getString(R.string.pm_pro_upgrade_not_eligible_description, threshold, Constant.POWER_MERCHANT_PRO_CHARGING).parseAsHtml()
             tvPmProTncDescription.gone()
             btnPmProUpgrade.gone()
             setExpandedChanged(true)
