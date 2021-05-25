@@ -21,6 +21,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
@@ -170,6 +171,16 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
         trackImpressedVoucher(vouchers)
+    }
+
+    override fun onProductCountChanged(view: ProductSheetViewComponent) {
+        if (playViewModel.bottomInsets.isKeyboardShown) return
+
+        doShowToaster(
+                bottomSheetType = BottomInsetsType.ProductSheet,
+                toasterType = Toaster.TYPE_NORMAL,
+                message = getString(R.string.play_product_updated)
+        )
     }
 
     /**

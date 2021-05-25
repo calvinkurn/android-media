@@ -1184,6 +1184,8 @@ class AddEditProductPreviewFragment :
                         SharedPreferencesUtil.setProductLimitationModel(requireActivity(), productLimitationModel)
                     }
                     is Fail -> {
+                        productLimitationTicker?.gone()
+                        showToasterFailed(it.throwable)
                         AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     }
                 }

@@ -16,15 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relTicker" />
 
-    <com.tokopedia.sellerhome.view.viewhelper.KetupatLottieView
-        android:id="@+id/lottie_seller_home_ketupat"
-        android:layout_width="@dimen/sah_thematic_width"
-        android:layout_height="@dimen/sah_thematic_height"
-        android:translationY="@dimen/sah_thematic_translation_y"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        app:layout_constraintTop_toBottomOf="@id/relTicker"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <RelativeLayout
         android:id="@+id/relTicker"
         android:layout_width="match_parent"

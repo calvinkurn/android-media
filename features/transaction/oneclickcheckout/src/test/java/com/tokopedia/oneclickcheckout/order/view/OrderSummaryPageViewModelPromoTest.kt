@@ -439,9 +439,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Final Validate Use Promo Red State Official Store`() {
+    fun `Final Validate Use Promo Red State With Shop Badge`() {
         // Given
-        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(isOfficial = 1))
+        val shopBadge = "shop_badge.png"
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(shopBadge = shopBadge))
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -459,32 +460,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
-                NotEligiblePromoHolderdata(showShopSection = true, iconType = NotEligiblePromoHolderdata.TYPE_ICON_OFFICIAL_STORE)
-        )), orderSummaryPageViewModel.globalEvent.value)
-    }
-
-    @Test
-    fun `Final Validate Use Promo Red State Power Merchant`() {
-        // Given
-        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(isGold = 1))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
-                voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
-                        messageUiModel = MessageUiModel(state = "red")
-                ))))
-        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(response)
-        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
-        orderSummaryPageViewModel.validateUsePromoRevampUiModel = response.copy(promoUiModel = response.promoUiModel.copy(messageUiModel = MessageUiModel(state = "green")))
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-
-        // When
-        orderSummaryPageViewModel.finalUpdate({ }, false)
-
-        // Then
-        assertEquals(OccGlobalEvent.PromoClashing(arrayListOf(
-                NotEligiblePromoHolderdata(showShopSection = true, iconType = NotEligiblePromoHolderdata.TYPE_ICON_POWER_MERCHANT)
+                NotEligiblePromoHolderdata(showShopSection = true, shopBadge = shopBadge)
         )), orderSummaryPageViewModel.globalEvent.value)
     }
 

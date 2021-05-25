@@ -7,11 +7,12 @@ import com.tokopedia.home_component.model.ReminderWidget
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ReminderWidgetModel(
+        val id: String = "",
         val data: ReminderWidget = ReminderWidget(),
         var source: ReminderEnum
 ): ImpressHolder(), HomeComponentVisitable {
     override fun visitableId(): String? {
-        return data.id
+        return id
     }
 
     override fun equalsWith(b: Any?): Boolean {
