@@ -1,12 +1,12 @@
 package com.tokopedia.atc_common.domain.usecase
 
 import com.google.gson.JsonArray
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -14,7 +14,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                                      private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AtcMultiData>() {
+                                                      private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AtcMultiData>() {
 
     companion object {
         private const val PARAM = "param"
@@ -31,7 +31,7 @@ class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase
     private var userId: String = ""
 
     fun setup(query: String, params: MutableMap<String, Any?>, userId: String) {
-        params[PARAM_KEY_CHOSEN_ADDRESS] = chosenAddressAddToCartRequestHelper.getChosenAddress()
+        params[KEY_CHOSEN_ADDRESS] = chosenAddressAddToCartRequestHelper.getChosenAddress()
         this.params = params
 
         this.query = query

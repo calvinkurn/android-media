@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@color/Neutral_N0"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/empty_message"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/empty_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_lvl4"
-        android:textColor="#273238"
-        android:textSize="@dimen/fontSize_lvl7"
-        android:gravity="center"
-        android:text="@string/remote_config_empty_result_message"
-        android:visibility="gone" />
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_lvl4"
+            android:textColor="#273238"
+            android:textSize="@dimen/fontSize_lvl7"
+            android:gravity="center"
+            android:text="@string/remote_config_empty_result_message" />
+        <Button
+            android:id="@+id/button_add_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Remote config (for local)"
+            android:layout_margin="16dp"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/config_list_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</LinearLayout>
+</FrameLayout>

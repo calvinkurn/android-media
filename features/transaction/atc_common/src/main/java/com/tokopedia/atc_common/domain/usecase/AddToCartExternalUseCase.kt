@@ -2,8 +2,6 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.AtcConstant.ATC_ERROR_GLOBAL
 import com.tokopedia.atc_common.AtcConstant.MUTATION_ATC_EXTERNAL
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartExternalGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
@@ -11,6 +9,8 @@ import com.tokopedia.atc_common.domain.mapper.AddToCartExternalDataMapper
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -22,7 +22,7 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
                                                    private val graphqlUseCase: GraphqlUseCase,
                                                    private val addToCartDataMapper: AddToCartExternalDataMapper,
                                                    private val analytics: AddToCartExternalAnalytics,
-                                                   private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AddToCartExternalModel>() {
+                                                   private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartExternalModel>() {
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
@@ -32,7 +32,7 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
     private fun getParams(productId: Long): Map<String, Any?> {
         return mapOf(
                 PARAM_PRODUCT_ID to productId,
-                PARAM_KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+                KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
         )
     }
 

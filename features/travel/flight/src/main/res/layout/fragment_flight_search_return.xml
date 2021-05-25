@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:layout_height="match_parent">
 
     <com.tokopedia.flight.common.view.HorizontalProgressBar
         android:id="@+id/horizontal_progress_bar"
@@ -25,7 +24,7 @@
         app:tickerShapeType="full"
         tools:visibility="visible" />
 
-    <com.tokopedia.flight.searchV4.presentation.widget.DepartureTripLabelView
+    <com.tokopedia.flight.search.presentation.widget.DepartureTripLabelView
         android:id="@+id/departureTripLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,6 +59,7 @@
                 android:descendantFocusability="blocksDescendants">
             <com.tokopedia.flight.promo_chips.presentation.widget.FlightPromoChips
                 android:id="@+id/flight_promo_chips_view"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

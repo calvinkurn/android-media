@@ -23,4 +23,8 @@ class Eligible {
     @SerializedName("actionItems")
     @Expose
     var actionItems: List<String> = emptyList()
+
+    @SerializedName("isSuccess")
+    @Expose
+    var isSuccess: Boolean? = null
 }

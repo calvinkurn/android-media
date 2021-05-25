@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl3">
 
     <com.tokopedia.sortfilter.SortFilter
         app:layout_constraintTop_toTopOf="parent"

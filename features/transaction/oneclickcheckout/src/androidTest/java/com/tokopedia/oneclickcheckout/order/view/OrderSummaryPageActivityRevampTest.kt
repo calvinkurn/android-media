@@ -32,10 +32,8 @@ class OrderSummaryPageActivityRevampTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
     private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
     private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
-    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
@@ -459,6 +457,18 @@ class OrderSummaryPageActivityRevampTest {
                     queryString = "transaction_id=123",
                     method = "POST"
             )
+        }
+    }
+
+    @Test
+    fun happyFlow_ShopBadge() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_SHOP_TYPE_PM_PRO_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShopBadge(shopTypeName = "power merchant pro")
         }
     }
 

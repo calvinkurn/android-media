@@ -7,7 +7,7 @@ import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.DepartureTimeModel
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
-import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
 
 /**

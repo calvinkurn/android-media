@@ -19,6 +19,7 @@
 
     <string name="path_checkout_variant" translatable="false">/checkout-variant</string>
     <string name="path_cart" translatable="false">/cart</string>
+    <string name="path_mini_cart_example" translatable="false">/minicartexample</string>
     <string name="path_checkout" translatable="false">/checkout</string>
     <string name="path_normal_checkout" translatable="false">/normal-checkout</string>
     <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>
@@ -83,6 +84,9 @@
     <string name="path_shop_setting_shipping" translatable="false">/shop-settings-shipping</string>
     <string name="path_shop_setting_cod_activation" translatable="false">/shop-settings-cod</string>
     <string name="path_shop_score_detail" translatable="false">/shop-score-detail</string>
+    <string name="path_shop_score_performance" translatable="false">/shop/performance</string>
+    <string name="path_shop_penalty" translatable="false">/shop-penalty</string>
+    <string name="path_shop_penalty_detail" translatable="false">/shop-penalty-detail</string>
     <string name="path_shop_edit_schedule" translatable="false">/shop-settings-edit-schedule</string>
     <string name="path_shop_page_setting" translatable="false">/shop-page-setting</string>
 

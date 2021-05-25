@@ -16,7 +16,6 @@ import timber.log.Timber
 import kotlin.math.log
 
 class BranchHelperValidation {
-    val TAG = "P2#BRANCH_VALIDATION#"
     val VALUE_IDR = "IDR"
     private val CONTENT_TYPE = "product"
     private val ADD_TO_CART = "ADD_TO_CART"
