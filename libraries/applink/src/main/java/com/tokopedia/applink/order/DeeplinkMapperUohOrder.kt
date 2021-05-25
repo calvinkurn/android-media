@@ -44,12 +44,12 @@ object DeeplinkMapperUohOrder {
                 td == ORDER_HISTORY ||
                 td == EVENTS_ORDER ||
                 td == DEALS_ORDER ||
-                td == FLIGHT_ORDER ||
+                d.startsWith(FLIGHT_ORDER) ||
                 td == TRAIN_ORDER ||
                 td == GIFT_CARDS_ORDER ||
                 td == INSURANCE_ORDER ||
                 td == MODAL_TOKO_ORDER ||
-                td == HOTEL_ORDER ||
+                d.startsWith(HOTEL_ORDER) ||
                 td == PURCHASE_ORDER ||
                 td == PURCHASE_CONFIRMED ||
                 td == PURCHASE_PROCESSED ||
