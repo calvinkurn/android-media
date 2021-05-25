@@ -22,8 +22,10 @@
         android:gravity="center"
         android:maxLines="2"
         android:ellipsize="end"
+        android:layout_marginBottom="@dimen/dp_8"
         app:typographyType="heading_6"
-        app:layout_constraintTop_toBottomOf="@+id/category_image"
+        android:textColor="@color/Unify_Static_White_96"
+        app:layout_constraintBottom_toBottomOf="@+id/category_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Two Line Category Name"/>
