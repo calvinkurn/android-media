@@ -36,6 +36,7 @@ class SecondaryActionButtonBottomSheet(
     private fun setupSecondaryActionButtonBottomSheet(context: Context): BottomSheetUnify {
         return BottomSheetUnify().apply {
             setTitle(context.getString(R.string.secondary_action_bottomsheet_header))
+            clearContentPadding = true
             showCloseIcon = true
             overlayClickDismiss = true
             setChild(childView)

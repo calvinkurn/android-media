@@ -466,7 +466,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                     cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
                     setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
                 }
-                setColorFilter(ContextCompat.getColor(context, R.color.buyer_order_detail_secondary_action_button_color_filter))
+                setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
                 setOnClickListener(secondaryActionButtonClickListener)
                 show()
             }
