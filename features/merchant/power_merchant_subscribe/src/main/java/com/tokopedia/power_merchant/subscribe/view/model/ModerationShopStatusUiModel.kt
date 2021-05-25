@@ -10,8 +10,9 @@ data class ModerationShopStatusUiModel(
 
     companion object {
         private const val STATUS_MODERATED = 3
+        private const val STATUS_MODERATED_PERMANENTLY = 5
     }
 
     val isModeratedShop: Boolean
-        get() = shopStatusId == STATUS_MODERATED
+        get() = shopStatusId == STATUS_MODERATED || shopStatusId == STATUS_MODERATED_PERMANENTLY
 }
