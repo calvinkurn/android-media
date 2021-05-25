@@ -372,7 +372,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun renderClientNumber(item: TopupBillsFavNumberItem) {
         var cardNumber = item.clientNumber
-        if (item.clientNumber.length > 16) cardNumber = item.clientNumber.substring(0, 16)
+        if (item.clientNumber.length > MAX_CHAR_EMONEY_CARD_NUMBER) cardNumber = item.clientNumber.substring(0, MAX_CHAR_EMONEY_CARD_NUMBER)
         emoneyPdpInputCardWidget.setNumber(cardNumber)
     }
 
@@ -419,7 +419,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     override fun onInputNumberChanged(inputNumber: String) {
         // call be to get operator name
         EmoneyPdpAnalyticsUtils.clickChangeCardNumber(inputNumber, userSession.userId)
-        emoneyPdpViewModel.getSelectedOperator(inputNumber, getString(R.string.recharge_pdp_emoney_error_not_found))
+        if (inputNumber.length == MAX_CHAR_EMONEY_CARD_NUMBER) {
+            emoneyPdpViewModel.getSelectedOperator(inputNumber, getString(R.string.recharge_pdp_emoney_number_error_not_found))
+        } else if (inputNumber.isNotEmpty()) {
+            emoneyPdpInputCardWidget.renderError(getString(R.string.recharge_pdp_emoney_number_length_minimal_16_char))
+        }
     }
 
     private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {
@@ -536,6 +540,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         private const val REQUEST_CODE_CART_DIGITAL = 1090
         private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
         private const val REQUEST_CODE_LOGIN = 1010
+
+        private const val MAX_CHAR_EMONEY_CARD_NUMBER = 16
 
         private const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
 

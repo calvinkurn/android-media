@@ -19,6 +19,6 @@
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/toolbar_seperator_height" />
+        android:layout_marginTop="@dimen/digital_search_number_toolbar_seperator_top_margin" />
 
 </LinearLayout>

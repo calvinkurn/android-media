@@ -12,8 +12,6 @@ import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCas
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.network.constant.ErrorNetMessage
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -84,7 +82,9 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 }
                 _selectedOperator.value = operatorSelected
             } else {
-                _errorMessage.value = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                if (catalogPrefixSelect.value is Fail) {
+                    _errorMessage.value = (catalogPrefixSelect.value as Fail).throwable
+                }
             }
         } catch (e: Throwable) {
             _inputViewError.value = errorNotFoundString

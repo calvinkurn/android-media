@@ -35,9 +35,9 @@ object ApplinkConsInternalDigital {
     const val INTERNAL_SMARTCARD_BRIZZI = "$INTERNAL_DIGITAL/smartcard/brizzi?$PARAM_SMARTCARD={type}"
 
     const val DIGITAL_PRODUCT_FORM = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL/form"
-    const val ELECTRONICMONEY_PRODUCT_FORM = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/form?category_id=34"
     const val DIGITAL_PRODUCT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL/form?category_id={category_id}&operator_id={operator_id}"
     const val PRODUCT_TEMPLATE = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/form?operator={operator_id}&menu_id={menu_id}&template={template}"
+    const val PRODUCT_TEMPLATE_WITH_CATEGORY_ID = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/form?category_id={category_id}&menu_id={menu_id}&template={template}"
 
     const val APPLINK_RECHARGE_SLICE = "tokopedia-android-internal://recharge_slice/main"
 }

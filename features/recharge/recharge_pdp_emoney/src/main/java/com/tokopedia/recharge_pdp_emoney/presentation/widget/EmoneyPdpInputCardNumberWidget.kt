@@ -34,7 +34,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
         emoneyPdpCardInputNumber.textFieldInput.isClickable = true
         emoneyPdpCardInputNumber.textFieldInput.isFocusable = false
-        emoneyPdpCardInputNumber.textFieldInput.filters = arrayOf<InputFilter>(LengthFilter(20))
+        emoneyPdpCardInputNumber.textFieldInput.filters = arrayOf<InputFilter>(LengthFilter(MAX_CHAR_EMONEY_CARD_NUMBER_WITH_SPACES))
         emoneyPdpCardInputNumber.textFieldInput.setOnClickListener { listener?.onClickInputView(getNumber()) }
         emoneyPdpCardInputNumber.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
@@ -64,8 +64,10 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun setNumber(number: String) {
         var cardNumber = ""
+        //to seperate emoney card number into 4
+        //e.g. card number: 1234567890123456 will be converted to 1234 5678 9012 3456
         for ((i, char) in number.withIndex()) {
-            if (i > 0 && i % 4 == 0) cardNumber += " "
+            if (i > 0 && i % MAX_CHAR_EMONEY_CARD_NUMBER_BLOCK == 0) cardNumber += " "
             cardNumber += char
         }
         emoneyPdpCardInputNumber.textFieldInput.setText(cardNumber)
@@ -96,5 +98,10 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onClickInputView(inputNumber: String)
         fun onRemoveNumberIconClick()
         fun onInputNumberChanged(inputNumber: String)
+    }
+
+    companion object {
+        private const val MAX_CHAR_EMONEY_CARD_NUMBER_WITH_SPACES = 20
+        private const val MAX_CHAR_EMONEY_CARD_NUMBER_BLOCK = 4
     }
 }

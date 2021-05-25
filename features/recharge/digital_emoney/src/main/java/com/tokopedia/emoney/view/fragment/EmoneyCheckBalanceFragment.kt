@@ -15,7 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.DEFAULT_ELECTRONICMONEY_MENU_ID
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
@@ -71,7 +71,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         return DigitalCategoryDetailPassData.Builder()
                 .categoryId(ETOLL_CATEGORY_ID)
                 .operatorId(operatorId)
-                .menuId(DEFAULT_ELECTRONICMONEY_MENU_ID)
+                .menuId(MENU_ID_ELECTRONIC_MONEY)
                 .clientNumber(eTollUpdateBalanceResultView.cardNumber)
                 .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
                 .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.cardLastUpdatedDate)
