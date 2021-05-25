@@ -157,9 +157,10 @@ class TopChatRoomAdapter constructor(
             val chatTime = visitable.replyTime?.toLong()?.div(SECONDS) ?: return
             val previousChatTime = bottomMostHeaderDate?.dateTimestamp ?: return
             if (!sameDay(chatTime, previousChatTime)) {
+                val indexToAdd = getOffsetSafely()
                 bottomMostHeaderDate = HeaderDateUiModel(chatTime)
-                visitables.add(0, bottomMostHeaderDate)
-                notifyItemInserted(0)
+                visitables.add(indexToAdd, bottomMostHeaderDate)
+                notifyItemInserted(indexToAdd)
             }
         }
     }
@@ -386,19 +387,24 @@ class TopChatRoomAdapter constructor(
     ) {
         srwState ?: return
         val uiModel = SrwBubbleUiModel(srwState, products)
-        visitables.add(offset, uiModel)
-        notifyItemInserted(offset)
+        val indexToAdd = getOffsetSafely()
+        visitables.add(indexToAdd, uiModel)
+        notifyItemInserted(indexToAdd)
         offset++
     }
 
     override fun addElement(item: Visitable<*>) {
-        val indexToAdd = if (visitables.size < offset) {
+        val indexToAdd = getOffsetSafely()
+        visitables.add(indexToAdd, item)
+        notifyItemInserted(indexToAdd)
+    }
+
+    private fun getOffsetSafely(): Int {
+        return if (visitables.size < offset) {
             visitables.size
         } else {
             offset
         }
-        visitables.add(indexToAdd, item)
-        notifyItemInserted(indexToAdd)
     }
 
     private fun postResetReviewState(lastKnownPosition: Int, review: ReviewUiModel) {
