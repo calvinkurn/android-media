@@ -571,7 +571,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     private fun renderProducts() {
         // products
         detailResponse?.run {
-            val dataProducts = SomDetailProducts(listProduct, flagOrderMeta.isTopAds)
+            val dataProducts = SomDetailProducts(listProduct, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
             listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
         }
     }

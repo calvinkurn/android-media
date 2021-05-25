@@ -188,6 +188,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     is_topads
                     is_tokocabang
                     is_shipping_printed
+                    is_broadcast_chat
                 }
                 label_info{
                   flag_name
