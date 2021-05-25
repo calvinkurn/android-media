@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="buyer_order_detail_thick_divider">@color/Unify_N50</color>
+    <color name="buyer_order_detail_thin_divider">@color/Unify_N50</color>
+    <color name="buyer_order_detail_window_color">@color/Unify_N0</color>
+    <color name="buyer_order_detail_secondary_action_button_color_filter">@color/Unify_N400</color>
+</resources>

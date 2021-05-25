@@ -3,4 +3,4 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/layout_lvl1"
     android:layout_marginTop="@dimen/buyer_order_detail_header_top_margin"
-    android:background="@color/Unify_N50" />
+    android:background="@color/buyer_order_detail_thick_divider" />

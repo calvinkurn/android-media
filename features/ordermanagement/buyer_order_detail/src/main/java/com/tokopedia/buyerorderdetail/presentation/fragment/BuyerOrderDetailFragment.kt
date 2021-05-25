@@ -38,6 +38,7 @@ import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailVie
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -102,6 +103,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
     private val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity())
+    }
+    private val chatIcon: IconUnify by lazy {
+        IconUnify(context = requireContext(), newIconId = IconUnify.CHAT).apply {
+            setOnClickListener {
+                viewModel.buyerOrderDetailResult.value?.let {
+                    if (it is Success) {
+                        navigator.goToAskSeller(it.data)
+                    }
+                }
+            }
+        }
     }
 
     private val buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring?
@@ -427,14 +439,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
         } else {
             toolbarBuyerOrderDetail?.apply {
-                addRightIcon(R.drawable.ic_buyer_order_detail_chat)
-                rightIcons?.firstOrNull()?.setOnClickListener {
-                    viewModel.buyerOrderDetailResult.value?.let {
-                        if (it is Success) {
-                            navigator.goToAskSeller(it.data)
-                        }
-                    }
-                }
+                addCustomRightContent(chatIcon)
             }
         }
     }
@@ -461,7 +466,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                     cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
                     setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
                 }
-                setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                setColorFilter(ContextCompat.getColor(context, R.color.buyer_order_detail_secondary_action_button_color_filter))
                 setOnClickListener(secondaryActionButtonClickListener)
                 show()
             }

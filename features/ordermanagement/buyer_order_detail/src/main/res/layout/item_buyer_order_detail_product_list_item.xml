@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:background="@color/dividerunify_background"
+            android:background="@color/buyer_order_detail_thin_divider"
             app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailProductNote" />
 
         <com.tokopedia.unifyprinciples.Typography

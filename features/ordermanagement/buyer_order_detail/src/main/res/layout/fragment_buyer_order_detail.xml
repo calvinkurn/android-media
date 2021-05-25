@@ -5,8 +5,7 @@
     android:id="@+id/containerBuyerOrderDetail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:background="@color/Unify_N0">
+    android:animateLayoutChanges="true">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderBuyerOrderDetail"
@@ -46,7 +45,6 @@
         android:id="@+id/swipeRefreshBuyerOrderDetail"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/Unify_N0"
         app:layout_constraintBottom_toTopOf="@id/containerActionButtons"
         app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail">
 
@@ -67,6 +65,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/layout_lvl0"
         app:cardElevation="@dimen/spacing_lvl3"
+        app:cardBackgroundColor="@color/buyer_order_detail_window_color"
         app:layout_constraintTop_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
