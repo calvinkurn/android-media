@@ -4,9 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -73,6 +76,10 @@ class MiniCartWidget @JvmOverloads constructor(
                     miniCartListBottomSheet.show(shopIds, fragment, ::onMiniCartBottomSheetDismissed)
                 }
             }
+        }
+        totalAmount?.context?.let {
+            val chatIcon = getIconUnifyDrawable(it, IconUnify.CHAT, ContextCompat.getColor(it, R.color.Unify_G500))
+            totalAmount?.setAdditionalButton(chatIcon)
         }
         if (totalAmount?.isTotalAmountLoading == false) {
             totalAmount?.isTotalAmountLoading = true
