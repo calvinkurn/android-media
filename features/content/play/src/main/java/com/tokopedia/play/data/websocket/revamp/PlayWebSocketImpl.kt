@@ -68,7 +68,7 @@ class PlayWebSocketImpl(
 
     override fun connect(url: String) {
         close()
-        client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
+        mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
     }
 
     override fun close() {
