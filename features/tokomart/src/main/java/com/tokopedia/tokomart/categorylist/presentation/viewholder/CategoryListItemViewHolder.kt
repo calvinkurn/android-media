@@ -34,7 +34,7 @@ class CategoryListItemViewHolder(
     override fun bind(data: CategoryListItemUiModel) {
         super.bind(data)
         itemView.run {
-            textTitle.text = data.title
+            textTitle.text = data.name
             showImageCategory(data)
             setupChildCategory()
         }
@@ -46,7 +46,7 @@ class CategoryListItemViewHolder(
     override fun expandAnimationListener() = expandAnimationListener
 
     private fun View.showImageCategory(category: CategoryListItemUiModel) {
-        category.iconUrl?.let {
+        category.imageUrl?.let {
             imageCategory.loadImage(it)
         }
     }

@@ -25,7 +25,7 @@ class TokoMartCategoryListViewModel @Inject constructor(
 
     fun getCategoryList() {
         launchCatchError(block = {
-            val response = getCategoryListUseCase.execute()
+            val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
             val data = CategoryListMapper.mapToUiModel(response)
             _categoryList.postValue(Success(data))
         }) {

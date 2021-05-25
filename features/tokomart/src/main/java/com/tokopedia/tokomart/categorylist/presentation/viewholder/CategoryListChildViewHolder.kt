@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomart.R
@@ -19,13 +20,21 @@ class CategoryListChildViewHolder(itemView: View): AbstractViewHolder<CategoryLi
 
     override fun bind(category: CategoryListChildUiModel) {
         itemView.run {
-            textTitle.text = category.title
+            textTitle.text = if(category.type == CategoryType.ALL_CATEGORY_TEXT) {
+                getString(R.string.tokomart_all_category_text_format, category.name)
+            } else {
+                category.name
+            }
             textTitle.setWeight(category.textWeight)
             textTitle.setTextColor(ContextCompat.getColor(context, category.textColorId))
 
-            category.iconUrl?.let {
+            category.imageUrl?.let {
                 imageCategory.loadImage(it)
                 imageCategory.show()
+            }
+
+            setOnClickListener {
+                RouteManager.route(context, category.appLink)
             }
         }
     }
