@@ -5,6 +5,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
+import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import timber.log.Timber
@@ -101,21 +102,21 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
-    fun trackClickUseOtherMethod(otpType: Int) {
+    fun trackClickUseOtherMethod(otpData: OtpData) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
-                Category.CATEGORY_INPUT_OTP_PAGE,
+                Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_ON_GUNAKAN_METODE_LAIN,
-                otpType.toString()
+                "${otpData.otpType} - ${otpData.otpMode}"
         ))
     }
 
-    fun trackClickResendOtpButton(otpType: Int) {
+    fun trackClickResendOtpButton(otpData: OtpData) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
-                Category.CATEGORY_INPUT_OTP_PAGE,
-                Action.ACTION_CLICK_ON_KIRIM_ULANG,
-                otpType.toString()))
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_RESEND_OTP,
+                "click - ${otpData.otpType} ${otpData.otpMode}"))
     }
 
     fun trackClickResendRegisterPhoneOtpButton() {
@@ -181,12 +182,13 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
-    fun trackClickBackOtpPage(otpType: Int) {
+    fun trackClickBackOtpPage(otpData: OtpData) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.EVENT_CLICK_BACK,
-                Category.CATEGORY_INPUT_OTP_PAGE,
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_BACK_BUTTON,
-                otpType.toString()))
+                "${otpData.otpType} - ${otpData.otpMode}"
+        ))
     }
 
     fun trackClickBackRegisterPhoneOtp() {
@@ -459,6 +461,21 @@ class TrackingOtpUtil @Inject constructor() {
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_VIEW_CHOOSE_OTP_PAGE,
                 "$otpType - " + if (isSuccess) "success" else "fail - $message"
+        ))
+    }
+
+
+    /* Auto Submit Tracker */
+    fun trackAutoSubmitVerification(otpData: OtpData, isSuccess: Boolean, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_AUTO_SUBMIT_OTP,
+                if (isSuccess) {
+                    "success"
+                } else {
+                    "fail - $message"
+                } + " - ${otpData.otpType} - ${otpData.otpMode}"
         ))
     }
 }

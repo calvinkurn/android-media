@@ -52,13 +52,14 @@ object TrackingOtpConstant{
         const val ACTION_CLICK_ON_BUTTON_AKTIVASI = "click on button aktivasi"
         const val ACTION_CLICK_KIRIM_ULANG = "click kirim ulang"
         const val ACTION_CLICK_ON_KIRIM_ULANG = "click on kirim ulang"
+        const val ACTION_CLICK_RESEND_OTP = "click kirim ulang otp"
         const val ACTION_CLICK_OK_KIRIM_ULANG = "click ok (kirim ulang email)"
         const val ACTION_CLICK_UBAH_EMAIL_ACTIVATION = "click ubah email"
         const val ACTION_CLICK_METHOD_OTP = "click metode otp"
         const val ACTION_CLICK_ON_OTP_METHOD = "click on otp method"
         const val ACTION_CLICK_ON_BUTTON_INACTIVE_PHONE_NUMBER = "click on button nomor saya sudah tidak aktif"
-        const val ACTION_CLICK_ON_GUNAKAN_METODE_LAIN = "click on gunakan metode verifikasi lain"
-        const val ACTION_CLICK_BACK_BUTTON = "click back button"
+        const val ACTION_CLICK_ON_GUNAKAN_METODE_LAIN = "click gunakan metode lain"
+        const val ACTION_CLICK_BACK_BUTTON = "click button back"
         const val ACTION_CLICK_ON_BUTTON_BACK = "click on button back"
         const val ACTION_CLICK_ON_VERIFIKASI  = "click on verifikasi"
         const val ACTION_CLICK_ON_BUTTON_VERIFIKASI = "click on button verifikasi"
@@ -82,6 +83,7 @@ object TrackingOtpConstant{
         const val ACTION_CLICK_ON_BUTTON_AKTIFKAN_MASUK_LEWAT_NOTIF = "click on button aktifkan masuk lewat notifikasi"
         const val ACTION_CLICK_ON_INACTIVE_PHONE = "click nomor saya sudah tidak aktif"
         const val ACTION_VIEW_CHOOSE_OTP_PAGE = "view choose otp page"
+        const val ACTION_AUTO_SUBMIT_OTP = "auto submit otp page"
     }
 
     object Label{

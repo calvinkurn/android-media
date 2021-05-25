@@ -1,3 +1,4 @@
+
 package com.tokopedia.otp.verification.view.fragment
 
 import android.app.Activity
@@ -152,7 +153,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        analytics.trackClickBackOtpPage(otpData.otpType)
+        analytics.trackClickBackOtpPage(otpData)
         if (otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
             analytics.trackClickBackRegisterPhoneOtp()
         } else if (otpData.otpType == OtpConstant.OtpType.REGISTER_EMAIL) {
@@ -285,6 +286,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
                 }
                 redirectAfterValidationSuccessful(bundle)
+                // tracker auto submit success
+                analytics.trackAutoSubmitVerification(otpData,true)
             }
             otpValidateData.errorMessage.isNotEmpty() -> {
                 onFailedOtpValidate(MessageErrorException(otpValidateData.errorMessage))
@@ -334,6 +337,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     analytics.trackFailedClickVerificationRegisterEmailButton(message)
                 }
             }
+            // tracker auto submit failed
+            analytics.trackAutoSubmitVerification(otpData,false, message)
             viewBound.pin?.isError = true
             showKeyboard()
         }
@@ -466,11 +471,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                             OtpConstant.OtpType.REGISTER_EMAIL -> {
                                 analytics.trackClickResendRegisterEmailOtpButton()
                             }
-                            else -> {
-                                analytics.trackClickResendOtpButton(otpData.otpType)
-                            }
                         }
 
+                        analytics.trackClickResendOtpButton(otpData)
                         sendOtp()
                         viewBound.pin?.value = ""
                     }
@@ -491,7 +494,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         viewModel.done = true
-                        analytics.trackClickUseOtherMethod(otpData.otpType)
+                        analytics.trackClickUseOtherMethod(otpData)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
 
@@ -511,7 +514,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         viewModel.done = true
-                        analytics.trackClickUseOtherMethod(otpData.otpType)
+                        analytics.trackClickUseOtherMethod(otpData)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
 
