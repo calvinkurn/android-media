@@ -98,7 +98,8 @@ class DealsHomeViewModelTest {
         val homeLayouts = mockHomeResponse.response.layout
         val brandPopular = emptyList<Brand>()
         val locations = mockLocationData.eventLocationSearch.locations
-        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations)
+        val mockTicker = mockHomeResponse.response.ticker
+        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations,mockTicker)
 
         // given
         coEvery { getHomeLayoutUseCase.useParams(any()) } returns mockk()
@@ -120,7 +121,8 @@ class DealsHomeViewModelTest {
         val homeLayouts = mockHomeResponse.response.layout
         val brandPopular = mockSearchData.eventSearch.brands
         val locations = emptyList<Location>()
-        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations)
+        val mockTicker = mockHomeResponse.response.ticker
+        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations, mockTicker)
 
         // given
         coEvery { getHomeLayoutUseCase.useParams(any()) } returns mockk()
@@ -142,7 +144,8 @@ class DealsHomeViewModelTest {
         val homeLayouts = mockHomeResponse.response.layout
         val brandPopular = mockSearchData.eventSearch.brands
         val locations = mockLocationData.eventLocationSearch.locations
-        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations)
+        val mockTicker = mockHomeResponse.response.ticker
+        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations, mockTicker)
 
         // given
         coEvery { getHomeLayoutUseCase.useParams(any()) } returns mockk()
@@ -164,7 +167,8 @@ class DealsHomeViewModelTest {
         val homeLayouts = mockHomeResponse.response.layout
         val brandPopular = mockSearchData.eventSearch.brands
         val locations = listOf<Location>()
-        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations)
+        val mockTicker = mockHomeResponse.response.ticker
+        val mockMapping = mapper.mapLayoutToBaseItemViewModel(homeLayouts, brandPopular, locations,mockTicker)
 
         // given
         coEvery { getHomeLayoutUseCase.useParams(any()) } returns mockk()

@@ -45,6 +45,10 @@ public class SectionContent {
     @Expose
     private LayoutTopAdsAttr layoutTopAdsAttr;
 
+    @SerializedName("layoutMerchantCouponAttr")
+    @Expose
+    private LayoutMerchantCouponAttr layoutMerchantCouponAttr;
+
     public String getBackgroundImgURLMobile() {
         return backgroundImgURLMobile;
     }
@@ -139,5 +143,13 @@ public class SectionContent {
 
     public void setLayoutTopAdsAttr(LayoutTopAdsAttr layoutTopAdsAttr) {
         this.layoutTopAdsAttr = layoutTopAdsAttr;
+    }
+
+    public LayoutMerchantCouponAttr getLayoutMerchantCouponAttr() {
+        return layoutMerchantCouponAttr;
+    }
+
+    public void setLayoutMerchantCouponAttr(LayoutMerchantCouponAttr layoutMerchantCouponAttr) {
+        this.layoutMerchantCouponAttr = layoutMerchantCouponAttr;
     }
 }

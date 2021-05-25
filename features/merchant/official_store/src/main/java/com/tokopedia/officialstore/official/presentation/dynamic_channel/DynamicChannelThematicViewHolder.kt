@@ -10,8 +10,8 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
