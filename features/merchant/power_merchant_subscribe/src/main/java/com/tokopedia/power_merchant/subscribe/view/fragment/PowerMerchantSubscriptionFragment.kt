@@ -79,8 +79,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         get() = super.getRecyclerView(view)
 
     private var isModeratedShop = false
-    private var upgradePmProWidgetPosition: Int = RecyclerView.NO_POSITION
-    private var cancelPmDeactivationWidgetPosition: Int = RecyclerView.NO_POSITION
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var pmGradeBenefitList: List<PMGradeWithBenefitsUiModel>? = null
     private var currentPmTireType = PMConstant.PMTierType.POWER_MERCHANT
@@ -124,7 +122,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     override fun cancelPmDeactivationSubmission(position: Int) {
-        cancelPmDeactivationWidgetPosition = position
         observePmCancelDeactivationSubmission()
         val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
         val shopTier = getShopTireByPmTire(currentPmTireType)
@@ -149,7 +146,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     override fun onUpgradePmProClickListener(adapterPosition: Int) {
-        this.upgradePmProWidgetPosition = adapterPosition
         submitPmRegistration(PMConstant.ShopTierType.POWER_MERCHANT_PRO)
     }
 
@@ -316,9 +312,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun notifyCancelPmDeactivationWidget() {
-        if (cancelPmDeactivationWidgetPosition != RecyclerView.NO_POSITION) {
-            recyclerView?.post {
+        val cancelPmDeactivationWidgetPosition = adapter.data.indexOfFirst { it is WidgetCancelDeactivationSubmissionUiModel }
+        recyclerView?.post {
+            if (cancelPmDeactivationWidgetPosition != RecyclerView.NO_POSITION) {
                 adapter.notifyItemChanged(cancelPmDeactivationWidgetPosition)
+            } else {
+                adapter.notifyDataSetChanged()
             }
         }
     }
@@ -454,9 +453,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun notifyUpgradePmProWidget() {
-        if (upgradePmProWidgetPosition != RecyclerView.NO_POSITION) {
-            recyclerView?.post {
+        val upgradePmProWidgetPosition = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
+        recyclerView?.post {
+            if (upgradePmProWidgetPosition != RecyclerView.NO_POSITION) {
                 adapter.notifyItemChanged(upgradePmProWidgetPosition)
+            } else {
+                adapter.notifyDataSetChanged()
             }
         }
     }
