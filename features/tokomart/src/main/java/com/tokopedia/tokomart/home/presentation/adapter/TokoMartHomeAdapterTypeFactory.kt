@@ -29,16 +29,19 @@ import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeAllCategoryUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryItemUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSectionUiModel
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeAllCategoryViewHolder
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryItemViewHolder
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeSectionViewHolder
 
 class TokoMartHomeAdapterTypeFactory: BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
     // region Toko Mart Home Component
     override fun type(uiModel: HomeSectionUiModel): Int = HomeSectionViewHolder.LAYOUT
-    override fun type(uiModel: HomeAllCategoryUiModel): Int = HomeAllCategoryViewHolder.LAYOUT
+    override fun type(uiModel: HomeCategoryGridUiModel): Int = HomeCategoryGridViewHolder.LAYOUT
+    override fun type(uiModel: HomeCategoryItemUiModel): Int = HomeCategoryItemViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -60,7 +63,8 @@ class TokoMartHomeAdapterTypeFactory: BaseAdapterTypeFactory(), TokoMartHomeType
         return when(type) {
             // region Toko Mart Home Component
             HomeSectionViewHolder.LAYOUT -> HomeSectionViewHolder(view)
-            HomeAllCategoryViewHolder.LAYOUT -> HomeAllCategoryViewHolder(view)
+            HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
+            HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
             // endregion
 
             // region Global Home Component
