@@ -270,7 +270,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        handleInterruptPageOnActivityResult(requestCode, resultCode, data)
+        handleInterruptPageOnActivityResult(requestCode)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
