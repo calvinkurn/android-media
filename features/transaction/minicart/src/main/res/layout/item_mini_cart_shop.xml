@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_product_policies_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:foregroundGravity="center_vertical"
+    app:flexWrap="wrap">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_image_fulfill"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:scaleType="fitCenter"
+        app:unify_image_corner_radius="0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_fulfill_district"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Tangerang Selatan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/separator_estimated_time_arrival"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
+        android:text="|"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_estimated_time_arrival"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Pasti tiba 2 jam" />
+
+</com.google.android.flexbox.FlexboxLayout>

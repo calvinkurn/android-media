@@ -9,12 +9,11 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
-import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
-import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -24,12 +23,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
+import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
@@ -41,6 +44,7 @@ import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
+import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.StatusBarCallback
@@ -50,6 +54,7 @@ import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -68,6 +73,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
         private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
+        private const val NAVIGATION_OTHER_MENU_POSITION = 4
     }
 
     @Inject lateinit var userSession: UserSessionInterface
@@ -144,6 +150,16 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleAppLink(intent)
+
+        val sellerHomeLifecycleState = navigator?.getHomeFragment()?.lifecycle?.currentState
+        if (sellerHomeLifecycleState?.isAtLeast(Lifecycle.State.CREATED) == true) {
+            navigator?.getHomeFragment()?.onNewIntent(intent?.data)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        navigator?.getHomeFragment()?.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {
@@ -206,7 +222,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         performanceMonitoringSomListPlt?.initPerformanceMonitoring()
     }
 
-    override fun getSomListLoadTimeMonitoring() =  performanceMonitoringSomListPlt
+    override fun getSomListLoadTimeMonitoring() = performanceMonitoringSomListPlt
 
     private fun fetchSellerAppWidget() {
         val broadcastIntent = Intent().apply {
@@ -301,6 +317,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupNavigator() {
         navigator = SellerHomeNavigator(this, supportFragmentManager, sellerHomeRouter, userSession)
+
+        setNavigationOtherMenuView()
+    }
+
+    private fun setNavigationOtherMenuView() {
+        val navigationOtherMenuView = sahBottomNav.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
+        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
     }
 
     private fun setupShadow() {
@@ -383,20 +406,26 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun observeShopInfoLiveData() {
         homeViewModel.shopInfo.observe(this, Observer {
-            if (it is Success) {
-                navigator?.run {
-                    val shopName = MethodChecker.fromHtml(it.data.shopName).toString()
-                    val shopAvatar = it.data.shopAvatar
+            when (it) {
+                is Success -> {
+                    navigator?.run {
+                        val shopName = MethodChecker.fromHtml(it.data.shopName).toString()
+                        val shopAvatar = it.data.shopAvatar
 
-                    // update userSession
-                    userSession.shopName = shopName
-                    userSession.shopAvatar = shopAvatar
+                        // update userSession
+                        userSession.shopName = shopName
+                        userSession.shopAvatar = shopAvatar
 
-                    if (isHomePageSelected()) {
-                        supportActionBar?.title = shopName
+                        if (isHomePageSelected()) {
+                            supportActionBar?.title = shopName
+                        }
+
+                        setHomeTitle(shopName)
                     }
-
-                    setHomeTitle(shopName)
+                }
+                is Fail -> {
+                    val message = "Seller Home Error shop info"
+                    logToCrashlytics(it.throwable, message)
                 }
             }
         })
@@ -491,6 +520,18 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             lifecycleScope.launch(Dispatchers.IO) {
                 sellerReviewHelper?.checkForSellerReview(this@SellerHomeActivity, supportFragmentManager)
             }
+        }
+    }
+
+    private fun logToCrashlytics(throwable: Throwable, message: String) {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
+            val exceptionMessage = "$message -> ${throwable.localizedMessage}"
+            FirebaseCrashlytics.getInstance().recordException(SellerHomeException(
+                    message = exceptionMessage,
+                    cause = throwable
+            ))
+        } else {
+            throwable.printStackTrace()
         }
     }
 }

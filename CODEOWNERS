@@ -72,6 +72,7 @@
 /features/merchant/seller_search/                       @tokopedia/android-minionstuart-dev
 /features/merchant/seller_action/                       @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
+/features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
 /features/merchant/product_add_edit/                    @tokopedia/android-minionken-dev
@@ -79,10 +80,10 @@
 /features/merchant/shop_open/                           @tokopedia/android-minionken-dev
 /features/merchant/shop_showcase/                       @tokopedia/android-minionken-dev
 /features/merchant/shop_page/                           @tokopedia/android-minionken-dev
-/features/merchant/shop_score/                          @tokopedia/android-minionken-dev
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/shop_settings/                       @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
+/features/tokomart/                                     @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev
@@ -151,6 +152,7 @@
 /features/transaction/checkout/        		            @tokopedia/android-minionbob-dev
 /features/transaction/oneclickcheckout/        		    @tokopedia/android-minionbob-dev
 /features/transaction/promo_checkout_marketplace/       @tokopedia/android-minionbob-dev
+/features/transaction/minicart/                         @tokopedia/android-minionbob-dev
 /features/logistic/logisticCommon/                		@tokopedia/android-minionbob-dev
 /features/logistic/logisticaddaddress/          		@tokopedia/android-minionbob-dev
 /features/logistic/logisticorder/                    	@tokopedia/android-minionbob-dev

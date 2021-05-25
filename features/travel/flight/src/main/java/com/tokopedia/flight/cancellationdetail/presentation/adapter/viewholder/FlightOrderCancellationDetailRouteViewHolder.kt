@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailRouteModel
-import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
+import com.tokopedia.flight.search.presentation.util.FlightSearchCache
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.include_header_detail_flight.view.*

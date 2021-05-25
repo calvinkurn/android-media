@@ -29,6 +29,8 @@ object ApplinkConstInternalMarketplace {
     const val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
     // CartActivity
     const val CART = "$INTERNAL_MARKETPLACE/cart"
+    // MiniCartExample
+    const val MINI_CART_EXAMPLE = "$INTERNAL_MARKETPLACE/minicartexample"
     // ShipmentActivity
     const val CHECKOUT = "$INTERNAL_MARKETPLACE/checkout"
     // CartAddressChoiceActivity
@@ -182,6 +184,18 @@ object ApplinkConstInternalMarketplace {
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+
+    //ShopScorePerformanceActivity
+    @JvmField
+    val SHOP_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop/performance"
+
+    //ShopPenaltyActivity
+    @JvmField
+    val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
+
+    //ShopPenaltyDetailPageActivity
+    @JvmField
+    val SHOP_PENALTY_DETAIL = "$INTERNAL_MARKETPLACE/shop-penalty-detail"
 
     // AttachInvoiceActivity
     const val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
