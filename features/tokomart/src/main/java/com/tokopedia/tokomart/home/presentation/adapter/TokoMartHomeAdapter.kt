@@ -7,4 +7,4 @@ import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListD
 class TokoMartHomeAdapter(
     typeFactory: TokoMartHomeAdapterTypeFactory,
     differ: TokoMartHomeListDiffer
-): BaseTokoMartListAdapter<Visitable<*>, TokoMartHomeAdapterTypeFactory>(typeFactory, differ)
+) : BaseTokoMartListAdapter<Visitable<*>, TokoMartHomeAdapterTypeFactory>(typeFactory, differ)
