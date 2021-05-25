@@ -12,7 +12,9 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.util.TypedValue
 import android.view.*
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -35,6 +37,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.convertFormatDate
 import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -195,8 +198,26 @@ class SomDetailFragment : BaseDaggerFragment(),
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
+    private val chatIcon: IconUnify by lazy {
+        createChatIcon(requireContext())
+    }
 
-    private var menu: Menu? = null
+    private fun createChatIcon(context: Context): IconUnify {
+        return IconUnify(requireContext(), IconUnify.CHAT).apply {
+            setOnClickListener {
+                doClickChat()
+            }
+            layoutParams = LinearLayout.LayoutParams(
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt(),
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt()).apply {
+                setMargins(0, 0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
+            }
+            val outValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+            setBackgroundResource(outValue.resourceId)
+            gone()
+        }
+    }
 
     private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
@@ -267,6 +288,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         progressBar = view.findViewById(R.id.progress_bar)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         setupToolbar()
@@ -295,8 +317,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        this.menu = menu
-        inflater.inflate(R.menu.chat_menu, menu)
+        som_detail_toolbar?.addCustomRightContent(chatIcon)
     }
 
     private fun checkUserRole() {
@@ -1564,10 +1585,7 @@ class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setChatButtonEnabled(isEnabled: Boolean) {
-        menu?.findItem(R.id.som_action_chat)?.run {
-            isVisible = isEnabled
-            setEnabled(isEnabled)
-        }
+        chatIcon.showWithCondition(isEnabled)
     }
 
     private fun getActivityPltPerformanceMonitoring() {

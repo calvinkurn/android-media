@@ -58,30 +58,10 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
         return SomDetailFragment.newInstance(bundle)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.chat_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.som_action_chat -> {
-                onChatClicked()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onBackPressed() {
         val result = Intent().putExtra(SomConsts.RESULT_REFRESH_ORDER, (fragment as? SomDetailFragment)?.isDetailChanged ?: false)
         setResult(Activity.RESULT_OK, result)
         finish()
-    }
-
-    private fun onChatClicked() {
-        (fragment as? SomDetailFragment)?.doClickChat()
     }
 
     override fun getComponent(): SomDetailComponent =
