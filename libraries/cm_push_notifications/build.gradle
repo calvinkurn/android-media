@@ -26,6 +26,7 @@ dependencies {
     implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
@@ -59,6 +60,7 @@ dependencies {
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation project(path: ':features:logistic:localizationchooseaddress_common')
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 

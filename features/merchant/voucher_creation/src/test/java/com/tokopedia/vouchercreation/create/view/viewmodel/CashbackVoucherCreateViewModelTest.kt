@@ -1,14 +1,12 @@
 package com.tokopedia.vouchercreation.create.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.vouchercreation.common.consts.VoucherRecommendationStatus
 import com.tokopedia.vouchercreation.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.create.domain.model.VoucherRecommendationData
@@ -138,16 +136,6 @@ class CashbackVoucherCreateViewModelTest {
     @Suppress("UNCHECKED_CAST")
     private val mPercentageVoucherQuotaLiveData: MutableLiveData<Int> by lazy {
         getPrivateField(mViewModel, "mPercentageVoucherQuotaLiveData") as MutableLiveData<Int>
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private val mIdrVoucherRecommendationResult: MutableLiveData<Result<VoucherRecommendationData>> by lazy {
-        getPrivateField(mViewModel, "mIdrVoucherRecommendationResult") as MutableLiveData<Result<VoucherRecommendationData>>
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private val mPercentageVoucherRecommendationResult: MutableLiveData<Result<VoucherRecommendationData>> by lazy {
-        getPrivateField(mViewModel, "mPercentageVoucherRecommendationResult") as MutableLiveData<Result<VoucherRecommendationData>>
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -343,6 +331,34 @@ class CashbackVoucherCreateViewModelTest {
     }
 
     @Test
+    fun `when maximum rupiah discount input is empty expect no cash back validation`() {
+        with(mViewModel) {
+            validateCashbackRupiahValues()
+            assert(rupiahValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `when minimum rupiah purchase amount input is empty expect no cash back validation`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
+            validateCashbackRupiahValues()
+            assert(rupiahValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `when rupiah voucher quota input is empty expect no cash back validation`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
+            addTextFieldValueToCalculation(DUMMY_MIN_PURCHASE, PromotionType.Cashback.Rupiah.MinimumPurchase)
+            validateCashbackRupiahValues()
+            assert(rupiahValidationLiveData.value == null)
+        }
+    }
+
+
+    @Test
     fun `success validating cashback percentage value`() = runBlocking {
         val successResponse = CashbackPercentageValidation()
 
@@ -387,6 +403,44 @@ class CashbackVoucherCreateViewModelTest {
             }
 
             assert(percentageValidationLiveData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `when percentage discount amount input is empty expect no cash back validation`() {
+        with(mViewModel) {
+            validateCashbackPercentageValues()
+            assert(percentageValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `when maximum percentage discount input is empty expect no cash back validation`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
+            validateCashbackPercentageValues()
+            assert(percentageValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `when minimum percentage discount input is empty expect no cash back validation`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
+            validateCashbackPercentageValues()
+            assert(percentageValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `when percentage voucher quota input is empty expect no cash back validation`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
+            addTextFieldValueToCalculation(DUMMY_MIN_PURCHASE, PromotionType.Cashback.Percentage.MinimumPurchase)
+            validateCashbackPercentageValues()
+            assert(percentageValidationLiveData.value == null)
         }
     }
 
@@ -492,7 +546,7 @@ class CashbackVoucherCreateViewModelTest {
     }
 
     @Test
-    fun  `when updating idr recommendation data expect new idr recommendation data`() {
+    fun `when updating idr recommendation data expect new idr recommendation data`() {
         val expectedData = VoucherRecommendationData(voucherDiscountAmt = 10000)
         mViewModel.updateVoucherRecommendation(CashbackType.Rupiah, expectedData)
         assert(idrRecommendationData == expectedData)
@@ -517,7 +571,7 @@ class CashbackVoucherCreateViewModelTest {
         mRupiahMinimumPurchaseLiveData.value = 10000
         mRupiahVoucherQuotaLiveData.value = 10000
         mViewModel.updateRecommendationStatus(CashbackType.Rupiah)
-        assert(mVoucherRecommendationStatus.value == expectedStatus)
+        assert(mViewModel.voucherRecommendationStatus.value == expectedStatus)
     }
 
     @Test
@@ -532,7 +586,7 @@ class CashbackVoucherCreateViewModelTest {
         mRupiahMinimumPurchaseLiveData.value = 20000
         mRupiahVoucherQuotaLiveData.value = 10000
         mViewModel.updateRecommendationStatus(CashbackType.Rupiah)
-        assert(mVoucherRecommendationStatus.value == expectedStatus)
+        assert(mViewModel.voucherRecommendationStatus.value == expectedStatus)
     }
 
     @Test
@@ -547,7 +601,7 @@ class CashbackVoucherCreateViewModelTest {
         mRupiahMinimumPurchaseLiveData.value = 20000
         mRupiahVoucherQuotaLiveData.value = 20000
         mViewModel.updateRecommendationStatus(CashbackType.Rupiah)
-        assert(mVoucherRecommendationStatus.value == expectedStatus)
+        assert(mViewModel.voucherRecommendationStatus.value == expectedStatus)
     }
 
     @Test
@@ -564,7 +618,7 @@ class CashbackVoucherCreateViewModelTest {
         mPercentageMinimumPurchaseLiveData.value = 10000
         mPercentageVoucherQuotaLiveData.value = 10000
         mViewModel.updateRecommendationStatus(CashbackType.Percentage)
-        assert(mVoucherRecommendationStatus.value == expectedStatus)
+        assert(mViewModel.voucherRecommendationStatus.value == expectedStatus)
     }
 
     @Test
@@ -581,7 +635,7 @@ class CashbackVoucherCreateViewModelTest {
         mPercentageMinimumPurchaseLiveData.value = 10000
         mPercentageVoucherQuotaLiveData.value = 10000
         mViewModel.updateRecommendationStatus(CashbackType.Percentage)
-        assert(mVoucherRecommendationStatus.value == expectedStatus)
+        assert(mViewModel.voucherRecommendationStatus.value == expectedStatus)
     }
 
     @Test
@@ -598,7 +652,7 @@ class CashbackVoucherCreateViewModelTest {
         mPercentageMinimumPurchaseLiveData.value = 20000
         mPercentageVoucherQuotaLiveData.value = 20000
         mViewModel.updateRecommendationStatus(CashbackType.Percentage)
-        assert(mVoucherRecommendationStatus.value == expectedStatus)
+        assert(mViewModel.voucherRecommendationStatus.value == expectedStatus)
     }
 
     @Test
@@ -635,8 +689,8 @@ class CashbackVoucherCreateViewModelTest {
             getVoucherRecommendationUseCase.executeOnBackground()
         } returns successResponse
         mViewModel.getVoucherRecommendationFromApi()
-        assert(mIdrVoucherRecommendationResult.value == Success(successResponse))
-        assert(mPercentageVoucherRecommendationResult.value == Success(successResponse))
+        assert(mViewModel.idrVoucherRecommendationResult.value == Success(successResponse))
+        assert(mViewModel.percentageVoucherRecommendationResult.value == Success(successResponse))
     }
 
     @Test
@@ -647,8 +701,8 @@ class CashbackVoucherCreateViewModelTest {
             getVoucherRecommendationUseCase.executeOnBackground()
         } throws throwable
         mViewModel.getVoucherRecommendationFromApi()
-        assert(mIdrVoucherRecommendationResult.value is Fail)
-        assert(mPercentageVoucherRecommendationResult.value is Fail)
+        assert(mViewModel.idrVoucherRecommendationResult.value is Fail)
+        assert(mViewModel.percentageVoucherRecommendationResult.value is Fail)
     }
 
     @Test

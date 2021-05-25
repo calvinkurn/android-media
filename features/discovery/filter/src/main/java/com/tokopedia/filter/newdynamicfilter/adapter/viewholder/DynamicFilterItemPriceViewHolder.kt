@@ -70,9 +70,7 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
                 bindWholesaleOptionItem(option)
             }
 
-            if (Option.KEY_PRICE_RANGE_1 == option.key
-                    || Option.KEY_PRICE_RANGE_2 == option.key
-                    || Option.KEY_PRICE_RANGE_3 == option.key) {
+            if (option.isPriceRange) {
                 priceRangeList.add(option)
             }
         }

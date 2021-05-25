@@ -306,4 +306,6 @@
     <string name="hotel_list_per_night">/malam</string>
     <string name="hotel_header_title_nearby">Hotel dekat lokasimu</string>
     <string name="hotel_header_title_nearby_area">Hotel di area pilihanmu</string>
+    <string name="hotel_sticky_calendar_content_desc">Hotel calendar</string>
+    <string name="hotel_review_booking_logo">Booking.com logo</string>
 </resources>

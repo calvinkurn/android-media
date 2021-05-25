@@ -8,6 +8,7 @@ import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.ServerLogger.log
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notification.common.utils.NotificationValidationManager
@@ -15,12 +16,15 @@ import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.common.PayloadConverter.advanceTargetNotification
 import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle
+import com.tokopedia.notifications.data.AmplificationDataSource
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.worker.PushWorker
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -82,6 +86,33 @@ class CMPushNotificationManager : CoroutineScope {
                 ::onAidlReceive,
                 ::onAidlError
         )
+
+        getAmplificationPushData(application)
+    }
+
+
+    private fun getAmplificationPushData(application: Application) {
+        /*
+         * Amplification of push notification.
+         * fetch all of cm_push_notification's
+         * push notification data that aren't rendered yet.
+         * then, put all of push_data into local storage.
+         * */
+        if (getAmplificationRemoteConfig()) {
+            try {
+                AmplificationDataSource.invoke(application)
+            } catch (e: java.lang.Exception) {
+                val messageMap: MutableMap<String, String> = HashMap()
+                messageMap["type"] = "exception"
+                messageMap["err"] = Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT)
+                messageMap["data"] = ""
+                log(Priority.P2, "CM_VALIDATION", messageMap)
+            }
+        }
+    }
+
+    private fun getAmplificationRemoteConfig(): Boolean {
+        return cmRemoteConfigUtils.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_AMPLIFICATION, false)
     }
 
     private fun onAidlReceive(tag: String, bundle: Bundle?) {

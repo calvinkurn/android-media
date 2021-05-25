@@ -49,10 +49,10 @@ class ProductProfile {
     val playStoreData: PlayStoreData = PlayStoreData()
     @SerializedName("remaining_stock")
     @Expose
-    val remainingStock: Int = 1
+    var remainingStock: Int = 1
     @SerializedName("status")
     @Expose
-    val status: Int = 1
+    var status: Int = 1
     @SerializedName("wishlist")
     @Expose
     val wishList: Boolean = false
@@ -74,4 +74,7 @@ class ProductProfile {
     @SerializedName("icon_tokocabang")
     @Expose
     var urlTokocabang: String = ""
+    @SerializedName("parent_id")
+    @Expose
+    var parentId: String = "0"
 }

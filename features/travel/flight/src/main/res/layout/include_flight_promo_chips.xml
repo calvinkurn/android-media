@@ -8,13 +8,15 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flight_promo_chips_widget_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="heading_5"
         android:text="@string/flight_promo_chips_title"
         android:paddingBottom="@dimen/flight_dp_12"
         android:paddingTop="@dimen/layout_lvl1"
-        android:paddingLeft="@dimen/layout_lvl2"/>
+        android:paddingLeft="@dimen/layout_lvl2"
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_promo_chips"
