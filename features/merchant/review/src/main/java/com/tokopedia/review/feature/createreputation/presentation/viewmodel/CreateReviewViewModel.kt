@@ -74,7 +74,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     private val _progressBarState = MutableLiveData<CreateReviewProgressBarState>(CreateReviewProgressBarState())
     val progressBarState: LiveData<CreateReviewProgressBarState>
-        get() =  _progressBarState
+        get() = _progressBarState
 
     fun submitReview(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                      reviewText: String, isAnonymous: Boolean, utmSource: String) {
@@ -126,7 +126,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
         val imagesToDisplay = originalImages.toMutableList()
         imagePickerResult.forEachIndexed { index, s ->
-            if(s.contains(LOCAL_IMAGE_SOURCE) && index > originalImages.lastIndex) {
+            if (s.contains(LOCAL_IMAGE_SOURCE) && index > originalImages.lastIndex) {
                 imagesToDisplay.add(s)
             }
         }
@@ -257,6 +257,15 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     fun isUserEligible(): Boolean {
         return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
+    }
+
+    fun isTemplateAvailable(): Boolean {
+        return (reviewTemplates.value as? com.tokopedia.usecase.coroutines.Success)?.data?.isNotEmpty()
+                ?: false
+    }
+
+    fun getImageCount(): Int  {
+        return imageData.count { it is ImageReviewUiModel }
     }
 
     private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int = 0, rating: Int,

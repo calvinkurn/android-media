@@ -19,7 +19,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - anonim on ulasan produk",
-                "${if(isEditReview) feedbackId else orderId} - $productId"
+                "${if (isEditReview) feedbackId else orderId} - $productId"
         ))
     }
 
@@ -50,7 +50,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - kirim ulasan produk",
-                "order_id : " + if(isEditReview) feedbackId else orderId +
+                "order_id : " + if (isEditReview) feedbackId else orderId +
                         " - product_id : " + productId +
                         " - star : " + ratingValue +
                         " - ulasan : " + messageState +
@@ -72,7 +72,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - ulasan product description",
-                "${if(isEditReview) feedbackId else orderId} - $productId - $messageState"
+                "${if (isEditReview) feedbackId else orderId} - $productId - $messageState"
         ))
     }
 
@@ -107,7 +107,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - upload gambar produk",
-                "${if(isEditReview) orderId else feedbackId} - $productId - $successState - $imageNum"
+                "${if (isEditReview) orderId else feedbackId} - $productId - $successState - $imageNum"
         ))
     }
 
@@ -124,7 +124,7 @@ object CreateReviewTracking {
                 "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
                 "click - product star rating - $ratingValue",
-                "${if(isEditReview) feedbackId else orderId} - $productId - $successState"
+                "${if (isEditReview) feedbackId else orderId} - $productId - $successState"
         ))
     }
 
@@ -273,6 +273,28 @@ object CreateReviewTracking {
         ))
     }
 
+    fun eventClickSubmitForm(rating: Int, textLength: Int, numberOfPicture: Int, isAnonymous: Boolean, isEligible: Boolean, isTemplateAvailable: Boolean, templateSelectedCount: Int, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SUBMIT,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT, orderId, productId, rating, textLength > 0, textLength, numberOfPicture, isAnonymous.toString(), isEligible.toString(), isTemplateAvailable.toString(), templateSelectedCount.toString()),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventDismissForm(rating: Int, textLength: Int, numberOfPicture: Int, isAnonymous: Boolean, isEligible: Boolean, isTemplateAvailable: Boolean, templateSelectedCount: Int, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_DISMISS_FORM,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT, orderId, productId, rating, textLength > 0, textLength, numberOfPicture, isAnonymous.toString(), isEligible.toString(), isTemplateAvailable.toString(), templateSelectedCount),
+                productId,
+                userId
+        ))
+    }
+
     private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {
         val eventMap = HashMap<String, Any>()
         eventMap[ReviewTrackingConstant.EVENT] = event
@@ -300,14 +322,14 @@ object CreateReviewTracking {
     }
 
     private fun mapDialogTypeToViewDialogEventAction(dialogType: CreateReviewDialogType): String {
-        return when(dialogType) {
+        return when (dialogType) {
             CreateReviewDialogType.CreateReviewSendRatingOnlyDialog -> CreateReviewTrackingConstants.EVENT_ACTION_VIEW_SEND_RATING_DIALOG
             CreateReviewDialogType.CreateReviewUnsavedDialog -> CreateReviewTrackingConstants.EVENT_ACTION_VIEW_UNSAVED_DIALOG
         }
     }
 
     private fun mapDialogTypeToClickDialogEventAction(dialogType: CreateReviewDialogType): String {
-        return when(dialogType) {
+        return when (dialogType) {
             CreateReviewDialogType.CreateReviewSendRatingOnlyDialog -> CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_RATING_OPTION
             CreateReviewDialogType.CreateReviewUnsavedDialog -> CreateReviewTrackingConstants.EVENT_ACTION_CLICK_STAY_OPTION
         }

@@ -30,4 +30,7 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_STAY_OPTION = "click - tetap disini on pop up"
     const val EVENT_ACTION_CLICK_TEMPLATE = "click - review template"
     const val EVENT_LABEL_CLICK_TEMPLATE = "template:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_ACTION_CLICK_SUBMIT = "click - kirim ulasan produk"
+    const val EVENT_LABEL_CLICK_SUBMIT = "order_id : %s - product_id : %s - star : %d - ulasan : %s - review_char : %d - gambar : %d - anonim : %s - feedback_is_incentive_eligible : %s - is_template_available : %s - count_template_used : %d"
+    const val EVENT_ACTION_DISMISS_FORM = "click - dismiss create review form"
 }

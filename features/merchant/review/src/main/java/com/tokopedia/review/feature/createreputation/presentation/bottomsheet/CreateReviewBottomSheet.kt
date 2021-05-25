@@ -17,7 +17,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -102,6 +101,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var utmSource: String = ""
     private var isReviewIncomplete = false
     private var incentiveHelper = ""
+    private var templatesSelectedCount = 0
 
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
@@ -196,8 +196,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
-        if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
-        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, createReviewViewModel.isUserEligible(), (createReviewViewModel.reviewTemplates?.value as? Success)?.data ?: listOf())
+        if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible)
+                ?: ""
+        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, isUserEligible(), (createReviewViewModel.reviewTemplates?.value as? Success)?.data
+                ?: listOf())
         (textAreaBottomSheet as BottomSheetUnify).setTitle(textAreaTitle?.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
     }
@@ -246,6 +248,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun onTemplateSelected(template: String) {
+        templatesSelectedCount++
         textArea?.append(context?.getString(R.string.review_form_templates_formatting, template)
                 ?: template)
         CreateReviewTracking.eventClickReviewTemplate(template, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
@@ -297,7 +300,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 val isGoodRating = isGoodRating()
                 updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
-                if (isGoodRating && !createReviewViewModel.isUserEligible()) {
+                if (isGoodRating && !isUserEligible()) {
                     showTemplates()
                 } else {
                     hideTemplates()
@@ -456,9 +459,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun setProductDetail(data: ProductData) {
         productCard?.apply {
             setProduct(data)
-            setOnClickListener {
-                goToPdp()
-            }
         }
     }
 
@@ -470,7 +470,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setSubmitButtonOnClickListener() {
         submitButton?.setOnClickListener {
-            if(!isReviewComplete() && createReviewViewModel.isUserEligible()) {
+            CreateReviewTracking.eventClickSubmitForm(getRating(), getReviewMessageLength(), getNumberOfPictures(), isAnonymous(), isUserEligible(), isTemplateAvailable(), templatesSelectedCount, getOrderId(), productId.toString(), getUserId())
+            if (!isReviewComplete() && isUserEligible()) {
                 showReviewIncompleteDialog()
             } else {
                 submitNewReview()
@@ -480,11 +481,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setTextAreaListener() {
         textArea?.setListener(this)
-    }
-
-    private fun goToPdp() {
-        dismiss()
-        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString())
     }
 
     private fun goToImagePicker() {
@@ -537,7 +533,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun getOrderId(): String {
-        return (createReviewViewModel.getReputationDataForm.value as? Success<ProductRevGetForm>)?.data?.productrevGetForm?.orderID ?: ""
+        return (createReviewViewModel.getReputationDataForm.value as? Success<ProductRevGetForm>)?.data?.productrevGetForm?.orderID
+                ?: ""
     }
 
     private fun clearFocusAndHideSoftInput(view: View?) {
@@ -548,8 +545,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun submitNewReview() {
         val reviewMessage = textArea?.getText() ?: ""
-        createReviewViewModel.submitReview(ratingStars?.getReviewClickAt()
-                ?: 0, reviewMessage, anonymousOption?.isChecked() ?: false, utmSource)
+        createReviewViewModel.submitReview(getRating(), reviewMessage, isAnonymous(), utmSource)
     }
 
     private fun isGoodRating(): Boolean {
@@ -558,6 +554,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setDismissBehavior() {
         setOnDismissListener {
+            CreateReviewTracking.eventDismissForm(getRating(), getReviewMessageLength(), getNumberOfPictures(), isAnonymous(), isUserEligible(), isTemplateAvailable(), templatesSelectedCount, getOrderId(), productId.toString(), getUserId())
             activity?.finish()
         }
     }
@@ -587,17 +584,17 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         val title = getString(R.string.review_form_send_rating_only_dialog_title)
         showDialog(title, getString(R.string.review_form_send_rating_only_body), getString(R.string.review_form_send_rating_only_exit), { dismiss() }, getString(R.string.review_form_send_rating_only), {
             submitNewReview()
-            CreateReviewTracking.eventClickDialogOption(CreateReviewDialogType.CreateReviewSendRatingOnlyDialog, title, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
+            CreateReviewTracking.eventClickDialogOption(CreateReviewDialogType.CreateReviewSendRatingOnlyDialog, title, getReputationId(), getOrderId(), productId.toString(), getUserId())
         })
-        CreateReviewTracking.eventViewDialog(CreateReviewDialogType.CreateReviewSendRatingOnlyDialog, title, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
+        CreateReviewTracking.eventViewDialog(CreateReviewDialogType.CreateReviewSendRatingOnlyDialog, title, getReputationId(), getOrderId(), productId.toString(), getUserId())
     }
 
     private fun showReviewUnsavedWarningDialog() {
         val title = getString(R.string.review_form_dismiss_form_dialog_title)
         showDialog(title, getString(R.string.review_form_dismiss_form_dialog_body), getString(R.string.review_edit_dialog_exit), { dismiss() }, getString(R.string.review_form_dismiss_form_dialog_stay), {
-            CreateReviewTracking.eventClickDialogOption(CreateReviewDialogType.CreateReviewUnsavedDialog, title, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
+            CreateReviewTracking.eventClickDialogOption(CreateReviewDialogType.CreateReviewUnsavedDialog, title, getReputationId(), getOrderId(), productId.toString(), getUserId())
         })
-        CreateReviewTracking.eventViewDialog(CreateReviewDialogType.CreateReviewUnsavedDialog, title, getReputationId(), getOrderId(), productId.toString(), createReviewViewModel.getUserId())
+        CreateReviewTracking.eventViewDialog(CreateReviewDialogType.CreateReviewUnsavedDialog, title, getReputationId(), getOrderId(), productId.toString(), getUserId())
     }
 
     private fun showIncentivesExitWarningDialog() {
@@ -654,7 +651,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 anonymousOption?.isChecked() ?: false,
                 isEditMode,
                 feedbackId.toString(),
-                createReviewViewModel.isUserEligible() && isReviewComplete()
+                isUserEligible() && isReviewComplete()
         )
     }
 
@@ -693,7 +690,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun handleDismiss() {
-        if (createReviewViewModel.isUserEligible()) {
+        if (isUserEligible()) {
             showIncentivesExitWarningDialog()
             return
         }
@@ -704,7 +701,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         showReviewUnsavedWarningDialog()
     }
 
-    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "", feedbackId: String =  "") {
+    private fun finishIfRoot(success: Boolean = false, errorMessage: String = "", feedbackId: String = "") {
         activity?.run {
             if (isTaskRoot) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
@@ -737,7 +734,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun setHelperText(textLength: Int) {
-        if (!createReviewViewModel.isUserEligible()) {
+        if (!isUserEligible()) {
             return
         }
         incentivesHelperText?.apply {
@@ -779,5 +776,33 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun getReputationId(): String {
         return (createReviewViewModel.getReputationDataForm.value as? Success)?.data?.productrevGetForm?.reputationID.toString()
+    }
+
+    private fun getRating(): Int {
+        return ratingStars?.clickAt ?: 5
+    }
+
+    private fun isAnonymous(): Boolean {
+        return anonymousOption?.isChecked() ?: false
+    }
+
+    private fun getReviewMessageLength(): Int {
+        return textArea?.getText()?.length ?: 0
+    }
+
+    private fun getNumberOfPictures(): Int {
+        return createReviewViewModel.getImageCount()
+    }
+
+    private fun isUserEligible(): Boolean {
+        return createReviewViewModel.isUserEligible()
+    }
+
+    private fun isTemplateAvailable(): Boolean {
+        return createReviewViewModel.isTemplateAvailable()
+    }
+
+    private fun getUserId(): String {
+        return createReviewViewModel.getUserId()
     }
 }
