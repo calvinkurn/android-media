@@ -278,7 +278,7 @@ class TokoMartHomeFragment: Fragment() {
     private fun isNavOld(): Boolean {
         return try {
 //            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
-            true
+            false
         } catch (e: Exception) {
             e.printStackTrace()
             true
