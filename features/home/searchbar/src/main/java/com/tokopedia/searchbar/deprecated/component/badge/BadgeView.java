@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.deprecated.component.badge;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -194,6 +195,7 @@ public class BadgeView extends View implements Badge {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {

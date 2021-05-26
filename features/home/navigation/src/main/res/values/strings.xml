@@ -103,4 +103,7 @@
     <string name="id_menu_os">menu_os</string>
     <string name="id_menu_cart">menu_cart</string>
     <string name="id_menu_account">menu_account</string>
+    
+    <string name="content_desc_label_image">Label</string>
+    <string name="content_desc_label_arrow">Next</string>
 </resources>
