@@ -38,7 +38,7 @@ public class ChangeClickBcaPresenter extends BaseDaggerPresenter<ChangeClickBcaC
         variables.put(Constant.MERCHANT_CODE, merchantCode);
         variables.put(Constant.NEW_KLIKBCA_USER_ID, newClickBcaUserId);*/
 
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
+       /* GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.change_click_bca), DataEditKlikBca.class, variables, false);
         changeClickBcaUseCase.clearRequest();
         changeClickBcaUseCase.setRequest(graphqlRequest);
@@ -62,7 +62,7 @@ public class ChangeClickBcaPresenter extends BaseDaggerPresenter<ChangeClickBcaC
                 DataEditKlikBca editKlikbca = objects.getData(DataEditKlikBca.class);
                 getView().onResultChangeClickBcaUserId(editKlikbca.getEditKlikbca().isSuccess(), editKlikbca.getEditKlikbca().getMessage());
             }
-        });
+        });*/
     }
 
     @Override

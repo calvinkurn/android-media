@@ -4,31 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
+    <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/input_layout_click_bca_user_id"
-        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_8"
         android:layout_alignParentTop="true"
-        android:hint="@string/payment_label_hint_click_bca_user_id"
-        app:helper="@string/payment_label_helper_change_click_bca">
+        android:layout_margin="@dimen/dp_8"
+        app:text_field_input_type="text"
+        app:text_field_label="@string/payment_label_hint_click_bca_user_id"
+        app:text_field_label_static="true"
+        app:text_field_message="@string/payment_label_helper_change_click_bca"/>
 
-        <EditText
-            android:id="@+id/input_click_bca_user_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text" />
 
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_use"
-        style="@style/Button.Submit.Green"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="@string/payment_label_use" />
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:text="@string/payment_label_use"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="large"/>
 
 
 </RelativeLayout>
