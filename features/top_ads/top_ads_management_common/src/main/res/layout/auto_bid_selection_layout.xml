@@ -111,7 +111,6 @@
         android:layout_height="wrap_content"
         app:fbType="group"
         android:visibility="gone"
-        android:background="@color/Unify_N0"
         app:layout_constraintBottom_toTopOf="@+id/save_autobid"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

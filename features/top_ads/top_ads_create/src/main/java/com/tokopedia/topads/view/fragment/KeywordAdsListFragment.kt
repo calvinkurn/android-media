@@ -329,6 +329,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun showSearchResult(data: List<SearchData>) {
         keywordSearchAdapter.items.clear()
+        emptyLayout?.gone()
         startLoading(false)
         val listKeywords: MutableList<String> = mutableListOf()
         if (searchBar.searchBarTextField.text.toString().isNotEmpty() && data.isNotEmpty()) {
@@ -340,8 +341,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                         ?: "", item.onChecked, fromSearch = true))
             }
             keywordSearchAdapter.setSearchList(list)
-        } else {
-            setEmpty(data.isEmpty())
         }
         checkIfNeedsManualAddition(listKeywords)
     }

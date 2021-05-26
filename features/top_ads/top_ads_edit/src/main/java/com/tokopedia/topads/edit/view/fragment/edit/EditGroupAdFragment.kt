@@ -86,14 +86,14 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            resources.getLayout(R.layout.topads_edit_activity_edit_form_ad),
-            container,
-            false
+                resources.getLayout(R.layout.topads_edit_activity_edit_form_ad),
+                container,
+                false
         )
     }
 
@@ -106,13 +106,12 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         if (priceDaily != 0) {
             toggle?.isChecked = true
             daily_budget?.visible()
-            daily_budget?.textFieldInput?.setText(data.priceDaily.toString())
-        } else {
-            daily_budget?.gone()
             if (currentAutoBidState.isEmpty())
                 setCurrentDailyBudget((MULTIPLIER * data.priceBid).toString())
             else
                 setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
+        } else {
+            daily_budget?.gone()
         }
         progressbar?.visibility = View.GONE
         saveInitialChoices()
@@ -160,6 +159,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         })
         sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
             currentAutoBidState = it
+            if(currentAutoBidState.isNotEmpty()) {
+                setCurrentDailyBudget(AUTOBID_DEFUALT_BUDGET.toString())
+                actionEnable()
+            }
         })
         if (arguments?.getString(GROUP_ID)?.isNotEmpty()!!) {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
@@ -204,17 +207,17 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         })
 
         daily_budget?.textFieldInput?.addTextChangedListener(object :
-            NumberTextWatcher(daily_budget.textFieldInput, "0") {
+                NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 when {
                     number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
-                            String.format(
-                                getString(R.string.angarran_harrian_min_bid_error),
-                                Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
-                            )
+                                String.format(
+                                        getString(R.string.angarran_harrian_min_bid_error),
+                                        Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
+                                )
                         )
                         validation3 = false
                         actionEnable()
@@ -222,10 +225,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                     number < currentBudget -> {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
-                            String.format(
-                                getString(R.string.topads_common_minimum_daily_budget),
-                                currentBudget
-                            )
+                                String.format(
+                                        getString(R.string.topads_common_minimum_daily_budget),
+                                        currentBudget
+                                )
                         )
                         validation3 = false
                         actionEnable()
@@ -233,10 +236,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                     number > MAXIMUM_LIMIT.removeCommaRawString().toDouble() -> {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
-                            String.format(
-                                getString(R.string.topads_common_maximum_daily_budget),
-                                MAXIMUM_LIMIT
-                            )
+                                String.format(
+                                        getString(R.string.topads_common_maximum_daily_budget),
+                                        MAXIMUM_LIMIT
+                                )
                         )
                         validation3 = false
                         actionEnable()

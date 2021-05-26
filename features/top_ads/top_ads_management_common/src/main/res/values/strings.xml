@@ -194,7 +194,7 @@
     <string name="topads_create_bs_title1">Biaya Kata Kunci</string>
     <string name="topads_create_bs_desc2">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman selain halaman hasil pencarian seperti halaman utama, kategori, dan produk rekomendasi.</string>
     <string name="topads_create_bs_desc1">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman pencarian seperti menggunakan kata kunci yang kamu tentukan.</string>
-    <string name="topads_keyword_common_del_toaster">kata kunci berhasil dihapus</string>
+    <string name="topads_keyword_common_del_toaster">Kata kunci berhasil dihapus.</string>
     <string name="topads_neg_keyword_common_del_toaster">kata kunci negatif berhasil dihapus</string>
 
 

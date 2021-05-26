@@ -25,7 +25,7 @@
     <string name="terbaru">Terbaru</string>
     <string name="terlaris">Terlaris</string>
     <string name="filter">Filter</string>
-    <string name="pilih_produk_yang_berada_dalam">Pilih produk yang berada daam suru kategori\n atau etalase.</string>
+    <string name="pilih_produk_yang_berada_dalam">Pilih produk yang berada dalam satu kategori\n atau etalase.</string>
     <string name="pilih_produk_dengan_ulasan_terbanyak">Pilih produk dengan ulasan terbanyak</string>
     <string name="pilih_produk_terpopuler">Pilih produk terpopuler</string>
     <string name="buat_group_iklan">Buat Grup Iklan</string>
@@ -36,7 +36,8 @@
     <string name="atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk">Atur beberapa iklan sekaligus ke dalam satu grup sesuai kategori produk.</string>
     <string name="group_iklan">Grup Iklan</string>
     <string name="oops_produk_ntidak_ditemukan">Oops, produk tidak ditemukan</string>
-    <string name="tip_biaya_iklan">Tips Biaya iklan</string>
+    <string name="tip_biaya_iklan">Tips Biaya Iklan</string>
+    <string name="tip_biaya_iklan_title">Tips biaya iklan</string>
     <string name="sudah_diiklankan">Sudah Diiklankan</string>
     <string name="belum_diiklankan">Belum Diiklankan</string>
     <string name="cari_produk">Cari Produk</string>
@@ -51,7 +52,6 @@
     <string name="anggaran_harian">Anggaran harian</string>
     <string name="optimalkan_penjualan_dengan_atur_anggaran_harian_iklan">Batasi pengeluaran harianmu dengan atur anggaran harian.</string>
     <string name="type_iklan">Tipe iklan</string>
-    <string name="lihat_performa_iklan">Lihat performa iklan</string>
     <string name="create_group">Buat Group Iklan</string>
     <string name="creat_ad">Buat Iklan Produk</string>
     <string name="seputar_biaya_iklan">Seputar biaya iklan</string>
@@ -141,8 +141,8 @@
     <string name="topads_create_tip_sheet_title3">3. Kompetisi terendah</string>
     <string name="topads_create_tip_sheet_desc1">Pilih kata kunci yang <![CDATA["<font color='#F531353B'><b> berhubungan </b></font> dengan produkmu agar iklanmu dapat tampil ke calon pembeli yang <font color='#F531353B'><b> relevan </b></font>.]]></string>
     <string name="topads_create_tip_sheet_desc3">Pilih kata kunci dengan kompetisi yang rendah agar iklanmu <![CDATA["<font color='#F531353B'><b> lebih sering tampil. </b></font> Kompetisi menunjukkan seberapa banyak suatu kata kunci <font color='#F531353B'><b> digunakan oleh kompetitormu. </b></font>]]></string>
-    <string name="topads_create_tip_sheet_desc2">Pilih kata kunci dengan jumlah pencarian tertinggi agar iklanmu dapat<![CDATA["<font color='#F531353B'><b>menjangkau lebih banyak calon pembeli.</b></font> Data jumlah pencarian merupakan data dari <font color='#F531353B'><b> 30 hari terakhir. </b></font>.]]></string>
-<string name="topads_create_tip_sheet_desc4">Karena sistem iklan di TopAds bersifat lelang, maka <![CDATA["<font color='#F531353B'><b> kompetisi tinggi </b></font> butuh <font color='#F531353B'><b> biaya iklan lebih tinggi</b></font> untuk tampil dan <font color='#F531353B'><b> kompetisi rendah </b></font> butuh <font color='#F531353B'><b> biaya iklan  </b></font>yang relatif <font color='#F531353B'><b> lebih rendah. </b></font>]]></string>
+    <string name="topads_create_tip_sheet_desc2">Pilih kata kunci dengan jumlah pencarian tertinggi agar iklanmu dapat <![CDATA["<font color='#F531353B'><b>menjangkau lebih banyak calon pembeli.</b></font> Data jumlah pencarian merupakan data dari <font color='#F531353B'><b> 30 hari terakhir. </b></font>.]]></string>
+    <string name="topads_create_tip_sheet_desc4"><p><p>Sistem iklan di TopAds bersifat lelang, maka <![CDATA["<font color='#F531353B'><b> kompetisi tinggi </b></font> butuh <font color='#F531353B'><b> biaya iklan lebih tinggi</b></font> untuk tampil dan <font color='#F531353B'><b> kompetisi rendah </b></font> butuh <font color='#F531353B'><b> biaya iklan  </b></font>yang relatif <font color='#F531353B'><b> lebih rendah. </b></font>]]></p></p></string>
 
 <!-- Search activity-->
     <string name="topads_create_empty_view_title">Tidak ada kata kunci ditemukan</string>

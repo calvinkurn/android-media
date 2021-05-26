@@ -3,6 +3,7 @@ package com.tokopedia.topads.common.view.sheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
@@ -105,7 +106,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
             onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString(), position)
             dismiss()
         }
-        budget.textFieldInput.setText(suggestedBid)
+        if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
+            budget.textFieldInput.setText(minBid)
+        } else {
+            budget.textFieldInput.setText(suggestedBid)
+        }
         setTitle(name)
     }
 

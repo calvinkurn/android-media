@@ -395,7 +395,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             tipsListSheet?.showKnob = false
             tipsListSheet?.isDragable = false
             tipsListSheet?.isHideable = false
-            tipsListSheet?.setTitle(getString(R.string.tip_biaya_iklan))
+            tipsListSheet?.setTitle(getString(R.string.tip_biaya_iklan_title))
             tipsListSheet?.show(childFragmentManager, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_BIAYA_IKLAN, shopID, userID)
         }
@@ -460,6 +460,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         } else {
             bidInfoAdapter.items.clear()
             stepperModel?.selectedKeywordStage?.forEach {
+                if(it.bidSuggest == "0")
+                    it.bidSuggest = minSuggestKeyword
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
             }
             bidInfoAdapter.notifyDataSetChanged()

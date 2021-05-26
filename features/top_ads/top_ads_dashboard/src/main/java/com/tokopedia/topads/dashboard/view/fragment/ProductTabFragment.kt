@@ -205,8 +205,10 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK) {
                 fetchData()
+                (activity as TopAdsGroupDetailViewActivity).loadChildStatisticsData()
+            }
         }
     }
 

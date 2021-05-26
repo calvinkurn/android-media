@@ -217,6 +217,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             suggestions.add(DataSuggestions("group", dummyId))
             viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
         })
+        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, Observer{
+            if(it.isEmpty() || minBid == "0") {
+                getLatestBid()
+            }
+        })
 
         if (productIds.isNotEmpty())
             viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
