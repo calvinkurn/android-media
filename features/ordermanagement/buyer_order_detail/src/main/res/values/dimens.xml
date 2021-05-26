@@ -2,5 +2,7 @@
 <resources>
     <dimen name="buyer_order_detail_section_top_margin">12dp</dimen>
     <dimen name="buyer_order_detail_header_top_margin">22dp</dimen>
-    <dimen name="product_thumbnail_size">46dp</dimen>
+    <dimen name="buyer_order_detail_product_thumbnail_size">46dp</dimen>
+    <dimen name="buyer_order_detail_bo_badge_width">39dp</dimen>
+    <dimen name="buyer_order_detail_bo_badge_height">18dp</dimen>
 </resources>

@@ -33,7 +33,8 @@ data class ShipmentInfoUiModel(
     data class CourierInfoUiModel(
             val arrivalEstimation: String,
             val courierNameAndProductName: String,
-            val isFreeShipping: Boolean
+            val isFreeShipping: Boolean,
+            val boBadgeUrl: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

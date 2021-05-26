@@ -26,6 +26,8 @@ data class GetBuyerOrderDetailResponse(
                 val invoice: String = "",
                 @SerializedName("invoice_url")
                 val invoiceUrl: String = "",
+                @SerializedName("meta")
+                val meta: Meta = Meta(),
                 @SerializedName("order_id")
                 val orderId: String = "0",
                 @SerializedName("order_status")
@@ -182,8 +184,6 @@ data class GetBuyerOrderDetailResponse(
                     val driver: Driver = Driver(),
                     @SerializedName("eta")
                     val eta: String = "",
-                    @SerializedName("is_bebas_ongkir")
-                    val isBebasOngkir: Boolean = false,
                     @SerializedName("receiver")
                     val receiver: Receiver = Receiver(),
                     @SerializedName("shipping_display_name")
@@ -242,6 +242,13 @@ data class GetBuyerOrderDetailResponse(
                     val text: String = "",
                     @SerializedName("type")
                     val type: String = ""
+            )
+
+            data class Meta(
+                    @SerializedName("is_bo")
+                    val isBebasOngkir: Boolean = false,
+                    @SerializedName("bo_image_url")
+                    val boImageUrl: String = "false"
             )
         }
     }

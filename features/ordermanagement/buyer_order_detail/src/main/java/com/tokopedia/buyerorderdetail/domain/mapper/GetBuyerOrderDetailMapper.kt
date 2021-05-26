@@ -13,7 +13,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
                 productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId),
-                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment)
+                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta)
         )
     }
 
@@ -49,11 +49,11 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapShipmentInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment): ShipmentInfoUiModel {
+    private fun mapShipmentInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
                 awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum),
                 courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
-                courierInfoUiModel = mapCourierInfoUiModel(shipment),
+                courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
                 headerUiModel = mapPlainHeader(BuyerOrderDetailConst.SECTION_HEADER_SHIPMENT_INFO),
                 receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
                 ticker = mapTicker(shipment.shippingInfo)
@@ -239,11 +239,12 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapCourierInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment): ShipmentInfoUiModel.CourierInfoUiModel {
+    private fun mapCourierInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta): ShipmentInfoUiModel.CourierInfoUiModel {
         return ShipmentInfoUiModel.CourierInfoUiModel(
                 arrivalEstimation = shipment.eta,
                 courierNameAndProductName = shipment.shippingDisplayName,
-                isFreeShipping = shipment.isBebasOngkir
+                isFreeShipping = meta.isBebasOngkir,
+                boBadgeUrl = meta.boImageUrl
         )
     }
 

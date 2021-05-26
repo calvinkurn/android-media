@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -17,7 +18,7 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
     override fun bind(element: ShipmentInfoUiModel.CourierInfoUiModel?) {
         element?.let {
             setupCourierNameAndProductName(it.courierNameAndProductName)
-            setupFreeShippingBadge(it.isFreeShipping)
+            setupFreeShippingBadge(it.isFreeShipping, it.boBadgeUrl)
             setupArrivalEstimation(it.arrivalEstimation, it.isFreeShipping)
         }
     }
@@ -32,8 +33,8 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
                     if (oldItem.courierNameAndProductName != newItem.courierNameAndProductName) {
                         setupCourierNameAndProductName(newItem.courierNameAndProductName)
                     }
-                    if (oldItem.isFreeShipping != newItem.isFreeShipping) {
-                        setupFreeShippingBadge(newItem.isFreeShipping)
+                    if (oldItem.isFreeShipping != newItem.isFreeShipping || oldItem.boBadgeUrl != newItem.boBadgeUrl) {
+                        setupFreeShippingBadge(newItem.isFreeShipping, newItem.boBadgeUrl)
                     }
                     if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping) {
                         setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping)
@@ -50,8 +51,11 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
         itemView.tvBuyerOrderDetailCourierValue?.text = courierNameAndProductName
     }
 
-    private fun setupFreeShippingBadge(freeShipping: Boolean) {
-        itemView.ivBuyerOrderDetailFreeShipmentBadge?.showWithCondition(freeShipping)
+    private fun setupFreeShippingBadge(freeShipping: Boolean, boBadgeUrl: String) {
+        itemView.ivBuyerOrderDetailFreeShipmentBadge?.apply {
+            ImageHandler.loadImage2(this, boBadgeUrl, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
+            showWithCondition(freeShipping)
+        }
     }
 
     private fun setupArrivalEstimation(arrivalEstimation: String, freeShipping: Boolean) {

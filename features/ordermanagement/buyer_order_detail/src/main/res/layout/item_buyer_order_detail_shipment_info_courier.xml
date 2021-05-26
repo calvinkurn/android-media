@@ -40,8 +40,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivBuyerOrderDetailFreeShipmentBadge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/buyer_order_detail_bo_badge_width"
+        android:layout_height="@dimen/buyer_order_detail_bo_badge_height"
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailCourierValue"
         app:layout_constraintEnd_toEndOf="parent"

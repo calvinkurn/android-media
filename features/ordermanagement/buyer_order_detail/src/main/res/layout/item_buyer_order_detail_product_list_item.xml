@@ -17,8 +17,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivBuyerOrderDetailProductThumbnail"
-            android:layout_width="@dimen/product_thumbnail_size"
-            android:layout_height="@dimen/product_thumbnail_size"
+            android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
+            android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

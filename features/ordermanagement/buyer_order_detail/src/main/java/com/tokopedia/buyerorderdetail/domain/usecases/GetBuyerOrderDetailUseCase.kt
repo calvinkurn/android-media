@@ -104,7 +104,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   shipping_display_name
                   shipping_ref_num
                   eta
-                  is_bebas_ongkir
                   receiver {
                     name
                     phone
@@ -177,6 +176,10 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       uri
                     }
                   }
+                }
+                meta {
+                  is_bo
+                  bo_image_url
                 }
               }
             }
