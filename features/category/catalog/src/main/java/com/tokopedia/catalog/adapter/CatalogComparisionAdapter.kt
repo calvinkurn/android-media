@@ -24,7 +24,7 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
         const val CATALOG_DETAIL = 0
         const val CATALOG_FEATURE = 1
         const val FIRST_POSITION = 0
-        const val EMPTY_VALUE = "- -"
+        const val EMPTY_VALUE = "-"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

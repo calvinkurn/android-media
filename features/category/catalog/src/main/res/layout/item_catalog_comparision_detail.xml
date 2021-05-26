@@ -18,7 +18,9 @@
         <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/base_catalog_card"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:card_type="border"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
