@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.utils.StatisticDateUtil
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
@@ -186,7 +187,8 @@ object StatisticPageHelper {
                 time = time.minus(millisOf31Days)
             }
         }
-        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = defaultDate, endDate = defaultDate, monthPickerMaxDate = defaultDate)
+        val (startDate, endDate) = StatisticDateUtil.getStartAndEndDateInAMonth(defaultDate)
+        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = startDate, endDate = endDate, monthPickerMaxDate = defaultDate)
     }
 
     fun getRegularMerchantStatus(userSession: UserSessionInterface): Boolean {
