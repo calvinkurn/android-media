@@ -45,7 +45,6 @@ class TokoMartHomeViewModel @Inject constructor(
     private val _searchHint = MutableLiveData<SearchPlaceholder>()
     private val _notificationCounter = MutableLiveData<TopNavNotificationModel>()
 
-
     private var layoutList = listOf<Visitable<*>>()
 
     fun getHomeLayout() {

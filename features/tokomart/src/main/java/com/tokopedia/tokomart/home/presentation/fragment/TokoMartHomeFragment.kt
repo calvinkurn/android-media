@@ -327,7 +327,7 @@ class TokoMartHomeFragment: Fragment() {
         }
 
         context?.let {
-            rvHome?.setPadding(16.toPx(), NavToolbarExt.getFullToolbarHeight(it) - 8, 0, 8.toPx())
+            rvHome?.setPadding(0, NavToolbarExt.getFullToolbarHeight(it) - 8, 0, 0)
             rvHome?.setItemViewCacheSize(20)
             rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
