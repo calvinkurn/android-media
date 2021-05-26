@@ -57,9 +57,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                 status
                 data {
                   errors
-                  total_product_count
-                  total_product_error
-                  total_product_price
                   empty_cart {
                     title
                     image
@@ -78,17 +75,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       id
                     }
                   }
-                  max_quantity
                   max_char_note
-                  messages {
-                    ErrorFieldBetween
-                    ErrorFieldMaxChar
-                    ErrorFieldRequired
-                    ErrorProductAvailableStock
-                    ErrorProductAvailableStockDetail
-                    ErrorProductMaxQuantity
-                    ErrorProductMinQuantity
-                  }
                   header_title
                   shopping_summary {
                     total_wording
@@ -97,6 +84,74 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                     discount_value
                     payment_total_wording
                     payment_total_value
+                  }
+                  available_section {
+                    action {
+                      id
+                      code
+                      message
+                    }
+                    available_group {
+                      cart_string
+                      errors
+                      shop {
+                        maximum_weight_wording
+                        maximum_shipping_weight
+                        shop_id
+                        shop_type_info {
+                          badge
+                          shop_grade
+                          shop_tier
+                          title
+                          title_fmt
+                        }
+                      }
+                      shipment_information {
+                        shop_location
+                        estimation
+                        free_shipping {
+                          eligible
+                          badge_url
+                        }
+                        free_shipping_extra {
+                          eligible
+                          badge_url
+                        }
+                      }
+                      cart_details {
+                        cart_id
+                        selected_unavailable_action_link
+                        errors
+                        product {
+                          product_id
+                          product_weight
+                          product_quantity
+                          product_name
+                          product_image {
+                            image_src_100_square
+                          }
+                          variant_description_detail {
+                            variant_name
+                            variant_description
+                          }
+                          product_warning_message
+                          slash_price_label
+                          product_original_price
+                          initial_price
+                          product_price
+                          product_information
+                          product_notes
+                          product_min_order
+                          product_max_order
+                          parent_id
+                          wholesale_price {
+                            qty_min
+                            qty_max
+                            prd_prc
+                          }
+                        }
+                      }
+                    }
                   }
                   unavailable_ticker
                   unavailable_section_action {
@@ -114,7 +169,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       message
                     }
                     unavailable_group {
-                      user_address_id
                       shipment_information {
                         shop_location
                         estimation
@@ -126,291 +180,63 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           eligible
                           badge_url
                         }
-                        preorder {
-                          is_preorder
-                          duration
-                        }
                       }
                       shop {
-                        shop_alert_message
-                        shop_id
-                        user_id
-                        shop_name
-                        shop_image
-                        shop_url
-                        shop_status
-                        is_gold
-                        is_gold_badge
-                        is_official
-                        is_free_returns
-                        address_id
-                        postal_code
-                        latitude
-                        longitude
-                        district_id
-                        district_name
-                        origin
-                        address_street
-                        province_id
-                        city_id
-                        city_name
-                        province_name
-                        country_name
-                        is_allow_manage
-                        shop_domain
-                        shop_ticker
                         maximum_weight_wording
                         maximum_shipping_weight
-                      }
-                      promo_codes
-                      cart_string
-                      total_cart_details_error
-                      total_cart_price
-                      errors
-                      sort_key
-                      is_fulfillment_service
-                      warehouse {
-                        warehouse_id
-                        partner_id
                         shop_id
-                        warehouse_name
-                        district_id
-                        district_name
-                        city_id
-                        city_name
-                        province_id
-                        province_name
-                        status
-                        postal_code
-                        is_default
-                        latlon
-                        latitude
-                        longitude
-                        email
-                        address_detail
-                        country_name
-                        is_fulfillment
-                      }
-                      checkbox_state
-                    }
-                  }
-                  available_section {
-                    action {
-                      id
-                      code
-                      message
-                    }
-                    available_group {
-                      shop {
-                        shop_alert_message
-                        shop_id
-                        user_id
-                        shop_name
-                        shop_image
-                        shop_url
-                        shop_status
-                        is_gold
-                        is_gold_badge
-                        is_official
-                        is_free_returns
-                        address_id
-                        postal_code
-                        latitude
-                        longitude
-                        district_id
-                        district_name
-                        origin
-                        address_street
-                        province_id
-                        city_id
-                        city_name
-                        province_name
-                        country_name
-                        is_allow_manage
-                        shop_domain
-                        shop_ticker
-                        maximum_weight_wording
-                        maximum_shipping_weight
                         shop_type_info {
-                          shop_tier
-                          shop_grade
                           badge
-                          badge_svg
+                          shop_grade
+                          shop_tier
                           title
                           title_fmt
                         }
-                        official_store {
-                          is_official
-                          os_logo_url
-                        }
-                        gold_merchant {
-                          is_gold
-                          is_gold_badge
-                          gold_merchant_logo_url
-                        }
-                        shop_shipments {
-                          ship_id
-                          ship_name
-                          ship_code
-                          ship_logo
-                          is_dropship_enabled
-                          ship_prods {
-                            ship_prod_id
-                            ship_prod_name
-                            ship_group_name
-                            ship_group_id
-                            minimum_weight
-                            additional_fee
-                          }
-                        }
                       }
-                      shipment_information {
-                        estimation
-                        shop_location
-                        preorder {
-                          is_preorder
-                          duration
-                        }
-                      }
+                      cart_string
+                      errors
                       cart_details {
                         cart_id
+                        selected_unavailable_action_link
+                        errors
                         product {
-                          product_tracker_data {
-                            attribution
-                            tracker_list_name
-                          }
-                          isWishlist
                           product_id
-                          product_name
-                          product_price_fmt
-                          product_price
-                          parent_id
-                          category_id
-                          category
-                          catalog_id
-                          wholesale_price {
-                            qty_min
-                            qty_min_fmt
-                            qty_max
-                            qty_max_fmt
-                            prd_prc
-                            prd_prc_fmt
-                          }
                           product_weight
-                          product_weight_fmt
-                          product_condition
-                          product_status
-                          product_url
-                          is_preorder
-                          product_cashback
-                          product_min_order
-                          product_max_order
-                          product_rating
-                          product_invenage_value
-                          product_invenage_total {
-                            by_user {
-                              in_cart
-                              last_stock_less_than
-                            }
-                            by_user_text {
-                              in_cart
-                              last_stock_less_than
-                              complete
-                            }
-                            is_counted_by_user
-                            by_product {
-                              in_cart
-                              last_stock_less_than
-                            }
-                            by_product_text {
-                              in_cart
-                              last_stock_less_than
-                              complete
-                            }
-                            is_counted_by_product
-                          }
-                          product_switch_invenage
-                          product_information
-                          price_changes {
-                            changes_state
-                            amount_difference
-                            original_amount
-                            description
-                          }
+                          product_quantity
+                          product_name
                           product_image {
                             image_src_100_square
                           }
-                          product_notes
-                          product_quantity
-                          product_weight_unit_code
-                          product_weight_unit_text
-                          last_update_price
-                          is_update_price
-                          product_preorder {
-                            duration_day
-                            duration_text
-                            duration_unit_code
-                            duration_unit_text
-                            duration_value
+                          variant_description_detail {
+                            variant_name
+                            variant_description
                           }
-                          campaign_id
-                          product_original_price
-                          product_price_original_fmt
-                          is_slash_price
-                          product_finsurance
-                          is_wishlisted
-                          is_ppp
-                          is_cod
-                          warehouse_id
-                          is_parent
-                          is_campaign_error
-                          is_blacklisted
-                          booking_stock
-                          product_variant {
-                            parent_id
-                            default_child
-                            variant {
-                              product_variant_id
-                              variant_id
-                              variant_unit_id
-                              name
-                              identifier
-                              unit_name
-                              position
-                              option {
-                                product_variant_option_id
-                                variant_unit_value_id
-                                value
-                                picture {
-                                  url
-                                  url200
-                                  picture_detail {
-                                    file_name
-                                    file_path
-                                    width
-                                    height
-                                  }
-                                }
-                              }
-                            }
-                          }
-                          is_product_volume_weight
-                          initial_price
-                          initial_price_fmt
-                          slash_price_label
                           product_warning_message
-                          product_alert_message
+                          slash_price_label
+                          product_original_price
+                          initial_price
+                          product_price
+                          product_information
+                          product_notes
+                          product_min_order
+                          product_max_order
+                          parent_id
+                          wholesale_price {
+                            qty_min
+                            qty_max
+                            prd_prc
+                          }
                         }
-                        errors
-                        messages
-                        checkbox_state
                       }
                     }
                   }
+                  total_product_count
+                  total_product_price
+                  total_product_error
                 }
               }
             }
-    """.trimIndent()
+        """.trimIndent()
     }
 
 }
