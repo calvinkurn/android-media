@@ -40,6 +40,8 @@ class SearchPageFragment: BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory).get(SearchPageViewModel::class.java)
     }
 
+    private var autoCompleteAdapter = AutoCompleteListAdapter()
+
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -149,7 +151,10 @@ class SearchPageFragment: BaseDaggerFragment() {
     }
 
     private fun loadListLocation(suggestedPlace: Place) {
-        //load list here
+        if (suggestedPlace.data.isNotEmpty()) {
+            binding.rvAddressList.visibility = View.VISIBLE
+            autoCompleteAdapter.setData(suggestedPlace.data)
+        }
     }
 
     private fun hideListLocation() {

@@ -6,16 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_location"
-        android:layout_width="14dp"
-        android:layout_height="19dp"
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_18"
         android:layout_marginRight="@dimen/dp_18"
-        app:srcCompat="@drawable/ic_green_pointer"
-        android:tint="@color/Unify_N200"
+        app:icon_name="LOCATION"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/dp_12"/>
+        android:layout_marginTop="@dimen/dp_8"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
