@@ -32,6 +32,7 @@ include "features:im:moengage_wrapper"
 
 include "features:category:basemvvm"
 include "features:category:tradein"
+include "features:category:moneyin"
 include "features:category:age_restriction"
 include "features:category:explore_category"
 include "features:category:discovery2"

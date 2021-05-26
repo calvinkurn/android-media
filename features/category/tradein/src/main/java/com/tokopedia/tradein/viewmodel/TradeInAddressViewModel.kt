@@ -6,9 +6,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.tradein.mapper.TradeInMapper
-import com.tokopedia.tradein.model.AddressResult
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
-import com.tokopedia.tradein.usecase.GetAddressUseCase
+import com.tokopedia.common_tradein.model.AddressResult
+import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse
+import com.tokopedia.common_tradein.usecase.GetAddressUseCase
 import com.tokopedia.tradein.usecase.RatesV3UseCase
 import com.tokopedia.tradein.usecase.ShopInfoUseCase
 import kotlinx.coroutines.CoroutineScope

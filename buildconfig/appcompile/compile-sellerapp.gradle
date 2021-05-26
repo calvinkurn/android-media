@@ -2,6 +2,7 @@
 includeDynamicFeatureIfEnabled("sellerapp")
 
 include "features:category:tradein"
+include "features:category:moneyin"
 
 include "features:common:developer_options"
 include "features:common:developer_options_noop"

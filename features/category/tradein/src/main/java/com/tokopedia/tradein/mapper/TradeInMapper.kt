@@ -2,7 +2,7 @@ package com.tokopedia.tradein.mapper
 
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data
+import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data
 
 class TradeInMapper {
 

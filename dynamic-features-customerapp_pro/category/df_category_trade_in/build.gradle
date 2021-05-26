@@ -50,5 +50,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp_pro)
     implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.moneyIn)
     implementation project(rootProject.ext.features.dropOff)
 }
