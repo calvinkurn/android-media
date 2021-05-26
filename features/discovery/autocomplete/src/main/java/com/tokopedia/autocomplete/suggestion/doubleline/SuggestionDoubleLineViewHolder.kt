@@ -20,7 +20,7 @@ import java.util.*
 class SuggestionDoubleLineViewHolder(
         itemView: View,
         private val clickListener: SuggestionClickListener
-) : AbstractViewHolder<SuggestionDoubleLineViewModel>(itemView) {
+) : AbstractViewHolder<SuggestionDoubleLineDataDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -29,7 +29,7 @@ class SuggestionDoubleLineViewHolder(
 
     private var searchQueryStartIndexInKeyword = -1
 
-    override fun bind(item: SuggestionDoubleLineViewModel) {
+    override fun bind(item: SuggestionDoubleLineDataDataView) {
         bindIconImage(item)
         bindIconTitle(item)
         bindIconSubtitle(item)
@@ -41,29 +41,29 @@ class SuggestionDoubleLineViewHolder(
         bindListener(item)
     }
 
-    private fun bindIconImage(item: SuggestionDoubleLineViewModel) {
+    private fun bindIconImage(item: SuggestionDoubleLineDataDataView) {
         itemView.iconImage?.let {
             ImageHandler.loadImageCircle2(itemView.context, it, item.imageUrl)
         }
     }
 
-    private fun bindIconTitle(item: SuggestionDoubleLineViewModel) {
+    private fun bindIconTitle(item: SuggestionDoubleLineDataDataView) {
         itemView.iconTitle?.shouldShowOrHideWithAction(item.iconTitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconTitle)
         }
     }
 
-    private fun bindIconSubtitle(item: SuggestionDoubleLineViewModel) {
+    private fun bindIconSubtitle(item: SuggestionDoubleLineDataDataView) {
         itemView.iconSubtitle?.shouldShowOrHideWithAction(item.iconSubtitle.isNotEmpty()) {
             ImageHandler.loadImageWithoutPlaceholderAndError(it, item.iconSubtitle)
         }
     }
 
-    private fun bindSubtitle(item: SuggestionDoubleLineViewModel) {
+    private fun bindSubtitle(item: SuggestionDoubleLineDataDataView) {
         itemView.doubleLineSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
     }
 
-    private fun setSearchQueryStartIndexInKeyword(item: SuggestionDoubleLineViewModel) {
+    private fun setSearchQueryStartIndexInKeyword(item: SuggestionDoubleLineDataDataView) {
         val displayName = item.title
         val searchTerm = item.searchTerm
 
@@ -72,7 +72,7 @@ class SuggestionDoubleLineViewHolder(
         } else -1
     }
 
-    private fun bindTextTitle(item: SuggestionDoubleLineViewModel) {
+    private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
         itemView.doubleLineTitle?.weightType = Typography.BOLD
         if (searchQueryStartIndexInKeyword == -1) {
             itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
@@ -81,7 +81,7 @@ class SuggestionDoubleLineViewHolder(
         }
     }
 
-    private fun getHighlightedTitle(item: SuggestionDoubleLineViewModel): SpannableString {
+    private fun getHighlightedTitle(item: SuggestionDoubleLineDataDataView): SpannableString {
         val highlightedTitle = SpannableString(MethodChecker.fromHtml(item.title))
 
         highlightTitleBeforeKeyword(highlightedTitle)
@@ -98,7 +98,7 @@ class SuggestionDoubleLineViewHolder(
         )
     }
 
-    private fun highlightTitleAfterKeyword(highlightedTitle: SpannableString, item: SuggestionDoubleLineViewModel) {
+    private fun highlightTitleAfterKeyword(highlightedTitle: SpannableString, item: SuggestionDoubleLineDataDataView) {
         val highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + (item.searchTerm.length)
         val highlightAfterKeywordEndIndex = item.title.length
 
@@ -108,20 +108,20 @@ class SuggestionDoubleLineViewHolder(
         )
     }
 
-    private fun bindLabel(item: SuggestionDoubleLineViewModel) {
+    private fun bindLabel(item: SuggestionDoubleLineDataDataView) {
         itemView.doubleLineLabel?.setTextAndCheckShow(item.label)
         if (itemView.doubleLineLabel.text.isNotEmpty()) {
             itemView.doubleLineLabel?.setLabelType(0)
         }
     }
 
-    private fun bindShortcutButton(item: SuggestionDoubleLineViewModel) {
+    private fun bindShortcutButton(item: SuggestionDoubleLineDataDataView) {
         itemView.actionShortcutButton?.shouldShowOrHideWithAction(item.shortcutImage.isNotEmpty()) {
             ImageHandler.loadImage2(it, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 
-    private fun bindListener(item: SuggestionDoubleLineViewModel) {
+    private fun bindListener(item: SuggestionDoubleLineDataDataView) {
         itemView.autocompleteDoubleLineItem?.setOnClickListener {
             clickListener.onItemClicked(item)
         }

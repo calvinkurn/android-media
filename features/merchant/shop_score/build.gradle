@@ -29,11 +29,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.sellerMigrationCommon)
 
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.analytics)
@@ -47,6 +49,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.miscDependencies.chips
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

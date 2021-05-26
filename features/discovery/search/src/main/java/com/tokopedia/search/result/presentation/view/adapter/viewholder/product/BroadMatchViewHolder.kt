@@ -53,6 +53,7 @@ class BroadMatchViewHolder(
     private fun setupRecyclerView(dataData: BroadMatchDataView){
         val products = dataData.broadMatchItemDataViewList
         itemView.searchBroadMatchList?.bindCarouselProductCardViewGrid(
+                recyclerViewPool = broadMatchListener.carouselRecycledViewPool,
                 productCardModelList = products.map {
                     ProductCardModel(
                             productName = it.name,
@@ -64,7 +65,7 @@ class BroadMatchViewHolder(
                             shopBadgeList = it.badgeItemDataViewList.toProductCardModelShopBadges(),
                             freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                             isTopAds = it.isOrganicAds,
-                            hasThreeDots = true
+                            hasThreeDots = it.carouselProductType.hasThreeDots
                     )
                 },
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

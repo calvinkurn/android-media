@@ -19,7 +19,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isKeyboardShown
+import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.BottomInsetsState
@@ -81,6 +84,8 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
+    private lateinit var productAnalyticHelper: ProductAnalyticHelper
+
     override fun getScreenName(): String = "Play Bottom Sheet"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +102,7 @@ class PlayBottomSheetFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupObserve()
+        initAnalytic()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -108,6 +114,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
+        productAnalyticHelper.sendImpressedProductSheets()
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -158,6 +165,24 @@ class PlayBottomSheetFragment @Inject constructor(
         analytic.clickCopyVoucher(voucher)
     }
 
+    override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
+        trackImpressedProduct(products)
+    }
+
+    override fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
+        trackImpressedVoucher(vouchers)
+    }
+
+    override fun onProductCountChanged(view: ProductSheetViewComponent) {
+        if (playViewModel.bottomInsets.isKeyboardShown) return
+
+        doShowToaster(
+                bottomSheetType = BottomInsetsType.ProductSheet,
+                toasterType = Toaster.TYPE_NORMAL,
+                message = getString(R.string.play_product_updated)
+        )
+    }
+
     /**
      * VariantSheet View Component Listener
      */
@@ -189,6 +214,10 @@ class PlayBottomSheetFragment @Inject constructor(
         observeBottomInsetsState()
         observeBuyEvent()
         observeStatusInfo()
+    }
+
+    private fun initAnalytic() {
+        productAnalyticHelper = ProductAnalyticHelper(analytic)
     }
 
     private fun openShopPage(partnerId: Long) {
@@ -301,7 +330,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
-        if (pipMode) {
+        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
             playViewModel.requestPiPBrowsingPage(
                     OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
             )
@@ -335,6 +364,9 @@ class PlayBottomSheetFragment @Inject constructor(
             if (it is PlayPinnedUiModel.PinnedProduct && it.productTags is PlayProductTagsUiModel.Complete) {
                 if (it.productTags.productList.isNotEmpty()) {
                     productSheetView.setProductSheet(it.productTags)
+
+                    trackImpressedProduct()
+                    trackImpressedVoucher()
                 } else {
                     productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
                 }
@@ -442,4 +474,13 @@ class PlayBottomSheetFragment @Inject constructor(
             }
         })
     }
+
+    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
+        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
+    }
+
+    private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = productSheetView.getVisibleVouchers()) {
+        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
+    }
+
 }

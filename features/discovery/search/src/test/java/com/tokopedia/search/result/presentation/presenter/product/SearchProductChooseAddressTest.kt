@@ -154,7 +154,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
 
     private fun `Given navigation revamp is enabled`() {
         every {
-            productListView.abTestRemoteConfig.getString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_VARIANT_OLD)
+            productListView.abTestRemoteConfig?.getString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_VARIANT_OLD)
         } answers { AbTestPlatform.NAVIGATION_VARIANT_REVAMP }
     }
 

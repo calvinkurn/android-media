@@ -42,10 +42,10 @@ data class ShopScoreLevelResponse(
                     val identifier: String = "",
                     @Expose
                     @SerializedName("nextMinValue")
-                    val nextMinValue: Int = 0,
+                    val nextMinValue: Double = 0.0,
                     @Expose
                     @SerializedName("rawValue")
-                    val rawValue: Int = 0,
+                    val rawValue: Double = 0.0,
                     @Expose
                     @SerializedName("title")
                     val title: String = ""

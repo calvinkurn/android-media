@@ -15,15 +15,14 @@ import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
-import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -37,7 +36,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
-    private static String KEY_CONFIG_RESPONSE_SIZE_LOG = "android_resp_size_log_threshold";
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -159,8 +157,10 @@ public class ConsumerSplashScreen extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
-                LoggingUtils.setResponseSize(remoteConfig.getLong(KEY_CONFIG_RESPONSE_SIZE_LOG));
+                LogManager logManager = LogManager.instance;
+                if (logManager!= null) {
+                    logManager.refreshConfig();
+                }
             }
 
             @Override

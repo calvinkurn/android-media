@@ -29,7 +29,18 @@
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        tools:text="@string/title_update_date"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPerformanceDetailDateNewSeller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         tools:text="@string/title_update_date"/>
 

@@ -5,7 +5,6 @@ import android.os.Bundle
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.View
-import android.widget.Button
 import com.tokopedia.datepicker.numberpicker.NumberPicker
 import com.tokopedia.datepicker.numberpicker.OnValueChangeListener
 import com.tokopedia.design.component.BottomSheets
@@ -13,6 +12,7 @@ import com.tokopedia.tradein.R
 import com.tokopedia.tradein.adapter.DateAdapter
 import com.tokopedia.tradein.adapter.TimeAdapter
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
+import com.tokopedia.unifycomponents.UnifyButton
 
 class MoneyInScheduledTimeBottomSheet : BottomSheets() {
     private var scheduleDate: ArrayList<ScheduleDate> = arrayListOf()
@@ -79,7 +79,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
                 currentTime = newVal
             }
         })
-        val courierButton = view?.findViewById<Button>(R.id.courier_btn)
+        val courierButton = view?.findViewById<UnifyButton>(R.id.courier_btn)
         courierButton?.setOnClickListener {
             scheduleDate.forEach {
                 if (it.dateFmt == currentDate) {

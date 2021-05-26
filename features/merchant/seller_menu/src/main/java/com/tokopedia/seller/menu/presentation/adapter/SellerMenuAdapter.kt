@@ -23,9 +23,16 @@ class SellerMenuAdapter(
         }
     }
 
-    fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int) {
+    fun hideShopScoreTicker() {
+        if (visitables.getOrNull(firstIndex) is TickerShopScoreUiModel) {
+            visitables.removeAt(0)
+            notifyItemRemoved(0)
+        }
+    }
+
+    fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int, shopAge: Int) {
         findShopInfoIndex()?.let { index ->
-            val shopInfoUiModel = ShopInfoUiModel(shopInfo, shopScore)
+            val shopInfoUiModel = ShopInfoUiModel(shopInfo, shopScore, shopAge)
             updateItemAt(index, shopInfoUiModel)
         }
     }

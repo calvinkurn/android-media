@@ -10,7 +10,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
  */
 public interface DeepLinkPresenter extends DeepLinkAnalyticsPresenter {
 
-    void processDeepLinkAction(Activity activity, Uri uri);
+    void processDeepLinkAction(Activity activity, Uri uri, boolean isUrlAmp);
 
     void checkUriLogin(Uri uriData);
 

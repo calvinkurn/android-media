@@ -22,7 +22,8 @@ data class RecommendationWidgetUiModel(
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
         override var emptyState: WidgetEmptyStateUiModel,
-        override var impressHolder: ImpressHolder = ImpressHolder()
+        override var impressHolder: ImpressHolder = ImpressHolder(),
+        override var isNeedToBeRemoved: Boolean = false
 ) : BaseWidgetUiModel<RecommendationDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
@@ -30,7 +31,7 @@ data class RecommendationWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<RecommendationDataUiModel> {
-        return RecommendationWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, isLoaded, isLoading, isFromCache, emptyState, impressHolder)
+        return RecommendationWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, isLoaded, isLoading, isFromCache, emptyState, impressHolder, isNeedToBeRemoved)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<RecommendationDataUiModel>): Boolean {

@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_potential_pm_benefit.view.*
 
 class ItemPotentialPMBenefitAdapter : RecyclerView.Adapter<ItemPotentialPMBenefitAdapter.ItemPotentialPMBenefitViewHolder>() {
 
-    private var potentialPMBenefitList: MutableList<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> = mutableListOf()
+    private val potentialPMBenefitList: MutableList<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> = mutableListOf()
 
     fun setPotentialPowerMerchantBenefit(potentialPMBenefitList: List<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>) {
         if (potentialPMBenefitList.isNullOrEmpty()) return

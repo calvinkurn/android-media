@@ -16,13 +16,13 @@ import kotlinx.android.synthetic.main.item_faq_shop_score.view.*
 
 class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerView.Adapter<ItemFaqAdapter.ItemFaqViewHolder>() {
 
-    private var itemFaqList = mutableListOf<ItemFaqUiModel>()
+    private val itemFaqList = mutableListOf<ItemFaqUiModel>()
 
     fun updateArrowItemFaq(position: Int) {
         itemFaqList.mapIndexed { index, itemFaqUiModel ->
             if (index == position) {
                 itemFaqUiModel.isShow = !itemFaqUiModel.isShow
-                notifyItemChanged(position)
+                notifyItemChanged(position, PAYLOAD_TOGGLE_FAQ)
             }
         }
     }
@@ -37,6 +37,17 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemFaqViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_faq_shop_score, parent, false)
         return ItemFaqViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ItemFaqViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNullOrEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            val keyPayload = payloads.getOrNull(0) as? Int
+            if (keyPayload == PAYLOAD_TOGGLE_FAQ) {
+                holder.bindPayload(itemFaqList[position])
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: ItemFaqViewHolder, position: Int) {
@@ -56,6 +67,10 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
                 tv_title_faq_shop_score?.text = data.title
                 tv_desc_faq_shop_score?.showWithCondition(data.isShow)
                 tv_desc_faq_shop_score?.text = MethodChecker.fromHtml(data.desc_first)
+                tv_desc_parameter_performance_faq?.text = data.desc_second
+
+                initAdapterCardLevel(data)
+                initAdapterParameterFaq(data)
 
                 card_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
                 tv_desc_parameter_performance_faq?.showWithCondition(data.isShow && data.isCalculationScore)
@@ -68,14 +83,25 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
                     ic_info_toggle_faq?.rotation = NO_ROTATION
                 }
 
-                if (data.isShow && data.isCalculationScore) {
-                    initAdapterCardLevel(data)
-                    initAdapterParameterFaq(data)
-                    tv_desc_parameter_performance_faq?.text = data.desc_second
-                }
-
                 ic_info_toggle_faq?.setOnClickListener {
                     itemFaqListener.onArrowClicked(adapterPosition)
+                }
+            }
+        }
+
+        fun bindPayload(data: ItemFaqUiModel) {
+            with(itemView) {
+                tv_desc_faq_shop_score?.showWithCondition(data.isShow)
+
+                card_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
+                tv_desc_parameter_performance_faq?.showWithCondition(data.isShow && data.isCalculationScore)
+                rv_card_level_faq?.showWithCondition(data.isShow && data.isCalculationScore)
+                rv_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
+
+                if (data.isShow) {
+                    ic_info_toggle_faq?.rotation = REVERSE_ROTATION
+                } else {
+                    ic_info_toggle_faq?.rotation = NO_ROTATION
                 }
             }
         }
@@ -111,5 +137,6 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) : RecyclerVie
     companion object {
         const val NO_ROTATION = 0F
         const val REVERSE_ROTATION = 180F
+        const val PAYLOAD_TOGGLE_FAQ = 805
     }
 }

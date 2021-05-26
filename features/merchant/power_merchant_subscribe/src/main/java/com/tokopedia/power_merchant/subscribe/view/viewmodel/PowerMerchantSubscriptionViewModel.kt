@@ -62,7 +62,7 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         })
     }
 
-    fun getPmActiveData() {
+    fun getPmActiveStateData() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getPMActiveDataUseCase.get().executeOnBackground()

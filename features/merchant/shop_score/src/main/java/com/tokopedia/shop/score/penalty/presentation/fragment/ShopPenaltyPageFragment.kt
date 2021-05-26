@@ -1,68 +1,54 @@
 package com.tokopedia.shop.score.penalty.presentation.fragment
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
-import com.tokopedia.shop.score.common.setTextMakeHyperlink
-import com.tokopedia.shop.score.common.toggle
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.*
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
-import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.card_shop_score_total_penalty.*
-import kotlinx.android.synthetic.main.fragment_penalty_page.*
-import kotlinx.android.synthetic.main.item_detail_penalty_filter.*
-import kotlinx.android.synthetic.main.item_shimmer_penalty.*
-import kotlinx.android.synthetic.main.item_shop_penalty_error_state.*
 import javax.inject.Inject
 
 class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
         PenaltyDateFilterBottomSheet.CalenderListener,
-        PenaltyFilterBottomSheet.PenaltyFilterFinishListener, ItemDetailPenaltyListener {
+        PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
+        ItemDetailPenaltyListener, ItemHeaderCardPenaltyListener,
+        ItemPeriodDateFilterListener, ItemPenaltyErrorListener,
+        ItemSortFilterPenaltyListener {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
-    private val viewModelShopPenalty by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ShopPenaltyViewModel::class.java)
+    @Inject
+    lateinit var viewModelShopPenalty: ShopPenaltyViewModel
+
+    private val penaltyPageAdapterFactory by lazy {
+        PenaltyPageAdapterFactory(this,
+                this, this, this, this)
     }
-
-    private val penaltyPageAdapterFactory by lazy { PenaltyPageAdapterFactory(this) }
     private val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
-
-    private val impressHolderLearnMore = ImpressHolder()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_penalty_page, container, false)
@@ -70,23 +56,12 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        setupSwipeRefresh()
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         observePenaltyPage()
         observeUpdateSortFilter()
-    }
-
-    private fun setupSwipeRefresh() {
-        appBarPenaltyPage.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            swipeToRefresh.isEnabled = (verticalOffset == 0)
-        })
-
-        rvPenaltyPage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val topRowVerticalPosition = if (recyclerView.childCount == 0) 0 else recyclerView.getChildAt(0).top
-                swipeToRefresh.isEnabled = topRowVerticalPosition >= 0
-            }
-        })
+        observeDetailPenaltyNextPage()
     }
 
     override fun getScreenName(): String = ""
@@ -106,13 +81,13 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     override fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = false
         clearAllData()
-        hideAllViewWithLoading()
+        penaltyPageAdapter.showLoading()
         viewModelShopPenalty.getDataPenalty()
     }
 
     override fun loadInitialData() {
         clearAllData()
-        hideAllViewWithLoading()
+        showLoading()
         viewModelShopPenalty.getDataPenalty()
     }
 
@@ -125,28 +100,52 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     override fun loadData(page: Int) {
-
+        viewModelShopPenalty.getPenaltyDetailListNext(page)
     }
 
     override fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>) {
         val typePenaltyList = penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilerList
         viewModelShopPenalty.setItemSortFilterWrapperList(penaltyFilterUiModelList, typePenaltyList.chipsPenaltyMapToItemSortFilter())
-        sortFilterDetailPenalty.setupSortFilter(typePenaltyList.chipsPenaltyMapToItemSortFilter())
+
+        penaltyPageAdapter.updateChipsSelected(typePenaltyList.chipsPenaltyMapToItemSortFilter())
+
+        val typeId = typePenaltyList?.find { it.isSelected }?.value ?: 0
+        val sortBy = penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilerList?.find { it.isSelected }?.value
+                ?: 0
+        viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
+        penaltyPageAdapter.apply {
+            removePenaltyListData()
+            refreshSticky()
+            removeNotFoundPenalty()
+            removeErrorStatePenalty()
+            showLoading()
+        }
+        endlessRecyclerViewScrollListener.resetState()
     }
 
-    private fun List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper> {
-        val itemSortFilterWrapperList = mutableListOf<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>()
+    private fun List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
+        val itemSortFilterWrapperList = mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
         this?.map {
-            itemSortFilterWrapperList.add(ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper(
-                    sortFilterItem = SortFilterItem(it.title),
+            itemSortFilterWrapperList.add(ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                    title = it.title,
                     isSelected = it.isSelected
             ))
         }
         return itemSortFilterWrapperList
     }
 
-    private fun updateItemChildSortFilterPenalty(sortFilterItemWrapperList: List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>?) {
-        sortFilterDetailPenalty.setupSortFilter(sortFilterItemWrapperList)
+    private fun updateItemChildSortFilterPenalty(sortFilterItemPeriodWrapperList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>?) {
+        sortFilterItemPeriodWrapperList?.let { penaltyPageAdapter.updateChipsSelected(it) }
+        val typeId = sortFilterItemPeriodWrapperList?.find { it.isSelected }?.idFilter ?: 0
+        viewModelShopPenalty.setTypeFilterData(typeId)
+        penaltyPageAdapter.apply {
+            removePenaltyListData()
+            refreshSticky()
+            removeNotFoundPenalty()
+            removeErrorStatePenalty()
+            showLoading()
+        }
+        endlessRecyclerViewScrollListener.resetState()
     }
 
     override fun onSaveCalendarClicked(startDate: Pair<String, String>, endDate: Pair<String, String>) {
@@ -157,13 +156,21 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         } else {
             "${startDate.second} - ${endDate.second}"
         }
-        tvPeriodDetailPenalty?.text = getString(R.string.period_date_detail_penalty, date)
+        clearAllData()
+        viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
+        viewModelShopPenalty.getDataPenalty()
+        penaltyPageAdapter.showLoading()
+        penaltyPageAdapter.updateDateFilterText(date)
     }
 
-    override fun onItemPenaltyClick(statusPenalty: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
-        intent.putExtra(ShopPenaltyDetailFragment.STATUS_PENALTY, statusPenalty)
-        startActivity(intent)
+    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel) {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            cacheManager.put(ShopPenaltyDetailFragment.KEY_ITEM_PENALTY_DETAIL, itemPenaltyUiModel)
+            intent.putExtra(ShopPenaltyDetailFragment.KEY_CACHE_MANAGE_ID, cacheManager.id)
+            startActivity(intent)
+        }
     }
 
     override fun getAdapterTypeFactory(): PenaltyPageAdapterFactory {
@@ -175,84 +182,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         super.onDestroy()
     }
 
-    private fun setupCardPenalty(element: ItemCardShopPenaltyUiModel?) {
-        tvContentPenalty?.addOnImpressionListener(impressHolderLearnMore) {
-            shopScorePenaltyTracking.impressLearnMorePenaltyPage()
-        }
-        tvContentPenalty?.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
-            onMoreInfoHelpPenaltyClicked()
-            shopScorePenaltyTracking.clickLearMorePenaltyPage()
-        }
-        bgTotalPenalty?.background = context?.let {
-            ContextCompat.getDrawable(it, if (element?.hasPenalty == true) R.drawable.ic_has_penalty else R.drawable.ic_no_penalty)
-        }
-        val roundedRadius = 8F
-        bgTotalPenalty?.shapeAppearanceModel = bgTotalPenalty.shapeAppearanceModel
-                .toBuilder()
-                .setAllCornerSizes(roundedRadius)
-                .build()
-
-        if (element?.totalPenalty?.isZero() == true) {
-            tvCountTotalPenalty?.text = getString(R.string.desc_no_penalty)
-        } else {
-            tvCountTotalPenalty.text = element?.totalPenalty?.toString().orEmpty()
-            context?.resources?.getDimension(R.dimen.scorePenaltyTextSize)?.let { tvCountTotalPenalty.setTextSize(TypedValue.COMPLEX_UNIT_PX, it) }
-        }
-        tvTotalPointDeductions?.text = if (element?.deductionPoints?.isLessThanZero() == true) element.deductionPoints.toString() else "-"
-    }
-
-    private fun setupDetailPenaltyFilter(element: ItemDetailPenaltyFilterUiModel?) {
-        tvPeriodDetailPenalty?.text = getString(R.string.period_date_detail_penalty, element?.periodDetail.orEmpty())
-        sortFilterDetailPenalty?.parentListener = {
-            onParentSortFilterClick()
-        }
-        sortFilterDetailPenalty?.setupSortFilter(element?.itemSortFilterWrapperList)
-
-        ic_detail_penalty_filter?.setOnClickListener {
-            onDateClick()
-        }
-    }
-
-    private fun SortFilter.setupSortFilter(updateSortFilterItemList: List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>?) {
-        sortFilterItems.removeAllViews()
-        indicatorCounter = 0
-        val sortFilterItemList = ArrayList<SortFilterItem>()
-
-        updateSortFilterItemList?.map {
-            it.sortFilterItem?.let { sortFilterItem ->
-                sortFilterItemList.add(SortFilterItem(
-                        title = sortFilterItem.title,
-                        size = ChipsUnify.SIZE_SMALL,
-                        type = if (it.isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
-                ))
-            }
-        }
-
-        addItem(sortFilterItemList)
-
-        sortFilterItemList.forEach {
-            it.listener = {
-                if (it.type != ChipsUnify.TYPE_DISABLE) {
-                    it.toggle()
-                    onChildSortFilterItemClick(it)
-                }
-            }
-        }
-    }
-
-    private fun List<ItemDetailPenaltyFilterUiModel.ItemSortFilterWrapper>.filterTypePenaltyTransform(): List<FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty> {
-        val itemFilterTypePenaltyList = mutableListOf<FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty>()
-        for (item in this) {
-            itemFilterTypePenaltyList.add(FilterTypePenaltyUiModelWrapper.ItemFilterTypePenalty(
-                    title = item.sortFilterItem?.title?.toString().orEmpty(),
-                    isSelected = item.isSelected
-            ))
-        }
-        return itemFilterTypePenaltyList
-    }
-
     private fun observeUpdateSortFilter() {
-        observe(viewModelShopPenalty.updateSortFilterSelected) {
+        observe(viewModelShopPenalty.updateSortSelectedPeriod) {
             when (it) {
                 is Success -> {
                     updateItemChildSortFilterPenalty(it.data)
@@ -263,69 +194,77 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     private fun observePenaltyPage() {
         observe(viewModelShopPenalty.penaltyPageData) {
+            hideLoading()
             when (it) {
                 is Success -> {
-                    showAllView()
-                    showAllPenaltyData(it.data)
+                    val basePenaltyData = it.data.penaltyVisitableList.first.filterNot { visitable -> visitable is ItemPenaltyUiModel }
+                    val penaltyFilterDetailData = it.data.penaltyVisitableList.first.filterIsInstance<ItemPenaltyUiModel>()
+                    penaltyPageAdapter.setPenaltyData(basePenaltyData)
+                    onSuccessGetPenaltyListData(penaltyFilterDetailData, it.data.penaltyVisitableList.second, it.data.penaltyVisitableList.third)
+                    penaltyPageAdapter.refreshSticky()
                 }
                 is Fail -> {
-                    containerShimmerPenalty?.hide()
-                    setupGlobalErrorState()
+                    penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            ShopScoreReputationErrorLogger.SHOP_PENALTY_ERROR, it.throwable)
                 }
             }
         }
     }
 
-    private fun setupGlobalErrorState() {
-        globalErrorPenalty.show()
-        globalErrorPenalty.setType(GlobalError.SERVER_ERROR)
-        globalErrorPenalty?.errorAction?.setOnClickListener {
-            onSwipeRefresh()
+    private fun observeDetailPenaltyNextPage() {
+        observe(viewModelShopPenalty.shopPenaltyDetailData) {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    onSuccessGetPenaltyListData(it.data.first, it.data.second, it.data.third)
+                }
+                is Fail -> {
+                    penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            ShopScoreReputationErrorLogger.SHOP_PENALTY_DETAIL_NEXT_ERROR, it.throwable)
+                }
+            }
         }
     }
 
-    private fun hideAllViewWithLoading() {
-        containerShimmerPenalty?.show()
-        globalErrorPenalty?.hide()
-        appBarPenaltyPage?.hide()
-        containerHeaderTotalPenalty?.hide()
-        itemDetailPenaltyContainer?.hide()
-        sortFilterDetailPenalty?.hide()
+    private fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasPrev: Boolean, hasNext: Boolean) {
+        if (!hasPrev && data.isEmpty()) {
+            penaltyPageAdapter.setEmptyStatePenalty()
+        } else {
+            penaltyPageAdapter.updatePenaltyListData(data)
+        }
+        updateScrollListenerState(hasNext)
     }
 
-    private fun showAllView() {
-        containerShimmerPenalty?.hide()
-        appBarPenaltyPage?.show()
-        containerHeaderTotalPenalty?.show()
-        itemDetailPenaltyContainer?.show()
-        sortFilterDetailPenalty?.show()
-    }
 
-    private fun showAllPenaltyData(data: PenaltyDataWrapper) {
-        val penaltyList = data.itemPenaltyUiModel
-        val penaltyFilterData = data.itemDetailPenaltyFilterUiModel
-        val cardPenaltyData = data.cardShopPenaltyUiModel
-        setupCardPenalty(cardPenaltyData)
-        setupDetailPenaltyFilter(penaltyFilterData)
-        penaltyPageAdapter.setPenaltyData(penaltyList)
-    }
-
-    private fun onDateClick() {
-        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance()
+    override fun onDateClick() {
+        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(viewModelShopPenalty.getStartDate(),
+                viewModelShopPenalty.getEndDate())
         bottomSheetDateFilter.setCalendarListener(this)
         bottomSheetDateFilter.show(childFragmentManager)
     }
 
-    private fun onParentSortFilterClick() {
+    override fun impressLearnMorePenaltyPage() {
+        shopScorePenaltyTracking.impressLearnMorePenaltyPage()
+    }
+
+    override fun onMoreInfoHelpPenaltyClicked() {
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SYSTEM_PENALTY_HELP_URL)
+        }
+        shopScorePenaltyTracking.clickLearMorePenaltyPage()
+    }
+
+    override fun onRetryRefreshError() {
+        onSwipeRefresh()
+    }
+
+    override fun onParentSortFilterClicked() {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-        val itemTypePenaltyData = viewModelShopPenalty.getSortFilterItemList().filterTypePenaltyTransform()
-        val sortByTitle = viewModelShopPenalty.getPenaltyFilterUiModelList().find { it.title == ShopScoreConstant.TITLE_SORT }
-                ?.chipsFilerList?.find { it.isSelected }?.title ?: ""
-        val sortByValue = viewModelShopPenalty.getPenaltyFilterUiModelList().find { it.title == ShopScoreConstant.TITLE_SORT }
-                ?.chipsFilerList?.find { it.isSelected }?.isSelected ?: false
+        val filterPenalty = viewModelShopPenalty.getPenaltyFilterUiModelList()
         cacheManager?.put(PenaltyFilterBottomSheet.KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper(
-                itemTypePenaltyData,
-                Pair(sortByTitle, sortByValue)
+                filterPenalty
         ))
 
         val bottomSheetFilterPenalty = PenaltyFilterBottomSheet.newInstance(cacheManager?.id.orEmpty())
@@ -333,11 +272,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         bottomSheetFilterPenalty.show(childFragmentManager)
     }
 
-    private fun onMoreInfoHelpPenaltyClicked() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SYSTEM_PENALTY_HELP_URL)
-    }
-
-    private fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem) {
+    override fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem) {
         viewModelShopPenalty.updateSortFilterSelected(sortFilterItem.title.toString(), sortFilterItem.type)
     }
 

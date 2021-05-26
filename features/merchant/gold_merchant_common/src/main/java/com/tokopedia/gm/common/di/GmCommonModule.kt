@@ -107,9 +107,6 @@ class GmCommonModule {
     }
 
     @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @Provides
     @Named(GMParamConstant.RAW_DEACTIVATION)
     fun providePmOffRaw(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_turn_off)

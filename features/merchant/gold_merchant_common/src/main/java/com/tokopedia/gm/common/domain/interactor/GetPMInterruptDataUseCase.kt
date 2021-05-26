@@ -37,26 +37,11 @@ class GetPMInterruptDataUseCase @Inject constructor(
         private const val KEY_SOURCE = "source"
         private val QUERY = """
             query getPMInterruptData(${'$'}shopId: Int!, ${'$'}source: String!) {
-              goldGetPMGradeBenefitInfo(shop_id: ${'$'}shopId, source: ${'$'}source) {
-                next_monthly_refresh_date
-                current_pm_grade {
-                  grade_name
-                  image_badge_url
-                }
-                potential_pm_grade {
-                  grade_name
-                  image_badge_url
-                }
-              }
               goldGetPMShopInfo(shop_id: ${'$'}shopId, source: ${'$'}source) {
-                shop_score_sum
-                shop_score_threshold
-                shop_level
-                is_eligible_pm
                 is_new_seller
                 shop_age
               }
-              goldGetPMOSStatus(shopID: ${'$'}shopId, includeOS: false) {
+              goldGetPMOSStatus(shopID: ${'$'}shopId, includeOS: true) {
                 data {
                   power_merchant {
                     status
@@ -68,9 +53,6 @@ class GetPMInterruptDataUseCase @Inject constructor(
               }
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source:${'$'}source) {
                 period_type
-              }
-              reputation_shops(shop_ids: [${'$'}shopId]) {
-                score
               }
             }
         """.trimIndent()

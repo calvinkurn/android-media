@@ -1,8 +1,11 @@
 package com.tokopedia.shop.score.detail_old.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.detail_old.domain.model.ShopScoreResponse
@@ -58,20 +61,25 @@ class ShopScoreDetailViewModelTest {
         val shopType = ShopType.OFFICIAL_STORE
         val response = ShopScoreResponse()
         val data = ShopScoreDetailData(shopType)
+        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = COMMUNICATION_PERIOD)
 
         every { userSession.shopId } returns shopId
         every { userSession.isShopOfficialStore } returns true
         every { userSession.isGoldMerchant } returns false
 
         coEvery { getShopScoreUseCase.execute(shopId) } returns response.data
+        every { getShopInfoPeriodUseCase.requestParams } returns GetShopInfoPeriodUseCase.createParams(shopId.toLongOrZero())
+        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } returns shopInfoPeriodUiModel
 
         viewModel.getShopScoreDetail()
 
         val expectedResult = Success(data)
-        val actualResult = viewModel.shopScoreData.value
+        val actualResult = (viewModel.shopScoreData.value as Success).data
 
         coVerify { getShopScoreUseCase.execute(shopId) }
+        coVerify { getShopInfoPeriodUseCase.executeOnBackground() }
 
-        assertEquals(expectedResult, actualResult)
+        assertEquals(expectedResult.data, actualResult.first)
+        assertEquals(shopInfoPeriodUiModel.periodType, actualResult.second.periodType)
     }
 }

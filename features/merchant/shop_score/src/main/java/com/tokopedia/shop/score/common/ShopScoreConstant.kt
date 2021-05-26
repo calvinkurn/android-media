@@ -23,6 +23,7 @@ object ShopScoreConstant {
 
     const val COUNT_DAYS_NEW_SELLER = 90
     const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
+    const val ONE_HUNDRED_PERCENT = 100
 
     const val CHAT_DISCUSSION_REPLY_SPEED_KEY = "chat_and_discussion_reply_speed"
     const val CHAT_DISCUSSION_SPEED_KEY = "chat_and_discussion_reply_rate"
@@ -44,58 +45,53 @@ object ShopScoreConstant {
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
-    const val PM_INACTIVE = "inactive"
-    const val SUPPOSED_INACTIVE_TEXT = "nonaktif"
-    const val PM_ACTIVE = "active"
-    const val PM_IDLE = "idle"
-    const val UP_POTENTIAL_PM = "naik"
-    const val STILL_POTENTIAL_PM = "tetap"
-    const val DOWN_POTENTIAL_PM = "turun"
-    const val GRADE_BRONZE_PM = "bronze"
-    const val GRADE_SILVER_PM = "silver"
-    const val GRADE_GOLD_PM = "gold"
-    const val GRADE_DIAMOND_PM = "diamond"
-    const val NO_GRADE_SCORE = 0
-    const val BRONZE_SCORE = 1
-    const val SILVER_SCORE = 2
-    const val GOLD_SCORE = 3
-    const val DIAMOND_SCORE = 4
+    const val PM_PRO_BENEFIT_URL_1 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro1@3x.png"
+    const val PM_PRO_BENEFIT_URL_2 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro2@3x.png"
+    const val PM_PRO_BENEFIT_URL_3 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro3@3x.png"
+
 
     const val PENALTY_IDENTIFIER = "penalty"
 
     const val minuteText = "menit"
     const val percentText = "%"
     const val dayText = "hari"
+    const val peopleText = "orang"
 
     const val SORT_LATEST = "Paling Baru"
     const val SORT_OLDEST = "Paling Lama"
+    const val SORT_LATEST_VALUE = 0
+    const val SORT_OLDEST_VALUE = 1
 
     const val TITLE_SORT = "Urutkan"
     const val TITLE_TYPE_PENALTY = "Jenis Pelanggaran"
 
-    const val POINTS_NOT_YET_DEDUCTED = "Poin belum dipotong"
-    const val ON_GOING = "Sedang Berlangsung"
-    const val PENALTY_DONE = "Penalty Selesai"
+    const val POINTS_NOT_YET_DEDUCTED = "Poin belum terpotong"
+    const val ON_GOING = "Sedang berlangsung"
+    const val PENALTY_DONE = "Penalti selesai"
 
-    const val GUILT_RESOLUTION_CENTER = "Bersalah di Pusat Resolusi"
-    const val ORDER_IGNORED = "Pesanan diabaikan"
-    const val DELIVERY_IGNORED = " Pengiriman diabaikan"
-    const val DELIVERY_REFUSED = "Pengiriman ditolak"
+    const val START_ACTIVE_PENALTY_DETAIL = "Mulai aktif pada"
+    const val ACTIVE_PENALTY_DETAIL = "Aktif hingga"
+    const val SINCE_FINISH_PENALTY_DETAIL = "Selesai sejak"
 
-    const val TRANSITION_PERIOD = "transition_period"
-    const val COMMUNICATION_PERIOD = "communication_period"
-    const val END_PERIOD = "final"
 
-    const val ONE_MONTH = 1
-    const val TWO_MONTH = 2
-    const val THREE_MONTH = 3
+    const val FINISHED_IN = "Selesai di"
+    const val SINCE = "Sejak"
+    const val START = "Mulai"
 
-    const val VIDEO_YOUTUBE_ID = "MjbnDFmWbZk"
+    const val VIDEO_YOUTUBE_ID = "z_zkBhyF714"
 
-    const val SYSTEM_PENALTY_HELP_URL = "https://www.tokopedia.com/help/article/bagaimana-sistem-penalti-pengurangan-reputasi-toko"
+    const val SYSTEM_PENALTY_HELP_URL = "https://seller.tokopedia.com/edu/penalti-toko"
     const val HELP_URL = "https://www.tokopedia.com/help"
 
-    const val PATTER_DATE_TEXT = "dd MMMM yyyy"
+    const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
+    const val PATTERN_PENALTY_DATE_TEXT = "dd MMM yyyy"
 
-    const val SHOP_INFO_URL = "https://seller.tokopedia.com/shop-score-info"
+    const val SHOP_INFO_URL = "https://seller.tokopedia.com/edu/skor-toko"
+    const val EMPTY_STATE_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
+
+    const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"
+    const val PATTERN_PERIOD_DATE = "yyyy-MM-dd HH:mm:ss"
+
+    const val AND_SYMBOL = "&"
+    const val AND_TEXT = "dan"
 }

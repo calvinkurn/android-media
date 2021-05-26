@@ -187,7 +187,7 @@
     <string name="title_shopscore">Skor Performa Toko</string>
     <string name="title_shop_performance">Performa Toko</string>
     <string name="title_penalty_shop_score">Penalti</string>
-    <string name="title_penalty_detail_shop_score">Penalti Detail</string>
+    <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
 
     <!-- Review   -->
     <string name="review_text">Ulasan</string>

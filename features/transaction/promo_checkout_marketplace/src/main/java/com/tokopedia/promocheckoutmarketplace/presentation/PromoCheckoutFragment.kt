@@ -68,6 +68,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -160,7 +161,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                            promoRequest: PromoRequest,
                            validateUsePromoRequest: ValidateUsePromoRequest,
                            bboPromoCodes: ArrayList<String>,
-                           promoMvcLockCourierFlow: Boolean = false): PromoCheckoutFragment {
+                           promoMvcLockCourierFlow: Boolean = false,
+                           chosenAddress: ChosenAddress?): PromoCheckoutFragment {
             return PromoCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARGS_PAGE_SOURCE, pageSource)
@@ -168,6 +170,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     putParcelable(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                     putStringArrayList(ARGS_BBO_PROMO_CODES, bboPromoCodes)
                     putBoolean(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow)
+                    // Add chosen address for trade in indomaret case, will be null for other case
+                    putParcelable(ARGS_CHOSEN_ADDRESS, chosenAddress)
                 }
             }
         }
@@ -226,6 +230,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBackground()
+
         // Initialize hansel helper
         initializeHanselHelper()
 
@@ -252,6 +258,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoLastSeenResult()
+    }
+
+    private fun setBackground() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+        }
     }
 
     private fun initializeHanselHelper() {
@@ -827,7 +839,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.getPromoList(mutation, promoRequest, "")
+            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+            viewModel.getPromoList(mutation, promoRequest, "", chosenAddress)
         }
     }
 
@@ -1005,7 +1018,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromLastSeen)
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.getPromoList(mutation, promoRequest, promoCode)
+            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+            viewModel.getPromoList(mutation, promoRequest, promoCode, chosenAddress)
         }
     }
 

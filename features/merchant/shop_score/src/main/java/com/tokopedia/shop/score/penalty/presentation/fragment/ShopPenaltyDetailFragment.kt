@@ -5,39 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
-import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.detail.PenaltyDetailStepperAdapter
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import javax.inject.Inject
 
-class ShopPenaltyDetailFragment: BaseDaggerFragment() {
+class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var shopPenaltyDetailViewModel: ShopPenaltyDetailViewModel
 
-    @Inject lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
+    @Inject
+    lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
     private val penaltyDetailStepperAdapter by lazy { PenaltyDetailStepperAdapter() }
-
-    private val impressHolderHelpCenter = ImpressHolder()
-
-    private var statusPenalty = ""
 
     override fun getScreenName(): String = ""
 
@@ -51,30 +47,36 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        statusPenalty = activity?.intent?.extras?.getString(STATUS_PENALTY) ?: ""
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, activity?.intent?.getStringExtra(KEY_CACHE_MANAGE_ID)) }
+        val itemPenalty = cacheManager?.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
+                ?: ItemPenaltyUiModel()
+        getPenaltyDetail(itemPenalty)
         observePenaltyDetailData()
     }
 
     private fun observePenaltyDetailData() {
         observe(shopPenaltyDetailViewModel.penaltyDetailData) {
-            when (it) {
-                is Success -> {
-                    initDataView(it.data)
-                }
-            }
+            initDataView(it)
         }
-        shopPenaltyDetailViewModel.getPenaltyDetailData(statusPenalty)
+    }
+
+    private fun getPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel) {
+        shopPenaltyDetailViewModel.getPenaltyDetailData(itemPenaltyUiModel)
     }
 
     private fun initDataView(shopPenaltyDetailUiModel: ShopPenaltyDetailUiModel) {
         tvTitleDetailPenalty?.text = shopPenaltyDetailUiModel.titleDetail
-        tvDateDetailPenalty?.text = shopPenaltyDetailUiModel.dateDetail
+        tvStartDateDetailPenalty?.text = getString(R.string.date_penalty_detail, shopPenaltyDetailUiModel.startDateDetail)
         tvSummaryDetailPenalty?.text = shopPenaltyDetailUiModel.summaryDetail
         tv_total_deduction_point_penalty?.text = MethodChecker.fromHtml(getString(R.string.total_deduction_point_performance,
                 shopPenaltyDetailUiModel.deductionPointPenalty))
-        tvDateResultDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
-                shopPenaltyDetailUiModel.statusDate))
+        tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
+                shopPenaltyDetailUiModel.prefixDateDetail,
+                shopPenaltyDetailUiModel.endDateDetail))
+        tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
         ic_info_status_penalty?.setOnClickListener {
@@ -86,14 +88,22 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
             shopScorePenaltyTracking.clickLearMoreHelpCenterPenaltyDetail()
         }
 
-        btnCallHelpCenter?.addOnImpressionListener(impressHolderHelpCenter) {
+        if (btnCallHelpCenter?.isVisible == true) {
             shopScorePenaltyTracking.impressHelpCenterPenaltyDetail()
         }
     }
 
     private fun setupRvStepper(stepperList: List<ShopPenaltyDetailUiModel.StepperPenaltyDetail>) {
+        val gridLayoutManager = GridLayoutManager(context, 5)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (stepperList.size == position+1) {
+                    SPAN_WIDTH_LAST_ITEM
+                } else SPAN_WIDTH_DEFAULT
+            }
+        }
         rv_timeline_status_penalty?.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = gridLayoutManager
             adapter = penaltyDetailStepperAdapter
         }
         penaltyDetailStepperAdapter.setStepperPenaltyDetail(stepperList)
@@ -105,7 +115,10 @@ class ShopPenaltyDetailFragment: BaseDaggerFragment() {
     }
 
     companion object {
-        const val STATUS_PENALTY = "EXTRA_STATUS_PENALTY"
+        const val KEY_ITEM_PENALTY_DETAIL = "key_item_penalty_detail"
+        const val KEY_CACHE_MANAGE_ID = "extra_cache_manager_id"
+        const val SPAN_WIDTH_DEFAULT = 2
+        const val SPAN_WIDTH_LAST_ITEM = 1
 
         fun newInstance(): ShopPenaltyDetailFragment {
             return ShopPenaltyDetailFragment()
