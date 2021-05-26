@@ -516,14 +516,15 @@ class NewShopPageFragment :
                     val throwable = result.throwable
                     if (!isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_BUYER_FLOW_TAG,
-                                this::observeLiveData.name,
-                                NewShopPageViewModel::shopIdFromDomainData.name,
-                                userId,
-                                shopId,
-                                shopName,
-                                ErrorHandler.getErrorMessage(context, throwable),
-                                Log.getStackTraceString(throwable)
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeLiveData.name,
+                                liveDataName = NewShopPageViewModel::shopIdFromDomainData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
                     }
                     onErrorGetShopPageTabData(throwable)
