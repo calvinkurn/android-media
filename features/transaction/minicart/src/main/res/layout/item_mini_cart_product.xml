@@ -138,7 +138,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_16"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         android:visibility="gone"
@@ -146,6 +145,7 @@
         app:layout_constraintEnd_toStartOf="@+id/button_delete_cart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
+        tools:visibility="visible"
         tools:layout_height="42dp" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -181,7 +181,7 @@
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
         app:typographyType="body_3"
         tools:text="Jangan dibanting ya gan gan gan gan gan"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_notes_change"
@@ -199,7 +199,7 @@
         app:layout_constraintEnd_toStartOf="@+id/button_delete_cart"
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
         app:typographyType="body_3"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/button_delete_cart"

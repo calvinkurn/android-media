@@ -1,6 +1,8 @@
 package com.tokopedia.minicart.cartlist.viewholder
 
 import android.graphics.Paint
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -118,7 +120,7 @@ class MiniCartProductViewHolder(private val view: View,
     }
 
     private fun renderProductQtyLeft(element: MiniCartProductUiModel) {
-        if (element.productQtyLeft.isNotBlank()) {
+        if (!element.isProductDisabled && element.productQtyLeft.isNotBlank()) {
             textQtyLeft?.text = element.productQtyLeft
             textQtyLeft?.show()
         } else {
@@ -149,12 +151,13 @@ class MiniCartProductViewHolder(private val view: View,
                 // Wholesale
                 renderSlashPriceFromWholesale(element)
             }
-
             textSlashPrice?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             textSlashPrice?.show()
+            textProductPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
         } else {
             textSlashPrice?.gone()
-            labelSlashPricePercentage?.invisible()
+            labelSlashPricePercentage?.gone()
+            textProductPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
         }
     }
 
@@ -222,18 +225,67 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductNotes(element: MiniCartProductUiModel) {
         if (element.productNotes.isNotBlank()) {
-            textFieldNotes?.gone()
-            textNotesFilled?.text = element.productNotes
-            textNotesFilled?.show()
-            textNotesChange?.show()
-            textNotes?.gone()
+            renderProductNotesFilled(element)
         } else {
-            textNotes?.show()
+            renderProductNotesEmpty()
             textNotes?.setOnClickListener {
-                textNotes?.gone()
-                textFieldNotes?.show()
+                renderProductNotesEditable(element)
+            }
+            textNotesChange?.setOnClickListener {
+                renderProductNotesEditable(element)
             }
         }
+    }
+
+    private fun renderProductNotesEditable(element: MiniCartProductUiModel) {
+        textFieldNotes?.requestFocus()
+        textNotes?.gone()
+        textFieldNotes?.show()
+        textNotesChange?.gone()
+        textNotesFilled?.gone()
+        textFieldNotes?.setCounter(element.maxNotesLength)
+        textFieldNotes?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                element.productNotes = s.toString()
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
+        textFieldNotes?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
+        textFieldNotes?.context?.let {
+            textFieldNotes?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    KeyboardHandler.DropKeyboard(it, v)
+                    if (element.productNotes.isNotBlank()) {
+                        renderProductNotesFilled(element)
+                    } else {
+                        renderProductNotesEmpty()
+                    }
+                    true
+                } else false
+            }
+        }
+    }
+
+    private fun renderProductNotesEmpty() {
+        textNotes?.show()
+        textNotesFilled?.gone()
+        textNotesChange?.gone()
+        textFieldNotes?.gone()
+    }
+
+    private fun renderProductNotesFilled(element: MiniCartProductUiModel) {
+        textFieldNotes?.gone()
+        textNotesFilled?.text = element.productNotes
+        textNotesFilled?.show()
+        textNotesChange?.show()
+        textNotes?.gone()
     }
 
     private fun renderActionDelete(element: MiniCartProductUiModel) {
@@ -281,6 +333,7 @@ class MiniCartProductViewHolder(private val view: View,
         qtyEditorProduct?.minValue = element.productMinOrder
         qtyEditorProduct?.maxValue = element.productMaxOrder
         qtyEditorProduct?.setValue(element.productQty)
+        qtyEditorProduct?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
         qtyEditorProduct?.setValueChangedListener { newValue, oldValue, isOver ->
 
         }
@@ -290,10 +343,10 @@ class MiniCartProductViewHolder(private val view: View,
         qtyEditorProduct?.setAddClickListener {
 
         }
-        qtyEditorProduct?.editText?.setOnEditorActionListener { _, actionId, _ ->
+        qtyEditorProduct?.editText?.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 qtyEditorProduct?.editText?.context?.let {
-                    KeyboardHandler.DropKeyboard(it, itemView)
+                    KeyboardHandler.DropKeyboard(it, v)
                 }
                 true
             } else false

@@ -47,7 +47,10 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                 availableGroup.cartDetails.forEach { cartDetail ->
                     weightTotal += cartDetail.product.productWeight * cartDetail.product.productQuantity
-                    val miniCartProductUiModel = mapProductUiModel(cartDetail, availableSection.action)
+                    val miniCartProductUiModel = mapProductUiModel(
+                            cartDetail = cartDetail,
+                            action = availableSection.action,
+                            notesLength = miniCartData.data.maxCharNote)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -81,7 +84,11 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                 // Add unavailable product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                 unavailableGroup.cartDetails.forEach { cartDetail ->
-                    val miniCartProductUiModel = mapProductUiModel(cartDetail, unavailableSection.action, true, unavailableSection.selectedUnavailableActionId)
+                    val miniCartProductUiModel = mapProductUiModel(
+                            cartDetail = cartDetail,
+                            action = unavailableSection.action,
+                            isDisabled = true,
+                            unavailableActionId = unavailableSection.selectedUnavailableActionId)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartUnavailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -140,7 +147,11 @@ class MiniCartListViewHolderMapper @Inject constructor() {
         }
     }
 
-    private fun mapProductUiModel(cartDetail: CartDetail, action: List<Action>, isDisabled: Boolean = false, unavailableActionId: String = ""): MiniCartProductUiModel {
+    private fun mapProductUiModel(cartDetail: CartDetail,
+                                  action: List<Action>,
+                                  isDisabled: Boolean = false,
+                                  unavailableActionId: String = "",
+                                  notesLength: Int = 0): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
             productId = cartDetail.product.productId
@@ -160,6 +171,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             productMaxOrder = cartDetail.product.productMaxOrder
             productActions = action
             isProductDisabled = isDisabled
+            maxNotesLength = notesLength
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
                 selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
