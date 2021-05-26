@@ -5,10 +5,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pms.paymentlist.domain.data.CancelPayment
 import com.tokopedia.pms.paymentlist.domain.data.DataCancelPayment
-import com.tokopedia.pms.paymentlist.domain.gql.GQL_CANCEL_PAYMENT_MUTATION
 import javax.inject.Inject
 
-@GqlQuery("CancelPaymentMutation", GQL_CANCEL_PAYMENT_MUTATION)
+@GqlQuery("CancelPaymentMutation", CancelPaymentUseCase.GQL_CANCEL_PAYMENT_MUTATION)
 class CancelPaymentUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<DataCancelPayment>(graphqlRepository) {
@@ -37,5 +36,14 @@ class CancelPaymentUseCase @Inject constructor(
     companion object {
         const val TRANSACTION_ID = "transactionID"
         const val MERCHANT_CODE = "merchantCode"
+
+        const val GQL_CANCEL_PAYMENT_MUTATION =
+            """mutation cancelPayment(${'$'}transactionID: String!, ${'$'}merchantCode: String!){
+  cancelPayment(transactionID: ${'$'}transactionID, merchantCode: ${'$'}merchantCode) {
+    success
+    message
+  }
+}
+"""
     }
 }

@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.pms.R
-import com.tokopedia.pms.paymentlist.di.PaymentListComponent
+import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionActionSheet
@@ -46,7 +46,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     override fun getScreenName() = ""
 
-    override fun initInjector() = getComponent(PaymentListComponent::class.java).inject(this)
+    override fun initInjector() = getComponent(PmsComponent::class.java).inject(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,

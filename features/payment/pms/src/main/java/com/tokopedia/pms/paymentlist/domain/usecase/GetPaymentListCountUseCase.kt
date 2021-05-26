@@ -4,10 +4,9 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pms.paymentlist.domain.data.NotificationResponse
-import com.tokopedia.pms.paymentlist.domain.gql.GQL_GET_LIST_COUNT
 import javax.inject.Inject
 
-@GqlQuery("GetListCount", GQL_GET_LIST_COUNT)
+@GqlQuery("GetListCount", GetPaymentListCountUseCase.GQL_GET_LIST_COUNT)
 class GetPaymentListCountUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<NotificationResponse>(graphqlRepository) {
@@ -25,5 +24,17 @@ class GetPaymentListCountUseCase @Inject constructor(
                 onError(error)
             }
         )
+    }
+
+    companion object {
+        const val GQL_GET_LIST_COUNT = """
+            query {
+                notifications{
+                buyerOrderStatus {
+                paymentStatus
+                }
+            }
+        }
+        """
     }
 }

@@ -79,19 +79,4 @@
     <string name="pms_deferred_payment_empty_subtitle">Yuk, mulai belanja dan penuhi berbagai kebutuhanmu di Tokopedia.</string>
     <string name="pms_deferred_payment_empty_action">Mulai Belanja</string>
 
-    <string-array name="payment_list_bank_name">
-        <item>BCA</item>
-        <item>MANDIRI</item>
-        <item>BNI</item>
-        <item>BRI</item>
-        <item>CIMB</item>
-    </string-array>
-
-    <string-array name="payment_list_bank_code">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-    </string-array>
 </resources>

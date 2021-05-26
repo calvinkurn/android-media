@@ -5,6 +5,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.pms.bankaccount.data.repository.BankListDataSourceLocal
+import com.tokopedia.pms.bankaccount.data.repository.BankListRepositoryImpl
+import com.tokopedia.pms.bankaccount.domain.BankListRepository
 import com.tokopedia.pms.paymentlist.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pms.paymentlist.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.user.session.UserSession
@@ -15,7 +18,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class PaymentListModule {
+class PmsModule {
 
     @Provides
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
@@ -37,5 +40,11 @@ class PaymentListModule {
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
+
+    @Provides
+    fun bankListRepository(bankListDataSourceLocal: BankListDataSourceLocal?): BankListRepository {
+        return BankListRepositoryImpl(bankListDataSourceLocal)
+    }
+
 
 }

@@ -89,13 +89,15 @@ class BankInfo(
     val bankId: String?
 ): Parcelable
 
-fun BasePaymentModel.extractValues(): Pair<String, String> {
+typealias PaymentCodes = Pair<String, String>
+
+fun BasePaymentModel.extractValues(): PaymentCodes {
     return when (this) {
-        is CreditCardPaymentModel -> Pair(transactionId, merchantCode)
-        is KlicBCAPaymentModel -> Pair(transactionId, merchantCode)
-        is StorePaymentModel -> Pair(transactionId, merchantCode)
-        is BankTransferPaymentModel -> Pair(transactionId, merchantCode)
-        else -> Pair("", "")
+        is CreditCardPaymentModel -> PaymentCodes(transactionId, merchantCode)
+        is KlicBCAPaymentModel -> PaymentCodes(transactionId, merchantCode)
+        is StorePaymentModel -> PaymentCodes(transactionId, merchantCode)
+        is BankTransferPaymentModel -> PaymentCodes(transactionId, merchantCode)
+        else -> PaymentCodes("", "")
     }
 }
 

@@ -1,26 +1,26 @@
-package com.tokopedia.pms.bankdestination.view.adapter;
+package com.tokopedia.pms.bankaccount.view.adapter
 
-import android.view.View;
-
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.pms.bankdestination.view.model.BankListModel;
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.pms.bankaccount.view.viewholder.BankListViewHolder
+import com.tokopedia.pms.bankaccount.data.model.BankListModel
 
 /**
  * Created by zulfikarrahman on 7/5/18.
  */
-
-public class BankListAdapterTypeFactory extends BaseAdapterTypeFactory {
-
-    public int type(BankListModel bankListModel) {
-        return BankListViewHolder.Layout;
+class BankListAdapter(var bankList: List<BankListModel>, val actionItemListener: (BankListModel) -> Unit) :
+    RecyclerView.Adapter<BankListViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BankListViewHolder {
+        return BankListViewHolder(
+            LayoutInflater.from(parent.context).inflate(BankListViewHolder.Layout, parent, false),
+            actionItemListener
+        )
     }
 
-    @Override
-    public AbstractViewHolder createViewHolder(View parent, int type) {
-        if(type == BankListViewHolder.Layout){
-            return new BankListViewHolder(parent);
-        }
-        return super.createViewHolder(parent, type);
+    override fun onBindViewHolder(holder: BankListViewHolder, position: Int) {
+        holder.bind(bankList[position])
     }
+
+    override fun getItemCount() = bankList.size
 }

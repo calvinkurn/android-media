@@ -34,9 +34,9 @@ public class ChangeClickBcaPresenter extends BaseDaggerPresenter<ChangeClickBcaC
     public void changeClickBcaUserId(Resources resources, String transactionId, String merchantCode, String newClickBcaUserId) {
         getView().showLoadingDialog();
         Map<String, Object> variables = new HashMap<>();
-        variables.put(Constant.TRANSACTION_ID, transactionId);
+        /*variables.put(Constant.TRANSACTION_ID, transactionId);
         variables.put(Constant.MERCHANT_CODE, merchantCode);
-        variables.put(Constant.NEW_KLIKBCA_USER_ID, newClickBcaUserId);
+        variables.put(Constant.NEW_KLIKBCA_USER_ID, newClickBcaUserId);*/
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.change_click_bca), DataEditKlikBca.class, variables, false);

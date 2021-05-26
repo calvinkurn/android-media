@@ -9,9 +9,8 @@ import android.view.WindowManager;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.pms.common.Constant;
-import com.tokopedia.pms.payment.view.model.PaymentListModel;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.pms.common.Constant;
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel;
 
 /**
@@ -27,7 +26,7 @@ public class UploadProofPaymentActivity extends BaseSimpleActivity {
     }
 
     private void setSecureWindowFlag() {
-        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
             runOnUiThread(() -> {
                 Window window = getWindow();
                 if (window != null) {
@@ -37,9 +36,9 @@ public class UploadProofPaymentActivity extends BaseSimpleActivity {
         }
     }
 
-    public static Intent createIntent(Context context, BasePaymentModel paymentListModel){
+    public static Intent createIntent(Context context, BasePaymentModel paymentListModel) {
         Intent intent = new Intent(context, UploadProofPaymentActivity.class);
-        intent.putExtra(Constant.PAYMENT_LIST_MODEL_EXTRA , paymentListModel);
+        intent.putExtra(Constant.PAYMENT_LIST_MODEL_EXTRA, paymentListModel);
         return intent;
     }
 

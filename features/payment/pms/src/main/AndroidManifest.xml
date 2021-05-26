@@ -29,7 +29,7 @@
             android:label="@string/payment_title_activity_change_detail_account"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:name=".bankaccount.view.ChangeBankAccountActivity"/>
+            android:name=".bankaccount.view.activity.ChangeBankAccountActivity"/>
         <activity
             android:label="@string/payment_title_activity_howtopay"
             android:screenOrientation="portrait"

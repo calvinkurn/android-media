@@ -1,71 +1,88 @@
-package com.tokopedia.pms.bankdestination.view.fragment;
+package com.tokopedia.pms.bankaccount.view.bottomsheet
 
-import android.app.Activity;
-import android.content.Intent;
-import androidx.fragment.app.Fragment;
-
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.pms.bankdestination.di.BankDestinationModule;
-import com.tokopedia.pms.bankdestination.view.presenter.BankDestinationContract;
-import com.tokopedia.pms.bankdestination.view.presenter.BankDestinationPresenter;
-import com.tokopedia.pms.bankdestination.view.adapter.BankListAdapterTypeFactory;
-import com.tokopedia.pms.bankdestination.view.model.BankListModel;
-import com.tokopedia.pms.bankdestination.di.DaggerBankDestinationComponent;
-import com.tokopedia.pms.common.Constant;
-
-import javax.inject.Inject;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.pms.R
+import com.tokopedia.pms.bankaccount.data.model.BankListModel
+import com.tokopedia.pms.bankaccount.domain.BankListRepository
+import com.tokopedia.pms.bankaccount.view.adapter.BankListAdapter
+import com.tokopedia.pms.paymentlist.di.DaggerPmsComponent
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toDp
+import kotlinx.android.synthetic.main.pms_base_recycler_bottom_sheet.*
+import javax.inject.Inject
 
 /**
  * Created by zulfikarrahman on 7/5/18.
  */
-
-public class BankDestinationFragment extends BaseListFragment<BankListModel,BankListAdapterTypeFactory> implements BankDestinationContract.View {
+class BankDestinationFragment : BottomSheetUnify() {
 
     @Inject
-    BankDestinationPresenter bankDestinationPresenter;
+    lateinit var bankListRepository: BankListRepository
+    private val childLayoutRes = R.layout.pms_base_recycler_bottom_sheet
+    private var bankListCallback: OnBankSelectedListener? = null
 
-    @Override
-    protected String getScreenName() {
-        return null;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+        setDefaultParams()
+        initBottomSheet()
     }
 
-    @Override
-    protected void initInjector() {
-        DaggerBankDestinationComponent.builder()
-                .bankDestinationModule(new BankDestinationModule(getContext()))
-                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build()
-                .inject(this);
-        bankDestinationPresenter.attachView(this);
+    private fun initBottomSheet() {
+        val childView = LayoutInflater.from(context).inflate(
+            childLayoutRes,
+            null, false
+        )
+        setChild(childView)
     }
 
-    @Override
-    public void onDestroy() {
-        bankDestinationPresenter.detachView();
-        super.onDestroy();
+    private fun initInjector() {
+        val component =
+            DaggerPmsComponent::class.java.cast((activity as (HasComponent<DaggerPmsComponent>)).component)
+        component?.inject(this) ?: dismiss()
     }
 
-    @Override
-    public void onItemClicked(BankListModel bankListModel) {
-        Intent intent = new Intent();
-        intent.putExtra(Constant.EXTRA_BANK_LIST_MODEL, bankListModel);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (::bankListRepository.isInitialized) {
+            baseRecyclerView.adapter = BankListAdapter(bankListRepository.bankList) {
+                bankListCallback?.onBankSelected(it)
+                dismiss()
+            }
+            baseRecyclerView.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        } else dismiss()
     }
 
-    @Override
-    public void loadData(int page) {
-        bankDestinationPresenter.getListBank();
+    private fun setDefaultParams() {
+        setTitle(context?.getString(R.string.payment_label_change_account_detail) ?: "")
+        isDragable = true
+        isHideable = true
+        showCloseIcon = true
+        showHeader = true
+        customPeekHeight = (getScreenHeight()).toDp()
     }
 
-    @Override
-    protected BankListAdapterTypeFactory getAdapterTypeFactory() {
-        return new BankListAdapterTypeFactory();
+    companion object {
+        private const val TAG = "BankDestinationFragment"
+        fun show(
+            bankListCallback: OnBankSelectedListener,
+            childFragmentManager: FragmentManager
+        ): BankDestinationFragment {
+            val fragment = BankDestinationFragment()
+            fragment.bankListCallback = bankListCallback
+            fragment.show(childFragmentManager, TAG)
+            return fragment
+        }
     }
+}
 
-    public static Fragment createInstance() {
-        BankDestinationFragment bankDestinationFragment = new BankDestinationFragment();
-        return bankDestinationFragment;
-    }
+interface OnBankSelectedListener {
+    fun onBankSelected(bank: BankListModel)
 }

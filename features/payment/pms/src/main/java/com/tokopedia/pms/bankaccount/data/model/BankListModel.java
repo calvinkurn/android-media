@@ -1,24 +1,17 @@
-package com.tokopedia.pms.bankdestination.view.model;
+package com.tokopedia.pms.bankaccount.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.pms.bankdestination.view.adapter.BankListAdapterTypeFactory;
 
 /**
  * Created by zulfikarrahman on 7/5/18.
  */
 
-public class BankListModel implements Visitable<BankListAdapterTypeFactory>,Parcelable {
+public class BankListModel implements Parcelable {
 
     private String id;
     private String bankName;
 
-    @Override
-    public int type(BankListAdapterTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
 
     public String getId() {
         return id;

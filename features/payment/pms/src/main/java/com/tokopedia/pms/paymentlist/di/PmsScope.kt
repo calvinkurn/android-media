@@ -5,4 +5,4 @@ import javax.inject.Scope
 @MustBeDocumented
 @Scope
 @Retention
-annotation class PaymentListScope
+annotation class PmsScope

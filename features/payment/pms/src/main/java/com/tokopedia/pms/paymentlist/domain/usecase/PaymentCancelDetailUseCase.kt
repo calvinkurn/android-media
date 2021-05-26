@@ -5,10 +5,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
 import com.tokopedia.pms.paymentlist.domain.data.DataCancelDetail
-import com.tokopedia.pms.paymentlist.domain.gql.GQL_GET_CANCEL_QUERY
 import javax.inject.Inject
 
-@GqlQuery("PaymentCancelDetailQuery", GQL_GET_CANCEL_QUERY)
+@GqlQuery("PaymentCancelDetailQuery", PaymentCancelDetailUseCase.GQL_GET_CANCEL_QUERY)
 class PaymentCancelDetailUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<DataCancelDetail>(graphqlRepository) {
@@ -45,5 +44,18 @@ class PaymentCancelDetailUseCase @Inject constructor(
     companion object {
         const val TRANSACTION_ID = "transactionID"
         const val MERCHANT_CODE = "merchantCode"
+        const val GQL_GET_CANCEL_QUERY = """
+    query cancelDetail(${'$'}transactionID: String!, ${'$'}merchantCode: String!) {
+    cancelDetail(transactionID: ${'$'}transactionID, merchantCode: ${'$'}merchantCode) {
+      success
+      hasRefund
+      refundCCAmount
+      refundWalletAmount
+      refundMessage
+      combineMessage
+    }
+}
+"""
+
     }
 }

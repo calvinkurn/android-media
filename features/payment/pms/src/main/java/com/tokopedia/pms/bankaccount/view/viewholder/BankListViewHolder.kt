@@ -1,28 +1,24 @@
-package com.tokopedia.pms.bankdestination.view.adapter;
+package com.tokopedia.pms.bankaccount.view.viewholder
 
-import android.view.View;
-import android.widget.TextView;
-
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.pms.R;
-import com.tokopedia.pms.bankdestination.view.model.BankListModel;
+import android.view.View
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.pms.R
+import com.tokopedia.pms.bankaccount.data.model.BankListModel
 
 /**
  * Created by zulfikarrahman on 7/5/18.
  */
-
-public class BankListViewHolder extends AbstractViewHolder<BankListModel> {
-    public static int Layout = R.layout.item_bank_list;
-
-    private TextView bankName;
-
-    public BankListViewHolder(View itemView) {
-        super(itemView);
-        bankName = itemView.findViewById(R.id.bank_name);
+class BankListViewHolder(view: View, val clickAction: (BankListModel) -> Unit) :
+    RecyclerView.ViewHolder(view) {
+    private val bankName: TextView = view.findViewById(R.id.bank_name)
+    fun bind(element: BankListModel) {
+        bankName.text = element.bankName
+        itemView.setOnClickListener { clickAction(element) }
     }
 
-    @Override
-    public void bind(BankListModel element) {
-        bankName.setText(element.getBankName());
+    companion object {
+        var Layout = R.layout.item_bank_list
     }
+
 }

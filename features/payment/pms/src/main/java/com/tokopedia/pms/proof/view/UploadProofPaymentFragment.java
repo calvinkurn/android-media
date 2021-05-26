@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,11 +12,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
@@ -29,19 +29,16 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor;
 import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.pms.R;
 import com.tokopedia.pms.common.Constant;
-import com.tokopedia.pms.payment.view.model.PaymentListModel;
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel;
 import com.tokopedia.pms.paymentlist.domain.data.ParentPaymentModelKt;
 import com.tokopedia.pms.proof.di.DaggerUploadProofPaymentComponent;
 import com.tokopedia.pms.proof.di.UploadProofPaymentModule;
 import com.tokopedia.pms.proof.model.PaymentProofResponse;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.unifycomponents.Toaster;
 
 import kotlin.Pair;
 
@@ -173,7 +170,7 @@ public class UploadProofPaymentFragment extends BaseDaggerFragment implements Up
             getActivity().finish();
         } else {
             Pair<String, String> idPair = ParentPaymentModelKt.extractValues(paymentListModel);
-            uploadProofPaymentPresenter.uploadProofPayment(idPair.getFirst(),idPair.getSecond(), imageUrl);
+            uploadProofPaymentPresenter.uploadProofPayment(idPair.getFirst(), idPair.getSecond(), imageUrl);
         }
     }
 
