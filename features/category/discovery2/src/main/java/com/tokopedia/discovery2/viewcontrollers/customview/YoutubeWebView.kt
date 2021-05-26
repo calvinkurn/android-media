@@ -37,14 +37,15 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 youtubeEventVideoPaused, youtubeEventVideoBuffering, youtubeEventVideoCued), jsInterface)
     }
 
-    fun loadVideo(videoId: String) {
-        loadData(getYoutubePlayerHtml(videoId), mimeType, encoding)
+    fun loadVideo(videoId: String,width: Int) {
+        loadData(getYoutubePlayerHtml(videoId,width), mimeType, encoding)
     }
 
-    private fun getYoutubePlayerHtml(videoId: String): String {
+    private fun getYoutubePlayerHtml(videoId: String, width: Int): String {
         return "<html>\n" +
                 "  <body>\n" +
-                "    <div id=\"player\"></div>\n" +
+                "    <div id=\"player\"" +
+                "style =\"margin-top : -2%;margin-left : -2%;\"></div>\n" +
                 "\n" +
                 "    <script>\n" +
                 "      var tag = document.createElement('script');\n" +
@@ -57,7 +58,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      function onYouTubeIframeAPIReady() {\n" +
                 "        player = new YT.Player('player', {\n" +
                 "          height: '100%',\n" +
-                "          width: '100%',\n" +
+                "          width: '${width}',\n" +
                 "          videoId: '${videoId}',\n" +
                 "          events: {\n" +
                 "            'onStateChange': onPlayerStateChange\n" +
