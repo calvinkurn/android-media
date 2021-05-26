@@ -41,7 +41,7 @@
     <string name="hint_date">Day, dd/mm/yyyy</string>
     <string name="shop_operational_hour_title_set_hour">Atur jam buka-tutup toko</string>
     <string name="shop_operational_hour_title_holiday">Atur jadwal toko libur</string>
-    <string name="shop_operational_hour_desc_holiday">Pembeli tidak dapat bertransaksi selama tokomu libur. Pastikan semua pesanan sudah diproses dan dikirimkan, ya.</string>
+    <string name="shop_operational_hour_desc_holiday">Pembeli tidak dapat membeli produkmu selama tokomu libur. Pastikan pesanan yang sudah masuk tetap diproses, ya.</string>
     <string name="shop_operational_hour_desc_set_hour">Pembeli akan diinformasikan kalau pesanan yang masuk saat toko tutup akan diproses keesokan hari dan tidak mengurangi skor tokomu.</string>
     <string name="shop_operational_hour_24_hours">Buka 24 Jam</string>
     <string name="shop_operational_hour_holiday">Libur</string>
