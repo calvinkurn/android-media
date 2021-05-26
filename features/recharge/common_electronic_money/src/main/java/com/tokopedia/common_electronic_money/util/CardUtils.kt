@@ -6,7 +6,8 @@ import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.hexStringToByteArray
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.toHex
-
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 /**
  * Author errysuprayogi on 15,May,2020
  */
