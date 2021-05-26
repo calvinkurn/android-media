@@ -6,8 +6,6 @@ import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.hexStringToByteArray
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.toHex
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 
 /**
  * Author errysuprayogi on 15,May,2020
@@ -42,9 +40,9 @@ class CardUtils {
                 if (tag != null) {
                     val isoDep = IsoDep.get(tag)
                     isoDep.connect()
-                    val bytes = isoDep.transceive(hexStringToByteArray(EMONEY_SELECT_COMMAND))
+                    val bytes = isoDep.transceive(hexStringToByteArray(PREFIX_SELECT_COMMAND + EMONEY_AID))
                     isoDep.close()
-                    return toHex(bytes) == EMONEY_SUCCESSFULLY_EXECUTED
+                    return toHex(bytes) == SUCCESSFULLY_EXECUTED
                 }
             } catch (e: Exception) {
                 ServerLogger.log(Priority.P2, EMONEY_TAG, mapOf("err" to "ERROR_EMONEY_CHECKER: ${e.message}"))
