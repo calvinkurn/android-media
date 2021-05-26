@@ -13,6 +13,7 @@ object Const {
     const val DAYS_29 = 29
     const val DAYS_30 = 30
     const val DAYS_91 = 91
+    const val DAYS_365 = 365
 
     const val WHITE_LIST_KEY_BUYER_INSIGHT = "buyer-insight-apps"
 

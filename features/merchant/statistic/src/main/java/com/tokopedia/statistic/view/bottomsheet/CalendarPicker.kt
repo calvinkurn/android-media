@@ -48,7 +48,7 @@ class CalendarPicker : BottomSheetUnify() {
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
     private var calendarView: CalendarPickerView? = null
     private val minDate by lazy {
-        Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_91.toLong()))
+        Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_365.toLong()))
     }
     private val maxDate by lazy {
         filterItem?.calendarPickerMaxDate ?: Date()
