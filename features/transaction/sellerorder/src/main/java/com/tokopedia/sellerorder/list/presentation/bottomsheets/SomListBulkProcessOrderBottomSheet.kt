@@ -56,10 +56,12 @@ class SomListBulkProcessOrderBottomSheet(
     }
 
     private fun setBulkAcceptOrderButtonClickListener() {
-        childViews?.findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.setOnClickListener {
-            childViews?.findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.isLoading = true
-            preventDismiss()
-            listener?.onBulkProcessOrderButtonClicked()
+        childViews?.run {
+            findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.setOnClickListener {
+                findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.isLoading = true
+                preventDismiss()
+                listener?.onBulkProcessOrderButtonClicked()
+            }
         }
     }
 

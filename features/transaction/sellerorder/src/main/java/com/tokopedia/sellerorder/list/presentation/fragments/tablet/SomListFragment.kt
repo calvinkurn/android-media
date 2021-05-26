@@ -155,10 +155,10 @@ class SomListFragment : com.tokopedia.sellerorder.list.presentation.fragments.So
     override fun renderOrderList(data: List<SomListOrderUiModel>) {
         if (openedOrderId.isNotEmpty()) {
             data.find { it.orderId == openedOrderId }.let { openedOrder ->
-                if (openedOrder != null) {
-                    openedOrder.isOpen = true
-                } else {
+                if (openedOrder == null) {
                     updateOrderDetail = false
+                } else {
+                    openedOrder.isOpen = true
                 }
             }
         }

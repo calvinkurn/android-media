@@ -78,19 +78,15 @@ class SomListOrderViewHolder(
         }
     }
 
-    private fun View?.animateFadeOut() {
-        this?.run {
-            if (fadeOutAnimation?.isRunning == true) return
-            fadeInAnimation?.cancel()
-            fadeOutAnimation = animateFade(alpha, 0.5f)
-        }
+    private fun View.animateFadeOut() {
+        if (fadeOutAnimation?.isRunning == true) return
+        fadeInAnimation?.cancel()
+        fadeOutAnimation = animateFade(alpha, 0.5f)
     }
 
-    private fun View?.animateFadeIn() {
-        this?.run {
-            if (fadeInAnimation?.isRunning == true) return
-            fadeOutAnimation?.cancel()
-            fadeInAnimation = animateFade(alpha, 1f)
-        }
+    private fun View.animateFadeIn() {
+        if (fadeInAnimation?.isRunning == true) return
+        fadeOutAnimation?.cancel()
+        fadeInAnimation = animateFade(alpha, 1f)
     }
 }

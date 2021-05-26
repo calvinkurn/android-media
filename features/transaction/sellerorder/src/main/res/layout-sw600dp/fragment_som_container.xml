@@ -47,10 +47,10 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSomDetailWelcomeIllustration"
-        android:layout_width="199.14dp"
-        android:layout_height="152.25dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
+        android:layout_width="@dimen/som_detail_welcome_illustration_width"
+        android:layout_height="@dimen/som_detail_welcome_illustration_height"
+        android:layout_marginStart="@dimen/som_detail_welcome_illustration_horizontal_margin"
+        android:layout_marginEnd="@dimen/som_detail_welcome_illustration_horizontal_margin"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toTopOf="@id/tvSomDetailWelcome"
         app:layout_constraintEnd_toEndOf="parent"
