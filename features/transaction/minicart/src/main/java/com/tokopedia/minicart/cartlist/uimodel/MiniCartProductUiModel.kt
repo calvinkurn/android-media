@@ -21,8 +21,8 @@ data class MiniCartProductUiModel(
         var productQty: Int = 0,
         var productMinOrder: Int = 0,
         var productMaxOrder: Int = 0,
-        var productAction: List<Action> = emptyList(),
-        var selectedUnavailableActionId: Int = 0,
+        var productActions: List<Action> = emptyList(),
+        var selectedUnavailableActionId: String = "",
         var selectedUnavailableActionLink: String = "",
         var isProductDisabled: Boolean = false
 ) : Visitable<MiniCartListAdapterTypeFactory> {

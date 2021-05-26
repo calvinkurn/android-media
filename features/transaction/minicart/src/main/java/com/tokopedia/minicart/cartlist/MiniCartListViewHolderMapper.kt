@@ -81,7 +81,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                 // Add unavailable product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                 unavailableGroup.cartDetails.forEach { cartDetail ->
-                    val miniCartProductUiModel = mapProductUiModel(cartDetail, unavailableSection.action)
+                    val miniCartProductUiModel = mapProductUiModel(cartDetail, unavailableSection.action, true, unavailableSection.selectedUnavailableActionId)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartUnavailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -140,11 +140,11 @@ class MiniCartListViewHolderMapper @Inject constructor() {
         }
     }
 
-    private fun mapProductUiModel(cartDetail: CartDetail, action: List<Action>, isDisabled: Boolean = false, unavailableActionId: Int = 0): MiniCartProductUiModel {
+    private fun mapProductUiModel(cartDetail: CartDetail, action: List<Action>, isDisabled: Boolean = false, unavailableActionId: String = ""): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
             productId = cartDetail.product.productId
-            productImageUrl = cartDetail.product.productImage.imageSrc
+            productImageUrl = cartDetail.product.productImage.imageSrc100Square
             productName = cartDetail.product.productName
             productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
             productQtyLeft = cartDetail.product.productWarningMessage
@@ -158,7 +158,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             productQty = cartDetail.product.productQuantity
             productMinOrder = cartDetail.product.productMinOrder
             productMaxOrder = cartDetail.product.productMaxOrder
-            productAction = action
+            productActions = action
             isProductDisabled = isDisabled
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId

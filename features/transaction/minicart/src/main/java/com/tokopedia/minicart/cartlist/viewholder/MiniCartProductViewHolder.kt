@@ -1,21 +1,357 @@
 package com.tokopedia.minicart.cartlist.viewholder
 
+import android.graphics.Paint
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.common.data.response.minicartlist.Action
+import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_DELETE
+import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_NOTES
+import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SIMILARPRODUCT
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
+import java.util.*
+
 
 class MiniCartProductViewHolder(private val view: View,
                                 private val listener: MiniCartListActionListener) :
         AbstractViewHolder<MiniCartProductUiModel>(view) {
 
+    private val imageProduct: ImageUnify? by lazy {
+        view.findViewById(R.id.image_product)
+    }
+    private val textProductName: Typography? by lazy {
+        view.findViewById(R.id.text_product_name)
+    }
+    private val textProductVariant: Typography? by lazy {
+        view.findViewById(R.id.text_product_variant)
+    }
+    private val textQtyLeft: Typography? by lazy {
+        view.findViewById(R.id.text_qty_left)
+    }
+    private val labelSlashPricePercentage: Label? by lazy {
+        view.findViewById(R.id.label_slash_price_percentage)
+    }
+    private val textSlashPrice: Typography? by lazy {
+        view.findViewById(R.id.text_slash_price)
+    }
+    private val textProductPrice: Typography? by lazy {
+        view.findViewById(R.id.text_product_price)
+    }
+    private val layoutProductInfo: FlexboxLayout? by lazy {
+        view.findViewById(R.id.layout_product_info)
+    }
+    private val textFieldNotes: TextFieldUnify? by lazy {
+        view.findViewById(R.id.text_field_notes)
+    }
+    private val textNotes: Typography? by lazy {
+        view.findViewById(R.id.text_notes)
+    }
+    private val textNotesFilled: Typography? by lazy {
+        view.findViewById(R.id.text_notes_filled)
+    }
+    private val textNotesChange: Typography? by lazy {
+        view.findViewById(R.id.text_notes_change)
+    }
+    private val buttonDelete: IconUnify? by lazy {
+        view.findViewById(R.id.button_delete_cart)
+    }
+    private val textProductUnavailableAction: Typography? by lazy {
+        view.findViewById(R.id.text_product_unavailable_action)
+    }
+    private val qtyEditorProduct: QuantityEditorUnify? by lazy {
+        view.findViewById(R.id.qty_editor_product)
+    }
+
     companion object {
+        const val LABEL_CASHBACK = "cashback"
+        const val LABEL_DISCOUNT = "label diskon"
+
         val LAYOUT = R.layout.item_mini_cart_product
     }
 
     override fun bind(element: MiniCartProductUiModel) {
-
+        renderProductImage(element)
+        renderProductName(element)
+        renderProductVariant(element)
+        renderProductQtyLeft(element)
+        renderProductPrice(element)
+        renderProductInformation(element)
+        renderProductQty(element)
+        renderProductAction(element)
+        renderProductAlpha(element)
     }
 
+    private fun renderProductVariant(element: MiniCartProductUiModel) {
+        if (element.productVariantName.isNotBlank()) {
+            textProductVariant?.text = element.productVariantName
+            textProductVariant?.show()
+        } else {
+            if (element.productQtyLeft.isNotBlank()) {
+                textProductVariant?.invisible()
+            } else {
+                textProductVariant?.gone()
+            }
+        }
+    }
+
+    private fun renderProductName(element: MiniCartProductUiModel) {
+        textProductName?.text = element.productName
+    }
+
+    private fun renderProductQtyLeft(element: MiniCartProductUiModel) {
+        if (element.productQtyLeft.isNotBlank()) {
+            textQtyLeft?.text = element.productQtyLeft
+            textQtyLeft?.show()
+        } else {
+            textQtyLeft?.gone()
+        }
+    }
+
+    private fun renderProductPrice(element: MiniCartProductUiModel) {
+        textProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false)
+
+        val hasPriceOriginal = element.productOriginalPrice != 0L
+        val hasWholesalePrice = element.productWholeSalePrice != 0L
+        val hasPriceDrop = element.productInitialPriceBeforeDrop > 0 && element.productInitialPriceBeforeDrop > element.productPrice
+        if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
+            if (element.productSlashPriceLabel.isNotBlank()) {
+                // Slash price
+                renderSlashPriceFromCampaign(element)
+            } else if (element.productInitialPriceBeforeDrop != 0L) {
+                val wholesalePrice = element.productWholeSalePrice
+                if (wholesalePrice > 0 && wholesalePrice < element.productPrice) {
+                    // Wholesale
+                    renderSlashPriceFromWholesale(element)
+                } else {
+                    // Price drop
+                    renderSlashPriceFromPriceDrop(element)
+                }
+            } else if (element.productWholeSalePrice != 0L) {
+                // Wholesale
+                renderSlashPriceFromWholesale(element)
+            }
+
+            textSlashPrice?.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            textSlashPrice?.show()
+        } else {
+            textSlashPrice?.gone()
+            labelSlashPricePercentage?.invisible()
+        }
+    }
+
+    private fun renderSlashPriceFromWholesale(element: MiniCartProductUiModel) {
+        val priceDropValue = element.productInitialPriceBeforeDrop
+        val price = element.productPrice
+        val originalPrice = if (priceDropValue > price) price else priceDropValue
+        textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false)
+    }
+
+    private fun renderSlashPriceFromPriceDrop(element: MiniCartProductUiModel) {
+        textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productInitialPriceBeforeDrop, false)
+    }
+
+    private fun renderSlashPriceFromCampaign(element: MiniCartProductUiModel) {
+        textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false)
+        labelSlashPricePercentage?.text = element.productSlashPriceLabel
+        labelSlashPricePercentage?.show()
+    }
+
+    private fun renderProductImage(element: MiniCartProductUiModel) {
+        imageProduct?.let {
+            if (element.productImageUrl.isNotBlank()) {
+                ImageHandler.loadImageWithoutPlaceholder(it, element.productImageUrl)
+            }
+        }
+    }
+
+    private fun renderProductInformation(element: MiniCartProductUiModel) {
+        if (element.productInformation.isNotEmpty()) {
+            layoutProductInfo?.gone()
+            val productInformationList = element.productInformation
+            if (productInformationList.isNotEmpty()) {
+                layoutProductInfo?.removeAllViews()
+                productInformationList.forEach {
+                    var tmpLabel = it
+                    if (tmpLabel.toLowerCase(Locale.getDefault()).contains(LABEL_CASHBACK)) {
+                        tmpLabel = LABEL_CASHBACK
+                    }
+
+                    val productInfo = createProductInfoText(it)
+                    layoutProductInfo?.addView(productInfo)
+                }
+                layoutProductInfo?.show()
+            }
+
+            if (element.productWholeSalePrice > 0) {
+                val wholesaleLabel = "Harga Grosir"
+                val productInfo = createProductInfoText(wholesaleLabel)
+                layoutProductInfo?.addView(productInfo)
+                layoutProductInfo?.show()
+            }
+        } else {
+            layoutProductInfo?.gone()
+        }
+    }
+
+    private fun createProductInfoText(it: String): Typography {
+        return Typography(itemView.context).apply {
+            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setType(Typography.BODY_3)
+            text = if (layoutProductInfo?.childCount ?: 0 > 0) ", $it" else it
+        }
+    }
+
+    private fun renderProductNotes(element: MiniCartProductUiModel) {
+        if (element.productNotes.isNotBlank()) {
+            textFieldNotes?.gone()
+            textNotesFilled?.text = element.productNotes
+            textNotesFilled?.show()
+            textNotesChange?.show()
+            textNotes?.gone()
+        } else {
+            textNotes?.show()
+            textNotes?.setOnClickListener {
+                textNotes?.gone()
+                textFieldNotes?.show()
+            }
+        }
+    }
+
+    private fun renderActionDelete(element: MiniCartProductUiModel) {
+        val marginTop = itemView.context.resources.getDimension(R.dimen.dp_16).toInt()
+        if (element.isProductDisabled) {
+            val constraintLayout: ConstraintLayout = view.findViewById(R.id.container_product)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+            constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.text_product_unavailable_action, ConstraintSet.START, 0)
+            if (element.productInformation.isNotEmpty()) {
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.layout_product_info, ConstraintSet.BOTTOM, marginTop)
+            } else {
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, marginTop)
+            }
+            constraintSet.applyTo(constraintLayout)
+        } else {
+            val constraintLayout: ConstraintLayout = view.findViewById(R.id.container_product)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+            constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.qty_editor_product, ConstraintSet.START, 0)
+            if (element.productInformation.isNotEmpty()) {
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.layout_product_info, ConstraintSet.BOTTOM, marginTop)
+            } else {
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, marginTop)
+            }
+            constraintSet.applyTo(constraintLayout)
+        }
+
+        buttonDelete?.setOnClickListener {
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                listener.onDeleteClicked()
+            }
+        }
+        buttonDelete?.show()
+    }
+
+    private fun renderProductQty(element: MiniCartProductUiModel) {
+        if (element.isProductDisabled) {
+            qtyEditorProduct?.gone()
+            return
+        }
+
+        qtyEditorProduct?.show()
+        qtyEditorProduct?.autoHideKeyboard = true
+        qtyEditorProduct?.minValue = element.productMinOrder
+        qtyEditorProduct?.maxValue = element.productMaxOrder
+        qtyEditorProduct?.setValue(element.productQty)
+        qtyEditorProduct?.setValueChangedListener { newValue, oldValue, isOver ->
+
+        }
+        qtyEditorProduct?.setSubstractListener {
+
+        }
+        qtyEditorProduct?.setAddClickListener {
+
+        }
+        qtyEditorProduct?.editText?.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                qtyEditorProduct?.editText?.context?.let {
+                    KeyboardHandler.DropKeyboard(it, itemView)
+                }
+                true
+            } else false
+        }
+    }
+
+    private fun renderProductAction(element: MiniCartProductUiModel) {
+        if (element.productActions.isNotEmpty()) {
+            element.productActions.forEach {
+                when (it.id) {
+                    ACTION_NOTES -> {
+                        renderProductNotes(element)
+                    }
+                    ACTION_DELETE -> {
+                        renderActionDelete(element)
+                    }
+                    ACTION_SIMILARPRODUCT -> {
+                        if (element.selectedUnavailableActionId == ACTION_SIMILARPRODUCT) {
+                            renderActionSimilarProduct(it, element)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun renderActionSimilarProduct(action: Action, element: MiniCartProductUiModel) {
+        textProductUnavailableAction?.text = action.message
+        textProductUnavailableAction?.setOnClickListener {
+            if (element.selectedUnavailableActionLink.isNotBlank()) {
+                listener.onShowSimilarProductClicked()
+            }
+        }
+        textProductUnavailableAction?.context?.let {
+            textProductUnavailableAction?.setTextColor(ContextCompat.getColor(it, R.color.Unify_N700_68))
+        }
+        textProductUnavailableAction?.show()
+    }
+
+    private fun renderProductAlpha(element: MiniCartProductUiModel) {
+        if (element.isProductDisabled) {
+            imageProduct?.alpha = 0.5f
+            textProductName?.alpha = 0.5f
+            textProductVariant?.alpha = 0.5f
+            textQtyLeft?.alpha = 0.5f
+            labelSlashPricePercentage?.alpha = 0.5f
+            textSlashPrice?.alpha = 0.5f
+            textProductPrice?.alpha = 0.5f
+            layoutProductInfo?.alpha = 0.5f
+        } else {
+            imageProduct?.alpha = 1.0f
+            textProductName?.alpha = 1.0f
+            textProductVariant?.alpha = 1.0f
+            textQtyLeft?.alpha = 1.0f
+            labelSlashPricePercentage?.alpha = 1.0f
+            textSlashPrice?.alpha = 1.0f
+            textProductPrice?.alpha = 1.0f
+            layoutProductInfo?.alpha = 1.0f
+        }
+    }
 }

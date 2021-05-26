@@ -8,4 +8,6 @@ interface MiniCartListActionListener {
 
     fun onNotesChanged()
 
+    fun onShowSimilarProductClicked()
+
 }
