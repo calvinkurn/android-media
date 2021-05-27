@@ -79,9 +79,9 @@ class MonthPickerViewHolder(
 
     private fun showMonthPicker(element: DateFilterItem.MonthPickerItem) {
         val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(itemView.context)).apply {
-            val last12months = TimeUnit.DAYS.toMillis(30).times(12)
-            val minDateMillis = timeInMillis.minus(last12months)
-            timeInMillis = minDateMillis
+            element.monthPickerMinDate?.let {
+                time = it
+            }
         }
 
         var selectedMonth: Date? = element.startDate
