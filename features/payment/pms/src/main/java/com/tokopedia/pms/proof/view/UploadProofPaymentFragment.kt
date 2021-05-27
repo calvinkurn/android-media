@@ -19,12 +19,12 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor.extract
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.pms.R
-import com.tokopedia.pms.common.Constant
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.extractValues
 import com.tokopedia.pms.proof.di.DaggerUploadProofPaymentComponent
 import com.tokopedia.pms.proof.di.UploadProofPaymentModule
 import com.tokopedia.pms.proof.model.PaymentProofResponse
+import com.tokopedia.pms.proof.view.UploadProofPaymentActivity.Companion.PAYMENT_LIST_MODEL_EXTRA
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_upload_proof_payment.*
 import javax.inject.Inject
@@ -58,7 +58,7 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
 
     override fun onCreate(savedInstanceState: Bundle?) {
         arguments?.let {
-            paymentListModel = it.getParcelable(Constant.PAYMENT_LIST_MODEL_EXTRA)
+            paymentListModel = it.getParcelable(PAYMENT_LIST_MODEL_EXTRA)
         }
         super.onCreate(savedInstanceState)
     }
@@ -108,15 +108,15 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
                     requireContext(),
                     com.tokopedia.iconunify.R.drawable.iconunify_close)
                 iv_action_image.setImageDrawable(drawable)
-                button_save!!.setText(R.string.payment_label_save_image)
-                button_save_choose_another_image!!.visibility = View.GONE
+                button_save.setText(R.string.payment_label_save_image)
+                button_save_choose_another_image.visibility = View.GONE
                 text_confirmation.setText(R.string.payment_label_confirmation_upload_image)
             }
         } else {
-            button_save!!.setText(R.string.payment_label_choose_image)
-            button_save_choose_another_image!!.visibility = View.GONE
-            container_helper!!.visibility = View.VISIBLE
-            container_image_helper!!.visibility = View.GONE
+            button_save.setText(R.string.payment_label_choose_image)
+            button_save_choose_another_image.visibility = View.GONE
+            container_helper.visibility = View.VISIBLE
+            container_image_helper.visibility = View.GONE
         }
     }
 
@@ -194,7 +194,7 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
         fun createInstance(paymentListModel: BasePaymentModel?): Fragment {
             val uploadProofPaymentFragment = UploadProofPaymentFragment()
             val bundle = Bundle()
-            bundle.putParcelable(Constant.PAYMENT_LIST_MODEL_EXTRA, paymentListModel)
+            bundle.putParcelable(PAYMENT_LIST_MODEL_EXTRA, paymentListModel)
             uploadProofPaymentFragment.arguments = bundle
             return uploadProofPaymentFragment
         }

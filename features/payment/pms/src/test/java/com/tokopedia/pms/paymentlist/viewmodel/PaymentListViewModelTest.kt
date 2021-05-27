@@ -3,13 +3,9 @@ package com.tokopedia.pms.paymentlist.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
+import com.tokopedia.pms.paymentlist.domain.data.Fail
 import com.tokopedia.pms.paymentlist.domain.data.PaymentList
-import com.tokopedia.pms.paymentlist.domain.usecase.CancelPaymentUseCase
-import com.tokopedia.pms.paymentlist.domain.usecase.PaymentCancelDetailUseCase
-import com.tokopedia.pms.paymentlist.domain.usecase.PaymentListMapperUseCase
-import com.tokopedia.pms.paymentlist.domain.usecase.PaymentListUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.pms.paymentlist.domain.usecase.*
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -27,6 +23,7 @@ class PaymentListViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val getPaymentListCountUseCase = mockk<GetPaymentListCountUseCase>(relaxed = true)
     private val paymentListUseCase = mockk<PaymentListUseCase>(relaxed = true)
     private val cancelPaymentDetailUseCase = mockk<PaymentCancelDetailUseCase>(relaxed = true)
     private val cancelPaymentUseCase = mockk<CancelPaymentUseCase>(relaxed = true)
@@ -43,6 +40,7 @@ class PaymentListViewModelTest {
     @Before
     fun setUp() {
         viewModel = PaymentListViewModel(
+            getPaymentListCountUseCase,
             paymentListUseCase,
             cancelPaymentDetailUseCase,
             cancelPaymentUseCase,
@@ -58,7 +56,7 @@ class PaymentListViewModelTest {
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getPaymentList()
+        viewModel.getPaymentListCount()
         assert(viewModel.paymentListResultLiveData.value is Fail)
         coVerify(exactly = 0) { mapper.mapResponseToRenderPaymentList(any(), any(), any()) }
         Assertions.assertThat((viewModel.paymentListResultLiveData.value as Fail).throwable.message)
@@ -74,7 +72,7 @@ class PaymentListViewModelTest {
         } coAnswers {
             firstArg<(PaymentList) -> Unit>().invoke(paymentData)
         }
-        viewModel.getPaymentList()
+        viewModel.getPaymentListCount()
         assert(viewModel.paymentListResultLiveData.value is Fail)
         coVerify(exactly = 0) { mapper.mapResponseToRenderPaymentList(any(), any(), any()) }
         Assertions.assertThat((viewModel.paymentListResultLiveData.value as Fail).throwable.message)
@@ -104,7 +102,7 @@ class PaymentListViewModelTest {
         } coAnswers {
             secondArg<(ArrayList<BasePaymentModel>) -> Unit>().invoke(arrayListOf(baseModel))
         }
-        viewModel.getPaymentList()
+        viewModel.getPaymentListCount()
         //assert(viewModel.paymentListResultLiveData.value is Success)
         //coVerify(exactly = 1) { mapper.mapResponseToRenderPaymentList(any(), any(), any()) }
         //Assertions.assertThat((viewModel.paymentListResultLiveData.value as Success).data[0].gatewayName)
@@ -132,7 +130,7 @@ class PaymentListViewModelTest {
         } coAnswers {
             firstArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getPaymentList()
+        viewModel.getPaymentListCount()
         assert(viewModel.cancelPaymentDetailLiveData.value is Fail)
         Assertions.assertThat((viewModel.cancelPaymentDetailLiveData.value as Fail).throwable.message)
             .isEqualTo(fetchFailedErrorMessage)

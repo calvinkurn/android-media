@@ -2,14 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/button_use"
-        android:padding="@dimen/dp_8">
+        android:padding="@dimen/unify_space_8">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -19,7 +18,7 @@
                 android:id="@+id/input_dest_bank_account"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/unify_space_8"
                 android:clickable="false"
                 android:focusable="false"
                 app:layout_constraintEnd_toStartOf="@+id/arrowIcon"
@@ -45,7 +44,7 @@
                 android:id="@+id/input_account_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/unify_space_8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/input_dest_bank_account"
@@ -60,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_8"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/unify_space_8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/input_account_number"
@@ -74,7 +73,7 @@
                 android:id="@+id/input_note_optional"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/unify_space_8"
                 android:maxLength="@integer/payment_max_counter_notes_bank_account"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

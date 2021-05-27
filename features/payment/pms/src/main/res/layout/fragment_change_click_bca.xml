@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/dp_8"
+        android:layout_margin="@dimen/unify_space_8"
         app:text_field_input_type="text"
         app:text_field_label="@string/payment_label_hint_click_bca_user_id"
         app:text_field_label_static="true"

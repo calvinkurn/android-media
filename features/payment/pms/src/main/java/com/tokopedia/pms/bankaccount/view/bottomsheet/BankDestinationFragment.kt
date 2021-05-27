@@ -61,7 +61,7 @@ class BankDestinationFragment : BottomSheetUnify() {
     }
 
     private fun setDefaultParams() {
-        setTitle(context?.getString(R.string.payment_label_change_account_detail) ?: "")
+        setTitle(context?.getString(R.string.payment_title_activity_dest_bank) ?: "")
         isDragable = true
         isHideable = true
         showCloseIcon = true
