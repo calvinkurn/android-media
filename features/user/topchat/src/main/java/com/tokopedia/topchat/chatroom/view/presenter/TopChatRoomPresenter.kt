@@ -604,7 +604,7 @@ open class TopChatRoomPresenter @Inject constructor(
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
             val wsMsgPayload = attachment.generateMsgObj(
-                    messageId, opponentId, message, listInterceptor
+                    messageId, opponentId, message, listInterceptor, userLocationInfo
             )
             sendWebSocketAttachmentPayload(wsMsgPayload)
             view?.sendAnalyticAttachmentSent(attachment)
