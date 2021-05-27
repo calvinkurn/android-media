@@ -9,11 +9,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.constant.PMProURL
@@ -22,7 +25,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
-import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
@@ -441,7 +443,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
         val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
-        val ivBgPMPro = findViewById<AppCompatImageView>(com.tokopedia.seller.menu.common.R.id.iv_bg_pm_pro)
+        val ivBgPMPro = findViewById<ShapeableImageView>(com.tokopedia.seller.menu.common.R.id.iv_bg_pm_pro)
         val powerMerchantProStatusText = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.powerMerchantProStatusText)
         when (powerMerchantStatus) {
             is PowerMerchantProStatus.Advanced -> {
@@ -458,6 +460,11 @@ class OtherMenuViewHolder(private val itemView: View,
             }
         }
         powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
+        val roundedRadius = 16F
+        ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
+                .toBuilder()
+                .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                .build()
         return this
     }
 

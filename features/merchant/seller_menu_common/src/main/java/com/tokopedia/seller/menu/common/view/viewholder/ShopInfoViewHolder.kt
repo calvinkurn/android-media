@@ -1,18 +1,20 @@
 package com.tokopedia.seller.menu.common.view.viewholder
 
-import android.annotation.SuppressLint
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -361,7 +363,7 @@ class ShopInfoViewHolder(
 
     private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
         val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
-        val ivBgPMPro = findViewById<AppCompatImageView>(R.id.iv_bg_pm_pro)
+        val ivBgPMPro = findViewById<ShapeableImageView>(R.id.iv_bg_pm_pro)
         val powerMerchantProStatusText = findViewById<Typography>(R.id.powerMerchantProStatusText)
         when (powerMerchantStatus) {
             is PowerMerchantProStatus.Advanced -> {
@@ -378,6 +380,11 @@ class ShopInfoViewHolder(
             }
         }
         powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
+        val roundedRadius = 16F
+        ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
+                .toBuilder()
+                .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                .build()
         return this
     }
 

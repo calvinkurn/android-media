@@ -16,11 +16,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.925">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_bg_pm_pro"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:src="@drawable/ic_pm_pro_advance"/>
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/statusCard"

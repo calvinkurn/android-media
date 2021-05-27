@@ -42,6 +42,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.internalReview)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.medialoader)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpdabstraction)
