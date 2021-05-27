@@ -4,17 +4,28 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressKey
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
@@ -22,7 +33,10 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailAc
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.managepassword.forgotpassword.view.activity.ForgotPasswordActivity
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
+import junit.framework.TestCase.assertEquals
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
+
 
 class LoginNormalCase : LoginBase() {
 
@@ -175,4 +189,79 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
+
+    @Test
+    fun checkEmailExtensionShownAfterAddAt() {
+        runTest {
+            inputEmailOrPhone("yoris.prayogo@")
+            isEmailExtensionDisplayed()
+        }
+
+    }
+
+    @Test
+    fun checkEmailExtensionVisibility() {
+        checkEmailExtensionShownAfterAddAt()
+        onView(withId(R.id.input_email_phone))
+                .perform(pressKey(KeyEvent.KEYCODE_DEL))
+        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo")
+        isEmailExtensionDismissed()
+        inputEmailOrPhone("@")
+        isEmailExtensionDisplayed()
+    }
+
+
+    @Test
+    fun checkEmailExtensionAdded() {
+        checkEmailExtensionShownAfterAddAt()
+
+        onView(withId(R.id.recyclerViewEmailExtension))
+                .perform(RecyclerViewActions
+                        .actionOnItemAtPosition<EmailExtensionAdapter.ViewHolder>(0, clickOnViewChild(R.id.textEmailExtension)))
+        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@gmail.com")
+    }
+
+    @Test
+    fun checkEmailExtensionAdded2() {
+        checkEmailExtensionShownAfterAddAt()
+        onView(withId(R.id.recyclerViewEmailExtension)).perform(scrollToPosition<EmailExtensionAdapter.ViewHolder>(6))
+        onView(withId(R.id.recyclerViewEmailExtension))
+                .perform(RecyclerViewActions
+                        .actionOnItemAtPosition<EmailExtensionAdapter.ViewHolder>(6, clickOnViewChild(R.id.textEmailExtension)))
+        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@outlook.com")
+    }
+
+    @Test
+    fun checkEmailExtensionDismissedAfterAdded() {
+        checkEmailExtensionAdded()
+        isEmailExtensionDismissed()
+    }
+
+    @Test
+    fun checkDeveloperOptions() {
+        runTest {
+            val viewDevOpts = onView(withText("Developer Options"))
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                viewDevOpts.check(matches(isDisplayed()))
+            } else {
+                viewDevOpts.check(matches(not(isDisplayed())))
+            }
+        }
+    }
+//
+//    @Test
+//    fun checkOnlyLoading(){
+//        launchDefaultFragment()
+//        val parent : ConstraintLayout = activityTestRule.activity.findViewById<View>(R.id.parent_container) as ConstraintLayout
+//
+//        assertEquals(parent.childCount, 4)
+//    }
+
+    private fun clickOnViewChild(viewId: Int) = object : ViewAction {
+        override fun getConstraints() = null
+
+        override fun getDescription() = "Click on a child view with specified id."
+
+        override fun perform(uiController: UiController, view: View) = click().perform(uiController, view.findViewById<View>(viewId))
+    }
 }
