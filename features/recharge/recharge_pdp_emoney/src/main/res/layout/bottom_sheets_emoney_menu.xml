@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/menu_order_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        android:text="@string/common_topup__menu_transaction_list"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_5" />
+
+    <View
+        android:id="@+id/v_first_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separator_size"
+        android:background="@color/Unify_N75" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/menu_langganan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        android:text="@string/recharge_pdp_emoney_menu_langganan"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_5"
+        android:layout_marginTop="@dimen/spacing_lvl4" />
+
+    <View
+        android:id="@+id/v_second_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/separator_size"
+        android:background="@color/Unify_N75" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/menu_help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        android:text="@string/common_topup__menu_help"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_5" />
+
+</LinearLayout>

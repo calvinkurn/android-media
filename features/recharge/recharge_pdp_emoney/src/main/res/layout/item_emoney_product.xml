@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify android:id="@+id/cardEmoneyProduct"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        android:paddingVertical="@dimen/unify_space_12">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/emoneyProductTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            tools:text="E-money 25.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/emoneyProductSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/emoneyProductTitle"
+            app:typographyType="body_3"
+            tools:text="Maksimal saldo tersimpan di kartu 2 juta.....Maksimal saldo tersimpan di kartu 2 juta.....Maksimal saldo tersimpan di kartu 2 juta....."
+            android:textColor="@color/Unify_N700_68"
+            android:lines="1"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/emoneyProductPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/emoneyProductSubtitle"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp24.400" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/emoneyProductSeeDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/emoneyProductPrice"
+            android:text="@string/recharge_pdp_emoney_product_see_details"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
