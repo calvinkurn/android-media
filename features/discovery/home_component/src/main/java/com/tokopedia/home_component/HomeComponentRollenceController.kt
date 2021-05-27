@@ -13,9 +13,6 @@ object HomeComponentRollenceController {
 
     private var rollenceLego4BannerValue: String = ""
     private var rollenceCategoryWidgetValue: String = ""
-    private const val CAT_TYPE_CONTROL = 1
-    private const val CAT_TYPE_INSIDE = 2
-    private const val CAT_TYPE_BOX = 1
 
     fun fetchHomeComponentRollenceValue() {
         rollenceLego4BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(AbTestPlatform.HOME_COMPONENT_LEGO4BANNER_EXP, AbTestPlatform.HOME_COMPONENT_LEGO4BANNER_OLD)
