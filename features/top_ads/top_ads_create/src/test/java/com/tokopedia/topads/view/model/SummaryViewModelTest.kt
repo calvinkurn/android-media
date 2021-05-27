@@ -66,7 +66,7 @@ class SummaryViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.validateGroup("name", {}, {})
+        viewModel.validateGroup("name", {})
 
         verify {
             validGroupUseCase.execute(any(), any())
