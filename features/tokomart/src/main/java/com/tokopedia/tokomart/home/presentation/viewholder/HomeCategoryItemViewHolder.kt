@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.tokomart.R
@@ -19,9 +20,11 @@ class HomeCategoryItemViewHolder(itemView: View): AbstractViewHolder<HomeCategor
     override fun bind(data: HomeCategoryItemUiModel) {
         itemView.apply {
             textCategory.text = data.title
-            imageCategory.loadImage(data.iconUrl) {
+            imageCategory.loadImage(data.imageUrl) {
                 setCacheStrategy(MediaCacheStrategy.RESOURCE)
-                isCircular(true)
+            }
+            setOnClickListener {
+                RouteManager.route(context, data.appLink)
             }
         }
     }

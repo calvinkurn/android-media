@@ -33,6 +33,8 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
 import com.tokopedia.tokomart.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
@@ -45,6 +47,7 @@ import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -107,9 +110,13 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setup()
-        getHomeLayout()
+        setupNavToolbar()
+        setupStatusBar()
+        setupRecyclerView()
+        observeLiveData()
         updateCurrentPageLocalCacheModelData()
+
+        getHomeLayout()
     }
 
     override fun onAttach(context: Context) {
@@ -129,13 +136,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
-    }
-
-    private fun setup() {
-        setupNavToolbar()
-        setupStatusBar()
-        setupRecyclerView()
-        observeLiveData()
     }
 
     private fun setupNavToolbar() {
@@ -206,8 +206,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     private fun isNavOld(): Boolean {
         return try {
-//            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
-            return false
+            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
         } catch (e: Exception) {
             e.printStackTrace()
             true
@@ -277,19 +276,23 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
     private fun observeLiveData() {
         observe(viewModel.homeLayoutList) {
             if (it is Success) {
-                adapter.submitList(it.data)
+                loadHomeLayout(it.data)
+            }
+        }
+    }
+
+    private fun loadHomeLayout(data: HomeLayoutListUiModel) {
+        data.run {
+            if (isInitialLoad) {
+                adapter.submitList(result)
                 // TO-DO: Lazy Load Data
                 viewModel.getLayoutData()
 
                 // isMyShop needs shopId to differentiate
                 if (!isChooseAddressWidgetShowed(false))
                     adapter.removeHomeChooseAddressWidget()
-            }
-        }
-
-        observe(viewModel.homeLayoutData) {
-            if(it is Success) {
-                adapter.submitList(it.data)
+            } else {
+                adapter.submitList(result)
             }
         }
     }
@@ -325,8 +328,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
                 HomeChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
                 true
         )
-//        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop
-        return true
+        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop
     }
 
     private fun updateCurrentPageLocalCacheModelData() {

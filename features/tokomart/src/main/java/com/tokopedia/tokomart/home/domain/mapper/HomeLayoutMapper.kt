@@ -1,67 +1,65 @@
 package com.tokopedia.tokomart.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.tokomart.home.constant.HomeAdditionalWidgetId
+import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.home.constant.HomeLayoutType
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
+import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
 import com.tokopedia.tokomart.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.tokomart.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
+import com.tokopedia.tokomart.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
-import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 
 object HomeLayoutMapper {
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
+        HomeLayoutType.CATEGORY,
         HomeLayoutType.LEGO_3_IMAGE,
         HomeLayoutType.BANNER_CAROUSEL
     )
 
-    val ADDITIONAL_WIDGETS = listOf(
-        HomeAdditionalWidgetId.CHOOSE_ADDRESS_WIDGET_ID,
-        HomeAdditionalWidgetId.TICKER_WIDGET_ID
-    )
-
     fun mapHomeLayoutList(response: List<HomeLayoutResponse>): List<Visitable<*>> {
         val layoutList = mutableListOf<Visitable<*>>()
-        layoutList.add(HomeChooseAddressWidgetUiModel(id = HomeAdditionalWidgetId.CHOOSE_ADDRESS_WIDGET_ID))
+        layoutList.add(HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID))
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
-            val item = mapToHomeUiModel(it)
-            layoutList.add(item)
+            mapToHomeUiModel(it)?.let { item ->
+                layoutList.add(item)
+            }
         }
 
         return layoutList
     }
 
-    fun mapHomeLayoutData(layoutList: List<Visitable<*>>, response: HomeLayoutResponse): List<Visitable<*>> {
-        val item = mapToHomeUiModel(response)
-        return layoutList.getItemIndex(item)?.let { index ->
-            layoutList.toMutableList().let {
-                it[index] = item
-                it
-            }
-        } ?: layoutList
-    }
-
-    private fun mapToHomeUiModel(response: HomeLayoutResponse): Visitable<*> {
-        return when (response.layout) {
-            HomeLayoutType.LEGO_3_IMAGE -> mapLegoBannerDataModel(response)
-            HomeLayoutType.BANNER_CAROUSEL -> mapSliderBannerModel(response)
-            else -> throw TypeNotSupportedException.create("Layout not supported")
+    fun List<Visitable<*>>.mapGlobalHomeLayoutData(
+        item: HomeComponentVisitable,
+        response: HomeLayoutResponse
+    ): List<Visitable<*>> {
+        return updateItemById(item.visitableId()) {
+            mapToHomeUiModel(response)
         }
     }
 
-    private fun List<Visitable<*>>.getItemIndex(item: Visitable<*>): Int? {
-        return firstOrNull { it.getChannelId() == item.getChannelId() }?.let { indexOf(it) }
+    fun List<Visitable<*>>.mapHomeCategoryGridData(
+        item: HomeCategoryGridUiModel,
+        response: List<CategoryResponse>
+    ): List<Visitable<*>> {
+        return updateItemById(item.visitableId) {
+            val categoryList = mapToCategoryList(response)
+            item.copy(categoryList = categoryList)
+        }
     }
 
-    private fun Visitable<*>.getChannelId(): String? {
-        return when (this) {
-            is TokoMartHomeLayoutUiModel -> channelId
-            is HomeComponentVisitable -> visitableId()
-            else -> throw TypeNotSupportedException.create("Component not supported")
+    private fun mapToHomeUiModel(response: HomeLayoutResponse): Visitable<*>? {
+        return when (response.layout) {
+            HomeLayoutType.CATEGORY -> mapToCategoryLayout(response)
+            HomeLayoutType.LEGO_3_IMAGE -> mapLegoBannerDataModel(response)
+            HomeLayoutType.BANNER_CAROUSEL -> mapSliderBannerModel(response)
+            else -> null
         }
     }
 }

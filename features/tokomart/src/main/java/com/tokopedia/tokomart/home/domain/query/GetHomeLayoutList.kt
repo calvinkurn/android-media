@@ -9,6 +9,9 @@ internal object GetHomeLayoutList {
             channels(type: "tokonow") {
               id
               layout
+              header {
+                 name 
+              }
             }
           }
         }
