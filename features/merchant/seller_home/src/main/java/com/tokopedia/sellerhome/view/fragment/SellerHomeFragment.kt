@@ -777,7 +777,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         updateScrollListenerState(false)
 
         var isWidgetHasError = false
-        val newWidgetFromCache = widgets.first().isFromCache
+        val newWidgetFromCache = widgets.firstOrNull()?.isFromCache ?: false
         if (isNewLazyLoad) {
             startHomeLayoutRenderMonitoring()
             stopPltMonitoringIfNotCompleted(fromCache = newWidgetFromCache)
