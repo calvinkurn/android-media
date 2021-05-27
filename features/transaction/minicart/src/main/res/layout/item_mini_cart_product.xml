@@ -145,8 +145,8 @@
         app:layout_constraintEnd_toStartOf="@+id/button_delete_cart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
-        tools:visibility="visible"
-        tools:layout_height="42dp" />
+        tools:layout_height="42dp"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_notes"
@@ -167,7 +167,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_notes_filled"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:ellipsize="end"
@@ -176,30 +176,29 @@
         android:paddingBottom="@dimen/dp_8"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
-        app:layout_constraintEnd_toStartOf="@+id/text_notes_change"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
         app:typographyType="body_3"
-        tools:text="Jangan dibanting ya gan gan gan gan gan"
-        tools:visibility="gone" />
+        tools:text="Jangan Jangan   "
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_notes_change"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_0"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_0"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         android:text="Ubah"
         android:textColor="@color/unify_G500"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
-        app:layout_constraintEnd_toStartOf="@+id/button_delete_cart"
+        app:layout_constraintStart_toEndOf="@+id/text_notes_filled"
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
         app:typographyType="body_3"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/button_delete_cart"
@@ -209,7 +208,7 @@
         android:paddingStart="@dimen/dp_0"
         android:paddingEnd="@dimen/dp_16"
         app:icon_name="DELETE"
-        app:layout_constraintEnd_toStartOf="@+id/text_product_unavailable_action"
+        app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"
         app:layout_constraintTop_toBottomOf="@+id/layout_product_info" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -225,18 +224,17 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Lihat Produk Serupa"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/qty_editor_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_0"
-        android:paddingEnd="@dimen/dp_16"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

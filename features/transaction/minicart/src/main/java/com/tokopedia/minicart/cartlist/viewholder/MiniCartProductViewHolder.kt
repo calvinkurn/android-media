@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -283,9 +284,33 @@ class MiniCartProductViewHolder(private val view: View,
     private fun renderProductNotesFilled(element: MiniCartProductUiModel) {
         textFieldNotes?.gone()
         textNotesFilled?.text = element.productNotes
+        setProductNotesWidth()
         textNotesFilled?.show()
         textNotesChange?.show()
         textNotes?.gone()
+    }
+
+    private fun setProductNotesWidth() {
+        val padding = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
+        val paddingLeftRight = padding * 2
+        buttonDelete?.measure(0, 0)
+        val buttonDeleteWidth = buttonDelete?.measuredWidth ?: 0
+        qtyEditorProduct?.measure(0, 0)
+        val qtyEditorProductWidth = qtyEditorProduct?.measuredWidth ?: 0
+        val textNotesChangeWidth = itemView.resources.getDimensionPixelOffset(R.dimen.dp_40)
+        val screenWidth = getScreenWidth()
+        val maxNotesWidth = screenWidth - paddingLeftRight - buttonDeleteWidth - qtyEditorProductWidth
+        val noteWidth = maxNotesWidth - textNotesChangeWidth
+
+        textNotesFilled?.measure(0, 0)
+        val currentWidth = textNotesFilled?.measuredWidth
+        if (currentWidth ?: 0 >= maxNotesWidth) {
+            textNotesFilled?.layoutParams?.width = noteWidth
+            textNotesFilled?.requestLayout()
+        } else {
+            textNotesFilled?.layoutParams?.width = currentWidth
+            textNotesFilled?.requestLayout()
+        }
     }
 
     private fun renderActionDelete(element: MiniCartProductUiModel) {
