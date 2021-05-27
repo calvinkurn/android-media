@@ -5,7 +5,12 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_electronic_money.R
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -23,6 +28,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     private val lottieAnimationView: LottieAnimationView
     private val buttonTryAgain: UnifyButton
     private val imageviewError: ImageView
+    private val globalError: GlobalError
     private var issuerId: Int = 0
 
     private lateinit var listener: OnTapEtoll
@@ -43,12 +49,16 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         lottieAnimationView = view.findViewById(R.id.lottie_animation_view)
         buttonTryAgain = view.findViewById(R.id.button_try_again)
         imageviewError = view.findViewById(R.id.imageview_error)
+        globalError = view.findViewById(R.id.emoney_global_error)
     }
 
     fun showLoading() {
-        textTitle.text = resources.getString(R.string.emoney_reading_card_label_title)
+        globalError.hide()
+        textTitle.show()
+        textLabel.show()
+        textTitle.text = resources.getString(R.string.emoney_nfc_reading_card_label_title)
         textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
-        textLabel.text = resources.getString(R.string.emoney_reading_card_label_message)
+        textLabel.text = resources.getString(R.string.emoney_nfc_reading_card_label_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
         lottieAnimationView.setAnimation("emoney_loading.json")
@@ -58,9 +68,12 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     }
 
     fun showInitialState() {
-        textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
+        globalError.hide()
+        textTitle.show()
+        textLabel.show()
+        textTitle.text = resources.getString(R.string.emoney_nfc_tap_card_instruction_title)
         textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
-        textLabel.text = resources.getString(R.string.emoney_tap_card_instruction_message)
+        textLabel.text = resources.getString(R.string.emoney_nfc_tap_card_instruction_message)
         lottieAnimationView.visibility = View.VISIBLE
         lottieAnimationView.clearAnimation()
         lottieAnimationView.setAnimation("emoney_animation.json")
@@ -77,30 +90,70 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         }
     }
 
-    fun showErrorState(errorMessage: String) {
-        textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
-        textLabel.text = errorMessage
+    fun showErrorState(errorMessageTitle: String, errorMessageLabel: String,
+                       imageUrl:String, isButtonShow: Boolean,
+                       mandiriGetSocketTimeout: Boolean
+    ) {
+        textTitle.text = errorMessageTitle
+        textLabel.text = errorMessageLabel
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
-        buttonTryAgain.visibility = View.VISIBLE
+        buttonTryAgain.visibility = if(isButtonShow) View.VISIBLE else View.GONE
 
-        buttonTryAgain.setOnClickListener {
-            showInitialState()
-            listener.tryAgainTopup(issuerId)
+        if(!imageUrl.isNullOrEmpty()){
+            imageviewError.loadImage(imageUrl){
+                setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+            }
+        } else {
+            imageviewError.loadImage(resources.getDrawable(R.drawable.emoney_revamp_connection_issue))
+        }
+
+        buttonTryAgain.apply {
+            if(mandiriGetSocketTimeout){
+                text = resources.getString(R.string.emoney_nfc_tap_card_button_socket_label)
+                setOnClickListener {
+                    listener.goToHome()
+                }
+            } else {
+                setOnClickListener {
+                    showInitialState()
+                    listener.tryAgainTopup(issuerId)
+                }
+            }
         }
     }
 
     fun showErrorDeviceUnsupportedState(errorMessage: String) {
-        textTitle.text = resources.getString(R.string.emoney_tap_card_instruction_title)
-        textTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+        textTitle.text = resources.getString(R.string.emoney_nfc_device_not_support)
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
+        imageviewError.loadImage(resources.getString(R.string.emoney_nfc_not_found)){
+            setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
+        }
         buttonTryAgain.visibility = View.GONE
+    }
+
+    fun showGlobalError(errorMessageTitle: String, errorMessageLabel: String){
+        textTitle.hide()
+        textLabel.hide()
+        lottieAnimationView.hide()
+        imageviewError.hide()
+        buttonTryAgain.hide()
+        globalError.show()
+        globalError.apply {
+            errorTitle.text = errorMessageTitle
+            errorDescription.text = errorMessageLabel
+
+            setActionClickListener {
+                showInitialState()
+                listener.tryAgainTopup(issuerId)
+            }
+        }
     }
 
     interface OnTapEtoll {
         fun tryAgainTopup(issuerId: Int)
+        fun goToHome()
     }
 }

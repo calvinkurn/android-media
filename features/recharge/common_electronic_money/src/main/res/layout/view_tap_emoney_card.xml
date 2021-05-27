@@ -23,19 +23,21 @@
 
         <ImageView
             android:id="@+id/imageview_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_width="@dimen/nfc_common_dp_local_360"
+            android:layout_height="@dimen/nfc_common_dp_local_230"
             android:visibility="gone"
-            app:srcCompat="@drawable/emoney_ic_nfc_need_activation" />
+            />
 
     </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/nfc_common_dp_local_260"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/emoney_tap_card_instruction_title"
+        android:text="@string/emoney_nfc_tap_card_instruction_title"
+        app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_2" />
 
@@ -43,21 +45,27 @@
         android:id="@+id/text_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center"
-        android:text="@string/emoney_tap_card_instruction_message"
+        android:text="@string/emoney_nfc_tap_card_instruction_message"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_try_again"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:text="@string/emoney_nfc_tap_card_button_label_error"
         android:visibility="gone"
-        app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/emoney_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

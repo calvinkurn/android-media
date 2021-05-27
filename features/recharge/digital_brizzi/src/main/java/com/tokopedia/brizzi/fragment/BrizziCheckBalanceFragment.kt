@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -25,8 +27,10 @@ import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDet
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.fragment.NfcCheckBalanceFragment
 import com.tokopedia.common_electronic_money.util.CardUtils
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import id.co.bri.sdk.Brizzi
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
@@ -110,10 +114,16 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     fun processBrizzi(intent: Intent) {
-        if (CardUtils.cardIsEmoney(intent)) {
+        if (CardUtils.isEmoneyCard(intent)) {
             processEmoney(intent)
-        } else {
+        } else if (CardUtils.isBrizziCard(intent)) {
             executeBrizzi(false, intent)
+        } else {
+            showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_card_is_not_supported),
+                    resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_card_is_not_supported),
+                    false
+            )
         }
     }
 
@@ -143,15 +153,42 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
             })
 
             brizziBalanceViewModel.errorCardMessage.observe(this, Observer {
-                showError(it)
+                showError(ErrorHandler.getErrorMessage(context, it), resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
+                        true)
             })
+
+            brizziBalanceViewModel.errorCommonBrizzi.observeForever { throwable ->
+                context?.let {
+                    val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+                    if((throwable is UnknownHostException) || errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                        showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
+                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                                "",
+                                true)
+                    } else {
+                        showError(errorMessage,
+                                resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                                "",
+                                true, true)
+                    }
+                }
+            }
 
             brizziBalanceViewModel.cardIsNotBrizzi.observe(this, Observer {
                 emoneyAnalytics.onErrorReadingCard()
-                showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_card_is_not_supported))
+                showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_card_is_not_supported),
+                        resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_card_is_not_supported),
+                        false
+                )
             })
         } else {
-            showError(resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported))
+            showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_device_not_support),
+                    resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported),
+                    resources.getString(com.tokopedia.brizzi.R.string.emoney_nfc_not_found),
+                    false
+            )
         }
     }
 
@@ -226,14 +263,17 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        data?.let {
-            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN){
+            showInitialState()
+            data?.let {
                 if (userSession.isLoggedIn) {
                     data?.let {
                         processTagIntent(data)
                     }
                 }
             }
+        } else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN){
+            activity?.finish()
         }
     }
 

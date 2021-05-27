@@ -17,6 +17,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import id.co.bri.sdk.Brizzi
 import id.co.bri.sdk.BrizziCardObject
@@ -39,7 +40,8 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     val emoneyInquiry = com.tokopedia.common_electronic_money.util.SingleLiveEvent<EmoneyInquiry>()
     val tokenNeedRefresh = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Boolean>()
     val cardIsNotBrizzi = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Boolean>()
-    val errorCardMessage = com.tokopedia.common_electronic_money.util.SingleLiveEvent<String>()
+    val errorCardMessage = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Throwable>()
+    val errorCommonBrizzi = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Throwable>()
 
     fun processBrizziTagIntent(intent: Intent, brizziInstance: Brizzi,
                                rawTokenQuery: String, rawLogBrizzi: String, refreshToken: Boolean) {
@@ -92,7 +94,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             })
         }) {
             ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_FAILED_REFRESH_TOKEN"))
-            errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN)
+            errorCommonBrizzi.postValue(it)
         }
     }
 
@@ -133,7 +135,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }
             else -> {
                 ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to (brizziException.message ?: "")))
-                errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
+                errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             }
         }
     }
