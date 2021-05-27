@@ -13,6 +13,7 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.di.DaggerMiniCartListComponent
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
@@ -143,6 +144,15 @@ class MiniCartListBottomSheet :
 
     override fun onShowSimilarProductClicked() {
 
+    }
+
+    override fun onShowUnavailableItemsCLicked() {
+        adapter?.data?.forEachIndexed { index, visitable ->
+            if (visitable is MiniCartUnavailableHeaderUiModel) {
+                rvMiniCartList?.smoothScrollToPosition(index)
+                return@forEachIndexed
+            }
+        }
     }
 
 }

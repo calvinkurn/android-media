@@ -348,10 +348,26 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           "product_price": 100000,
                           "product_information": [],
                           "product_notes": "",
-                          "product_min_order": 1,
-                          "product_max_order": 30000,
-                          "parent_id": 0,
-                          "wholesale_price": []
+                          "product_min_order": 2,
+                          "product_max_order": 50,
+                          "parent_id": 12345,
+                          "wholesale_price": [
+                            {
+                                "qtyMin" : 5,
+                                "qtyMax" : 10,
+                                "prdPrice" : 90000
+                            },
+                            {
+                                "qtyMin" : 11,
+                                "qtyMax" : 15,
+                                "prdPrice" : 80000
+                            },
+                            {
+                                "qtyMin" : 16,
+                                "qtyMax" : 20,
+                                "prdPrice" : 70000
+                            }
+                          ]
                         }
                       },
                       {
@@ -377,10 +393,26 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           "product_price": 100000,
                           "product_information": [],
                           "product_notes": "",
-                          "product_min_order": 1,
-                          "product_max_order": 30000,
-                          "parent_id": 0,
-                          "wholesale_price": []
+                          "product_min_order": 2,
+                          "product_max_order": 50,
+                          "parent_id": 12345,
+                          "wholesale_price": [
+                            {
+                                "qtyMin" : 5,
+                                "qtyMax" : 10,
+                                "prdPrice" : 90000
+                            },
+                            {
+                                "qtyMin" : 11,
+                                "qtyMax" : 15,
+                                "prdPrice" : 80000
+                            },
+                            {
+                                "qtyMin" : 16,
+                                "qtyMax" : 20,
+                                "prdPrice" : 70000
+                            }
+                          ]
                         }
                       }
                     ]
@@ -429,15 +461,17 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                             "variant_name": [],
                             "variant_description": ""
                           },
-                          "product_warning_message": "",
+                          "product_warning_message": "Sisa 3",
                           "slash_price_label": "",
-                          "product_original_price": 0,
+                          "product_original_price": 10000,
                           "initial_price": 5000,
                           "product_price": 5000,
-                          "product_information": [],
-                          "product_notes": "",
+                          "product_information": [
+                            "Cashback 3%"
+                          ],
+                          "product_notes": "Ini notes",
                           "product_min_order": 1,
-                          "product_max_order": 30000,
+                          "product_max_order": 10,
                           "parent_id": 0,
                           "wholesale_price": []
                         }

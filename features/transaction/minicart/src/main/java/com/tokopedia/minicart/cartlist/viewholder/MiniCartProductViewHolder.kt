@@ -14,10 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
@@ -90,6 +87,8 @@ class MiniCartProductViewHolder(private val view: View,
     private val qtyEditorProduct: QuantityEditorUnify? by lazy {
         view.findViewById(R.id.qty_editor_product)
     }
+
+    private var qtyTextWatcher: TextWatcher? = null
 
     override fun bind(element: MiniCartProductUiModel) {
         renderProductImage(element)
@@ -225,16 +224,17 @@ class MiniCartProductViewHolder(private val view: View,
     }
 
     private fun renderProductNotes(element: MiniCartProductUiModel) {
+        textNotes?.setOnClickListener {
+            renderProductNotesEditable(element)
+        }
+        textNotesChange?.setOnClickListener {
+            renderProductNotesEditable(element)
+        }
+
         if (element.productNotes.isNotBlank()) {
             renderProductNotesFilled(element)
         } else {
             renderProductNotesEmpty()
-            textNotes?.setOnClickListener {
-                renderProductNotesEditable(element)
-            }
-            textNotesChange?.setOnClickListener {
-                renderProductNotesEditable(element)
-            }
         }
     }
 
@@ -244,6 +244,7 @@ class MiniCartProductViewHolder(private val view: View,
         textFieldNotes?.show()
         textNotesChange?.gone()
         textNotesFilled?.gone()
+        textNotesFilled?.text = element.productNotes
         textFieldNotes?.setCounter(element.maxNotesLength)
         textFieldNotes?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -354,20 +355,40 @@ class MiniCartProductViewHolder(private val view: View,
         }
 
         qtyEditorProduct?.show()
+        if (qtyTextWatcher != null) {
+            // reset listener
+            qtyEditorProduct?.editText?.removeTextChangedListener(qtyTextWatcher)
+            qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
+        }
         qtyEditorProduct?.autoHideKeyboard = true
         qtyEditorProduct?.minValue = element.productMinOrder
         qtyEditorProduct?.maxValue = element.productMaxOrder
         qtyEditorProduct?.setValue(element.productQty)
         qtyEditorProduct?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
         qtyEditorProduct?.setValueChangedListener { newValue, oldValue, isOver ->
-
+            if (element.productQty != newValue) {
+                element.productQty = newValue
+                listener.onQuantityChanged()
+            }
         }
-        qtyEditorProduct?.setSubstractListener {
+        qtyTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-        }
-        qtyEditorProduct?.setAddClickListener {
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.toString().toIntOrZero() > element.productMaxOrder) {
+                    qtyEditorProduct?.setValue(element.productMaxOrder)
+                } else if (s.toString().toIntOrZero() < element.productMinOrder) {
+                    qtyEditorProduct?.setValue(element.productMinOrder)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
         }
+        qtyEditorProduct?.editText?.addTextChangedListener(qtyTextWatcher)
         qtyEditorProduct?.editText?.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 qtyEditorProduct?.editText?.context?.let {

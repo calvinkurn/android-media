@@ -12,4 +12,6 @@ interface MiniCartListActionListener {
 
     fun onShowSimilarProductClicked()
 
+    fun onShowUnavailableItemsCLicked()
+
 }
