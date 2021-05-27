@@ -39,7 +39,6 @@ class TokoMartHomeAdapterTypeFactory(
 ): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
     // region Toko Mart Home Component
-    override fun type(uiModel: HomeSectionUiModel): Int = HomeSectionViewHolder.LAYOUT
     override fun type(uiModel: HomeCategoryGridUiModel): Int = HomeCategoryGridViewHolder.LAYOUT
     override fun type(uiModel: HomeCategoryItemUiModel): Int = HomeCategoryItemViewHolder.LAYOUT
     override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
@@ -63,7 +62,6 @@ class TokoMartHomeAdapterTypeFactory(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             // region Toko Mart Home Component
-            HomeSectionViewHolder.LAYOUT -> HomeSectionViewHolder(view)
             HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, listener)
