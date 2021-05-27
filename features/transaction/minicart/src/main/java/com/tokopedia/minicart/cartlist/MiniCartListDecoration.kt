@@ -14,6 +14,7 @@ class MiniCartListDecoration @Inject constructor() : RecyclerView.ItemDecoration
     private var defaultMargin: Int = 0
     private var mediumMargin: Int = 0
     private var smallMargin: Int = 0
+    private var lastItemMargin: Int = 0
     private var context: Context? = null
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -23,6 +24,7 @@ class MiniCartListDecoration @Inject constructor() : RecyclerView.ItemDecoration
             defaultMargin = context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
             mediumMargin = context?.resources?.getDimension(R.dimen.dp_12)?.toInt() ?: 0
             smallMargin = context?.resources?.getDimension(R.dimen.dp_10)?.toInt() ?: 0
+            lastItemMargin = context?.resources?.getDimension(R.dimen.dp_64)?.toInt() ?: 0
         }
 
         when (parent.getChildViewHolder(view)) {
@@ -32,6 +34,10 @@ class MiniCartListDecoration @Inject constructor() : RecyclerView.ItemDecoration
             is MiniCartSeparatorViewHolder -> setupOutRect(outRect, noMargin, noMargin, noMargin, noMargin)
             is MiniCartAccordionViewHolder -> setupOutRect(outRect, noMargin, noMargin, noMargin, noMargin)
             else -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, defaultMargin)
+        }
+
+        if (parent.canScrollVertically(-1) && parent.getChildAdapterPosition(view) == state.itemCount - 1) {
+            outRect.bottom = lastItemMargin
         }
     }
 
