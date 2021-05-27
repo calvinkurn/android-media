@@ -170,6 +170,7 @@
     <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_shop_score_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
     <string name="pm_shop_score_not_eligible"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$d</font>]]></string>
+    <string name="pm_shop_score_not_eligible_new_seller">Skor Toko: -</string>
     <string name="pm_shop_score_eligible_description">Batas min. skor %1$d</string>
     <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor hingga min. %1$d, ya! <br>Pelajari Performa Toko]]></string>
     <string name="pm_add_product">Tambah Produk</string>
@@ -279,4 +280,7 @@
     <string name="pm_bottom_sheet_moderated_shop_description">Saat ini, tokomu dalam pengasawan Tokopedia. \nTunggu hingga toko kembali aktif untuk daftar jadi Power Merchant.</string>
     <string name="pm_upgrade_to_power_merchant_pro">Upgrade ke Power Merchant PRO</string>
     <string name="pm_pm_pro_deactivation_description">Kamu bisa turunkan status tokomu jadi Power Merchant. Hanya dengan biaya layanan %1$s, kamu tetap bisa menikmati berbagai keuntungan.</string>
+    <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_title">Oops, kamu belum bisa daftar dulu ya..</string>
+    <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_description"><![CDATA[Untuk daftar Power Merchant PRO, kamu perlu skor toko <b>min. %1$d.</b> Saat ini belum ada penilaian untuk tokomu karena penilaian toko baru akan muncul setelah 90 hari bergabung, ya.]]></string>
+    <string name="pm_new_seller_shop_score_description">Skor tokomu baru akan muncul setelah 90 hari bergabung, ya! Pelajari Performa Toko</string>
 </resources>

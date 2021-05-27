@@ -320,7 +320,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         //show tnc check box only if kyc not eligible or pm/pm pro eligible
         val needTnC = firstPriorityTerm is RegistrationTermUiModel.Kyc || isEligiblePm
 
-        val ctaText = if (needTnC || shopInfo.isNewSeller) {
+        val ctaText = if (needTnC) {
             getString(R.string.power_merchant_register_now)
         } else {
             getString(R.string.pm_interested_to_register)

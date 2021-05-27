@@ -162,8 +162,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean, nextShopTireType: Int) {
         val shopInfo = pmBasicInfo?.shopInfo ?: return
+        val isPmPro = currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         when {
             isModeratedShop -> showModeratedShopBottomSheet()
+            shopInfo.isNewSeller && isPmPro -> showNewSellerPmProBottomSheet()
             isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed, nextShopTireType)
             term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
             term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
@@ -574,6 +576,16 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                     Toaster.TYPE_ERROR, actionText)
                     .show()
         }
+    }
+
+    private fun showNewSellerPmProBottomSheet() {
+        val pmShopScoreProThreshold = pmBasicInfo?.shopInfo?.shopScorePmProThreshold.orZero()
+        val title: String = getString(R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_title)
+        val description = getString(R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_description, pmShopScoreProThreshold)
+        val ctaText = getString(R.string.pm_content_slider_last_slide_button)
+        val illustrationUrl = PMConstant.Images.PM_NEW_REQUIREMENT
+
+        showNotificationBottomSheet(title, description, ctaText, illustrationUrl)
     }
 
     private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
