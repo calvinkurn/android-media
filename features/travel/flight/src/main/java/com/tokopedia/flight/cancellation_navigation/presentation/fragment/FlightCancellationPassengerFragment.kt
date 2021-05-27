@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -22,9 +20,7 @@ import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPa
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationReasonAndAttachmentModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationPassengerViewModel
-import com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReasonFragment.Companion.EXTRA_CANCELLATION_MODEL
-import com.tokopedia.flight.cancellation_navigation.presentation.listener.FlightCancellationNavResult
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_cancellation.*
@@ -34,8 +30,7 @@ import javax.inject.Inject
  * @author by furqan on 10/07/2020
  */
 class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationModel, FlightCancellationAdapterTypeFactory>(),
-        FlightCancellationViewHolder.FlightCancellationListener,
-        FlightCancellationNavResult {
+        FlightCancellationViewHolder.FlightCancellationListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -57,7 +52,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         }
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             flightCancellationPassengerViewModel = viewModelProvider.get(FlightCancellationPassengerViewModel::class.java)
         }
 
@@ -161,14 +156,6 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         flightCancellationPassengerViewModel.getCancellablePassenger(invoiceId, flightCancellationJourneyList)
     }
 
-    override fun onNavigationResult(result: Bundle) {
-        if (result.getString(FlightCancellationActivity.FRAGMENT_RESULT_ORIGIN) == FlightCancellationReasonFragment::class.java.name &&
-                result.getInt(FlightCancellationActivity.FRAGMENT_RESULT_STATUS) == Activity.RESULT_OK) {
-//            closeCancellationPage()
-            Toast.makeText(requireContext(), result.getString(FlightCancellationActivity.FRAGMENT_RESULT_ORIGIN), Toast.LENGTH_SHORT).show()
-        }
-    }
-
     private fun initVariable() {
         invoiceId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
         flightCancellationJourneyList = arguments?.getParcelableArrayList(EXTRA_CANCEL_JOURNEY)
@@ -202,10 +189,6 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
             dialog.dismiss()
         }
         dialog.show()
-    }
-
-    private fun showFullLoading() {
-        btn_container.visibility = View.GONE
     }
 
     private fun hideFullLoading() {

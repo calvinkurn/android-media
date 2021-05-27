@@ -16,6 +16,15 @@
     <fragment
         android:id="@+id/flightCancellationReasonFragment"
         android:name="com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReasonFragment"
+        android:label="FlightCancellationReasonFragment" >
+        <action
+            android:id="@+id/action_flightCancellationReason_to_cancellationReviewFragment"
+            app:destination="@id/flightCancellationReviewFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/flightCancellationReviewFragment"
+        android:name="com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReviewFragment"
         android:label="FlightCancellationReasonFragment" />
 
 </navigation>

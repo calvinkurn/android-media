@@ -1,6 +1,5 @@
 package com.tokopedia.flight.cancellation_navigation.presentation.fragment
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,14 +21,13 @@ import com.tokopedia.flight.cancellation.presentation.activity.FlightCancellatio
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationAttachmentAdapter
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationAttachmentAdapterTypeFactory
 import com.tokopedia.flight.cancellation.presentation.bottomsheet.FlightCancellationViewImageDialogFragment
-import com.tokopedia.flight.cancellation.presentation.fragment.FlightCancellationReviewFragment
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationAttachmentModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationReasonViewModel
-import com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity
 import com.tokopedia.flight.cancellation_navigation.presentation.bottomsheet.FlightCancellationChooseReasonBottomSheet
 import com.tokopedia.flight.cancellation_navigation.presentation.bottomsheet.FlightCancellationChooseReasonBottomSheet.Companion.TAG_CANCELLATION_CHOOSE_REASON
-import com.tokopedia.flight.cancellation_navigation.presentation.listener.FlightCancellationNavResult
+import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReviewFragment.Companion.EXTRA_CANCEL_WRAPPER
+import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReviewFragment.Companion.EXTRA_INVOICE_ID
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
@@ -45,8 +43,7 @@ import javax.inject.Inject
  * @author by furqan on 17/07/2020
  */
 class FlightCancellationReasonFragment : BaseDaggerFragment(),
-        FlightCancellationAttachmentAdapterTypeFactory.AdapterInteractionListener,
-        FlightCancellationNavResult {
+        FlightCancellationAttachmentAdapterTypeFactory.AdapterInteractionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -64,7 +61,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             cancellationReasonViewModel = viewModelProvider.get(FlightCancellationReasonViewModel::class.java)
 
             arguments?.let {
@@ -123,8 +120,9 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
         cancellationReasonViewModel.canNavigateToNextStep.observe(viewLifecycleOwner, Observer {
             hideProgressBar()
-            if (it) {
+            if (it.first && it.second) {
                 cancellationReasonViewModel.trackOnNext()
+                cancellationReasonViewModel.disableNextButtonNotifyState()
                 navigateToReviewPage()
             }
         })
@@ -148,19 +146,6 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
                     setupNextButton()
                 }
             }
-            REQUEST_CODE_REVIEW -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    closeReasonPage()
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    data?.extras?.let {
-                        if (it.containsKey(FlightCancellationReviewFragment.EXTRA_CANCELLATION_ERROR) &&
-                                it.getBoolean(FlightCancellationReviewFragment.EXTRA_CANCELLATION_ERROR)) {
-                            requireActivity().setResult(Activity.RESULT_CANCELED, data)
-                            requireActivity().finish()
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -174,10 +159,6 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     override fun viewImage(filePath: String) {
         showImageInFragment(filePath)
-    }
-
-    override fun onNavigationResult(result: Bundle) {
-//        TODO("Not yet implemented")
     }
 
     private fun buildView() {
@@ -298,24 +279,16 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     private fun showImageInFragment(filePath: String) {
         val dialogFragment = FlightCancellationViewImageDialogFragment.newInstance(filePath)
-        dialogFragment.show(requireFragmentManager(), TAG_DIALOG_FRAGMENT)
+        dialogFragment.show(childFragmentManager, TAG_DIALOG_FRAGMENT)
     }
 
     private fun navigateToReviewPage() {
-//        startActivityForResult(FlightCancellationReviewActivity.getCallingIntent(
-//                requireContext(),
-//                cancellationReasonViewModel.cancellationWrapperModel.invoiceId,
-//                cancellationReasonViewModel.cancellationWrapperModel),
-//                REQUEST_CODE_REVIEW)
-    }
-
-    private fun closeReasonPage() {
-        activity?.let {
-            val mActivity = it as FlightCancellationActivity
-            mActivity.popBackStackWithResult(
-                    Activity.RESULT_OK,
-                    FlightCancellationReasonFragment::class.java.name
-            )
+        view?.let {
+            it.findNavController().navigate(R.id.action_flightCancellationReason_to_cancellationReviewFragment,
+                    Bundle().apply {
+                        putString(EXTRA_INVOICE_ID, cancellationReasonViewModel.cancellationWrapperModel.invoiceId)
+                        putParcelable(EXTRA_CANCEL_WRAPPER, cancellationReasonViewModel.cancellationWrapperModel)
+                    })
         }
     }
 
@@ -325,7 +298,6 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         private const val TAG_DIALOG_FRAGMENT = "TAG_DIALOG_FRAGMENT"
 
         private const val REQUEST_CODE_IMAGE = 1001
-        private const val REQUEST_CODE_REVIEW = 2112
 
         fun newInstance(cancellationWrapperModel: FlightCancellationWrapperModel): FlightCancellationReasonFragment =
                 FlightCancellationReasonFragment().also {
