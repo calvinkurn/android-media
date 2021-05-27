@@ -26,6 +26,9 @@ class MiniCartListBottomSheet :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var miniCartListDecoration: MiniCartListDecoration
+
     lateinit var viewModel: MiniCartListViewModel
     private var bottomSheet: BottomSheetUnify? = null
     private var miniCartWidget: MiniCartWidget? = null
@@ -123,6 +126,10 @@ class MiniCartListBottomSheet :
     }
 
     override fun onDeleteClicked() {
+
+    }
+
+    override fun onBulkDeleteUnavailableItems() {
 
     }
 
