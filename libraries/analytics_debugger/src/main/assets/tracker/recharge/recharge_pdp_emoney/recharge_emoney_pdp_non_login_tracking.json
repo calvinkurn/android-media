@@ -7,9 +7,9 @@
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",
       "event": "viewDigitalIris",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "view pdp page",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": "Uang Elektronik"
     },
     {
@@ -17,9 +17,9 @@
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",
       "event": "digitalGeneralEvent",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click update saldo",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": ""
     },
     {
@@ -27,19 +27,19 @@
       "eventCategory": "digital - Uang Elektronik",
       "currentSite": "tokopediadigitalRecharge",
       "event": "clickEmoney",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click lihat detail",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     },
     {
       "businessUnit": "recharge",
       "eventCategory": "digital - Uang Elektronik",
       "currentSite": "tokopediadigitalRecharge",
       "event": "clickEmoney",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "click x button card number",
-      "sessionIris": "{{.+}}",
+      "sessionIris": ".+",
       "eventLabel": ""
     },
     {
@@ -47,10 +47,10 @@
       "eventCategory": "digital - Uang Elektronik",
       "currentSite": "tokopediadigitalRecharge",
       "event": "clickEmoney",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "eventAction": "input card number",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     }
   ]
 }

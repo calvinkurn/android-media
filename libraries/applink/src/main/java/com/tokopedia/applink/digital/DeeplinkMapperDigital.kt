@@ -14,6 +14,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAI
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 
 object DeeplinkMapperDigital {
