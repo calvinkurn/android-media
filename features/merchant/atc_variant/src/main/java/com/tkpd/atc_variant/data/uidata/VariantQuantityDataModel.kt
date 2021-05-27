@@ -12,8 +12,7 @@ data class VariantQuantityDataModel(
         val productId: String = "",
         var quantity: Int = 0,
         var minOrder: Int = 0,
-        var shouldShowView: Boolean = false,
-        var cartId: String = ""
+        var shouldShowView: Boolean = false
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
 

@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
@@ -22,106 +23,113 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     companion object {
         val QUERY = """
-        query pdpVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}whid : String, ${'$'}pdpSession : String , ${'$'}userLocation: UserLocation) {
-            pdpVariantComponent(productID: ${'$'}productID, source: ${'$'}source, whid: ${'$'}whid, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation) {
-                    variantData { 
-                          errorCode
-                          parentID
-                          defaultChild
-                          variants {
-                            productVariantID
-                            variantID
-                            name
-                            identifier
-                            option {
-                              picture {
-                                url
-                                url200
-                              }
-                              productVariantOptionID
-                              variantUnitValueID
-                              value
-                              hex
-                            }
+        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation) {
+            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation) {
+                variantData { 
+                      errorCode
+                      parentID
+                      defaultChild
+                      variants {
+                        productVariantID
+                        variantID
+                        name
+                        identifier
+                        option {
+                          picture {
+                            url
+                            url200
+                            url100
                           }
-                          children {
-                            productID
-                            price
-                            priceFmt
-                            sku
-                            optionID
-                            productName
-                            productURL
-                            picture {
-                              url
-                              url200
-                            }
-                            stock {
-                              stock
-                              isBuyable
-                              stockWording
-                              stockWordingHTML
-                              minimumOrder
-                              maximumOrder
-                            }
-                            isCOD
-                            isWishlist
-                            campaignInfo {
-                              campaignID
-                              campaignType
-                              campaignTypeName
-                              discountPercentage
-                              originalPrice
-                              discountPrice
-                              stock
-                              stockSoldPercentage
-                              threshold
-                              startDate
-                              endDate
-                              endDateUnix
-                              appLinks
-                              isAppsOnly
-                              isActive
-                              hideGimmick
-                              isCheckImei
-                              isUsingOvo
-                            }
-                          }
-                          sizeChart
-                    }
-                    cartRedirection {
-                      product_id
-                      status
-                      error_message
-                      data {
-                        available_buttons {
-                          text
-                          color
-                          cart_type
-                          onboarding_message
-                          show_recommendation
+                          productVariantOptionID
+                          variantUnitValueID
+                          value
+                          hex
                         }
-                        unavailable_buttons
-                        hide_floating_button
                       }
-                    }
-                    warehouseInfo{
-                      product_id
-                      warehouse_info {
-                        warehouse_id
-                        is_fulfillment
-                        district_id
-                        postal_code
-                        geolocation
+                      children {
+                        productID
+                        price
+                        priceFmt
+                        sku
+                        optionID
+                        productName
+                        productURL
+                        picture {
+                          url
+                          url200
+                          url100
+                        }
+                        stock {
+                          stock
+                          isBuyable
+                          stockWording
+                          stockWordingHTML
+                          minimumOrder
+                          maximumOrder
+                        }
+                        isCOD
+                        isWishlist
+                        campaignInfo {
+                          campaignID
+                          campaignType
+                          campaignTypeName
+                          discountPercentage
+                          originalPrice
+                          discountPrice
+                          stock
+                          stockSoldPercentage
+                          threshold
+                          startDate
+                          endDate
+                          endDateUnix
+                          appLinks
+                          isAppsOnly
+                          isActive
+                          hideGimmick
+                          isCheckImei
+                          isUsingOvo
+                          minOrder
+                          background
+                          campaignIdentifier
+                          paymentInfoWording
+                        }
                       }
-                    }
-                    callsError{
-                      cartRedirection{
-                        Code
-                        Message
-                      }
-                    }
+                      sizeChart
                 }
+                cartRedirection {
+                  status
+                  error_message
+                  data {
+                    product_id
+                    config_name
+                    available_buttons {
+                      text
+                      color
+                      cart_type
+                      onboarding_message
+                      show_recommendation
+                    }
+                    unavailable_buttons
+                    hide_floating_button
+                  }
+                }
+                warehouseInfo{
+                  product_id
+                  warehouse_info {
+                    warehouse_id
+                    is_fulfillment
+                    district_id
+                    postal_code
+                    geolocation
+                  }
+                }
+                callsError{
+                  cartRedirection{
+                    Code
+                    Message
+                  }
+                }
+            }
         }
         """.trimIndent()
 
@@ -146,23 +154,23 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
     }
 
     override suspend fun executeOnBackground(): ProductVariantAggregatorUiData {
-        val request = GraphqlRequest(QUERY, ProductVariantAggregator::class.java, requestParams)
+        val request = GraphqlRequest(QUERY, ProductVariantAggregatorResponse::class.java, requestParams)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
                 .build()
 
         val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
-        val error: List<GraphqlError>? = response.getError(ProductVariantAggregator::class.java)
-        val data = response.getSuccessData<ProductVariantAggregator>()
+        val error: List<GraphqlError>? = response.getError(ProductVariantAggregatorResponse::class.java)
+        val data = response.getSuccessData<ProductVariantAggregatorResponse>()
 
         if (error != null && error.isNotEmpty()) {
             throw MessageErrorException(error.firstOrNull()?.message ?: "")
         }
 
-        if (!data.variantData.hasVariant && !data.variantData.hasChildren) {
+        if (!data.response.variantData.hasVariant && !data.response.variantData.hasChildren) {
             throw NullPointerException("variant empty")
         }
 
-        return mapToUiData(data)
+        return mapToUiData(data.response)
     }
 
     private fun mapToUiData(data: ProductVariantAggregator): ProductVariantAggregatorUiData {

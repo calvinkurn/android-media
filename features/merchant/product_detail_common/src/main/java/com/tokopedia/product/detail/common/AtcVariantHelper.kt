@@ -33,8 +33,8 @@ object AtcVariantHelper {
                         warehouseId: String,
                         pdpSession: String,
                         isTokoNow: Boolean,
-                        isShopOwner:Boolean,
-                        isCheckImeiRemoteConfig:Boolean,
+                        isShopOwner: Boolean,
+                        isCheckImeiRemoteConfig: Boolean,
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
                         cartRedirection: Map<String, CartTypeData>,
@@ -84,8 +84,9 @@ object AtcVariantHelper {
                        productId: String,
                        pageSource: String,
                        isTokoNow: Boolean = false,
+                       shopId: String,
                        startActivitResult: (Intent, Int) -> Unit) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, pageSource, isTokoNow.toString())
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString())
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 }

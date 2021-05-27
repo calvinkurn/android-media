@@ -134,8 +134,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewContent?.let {
             baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
         }
-        setupRv(viewContent)
         setChild(viewContent)
+        setupRv(viewContent)
     }
 
     private fun updateBottomSheetTitle(value: String) {
@@ -166,7 +166,17 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeTitleChanged()
         observeButtonState()
         observeCart()
+        observeUpdateCart()
         observeWishlist()
+    }
+
+    private fun observeUpdateCart() {
+        viewModel.updateCartLiveData.observe(viewLifecycleOwner, {
+            loadingProgressDialog?.dismiss()
+            if (it is Success) {
+                viewContent?.showToasterSuccess("Sukses update")
+            }
+        })
     }
 
     private fun observeTitleChanged() {
@@ -432,7 +442,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         baseAtcBtn?.renderButtonView(
                 data.isProductSelectedBuyable,
                 data.isShopOwner,
-                data.cartTypeData
+                data.cartTypeData,
+                data.alternateText
         )
     }
 }

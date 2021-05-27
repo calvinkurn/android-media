@@ -59,7 +59,6 @@ import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.discovery.common.manager.*
@@ -2941,34 +2940,34 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 //        }
 
         context?.let {
-            if (viewModel.getDynamicProductInfoP1 != null) {
-                AtcVariantHelper.pdpToAtcVariant(
-                        context = it,
-                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
-                        warehouseId = warehouseId ?: "",
-                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-                        isTokoNow = true,
-                        isShopOwner = viewModel.isShopOwner(),
-                        isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
-                        productVariant = viewModel.variantData ?: ProductVariant(),
-                        warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
-                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
-                ) { data, code ->
-                    startActivityForResult(data, code)
-                }
-            }
-        }
-
-//                AtcVariantHelper.goToAtcVariant(
+//            if (viewModel.getDynamicProductInfoP1 != null) {
+//                AtcVariantHelper.pdpToAtcVariant(
 //                        context = it,
-//                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-//                        pageSource = "pdp",
-//                        isTokoNow = false
+//                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
+//                        warehouseId = warehouseId ?: "",
+//                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
+//                        isTokoNow = true,
+//                        isShopOwner = viewModel.isShopOwner(),
+//                        isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
+//                        productVariant = viewModel.variantData ?: ProductVariant(),
+//                        warehouseResponse = mapOf(),
+//                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
 //                ) { data, code ->
 //                    startActivityForResult(data, code)
 //                }
 //            }
 //        }
+
+                AtcVariantHelper.goToAtcVariant(
+                        context = it,
+                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
+                        pageSource = "wishlist",
+                        shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
+                        isTokoNow = true
+                ) { data, code ->
+                    startActivityForResult(data, code)
+                }
+            }
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {

@@ -143,7 +143,7 @@ object VariantMapper {
                 isCod = newData?.isCod ?: false
         )
 
-        return DynamicProductInfoP1(basic, data, oldData.layoutName)
+        return DynamicProductInfoP1(basic, data, oldData.layoutName, oldData.pdpSession)
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {

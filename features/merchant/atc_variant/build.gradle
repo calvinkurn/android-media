@@ -43,9 +43,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.features.minicart)
-    implementation project(rootProject.ext.features.localizationchooseaddress)
 
+    implementation project(rootProject.ext.features.minicart)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.libraries.imagePreview)
 

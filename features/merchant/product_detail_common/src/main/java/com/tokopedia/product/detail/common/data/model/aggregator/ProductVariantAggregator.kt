@@ -10,6 +10,12 @@ import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouse
  * Created by Yehezkiel on 05/05/21
  */
 
+data class ProductVariantAggregatorResponse (
+        @SerializedName("pdpGetVariantComponent")
+        @Expose
+        val response : ProductVariantAggregator = ProductVariantAggregator()
+)
+
 data class ProductVariantAggregator(
         @SerializedName("variantData")
         @Expose

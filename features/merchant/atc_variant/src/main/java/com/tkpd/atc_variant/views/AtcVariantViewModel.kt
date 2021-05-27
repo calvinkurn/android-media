@@ -59,7 +59,7 @@ class AtcVariantViewModel @Inject constructor(
 
     //This livedata is only for access variant,cartRedirection, and warehouse locally in viewmodel
     private var aggregatorData: ProductVariantAggregatorUiData? = null
-    private var minicartData: Map<String, MiniCartItem>? = null
+    private var minicartData: MutableMap<String, MiniCartItem>? = null
     private var localQuantityData: MutableMap<String, Int> = mutableMapOf()
 
     private val _initialData = MutableLiveData<Result<List<AtcVariantVisitable>>>()
@@ -77,6 +77,10 @@ class AtcVariantViewModel @Inject constructor(
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
+
+    private val _updateCartLiveData = MutableLiveData<Result<Boolean>>()
+    val updateCartLiveData: LiveData<Result<Boolean>>
+        get() = _updateCartLiveData
 
     private val _addWishlistResult = MutableLiveData<Result<Boolean>>()
     val addWishlistResult: LiveData<Result<Boolean>>
@@ -105,12 +109,11 @@ class AtcVariantViewModel @Inject constructor(
 
             val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds?.values?.toList()
                     ?: listOf())
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData?.cardRedirection)
+            val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData?.cardRedirection, isShopOwner,selectedMiniCart != null)
 
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
-            val selectedMiniCartItem = getSelectedMiniCartItem(selectedVariantChild?.productId
-                    ?: "")
             val selectedQuantity = localQuantityData[selectedVariantChild?.productId ?: ""] ?: 0
 
             //We update visitable to re-render selected variant and header
@@ -119,11 +122,10 @@ class AtcVariantViewModel @Inject constructor(
                     processedVariant = processedVariant,
                     isPartiallySelected = isPartiallySelected,
                     selectedVariantIds = selectedVariantIds,
-                    variantImage = variantImage,
                     allChildEmpty = getVariantData()?.getBuyableVariantCount() == 0,
                     selectedVariantChild = selectedVariantChild,
+                    variantImage = variantImage,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
-                    miniCartData = selectedMiniCartItem,
                     isTokoNow = isTokoNow,
                     selectedQuantity = selectedQuantity)
 
@@ -198,13 +200,15 @@ class AtcVariantViewModel @Inject constructor(
             val selectedChild = pairIsParentAndChild?.second
 
             //Get cart redirection , and warehouse by selected product id to render button and toko cabang
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorData?.cardRedirection, isShopOwner)
+            val selectedMiniCart = minicartData?.get(selectedChild?.productId ?: "")
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedChild, aggregatorData?.cardRedirection, isShopOwner, selectedMiniCart != null)
             val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
 
             //generate variant component and data, initial render need to determine selected option
             val initialSelectedOptionIds = AtcCommonMapper.determineSelectedOptionIds(isParent, aggregatorData?.variantData, selectedChild)
             val processedVariant = AtcVariantMapper.processVariant(aggregatorData?.variantData, initialSelectedOptionIds)
-            val selectedMiniCartItem = getSelectedMiniCartItem(aggregatorParams.productId)
+
+            assignLocalQuantityWithMiniCartQuantity(minicartData?.values?.toList())
             val selectedQuantity = localQuantityData[selectedChild?.productId ?: ""] ?: 0
 
             //Generate visitables
@@ -215,7 +219,6 @@ class AtcVariantViewModel @Inject constructor(
                     processedVariant = processedVariant,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     totalStock = aggregatorData?.variantData?.totalStockChilds ?: 0,
-                    miniCartData = selectedMiniCartItem,
                     selectedQuantity = selectedQuantity)
 
             if (visitables != null) {
@@ -232,6 +235,13 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    private fun assignLocalQuantityWithMiniCartQuantity(miniCart: List<MiniCartItem>?) {
+        if (miniCart == null) return
+        miniCart.forEach {
+            localQuantityData[it.productId] = it.quantity
+        }
+    }
+
     private suspend fun getAggregatorAndMiniCartData(aggregatorParams: ProductVariantBottomSheetParams) {
         /**
          * If data completely provided from previous page, use that
@@ -244,10 +254,10 @@ class AtcVariantViewModel @Inject constructor(
                     aggregatorParams.shopId, aggregatorParams.isTokoNow
             )
             aggregatorData = result.variantAggregator
-            minicartData = result.miniCartData
+            minicartData = result.miniCartData?.toMutableMap()
         } else {
             aggregatorData = aggregatorParams.variantAggregator
-            minicartData = aggregatorParams.miniCartData
+            minicartData = aggregatorParams.miniCartData?.toMutableMap()
         }
     }
 
@@ -275,7 +285,7 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     private fun updateButtonAndWishlistLocally(productId: String, btnText: String) {
-        updateCartRedirectionData(productId, btnText)
+        updateRemindMeCartRedirection(productId, btnText)
         //update wishlist in child locally
         val selectedChild = getVariantData()?.getChildByProductId(productId)
         selectedChild?.isWishlist = true
@@ -284,7 +294,26 @@ class AtcVariantViewModel @Inject constructor(
         _buttonData.postValue(generateCartRedir.asSuccess())
     }
 
-    private fun updateCartRedirectionData(productId: String, btnText: String) {
+    private fun updateMiniCartAndButtonData(productId: String, quantity: Int, cartId: String = "", notes: String = "") {
+        if (minicartData == null) return
+        val selectedMiniCartData = minicartData?.get(productId)
+
+        if (selectedMiniCartData == null) {
+            minicartData?.set(productId, MiniCartItem(
+                    cartId = cartId,
+                    productId = productId,
+                    quantity = quantity,
+                    notes = notes
+            ))
+        } else {
+            minicartData?.get(productId)?.quantity = quantity
+        }
+
+        val generateCartRedir = AtcCommonMapper.mapToCartRedirectionData(getVariantData()?.getChildByProductId(productId), aggregatorData?.cardRedirection, isShopOwner, true)
+        _buttonData.postValue(generateCartRedir.asSuccess())
+    }
+
+    private fun updateRemindMeCartRedirection(productId: String, btnText: String) {
         val cartType = ProductDetailCommonConstant.KEY_CART_TYPE_CHECK_WISHLIST
         val btnColor = ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY
 
@@ -311,15 +340,18 @@ class AtcVariantViewModel @Inject constructor(
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
         val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
         var actionButtonCart = actionButton
-        if (selectedMiniCart != null) {
-            selectedMiniCart.quantity = localQuantityData[selectedChild?.productId ?: ""]
-                    ?: selectedChild?.getFinalMinOrder() ?: return
+        val updatedQuantity = if (selectedMiniCart != null) {
             actionButtonCart = ProductDetailCommonConstant.ATC_UPDATE_BUTTON
+            localQuantityData[selectedChild?.productId ?: ""]
+                    ?: selectedChild?.getFinalMinOrder() ?: 1
+        } else {
+            1
         }
 
         when (actionButtonCart) {
             ProductDetailCommonConstant.ATC_UPDATE_BUTTON -> {
-
+                if (selectedMiniCart == null) return
+                getUpdateCartUseCase(selectedMiniCart, updatedQuantity)
             }
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
@@ -397,14 +429,22 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getUpdateCartUseCase(params: List<MiniCartItem>) {
-        withContext(dispatcher.io) {
-            updateCartUseCase.setParams(params)
-            val result = updateCartUseCase.executeOnBackground()
+    private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int) {
+        viewModelScope.launchCatchError(block = {
+            withContext(dispatcher.io) {
+                val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
+                updateCartUseCase.setParams(listOf(copyOfMiniCartItem))
+                val result = updateCartUseCase.executeOnBackground()
 
-            if (result.error.isEmpty()) {
-
+                if (result.error.isEmpty()) {
+                    updateMiniCartAndButtonData(copyOfMiniCartItem.productId, copyOfMiniCartItem.quantity, copyOfMiniCartItem.notes)
+                    _updateCartLiveData.postValue(true.asSuccess())
+                } else {
+                    _updateCartLiveData.postValue(false.asSuccess())
+                }
             }
+        }) {
+            _updateCartLiveData.postValue(it.asFail())
         }
     }
 
@@ -415,6 +455,7 @@ class AtcVariantViewModel @Inject constructor(
                 val errorMessage = result.errorMessage.firstOrNull() ?: ""
                 _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
             } else {
+                updateMiniCartAndButtonData(result.data.productId.toString(), result.data.quantity, result.data.cartId, result.data.notes)
                 _addToCartLiveData.postValue(result.asSuccess())
             }
         }

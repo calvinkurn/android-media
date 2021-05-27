@@ -41,6 +41,12 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
         val uri = intent.data
         val bundle = intent.extras
         val productId = if (uri != null) {
+            uri.pathSegments.getOrNull(1) ?: ""
+        } else {
+            ""
+        }
+
+        val shopId = if (uri != null) {
             uri.lastPathSegment ?: ""
         } else {
             ""
@@ -59,6 +65,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
                 paramsData.pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
                 paramsData.productParentId = bundle.getString(PARENT_ID_EXTRA, "")
                 paramsData.productId = productId
+                paramsData.shopId = shopId
             } else {
                 paramsData = data
             }

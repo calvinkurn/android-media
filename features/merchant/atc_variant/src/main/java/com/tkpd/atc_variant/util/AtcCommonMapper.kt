@@ -3,7 +3,6 @@ package com.tkpd.atc_variant.util
 import com.tkpd.atc_variant.data.uidata.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -47,9 +46,13 @@ object AtcCommonMapper {
         }
     }
 
-    fun mapToCartRedirectionData(selectedChild: VariantChild?, cartTypeData: Map<String, CartTypeData>?, isShopOwner: Boolean = false): PartialButtonDataModel {
+    fun mapToCartRedirectionData(selectedChild: VariantChild?,
+                                 cartTypeData: Map<String, CartTypeData>?,
+                                 isShopOwner: Boolean = false,
+                                 shouldUseAlternateTokoNow: Boolean = false): PartialButtonDataModel {
+        val alternateText = if (shouldUseAlternateTokoNow) "Perbarui Keranjang" else ""
         return PartialButtonDataModel(selectedChild?.isBuyable
-                ?: false, isShopOwner, cartTypeData?.get(selectedChild?.productId ?: ""))
+                ?: false, isShopOwner, cartTypeData?.get(selectedChild?.productId ?: ""), alternateText)
     }
 
     fun mapToVisitable(selectedChild: VariantChild?,
@@ -58,7 +61,6 @@ object AtcCommonMapper {
                        processedVariant: List<VariantCategory>?,
                        selectedProductFulfillment: Boolean,
                        totalStock: Int,
-                       miniCartData: MiniCartItem?,
                        selectedQuantity: Int): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
@@ -90,11 +92,9 @@ object AtcCommonMapper {
                 VariantQuantityDataModel(
                         position = idCounter,
                         productId = selectedChild?.productId ?: "",
-                        quantity = miniCartData?.quantity
-                                ?: selectedQuantity,
+                        quantity = selectedQuantity,
                         minOrder = selectedChild?.getFinalMinOrder() ?: 0,
-                        shouldShowView = isTokoNow && selectedChild?.isBuyable == true,
-                        cartId = miniCartData?.cartId ?: "")
+                        shouldShowView = isTokoNow && selectedChild?.isBuyable == true)
         ).also {
             idCounter += 1
         }
@@ -110,7 +110,6 @@ object AtcCommonMapper {
                         selectedVariantChild: VariantChild?,
                         variantImage: String,
                         selectedProductFulfillment: Boolean,
-                        miniCartData: MiniCartItem?,
                         isTokoNow: Boolean,
                         selectedQuantity: Int): List<AtcVariantVisitable> {
 
@@ -125,11 +124,9 @@ object AtcCommonMapper {
                 }
                 is VariantQuantityDataModel -> {
                     it.copy(productId = selectedVariantChild?.productId ?: "",
-                            quantity = miniCartData?.quantity
-                                    ?: selectedQuantity,
+                            quantity = selectedQuantity,
                             minOrder = selectedVariantChild?.getFinalMinOrder() ?: 0,
-                            shouldShowView = isTokoNow && selectedVariantChild?.isBuyable == true,
-                            cartId = miniCartData?.cartId ?: "")
+                            shouldShowView = isTokoNow && selectedVariantChild?.isBuyable == true)
                 }
                 is VariantHeaderDataModel -> {
                     if (isPartiallySelected) {

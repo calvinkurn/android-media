@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.common.data.model.carttype
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
 data class CartRedirectionResponse(
         @SerializedName("cartRedirection")
@@ -53,4 +54,8 @@ data class AvailableButton(
         @SerializedName("onboarding_message")
         @Expose
         val onboardingMessage: String = ""
-)
+) {
+    fun isCartTypeDisabledOrRemindMe(): Boolean {
+        return cartType == ProductDetailCommonConstant.KEY_BUTTON_DISABLE || cartType == ProductDetailCommonConstant.KEY_CART_TYPE_REMIND_ME || cartType == ProductDetailCommonConstant.KEY_CART_TYPE_CHECK_WISHLIST
+    }
+}

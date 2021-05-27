@@ -7,6 +7,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
  */
 data class PartialButtonDataModel(
         val isProductSelectedBuyable: Boolean = false,
-        val isShopOwner:Boolean = false,
-        val cartTypeData: CartTypeData? = null
+        val isShopOwner: Boolean = false,
+        val cartTypeData: CartTypeData? = null,
+        val alternateText: String = ""
 )
