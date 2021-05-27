@@ -38,13 +38,13 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
-import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_REVAMP
 import com.tokopedia.tokomart.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokomart.common.view.HomeMainToolbar
+import com.tokopedia.tokomart.common.view.TokoMartHomeView
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.domain.model.Data
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
@@ -53,7 +53,6 @@ import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeF
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokomart_home.*
@@ -61,7 +60,7 @@ import java.util.*
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
-class TokoMartHomeFragment: Fragment() {
+class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
@@ -152,6 +151,8 @@ class TokoMartHomeFragment: Fragment() {
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
     }
+
+    override fun getFragment(): Fragment = this
 
     private fun initInjector() {
         DaggerTokoMartHomeComponent.builder()
@@ -277,8 +278,7 @@ class TokoMartHomeFragment: Fragment() {
 
     private fun isNavOld(): Boolean {
         return try {
-//            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
-            false
+            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
         } catch (e: Exception) {
             e.printStackTrace()
             true
@@ -353,7 +353,8 @@ class TokoMartHomeFragment: Fragment() {
                 // TO-DO: Lazy Load Data
                 viewModel.getLayoutData()
 
-                if (!isChooseAddressWidgetShowed(true))
+                // isMyShop needs shopId to differentiate
+                if (!isChooseAddressWidgetShowed(false))
                     adapter.removeHomeChooseAddressWidget()
             }
         }
@@ -404,8 +405,7 @@ class TokoMartHomeFragment: Fragment() {
                 HomeChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
                 true
         )
-//        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop
-        return true
+        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
