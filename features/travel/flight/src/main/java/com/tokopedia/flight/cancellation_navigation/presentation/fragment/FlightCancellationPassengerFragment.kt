@@ -6,14 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent
-import com.tokopedia.flight.cancellation.presentation.activity.FlightCancellationReasonActivity
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationAdapterTypeFactory
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationViewHolder
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
@@ -21,6 +22,9 @@ import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPa
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationReasonAndAttachmentModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationPassengerViewModel
+import com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity
+import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReasonFragment.Companion.EXTRA_CANCELLATION_MODEL
+import com.tokopedia.flight.cancellation_navigation.presentation.listener.FlightCancellationNavResult
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flight_cancellation.*
@@ -30,7 +34,8 @@ import javax.inject.Inject
  * @author by furqan on 10/07/2020
  */
 class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationModel, FlightCancellationAdapterTypeFactory>(),
-        FlightCancellationViewHolder.FlightCancellationListener {
+        FlightCancellationViewHolder.FlightCancellationListener,
+        FlightCancellationNavResult {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,7 +50,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        initInjector()
 
         savedInstanceState?.let {
             if (it.containsKey(EXTRA_FIRST_CHECK)) isFirstRelationCheck = it.getBoolean(EXTRA_FIRST_CHECK)
@@ -55,6 +60,8 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightCancellationPassengerViewModel = viewModelProvider.get(FlightCancellationPassengerViewModel::class.java)
         }
+
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
@@ -127,9 +134,11 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
                     .inject(this)
 
     override fun loadData(page: Int) {
-        adapter.clearAllElements()
-        showLoading()
-        flightCancellationPassengerViewModel.getCancellablePassenger(invoiceId, flightCancellationJourneyList)
+        if (flightCancellationPassengerViewModel.selectedCancellationPassengerList.size == 0) {
+            adapter.clearAllElements()
+            showLoading()
+            flightCancellationPassengerViewModel.getCancellablePassenger(invoiceId, flightCancellationJourneyList)
+        }
     }
 
     override fun onPassengerChecked(passengerModel: FlightCancellationPassengerModel, position: Int) {
@@ -152,6 +161,14 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         flightCancellationPassengerViewModel.getCancellablePassenger(invoiceId, flightCancellationJourneyList)
     }
 
+    override fun onNavigationResult(result: Bundle) {
+        if (result.getString(FlightCancellationActivity.FRAGMENT_RESULT_ORIGIN) == FlightCancellationReasonFragment::class.java.name &&
+                result.getInt(FlightCancellationActivity.FRAGMENT_RESULT_STATUS) == Activity.RESULT_OK) {
+//            closeCancellationPage()
+            Toast.makeText(requireContext(), result.getString(FlightCancellationActivity.FRAGMENT_RESULT_ORIGIN), Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun initVariable() {
         invoiceId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
         flightCancellationJourneyList = arguments?.getParcelableArrayList(EXTRA_CANCEL_JOURNEY)
@@ -164,7 +181,9 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     private fun renderCancellationList(cancellationModelList: List<FlightCancellationModel>) {
         hideLoading()
         hideFullLoading()
-        renderList(cancellationModelList)
+        if (adapter.dataSize != cancellationModelList.size) {
+            renderList(cancellationModelList)
+        }
 
         if (cancellationModelList.isNotEmpty()) {
             btn_container.visibility = View.VISIBLE
@@ -228,11 +247,12 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
 
     private fun navigateToReasonPage() {
         flightCancellationWrapperModel.cancellationList = flightCancellationPassengerViewModel.selectedCancellationPassengerList
-        startActivityForResult(
-                FlightCancellationReasonActivity.getCallingIntent(
-                        requireContext(), flightCancellationWrapperModel),
-                REQUEST_REASON_AND_PROOF_CANCELLATION
-        )
+        view?.let {
+            it.findNavController().navigate(R.id.action_flightCancellationPassenger_to_CancellationReason,
+                    Bundle().apply {
+                        putParcelable(EXTRA_CANCELLATION_MODEL, flightCancellationWrapperModel)
+                    })
+        }
     }
 
     private fun showShouldChooseAtLeastOnePassengerError() {
@@ -241,8 +261,10 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     }
 
     private fun closeCancellationPage() {
-        requireActivity().setResult(Activity.RESULT_OK)
-        requireActivity().finish()
+        activity?.let {
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
+        }
     }
 
     companion object {

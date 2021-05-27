@@ -49,11 +49,15 @@ class FlightCancellationActivity : BaseSimpleActivity(), HasComponent<FlightCanc
                     .flightComponent(FlightComponentInstance.getFlightComponent(application))
                     .build()
 
-    fun setupNavigationResult(result: Bundle) {
+    fun popBackStackWithResult(fragmentStatus: Int, fragmentOrigin: String, extras: Bundle = Bundle()) {
         val childFragmentManager = supportFragmentManager
                 .findFragmentById(R.id.container_cancellation_navigation)?.childFragmentManager
         var backstackListener: FragmentManager.OnBackStackChangedListener by Delegates.notNull()
         backstackListener = FragmentManager.OnBackStackChangedListener {
+            val result = extras.also {
+                it.putInt(FRAGMENT_RESULT_STATUS, fragmentStatus)
+                it.putString(FRAGMENT_RESULT_ORIGIN, fragmentOrigin)
+            }
             (childFragmentManager?.fragments?.get(0) as FlightCancellationNavResult).onNavigationResult(result)
             childFragmentManager.removeOnBackStackChangedListener(backstackListener)
         }
@@ -62,6 +66,10 @@ class FlightCancellationActivity : BaseSimpleActivity(), HasComponent<FlightCanc
     }
 
     companion object {
+
+        const val FRAGMENT_RESULT_STATUS = "FRAGMENT_RESULT_STATUS"
+        const val FRAGMENT_RESULT_ORIGIN = "FRAGMENT_RESULT_ORIGIN"
+
         fun createIntent(context: Context,
                          invoiceId: String,
                          flightCancellationJourney: List<FlightCancellationJourney>)

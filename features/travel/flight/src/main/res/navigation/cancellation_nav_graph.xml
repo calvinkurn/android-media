@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/cancellation_nav_graph"
-    app:startDestination="@id/flightCancellationPassengerFragment2">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cancellation_nav_graph"
+    app:startDestination="@id/flightCancellationPassengerFragment">
+
     <fragment
-        android:id="@+id/flightCancellationPassengerFragment2"
+        android:id="@+id/flightCancellationPassengerFragment"
         android:name="com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationPassengerFragment"
-        android:label="FlightCancellationPassengerFragment" />
+        android:label="FlightCancellationPassengerFragment" >
+        <action
+            android:id="@+id/action_flightCancellationPassenger_to_CancellationReason"
+            app:destination="@id/flightCancellationReasonFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/flightCancellationReasonFragment"
+        android:name="com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReasonFragment"
+        android:label="FlightCancellationReasonFragment" />
+
 </navigation>
