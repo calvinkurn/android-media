@@ -48,6 +48,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -548,7 +549,8 @@ class NewShopPageFragment :
                                     Toaster.TYPE_NORMAL
                             )
                         } else {
-                            showToasterShopUnmoderate(moderateShop.message, Toaster.TYPE_ERROR)
+                            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(moderateShop.message))
+                            showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -567,7 +569,8 @@ class NewShopPageFragment :
                     if (moderateStatusRequestResponse.error.message.isEmpty()) {
                         onCompleteCheckRequestModerateStatus(moderateStatusRequestResponse.result)
                     } else {
-                        showToasterShopUnmoderate(moderateStatusRequestResponse.error.message, Toaster.TYPE_ERROR)
+                        val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(moderateStatusRequestResponse.error.message))
+                        showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -634,7 +637,8 @@ class NewShopPageFragment :
                         isSuccess = followShop.success == true
                 )
             }
-            ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(followShop.message))
+            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(followShop.message))
+            ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(errorMessage))
         }
     }
 
@@ -648,7 +652,8 @@ class NewShopPageFragment :
         }
 
         activity?.run {
-            showErrorUpdateFollowToaster(getString(R.string.shop_follow_error_toaster), !isFollowing, false)
+            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.shop_follow_error_toaster)))
+            showErrorUpdateFollowToaster(errorMessage, !isFollowing, false)
             ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, e)
         }
     }
