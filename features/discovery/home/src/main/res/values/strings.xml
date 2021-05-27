@@ -134,6 +134,7 @@
     <string name="content_desc_error_state_icon">Image error</string>
     <string name="content_desc_error_state_channel">Content error</string>
     <string name="content_desc_home_background">Home background</string>
+    <string name="content_desc_home_category_widget">Category widget</string>
 
     <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
     <string name="sprint_card_item">Sprint Card Item</string>

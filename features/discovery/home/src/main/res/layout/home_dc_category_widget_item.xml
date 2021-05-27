@@ -13,7 +13,8 @@
         tools:background="@color/Unify_R200"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/content_desc_home_category_widget"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_item_name"
