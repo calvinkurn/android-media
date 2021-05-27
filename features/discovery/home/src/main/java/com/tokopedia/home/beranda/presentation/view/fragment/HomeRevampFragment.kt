@@ -998,6 +998,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         if (isAddressChanged) {
+            chooseAddressWidgetInitialized = false
             val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
             val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
@@ -1112,6 +1113,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (isNeedRefresh) {
                 bannerCarouselCallback?.resetImpression()
             }
+            /**
+             * Recyclerview need to scrolled to pos 0 when refresh
+             *
+             * There is FragmentStatePagerAdapter bug in recom section which can produce blank fragment
+             * if the fragment updated when the component is shown
+             */
+            homeRecyclerView?.scrollToPosition(0)
         })
         getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
     }
