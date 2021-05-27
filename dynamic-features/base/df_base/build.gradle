@@ -157,4 +157,6 @@ dependencies {
 
     //Library
     implementation project(rootProject.ext.libraries.imagePicker)
+
+    implementation project(rootProject.ext.features.tokoMart)
 }
