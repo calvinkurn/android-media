@@ -588,7 +588,7 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.hideRefreshLayout()
-        view.showNetworkError(startFrom)
+        view.showNetworkError(startFrom, error)
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), error)
     }
 
@@ -656,7 +656,7 @@ class ProductListPresenter @Inject constructor(
 
         decrementStart()
         view.removeLoading()
-        view.showNetworkError(0)
+        view.showNetworkError(0, throwable)
         view.hideRefreshLayout()
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), throwable)
     }
