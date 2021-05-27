@@ -61,7 +61,7 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
         return when(type) {
             // region Toko Mart Home Component
             HomeSectionViewHolder.LAYOUT -> HomeSectionViewHolder(view)
-            HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
+            HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view, fragment)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, fragment)
             // endregion

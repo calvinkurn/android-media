@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -13,7 +14,7 @@ import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListD
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import kotlinx.android.synthetic.main.item_tokomart_home_category_grid.view.*
 
-class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategoryGridUiModel>(itemView) {
+class HomeCategoryGridViewHolder(itemView: View, fragment: Fragment): AbstractViewHolder<HomeCategoryGridUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -24,7 +25,7 @@ class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategor
         private const val GRID_SPAN_COUNT = 2
     }
 
-    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(), TokoMartHomeListDiffer()) }
+    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(fragment), TokoMartHomeListDiffer()) }
 
     override fun bind(data: HomeCategoryGridUiModel) {
         itemView.apply {
