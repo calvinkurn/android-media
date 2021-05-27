@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -64,6 +65,10 @@ class MenuItemsViewHolder(
                         clickAction.invoke()
                     } else {
                         RouteManager.route(context, onClickApplink)
+                    }
+
+                    if (element.iconUnify == IconUnify.PERFORMANCE) {
+                        clickSendTracker.invoke()
                     }
                 }
             }

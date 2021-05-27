@@ -69,7 +69,7 @@ public class ImageLoader {
                             product.setLoaded(true);
                             new ImpresionTask(className).execute(product.getImage().getS_url());
                             if(impressionListener!=null){
-                                impressionListener.onImpressionProductAdsItem(pos, product);
+                                impressionListener.onImpressionProductAdsItem(pos, product, null);
                             }
                         }
                     }

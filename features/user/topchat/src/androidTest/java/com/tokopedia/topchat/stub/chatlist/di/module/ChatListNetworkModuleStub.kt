@@ -165,7 +165,7 @@ class ChatListNetworkModuleStub(
     fun provideTopChatWebSocket(
             userSession: UserSessionInterface,
             client: OkHttpClient
-    ): DefaultTopChatWebSocket {
+    ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
