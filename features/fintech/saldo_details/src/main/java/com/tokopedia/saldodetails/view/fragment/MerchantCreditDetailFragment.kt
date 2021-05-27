@@ -84,7 +84,6 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         populateData()
     }
 
-    // @Todo remove drawable ic_modal_toko
     private fun populateData() {
         if (merchantCreditDetails != null) {
 
@@ -215,7 +214,6 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    // @Todo Bottom sheet Testing
     private fun populateAnchorListData() {
         val gqlAnchorListResponse = merchantCreditDetails!!.anchorList
         if (gqlAnchorListResponse != null) {

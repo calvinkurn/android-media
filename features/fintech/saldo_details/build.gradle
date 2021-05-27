@@ -71,4 +71,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply plugin: 'kotlin-android'
 //apply from: '../../../jacoco_task.gradle'

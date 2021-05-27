@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -13,7 +12,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
-class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHistoryList>(itemView) {
+class SaldoTransactionViewHolder(itemView: View) :
+    AbstractViewHolder<DepositHistoryList>(itemView) {
     private val dateTV: TextView
     private val note: TextView
     private val nominal: TextView
@@ -42,17 +42,20 @@ class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHis
         } catch (e: ParseException) {
         }
 
-        dateTV.text = String.format(context!!.resources.getString(com.tokopedia.saldodetails.R.string.sp_date_time_view), strDate)
+        dateTV.text = String.format(
+            context!!.resources.getString(com.tokopedia.saldodetails.R.string.sp_date_time_view),
+            strDate
+        )
         note.text = element.note
         heading.text = element.typeDescription
-        // @Todo Placeholder?
-        imageView.loadImage(element.imageURL ?: "", com.tokopedia.unifycomponents.R.drawable.iconunify_information)
+        imageView.urlSrc = element.imageURL ?: ""
         if (element.amount > 0) {
             if (context != null) {
                 nominal.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G700))
                 nominal.text = String.format(
-                        context.resources.getString(com.tokopedia.saldodetails.R.string.sp_positive_saldo_balance),
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(element.amount, false))
+                    context.resources.getString(com.tokopedia.saldodetails.R.string.sp_positive_saldo_balance),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(element.amount, false)
+                )
             } else {
                 nominal.text = element.amount.toString()
             }
@@ -61,8 +64,9 @@ class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHis
             if (context != null) {
                 nominal.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y600))
                 nominal.text = String.format(
-                        context.resources.getString(com.tokopedia.saldodetails.R.string.sp_negative_saldo_balance),
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(abs(element.amount), false))
+                    context.resources.getString(com.tokopedia.saldodetails.R.string.sp_negative_saldo_balance),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(abs(element.amount), false)
+                )
             } else {
                 nominal.text = element.amount.toString()
             }
