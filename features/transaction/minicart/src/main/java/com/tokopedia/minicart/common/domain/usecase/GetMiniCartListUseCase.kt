@@ -302,7 +302,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                     "errors": [],
                     "shop": {
                       "maximum_weight_wording": "Oops, belanjaan TokoNOW! kamu terlalu berat {{weight}}kg untuk sekali pengiriman. Coba pilih lagi ya!",
-                      "maximum_shipping_weight": 3000,
+                      "maximum_shipping_weight": 10000,
                       "shop_id": 6551304,
                       "shop_type_info": {
                         "badge": "https://images.tokopedia.net/img/official_store/badge_os.png",
@@ -331,7 +331,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         "errors": [],
                         "product": {
                           "product_id": 15628433,
-                          "product_weight": 100,
+                          "product_weight": 1000,
                           "product_quantity": 2,
                           "product_name": "BBO 01 non var",
                           "product_image": {
@@ -376,7 +376,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         "errors": [],
                         "product": {
                           "product_id": 15628657,
-                          "product_weight": 1555,
+                          "product_weight": 1000,
                           "product_quantity": 2,
                           "product_name": "Slash Price Revamp 03-04-21 18:10:84-Non Var-1",
                           "product_image": {
@@ -422,7 +422,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                     "errors": [],
                     "shop": {
                       "maximum_weight_wording": "Oops, belanjaan TokoNOW! kamu terlalu berat {{weight}}kg untuk sekali pengiriman. Coba pilih lagi ya!",
-                      "maximum_shipping_weight": 3000,
+                      "maximum_shipping_weight": 10000,
                       "shop_id": 4423004,
                       "shop_type_info": {
                         "badge": "",
@@ -451,7 +451,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         "errors": [],
                         "product": {
                           "product_id": 1687280143,
-                          "product_weight": 25,
+                          "product_weight": 1000,
                           "product_quantity": 1,
                           "product_name": "Case Anti Crack Bening Silikon Soft Case Samsung Galaxy A32",
                           "product_image": {
@@ -558,7 +558,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           ],
                           "product": {
                             "product_id": 1809319671,
-                            "product_weight": 0,
+                            "product_weight": 1000,
                             "product_quantity": 1,
                             "product_name": "Poco X3 Pro ram 8/256 gb garansi resmi - Frost Blue",
                             "product_image": {
@@ -600,7 +600,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       },
                       "shop": {
                         "maximum_weight_wording": "Oops, belanjaan TokoNOW! kamu terlalu berat {{weight}}kg untuk sekali pengiriman. Coba pilih lagi ya!",
-                        "maximum_shipping_weight": 3000,
+                        "maximum_shipping_weight": 1000,
                         "shop_id": 11130255,
                         "shop_type_info": {
                           "badge": "",
@@ -622,7 +622,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           ],
                           "product": {
                             "product_id": 1815388587,
-                            "product_weight": 0,
+                            "product_weight": 1000,
                             "product_quantity": 1,
                             "product_name": "XIAOMI POCO X3 PRO RAM 8GB/256GB BLACK ADA NFC",
                             "product_image": {

@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUiModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import javax.inject.Inject
@@ -30,8 +32,10 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
     }
 
     fun calculateProduct() {
+        val miniCartUiModelValue = miniCartUiModel.value
+
         val miniCartProductList = mutableListOf<MiniCartProductUiModel>()
-        miniCartUiModel.value?.visitables?.forEach { visitable ->
+        miniCartUiModelValue?.visitables?.forEach { visitable ->
             if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
                 miniCartProductList.add(visitable)
             }
@@ -68,16 +72,65 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
         }
 
         // Calculate total price
-        var totalPrice = 0L
         var totalQty = 0
+        var totalPrice = 0L
+        var totalWeight = 0
         miniCartProductList.forEach { visitable ->
             val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
-            totalPrice += visitable.productQty * price
             totalQty += visitable.productQty
-            miniCartUiModel.value?.miniCartWidgetData?.totalProductPrice = totalPrice
-            miniCartUiModel.value?.miniCartWidgetData?.totalProductCount = totalQty
+            totalPrice += visitable.productQty * price
+            totalWeight += visitable.productQty * visitable.productWeight
+            miniCartUiModelValue?.miniCartWidgetData?.totalProductPrice = totalPrice
+            miniCartUiModelValue?.miniCartWidgetData?.totalProductCount = totalQty
         }
 
+        validateTickerWarning(totalWeight, miniCartUiModelValue)
+
         _miniCartUiModel.value = miniCartUiModel.value
+    }
+
+    private fun validateTickerWarning(totalWeight: Int, miniCartUiModelValue: MiniCartUiModel?) {
+        if (totalWeight > miniCartUiModelValue?.maximumShippingWeight ?: 0) {
+            var tickerWarning: MiniCartTickerWarningUiModel? = null
+            miniCartUiModelValue?.visitables?.forEachIndexed { index, visitable ->
+                if (visitable is MiniCartTickerWarningUiModel) {
+                    tickerWarning = visitable
+                    return@forEachIndexed
+                }
+            }
+
+            val maxWeight = miniCartUiModelValue?.maximumShippingWeight ?: 0
+            val warningWording = miniCartUiModelValue?.maximumShippingWeightErrorMessage ?: ""
+            val overWeight = (totalWeight - maxWeight) / 1000.0f
+            if (tickerWarning == null) {
+                tickerWarning = miniCartListViewHolderMapper.mapTickerWarningUiModel(overWeight, warningWording)
+                tickerWarning?.let {
+                    val firstItem = miniCartUiModelValue?.visitables?.firstOrNull()
+                    if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
+                        miniCartUiModel.value?.visitables?.add(1, it)
+                    } else {
+                        miniCartUiModel.value?.visitables?.add(0, it)
+                    }
+                }
+            } else {
+                tickerWarning?.warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
+            }
+        } else {
+            removeTickerWarning(miniCartUiModelValue)
+        }
+    }
+
+    private fun removeTickerWarning(miniCartUiModelValue: MiniCartUiModel?) {
+        var tmpIndex = -1
+        miniCartUiModelValue?.visitables?.forEachIndexed { index, visitable ->
+            if (visitable is MiniCartTickerWarningUiModel) {
+                tmpIndex = index
+                return@forEachIndexed
+            }
+        }
+
+        if (tmpIndex != -1) {
+            miniCartUiModel.value?.visitables?.removeAt(tmpIndex)
+        }
     }
 }

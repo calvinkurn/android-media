@@ -15,6 +15,10 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             title = miniCartData.data.headerTitle
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
             visitables = mapVisitables(miniCartData)
+            if (miniCartData.data.availableSection.availableGroup.isNotEmpty()) {
+                maximumShippingWeight = miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight
+                maximumShippingWeightErrorMessage = miniCartData.data.availableSection.availableGroup[0].shop.maximumWeightWording
+            }
         }
     }
 
@@ -55,13 +59,6 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
             }
-        }
-
-        // Add warning ticker
-        if (weightTotal > 0 && weightTotal > miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight) {
-            val shop = miniCartData.data.availableSection.availableGroup[0].shop
-            val overWeight = (weightTotal - shop.maximumShippingWeight) / 1000.0F
-            miniCartTickerWarningUiModel = mapTickerWarningUiModel(overWeight, shop.maximumWeightWording)
         }
 
         // Add unavailable separator
@@ -167,6 +164,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             productInformation = cartDetail.product.productInformation
             productNotes = cartDetail.product.productNotes
             productQty = cartDetail.product.productQuantity
+            productWeight = cartDetail.product.productWeight
             productMinOrder = cartDetail.product.productMinOrder
             productMaxOrder = cartDetail.product.productMaxOrder
             productActions = action
@@ -204,7 +202,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
         }
     }
 
-    private fun mapTickerWarningUiModel(overWeight: Float, warningWording: String): MiniCartTickerWarningUiModel {
+    fun mapTickerWarningUiModel(overWeight: Float, warningWording: String): MiniCartTickerWarningUiModel {
         return MiniCartTickerWarningUiModel().apply {
             warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
         }

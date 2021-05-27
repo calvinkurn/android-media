@@ -5,6 +5,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 
 data class MiniCartUiModel(
         var title: String = "",
+        var maximumShippingWeight: Int = 0,
+        var maximumShippingWeightErrorMessage: String = "",
         var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
         var visitables: MutableList<Visitable<*>> = mutableListOf()
 )

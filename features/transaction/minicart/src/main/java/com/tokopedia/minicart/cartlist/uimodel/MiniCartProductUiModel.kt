@@ -21,6 +21,7 @@ data class MiniCartProductUiModel(
         var productInformation: List<String> = emptyList(),
         var productNotes: String = "",
         var productQty: Int = 0,
+        var productWeight: Int = 0,
         var productMinOrder: Int = 0,
         var productMaxOrder: Int = 0,
         var productActions: List<Action> = emptyList(),
