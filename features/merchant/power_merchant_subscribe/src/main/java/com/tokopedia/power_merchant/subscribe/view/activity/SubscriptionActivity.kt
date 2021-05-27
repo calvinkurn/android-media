@@ -142,11 +142,11 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     override fun showActivationProgress() {
-
+        pmRegistrationFooterView.showLoadingState()
     }
 
     override fun hideActivationProgress() {
-
+        pmRegistrationFooterView.hideLoadingState()
     }
 
     private fun observeShopModerationStatus() {

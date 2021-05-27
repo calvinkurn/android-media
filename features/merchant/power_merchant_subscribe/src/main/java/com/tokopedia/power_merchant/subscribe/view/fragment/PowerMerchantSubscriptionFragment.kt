@@ -631,7 +631,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
 
         powerMerchantTracking.sendEventClickUpgradePowerMerchant()
-        showActivationProgress()
         submitPmRegistration(nextShopTireType)
     }
 
@@ -644,6 +643,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val currentPmTire = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
         val currentShopTireType = getShopTireByPmTire(currentPmTire)
 
+        showActivationProgress()
         observePmActivationStatus()
         mViewModel.submitPMActivation(currentShopTireType, nextShopTireType)
     }

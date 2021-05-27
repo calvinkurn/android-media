@@ -59,4 +59,12 @@ class RegistrationFooterView : ConstraintLayout {
     fun setOnTickboxCheckedListener(callback: (Boolean) -> Unit) {
         this.checkedListener = callback
     }
+
+    fun showLoadingState() {
+        btnPmRegister.isLoading = true
+    }
+
+    fun hideLoadingState() {
+        btnPmRegister.isLoading = false
+    }
 }
