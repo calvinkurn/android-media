@@ -1190,7 +1190,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             try {
                 walletContent = getWalletBalanceContent()
-            } catch (e: MessageErrorException) {
+            } catch (e: Exception) {
                 homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeDataModel.homeBalanceModel.mapErrorWallet()
                 newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
@@ -1198,7 +1198,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             try {
                 tokopointContent = getTokopointBalanceContent()
-            } catch (e: MessageErrorException) {
+            } catch (e: Exception) {
                 homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeDataModel.homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
@@ -1220,7 +1220,7 @@ open class HomeRevampViewModel @Inject constructor(
                                     )
                             )
                         }
-                    } catch (e: MessageErrorException) {
+                    } catch (e: Exception) {
                         homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
                         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
                     }
