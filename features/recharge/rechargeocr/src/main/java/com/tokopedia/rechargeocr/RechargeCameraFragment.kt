@@ -176,10 +176,10 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showCameraView() {
-        full_camera_view.visibility = View.VISIBLE
         image_button_shutter.visibility = View.VISIBLE
         startCamera()
         full_image_preview.visibility = View.GONE
+        full_camera_view.visibility = View.VISIBLE
     }
 
     private fun hideCameraButtonAndShowLoading() {
@@ -189,10 +189,10 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showImagePreview() {
-        full_camera_view.close()
-        full_camera_view.visibility = View.GONE
-        image_button_shutter.visibility = View.GONE
         full_image_preview.visibility = View.VISIBLE
+        full_camera_view.visibility = View.GONE
+        full_camera_view.close()
+        image_button_shutter.visibility = View.GONE
     }
 
     private fun startCamera() {
