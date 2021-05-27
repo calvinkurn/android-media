@@ -51,7 +51,7 @@ class LoginByQrViewModel @Inject constructor(
                 }
             }
         }, {
-            _verifyQrResult.postValue(Fail(it))
+            _verifyQrResult.postValue(Fail(Throwable()))
         })
     }
 
