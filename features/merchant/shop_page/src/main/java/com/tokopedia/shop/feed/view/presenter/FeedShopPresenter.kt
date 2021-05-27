@@ -2,7 +2,6 @@ package com.tokopedia.shop.feed.view.presenter
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -19,6 +18,7 @@ import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.feed.domain.DynamicFeedShopDomain
 import com.tokopedia.shop.feed.domain.usecase.GetFeedShopFirstUseCase
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
