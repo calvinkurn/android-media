@@ -14,7 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.DEFAULT_ELECTRONICMONEY_MENU_ID
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.brizzi.di.DaggerDigitalBrizziComponent
 import com.tokopedia.brizzi.util.DigitalBrizziGqlMutation
@@ -79,7 +79,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     override fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData {
         return DigitalCategoryDetailPassData.Builder()
                 .categoryId(ETOLL_CATEGORY_ID)
-                .menuId(DEFAULT_ELECTRONICMONEY_MENU_ID)
+                .menuId(DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY)
                 .operatorId(operatorId)
                 .clientNumber(eTollUpdateBalanceResultView.cardNumber)
                 .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
