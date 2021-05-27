@@ -101,14 +101,16 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: CoroutineDis
     private val pagingHandler: PagingHandler = PagingHandler()
 
     fun getOnboardingData(source: String) {
-        getInterestPickUseCase.apply {
-            clearRequest()
-            addRequestWithParam(source)
-        }.execute({
-            onboardingResp.value = Success(it.convertToViewModel())
-        }, {
-            onboardingResp.value = Fail(it)
-        })
+        if(userId != NON_LOGIN_USER_ID) {
+            getInterestPickUseCase.apply {
+                clearRequest()
+                addRequestWithParam(source)
+            }.execute({
+                onboardingResp.value = Success(it.convertToViewModel())
+            }, {
+                onboardingResp.value = Fail(it)
+            })
+        }
     }
 
     fun submitInterestPickData(dataList: List<InterestPickDataViewModel>, source: String, requestInt: Int) {
