@@ -278,9 +278,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = "";
                     break;
                 case DeepLinkChecker.LOGIN_BY_QR:
-                    openLoginByQr(uriData);
-                    screenName = "";
-                    break;
                 case DeepLinkChecker.LOGIN_BY_QR_STAGING:
                     openLoginByQr(uriData);
                     screenName = "";
@@ -298,8 +295,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openLoginByQr(Uri uriData) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.QR_LOGIN + "?" + uriData.getQuery());
-        viewListener.goToPage(intent);
+        RouteManager.route(context, ApplinkConst.QR_LOGIN + "?" + uriData.getQuery());
     }
 
     private void openNativeThankYouPage(List<String> linkSegment, Bundle defaultBundle) {
