@@ -15,8 +15,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            tools:itemCount="1"
-            tools:listitem="@layout/widget_pm_registration_header"
+            tools:visibility="visible" />
+
+        <com.tokopedia.power_merchant.subscribe.view.viewcomponent.UpgradePMProStickyView
+            android:id="@+id/viewPmUpgradePmPro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/layout_lvl3"
+            android:visibility="gone"
             tools:visibility="visible" />
     </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

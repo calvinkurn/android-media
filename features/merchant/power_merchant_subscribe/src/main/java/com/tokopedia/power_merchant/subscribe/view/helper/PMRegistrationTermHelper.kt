@@ -98,7 +98,7 @@ object PMRegistrationTermHelper {
     }
 
     private fun getShopScoreTerm(context: Context, shopInfo: PMShopInfoUiModel, isPmPro: Boolean): RegistrationTermUiModel.ShopScore {
-        val isEligibleShopScore = (isPmPro && shopInfo.isEligibleShopScorePmPro()) || (!isPmPro && shopInfo.isEligibleShopScore())
+        val isEligibleShopScore = (isPmPro && shopInfo.isEligibleShopScorePmPro()) || (!isPmPro && shopInfo.isEligibleShopScore()) && !shopInfo.isNewSeller
         val shopScoreResIcon: Int = if (isEligibleShopScore) {
             R.drawable.ic_pm_checked
         } else {
@@ -116,16 +116,23 @@ object PMRegistrationTermHelper {
             shopInfo.shopScoreThreshold
         }
 
-        if (isEligibleShopScore) {
-            val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-            title = context.getString(R.string.pm_shop_score_eligible, textColor, shopInfo.shopScore)
-            description = context.getString(R.string.pm_shop_score_eligible_description, shopScoreThreshold)
-        } else {
-            val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
-            title = context.getString(R.string.pm_shop_score_not_eligible, textColor, shopInfo.shopScore)
-            description = context.getString(R.string.pm_shop_score_not_eligible_description, shopScoreThreshold)
+        if (shopInfo.isNewSeller) {
+            title = context.getString(R.string.pm_shop_score_not_eligible_new_seller)
+            description = context.getString(R.string.pm_new_seller_shop_score_description)
             ctaText = context.getString(R.string.pm_learn_shop_performance)
             ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
+        } else {
+            if (isEligibleShopScore) {
+                val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                title = context.getString(R.string.pm_shop_score_eligible, textColor, shopInfo.shopScore)
+                description = context.getString(R.string.pm_shop_score_eligible_description, shopScoreThreshold)
+            } else {
+                val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
+                title = context.getString(R.string.pm_shop_score_not_eligible, textColor, shopInfo.shopScore)
+                description = context.getString(R.string.pm_shop_score_not_eligible_description, shopScoreThreshold)
+                ctaText = context.getString(R.string.pm_learn_shop_performance)
+                ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
+            }
         }
 
         return RegistrationTermUiModel.ShopScore(

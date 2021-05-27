@@ -6,12 +6,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
 
@@ -19,7 +17,10 @@ import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
  * Created By @ilhamsuaib on 03/03/21
  */
 
-class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiModel>(itemView) {
+class ShopGradeWidget(
+        itemView: View,
+        private val powerMerchantTracking: PowerMerchantTracking
+) : AbstractViewHolder<WidgetShopGradeUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
@@ -37,19 +38,19 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
         val illustrationSize: Pair<Int, Int>
         val imgUrl = when {
             isPmPro && isPmActive -> {
-                illustrationSize = Pair(R.dimen.gmc_dimen_128dp, R.dimen.gmc_dimen_134dp)
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp)
                 PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
             }
             isPmPro && !isPmActive -> {
-                illustrationSize = Pair(R.dimen.gmc_dimen_136dp, R.dimen.gmc_dimen_132dp)
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp)
                 PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
             }
             !isPmPro && isPmActive -> {
-                illustrationSize = Pair(R.dimen.gmc_dimen_112dp, R.dimen.gmc_dimen_122dp)
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp)
                 PMConstant.Images.IMG_TOPED_PM_ACTIVE
             }
             else -> {
-                illustrationSize = Pair(R.dimen.gmc_dimen_112dp, R.dimen.gmc_dimen_114dp)
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp)
                 PMConstant.Images.IMG_TOPED_PM_INACTIVE
             }
         }
@@ -83,6 +84,7 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
         icPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         tvPmShopScoreTips.setOnClickListener {
             RouteManager.route(context, Constant.Url.URL_SHOP_PERFORMANCE_TIPS)
+            powerMerchantTracking.sendEventClickTipsToImproveShopScore()
         }
     }
 
@@ -119,13 +121,21 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
         }
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl, R.drawable.bg_pm_registration_header)
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
+        val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
+        if (isPmStatusActive) {
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_active)
+        } else {
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_inactive)
+        }
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
     }
 
     private fun getPMStatusLabel(pmStatus: String): String {
         return when (pmStatus) {
-            PMStatusConst.INACTIVE -> itemView.context.getString(R.string.pm_inactive)
-            else -> itemView.context.getString(R.string.pm_active)
+            PMStatusConst.ACTIVE -> itemView.context.getString(R.string.pm_active)
+            else -> itemView.context.getString(R.string.pm_inactive)
         }
     }
 }

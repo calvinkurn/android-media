@@ -4,11 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import kotlinx.android.synthetic.main.view_pm_registration_footer.view.*
 
 /**
@@ -16,6 +14,9 @@ import kotlinx.android.synthetic.main.view_pm_registration_footer.view.*
  */
 
 class RegistrationFooterView : ConstraintLayout {
+
+    private var tncClickListener: (() -> Unit)? = null
+    private var checkedListener: ((Boolean) -> Unit)? = null
 
     constructor (context: Context) : super(context)
 
@@ -27,8 +28,12 @@ class RegistrationFooterView : ConstraintLayout {
         View.inflate(context, R.layout.view_pm_registration_footer, this)
 
         tvPmRegistrationTnC.setOnClickListener {
-            RouteManager.route(context, Constant.Url.POWER_MERCHANT_TERMS_AND_CONDITION)
+            tncClickListener?.invoke()
         }
+    }
+
+    fun setOnTncClickListener(action: () -> Unit) {
+        this.tncClickListener = action
     }
 
     fun setOnCtaClickListener(action: (isAgreed: Boolean) -> Unit) {
@@ -51,11 +56,15 @@ class RegistrationFooterView : ConstraintLayout {
         }
     }
 
-    fun showRegistrationProgress() {
+    fun setOnTickboxCheckedListener(callback: (Boolean) -> Unit) {
+        this.checkedListener = callback
+    }
+
+    fun showLoadingState() {
         btnPmRegister.isLoading = true
     }
 
-    fun hideRegistrationProgress() {
+    fun hideLoadingState() {
         btnPmRegister.isLoading = false
     }
 }

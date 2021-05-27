@@ -39,15 +39,15 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
         return lazy {
             listOf(
                     PotentialItemUiModel(
-                            resDrawableIcon = R.drawable.ic_pm_benefit_01,
+                            imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_01,
                             description = getString(R.string.pm_potential_benefit_01)
                     ),
                     PotentialItemUiModel(
-                            resDrawableIcon = R.drawable.ic_pm_benefit_02,
+                            imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_02,
                             description = getString(R.string.pm_potential_benefit_02)
                     ),
                     PotentialItemUiModel(
-                            resDrawableIcon = R.drawable.ic_pm_benefit_03,
+                            imgUrl = PMConstant.Images.PM_POTENTIAL_BENEFIT_03,
                             description = getString(R.string.pm_potential_benefit_03)
                     )
             )

@@ -34,7 +34,7 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
         setupTnc()
         setOnNextClickListener()
 
-        tvPmDeactivationPmProDesc.text = getString(R.string.pm_pro_upgrade_eligible_description, Constant.POWER_MERCHANT_PRO_CHARGING).parseAsHtml()
+        tvPmDeactivationPmProDesc.text = getString(R.string.pm_pm_pro_deactivation_description, Constant.POWER_MERCHANT_CHARGING).parseAsHtml()
     }
 
     fun setOnNextClickListener(callback: (selectedShopTire: Int) -> Unit) {
@@ -58,7 +58,7 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
                 colorId = requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Green_G500),
                 isBold = true
         ) {
-            RouteManager.route(requireContext(), Constant.Url.POWER_MERCHANT_TERMS_AND_CONDITION)
+            showPmTermAndCondition()
         }
 
         tvPmOptionsTnC.movementMethod = LinkMovementMethod.getInstance()
@@ -67,6 +67,15 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
 
     fun show(fm: FragmentManager) {
         show(fm, TAG)
+    }
+
+    private fun showPmTermAndCondition() {
+        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
+        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun setupOptions() = childView?.run {
@@ -89,7 +98,7 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
 
         val pmLabel = getString(R.string.pm_downgrade_to_pm)
         val pmName = getString(R.string.pm_title_activity)
-        val pmDescription = getString(R.string.pm_option_become_power_merchant_description, Constant.REGULAR_MERCHANT_CHARGING)
+        val pmDescription = getString(R.string.pm_option_become_power_merchant_description, Constant.POWER_MERCHANT_CHARGING)
         with(optionPmRegularMerchant) {
             show(pmLabel, pmName, pmDescription)
             setSelectedStatus(false)

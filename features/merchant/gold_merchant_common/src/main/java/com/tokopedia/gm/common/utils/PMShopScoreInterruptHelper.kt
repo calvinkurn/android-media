@@ -256,7 +256,6 @@ class PMShopScoreInterruptHelper @Inject constructor(
     private fun hasConsentChecked(): Boolean {
         return pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_SHOP_SCORE_CONSENT_CHECKED, false).orFalse()
     }
-
     private fun hasOpenedInterruptPage(): Boolean {
         return pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, false).orFalse()
     }

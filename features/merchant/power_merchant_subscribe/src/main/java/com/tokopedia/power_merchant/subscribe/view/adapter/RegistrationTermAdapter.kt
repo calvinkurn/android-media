@@ -19,7 +19,9 @@ import kotlinx.android.synthetic.main.item_pm_registration_term.view.*
  * Created By @ilhamsuaib on 03/03/21
  */
 
-class RegistrationTermAdapter : RecyclerView.Adapter<RegistrationTermAdapter.RegistrationTermViewHolder>() {
+class RegistrationTermAdapter(
+        private val onTermCtaClicked: ((RegistrationTermUiModel) -> Unit)? = null
+) : RecyclerView.Adapter<RegistrationTermAdapter.RegistrationTermViewHolder>() {
 
     private var terms: List<RegistrationTermUiModel> = emptyList()
 
@@ -60,6 +62,7 @@ class RegistrationTermAdapter : RecyclerView.Adapter<RegistrationTermAdapter.Reg
                         isBold = true
                 ) {
                     RouteManager.route(itemView.context, term.appLinkOrUrl)
+                    onTermCtaClicked?.invoke(term)
                 }
                 itemView.tvPmTermItemDesc.movementMethod = LinkMovementMethod.getInstance()
                 itemView.tvPmTermItemDesc.text = termDescription

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitAdapter
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
@@ -76,8 +77,7 @@ class UpgradePmProWidget(
             setExpandedChanged(false)
         } else {
             val threshold = element.shopInfo.shopScorePmProThreshold
-            val charging = "1,5%."
-            tvPmUpgradeBenefitDescription.text = context.resources.getString(R.string.pm_pro_upgrade_not_eligible_description, threshold, charging).parseAsHtml()
+            tvPmUpgradeBenefitDescription.text = context.resources.getString(R.string.pm_pro_upgrade_not_eligible_description, threshold, Constant.POWER_MERCHANT_PRO_CHARGING).parseAsHtml()
             tvPmProTncDescription.gone()
             btnPmProUpgrade.gone()
             setExpandedChanged(true)
@@ -103,7 +103,7 @@ class UpgradePmProWidget(
                 colorId = context.getResColor(ctaTextColor),
                 isBold = true
         ) {
-            RouteManager.route(itemView.context, Constant.Url.POWER_MERCHANT_TERMS_AND_CONDITION)
+            listener.onUpgradePmProTnCClickListener()
         }
         tvPmProTncDescription.movementMethod = LinkMovementMethod.getInstance()
         tvPmProTncDescription.text = termDescription
@@ -123,5 +123,6 @@ class UpgradePmProWidget(
 
     interface Listener {
         fun onUpgradePmProClickListener(adapterPosition: Int)
+        fun onUpgradePmProTnCClickListener()
     }
 }

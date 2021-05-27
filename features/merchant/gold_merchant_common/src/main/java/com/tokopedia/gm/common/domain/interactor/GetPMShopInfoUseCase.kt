@@ -40,8 +40,8 @@ class GetPMShopInfoUseCase @Inject constructor(
         private const val KEY_INCLUDING_PM_PRO_ELIGIBILITY = "including_pm_pro_eligibility"
 
         private val QUERY = """
-          query goldGetPMShopInfo(${'$'}shop_id: Int!, ${'$'}source: String!) {
-            goldGetPMShopInfo(shop_id: ${'$'}shop_id, source: ${'$'}source) {
+          query goldGetPMShopInfo(${'$'}shop_id: Int!, ${'$'}source: String!, ${'$'}filter: GetPMShopInfoFilter) {
+            goldGetPMShopInfo(shop_id: ${'$'}shop_id, source: ${'$'}source, filter: ${'$'}filter) {
               is_new_seller
               is_kyc
               kyc_status_id
@@ -61,12 +61,13 @@ class GetPMShopInfoUseCase @Inject constructor(
         """.trimIndent()
 
         fun createParams(shopId: String, source: String): RequestParams {
+            val filter: Map<String, Boolean> = mapOf(
+                    KEY_INCLUDING_PM_PRO_ELIGIBILITY to true
+            )
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
                 putString(KEY_SOURCE, source)
-                putObject(KEY_FILTER, mapOf(
-                        KEY_INCLUDING_PM_PRO_ELIGIBILITY to true
-                ))
+                putObject(KEY_FILTER, filter)
             }
         }
     }

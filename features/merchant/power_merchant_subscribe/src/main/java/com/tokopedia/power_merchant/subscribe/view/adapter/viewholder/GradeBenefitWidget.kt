@@ -89,7 +89,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val selectedTabIndex = tabPmGradeBenefit.tabLayout.selectedTabPosition
-                    setOnTabSelected(element, selectedTabIndex)
+                    setOnTabSelected(selectedTabIndex)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -99,13 +99,8 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         }
     }
 
-    private fun setOnTabSelected(element: WidgetGradeBenefitUiModel, position: Int) = with(itemView) {
+    private fun setOnTabSelected(position: Int) = with(itemView) {
         rvPmGradeBenefitPager.smoothScrollToPosition(position)
-
-        val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val selectedPage = element.benefitPages.getOrNull(position)
-        val gradeName = selectedPage?.gradeName.orEmpty().asCamelCase()
-        setGradeBenefitTitle(isPmPro, gradeName)
     }
 
     private fun setupPagerView(element: WidgetGradeBenefitUiModel) {

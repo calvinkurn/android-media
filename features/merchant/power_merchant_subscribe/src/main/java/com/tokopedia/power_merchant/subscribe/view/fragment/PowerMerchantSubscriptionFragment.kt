@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -17,15 +18,13 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
@@ -38,6 +37,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.*
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
 import java.net.UnknownHostException
 import java.util.*
@@ -65,6 +65,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
+
     private val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSubscriptionViewModel::class.java)
     }
@@ -76,8 +79,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         get() = super.getRecyclerView(view)
 
     private var isModeratedShop = false
-    private var upgradePmProWidgetPosition: Int = RecyclerView.NO_POSITION
-    private var cancelPmDeactivationWidgetPosition: Int = RecyclerView.NO_POSITION
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var pmGradeBenefitList: List<PMGradeWithBenefitsUiModel>? = null
     private var currentPmTireType = PMConstant.PMTierType.POWER_MERCHANT
@@ -90,7 +91,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvPmRegistration
 
-    override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl = WidgetAdapterFactoryImpl(this)
+    override fun getAdapterTypeFactory(): WidgetAdapterFactoryImpl = WidgetAdapterFactoryImpl(this, powerMerchantTracking)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_pm_power_merchant_subscription, container, false)
@@ -118,10 +119,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         } else {
             showRegularPmDeactivationBottomSheet()
         }
+
+        powerMerchantTracking.sendEventClickStopPowerMerchant()
     }
 
     override fun cancelPmDeactivationSubmission(position: Int) {
-        cancelPmDeactivationWidgetPosition = position
         observePmCancelDeactivationSubmission()
         val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
         val shopTier = getShopTireByPmTire(currentPmTireType)
@@ -146,14 +148,24 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     override fun onUpgradePmProClickListener(adapterPosition: Int) {
-        this.upgradePmProWidgetPosition = adapterPosition
         submitPmRegistration(PMConstant.ShopTierType.POWER_MERCHANT_PRO)
+    }
+
+    override fun onUpgradePmProTnCClickListener() {
+        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
+        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
     }
 
     fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean, nextShopTireType: Int) {
         val shopInfo = pmBasicInfo?.shopInfo ?: return
+        val isPmPro = currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         when {
             isModeratedShop -> showModeratedShopBottomSheet()
+            shopInfo.isNewSeller && isPmPro -> showNewSellerPmProBottomSheet()
             isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed, nextShopTireType)
             term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
             term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
@@ -201,14 +213,51 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val ctaText: String = getString(R.string.pm_content_slider_last_slide_button)
         val illustrationUrl: String = PMConstant.Images.PM_INACTIVE
 
-        showNotificationBottomSheet(title, description, ctaText, illustrationUrl)
+        showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
+            powerMerchantTracking.sendEventClickAcknowledgeShopModeration()
+        })
+
+        powerMerchantTracking.sendEventPopupUnableToRegisterShopModeration()
     }
 
     private fun setupView() = view?.run {
         swipeRefreshPm.setOnRefreshListener {
             reloadPageContent()
         }
+
+        setupRecyclerView()
+        setupPmProUpgradeView()
+    }
+
+    private fun setupPmProUpgradeView() = view?.run {
+        viewPmUpgradePmPro.setOnClickListener {
+            val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
+            val indexOfUpgradePmProWidget = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
+            layoutManager?.scrollToPositionWithOffset(indexOfUpgradePmProWidget, 0)
+            hideUpgradePmProStickyView()
+        }
+    }
+
+    private fun setupRecyclerView() = view?.run {
+        val layManager = object : LinearLayoutManager(context) {
+            override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
+                setOnVerticalScrolled()
+                return super.scrollVerticallyBy(dy, recycler, state)
+            }
+        }
+        recyclerView?.layoutManager = layManager
         recyclerView?.gone()
+    }
+
+    private fun setOnVerticalScrolled() {
+        val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
+        val lastVisible = layoutManager?.findLastVisibleItemPosition() ?: RecyclerView.NO_POSITION
+        val indexOfUpgradePmProWidget = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
+        if (lastVisible != RecyclerView.NO_POSITION && lastVisible < indexOfUpgradePmProWidget) {
+            showUpgradePmProStickyView()
+        } else {
+            hideUpgradePmProStickyView()
+        }
     }
 
     private fun getExpiredTimeFmt(): String {
@@ -270,8 +319,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         view?.run {
             val message = getString(R.string.pm_cancel_pm_deactivation_success)
             val actionText = getString(R.string.power_merchant_ok_label)
-            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
-            Toaster.build(rvPmRegistration, message, Toaster.LENGTH_LONG,
+            Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+            Toaster.build(rootView, message, Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL, actionText)
                     .show()
         }
@@ -280,9 +329,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun notifyCancelPmDeactivationWidget() {
-        if (cancelPmDeactivationWidgetPosition != RecyclerView.NO_POSITION) {
-            recyclerView?.post {
+        val cancelPmDeactivationWidgetPosition = adapter.data.indexOfFirst { it is WidgetCancelDeactivationSubmissionUiModel }
+        recyclerView?.post {
+            if (cancelPmDeactivationWidgetPosition != RecyclerView.NO_POSITION) {
                 adapter.notifyItemChanged(cancelPmDeactivationWidgetPosition)
+            } else {
+                adapter.notifyDataSetChanged()
             }
         }
     }
@@ -408,6 +460,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             }
 
             fetchPowerMerchantBasicInfo()
+
+            powerMerchantTracking.sendEventShowPopupSuccessRegister()
         }
     }
 
@@ -418,9 +472,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun notifyUpgradePmProWidget() {
-        if (upgradePmProWidgetPosition != RecyclerView.NO_POSITION) {
-            recyclerView?.post {
+        val upgradePmProWidgetPosition = adapter.data.indexOfFirst { it is WidgetUpgradePmProUiModel }
+        recyclerView?.post {
+            if (upgradePmProWidgetPosition != RecyclerView.NO_POSITION) {
                 adapter.notifyItemChanged(upgradePmProWidgetPosition)
+            } else {
+                adapter.notifyDataSetChanged()
             }
         }
     }
@@ -474,6 +531,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                     RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
                 }
         )
+
+        powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
     private fun showNivTermBottomSheet(nivThreshold: Long) {
@@ -489,6 +548,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                     RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
                 }
         )
+
+        powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
     private fun submitKYC(isTncChecked: Boolean) {
@@ -499,7 +560,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             return
         }
 
-        RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+        val isPmPro = currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val appLink = if (isPmPro) {
+            PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
+        } else {
+            PMConstant.AppLink.KYC_POWER_MERCHANT
+        }
+        RouteManager.route(context, appLink)
     }
 
     private fun showErrorToaster(message: String, actionText: String) {
@@ -509,6 +576,16 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                     Toaster.TYPE_ERROR, actionText)
                     .show()
         }
+    }
+
+    private fun showNewSellerPmProBottomSheet() {
+        val pmShopScoreProThreshold = pmBasicInfo?.shopInfo?.shopScorePmProThreshold.orZero()
+        val title: String = getString(R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_title)
+        val description = getString(R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_description, pmShopScoreProThreshold)
+        val ctaText = getString(R.string.pm_content_slider_last_slide_button)
+        val illustrationUrl = PMConstant.Images.PM_NEW_REQUIREMENT
+
+        showNotificationBottomSheet(title, description, ctaText, illustrationUrl)
     }
 
     private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
@@ -523,7 +600,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
             RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
+            powerMerchantTracking.sendEventClickLearnMoreShopPerformancePopUp()
         })
+
+        powerMerchantTracking.sendEventShowPopupImproveShopPerformance()
+        powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
     private fun showActiveProductTermBottomSheet() {
@@ -534,7 +615,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
             RouteManager.route(context, ApplinkConst.SellerApp.PRODUCT_ADD)
+            powerMerchantTracking.sendEventClickAddOneProductPopUp()
         })
+
+        powerMerchantTracking.sendEventShowPopupAddNewProduct()
+        powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
     private fun submitPmRegistrationOnEligible(isTncChecked: Boolean, nextShopTireType: Int) {
@@ -545,7 +630,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             return
         }
 
-        showActivationProgress()
+        powerMerchantTracking.sendEventClickUpgradePowerMerchant()
         submitPmRegistration(nextShopTireType)
     }
 
@@ -558,6 +643,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val currentPmTire = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
         val currentShopTireType = getShopTireByPmTire(currentPmTire)
 
+        showActivationProgress()
         observePmActivationStatus()
         mViewModel.submitPMActivation(currentShopTireType, nextShopTireType)
     }
@@ -588,6 +674,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
+        showUpgradePmProStickyView()
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val isPmActive = pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
@@ -620,6 +707,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetNextUpdateUiModel(pmProThreshold, data.nextQuarterlyCalibrationRefreshDate))
         }
+        if (pmBasicInfo?.shopInfo?.isNewSeller.orFalse()) {
+            widgets.add(WidgetDividerUiModel)
+            widgets.add(WidgetSingleCtaUiModel(
+                    getString(R.string.pm_pm_transition_period_learnmore),
+                    Constant.Url.POWER_MERCHANT_FEATURES
+            ))
+        }
         if (isAutoExtendEnabled) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
@@ -630,6 +724,18 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         recyclerView?.post {
             recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
         }
+    }
+
+    private fun showUpgradePmProStickyView() {
+        val isAutoExtendEnabled = getAutoExtendEnabled()
+        val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
+                && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
+                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue() && isAutoExtendEnabled
+        view?.viewPmUpgradePmPro?.isVisible = shouldShowView
+    }
+
+    private fun hideUpgradePmProStickyView() {
+        view?.viewPmUpgradePmPro?.gone()
     }
 
     private fun observePmRegistrationPage() {
@@ -707,7 +813,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         return WidgetShopGradeUiModel(
                 isNewSeller = shopInfo?.isNewSeller.orTrue(),
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
-                shopScore = pmBasicInfo?.shopInfo?.shopScore.orZero(),
+                shopScore = shopInfo?.shopScore.orZero(),
                 threshold = shopScoreThreshold,
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
@@ -727,12 +833,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         )
     }
 
-    private fun getPotentialBenefitWidgetData(): WidgetPotentialUiModel {
-        return WidgetPotentialUiModel(listOf())
-    }
-
-    private fun showDeactivationQuestionnaire() {
-        val bottomSheet = DeactivationBottomSheet.createInstance()
+    private fun showDeactivationQuestionnaire(pmTireType: Int) {
+        val pmExpirationDate = pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
+        val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT
+        val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance(pmExpirationDate, currentPmTireType, pmTireType)
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         bottomSheet.setOnDeactivationSuccess {

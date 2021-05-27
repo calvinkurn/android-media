@@ -9,6 +9,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetRegistrationHeaderUiModel
@@ -20,14 +21,17 @@ import kotlinx.android.synthetic.main.widget_pm_registration_header.view.*
 
 class RegistrationHeaderWidget(
         itemView: View,
-        private val listener: Listener
+        private val listener: Listener,
+        private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetRegistrationHeaderUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_pm_registration_header
     }
 
-    private val termAdapter by lazy { RegistrationTermAdapter() }
+    private val termAdapter by lazy {
+        RegistrationTermAdapter(this::onTermCtaClickedListener)
+    }
 
     override fun bind(element: WidgetRegistrationHeaderUiModel) {
         setupView(element)
@@ -79,6 +83,14 @@ class RegistrationHeaderWidget(
             adapter = termAdapter
         }
         showTermList(element.registrationTerms)
+    }
+
+    private fun onTermCtaClickedListener(term: RegistrationTermUiModel) {
+        when (term) {
+            is RegistrationTermUiModel.ActiveProduct -> powerMerchantTracking.sendEventClickAddProduct()
+            is RegistrationTermUiModel.ShopScore -> powerMerchantTracking.sendEventClickLearnMoreShopPerformance()
+            is RegistrationTermUiModel.Kyc -> powerMerchantTracking.sendEventClickKycDataVerification()
+        }
     }
 
     interface Listener {

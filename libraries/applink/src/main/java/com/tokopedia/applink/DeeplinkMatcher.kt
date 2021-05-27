@@ -86,10 +86,12 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 1, mapOf(0 to "my-shop")) to OTHER)
         add(Pattern(GT, 0, mapOf(0 to "deals")) to DEALS)
         add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
-        add(Pattern(EQ, 1, null) to SHOP)
-        add(Pattern(EQ, 2, null) to PRODUCT)
-        add(Pattern(EQ, 3, mapOf(1 to "campaign")) to ETALASE)
-        add(Pattern(EQ, 4, mapOf(0 to "payment", 1 to "thank-you")) to NATIVE_THANK_YOU)
+        add(Pattern(GT, 0, mapOf(0 to "edu")) to OTHER)
+            add(Pattern(EQ, 1, null) to SHOP)
+            add(Pattern(EQ, 2, null) to PRODUCT)
+            add(Pattern(EQ, 3, mapOf(1 to "campaign")) to ETALASE)
+            add(Pattern(EQ, 4, mapOf(0 to "payment", 1 to "thank-you")) to NATIVE_THANK_YOU)
+
     }
 
     fun match(uri: Uri): Int {

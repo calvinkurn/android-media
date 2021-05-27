@@ -11,8 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
@@ -20,9 +19,22 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMTermAndConditionBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
+import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
+import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
+import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_pm_subsription.*
-import java.net.URLEncoder
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 25/02/21
@@ -35,6 +47,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
 
     private val sharedViewModel: PowerMerchantSharedViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSharedViewModel::class.java)
@@ -127,15 +142,51 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     override fun showActivationProgress() {
-
+        pmRegistrationFooterView.showLoadingState()
     }
 
-    private fun openPowerMerchantWebView() {
-        val url = "%s?navHide=true"
-        val encodedUrl = URLEncoder.encode(String.format(url, PMConstant.Urls.POWER_MERCHANT_PAGE), "UTF-8")
-        val applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
-        RouteManager.route(this, applink)
-        finish()
+    override fun hideActivationProgress() {
+        pmRegistrationFooterView.hideLoadingState()
+    }
+
+    private fun observeShopModerationStatus() {
+        sharedViewModel.getShopModerationStatus(userSession.shopId.toLongOrZero())
+        observe(sharedViewModel.shopModerationStatus) {
+            if (it is Success) {
+                showModerationShopTicker(it.data)
+            }
+        }
+    }
+
+    private fun observePmBasicInfo() {
+        observe(sharedViewModel.powerMerchantBasicInfo) {
+            when (it) {
+                is Success -> setOnSuccessGetBasicInfo(it.data)
+                is Fail -> {
+                    showErrorState()
+                }
+            }
+        }
+    }
+
+    private fun showModerationShopTicker(data: ModerationShopStatusUiModel) {
+        if (!data.isModeratedShop) {
+            tickerPmContainer.gone()
+            return
+        }
+
+        tickerPmContainer.visible()
+        val tickerTitle = getString(R.string.pm_moderated_shop_ticker_title)
+        val tickerDescription = getString(R.string.pm_moderated_shop_ticker_description)
+        val tickersData = listOf(TickerData(tickerTitle, tickerDescription, Ticker.TYPE_WARNING, false))
+        tickerPmView.run {
+            val adapter = TickerPagerAdapter(context, tickersData)
+            addPagerView(adapter, tickersData)
+        }
+    }
+
+    private fun setOnSuccessGetBasicInfo(data: PowerMerchantBasicInfoUiModel) {
+        setupViewPager(data)
     }
 
     private fun initInjector() {
@@ -177,6 +228,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val tabIndex = tabPmSubscription.tabLayout.selectedTabPosition
                 setOnTabIndexSelected(data, tabIndex)
+                sendTrackerOnPMTabClicked(tabIndex)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -192,6 +244,13 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         val defaultTabIndex = if (data.shopInfo.isEligiblePmPro) 1 else 0
         setOnTabIndexSelected(data, defaultTabIndex)
         tabPmSubscription.tabLayout.getTabAt(defaultTabIndex)?.select()
+    }
+
+    private fun sendTrackerOnPMTabClicked(tabIndex: Int) {
+        val pmTabIndex = 0
+        if (tabIndex == pmTabIndex) {
+            powerMerchantTracking.sendEventClickTabPowerMerchant()
+        }
     }
 
     private fun setupActiveState(data: PowerMerchantBasicInfoUiModel) {
@@ -261,7 +320,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         //show tnc check box only if kyc not eligible or pm/pm pro eligible
         val needTnC = firstPriorityTerm is RegistrationTermUiModel.Kyc || isEligiblePm
 
-        val ctaText = if (needTnC || shopInfo.isNewSeller) {
+        val ctaText = if (needTnC) {
             getString(R.string.power_merchant_register_now)
         } else {
             getString(R.string.pm_interested_to_register)
@@ -271,6 +330,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
             setTnCVisibility(needTnC)
+            setOnTickboxCheckedListener {
+                powerMerchantTracking.sendEventClickTickBox()
+            }
             setOnCtaClickListener { tncAgreed ->
                 if (isPmProSelected) {
                     pmProRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed, PMConstant.ShopTierType.POWER_MERCHANT_PRO)
@@ -278,6 +340,18 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
                     pmRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed, PMConstant.ShopTierType.POWER_MERCHANT)
                 }
             }
+            setOnTncClickListener {
+                showPmTermAndCondition()
+            }
         }
+    }
+
+    private fun showPmTermAndCondition() {
+        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
+        if (supportFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(supportFragmentManager)
     }
 }
