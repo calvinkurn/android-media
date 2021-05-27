@@ -103,7 +103,7 @@ class UpgradePmProWidget(
                 colorId = context.getResColor(ctaTextColor),
                 isBold = true
         ) {
-            RouteManager.route(itemView.context, Constant.Url.POWER_MERCHANT_TERMS_AND_CONDITION)
+            listener.onUpgradePmProTnCClickListener()
         }
         tvPmProTncDescription.movementMethod = LinkMovementMethod.getInstance()
         tvPmProTncDescription.text = termDescription
@@ -123,5 +123,6 @@ class UpgradePmProWidget(
 
     interface Listener {
         fun onUpgradePmProClickListener(adapterPosition: Int)
+        fun onUpgradePmProTnCClickListener()
     }
 }

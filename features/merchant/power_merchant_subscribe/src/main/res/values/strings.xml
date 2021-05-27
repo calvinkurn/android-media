@@ -278,4 +278,5 @@
     <string name="pm_bottom_sheet_moderated_shop_title">Pendaftaran Power Merchant \ntidak dapat dilanjutkan</string>
     <string name="pm_bottom_sheet_moderated_shop_description">Saat ini, tokomu dalam pengasawan Tokopedia. \nTunggu hingga toko kembali aktif untuk daftar jadi Power Merchant.</string>
     <string name="pm_upgrade_to_power_merchant_pro">Upgrade ke Power Merchant PRO</string>
+    <string name="pm_pm_pro_deactivation_description">Kamu bisa turunkan status tokomu jadi Power Merchant. Hanya dengan biaya layanan %1$s, kamu tetap bisa menikmati berbagai keuntungan.</string>
 </resources>

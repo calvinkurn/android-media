@@ -151,6 +151,15 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         submitPmRegistration(PMConstant.ShopTierType.POWER_MERCHANT_PRO)
     }
 
+    override fun onUpgradePmProTnCClickListener() {
+        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
+        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
+    }
+
     fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean, nextShopTireType: Int) {
         val shopInfo = pmBasicInfo?.shopInfo ?: return
         when {

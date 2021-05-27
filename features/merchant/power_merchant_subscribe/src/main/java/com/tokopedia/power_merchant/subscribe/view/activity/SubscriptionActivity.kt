@@ -20,6 +20,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMTermAndConditionBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
@@ -339,6 +340,18 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
                     pmRegistrationPage.second.setOnFooterCtaClickedListener(firstPriorityTerm, isEligiblePm, tncAgreed, PMConstant.ShopTierType.POWER_MERCHANT)
                 }
             }
+            setOnTncClickListener {
+                showPmTermAndCondition()
+            }
         }
+    }
+
+    private fun showPmTermAndCondition() {
+        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
+        if (supportFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(supportFragmentManager)
     }
 }
