@@ -2,11 +2,10 @@ package com.tokopedia.tokomart.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoNow
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
@@ -31,7 +30,7 @@ class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategor
         itemView.apply {
             textTitle.text = data.title
             textSeeAll.setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalTokoMart.CATEGORY_LIST, WAREHOUSE_ID)
+                RouteManager.route(context, ApplinkConstInternalTokoNow.CATEGORY_LIST, WAREHOUSE_ID)
             }
 
             with(rvCategory) {
