@@ -1,6 +1,7 @@
 package com.tokopedia.seller.menu.common.view.viewholder
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,8 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
@@ -33,6 +36,7 @@ import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.
 import kotlinx.android.synthetic.main.setting_balance.view.*
 import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
+import kotlinx.android.synthetic.main.setting_shop_status_pm_pro.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
 class ShopInfoViewHolder(
@@ -47,15 +51,15 @@ class ShopInfoViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.layout_seller_menu_shop_info
 
-        private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
-        private val GREEN_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
-        private val GREY_TIP = R.drawable.setting_tip_bar_disabled
         private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-        private val RED_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_R500
-        private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
-        private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
+
+        private val TEAL_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_T500
+        private val YELLOW_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_Y400
 
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
+        private const val TAB_PM_PARAM = "tab"
+        private const val TAB_PM = "pm"
+        private const val TAB_PM_PRO = "pm_pro"
     }
 
     private val context by lazy { itemView.context }
@@ -204,89 +208,170 @@ class ShopInfoViewHolder(
     }
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
-        val shopType = shopStatusUiModel.shopType
-        val itemView: View = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
+        val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
+        val itemView: View? = shopType?.shopTypeLayoutRes?.let {
+            LayoutInflater.from(context).inflate(it, null, false)
+        }
         val shopStatusLayout: View? = when (shopType) {
             is RegularMerchant -> {
-                itemView.apply {
-                    setRegularMerchantShopStatus(shopType)
+                itemView?.apply {
+                    setRegularMerchantShopStatus(shopType, shopStatusUiModel)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    rightRectangle.setOnClickListener {
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM)
                         sellerMenuTracker?.sendEventClickShopType()
                     }
                 }
             }
             is PowerMerchantStatus -> {
-                itemView.apply {
+                itemView?.apply {
                     setPowerMerchantShopStatus(shopType)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
                         RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-                        sellerMenuTracker?.sendEventClickShopType()
                     }
                 }
             }
             is ShopType.OfficialStore -> {
-                itemView.apply {
+                itemView?.apply {
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                 }
             }
+
+            is PowerMerchantProStatus.Advanced -> {
+                itemView?.apply {
+                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
+                        sellerMenuTracker?.sendEventClickShopType()
+                    }
+                }
+
+            }
+            is PowerMerchantProStatus.Expert -> {
+                itemView?.apply {
+                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
+                        sellerMenuTracker?.sendEventClickShopType()
+                    }
+                }
+            }
+            is PowerMerchantProStatus.Ultimate -> {
+                itemView?.apply {
+                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
+                        sellerMenuTracker?.sendEventClickShopType()
+                    }
+                }
+            }
+            else -> null
         }
 
-        val paddingTop = itemView.resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
-        val paddingBottom = itemView.resources.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
-        itemView.setPadding(0, paddingTop, 0, paddingBottom)
+        val paddingTop = itemView?.resources?.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val paddingBottom = itemView?.resources?.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
+        if (paddingTop != null && paddingBottom != null) {
+            itemView.setPadding(0, paddingTop, 0, paddingBottom)
+        }
 
         shopStatusLayout?.let { view ->
-            (this.itemView.shopStatus as LinearLayout).run {
+            this.itemView.shopStatus?.run {
                 removeAllViews()
                 addView(view)
             }
         }
     }
 
-    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant): View {
+    private fun goToPowerMerchantSubscribe(tab: String) {
+        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+        val appLinkPMTab = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build().toString()
+        context?.let { RouteManager.route(context, appLinkPMTab) }
+    }
+
+    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant, shopStatusUiModel: ShopStatusUiModel): View {
+        val userShopInfo = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
         regularMerchantStatus.run {
             text = when (regularMerchant) {
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
-                is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)
+            }
+        }
+
+        val thresholdTransaction  = 110
+        val maxTransaction = 100
+        val totalTransaction = userShopInfo?.totalTransaction ?: 0
+        if (totalTransaction >= thresholdTransaction) {
+            hideTransactionSection()
+        } else {
+            showTransactionSection()
+            if (totalTransaction > maxTransaction) {
+                tx_stats_rm?.text = MethodChecker.fromHtml(getString(R.string.transaction_passed))
+                tx_total_stats_rm?.hide()
+            } else {
+                if (userShopInfo?.isBeforeOnDate == true) {
+                    tx_stats_rm?.text = getString(R.string.transaction_since_joining)
+                } else {
+                    tx_stats_rm?.text = getString(R.string.transaction_on_date)
+                }
+                tx_total_stats_rm?.show()
+                tx_total_stats_rm?.text = getString(R.string.total_transaction, totalTransaction.toString())
             }
         }
 
         return this
     }
 
+    private fun View.hideTransactionSection() {
+        divider_stats_rm?.hide()
+        tx_stats_rm?.hide()
+        tx_total_stats_rm?.hide()
+    }
+
+    private fun View.showTransactionSection() {
+        divider_stats_rm?.show()
+        tx_stats_rm?.show()
+        tx_total_stats_rm?.show()
+    }
+
     private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus): View {
-        var statusText = context.resources.getString(R.string.setting_on_verification)
-        var textColor = GREY_TEXT_COLOR
-        var statusDrawable = GREY_TIP
-        var powerMerchantDrawableIcon = GREY_POWER_MERCHANT_ICON
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
-                statusText = context.resources.getString(R.string.setting_active)
-                textColor = GREEN_TEXT_COLOR
-                powerMerchantDrawableIcon = GREEN_POWER_MERCHANT_ICON
-                statusDrawable = GREEN_TIP
+                upgradePMText?.show()
+                powerMerchantStatusText?.hide()
             }
             is PowerMerchantStatus.NotActive -> {
-                statusText = context.resources.getString(R.string.setting_not_active)
-                textColor = RED_TEXT_COLOR
-            }
-            is PowerMerchantStatus.OnVerification -> {
-                powerMerchantText?.text = context.resources.getString(R.string.regular_merchant)
-            }
-        }
-        powerMerchantStatusText?.text = statusText
-        powerMerchantStatusText?.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            powerMerchantLeftStatus?.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
-        } else {
-            powerMerchantLeftStatus?.let {
-                (it as? ImageView)?.setImageDrawable(ResourcesCompat.getDrawable(resources, statusDrawable, null))
+                powerMerchantStatusText?.show()
+                upgradePMText?.hide()
+                powerMerchantStatusText?.setOnClickListener {
+                    goToPowerMerchantSubscribe(TAB_PM_PRO)
+                    sellerMenuTracker?.sendEventClickShopType()
+                }
             }
         }
-        powerMerchantIcon?.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
+        return this
+    }
+
+    private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
+        val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+        when (powerMerchantStatus) {
+            is PowerMerchantProStatus.Advanced -> {
+                iv_bg_pm_pro?.setImageResource(R.drawable.ic_pm_pro_advance)
+                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
+            }
+            is PowerMerchantProStatus.Expert -> {
+                iv_bg_pm_pro?.setImageResource(R.drawable.ic_pm_pro_expert)
+                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
+            }
+            is PowerMerchantProStatus.Ultimate -> {
+                iv_bg_pm_pro?.setImageResource(R.drawable.ic_pm_pro_ultimate)
+                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
+            }
+        }
+        powerMerchantProStatusText?.text = goldOS?.pmProGradeName ?: ""
         return this
     }
 
