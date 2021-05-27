@@ -31,15 +31,14 @@ import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.tokomart.home.presentation.uimodel.*
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeAllCategoryViewHolder
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeSectionViewHolder
+import com.tokopedia.tokomart.home.presentation.viewholder.*
 
 class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
     // region Toko Mart Home Component
     override fun type(uiModel: HomeSectionUiModel): Int = HomeSectionViewHolder.LAYOUT
-    override fun type(uiModel: HomeAllCategoryUiModel): Int = HomeAllCategoryViewHolder.LAYOUT
+    override fun type(uiModel: HomeCategoryGridUiModel): Int = HomeCategoryGridViewHolder.LAYOUT
+    override fun type(uiModel: HomeCategoryItemUiModel): Int = HomeCategoryItemViewHolder.LAYOUT
     override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
     // endregion
 
@@ -62,7 +61,8 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
         return when(type) {
             // region Toko Mart Home Component
             HomeSectionViewHolder.LAYOUT -> HomeSectionViewHolder(view)
-            HomeAllCategoryViewHolder.LAYOUT -> HomeAllCategoryViewHolder(view)
+            HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
+            HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, fragment)
             // endregion
 

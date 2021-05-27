@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="tokomart_category_list_padding">14dp</dimen>
+    <dimen name="tokomart_category_divider_height">1dp</dimen>
     <dimen name="default_toolbar_status_height">96dp</dimen>
     <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>
 </resources>
