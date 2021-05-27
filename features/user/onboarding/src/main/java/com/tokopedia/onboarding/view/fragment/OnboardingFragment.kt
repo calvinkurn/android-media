@@ -24,6 +24,7 @@ import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER
 import com.tokopedia.onboarding.data.OnboardingConstant.PARAM_SOURCE_ONBOARDING
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.di.OnboardingComponent
@@ -111,7 +112,10 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
                     val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    if (resultCode == Activity.RESULT_OK && userSession.isLoggedIn) {
+                    if (resultCode == Activity.RESULT_OK &&
+                            userSession.isLoggedIn &&
+                            data?.extras?.getBoolean(PARAM_IS_SMART_REGISTER, false) == true
+                    ) {
                         it.startActivities(arrayOf(intentHome, intentNewUser))
                     } else {
                         it.startActivity(intentHome)

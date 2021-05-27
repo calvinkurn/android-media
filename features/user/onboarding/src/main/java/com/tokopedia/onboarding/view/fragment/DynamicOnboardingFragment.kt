@@ -91,7 +91,10 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                     val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    if (resultCode == Activity.RESULT_OK && userSession.isLoggedIn) {
+                    if (resultCode == Activity.RESULT_OK &&
+                            userSession.isLoggedIn &&
+                            data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == true
+                    ) {
                         it.startActivities(arrayOf(intentHome, intentNewUser))
                     } else {
                         it.startActivity(intentHome)

@@ -33,6 +33,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
@@ -132,6 +133,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private var source: String = ""
     private var email: String = ""
     private var isSmartLogin: Boolean = false
+    private var isSmartRegister: Boolean = false
     private var isPending: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
@@ -770,6 +772,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun goToOTPActivateEmail(email: String) {
         activity?.let {
+            isSmartRegister = true
             val intent = registerInitialRouter.goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE, context = requireContext())
             startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
         }
@@ -894,7 +897,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 val phoneNumber = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 goToChooseAccountPage(accessToken, phoneNumber)
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                it.setResult(Activity.RESULT_OK)
+                val bundleResult = Bundle()
+                bundleResult.putBoolean(PARAM_IS_SMART_REGISTER, isSmartRegister)
+                it.setResult(Activity.RESULT_OK, Intent().putExtras(bundleResult))
                 if (data != null) {
                     data.extras?.let { bundle ->
                         if (bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
@@ -1092,11 +1097,15 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         activity?.let {
             activity ->
             dialog?.setPrimaryCTAClickListener {
+                isSmartRegister = true
                 registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                 dialog.dismiss()
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, Uri.encode(email), source)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
                 intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+                val bundleResult = Bundle()
+                bundleResult.putBoolean(PARAM_IS_SMART_REGISTER, isSmartRegister)
+                activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundleResult))
                 startActivity(intent)
                 activity.finish()
             }
@@ -1113,6 +1122,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         registerAnalytics.trackFailedClickPhoneSignUpButtonAlreadyRegistered()
         val dialog = RegisteredDialog.createRegisteredPhoneDialog(context, phone)
         dialog?.setPrimaryCTAClickListener {
+            isSmartRegister = true
             registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
             dialog.dismiss()
             phoneNumber = phone
@@ -1205,10 +1215,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         activityShouldEnd = true
         registerPushNotif()
         activity?.let {
-            val intent = Intent()
-            intent.putExtra(PARAM_IS_SUCCESS_REGISTER, true)
-
-            it.setResult(Activity.RESULT_OK, intent)
+            val bundle = Bundle()
+            bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
+            it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
             it.finish()
             saveFirstInstallTime()
 
