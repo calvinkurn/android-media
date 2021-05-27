@@ -32,6 +32,7 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryItemUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeSectionUiModel
+import com.tokopedia.tokomart.home.presentation.view.listener.TokoMartDynamicLegoBannerCallback
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryItemViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeSectionViewHolder
@@ -68,7 +69,10 @@ class TokoMartHomeAdapterTypeFactory: BaseAdapterTypeFactory(), TokoMartHomeType
             // endregion
 
             // region Global Home Component
-            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(view, null, null)
+            DynamicLegoBannerViewHolder.LAYOUT -> {
+                val listener = TokoMartDynamicLegoBannerCallback(view.context)
+                DynamicLegoBannerViewHolder(view, listener, null)
+            }
             // endregion
             else -> super.createViewHolder(view, type)
         }
