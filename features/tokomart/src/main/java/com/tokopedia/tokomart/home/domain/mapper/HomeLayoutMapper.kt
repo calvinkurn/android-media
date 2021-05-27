@@ -19,6 +19,7 @@ object HomeLayoutMapper {
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         HomeLayoutType.CATEGORY,
         HomeLayoutType.LEGO_3_IMAGE,
+        HomeLayoutType.LEGO_6_IMAGE,
         HomeLayoutType.BANNER_CAROUSEL
     )
 
@@ -57,7 +58,8 @@ object HomeLayoutMapper {
     private fun mapToHomeUiModel(response: HomeLayoutResponse): Visitable<*>? {
         return when (response.layout) {
             HomeLayoutType.CATEGORY -> mapToCategoryLayout(response)
-            HomeLayoutType.LEGO_3_IMAGE -> mapLegoBannerDataModel(response)
+            HomeLayoutType.LEGO_3_IMAGE,
+            HomeLayoutType.LEGO_6_IMAGE -> mapLegoBannerDataModel(response)
             HomeLayoutType.BANNER_CAROUSEL -> mapSliderBannerModel(response)
             else -> null
         }
