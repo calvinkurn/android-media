@@ -73,7 +73,6 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
             private val parentPosition: Int
     ): RecyclerView.Adapter<CategoryWidgetItemViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
-        private var cardWithShadow = false
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryWidgetItemViewHolder {
             var layout = 0
@@ -86,7 +85,6 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
                     },
                     isTypeTextBox = {
                         layout = R.layout.home_dc_category_widget_item_text_box
-                        cardWithShadow = true
                     }
             )
             val v = LayoutInflater.from(parent.context).inflate(layout, parent, false)
