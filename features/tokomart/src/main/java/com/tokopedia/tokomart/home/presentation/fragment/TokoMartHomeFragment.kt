@@ -14,6 +14,7 @@ import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_tokomart_home.*
@@ -63,15 +64,19 @@ class TokoMartHomeFragment: Fragment() {
     private fun observeLiveData() {
         observe(viewModel.homeLayoutList) {
             if (it is Success) {
-                adapter.submitList(it.data)
-                // TO-DO: Lazy Load Data
-                viewModel.getLayoutData()
+                loadHomeLayout(it.data)
             }
         }
+    }
 
-        observe(viewModel.homeLayoutData) {
-            if(it is Success) {
-                adapter.submitList(it.data)
+    private fun loadHomeLayout(data: HomeLayoutListUiModel) {
+        data.run {
+            if (isInitialLoad) {
+                adapter.submitList(result)
+                // TO-DO: Lazy Load Data
+                viewModel.getLayoutData()
+            } else {
+                adapter.submitList(result)
             }
         }
     }
