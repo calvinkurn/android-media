@@ -109,6 +109,7 @@
                     android:paddingTop="@dimen/spacing_lvl2"
                     android:paddingEnd="@dimen/layout_lvl0"
                     android:paddingBottom="@dimen/spacing_lvl2"
+                    android:contentDescription="Ikon tenggat waktu"
                     app:layout_constraintBottom_toBottomOf="@id/tvSomListDeadline"
                     app:layout_constraintEnd_toStartOf="@id/tvSomListDeadline"
                     app:layout_constraintTop_toTopOf="@id/tvSomListDeadline"

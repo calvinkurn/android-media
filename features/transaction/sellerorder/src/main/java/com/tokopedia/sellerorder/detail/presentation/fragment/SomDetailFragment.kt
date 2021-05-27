@@ -160,7 +160,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var bottomSheetBuyerNoResponse: SomBottomSheetBuyerNoResponse? = null
     private var bottomSheetBuyerOtherReason: SomBottomSheetBuyerOtherReason? = null
 
-    private var progressBar: ProgressBar? = null
     private var pendingAction: SomPendingAction? = null
 
     protected var orderId = ""
@@ -242,7 +241,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progressBar = view.findViewById(R.id.progress_bar)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         setupToolbar()
         prepareLayout()
@@ -744,11 +742,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setLoadingIndicator(active: Boolean) {
-        if (active) {
-            progressBar?.visibility = View.VISIBLE
-        } else {
-            progressBar?.visibility = View.GONE
-        }
+        swipe_refresh_layout?.isRefreshing = active
     }
 
     private fun showFreeShippingAcceptOrderDialog(orderId: String) {
