@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class FeaturesData(
-        @SerializedName("dynamic_Price")
+        @SerializedName("dynamic_price")
         val dynamicPricing: DynamicPricing = DynamicPricing()
 
 ) : Parcelable
