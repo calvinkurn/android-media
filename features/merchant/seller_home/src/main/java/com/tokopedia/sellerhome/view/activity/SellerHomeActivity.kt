@@ -159,7 +159,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        navigator?.getHomeFragment()?.onActivityResult(requestCode, resultCode, data)
+        val sellerHomeLifecycleState = navigator?.getHomeFragment()?.lifecycle?.currentState
+        if (sellerHomeLifecycleState?.isAtLeast(Lifecycle.State.CREATED) == true) {
+            navigator?.getHomeFragment()?.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onBackPressed() {
