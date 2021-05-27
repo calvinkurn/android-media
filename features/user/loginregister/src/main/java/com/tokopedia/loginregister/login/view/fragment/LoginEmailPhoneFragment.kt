@@ -17,6 +17,7 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
@@ -841,11 +842,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun onErrorGetFacebookCredential(errorMessage: Throwable?){
+    private fun onErrorGetFacebookCredential(errorMessage: Throwable){
         dismissLoadingLogin()
         if (isAdded && activity != null) {
             val msg = ErrorHandler.getErrorMessage(context, errorMessage)
-            onErrorLogin(msg, LoginErrorCode.ERROR_ON_FACEBOOK)
+            onErrorLogin(msg, LoginErrorCode.ERROR_ON_FACEBOOK, errorMessage)
         }
     }
 
@@ -1115,12 +1116,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
-    fun onErrorLogin(errorMessage: String?, flow: String) {
+    private fun onErrorLogin(errorMessage: String?, flow: String) {
         analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
         loggingError(flow, errorMessage)
+    }
+
+    private fun onErrorLogin(errorMessage: String?, flow: String, throwable: Throwable) {
+        analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
+
+        dismissLoadingLogin()
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        loggingErrorWithThrowable(flow, errorMessage, throwable)
     }
 
     override fun trackSuccessValidate() {
@@ -1280,7 +1289,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
-                onErrorLogin(it.errorDescription, LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION)
+                onErrorLogin(it.errorDescription, LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION, it)
             } else {
                 val forbiddenMessage = context?.getString(
                         com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
@@ -1288,7 +1297,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 if (errorMessage == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
-                    onErrorLogin(errorMessage, LoginErrorCode.ERROR_EMAIL_UNKNOWN)
+                    onErrorLogin(errorMessage, LoginErrorCode.ERROR_EMAIL_UNKNOWN, it)
 
                     context?.run {
                         if (!TextUtils.isEmpty(it.message)
@@ -1320,7 +1329,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GET_USER_INFO)
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GET_USER_INFO, it)
         }
     }
 
@@ -1392,7 +1401,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK)
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK, it)
             }
         }
     }
@@ -1413,7 +1422,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK_PHONE)
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK_PHONE, it)
             }
         }
     }
@@ -1425,7 +1434,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GMAIL)
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GMAIL, it)
             }
         }
     }
@@ -1439,7 +1448,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onFailedActivateUser(throwable: Throwable) {
         dismissLoadingLogin()
-        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable), LoginErrorCode.ERROR_ACTIVATE_USER)
+        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable), LoginErrorCode.ERROR_ACTIVATE_USER, throwable)
     }
 
     protected fun isEmailNotActive(e: Throwable, email: String): Boolean {
@@ -1910,6 +1919,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 getString(R.string.popup_error_desc),
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
         )
+        loggingError("Login", "Akamai Error")
     }
 
     override fun onFingerprintValid() {}
@@ -1928,9 +1938,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun loggingError(flow: String, errorMessage: String?) {
-        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN"
+        ServerLogger.log(Priority.P1, "BUYER_FLOW_LOGIN"
                 , mapOf("type" to flow
                         , "error" to errorMessage.orEmpty()))
+    }
+
+    private fun loggingErrorWithThrowable(flow: String, errorMessage: String?, throwable: Throwable) {
+        ServerLogger.log(Priority.P1, "BUYER_FLOW_LOGIN"
+                , mapOf("type" to flow
+                , "error" to errorMessage.orEmpty()
+                , "throwable" to Log.getStackTraceString(throwable)))
     }
 
     companion object {
