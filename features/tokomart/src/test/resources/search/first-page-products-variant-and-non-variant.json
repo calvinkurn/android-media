@@ -80,6 +80,10 @@
           "countReview": 259,
           "originalPrice": "",
           "discountPercentage": 0,
+          "minOrder": 1,
+          "childs": [],
+          "parentId": 0,
+          "stock": 7,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -280,7 +284,20 @@
             "city": "Jakarta Pusat",
             "isOfficial": true,
             "isPowerBadge": false
-          }
+          },
+          "minOrder": 1,
+          "childs": [
+            1682734981,
+            1682734979,
+            1682734983,
+            1682734976,
+            1682734980,
+            1682734982,
+            1682734977,
+            1682734978
+          ],
+          "parentId": 1682234974,
+          "stock": 13
         },
         {
           "id": 574262652,
@@ -330,7 +347,20 @@
             "city": "Jakarta Pusat",
             "isOfficial": true,
             "isPowerBadge": false
-          }
+          },
+          "minOrder": 1,
+          "childs": [
+            1682734981,
+            1682734979,
+            1682734983,
+            1682734976,
+            1682734980,
+            1682734982,
+            1682734977,
+            1682734978
+          ],
+          "parentId": 1682233974,
+          "stock": 12
         },
         {
           "id": 574262352,
@@ -380,7 +410,11 @@
             "city": "Jakarta Pusat",
             "isOfficial": true,
             "isPowerBadge": false
-          }
+          },
+          "minOrder": 1,
+          "childs": [],
+          "parentId": 0,
+          "stock": 13
         },
         {
           "id": 574262659,
@@ -430,7 +464,20 @@
             "city": "Jakarta Pusat",
             "isOfficial": true,
             "isPowerBadge": false
-          }
+          },
+          "minOrder": 1,
+          "childs": [
+            1682734981,
+            1682734979,
+            1682734983,
+            1682734976,
+            1682734980,
+            1682734982,
+            1682734977,
+            1682734978
+          ],
+          "parentId": 2682234972,
+          "stock": 13
         },
         {
           "id": 674262652,
@@ -480,7 +527,11 @@
             "city": "Jakarta Pusat",
             "isOfficial": true,
             "isPowerBadge": false
-          }
+          },
+          "minOrder": 1,
+          "childs": [],
+          "parentId": 0,
+          "stock": 13
         }
       ]
     }

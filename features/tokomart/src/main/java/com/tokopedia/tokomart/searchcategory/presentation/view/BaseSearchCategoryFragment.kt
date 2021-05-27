@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.discovery.common.Event
+import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -171,13 +173,18 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().productCountAfterFilterLiveData.observe(this::setFilterProductCount)
         getViewModel().isL3FilterPageOpenLiveData.observe(this::configureL3BottomSheet)
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
+        getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
     }
+
+    abstract fun getViewModel(): BaseSearchCategoryViewModel
 
     protected fun <T> LiveData<T>.observe(observer: Observer<T>) {
         observe(viewLifecycleOwner, observer)
     }
 
-    abstract fun getViewModel(): BaseSearchCategoryViewModel
+    protected fun <T> LiveData<Event<T>>.observeEvent(onChanged: (T) -> Unit) {
+        observe(viewLifecycleOwner, EventObserver(onChanged))
+    }
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
         searchCategoryAdapter?.submitList(visitableList)
@@ -302,7 +309,13 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
+    }
 
+    private fun notifyAdapterItemChange(indices: List<Int>) {
+        indices.forEach {
+            searchCategoryAdapter?.notifyItemChanged(it)
+        }
     }
 
     override fun onResume() {

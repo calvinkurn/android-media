@@ -44,7 +44,6 @@ class CategoryProductVariantAndNonVariantTest: CategoryTestFixtures() {
         assertThat(nonVariantATC.maxQuantity, shouldBe(productNonVariant.stock))
     }
 
-
     @Test
     fun `test product item with variant configuration`() {
         `Given get category first page use case will be successful`(categoryModel)

@@ -44,7 +44,6 @@ class SearchProductVariantNonVariantTest: SearchTestFixtures() {
         assertThat(nonVariantATC.maxQuantity, shouldBe(productNonVariant.stock))
     }
 
-
     @Test
     fun `test product item with variant configuration`() {
         `Given get search first page use case will be successful`(searchModel)

@@ -20,12 +20,17 @@ class SearchUpdateCartTest: SearchTestFixtures(), UpdateCartTestHelper.Callback 
     }
 
     override fun `Given first page API will be successful`() {
-        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+        val searchModel = "search/first-page-products-variant-and-non-variant.json".jsonToObject<SearchModel>()
         `Given get search first page use case will be successful`(searchModel)
     }
 
     @Test
-    fun `onViewResumed should update mini cart`() {
-        updateCartTestHelper.`onViewResumed should update mini cart`()
+    fun `onViewResumed should update mini cart and quantity in product list`() {
+        updateCartTestHelper.`onViewResumed should update mini cart and quantity in product list`()
+    }
+
+    @Test
+    fun `onViewUpdateCartItems should update quantity in product list`() {
+        updateCartTestHelper.`onViewUpdateCartItems should update quantity in product list`()
     }
 }
