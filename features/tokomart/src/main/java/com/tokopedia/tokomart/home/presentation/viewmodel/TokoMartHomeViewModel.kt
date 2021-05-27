@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
@@ -36,6 +37,16 @@ class TokoMartHomeViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
+        /**
+         * List of layout IDs that doesn't need to call GQL query from Toko Now Home
+         * to fetch the data. For example: Choose Address Widget. The GQL call for
+         * Choose Address Widget data is done internally, so Toko Now Home doesn't
+         * need to call query to fetch data for it.
+         */
+        private val STATIC_LAYOUT_ID = listOf(
+            HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID
+        )
+
         // Temp hardcoded wh_id
         private const val WAREHOUSE_ID = "1"
         private const val CATEGORY_LEVEL_DEPTH = 1
@@ -69,7 +80,7 @@ class TokoMartHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val layoutItems = layoutList.toList()
 
-            val getDataForEachLayout = layoutItems.map {
+            val getDataForEachLayout = layoutItems.filter { it.isNotStaticLayout() }.map {
                 asyncCatchError(block = {
                     val layoutList = getHomeComponentData(it)
                     val data = HomeLayoutListUiModel(layoutList, isInitialLoad = false)
@@ -124,5 +135,17 @@ class TokoMartHomeViewModel @Inject constructor(
         val channelId = item.visitableId().orEmpty()
         val response = getHomeLayoutDataUseCase.execute(channelId)
         return layoutList.mapGlobalHomeLayoutData(item, response)
+    }
+
+    private fun Visitable<*>.getVisitableId(): String? {
+        return when(this) {
+            is TokoMartHomeLayoutUiModel -> visitableId
+            is HomeComponentVisitable -> visitableId()
+            else -> null
+        }
+    }
+
+    private fun Visitable<*>.isNotStaticLayout(): Boolean {
+        return this.getVisitableId() !in STATIC_LAYOUT_ID
     }
 }

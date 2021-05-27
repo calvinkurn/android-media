@@ -6,8 +6,8 @@ import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiMode
 
 object VisitableMapper {
 
-    fun List<Visitable<*>>.updateByChannelId(channelId: String?, block: () -> Visitable<*>?): List<Visitable<*>> {
-        return getItemIndex(channelId)?.let { index ->
+    fun List<Visitable<*>>.updateItemById(id: String?, block: () -> Visitable<*>?): List<Visitable<*>> {
+        return getItemIndex(id)?.let { index ->
             toMutableList().let {
                 block.invoke()?.let { item->
                     it[index] = item
@@ -17,16 +17,15 @@ object VisitableMapper {
         } ?: this
     }
 
-    private fun Visitable<*>.getChannelId(): String? {
+    private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
-            is TokoMartHomeLayoutUiModel -> channelId
+            is TokoMartHomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
             else -> null
         }
     }
 
-    private fun List<Visitable<*>>.getItemIndex(channelId: String?): Int? {
-        val item = firstOrNull { it.getChannelId() == channelId }
-        return item?.let { indexOf(it) }
+    private fun List<Visitable<*>>.getItemIndex(visitableId: String?): Int? {
+        return firstOrNull { it.getVisitableId() == visitableId }?.let { indexOf(it) }
     }
 }
