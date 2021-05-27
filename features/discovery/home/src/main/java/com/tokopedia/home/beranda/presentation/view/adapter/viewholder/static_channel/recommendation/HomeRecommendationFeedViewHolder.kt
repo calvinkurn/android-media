@@ -23,16 +23,22 @@ import java.util.*
 
 class HomeRecommendationFeedViewHolder(itemView: View,
                                        private val listener: HomeCategoryListener) : AbstractViewHolder<HomeRecommendationFeedDataModel>(itemView), HomeTabFeedListener {
-    private val homeFeedsViewPager: ViewPager = itemView.findViewById(R.id.view_pager_home_feeds)
-    private val homeFeedsTabLayout: CollapsingTabLayout = itemView.findViewById(R.id.tab_layout_home_feeds)
-    private val homeFeedsTabShadow: View = itemView.findViewById(R.id.view_feed_shadow)
-    private val container: View = itemView.findViewById(R.id.home_recommendation_feed_container)
     private val context: Context = itemView.context
     private var homeFeedPagerAdapter: HomeFeedPagerAdapter? = null
     private var recommendationTabDataModelList: List<RecommendationTabDataModel>? = null
 
+    private var homeFeedsViewPager: ViewPager? = null
+    private var homeFeedsTabLayout: CollapsingTabLayout? = null
+    private var homeFeedsTabShadow: View? = null
+    private var container: View? = null
+
     override fun bind(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel) {
-        val layoutParams = container.layoutParams
+        homeFeedsViewPager = itemView.findViewById(R.id.view_pager_home_feeds)
+        homeFeedsTabLayout = itemView.findViewById(R.id.tab_layout_home_feeds)
+        homeFeedsTabShadow = itemView.findViewById(R.id.view_feed_shadow)
+        container = itemView.findViewById(R.id.home_recommendation_feed_container)
+
+        val layoutParams = container?.layoutParams
 
         //we must specify height for viewpager, so it can't scroll up anymore and create
         //sticky effect
@@ -40,23 +46,23 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         // 1st dp8 comes from N0 divider in home recommendation feed viewholder
         // 2nd dp8 comes from N50 divider in home recommendation feed viewholder
         // 3rd dp8 comes from N0 divider in home recommendation feed viewholder
-        layoutParams.height = listener.windowHeight - listener.homeMainToolbarHeight +
+        layoutParams?.height = listener.windowHeight - listener.homeMainToolbarHeight +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8) +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8) +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8) +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8)
-        container.layoutParams = layoutParams
+        container?.layoutParams = layoutParams
 
         recommendationTabDataModelList = homeRecommendationFeedDataModel.recommendationTabDataModel
 
-        homeFeedsTabLayout.visibility = View.VISIBLE
-        homeFeedsViewPager.visibility = View.VISIBLE
+        homeFeedsTabLayout?.visibility = View.VISIBLE
+        homeFeedsViewPager?.visibility = View.VISIBLE
 
-        initViewPagerAndTablayout()
+        initViewPagerAndTablayout(homeFeedsViewPager = homeFeedsViewPager, homeFeedsTabLayout = homeFeedsTabLayout)
         homeRecommendationFeedDataModel.isNewData = false
     }
 
-    private fun initViewPagerAndTablayout() {
+    private fun initViewPagerAndTablayout(homeFeedsViewPager: ViewPager?, homeFeedsTabLayout: CollapsingTabLayout?) {
         homeFeedPagerAdapter = HomeFeedPagerAdapter(
                 listener,
                 listener.eggListener,
@@ -65,10 +71,10 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 recommendationTabDataModelList,
                 listener.parentPool)
 
-        homeFeedsViewPager.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
-        homeFeedsViewPager.adapter = homeFeedPagerAdapter
-        homeFeedsTabLayout.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!))
-        homeFeedsTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        homeFeedsViewPager?.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
+        homeFeedsViewPager?.adapter = homeFeedPagerAdapter
+        homeFeedsTabLayout?.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!))
+        homeFeedsTabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 if (tab.position < recommendationTabDataModelList!!.size) {
                     val selectedFeedTabModel = recommendationTabDataModelList!![tab.position]
@@ -100,31 +106,22 @@ class HomeRecommendationFeedViewHolder(itemView: View,
     }
 
     override fun onFeedContentScrolled(dy: Int, totalScrollY: Int) {
-        homeFeedsTabLayout.adjustTabCollapseOnScrolled(dy, totalScrollY)
+        homeFeedsTabLayout?.adjustTabCollapseOnScrolled(dy, totalScrollY)
     }
 
     override fun onFeedContentScrollStateChanged(newState: Int) {
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-            homeFeedsTabLayout.scrollActiveTabToLeftScreen()
+            homeFeedsTabLayout?.scrollActiveTabToLeftScreen()
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            homeFeedsTabLayout.snapCollapsingTab()
+            homeFeedsTabLayout?.snapCollapsingTab()
         }
     }
 
     fun showFeedTabShadow(show: Boolean?) {
         if (show!!) {
-            homeFeedsTabShadow.visibility = View.VISIBLE
+            homeFeedsTabShadow?.visibility = View.VISIBLE
         } else {
-            homeFeedsTabShadow.visibility = View.INVISIBLE
-        }
-    }
-
-    fun scrollByVelocity(velocity: Int) {
-        val fragment = homeFeedPagerAdapter?.getRegisteredFragment(
-                homeFeedsViewPager.currentItem
-        )
-        fragment?.let {
-            fragment.smoothScrollRecyclerViewByVelocity(velocity)
+            homeFeedsTabShadow?.visibility = View.INVISIBLE
         }
     }
 
