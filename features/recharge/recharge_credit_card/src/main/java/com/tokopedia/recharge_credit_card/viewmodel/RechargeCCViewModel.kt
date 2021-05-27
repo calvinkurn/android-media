@@ -81,7 +81,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
             }
 
         }) {
-            errorCCBankList.postValue(MessageErrorException(it.message))
+            errorCCBankList.postValue(it)
         }
     }
 

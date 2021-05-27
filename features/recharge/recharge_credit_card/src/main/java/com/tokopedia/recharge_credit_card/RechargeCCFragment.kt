@@ -300,8 +300,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
             rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
-            navigateUserLogin()
             hideLoading()
+            navigateUserLogin()
         }
     }
 

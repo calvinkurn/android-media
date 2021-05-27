@@ -52,7 +52,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
                 _errorSignature.postValue(MessageErrorException(data.rechargeSignature.messageError))
             }
         }) {
-            _errorSignature.postValue(MessageErrorException(it.message))
+            _errorSignature.postValue(it)
         }
     }
 
@@ -73,7 +73,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
                 _errorSubmitCreditCard.postValue(MessageErrorException(ccRedirectUrl.messageError))
             }
         }) {
-            _errorSubmitCreditCard.postValue(MessageErrorException(it.message))
+            _errorSubmitCreditCard.postValue(it)
         }
     }
 
