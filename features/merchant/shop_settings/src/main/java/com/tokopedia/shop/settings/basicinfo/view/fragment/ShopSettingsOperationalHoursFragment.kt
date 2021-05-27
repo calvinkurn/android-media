@@ -74,7 +74,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         setBackgroundColor()
         initListener()
         observeLiveData()
-        getShopOperationalHoursList(userSession.shopId)
+        getInitialData()
     }
 
     override fun getScreenName(): String {
@@ -199,16 +199,20 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun observeLiveData() {
 
         // observe get shop operational hours list data
-        observe(shopSettingsOperationalHoursViewModel.shopOperationalHoursListData) { result ->
+        observe(shopSettingsOperationalHoursViewModel.shopSettingsOperationalHoursListUiModel) { result ->
             if (result is Success) {
-                val opsHourList = result.data
+                val opsHourListUiModel = result.data
+                // update UI for operational hours list section
+                val opsHourList = opsHourListUiModel.operationalHourList
                 rvOpsHourListAdapter?.updateOpsHourList(opsHourList)
             }
         }
 
     }
 
-    private fun getShopOperationalHoursList(shopId: String) {
-        shopSettingsOperationalHoursViewModel.getShopOperationalHoursList(shopId)
+    private fun getInitialData() {
+        shopSettingsOperationalHoursViewModel.getShopOperationalHoursInitialData(
+                userSession.shopId
+        )
     }
 }

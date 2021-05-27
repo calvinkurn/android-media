@@ -196,6 +196,21 @@ object GqlQueryConstant {
             "             }\n" +
             "         }"
 
+    const val SHOP_CLOSE_DETAIL_INFO_QUERY_STRING = "result {\n" +
+            "      closedInfo {\n" +
+            "        detail {\n" +
+            "          startDate\n" +
+            "          endDate\n" +
+            "          openDate\n" +
+            "          status\n" +
+            "          startDateUTC\n" +
+            "          endDateUTC\n" +
+            "          openDateUTC\n" +
+            "        }\n" +
+            "        closedNote\n" +
+            "      }\n" +
+            "    }"
+
     private const val SHOP_INFO_BASE_QUERY_STRING = "query %1s(\$shopIds: [Int!]!, \$fields: [String!]!, \$shopDomain: String, \$source: String){\n" +
             "    shopInfoByID(input: {\n" +
             "        shopIDs: \$shopIds,\n" +
