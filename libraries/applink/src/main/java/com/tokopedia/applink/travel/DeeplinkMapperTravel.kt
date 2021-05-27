@@ -19,6 +19,9 @@ object DeeplinkMapperTravel {
             deeplink.startsWith(ApplinkConst.HOTEL_SRP, true) -> {
                 getHotelSrp(context)
             }
+            deeplink.startsWith(ApplinkConst.HOTEL_ORDER, true) && !deeplink.equals(ApplinkConst.HOTEL_ORDER, true) -> {
+                DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(context, deeplink)
+            }
             else -> deeplink
         }
     }
