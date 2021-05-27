@@ -21,9 +21,10 @@ class TopchatRoomSrwBuyerTest {
     // TODO-Alert: SRW bubble should be removed when user sent invoice. what happened if user receive invoice event from other platform??
     // TODO: SRW Bubble should be collapsed when preview attachment is visible other than product
     // TODO: SRW Bubble should be expanded when preview attachment is not visible
-    // TODO: SRW preview should not be sent when user attach image
+    // TODO: SRW preview should not be sent when user attach image. what happened if user receive image event from other platform??
     // TODO: SRW Bubble should be removed when user attach image
     // TODO: SRW Bubble should be displayed when user manually type msg instead of click SRW question
+    // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
 
     // TODO: CTA on left msg
 }
