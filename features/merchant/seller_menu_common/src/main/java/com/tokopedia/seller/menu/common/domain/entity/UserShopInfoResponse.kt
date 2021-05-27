@@ -56,15 +56,6 @@ data class UserShopInfoResponse(
                     @SerializedName("badge")
                     val badge: String = "",
                     @Expose
-                    @SerializedName("isGold")
-                    val isGold: Int = 0,
-                    @Expose
-                    @SerializedName("isGoldBadge")
-                    val isGoldBadge: Int = 0,
-                    @Expose
-                    @SerializedName("isOfficial")
-                    val isOfficial: Int = 0,
-                    @Expose
                     @SerializedName("shopGrade")
                     val shopGrade: Int = 0,
                     @Expose

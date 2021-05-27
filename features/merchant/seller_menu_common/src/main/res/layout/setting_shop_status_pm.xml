@@ -37,7 +37,7 @@
             app:typographyType="body_2"
             app:typographyWeight="bold"
             app:layout_constraintStart_toEndOf="@id/powerMerchantText"
-            tools:text="Tidak Aktif"/>
+            android:text="@string/setting_not_active"/>
 
         <View
             android:id="@+id/badgeBorder"
@@ -72,8 +72,9 @@
             app:layout_constraintBottom_toBottomOf="@id/powerMerchantIcon"
             app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="body_2"
+            app:typographyWeight="bold"
             android:textColor="@color/Unify_G500"
-            tools:text="Upgrade"/>
+            android:text="@string/setting_upgrade"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftGuideline"

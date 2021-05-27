@@ -35,10 +35,8 @@ import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
-import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
-import kotlinx.android.synthetic.main.setting_shop_status_pm_pro.view.*
-import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 import java.lang.StringBuilder
+import java.util.*
 
 class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
@@ -361,19 +359,20 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun View.hideTransactionSection() {
-        divider_stats_rm?.hide()
-        tx_stats_rm?.hide()
-        tx_total_stats_rm?.hide()
+        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.hide()
+        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)?.hide()
+        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)?.hide()
     }
 
     private fun View.showTransactionSection() {
-        divider_stats_rm?.show()
-        tx_stats_rm?.show()
-        tx_total_stats_rm?.show()
+        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.show()
+        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.setBackgroundResource(com.tokopedia.seller.menu.common.R.drawable.ic_divider_stats_rm)
+        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)?.show()
+        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)?.show()
     }
 
     private fun showShopStatusHeader(shopType: ShopType?) {
-        itemView.shopStatusHeader?.setImageDrawable(shopType?.let { ContextCompat.getDrawable(context, it.shopTypeHeaderRes) })
+        shopType?.let { itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, it.shopTypeHeaderRes)) }
         itemView.shopStatusHeaderIcon?.run {
             if (shopType !is RegularMerchant) {
                 visibility = View.VISIBLE
@@ -387,15 +386,20 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus): View {
+        val upgradePMTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.upgradePMText)
+        val powerMerchantStatusTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantStatusText)
+        val powerMerchantText: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantText)
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
-                upgradePMText?.show()
-                powerMerchantStatusText?.hide()
+                upgradePMTextView.show()
+                powerMerchantStatusTextView.hide()
+                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_status)
             }
             is PowerMerchantStatus.NotActive -> {
-                powerMerchantStatusText?.show()
-                upgradePMText?.hide()
-                powerMerchantStatusText?.setOnClickListener {
+                powerMerchantStatusTextView.show()
+                upgradePMTextView.hide()
+                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
+                powerMerchantStatusTextView.setOnClickListener {
                     goToPowerMerchantSubscribe(TAB_PM_PRO)
                 }
             }
@@ -405,6 +409,9 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant, shopStatusUiModel: ShopStatusUiModel): View {
         val userShopInfo = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+        val txStatsRM = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)
+        val txTotalStatsRM = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)
+        val regularMerchantStatus = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.regularMerchantStatus)
         regularMerchantStatus.run {
             text = when (regularMerchant) {
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_upgrade)
@@ -419,39 +426,40 @@ class OtherMenuViewHolder(private val itemView: View,
         } else {
             showTransactionSection()
             if (totalTransaction > maxTransaction) {
-                tx_stats_rm?.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
-                tx_total_stats_rm?.hide()
+                txStatsRM.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
+                txTotalStatsRM.hide()
             } else {
                 if (userShopInfo?.isBeforeOnDate == true) {
-                    tx_stats_rm?.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
+                    txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
                 } else {
-                    tx_stats_rm?.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+                    txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
                 }
-                tx_total_stats_rm?.show()
-                tx_total_stats_rm?.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
+                txTotalStatsRM.show()
+                txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
             }
         }
-
         return this
     }
 
     private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
         val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+        val ivBgPMPro = findViewById<AppCompatImageView>(com.tokopedia.seller.menu.common.R.id.iv_bg_pm_pro)
+        val powerMerchantProStatusText = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.powerMerchantProStatusText)
         when (powerMerchantStatus) {
             is PowerMerchantProStatus.Advanced -> {
-                iv_bg_pm_pro?.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_advance)
-                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
+                ivBgPMPro.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_advance)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
             }
             is PowerMerchantProStatus.Expert -> {
-                iv_bg_pm_pro?.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_expert)
-                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
+                ivBgPMPro.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_expert)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
             }
             is PowerMerchantProStatus.Ultimate -> {
-                iv_bg_pm_pro?.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_ultimate)
-                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
+                ivBgPMPro.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_ultimate)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
             }
         }
-        powerMerchantProStatusText?.text = goldOS?.pmProGradeName ?: ""
+        powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
         return this
     }
 

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -24,14 +25,13 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.layout_seller_menu_shop_info.view.*
 import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_balance.view.*
 import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
-import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
-import kotlinx.android.synthetic.main.setting_shop_status_pm_pro.view.*
-import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
+import java.util.*
 
 class ShopInfoViewHolder(
         itemView: View,
@@ -149,13 +149,12 @@ class ShopInfoViewHolder(
         }
     }
 
-    @SuppressLint("SetTextI18n")
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
         val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
         itemView.successShopInfoLayout.shopFollowers?.run {
             visibility = followersVisibility
-            text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
+            text = StringBuilder("${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}")
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
                 goToShopFavouriteList()
@@ -289,6 +288,10 @@ class ShopInfoViewHolder(
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant, shopStatusUiModel: ShopStatusUiModel): View {
         val userShopInfo = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+        val txStatsRM = findViewById<Typography>(R.id.tx_stats_rm)
+        val txTotalStatsRM = findViewById<Typography>(R.id.tx_total_stats_rm)
+        val regularMerchantStatus = findViewById<Typography>(R.id.regularMerchantStatus)
+
         regularMerchantStatus.run {
             text = when (regularMerchant) {
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
@@ -303,44 +306,50 @@ class ShopInfoViewHolder(
         } else {
             showTransactionSection()
             if (totalTransaction > maxTransaction) {
-                tx_stats_rm?.text = MethodChecker.fromHtml(getString(R.string.transaction_passed))
-                tx_total_stats_rm?.hide()
+                txStatsRM.text = MethodChecker.fromHtml(getString(R.string.transaction_passed))
+                txTotalStatsRM.hide()
             } else {
                 if (userShopInfo?.isBeforeOnDate == true) {
-                    tx_stats_rm?.text = getString(R.string.transaction_since_joining)
+                    txStatsRM.text = getString(R.string.transaction_since_joining)
                 } else {
-                    tx_stats_rm?.text = getString(R.string.transaction_on_date)
+                    txStatsRM.text = getString(R.string.transaction_on_date)
                 }
-                tx_total_stats_rm?.show()
-                tx_total_stats_rm?.text = getString(R.string.total_transaction, totalTransaction.toString())
+                txTotalStatsRM.show()
+                txTotalStatsRM.text = getString(R.string.total_transaction, totalTransaction.toString())
             }
         }
-
         return this
     }
 
     private fun View.hideTransactionSection() {
-        divider_stats_rm?.hide()
-        tx_stats_rm?.hide()
-        tx_total_stats_rm?.hide()
+        findViewById<View>(R.id.divider_stats_rm)?.hide()
+        findViewById<Typography>(R.id.tx_stats_rm)?.hide()
+        findViewById<Typography>(R.id.tx_total_stats_rm)?.hide()
     }
 
     private fun View.showTransactionSection() {
-        divider_stats_rm?.show()
-        tx_stats_rm?.show()
-        tx_total_stats_rm?.show()
+        findViewById<View>(R.id.divider_stats_rm)?.show()
+        findViewById<View>(R.id.divider_stats_rm)?.setBackgroundResource(R.drawable.ic_divider_stats_rm)
+        findViewById<Typography>(R.id.tx_stats_rm)?.show()
+        findViewById<Typography>(R.id.tx_total_stats_rm)?.show()
     }
 
     private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus): View {
+        val upgradePMTextView: Typography = findViewById(R.id.upgradePMText)
+        val powerMerchantStatusTextView: Typography = findViewById(R.id.powerMerchantStatusText)
+        val powerMerchantText: Typography = findViewById(R.id.powerMerchantText)
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
-                upgradePMText?.show()
-                powerMerchantStatusText?.hide()
+                upgradePMTextView.show()
+                powerMerchantStatusTextView.hide()
+                powerMerchantText.text = getString(R.string.power_merchant_status)
             }
             is PowerMerchantStatus.NotActive -> {
-                powerMerchantStatusText?.show()
-                upgradePMText?.hide()
-                powerMerchantStatusText?.setOnClickListener {
+                powerMerchantStatusTextView.show()
+                upgradePMTextView.hide()
+                powerMerchantText.text = getString(R.string.power_merchant_upgrade)
+
+                powerMerchantStatusTextView.setOnClickListener {
                     goToPowerMerchantSubscribe(TAB_PM_PRO)
                     sellerMenuTracker?.sendEventClickShopType()
                 }
@@ -351,21 +360,23 @@ class ShopInfoViewHolder(
 
     private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
         val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+        val ivBgPMPro = findViewById<AppCompatImageView>(R.id.iv_bg_pm_pro)
+        val powerMerchantProStatusText = findViewById<Typography>(R.id.powerMerchantProStatusText)
         when (powerMerchantStatus) {
             is PowerMerchantProStatus.Advanced -> {
-                iv_bg_pm_pro?.setImageResource(R.drawable.ic_pm_pro_advance)
-                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
+                ivBgPMPro.setImageResource(R.drawable.ic_pm_pro_advance)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
             }
             is PowerMerchantProStatus.Expert -> {
-                iv_bg_pm_pro?.setImageResource(R.drawable.ic_pm_pro_expert)
-                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
+                ivBgPMPro.setImageResource(R.drawable.ic_pm_pro_expert)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
             }
             is PowerMerchantProStatus.Ultimate -> {
-                iv_bg_pm_pro?.setImageResource(R.drawable.ic_pm_pro_ultimate)
-                powerMerchantStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
+                ivBgPMPro.setImageResource(R.drawable.ic_pm_pro_ultimate)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
             }
         }
-        powerMerchantProStatusText?.text = goldOS?.pmProGradeName ?: ""
+        powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
         return this
     }
 

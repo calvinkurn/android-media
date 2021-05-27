@@ -16,7 +16,7 @@ class GetUserShopInfoUseCase @Inject constructor(
 
     companion object {
         val USER_SHOP_INFO_QUERY = """
-            query GetUserShop(${'$'}shopID: Int!) {
+            query GetUserShop(${'$'}shopId: Int!) {
               userShopInfo {
                 info {
                   date_shop_created
@@ -30,15 +30,12 @@ class GetUserShopInfoUseCase @Inject constructor(
               }
               shopInfoByID(
                 input: {
-                  shopIDs: [${'$'}shopID]
+                  shopIDs: [${'$'}shopId]
                   fields: ["other-goldos"]
                 }
               ) {
                 result {
                   goldOS {
-                    isGold
-                    isGoldBadge
-                    isOfficial
                     title
                     badge
                     shopTier  
