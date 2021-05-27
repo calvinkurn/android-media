@@ -83,7 +83,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun onBackPressed() {
-        if (!InboxUnifiedRemoteConfig.isInboxUnified()) {
+        if (!InboxUnifiedRemoteConfig.isInboxUnified() || isEditMode) {
             createReviewFragment?.let {
                 CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
                 it.showCancelDialog()
