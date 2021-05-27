@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -40,11 +39,13 @@ class HomeTickerViewHolder(
                 Toast.makeText(itemView.context, "Ticker Slider Dismissed", Toast.LENGTH_SHORT).show()
             }
         }
-        ticker?.addPagerView(adapter, dataList)
+        ticker?.post {
+            ticker?.addPagerView(adapter, dataList)
+        }
     }
 
     private fun mapTickerData(tickerList: List<com.tokopedia.tokomart.home.domain.model.Ticker> ): List<TickerData> {
-        val uiTickerList = ArrayList<TickerData>()
+        val uiTickerList = mutableListOf<TickerData>()
         tickerList.map { tickerData ->
             uiTickerList.add(
                     TickerData(
