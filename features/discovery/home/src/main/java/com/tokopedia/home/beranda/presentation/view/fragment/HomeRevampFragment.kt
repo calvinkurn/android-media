@@ -121,6 +121,7 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
@@ -1214,7 +1215,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().oneClickCheckout.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
             val data = event.peekContent()
             if (data is Throwable) { // error
-                showToaster(getErrorString(Throwable(getString(R.string.home_error_connection))), TYPE_ERROR)
+                showToaster(getErrorString(MessageErrorException(data.message)), TYPE_ERROR)
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarousel(
@@ -1232,7 +1233,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         viewModel.get().oneClickCheckoutHomeComponent.observe(viewLifecycleOwner, Observer { event: Event<Any> ->
             val data = event.peekContent()
             if (data is Throwable) { // error
-                showToaster(getErrorString(Throwable(data)), TYPE_ERROR)
+                showToaster(getErrorString(MessageErrorException(data.message)), TYPE_ERROR)
             } else {
                 val dataMap = data as Map<*, *>
                 sendEETracking(RecommendationListTracking.getAddToCartOnDynamicListCarouselHomeComponent(
