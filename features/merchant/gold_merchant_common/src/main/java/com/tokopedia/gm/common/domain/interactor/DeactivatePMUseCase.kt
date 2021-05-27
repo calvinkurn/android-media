@@ -37,8 +37,8 @@ class DeactivatePMUseCase @Inject constructor(
         private const val KEY_NEXT_SHOP_TIRE = "next_shop_tier"
         private const val KEY_AUTO_EXTEND = "autoExtend"
         private val QUERY = """
-            mutation deactivatePowerMerchant(${'$'}quest_data: [questData]) {
-              goldTurnOffSubscription(autoExtend: false, quest: ${'$'}quest_data) {
+            mutation deactivatePowerMerchant(${'$'}source: String!, ${'$'}quest: [questData], ${'$'}current_shop_tier: Int, ${'$'}next_shop_tier: Int) {
+              goldTurnOffSubscription(source: ${'$'}source, quest: ${'$'}quest, current_shop_tier: ${'$'}current_shop_tier, next_shop_tier: ${'$'}next_shop_tier, autoExtend: false) {
                 header {
                   error_code
                 }

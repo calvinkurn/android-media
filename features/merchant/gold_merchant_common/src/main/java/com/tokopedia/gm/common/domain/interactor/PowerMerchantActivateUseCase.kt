@@ -37,8 +37,8 @@ class PowerMerchantActivateUseCase @Inject constructor(
 
     companion object {
         private val QUERY = """
-         mutation activatePowerMerchant {
-           goldActivationSubscription {
+         mutation activatePowerMerchant(${'$'}source: String!, ${'$'}current_shop_tier: Int, ${'$'}next_shop_tier: Int) {
+           goldActivationSubscription(source: ${'$'}source, current_shop_tier: ${'$'}current_shop_tier, next_shop_tier: ${'$'}next_shop_tier) {
              header {
                process_time
                messages
@@ -61,9 +61,11 @@ class PowerMerchantActivateUseCase @Inject constructor(
 
         private const val CURRENT_SHOP_TIER = "current_shop_tier"
         private const val NEXT_SHOP_TIER = "next_shop_tier"
+        private const val SOURCE = "source"
 
-        fun createActivationParam(currentShopTier: Int, nextShopTierType: Int): RequestParams {
+        fun createActivationParam(currentShopTier: Int, nextShopTierType: Int, source: String): RequestParams {
             return RequestParams.create().apply {
+                putString(SOURCE, source)
                 putInt(CURRENT_SHOP_TIER, currentShopTier)
                 putInt(NEXT_SHOP_TIER, nextShopTierType)
             }
