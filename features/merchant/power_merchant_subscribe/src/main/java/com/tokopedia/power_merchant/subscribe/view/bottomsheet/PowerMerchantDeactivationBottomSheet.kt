@@ -88,13 +88,22 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
                 colorId = requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Green_G500),
                 isBold = true
         ) {
-            RouteManager.route(requireContext(), Constant.Url.POWER_MERCHANT_TERMS_AND_CONDITION)
+            showPmTermAndCondition()
         }
         tvPmDeactivationTnC.movementMethod = LinkMovementMethod.getInstance()
         tvPmDeactivationTnC.text = tncDescription
 
         imageFreeShipping.showWithCondition(freeShippingEnabled)
         textFreeShipping.showWithCondition(freeShippingEnabled)
+    }
+
+    private fun showPmTermAndCondition() {
+        val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
+        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun showWarningTicker(expiredDate: String) {
