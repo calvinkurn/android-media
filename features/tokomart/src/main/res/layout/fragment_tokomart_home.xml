@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:contentDescription="@string/home_header_background_content_description"
-        android:src="@drawable/ic_header_background"/>
+        app:srcCompat="@drawable/ic_header_background"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvHome"
