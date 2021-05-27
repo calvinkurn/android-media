@@ -2,24 +2,34 @@ package com.tokopedia.tokomart.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.tokomart.home.constant.HomeAdditionalWidgetId
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.home.constant.HomeLayoutType
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
 import com.tokopedia.tokomart.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
+import com.tokopedia.tokomart.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.tokomart.home.domain.mapper.VisitableMapper.updateByChannelId
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 
 object HomeLayoutMapper {
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
         HomeLayoutType.CATEGORY,
-        HomeLayoutType.LEGO_3_IMAGE
+        HomeLayoutType.LEGO_3_IMAGE,
+        HomeLayoutType.BANNER_CAROUSEL
+    )
+
+    val ADDITIONAL_WIDGETS = listOf(
+        HomeAdditionalWidgetId.CHOOSE_ADDRESS_WIDGET_ID,
+        HomeAdditionalWidgetId.TICKER_WIDGET_ID
     )
 
     fun mapHomeLayoutList(response: List<HomeLayoutResponse>): List<Visitable<*>> {
         val layoutList = mutableListOf<Visitable<*>>()
+        layoutList.add(HomeChooseAddressWidgetUiModel(id = HomeAdditionalWidgetId.CHOOSE_ADDRESS_WIDGET_ID))
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             mapToHomeUiModel(it)?.let { item ->
@@ -53,6 +63,7 @@ object HomeLayoutMapper {
         return when (response.layout) {
             HomeLayoutType.CATEGORY -> mapToCategoryLayout(response)
             HomeLayoutType.LEGO_3_IMAGE -> mapLegoBannerDataModel(response)
+            HomeLayoutType.BANNER_CAROUSEL -> mapSliderBannerModel(response)
             else -> null
         }
     }
