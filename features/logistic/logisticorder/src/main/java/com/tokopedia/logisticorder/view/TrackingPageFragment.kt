@@ -36,6 +36,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -51,6 +52,9 @@ class TrackingPageFragment: BaseDaggerFragment() {
     lateinit var dateUtil: DateUtil
     @Inject
     lateinit var mAnalytics: OrderAnalyticsOrderTracking
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel: TrackingPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TrackingPageViewModel::class.java)
@@ -220,7 +224,7 @@ class TrackingPageFragment: BaseDaggerFragment() {
         setTicketInfoCourier(trackingDataModel.page)
         mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking()
 
-        viewModel.getDeliveryImage("1e906057-9ed0-422a-8f15-c3133b1e9763", 166826912, "small")
+        viewModel.getDeliveryImage("1e906057-9ed0-422a-8f15-c3133b1e9763", 166826912, "small", userSession.userId, 1, userSession.deviceId)
     }
 
     private fun showLoading() {

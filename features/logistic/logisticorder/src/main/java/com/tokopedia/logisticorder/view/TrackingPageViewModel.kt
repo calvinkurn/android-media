@@ -9,6 +9,7 @@ import com.tokopedia.logisticorder.domain.response.GetDeliveryImageResponse
 import com.tokopedia.logisticorder.domain.response.TrackOrder
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.logisticorder.usecase.GetDeliveryCoroutinesUseCase
 import com.tokopedia.logisticorder.usecase.GetDeliveryImageUseCase
 import com.tokopedia.logisticorder.usecase.TrackingPageRepository
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
@@ -26,7 +27,8 @@ import javax.inject.Inject
 
 class TrackingPageViewModel @Inject constructor(
         private val repo: TrackingPageRepository,
-        private val mapper: TrackingPageMapperNew, private val getDeliveryImageUseCase: GetDeliveryImageUseCase) : ViewModel() {
+        private val mapper: TrackingPageMapperNew, private val getDeliveryImageUseCase: GetDeliveryImageUseCase,
+        private val getDeliveryCoroutinesUseCase: GetDeliveryCoroutinesUseCase) : ViewModel() {
 
     private val _trackingData = MutableLiveData<Result<TrackingDataModel>>()
     val trackingData: LiveData<Result<TrackingDataModel>>
@@ -65,12 +67,24 @@ class TrackingPageViewModel @Inject constructor(
         }
     }
 
-    fun getDeliveryImage(imageId: String, orderId: Long, size: String) {
+    /*fun getDeliveryImage(imageId: String, orderId: Long, size: String) {
         viewModelScope.launch(onErrorGetDeliveryImage) {
             getDeliveryImageUseCase.getDeliveryImageUrl(imageId, orderId, size)
             val result = convertToRedeemedResponse(getDeliveryImageUseCase.executeOnBackground())
             _getDeliveryImage.value = Success(result)
         }
+    }
+*/
+    fun getDeliveryImage(imageId: String, orderId: Long, size: String, userId: String, osType: Int, deviceId: String) {
+        val baseUrl = "logistic/tracking/get-delivery-image"
+        val url = "$baseUrl?order_id=$orderId&image_id=$imageId&size=$size&user_id=$userId&os_type=$osType&device_id=$deviceId"
+        viewModelScope.launch (onErrorGetDeliveryImage) {
+//            val get-delivery-imagemageResponse = getDeliveryCoroutinesUseCase.execute(url)
+            val getDeliveryImageResponse = getDeliveryCoroutinesUseCase.executeParams(
+                    getDeliveryCoroutinesUseCase.getParams(imageId, orderId, size, userId, osType, deviceId))
+            _getDeliveryImage.value = Success(getDeliveryImageResponse)
+        }
+
     }
 
     private val onErrorGetTrackingData = CoroutineExceptionHandler { _, throwable ->
