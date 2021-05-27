@@ -51,6 +51,7 @@ import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -135,9 +136,12 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setup()
+        setupNavToolbar()
+        setupStatusBar()
         setupRecyclerView()
         observeLiveData()
+        updateCurrentPageLocalCacheModelData()
+
         getHomeLayout()
         getSearchHint()
     }
@@ -159,14 +163,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
-    }
-
-    private fun setup() {
-        setupNavToolbar()
-        setupStatusBar()
-        setupRecyclerView()
-        observeLiveData()
-        updateCurrentPageLocalCacheModelData()
     }
 
     private fun setupNavToolbar() {
@@ -349,19 +345,23 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
     private fun observeLiveData() {
         observe(viewModel.homeLayoutList) {
             if (it is Success) {
-                adapter.submitList(it.data)
+                loadHomeLayout(it.data)
+            }
+        }
+    }
+
+    private fun loadHomeLayout(data: HomeLayoutListUiModel) {
+        data.run {
+            if (isInitialLoad) {
+                adapter.submitList(result)
                 // TO-DO: Lazy Load Data
                 viewModel.getLayoutData()
 
                 // isMyShop needs shopId to differentiate
                 if (!isChooseAddressWidgetShowed(false))
                     adapter.removeHomeChooseAddressWidget()
-            }
-        }
-
-        observe(viewModel.homeLayoutData) {
-            if(it is Success) {
-                adapter.submitList(it.data)
+            } else {
+                adapter.submitList(result)
             }
         }
 

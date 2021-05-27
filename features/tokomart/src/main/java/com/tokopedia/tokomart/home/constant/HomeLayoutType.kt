@@ -2,6 +2,11 @@ package com.tokopedia.tokomart.home.constant
 
 import androidx.annotation.StringDef
 
+/**
+ * Type for layout that returned by Home Dynamic Channel query.
+ * The layout type defined is based on Home Dynamic Channel GQL
+ * response.
+ */
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(
     HomeLayoutType.BANNER_CAROUSEL,
