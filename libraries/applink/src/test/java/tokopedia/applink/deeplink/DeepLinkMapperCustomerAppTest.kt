@@ -1773,6 +1773,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check login by qr appLink then should return tokopedia internal login by qr in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/qr-login"
-        assertEqualsDeepLinkMapper(ApplinkConst.MONEYIN, expectedDeepLink)
+        assertEqualsDeepLinkMapper(ApplinkConst.QR_LOGIN, expectedDeepLink)
     }
 }

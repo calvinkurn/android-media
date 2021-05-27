@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.notif.domain.pojo.ChangeStatusPushNotifData
+import com.tokopedia.otp.notif.view.fragment.ReceiverNotifFragment.Companion.STATUS_APPROVE
 import com.tokopedia.otp.qrcode.domain.pojo.VerifyQrData
 import com.tokopedia.otp.qrcode.domain.usecase.VerifyQrUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,6 +32,7 @@ class LoginByQrViewModel @Inject constructor(
         launchCatchError(coroutineContext, {
             val params = verifyQrUseCase.getParams(uuid, status, signature)
             val data = verifyQrUseCase.getData(params).data
+            data.approvalStatus = status
             when {
                 data.imglink.isNotEmpty() &&
                         data.messageTitle.isNotEmpty() &&

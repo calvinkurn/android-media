@@ -135,13 +135,17 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun onSuccessVerifyQr(): (VerifyQrData) -> Unit {
         return { verifyQrData ->
-            goToResult(
-                    verifyQrData.imglink,
-                    verifyQrData.messageTitle,
-                    verifyQrData.messageBody,
-                    verifyQrData.buttonType,
-                    verifyQrData.status
-            )
+            if (verifyQrData.approvalStatus == STATUS_REJECT) {
+                activity?.finish()
+            } else {
+                goToResult(
+                        verifyQrData.imglink,
+                        verifyQrData.messageTitle,
+                        verifyQrData.messageBody,
+                        verifyQrData.buttonType,
+                        verifyQrData.status
+                )
+            }
         }
     }
 

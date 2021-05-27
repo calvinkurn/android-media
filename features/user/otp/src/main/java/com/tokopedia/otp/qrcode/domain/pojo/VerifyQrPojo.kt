@@ -33,5 +33,6 @@ data class VerifyQrData(
         var buttonType: String = "",
         @SerializedName("Status")
         @Expose
-        var status: String = ""
+        var status: String = "",
+        var approvalStatus: String = ""
 )
