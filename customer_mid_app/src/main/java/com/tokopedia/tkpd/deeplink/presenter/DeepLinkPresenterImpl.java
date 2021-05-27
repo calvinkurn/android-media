@@ -668,7 +668,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
                         Intent productIntent = RouteManager.getIntent(context,
                                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
-                                uriData,
                                 linkSegment.get(0),
                                 linkSegment.get(1),
                                 affiliateString);

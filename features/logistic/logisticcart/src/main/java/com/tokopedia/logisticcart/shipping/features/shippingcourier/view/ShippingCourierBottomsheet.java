@@ -16,12 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -44,6 +46,7 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
     public static final String ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST";
     public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
     public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
+    public static final String ARGUMENT_PRE_ORDER_MODEL = "ARGUMENT_PRE_ORDER_MODEL";
 
     private LinearLayout llContent;
     private RecyclerView rvCourier;
@@ -55,6 +58,7 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
     private Bundle bundle;
     private ShippingCourierBottomsheetListener shippingCourierBottomsheetListener;
     private List<ShippingCourierUiModel> mCourierModelList = new ArrayList<>();
+    private PreOrderModel mPreOrderModel;
     private RecipientAddressModel mRecipientAddress;
 
     @Inject
@@ -81,6 +85,7 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
         if (shippingCourierUiModels != null) {
             bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierUiModels));
         }
+        bundle.putParcelable(ARGUMENT_PRE_ORDER_MODEL, shippingCourierUiModels.get(0).getPreOrderModel());
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
     }
@@ -103,10 +108,11 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                             int cartPosition, ShipmentCartItemModel shipmentCartItemModel) {
+                                             int cartPosition, ShipmentCartItemModel shipmentCartItemModel, PreOrderModel preOrderModel) {
         hideLoading();
         if (shippingCourierUiModels != null && shippingCourierUiModels.size() > 0) {
             mCourierModelList = shippingCourierUiModels;
+            mPreOrderModel = preOrderModel;
             setupRecyclerView(cartPosition);
         } else {
             showErrorPage(activity.getString(R.string.message_error_shipping_general), shipmentCartItemModel, cartPosition);
@@ -142,6 +148,7 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
             mRecipientAddress = bundle.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             int cartPosition = bundle.getInt(ARGUMENT_CART_POSITION);
             List<ShippingCourierUiModel> shippingCourierUiModels = bundle.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
+            mPreOrderModel = bundle.getParcelable(ARGUMENT_PRE_ORDER_MODEL);
             if (shippingCourierUiModels != null) {
                 mCourierModelList = shippingCourierUiModels;
                 setupRecyclerView(cartPosition);
@@ -153,7 +160,7 @@ public class ShippingCourierBottomsheet implements ShippingCourierContract.View,
 
     private void setupRecyclerView(int cartPosition) {
         shippingCourierAdapter.setShippingCourierAdapterListener(this);
-        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList);
+        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList, mPreOrderModel);
         shippingCourierAdapter.setCartPosition(cartPosition);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 activity, LinearLayoutManager.VERTICAL, false);

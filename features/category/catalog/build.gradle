@@ -36,7 +36,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
+    implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.analytics)

@@ -61,17 +61,15 @@
         app:layout_constraintTop_toBottomOf="@id/date_spinner" />
 
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/courier_btn"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         android:layout_margin="@dimen/dp_16"
-        android:background="@drawable/bg_green_rounded_tradein"
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:text="@string/choose"
         android:textAllCaps="false"
-        android:textColor="@color/Unify_N0"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

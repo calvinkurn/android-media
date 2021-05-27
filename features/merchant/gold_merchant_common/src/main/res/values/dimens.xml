@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gmc_dimen_18dp">18dp</dimen>
+    <dimen name="gmc_dimen_28dp">28dp</dimen>
+    <dimen name="gmc_dimen_30dp">30dp</dimen>
+    <dimen name="gmc_dimen_44dp">44dp</dimen>
+    <dimen name="gmc_dimen_54dp">54dp</dimen>
+    <dimen name="gmc_dimen_80dp">80dp</dimen>
+    <dimen name="gmc_dimen_176dp">176dp</dimen>
+    <dimen name="gmc_dimen_162dp">162dp</dimen>
+</resources>
