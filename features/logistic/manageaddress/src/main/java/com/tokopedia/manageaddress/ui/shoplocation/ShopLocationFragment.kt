@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.shoplocation.GeneralTickerModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
+import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingsAddressActivity
 import com.tokopedia.manageaddress.util.ManageAddressConstant

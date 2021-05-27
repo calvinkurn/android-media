@@ -184,6 +184,12 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         topAdsViewUrl shouldBe otherRelatedProduct.ads.productViewUrl
         this.topAdsClickUrl shouldBe otherRelatedProduct.ads.productClickUrl
         topAdsWishlistUrl shouldBe otherRelatedProduct.ads.productWishlistUrl
+
+        carouselProductType.shouldBeInstanceOf<BroadMatchProduct>()
+        carouselProductType.hasThreeDots shouldBe true
+
+        val broadMatchProductType = carouselProductType as BroadMatchProduct
+        broadMatchProductType.isOrganicAds shouldBe otherRelatedProduct.ads.id.isNotEmpty()
     }
 
     @Test
