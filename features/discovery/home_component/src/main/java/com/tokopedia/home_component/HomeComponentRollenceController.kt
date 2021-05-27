@@ -2,9 +2,6 @@ package com.tokopedia.home_component
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_OLD
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE
 
 /**
  * Created by yfsx on 4/28/21.
@@ -28,14 +25,14 @@ object HomeComponentRollenceController {
     }
 
     fun isHomeComponentLego4BannerUsingRollenceVariant(): Boolean {
-        return HomeComponentRollenceController.getRollenceValueLego4Banner() == AbTestPlatform.HOME_COMPONENT_LEGO4BANNER_VARIANT
+        return getRollenceValueLego4Banner() == AbTestPlatform.HOME_COMPONENT_LEGO4BANNER_VARIANT
     }
 
     fun checkCategoryWidgetRollenceType(isTypeControl:() -> Unit, isTypeTextInside: () -> Unit, isTypeTextBox: () -> Unit) {
-        when (HomeComponentRollenceController.getRollenceValueCategoryWidget()) {
-            HOME_COMPONENT_CATEGORYWIDGET_OLD -> isTypeControl.invoke()
-            HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX -> isTypeTextBox.invoke()
-            HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE -> isTypeTextInside.invoke()
+        when (getRollenceValueCategoryWidget()) {
+            AbTestPlatform.HOME_COMPONENT_CATEGORYWIDGET_OLD -> isTypeControl.invoke()
+            AbTestPlatform.HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX -> isTypeTextBox.invoke()
+            AbTestPlatform.HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE -> isTypeTextInside.invoke()
             else -> isTypeControl.invoke()
         }
     }
