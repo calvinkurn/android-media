@@ -126,14 +126,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         super.onViewCreated(view, savedInstanceState)
         bindViews()
         setOnTouchOutsideListener()
-        observeGetForm()
-        observeIncentive()
-        getForm()
-        getIncentiveOvoData()
-        observeSubmitReview()
-        observeTemplates()
-        observeButtonState()
-        observeProgressBarState()
         setRatingClickListener()
         setAddPhotoOnClickListener()
         setSubmitButtonOnClickListener()
@@ -142,7 +134,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setAnonymousOptionClickListener()
         setPaddings()
         setRatingInitialState()
-        getTemplates()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -683,6 +674,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             this.dialog?.window?.decorView?.findViewById<View>(com.google.android.material.R.id.touch_outside)?.setOnClickListener {
                 handleDismiss()
             }
+            observeLiveDatas()
+            getData()
         }
         setCloseClickListener {
             handleDismiss()
@@ -804,5 +797,20 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun getUserId(): String {
         return createReviewViewModel.getUserId()
+    }
+
+    private fun observeLiveDatas() {
+        observeGetForm()
+        observeIncentive()
+        observeSubmitReview()
+        observeTemplates()
+        observeButtonState()
+        observeProgressBarState()
+    }
+
+    private fun getData() {
+        getForm()
+        getIncentiveOvoData()
+        getTemplates()
     }
 }
