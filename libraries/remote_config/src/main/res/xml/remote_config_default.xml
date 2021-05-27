@@ -264,6 +264,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_hotel_search_with_map</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>nonb_1_ttl</key>
         <value>Bebas Beli Apa Saja</value>
     </entry>
@@ -422,6 +426,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_enable_async_abtest</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_async_addshortcuts</key>
         <value>true</value>
     </entry>
@@ -554,11 +562,15 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>app_push_amplification_enabled_v2</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>app_enable_branch_utm_only_branch_link</key>
         <value>true</value>
     </entry>
     <entry>
-        <key>app_enable_skip_deeplink_from_non_branch_link</key>
-        <value>true</value>
+        <key>android_branch_callback_timeout_key</key>
+        <value>5000</value>
     </entry>
 </defaultsMap>

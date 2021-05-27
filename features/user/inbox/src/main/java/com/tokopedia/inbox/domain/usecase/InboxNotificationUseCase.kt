@@ -10,7 +10,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class InboxNotificationUseCase @Inject constructor(
+open class InboxNotificationUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<InboxNotificationResponse>,
         private val dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
@@ -50,18 +50,21 @@ class InboxNotificationUseCase @Inject constructor(
                 notifcenter_int
                 chat_int
                 talk_int
+                review_int
               }
               buyer{
                 total_int
                 notifcenter_int
                 chat_int
                 talk_int
+                review_int
               }
               seller{
                 total_int
                 notifcenter_int
                 chat_int
                 talk_int
+                review_int
               }
             }
           }

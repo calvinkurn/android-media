@@ -10,17 +10,19 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.home.account.presentation.widget.TagRoundedSpan;
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.Date;
 import java.util.List;
@@ -105,37 +107,42 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return settingItems.size();
+        if (settingItems != null) {
+            return settingItems.size();
+        } else {
+            return 0;
+        }
     }
 
     class GeneralSettingViewHolder extends RecyclerView.ViewHolder{
-        private LabelView labelView;
-
+        private Typography titleView;
+        private Typography bodyView;
+        private ImageView arrowIcon;
 
         public GeneralSettingViewHolder(View itemView) {
             super(itemView);
-            labelView = itemView.findViewById(R.id.labelview);
+            titleView = itemView.findViewById(R.id.account_user_item_common_title);
+            bodyView = itemView.findViewById(R.id.account_user_item_common_body);
+            arrowIcon = itemView.findViewById(R.id.account_user_item_icon_arrow);
 
             itemView.setOnClickListener(view -> {
                 if (listener != null){
-                    listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
+                    if(getAdapterPosition()>=0 && getAdapterPosition() < settingItems.size()) {
+                        listener.onItemClicked(settingItems.get(getAdapterPosition()).getId());
+                    }
                 }
             });
         }
 
         public void bind(SettingItemViewModel item){
             SpannableString title = generateSpannableTitle(item);
-            labelView.setTitle(title);
-            labelView.setSubTitle(item.getSubtitle());
-            labelView.setImageResource(item.getIconResource());
-
-            if (item.getIconResource() > 0){
-                labelView.getImageView().setVisibility(View.VISIBLE);
-                labelView.getImageView().setImageResource(item.getIconResource());
+            titleView.setText(title);
+            bodyView.setText(item.getSubtitle());
+            if(item.isHideArrow()) {
+                arrowIcon.setVisibility(View.GONE);
             } else {
-                labelView.getImageView().setVisibility(View.GONE);
+                arrowIcon.setVisibility(View.VISIBLE);
             }
-            labelView.showRightArrow(item.isHideArrow());
         }
 
         private SpannableString generateSpannableTitle(SettingItemViewModel item) {
@@ -145,10 +152,6 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .getContext()
                     .getResources()
                     .getString(R.string.title_notification_setting);
-            String preferenceTitle = itemView
-                    .getContext()
-                    .getResources()
-                    .getString(R.string.title_occ_preference_setting);
             String mediaTitle = itemView
                     .getContext()
                     .getResources()
@@ -157,7 +160,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             if (title.equals(notificationTitle)) {
                 boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R400;
-            } else if (title.equals(preferenceTitle) || title.equals(mediaTitle)) {
+            } else if (title.equals(mediaTitle)) {
                 boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R500;
             }
 
@@ -223,17 +226,17 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     class SwitchSettingViewHolder extends RecyclerView.ViewHolder{
-        private TextView titleTextView;
-        private TextView summaryextView;
-        private Switch aSwitch;
+        private Typography titleTextView;
+        private Typography summaryextView;
+        private SwitchUnify aSwitch;
         private View view;
 
         public SwitchSettingViewHolder(View itemView) {
             super(itemView);
             view = itemView;
-            titleTextView = itemView.findViewById(R.id.title);
-            summaryextView = itemView.findViewById(R.id.subtitle);
-            aSwitch = itemView.findViewById(R.id.switchWidget);
+            titleTextView = itemView.findViewById(R.id.account_user_item_common_title);
+            summaryextView = itemView.findViewById(R.id.account_user_item_common_body);
+            aSwitch = itemView.findViewById(R.id.account_user_item_common_switch);
             aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (switchSettingListener != null) {
                 switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);

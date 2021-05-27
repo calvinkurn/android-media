@@ -216,9 +216,11 @@ class SomListViewModel @Inject constructor(
 
     private fun updateLoadOrderStatus(job: Job) {
         job.invokeOnCompletion {
-            launch(context = dispatcher.main) {
+            launchCatchError(context = dispatcher.main, block = {
                 _isLoadingOrder.value = isRefreshingOrder()
-            }
+            }, onError = {
+                _isLoadingOrder.value = false
+            })
         }
     }
 

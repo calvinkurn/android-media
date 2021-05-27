@@ -3,11 +3,11 @@ package com.tokopedia.flight.homepage.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dummy.BANNER_DATA
@@ -16,10 +16,11 @@ import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
-import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -1047,4 +1048,61 @@ class FlightHomepageViewModelTest {
         // then
     }
 
+    @Test
+    fun validateSendTrackingVideoBannerImpression_LoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
+
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerImpression_NotLoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerClick_LoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
+
+        flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerClick_NotLoggedIn(){
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
+                    FlightAnalytics.Screen.HOMEPAGE,
+                    any())
+        }
+    }
 }

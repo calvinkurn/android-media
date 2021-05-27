@@ -127,7 +127,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         //initialize of cameraView mode
         cameraView.setMode(Mode.PICTURE);
 
-        //noinspection SuspiciousNameCombination
         cameraListener = new CameraListener() {
 
             @Override
@@ -264,7 +263,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     private boolean isOneOneRatio() {
         int ratioX = onImagePickerCameraFragmentListener.getRatioX();
         int ratioY = onImagePickerCameraFragmentListener.getRatioY();
-        return ratioX > 0 && ratioY > 0 && ratioX == ratioY;
+        return ratioY > 0 && ratioX == ratioY;
     }
 
     private void setCameraFlash() {
@@ -397,7 +396,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     }
 
     public void onInvisible(){
-        destroyCamera();
+        try {
+            hideLoading();
+        } catch (Throwable e) {
+            // no-op
+        }
     }
 
     private void showLoading(){
@@ -470,6 +473,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         hideLoading();
         super.onDestroy();
         stopCamera();
+        destroyCamera();
     }
 
     private void startCamera() {
@@ -493,7 +497,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     private void destroyCamera() {
         try {
-            hideLoading();
+            cameraView.destroy();
         } catch (Throwable e) {
             // no-op
         }
@@ -511,7 +515,6 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         onAttachActivity(context);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

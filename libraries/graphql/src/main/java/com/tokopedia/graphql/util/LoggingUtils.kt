@@ -8,20 +8,20 @@ import timber.log.Timber
 
 object LoggingUtils {
     const val DEFAULT_RESP_SIZE_THRES = 10000L
-    var gqlResponseSizeThreshold = DEFAULT_RESP_SIZE_THRES
-
-    @JvmStatic
-    fun setResponseSize(responseSize: Long) {
-        var sizeToSet = responseSize
-        if (sizeToSet < 0) {
-            sizeToSet = DEFAULT_RESP_SIZE_THRES
-        }
-        gqlResponseSizeThreshold = sizeToSet
-    }
 
     @JvmStatic
     fun logGqlError(classType: String, request: String, throwable: Throwable) {
-        ServerLogger.log(Priority.P1, "GQL_RESP_CODE", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "resp" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+        ServerLogger.log(Priority.P1, "GQL_ERROR", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    }
+
+    @JvmStatic
+    fun logGqlErrorNetwork(classType: String, request: String, throwable: Throwable) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR_NETWORK", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    }
+
+    @JvmStatic
+    fun logGqlErrorBackend(from: String, request: String, errorMessage: String) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR_BACKEND", mapOf("from" to from, "err" to errorMessage, "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
     }
 
     @JvmStatic
@@ -34,7 +34,7 @@ object LoggingUtils {
     @JvmStatic
     fun logGqlSize(classType: String, request: List<GraphqlRequest>, response: String) {
         val responseSize = response.length
-        if (responseSize >= gqlResponseSizeThreshold) {
+        if (responseSize >= DEFAULT_RESP_SIZE_THRES) {
             val requestString = request.toString()
             val sampleRequest = requestString.substringAfter("[GraphqlRequest{query='").take(Const.GQL_RESPONSE_MAX_LENGTH).trim()
             val variable = requestString.substringAfter("variables=").substringBefore(", operationName").trim()

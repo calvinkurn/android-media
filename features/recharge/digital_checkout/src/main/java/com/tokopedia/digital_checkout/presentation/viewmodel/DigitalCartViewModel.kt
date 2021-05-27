@@ -327,7 +327,9 @@ class DigitalCartViewModel @Inject constructor(
                         if (fintech.isNotEmpty()) {
                             fintech.values.forEach {
                                 if (it.info.iconUrl.isNotEmpty()) {
-                                    analytics.eventProceedCheckoutTebusMurah(it, userSession.userId)
+                                    analytics.eventProceedCheckoutTebusMurah(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
+                                } else {
+                                    analytics.eventProceedCheckoutCrossell(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
                                 }
                             }
                         }
@@ -362,16 +364,10 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     fun applyPromoData(promoData: PromoData) {
-        when (promoData.state) {
-            TickerCheckoutView.State.FAILED,
-            TickerCheckoutView.State.EMPTY -> {
-                resetCheckoutSummaryPromoAndTotalPrice()
-            }
-            TickerCheckoutView.State.ACTIVE -> {
-                onReceivedPromoCode()
-            }
-            else -> {
-            }
+        if (promoData.state == TickerCheckoutView.State.FAILED || promoData.state == TickerCheckoutView.State.EMPTY) {
+            resetCheckoutSummaryPromoAndTotalPrice()
+        } else if (promoData.state == TickerCheckoutView.State.ACTIVE) {
+            onReceivedPromoCode()
         }
     }
 
