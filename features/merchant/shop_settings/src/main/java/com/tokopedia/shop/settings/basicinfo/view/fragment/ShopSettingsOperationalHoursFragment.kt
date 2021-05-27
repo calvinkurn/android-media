@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.calendar.CalendarPickerView
+import com.tokopedia.calendar.UnifyCalendar
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observe
@@ -20,8 +23,11 @@ import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopSettingsOperationa
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsOperationalHoursViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -37,6 +43,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         @LayoutRes
         val FRAGMENT_LAYOUT = R.layout.fragment_shop_settings_operational_hours
 
+        @LayoutRes
+        val HOLIDAY_BOTTOMSHEET_LAYOUT = R.layout.bottomsheet_shop_set_holiday
+
     }
 
     @Inject
@@ -49,6 +58,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var icEditOpsHour: IconUnify? = null
     private var rvOpsHourList: RecyclerView? = null
     private var rvOpsHourListAdapter: ShopSettingsOperationalHoursListAdapter? = null
+    private var holidayBottomSheet: BottomSheetUnify? = null
+    private var buttonAddHoliday: UnifyButton? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(FRAGMENT_LAYOUT, container, false).apply {
@@ -87,6 +98,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         headerOpsHour = view?.findViewById(R.id.header_shop_operational_hours)
         icEditOpsHour = view?.findViewById(R.id.ic_edit_ops_hour)
         rvOpsHourList = view?.findViewById(R.id.rv_ops_hour_list)
+        buttonAddHoliday = view?.findViewById(R.id.btn_add_holiday_schedule)
     }
 
     private fun initRecylerView() {
@@ -105,10 +117,75 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 startActivity(Intent(this, ShopSettingsSetOperationalHoursActivity::class.java))
             }
         }
+
+        // set click listener for button add holiday schedule
+        buttonAddHoliday?.setOnClickListener {
+            setupHolidayBottomSheet()
+            showHolidayBottomSheet()
+        }
     }
 
     private fun setupToolbar() {
         headerOpsHour?.addRightIcon(R.drawable.ic_ops_hour_help)
+    }
+
+    private fun setupHolidayBottomSheet() {
+        val calendar = Calendar.getInstance()
+        val todayDate = calendar.time
+        calendar.roll(Calendar.DATE, true) // roll to get tomorrows date
+        val tomorrowDate = calendar.time
+        val nextYear = Calendar.getInstance().apply { add(Calendar.YEAR, 1) }.time
+
+        context?.let { ctx ->
+            val bottomSheetView = View.inflate(context, HOLIDAY_BOTTOMSHEET_LAYOUT, null).apply {
+                val calendarUnify = findViewById<UnifyCalendar>(R.id.ops_hour_holiday_calendar)
+                val buttonSaveHolidaySchedule = findViewById<UnifyButton>(R.id.btn_save_holiday_schedule)
+                val calendarView = calendarUnify.calendarPickerView
+
+                // init calendar view
+                calendarView?.run {
+                    calendarView
+                            .init(todayDate, nextYear, listOf())
+                            .inMode(CalendarPickerView.SelectionMode.RANGE)
+                            .withSelectedDates(listOf(todayDate, tomorrowDate))
+                }
+
+                // set listener for save schedule button
+                buttonSaveHolidaySchedule.setOnClickListener {
+                    showConfirmDialogForSaveHolidaySchedule()
+                }
+            }
+
+            holidayBottomSheet = BottomSheetUnify().apply {
+                setTitle(ctx.getString(R.string.shop_operational_hour_set_holiday_schedule_title))
+                setChild(bottomSheetView)
+                setCloseClickListener { dismiss() }
+            }
+        }
+    }
+
+    private fun showConfirmDialogForSaveHolidaySchedule() {
+        context?.let { ctx ->
+            DialogUnify(ctx, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.shop_operational_hour_set_holiday_schedule_dialog_title))
+                setDescription(getString(R.string.shop_operational_hour_set_holiday_schedule_dialog_desc))
+                setPrimaryCTAText(getString(R.string.label_save))
+                setSecondaryCTAText(getString(R.string.label_cancel))
+                setPrimaryCTAClickListener {
+
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                show()
+            }
+        }
+    }
+
+    private fun showHolidayBottomSheet() {
+        fragmentManager?.let {
+            holidayBottomSheet?.show(it, screenName)
+        }
     }
 
     private fun setBackgroundColor() {
