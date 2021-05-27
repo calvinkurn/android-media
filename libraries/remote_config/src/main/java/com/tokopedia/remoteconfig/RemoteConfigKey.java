@@ -209,7 +209,7 @@ public class RemoteConfigKey {
     public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
-    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
+    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled_v2";
 
     public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
 
@@ -240,4 +240,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
+
+    public static final String ENABLE_NEW_SHOP_SCORE = "android_enable_new_shop_score";
+    public static final String ENABLE_NEW_PENALTY = "android_enable_new_penalty";
+
 }

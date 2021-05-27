@@ -10,7 +10,6 @@ data class ShopScoreResult(
         @SerializedName("BadgeScore")
         @Expose
         val badgeScore: Int = 0
-
 )
 
 data class ShopScoreDetailItemServiceModel(

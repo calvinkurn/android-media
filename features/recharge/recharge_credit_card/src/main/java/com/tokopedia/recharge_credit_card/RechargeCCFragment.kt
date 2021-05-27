@@ -24,6 +24,11 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_CLIENT_NUMBER
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_IDENTIFIER
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_OPERATOR_ID
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_PRODUCT_ID
+import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_SIGNATURE
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
@@ -51,8 +56,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var creditCardAnalytics: CreditCardAnalytics
 
@@ -131,6 +138,11 @@ class RechargeCCFragment : BaseDaggerFragment() {
         arguments?.let {
             categoryId = it.getString(CATEGORY_ID, "")
             menuId = it.getString(MENU_ID, "")
+            val signature = it.getString(PARAM_SIGNATURE) ?: ""
+            val identifier = it.getString(PARAM_IDENTIFIER) ?: ""
+            if (signature.isNotEmpty() && identifier.isNotEmpty()) {
+                instantCheckout()
+            }
         }
     }
 
@@ -244,7 +256,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialog.setPrimaryCTAClickListener {
                     dialog.dismiss()
                     creditCardAnalytics.clickToContinueCheckout(
-                            categoryId.toString(), operatorIdSelected, userSession.userId)
+                            categoryId, operatorIdSelected, userSession.userId)
                     submitCreditCard(categoryId, operatorIdSelected,
                             productIdSelected, cc_widget_client_number.getClientNumber())
                 }
@@ -257,6 +269,26 @@ class RechargeCCFragment : BaseDaggerFragment() {
             }
         } else {
             showErrorToaster(MessageErrorException(getString(R.string.cc_error_default_message)))
+        }
+    }
+
+    private fun instantCheckout() {
+        showLoading()
+        if (userSession.isLoggedIn) {
+            arguments?.let {
+                val signature = it.getString(PARAM_SIGNATURE) ?: ""
+                val operatorId = it.getString(PARAM_OPERATOR_ID) ?: ""
+                val productId = it.getString(PARAM_PRODUCT_ID) ?: ""
+                val identifier = it.getString(PARAM_IDENTIFIER) ?: ""
+                val clientNumber = it.getString(PARAM_CLIENT_NUMBER) ?: ""
+
+                val mapParam = rechargeSubmitCCViewModel.createPcidssParamFromApplink(clientNumber, operatorId,
+                        productId, userSession.userId, signature, identifier)
+                rechargeSubmitCCViewModel.submitCreditCard(mapParam)
+            }
+        } else {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN_INSTANT_CHECKOUT)
         }
     }
 
@@ -322,6 +354,13 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     }
                 }
             }
+
+            REQUEST_CODE_LOGIN_INSTANT_CHECKOUT -> {
+                hideLoading()
+                if (userSession.isLoggedIn) {
+                    instantCheckout()
+                }
+            }
         }
     }
 
@@ -340,16 +379,24 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
         private const val CATEGORY_ID = "category_id"
         private const val MENU_ID = "menu_id"
+
         const val RECHARGE_CC_PAGE_PERFORMANCE = "dg_tagihan_cc_pdp"
 
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001
+        const val REQUEST_CODE_LOGIN_INSTANT_CHECKOUT = 1020
 
-        fun newInstance(categoryId: String, menuId: String): Fragment {
+        fun newInstance(categoryId: String, menuId: String, operatorId: String, productId: String,
+                        signature: String, identifier: String, clientNumber: String): Fragment {
             val fragment = RechargeCCFragment()
             val bundle = Bundle()
             bundle.putString(CATEGORY_ID, categoryId)
             bundle.putString(MENU_ID, menuId)
+            bundle.putString(PARAM_OPERATOR_ID, operatorId)
+            bundle.putString(PARAM_PRODUCT_ID, productId)
+            bundle.putString(PARAM_SIGNATURE, signature)
+            bundle.putString(PARAM_IDENTIFIER, identifier)
+            bundle.putString(PARAM_CLIENT_NUMBER, clientNumber)
             fragment.arguments = bundle
             return fragment
         }

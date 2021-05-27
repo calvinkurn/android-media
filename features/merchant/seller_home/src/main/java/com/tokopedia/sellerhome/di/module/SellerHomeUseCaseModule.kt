@@ -149,6 +149,15 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
+    fun provideGetRecommendationDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: RecommendationMapper
+    ): GetRecommendationDataUseCase {
+        return GetRecommendationDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
     fun provideGetTickerUseCase(
             gqlRepository: GraphqlRepository,
             mapper: TickerMapper,
