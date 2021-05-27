@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
-import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
@@ -32,7 +31,6 @@ class TokoMartHomeViewModel @Inject constructor(
     private val getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
-    private val getNotificationUseCase: GetNotificationUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -56,8 +54,6 @@ class TokoMartHomeViewModel @Inject constructor(
         get() = _homeLayoutList
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
-    val notificationCounter: LiveData<TopNavNotificationModel>
-        get() = _notificationCounter
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _searchHint = MutableLiveData<SearchPlaceholder>()
@@ -101,14 +97,6 @@ class TokoMartHomeViewModel @Inject constructor(
             getKeywordSearchUseCase.params = getKeywordSearchUseCase.createParams(isFirstInstall, deviceId, userId)
             val data = getKeywordSearchUseCase.executeOnBackground()
             _searchHint.postValue(data.searchData)
-        }) {}
-    }
-
-    // only used to count the old toolbar's notif
-    fun getNotification() {
-        launchCatchError(coroutineContext, block = {
-            val topNavNotificationModel = getNotificationUseCase.executeOnBackground()
-            _notificationCounter.postValue(topNavNotificationModel)
         }) {}
     }
 
