@@ -50,6 +50,8 @@ object DeepLinkUrlConstant {
     const val SHOP_LINK_URL = "https://www.tokopedia.com/nicestuff88"
     const val PRODUCT_LINK_URL = "https://www.tokopedia.com/nicestuff88/magic-tas-kantong-belanja-shopping-bag-roll-up-berkualitas"
     const val CAMPAIGN_LINK_URL = "https://www.tokopedia.com/dettol/campaign/123"
+    const val LOGIN_BY_QR_LINK_URL = "https://www.tokopedia.com/qrcode-login?data=XXXX"
+    const val LOGIN_BY_QR_STAGING_LINK_URL = "https://staging.tokopedia.com/qrcode-login?data=XXXX"
 
     object DIGITAL {
         const val AXIS = "https://www.tokopedia.com/pulsa/axis/"

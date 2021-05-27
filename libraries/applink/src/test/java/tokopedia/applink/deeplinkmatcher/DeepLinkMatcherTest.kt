@@ -14,6 +14,8 @@ import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
+import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
+import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR_STAGING
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
 import com.tokopedia.applink.DeepLinkChecker.PLAY
@@ -57,6 +59,7 @@ import tokopedia.applink.util.DeepLinkUrlConstant.HOT_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.HOT_LIST_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.INVOICE_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.KUPON_THR_LINK_URL
+import tokopedia.applink.util.DeepLinkUrlConstant.LOGIN_BY_QR_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.MERCHANT_KYC_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.MODAL_TOKO_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.MYSHOP_LINK_URL
@@ -332,4 +335,13 @@ class DeepLinkMatcherTest: DeepLinkMatcherTestFixture() {
         assertEqualsDeepLinkMatcher(ETALASE, CAMPAIGN_LINK_URL)
     }
 
+    @Test
+    fun `check link url of login by QR then should return LOGIN_BY_QR`() {
+        assertEqualsDeepLinkMatcher(LOGIN_BY_QR, LOGIN_BY_QR_LINK_URL)
+    }
+
+    @Test
+    fun `check link url of login by QR staging then should return LOGIN_BY_QR_STAGING`() {
+        assertEqualsDeepLinkMatcher(LOGIN_BY_QR_STAGING, LOGIN_BY_QR_LINK_URL)
+    }
 }

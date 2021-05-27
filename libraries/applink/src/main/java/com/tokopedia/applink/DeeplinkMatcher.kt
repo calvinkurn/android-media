@@ -15,6 +15,8 @@ import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
+import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
+import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR_STAGING
 import com.tokopedia.applink.DeepLinkChecker.NATIVE_THANK_YOU
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
@@ -90,6 +92,8 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 2, null) to PRODUCT)
         add(Pattern(EQ, 3, mapOf(1 to "campaign")) to ETALASE)
         add(Pattern(EQ, 4, mapOf(0 to "payment", 1 to "thank-you")) to NATIVE_THANK_YOU)
+        add(Pattern(EQ, 1, mapOf(0 to "qrcode-login")) to LOGIN_BY_QR)
+        add(Pattern(EQ, 1, mapOf(0 to "qrcode-login")) to LOGIN_BY_QR_STAGING)
     }
 
     fun match(uri: Uri): Int {
