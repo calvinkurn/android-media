@@ -41,15 +41,17 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
     companion object {
         private const val TAG = "DeactivationBottomSheet"
         private const val KEY_PM_TIRE_TYPE = "key_pm_tier"
+        private const val KEY_CURRENT_PM_TIRE_TYPE = "key_current_pm_tier"
         private const val KEY_PM_EXPIRED_DATE = "key_expired_date"
 
-        fun createInstance(expiredDate: String, pmTireType: Int): DeactivationQuestionnaireBottomSheet {
+        fun createInstance(expiredDate: String, currentPmTireType: Int, pmTireType: Int): DeactivationQuestionnaireBottomSheet {
             return DeactivationQuestionnaireBottomSheet().apply {
                 overlayClickDismiss = false
                 isFullpage = true
                 arguments = Bundle().apply {
                     putString(KEY_PM_EXPIRED_DATE, expiredDate)
                     putInt(KEY_PM_TIRE_TYPE, pmTireType)
+                    putInt(KEY_CURRENT_PM_TIRE_TYPE, currentPmTireType)
                 }
             }
         }
@@ -174,9 +176,18 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
 
     private fun getDeactivationQuestionnaire() {
         childView?.progressPmDeactivation?.visible()
-        val pmTireType = arguments?.getInt(KEY_PM_TIRE_TYPE, PMConstant.ShopTierType.POWER_MERCHANT)
-                ?: PMConstant.ShopTierType.POWER_MERCHANT
+        val pmTireType = getPmTireType()
         mViewModel.getPMCancellationQuestionnaireData(pmTireType)
+    }
+
+    private fun getCurrentPmTireType(): Int {
+        return arguments?.getInt(KEY_CURRENT_PM_TIRE_TYPE, PMConstant.ShopTierType.POWER_MERCHANT)
+                ?: PMConstant.ShopTierType.POWER_MERCHANT
+    }
+
+    private fun getPmTireType(): Int {
+        return arguments?.getInt(KEY_PM_TIRE_TYPE, PMConstant.ShopTierType.POWER_MERCHANT)
+                ?: PMConstant.ShopTierType.POWER_MERCHANT
     }
 
     private fun showToaster(message: String, ctaText: String, duration: Int, action: () -> Unit = {}) {
@@ -246,8 +257,26 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
         }
 
         showButtonProgress()
-        mViewModel.submitPmDeactivation(answers)
+        val currentShopTire = getShopTire(getCurrentPmTireType())
+        val nextShopTire = getNextShopTire(getPmTireType())
+        mViewModel.submitPmDeactivation(answers, currentShopTire, nextShopTire)
         powerMerchantTracking.sendEventClickSubmitQuestionnaire()
+    }
+
+    private fun getNextShopTire(pmTireType: Int): Int {
+        return if (pmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
+            PMConstant.ShopTierType.POWER_MERCHANT
+        } else {
+            PMConstant.ShopTierType.REGULAR_MERCHANT
+        }
+    }
+
+    private fun getShopTire(pmTireType: Int): Int {
+        return when (pmTireType) {
+            PMConstant.PMTierType.POWER_MERCHANT -> PMConstant.ShopTierType.POWER_MERCHANT
+            PMConstant.PMTierType.POWER_MERCHANT_PRO -> PMConstant.ShopTierType.POWER_MERCHANT_PRO
+            else -> PMConstant.ShopTierType.NA
+        }
     }
 
     private fun showButtonProgress() = childView?.run {

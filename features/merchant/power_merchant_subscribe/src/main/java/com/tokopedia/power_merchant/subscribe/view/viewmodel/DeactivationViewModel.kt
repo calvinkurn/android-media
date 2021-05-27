@@ -54,9 +54,9 @@ class DeactivationViewModel @Inject constructor(
         })
     }
 
-    fun submitPmDeactivation(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>) {
+    fun submitPmDeactivation(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>, currentShopTire: Int, nextShopTire: Int) {
         launchCatchError(block = {
-            deactivatePmUseCase.params = DeactivatePMUseCase.createRequestParam(questionData)
+            deactivatePmUseCase.params = DeactivatePMUseCase.createRequestParam(questionData, currentShopTire, nextShopTire)
             val result = Success(withContext(dispatchers.io) {
                 deactivatePmUseCase.executeOnBackground()
             })

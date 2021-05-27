@@ -835,7 +835,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun showDeactivationQuestionnaire(pmTireType: Int) {
         val pmExpirationDate = pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
-        val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance(pmExpirationDate, pmTireType)
+        val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT
+        val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance(pmExpirationDate, currentPmTireType, pmTireType)
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         bottomSheet.setOnDeactivationSuccess {
