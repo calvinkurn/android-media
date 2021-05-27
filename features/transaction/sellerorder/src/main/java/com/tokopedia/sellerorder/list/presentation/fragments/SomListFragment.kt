@@ -40,6 +40,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
@@ -455,8 +456,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
         setDefaultSortByValue()
         if (viewModel.isMultiSelectEnabled) {
-            somListLayoutManager?.findFirstVisibleItemPosition()?.let {
-                somListLayoutManager?.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.addOneTimeGlobalLayoutListener {
+            context.let { context ->
+                if (context == null || !DeviceScreenInfo.isTablet(context)) {
+                    somListLayoutManager?.findFirstVisibleItemPosition()?.let {
+                        somListLayoutManager?.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.addOneTimeGlobalLayoutListener {
+                            refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
+                        }
+                    }
+                } else {
                     refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
                 }
             }
@@ -1343,6 +1350,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun updateOrderCounter() {
+        multiEditViews?.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder) ?: false) && GlobalConfig.isSellerApp())
         context?.run {
             val text = if (viewModel.isMultiSelectEnabled) {
                 val checkedCount = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked }
