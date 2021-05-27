@@ -22,7 +22,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -57,10 +56,7 @@ import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
@@ -191,7 +187,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
-    private var parentContainer: ConstraintLayout? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -284,6 +279,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupBackgroundColor()
         callbackManager = CallbackManager.Factory.create()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -299,6 +295,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+    }
+
+    private fun setupBackgroundColor() {
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -522,10 +526,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun loginEmail(email: String, password: String, isSmartLock: Boolean = false, useHash: Boolean = false) {
-        showLoadingLogin()
         currentEmail = email
         resetError()
         if(isValid(email, password)) {
+            showLoadingLogin()
             if(isEnableEncryption() && useHash) {
                 viewModel.loginEmailV2(email = email, password = password, isSmartLock = isSmartLock, useHash = useHash)
             }else {
@@ -582,10 +586,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun prepareView() {
-        parentContainer = activity?.findViewById(R.id.parent_container)
-        parentContainer?.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         partialRegisterInputView?.showForgotPassword()
-
         socmedBottomSheet = SocmedBottomSheet(context)
         socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
         socmedBottomSheet?.setCloseClickListener {
@@ -930,6 +931,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     })
         }
         emailExtension?.hide()
+
+        callTokopediaCare?.showWithCondition(!isLoading)
     }
 
     override fun goToRegisterInitial(source: String) {

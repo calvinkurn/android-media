@@ -180,6 +180,10 @@ class ShakeDetectPresenterTest {
         every {
             sharedPreferencesTest.getBoolean(any(), any())
         } returns loggedIn
+
+        every {
+            presenter.isLogin
+        } returns loggedIn
     }
 
     @Test
