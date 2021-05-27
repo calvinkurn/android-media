@@ -297,6 +297,9 @@ class OtherMenuViewHolder(private val itemView: View,
                 layoutInflater?.apply {
                     setRegularMerchantShopStatus(shopType, shopStatusUiModel)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM)
+                    }
                 }
             }
             is PowerMerchantStatus -> {
@@ -306,7 +309,6 @@ class OtherMenuViewHolder(private val itemView: View,
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                     }
                 }
             }
