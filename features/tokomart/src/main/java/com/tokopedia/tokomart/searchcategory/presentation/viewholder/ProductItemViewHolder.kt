@@ -6,14 +6,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.NonVariantATCDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataView
-import com.tokopedia.unifycomponents.UnifyButton
 
-class ProductItemViewHolder(itemView: View): AbstractViewHolder<ProductItemDataView>(itemView) {
+class ProductItemViewHolder(
+        itemView: View,
+        private val productItemListener: ProductItemListener,
+): AbstractViewHolder<ProductItemDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -38,6 +41,16 @@ class ProductItemViewHolder(itemView: View): AbstractViewHolder<ProductItemDataV
                         nonVariant = element.nonVariantATC?.mapToNonVariant(),
                 )
         )
+
+        productCard?.setAddVariantClickListener {
+            productItemListener.onProductChooseVariantClicked(element)
+        }
+
+        productCard?.setAddToCartNonVariantClickListener(object: ProductCardGridView.ATCNonVariantListener {
+            override fun onQuantityChanged(quantity: Int) {
+                productItemListener.onProductNonVariantQuantityChanged(element, quantity)
+            }
+        })
     }
 
     private fun List<LabelGroupDataView>.mapToLabelGroup() = map {
@@ -59,7 +72,9 @@ class ProductItemViewHolder(itemView: View): AbstractViewHolder<ProductItemDataV
     }
 
     private fun VariantATCDataView.mapToVariant(): ProductCardModel.Variant {
-        return ProductCardModel.Variant(quantity = this.quantity)
+        return ProductCardModel.Variant(
+                quantity = this.quantity
+        )
     }
 
     private fun NonVariantATCDataView.mapToNonVariant(): ProductCardModel.NonVariant {

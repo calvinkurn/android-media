@@ -37,8 +37,10 @@ import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryCho
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -52,7 +54,8 @@ abstract class BaseSearchCategoryFragment:
         QuickFilterListener,
         SortFilterBottomSheet.Callback,
         CategoryChooserBottomSheet.Callback,
-        MiniCartWidgetListener {
+        MiniCartWidgetListener,
+        ProductItemListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -316,6 +319,17 @@ abstract class BaseSearchCategoryFragment:
         indices.forEach {
             searchCategoryAdapter?.notifyItemChanged(it)
         }
+    }
+
+    override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
+
+    }
+
+    override fun onProductNonVariantQuantityChanged(
+            productItemDataView: ProductItemDataView,
+            quantity: Int,
+    ) {
+
     }
 
     override fun onResume() {

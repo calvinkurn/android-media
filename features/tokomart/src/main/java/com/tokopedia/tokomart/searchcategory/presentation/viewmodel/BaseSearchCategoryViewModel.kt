@@ -506,8 +506,7 @@ abstract class BaseSearchCategoryViewModel(
                 nonVariantATC.quantity = quantity
                 updatedProductIndices.add(index)
             }
-        }
-        else if (variantATC != null) {
+        } else if (variantATC != null) {
             val totalQuantity = cartItemsVariantGrouped[parentProductId]?.sumBy { it.quantity } ?: 0
 
             if (variantATC.quantity != totalQuantity) {

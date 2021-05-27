@@ -99,7 +99,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
-    fun setButtonAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
+    fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
         buttonAddVariant?.setOnClickListener(addVariantClickListener)
     }
 

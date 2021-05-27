@@ -8,6 +8,7 @@ import com.tokopedia.tokomart.category.presentation.viewholder.CategoryAisleView
 import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
@@ -18,12 +19,14 @@ class CategoryTypeFactoryImpl(
         bannerListener: BannerComponentListener,
         quickFilterListener: QuickFilterListener,
         categoryFilterListener: CategoryFilterListener,
+        productItemListener: ProductItemListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
         bannerListener,
         quickFilterListener,
-        categoryFilterListener
+        categoryFilterListener,
+        productItemListener,
 ), CategoryTypeFactory {
 
     override fun type(categoryAisleDataView: CategoryAisleDataView) = CategoryAisleViewHolder.LAYOUT
