@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/category_item_width"
+    android:layout_height="@dimen/category_item_height"
     android:padding="@dimen/spacing_lvl2"
     android:id="@+id/card_container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <ImageView
         android:id="@+id/category_image"
-        android:layout_width="124dp"
-        android:layout_height="105dp"
-        tools:background="@color/Unify_R200"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="@color/Unify_R200"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_category_inside" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_item_name"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="left"
         android:maxLines="2"
         android:ellipsize="end"
         android:layout_marginBottom="@dimen/dp_8"
-        app:typographyType="heading_6"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:textColor="@color/Unify_Static_White_96"
-        app:layout_constraintBottom_toBottomOf="@+id/category_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        app:typographyType="heading_6"
         tools:text="Two Line Category Name"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

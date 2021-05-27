@@ -108,7 +108,6 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
                     },
                     isTypeTextBox = {
                         holder.categoryImageView.loadImageWithoutPlaceholder(grid.imageUrl, FPM_CATEGORY_WIDGET_ITEM)
-//                        holder.categoryContainer.background = getCardShadow(holder.categoryContainer)
                     }
             )
             holder.categoryName.text = grid.name
