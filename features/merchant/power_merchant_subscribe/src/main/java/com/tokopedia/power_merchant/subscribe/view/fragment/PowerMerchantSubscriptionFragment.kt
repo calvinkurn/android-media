@@ -707,6 +707,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetNextUpdateUiModel(pmProThreshold, data.nextQuarterlyCalibrationRefreshDate))
         }
+        if (pmBasicInfo?.shopInfo?.isNewSeller.orFalse()) {
+            widgets.add(WidgetDividerUiModel)
+            widgets.add(WidgetSingleCtaUiModel(
+                    getString(R.string.pm_pm_transition_period_learnmore),
+                    Constant.Url.POWER_MERCHANT_FEATURES
+            ))
+        }
         if (isAutoExtendEnabled) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
