@@ -11,7 +11,6 @@
         <domain includeSubdomains="false">localhost</domain>
         <domain includeSubdomains="true">172.31.2.144</domain>
         <domain includeSubdomains="true">gjk.io</domain>
-        <domain includeSubdomains="false">ecs.tokopedia.com</domain>
         <domain includeSubdomains="true">wst.laku6.com</domain>
         <domain includeSubdomains="true">gojek.com</domain>
         <domain includeSubdomains="true">grab.com</domain>
