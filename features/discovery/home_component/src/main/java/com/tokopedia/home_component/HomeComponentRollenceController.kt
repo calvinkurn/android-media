@@ -28,7 +28,7 @@ object HomeComponentRollenceController {
         return getRollenceValueLego4Banner() == AbTestPlatform.HOME_COMPONENT_LEGO4BANNER_VARIANT
     }
 
-    fun checkCategoryWidgetRollenceType(isTypeControl:() -> Unit, isTypeTextInside: () -> Unit, isTypeTextBox: () -> Unit) {
+    fun checkCategoryWidgetRollenceType(isTypeControl:() -> Unit = {}, isTypeTextInside: () -> Unit = {}, isTypeTextBox: () -> Unit = {}) {
         when (getRollenceValueCategoryWidget()) {
             AbTestPlatform.HOME_COMPONENT_CATEGORYWIDGET_OLD -> isTypeControl.invoke()
             AbTestPlatform.HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX -> isTypeTextBox.invoke()

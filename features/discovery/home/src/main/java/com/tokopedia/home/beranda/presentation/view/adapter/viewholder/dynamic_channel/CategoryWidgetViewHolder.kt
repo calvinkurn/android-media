@@ -51,10 +51,17 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
                 2,
                 GridLayoutManager.HORIZONTAL,
                 false)
+
         if (recyclerView.itemDecorationCount == 0) {
+            var dimens = R.dimen.dp_0
+            HomeComponentRollenceController.checkCategoryWidgetRollenceType(
+                    isTypeTextBox = {
+                        dimens = R.dimen.dp_8
+                    }
+            )
             recyclerView.addItemDecoration(CategoryWidgetSpacingItemDecoration(
                     2,
-                    itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)
+                    itemView.context.resources.getDimensionPixelOffset(dimens)
             ))
         }
     }

@@ -30,6 +30,6 @@
         android:textColor="@color/Unify_Static_White_96"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        app:typographyType="heading_6"
+        app:typographyType="heading_5"
         tools:text="Two Line Category Name"/>
 </RelativeLayout>
