@@ -13,12 +13,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.constant.PMProURL
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
@@ -447,15 +445,15 @@ class OtherMenuViewHolder(private val itemView: View,
         val powerMerchantProStatusText = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.powerMerchantProStatusText)
         when (powerMerchantStatus) {
             is PowerMerchantProStatus.Advanced -> {
-                ivBgPMPro.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_advance)
+                ivBgPMPro.loadImage(PMProURL.BG_ADVANCE)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
             }
             is PowerMerchantProStatus.Expert -> {
-                ivBgPMPro.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_expert)
+                ivBgPMPro.loadImage(PMProURL.BG_EXPERT)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
             }
             is PowerMerchantProStatus.Ultimate -> {
-                ivBgPMPro.setImageResource(com.tokopedia.seller.menu.common.R.drawable.ic_pm_pro_ultimate)
+                ivBgPMPro.loadImage(PMProURL.BG_ULTIMATE)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
             }
         }
