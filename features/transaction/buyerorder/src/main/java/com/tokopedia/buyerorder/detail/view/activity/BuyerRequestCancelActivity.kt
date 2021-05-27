@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.detail.view.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -10,6 +11,8 @@ import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.fragment.BuyerRequestCancelFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import java.io.Serializable
+import java.lang.reflect.Type
 
 /**
  * Created by fwidjaja on 08/06/20.
@@ -23,7 +26,10 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<OrderDetai
         val cacheManagerId = intent.getStringExtra(BuyerConsts.PARAM_CACHE_MANAGER_ID).orEmpty()
         if (cacheId.isNotEmpty() && cacheManagerId.isNotEmpty()) {
             val cacheManager = SaveInstanceCacheManager(this, cacheManagerId)
-            bundle.putAll(cacheManager.get(cacheId, Bundle::class.java, bundle))
+            val mapType: Type = object : TypeToken<Map<String, Any>>() {}.type
+            cacheManager.get(cacheId, mapType, mapOf<String, Any>())?.let {
+                bundle.putAllPayload(it)
+            }
         } else if (intent.extras != null) {
             bundle.putAll(intent.extras ?: Bundle())
         } else {
@@ -51,5 +57,15 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<OrderDetai
         return DaggerOrderDetailsComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
+    }
+
+    private fun Bundle.putAllPayload(data: Map<String, Any>) {
+        data.forEach {
+            when (val value = it.value) {
+                is String -> putString(it.key, value)
+                is Boolean -> putBoolean(it.key, value)
+                is Int -> putInt(it.key, value)
+            }
+        }
     }
 }

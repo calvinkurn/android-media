@@ -3,7 +3,6 @@ package com.tokopedia.buyerorderdetail.common
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -16,6 +15,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 
@@ -34,7 +34,7 @@ class BuyerOrderDetailNavigator(
     }
 
     private fun createProductListPayload(productList: List<ProductListUiModel.ProductUiModel>): String {
-        return Gson().toJson(JsonArray(productList.size).apply {
+        return GsonSingleton.instance.toJson(JsonArray(productList.size).apply {
             productList.forEach {
                 add(createProductPayload(it))
             }
@@ -110,16 +110,16 @@ class BuyerOrderDetailNavigator(
         fragment.context?.let { context ->
             if (buyerOrderDetailData is Success) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.MP_INTERNAL_REQUEST_CANCEL)
-                val payload: Bundle = Bundle().apply {
-                    putString(BuyerOrderDetailConst.PARAM_SHOP_NAME, buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName)
-                    putString(BuyerOrderDetailConst.PARAM_INVOICE, buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice)
-                    putString(BuyerOrderDetailConst.PARAM_JSON_LIST_PRODUCT, createProductListPayload(buyerOrderDetailData.data.productListUiModel.productList))
-                    putString(BuyerOrderDetailConst.PARAM_ORDER_ID, buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId)
-                    putBoolean(BuyerOrderDetailConst.PARAM_IS_CANCEL_ALREADY_REQUESTED, false) //TODO: use backend response
-                    putString(BuyerOrderDetailConst.PARAM_TITLE_CANCEL_REQUESTED, button.popUp.title)
-                    putString(BuyerOrderDetailConst.PARAM_BODY_CANCEL_REQUESTED, button.popUp.body)
-                    putString(BuyerOrderDetailConst.PARAM_SHOP_ID, buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopId)
-                }
+                val payload: Map<String, Any> = mapOf(
+                        BuyerOrderDetailConst.PARAM_SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
+                        BuyerOrderDetailConst.PARAM_INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
+                        BuyerOrderDetailConst.PARAM_JSON_LIST_PRODUCT to createProductListPayload(buyerOrderDetailData.data.productListUiModel.productList),
+                        BuyerOrderDetailConst.PARAM_ORDER_ID to buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                        BuyerOrderDetailConst.PARAM_IS_CANCEL_ALREADY_REQUESTED to false,
+                        BuyerOrderDetailConst.PARAM_TITLE_CANCEL_REQUESTED to button.popUp.title,
+                        BuyerOrderDetailConst.PARAM_BODY_CANCEL_REQUESTED to button.popUp.body,
+                        BuyerOrderDetailConst.PARAM_SHOP_ID to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopId
+                )
                 val cacheId = cacheManager.generateUniqueRandomNumber()
                 cacheManager.put(cacheId, payload)
                 intent.putExtra(BuyerOrderDetailConst.PARAM_CACHE_ID, cacheId)
