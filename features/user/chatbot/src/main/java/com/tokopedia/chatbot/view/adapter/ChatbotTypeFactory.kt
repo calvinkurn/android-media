@@ -14,6 +14,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
+import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
 
 /**
  * @author by nisie on 27/11/18.
@@ -44,5 +45,7 @@ interface ChatbotTypeFactory : AdapterTypeFactory {
     fun type(helpFullQuestionsViewModel: HelpFullQuestionsViewModel): Int
 
     fun type(csatOptionsViewModel: CsatOptionsViewModel): Int
+
+    fun type(stickyActionButtonViewModel: StickyActionButtonViewModel): Int
 
 }

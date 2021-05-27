@@ -52,7 +52,7 @@
 
         <TextView
             android:id="@+id/total_review"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             style="@style/TextView.Micro.BlackDisabled"
             tools:text="129 Ulasan" />
 

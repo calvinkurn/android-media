@@ -477,9 +477,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             editorControlView.setVisibility(View.VISIBLE);
             doneButton.setVisibility(View.GONE);
 
-            getSupportActionBar().setHomeButtonEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setTitle("");
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setHomeButtonEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setTitle("");
+            }
 
             switch (editActionType) {
                 case ACTION_CROP:
@@ -528,9 +530,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             editorMainView.setVisibility(View.VISIBLE);
             editorControlView.setVisibility(View.GONE);
             doneButton.setVisibility(View.VISIBLE);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(getTitle());
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setHomeButtonEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle(getTitle());
+            }
             tvActionTitle.setVisibility(View.GONE);
             if (fragment != null) {
                 fragment.setEditCropMode(false);
@@ -781,7 +786,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.title_loading));
+            progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         progressDialog.show();
         blockingView.setVisibility(View.VISIBLE);
@@ -876,33 +881,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     @Override
     protected void onResume() {
         super.onResume();
-        if (isPermissionGotDenied) {
-            finish();
-            return;
-        }
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
-        } else {
-            onResumeAfterCheckPermission();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        int result = grantResults[0];
-        if (result == PackageManager.PERMISSION_DENIED) {
-            isPermissionGotDenied = true;
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                //Never ask again selected, or device policy prohibits the app from having that permission.
-                Toast.makeText(getContext(), getString(R.string.permission_enabled_needed), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            isPermissionGotDenied = false;
-            onResumeAfterCheckPermission();
-        }
+        onResumeAfterCheckPermission();
     }
 
     private void onResumeAfterCheckPermission() {

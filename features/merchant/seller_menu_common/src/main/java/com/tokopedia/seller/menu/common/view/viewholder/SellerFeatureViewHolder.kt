@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller.menu.common.R
@@ -29,12 +30,28 @@ class SellerFeatureViewHolder(
 
     override fun bind(feature: SellerFeatureUiModel) {
         itemView.cardStatistics.setOnClickListener {
-            goToToAdminAuthorizationPage(AdminFeature.STATISTIC)
+            if (feature.userSession.isShopOwner) {
+                val appLinks = ArrayList<String>().apply {
+                    add(ApplinkConstInternalSellerapp.SELLER_HOME)
+                    add(ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD)
+                }
+                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_SHOP_INSIGHT, appLinks)
+            } else {
+                goToToAdminAuthorizationPage(AdminFeature.STATISTIC)
+            }
             sellerMenuTracker?.sendEventClickShopStatistic()
         }
 
         itemView.cardPromo.setOnClickListener {
-            goToToAdminAuthorizationPage(AdminFeature.ADS_AND_PROMOTION)
+            if (feature.userSession.isShopOwner) {
+                val appLinks = ArrayList<String>().apply {
+                    add(ApplinkConstInternalSellerapp.SELLER_HOME)
+                    add(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
+                }
+                goToSellerMigrationPage(SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO, appLinks)
+            } else {
+                goToToAdminAuthorizationPage(AdminFeature.ADS_AND_PROMOTION)
+            }
             sellerMenuTracker?.sendEventClickCentralizePromo()
         }
 

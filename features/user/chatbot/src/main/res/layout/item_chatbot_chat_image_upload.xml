@@ -8,12 +8,38 @@
     android:paddingLeft="@dimen/unify_space_12"
     android:paddingRight="@dimen/unify_space_12">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dateContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_below="@id/chatbot_ticker"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardBackgroundColor="#E5F5FF"
+        android:layout_centerHorizontal="true">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_68"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:paddingLeft="@dimen/unify_space_12"
+            android:paddingRight="@dimen/unify_space_12"
+            app:typographyType="body_3"
+            tools:text="1 Jan"/>
+
+    </androidx.cardview.widget.CardView>
+
     <FrameLayout
         android:id="@+id/fl_image_container"
         android:layout_width="@dimen/dp_chatbot_240"
         android:layout_height="@dimen/dp_chatbot_240"
-        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
+        android:layout_below="@id/dateContainer"
         tools:ignore="RtlHardcoded">
 
         <com.tokopedia.unifycomponents.ImageUnify

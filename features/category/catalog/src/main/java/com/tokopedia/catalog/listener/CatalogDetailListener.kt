@@ -2,7 +2,7 @@ package com.tokopedia.catalog.listener
 
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.catalog.model.raw.VideoComponentData
 
 interface CatalogDetailListener {
 
@@ -15,7 +15,6 @@ interface CatalogDetailListener {
      * CatalogImageViewHolder
      */
     fun onProductImageClick(catalogImage : CatalogImage, position: Int)
-    fun onImagesScrolled()
 
     /**
      * CatalogSpecificationsContainerViewHolder
@@ -28,6 +27,11 @@ interface CatalogDetailListener {
     fun hideFloatingLayout()
 
     fun showFloatingLayout()
+
+    /**
+     * CatalogVideoViewHolder
+     */
+    fun playVideo(catalogVideo : VideoComponentData, position : Int)
 
     val childsFragmentManager: FragmentManager?
 

@@ -3,6 +3,7 @@ package com.tokopedia.abstraction.base.view.activity;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -22,7 +23,7 @@ import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 abstract class BaseToolbarActivity extends BaseActivity {
 
-    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black;
+    private final static int TEXT_COLOR_BACKGROUND_WHITE = com.tokopedia.unifyprinciples.R.color.Unify_N700;
     protected Toolbar toolbar;
 
     protected abstract void setupFragment(Bundle savedInstanceState);

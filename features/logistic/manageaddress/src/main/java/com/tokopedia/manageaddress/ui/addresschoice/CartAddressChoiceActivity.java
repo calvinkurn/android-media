@@ -46,11 +46,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     private CheckoutAnalyticsChangeAddress mAnalytics = new CheckoutAnalyticsChangeAddress();
 
     @Override
-    protected void initInjector() {
-
-    }
-
-    @Override
     protected void setupBundlePass(Bundle extras) {
         this.typeRequest = extras.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST);
         this.token = extras.getParcelable(CheckoutConstant.EXTRA_DISTRICT_RECOMMENDATION_TOKEN);

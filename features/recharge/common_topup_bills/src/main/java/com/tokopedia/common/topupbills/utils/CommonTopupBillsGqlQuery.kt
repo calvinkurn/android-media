@@ -49,7 +49,7 @@ object CommonTopupBillsGqlQuery {
     """.trimIndent()
 
     val rechargeCatalogProductInput = """
-        query voucherGameProductDetail(${'$'}menuID: Int!,${'$'}operator: String!){
+        query rechargeCatalogProductInput(${'$'}menuID: Int!,${'$'}operator: String!){
           rechargeCatalogProductInput(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID, operator:${'$'}operator) {
             needEnquiry
             isShowingProduct
@@ -91,29 +91,6 @@ object CommonTopupBillsGqlQuery {
                     detail_url_text
                   }
                 }
-              }
-            }
-          }
-        }
-    """.trimIndent()
-
-    val enquiryDigital = """
-        query enquiry (${'$'}clientNumber: String!,${'$'}productId: String!) {
-          status
-          enquiry(
-            clientNumber:${'$'}clientNumber,
-            productId:${'$'}productId,
-            requestType: NEW) {
-            attributes: Attributes {
-              UserID
-              ProductID
-              ClientNumber
-              Title
-              Price
-              PricePlain
-              mainInfo: MainInfo {
-                label: Label
-                value: Value
               }
             }
           }

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -18,19 +19,24 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetCarouselDataUseCase(
-        private val gqlRepository: GraphqlRepository,
-        private val mapper: CarouselMapper
-) : BaseGqlUseCase<List<CarouselDataUiModel>>() {
+        gqlRepository: GraphqlRepository,
+        mapper: CarouselMapper,
+        dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetCarouselDataResponse, List<CarouselDataUiModel>>(
+        gqlRepository, mapper, dispatchers, GetCarouselDataResponse::class.java, QUERY, false) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<CarouselDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetCarouselDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetCarouselDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetCarouselDataResponse>()
-            val carouselData = data.carouselData.data
-            return mapper.mapRemoteModelToUiModel(carouselData, cacheStrategy.type == CacheType.CACHE_ONLY)
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

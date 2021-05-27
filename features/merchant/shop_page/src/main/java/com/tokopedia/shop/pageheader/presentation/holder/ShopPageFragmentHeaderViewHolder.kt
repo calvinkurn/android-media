@@ -6,17 +6,19 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -24,7 +26,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
@@ -81,6 +82,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         chooseAddressWidget?.updateWidget()
     }
 
+    fun hideChooseAddressWidget(){
+        chooseAddressWidget?.hide()
+    }
+
     fun bind(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean, remoteConfig: RemoteConfig) {
         view.shop_page_follow_unfollow_button?.hide()
         view.shop_page_follow_unfollow_button_old?.hide()
@@ -96,7 +101,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_location.hide()
             view.shop_page_main_profile_location.text = shopLocation
         }
-        ImageHandler.loadImageCircle2(view.context, view.shop_page_main_profile_image, shopPageHeaderDataModel.avatar)
+        view.shop_page_main_profile_image.loadImageCircle(shopPageHeaderDataModel.avatar)
         if (isMyShop) {
             view.shop_page_main_profile_background.setOnClickListener {
                 listener.onShopCoverClicked(
@@ -105,12 +110,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 )
             }
         }
-        when {
-            shopPageHeaderDataModel.isOfficial -> displayOfficial()
-            shopPageHeaderDataModel.isGoldMerchant -> displayGoldenShop()
-            else -> {
-                shopPageProfileBadgeView.visibility = View.GONE
-            }
+        if (shopPageHeaderDataModel.shopBadge.isNotEmpty()) {
+            setShopBadge(shopPageHeaderDataModel.shopBadge)
+        } else {
+            shopPageProfileBadgeView.visibility = View.GONE
         }
         TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_name, MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString(), view.shop_page_main_profile_name.context.getString(R.string.content_desc_shop_page_main_profile_name))
         if (isMyShop) setupSgcPlayWidget(shopPageHeaderDataModel)
@@ -135,14 +138,14 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
     }
 
-    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
             )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
                 view.choosee_address_widget_bottom_shadow?.show()
@@ -341,7 +344,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
         view.tickerShopStatus.setHtmlDescription(
-                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED && isMyShop) {
                     generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
                 } else {
                     shopPageHeaderDataModel.statusMessage
@@ -461,17 +464,12 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
         view.image_view_shop_reputation_badge.show()
-        ImageHandler.LoadImage(view.image_view_shop_reputation_badge, shopBadge.badgeHD)
+        view.image_view_shop_reputation_badge.loadIcon(shopBadge.badgeHD)
     }
 
-    private fun displayGoldenShop() {
+    private fun setShopBadge(shopBadge: String){
         shopPageProfileBadgeView.visibility = View.VISIBLE
-        shopPageProfileBadgeView.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
-    }
-
-    private fun displayOfficial() {
-        shopPageProfileBadgeView.visibility = View.VISIBLE
-        shopPageProfileBadgeView.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
+        shopPageProfileBadgeView.loadImage(shopBadge)
     }
 
     /**
@@ -495,21 +493,5 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     fun setLoadingFollowButton(isLoading: Boolean) {
         followButton.isLoading = isLoading
     }
-
-    interface ShopPageFragmentViewHolderListener {
-        fun onFollowerTextClicked(shopFavourited: Boolean)
-        fun setFollowStatus(isFollowing: Boolean)
-        fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean)
-        fun onShopStatusTickerClickableDescriptionClicked(linkUrl: CharSequence)
-        fun openShopInfo()
-        fun onStartLiveStreamingClicked()
-        fun saveFirstTimeVisit()
-        fun isFirstTimeVisit(): Boolean?
-        fun onSendRequestOpenModerate(optionValue : String)
-        fun onCompleteSendRequestOpenModerate()
-        fun onCompleteCheckRequestModerateStatus(moderateStatusResult : ShopModerateRequestResult)
-        fun setShopUnmoderateRequestBottomSheet(bottomSheet: ShopRequestUnmoderateBottomSheet)
-    }
-
 
 }

@@ -6,7 +6,7 @@
     android:background="@color/Unify_N0">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
+        android:id="@+id/rv_recent_view_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"

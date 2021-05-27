@@ -9,6 +9,7 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -19,7 +20,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -117,7 +117,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Given
         val data = DataProvider.provideShipmentAddressFormResponse()
         val cartShipmentAddressFormData = shipmentMapper.convertToShipmentAddressFormData(data.shipmentAddressFormResponse.data)
-        cartShipmentAddressFormData.abTestButton = ABTestButton(enable = true)
         presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel()
 
         every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(cartShipmentAddressFormData)
@@ -238,29 +237,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun `WHEN load checkout page with no error and address list is not empty but the user address data is null THEN should trigger finish activity`() {
-        // Given
-        val data = CartShipmentAddressFormData(errorCode = 0, groupAddress = listOf(GroupAddress().apply {
-            userAddress = null
-        }))
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
-
-        // When
-        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.setHasRunningApiCall(false)
-            view.resetPromoBenefit()
-            view.clearTotalBenefitPromoStacking()
-            view.hideLoading()
-            view.onShipmentAddressFormEmpty()
-            view.stopTrace()
-        }
-    }
-
-
-    @Test
     fun `WHEN load checkout page get state address id match THEN should render checkout page`() {
         // Given
         val groupAddress = GroupAddress().apply {
@@ -362,16 +338,12 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun `WHEN load checkout page get error code open address list and user address is null THEN should navigate to address list page with default address state`() {
+    fun `WHEN load checkout page get error code open address list and group address is empty THEN should navigate to address list page with default address state`() {
         // Given
         val defaultAddressState = 0
         val data = CartShipmentAddressFormData().apply {
             errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST
-            groupAddress = listOf(
-                    GroupAddress().apply {
-                        userAddress = null
-                    }
-            )
+            groupAddress = listOf()
         }
 
         every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.UnifyButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button_shop_chat"
+    android:layout_width="@dimen/dp_10"
+    android:gravity="center"
+    android:layout_height="wrap_content"
+    tools:text="Chat"
+    app:layout_flexGrow="1"
+    app:unifyButtonSize="micro"
+    app:unifyButtonType="alternate"
+    app:unifyButtonVariant="ghost"
+    tools:visibility="visible" />

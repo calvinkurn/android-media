@@ -19,8 +19,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -41,11 +39,10 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.Response;
@@ -71,6 +68,9 @@ public class MyApplication extends BaseMainApplication
     public void onCreate() {
 
         setVersionCode();
+        initFileDirConfig();
+
+        TokopediaUrl.Companion.init(this); // generate base url
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
@@ -100,7 +100,6 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
 
         super.onCreate();
-        initCacheApi();
 
         ResourceDownloadManager
                 .Companion.getManager()
@@ -185,19 +184,6 @@ public class MyApplication extends BaseMainApplication
         public void sendEvent(String eventName, Map<String, Object> eventValue) {
 
         }
-    }
-
-    private void initCacheApi() {
-        new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
-                getWhiteList(), String.valueOf(System.currentTimeMillis())));
-    }
-
-    public static List<CacheApiWhiteListDomain> getWhiteList() {
-        return new ArrayList<>(getShopWhiteList());
-    }
-
-    public static List<CacheApiWhiteListDomain> getShopWhiteList() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -451,5 +437,12 @@ public class MyApplication extends BaseMainApplication
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
             com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
+    }
+
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.subscriber
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.view.ShipmentContract
@@ -27,7 +28,7 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
             view.hideInitialLoading()
         }
         var errorMessage = e.message
-        if (e !is CartResponseErrorException) {
+        if (e !is CartResponseErrorException && e !is AkamaiErrorException) {
             errorMessage = ErrorHandler.getErrorMessage(view.activityContext, e)
         }
         view.showToastError(errorMessage)

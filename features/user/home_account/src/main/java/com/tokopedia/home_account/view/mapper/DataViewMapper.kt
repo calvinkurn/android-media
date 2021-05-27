@@ -4,8 +4,9 @@ import android.content.Context
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.Utils
+import com.tokopedia.home_account.Utils.formatIdrCurrency
 import com.tokopedia.home_account.data.model.*
-import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_DEFAULT
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
@@ -23,26 +24,15 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 class DataViewMapper @Inject constructor(
-        private val userSession: UserSessionInterface,
-        private val remoteConfig: RemoteConfig
+        private val userSession: UserSessionInterface
 ) {
 
-    fun mapToProfileDataView(context: Context?, accountDataModel: UserAccountDataModel): ProfileDataView {
+    fun mapToProfileDataView(accountDataModel: UserAccountDataModel): ProfileDataView {
         return ProfileDataView(
                 name = accountDataModel.profile.fullName,
                 phone = userSession.phoneNumber,
                 email = userSession.email,
                 avatar = accountDataModel.profile.profilePicture,
-                members = mapToMemberDataView(accountDataModel),
-                backdrop = accountDataModel.tokopoints.status.tier.backgroundImgUrl
-        )
-    }
-
-    fun mapToMemberDataView(accountDataModel: UserAccountDataModel): MemberDataView {
-        return MemberDataView(
-                title = accountDataModel.tokopoints.status?.tier?.nameDesc.toEmptyStringIfNull(),
-                icon = accountDataModel.tokopoints.status?.tier?.imageUrl.toEmptyStringIfNull(),
-                items = mapMemberItemDataView(accountDataModel.shortcutResponse)
         )
     }
 
@@ -96,7 +86,7 @@ class DataViewMapper @Inject constructor(
                 )
             } else {
                 item = CommonDataView(
-                        title = CurrencyFormatUtil.convertPriceValueToIdrFormat(wallet.rawCashBalance, false),
+                        title = renderOvoBalance(wallet),
                         body = getString(context, R.string.account_title_points_item) + " " + wallet.pointBalance.toEmptyStringIfNull(),
                         applink = wallet.applink.toEmptyStringIfNull(),
                         urlIcon = AccountConstants.Url.OVO_ICON,
@@ -107,11 +97,15 @@ class DataViewMapper @Inject constructor(
         return item
     }
 
+    private fun renderOvoBalance(wallet: WalletModel): String {
+        return wallet.cashBalance.toEmptyStringIfNull()
+    }
+
     fun mapSaldo(context: Context?, balance: Balance): CommonDataView {
         val totalBalance = balance.buyerUsable + balance.sellerUsable
         return CommonDataView(
                 id = AccountConstants.SettingCode.SETTING_SALDO,
-                title = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance.toLong() , false),
+                title = formatIdrCurrency(totalBalance.toLong()),
                 body = getString(context, R.string.account_title_saldo_item),
                 type = FinancialItemViewHolder.TYPE_SALDO,
                 urlIcon = AccountConstants.Url.SALDO_ICON,

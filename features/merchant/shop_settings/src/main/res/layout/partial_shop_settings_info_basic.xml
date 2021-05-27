@@ -8,15 +8,6 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/shadow"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@drawable/bg_shadow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <RelativeLayout
         android:id="@+id/containerShopInfo"
         android:layout_width="match_parent"
@@ -170,11 +161,12 @@
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost" />
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
         android:layout_marginTop="16dp"
+        android:background="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnChangeShopInfo" />
@@ -212,9 +204,10 @@
             app:typographyWeight="reguler"
             tools:text="Buka" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:layout_width="fill_parent"
+        <View
+            android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
+            android:background="@color/Unify_N50"
             android:layout_marginTop="@dimen/dp_15" />
 
     </LinearLayout>
@@ -287,7 +280,7 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_power_merchant" />
+                tools:srcCompat="@drawable/ic_power_merchant" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -324,7 +317,7 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_power_merchant" />
+                tools:srcCompat="@drawable/ic_power_merchant" />
 
             <LinearLayout
                 android:layout_width="match_parent"

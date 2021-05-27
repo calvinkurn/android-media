@@ -21,7 +21,8 @@
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/shc_content_desc_image_post" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPostTitle"
@@ -31,7 +32,7 @@
         android:layout_marginLeft="@dimen/shc_dimen_12dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imgPost"
         app:layout_constraintTop_toTopOf="parent"

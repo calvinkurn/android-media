@@ -61,18 +61,17 @@ def isFirebasePerformanceLogEnabled() {
     return "false"
 }
 
+android.applicationVariants.all { variant ->
+    def variantNameCap = variant.name.capitalize()
+    task ("generateBundledResourcesHash${variantNameCap}")
+    task ("bundle${variantNameCap}JsAndAssets")
+}
+
 project.ext {
     defaultVersionCode = 418001101;
     defaultVersionName = "3.80";
-    react = [
-            nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
-            enableHermes         : true,
-    ]
 }
 
-//def hermesPath = "../hermes/";
-def jscFlavor = 'org.webkit:android-jsc:+'
-def enableHermes = project.ext.react.get("enableHermes", false);
 
 buildscript {
     repositories {
@@ -235,7 +234,6 @@ android {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
-        resolutionStrategy.force 'com.facebook.soloader:soloader:0.8.0'
     }
 
     // Specifies 4 flavor dimensions.
@@ -276,7 +274,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.promoGamificationCommon)
-    implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -287,7 +284,7 @@ dependencies {
     implementation project(rootProject.ext.features.feedbackForm)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.screenshot_observer)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.features.productManageCommon)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -300,7 +297,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.iconNotification
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.pin
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -310,7 +306,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.measurementApi
 
     if (rootProject.ext.debugToolsEnabled) {
@@ -379,17 +374,12 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.miscDependencies.codePushReactNative
-    implementation rootProject.ext.miscDependencies.reactNative
-    implementation 'com.facebook.fresco:fresco:1.10.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.miscDependencies.rxAndroid
@@ -403,7 +393,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-    implementation 'com.facebook.soloader:soloader:0.8.0'
+
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
@@ -455,21 +445,12 @@ dependencies {
     }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
-
-
-    if (enableHermes) {
-        debugImplementation 'com.facebook.hermes:hermes-debug:0.1.2@aar'
-        releaseImplementation 'com.facebook.hermes:hermes-release:0.1.2@aar'
-    } else {
-        implementation jscFlavor
-    }
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+
+    implementation rootProject.ext.unifyDependencies.empty_state
 }
 
-
-apply from: "../buildconfig/reactnative/react.gradle"
-apply from: "../buildconfig/reactnative/codepush.gradle"
 apply plugin: 'com.google.gms.google-services'

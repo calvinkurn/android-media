@@ -5,8 +5,6 @@ import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.inbox.common.InboxCoroutineContextProvider
-import com.tokopedia.inbox.common.InboxCoroutineDispatcher
 import com.tokopedia.inbox.domain.cache.InboxCacheManager
 import com.tokopedia.inbox.domain.cache.InboxCacheManagerImpl
 import com.tokopedia.user.session.UserSession
@@ -28,13 +26,6 @@ class InboxCommonModule {
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
-
-    @InboxScope
-    @Provides
-    fun provideInboxCoroutineDispatcher(): InboxCoroutineDispatcher {
-        return InboxCoroutineContextProvider()
-    }
-
 
     @InboxScope
     @Provides

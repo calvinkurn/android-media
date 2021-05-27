@@ -16,6 +16,7 @@ class GetFollowStatusUseCase @Inject constructor(
 
     companion object {
         const val SOURCE_NPL_TNC = "npl-tnc"
+        const val SOURCE_SHOP_PAGE = "shop-page"
         const val SOURCE_PDP = "pdp"
         private const val PARAM_INPUT = "input"
         private const val PARAM_SHOP_ID = "shopID"

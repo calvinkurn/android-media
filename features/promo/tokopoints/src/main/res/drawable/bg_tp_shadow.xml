@@ -6,6 +6,6 @@
     <gradient
         android:angle="90"
         android:endColor="@color/transparent"
-        android:startColor="@color/tp_bottom_shadow_color" />
+        android:startColor="@color/Unify_N700_20" />
 
 </shape>

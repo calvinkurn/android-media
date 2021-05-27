@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="@dimen/dp_20"
-    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_10">
 
@@ -12,16 +12,17 @@
         android:id="@+id/stepper_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="@null"
-        tools:src="@drawable/stepper_order_arrived" />
+        android:contentDescription="@null" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/stepper_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:padding="@dimen/dp_10"
         android:textColor="@color/Unify_G400"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         tools:text="Pesanan Sedang Diproses" />
 
 </LinearLayout>

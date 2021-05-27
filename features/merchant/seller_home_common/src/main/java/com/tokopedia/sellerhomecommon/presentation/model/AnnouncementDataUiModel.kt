@@ -5,7 +5,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class AnnouncementDataUiModel(
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         override var error: String = "",
         override var isFromCache: Boolean = false,
         override val showWidget: Boolean = false,
@@ -15,6 +15,6 @@ data class AnnouncementDataUiModel(
         val imgUrl: String = ""
 ) : BaseDataUiModel {
     override fun shouldRemove(): Boolean {
-        return !isFromCache && (title.isBlank() || subtitle.isBlank())
+        return title.isBlank() || subtitle.isBlank()
     }
 }

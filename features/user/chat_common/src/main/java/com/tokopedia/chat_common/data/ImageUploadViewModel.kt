@@ -11,7 +11,6 @@ class ImageUploadViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
     var imageUrl: String? = null
     var imageUrlThumbnail: String? = null
-        private set
     var isRetry: Boolean = false
 
     constructor(

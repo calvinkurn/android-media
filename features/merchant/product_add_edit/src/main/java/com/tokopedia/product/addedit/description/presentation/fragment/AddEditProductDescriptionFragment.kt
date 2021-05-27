@@ -39,13 +39,13 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_DESCRIPTION_CHAR
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_VIDEOS
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VALIDATE_REQUEST_DELAY
-import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.VIDEO_REQUEST_DELAY
 import com.tokopedia.product.addedit.description.presentation.dialog.GiftingDescriptionBottomSheet
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -54,8 +54,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
@@ -84,8 +82,12 @@ import kotlinx.android.synthetic.main.add_edit_product_no_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
 import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class AddEditProductDescriptionFragment:
         BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
         VideoLinkTypeFactory.VideoLinkListener,
@@ -94,6 +96,8 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var shopId: String
     private var isFragmentVisible = false
+    private var youtubeAdapterPosition = 0
+    private var isFirstTimeFetchYoutubeData = false
 
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -110,7 +114,6 @@ class AddEditProductDescriptionFragment:
     override fun getAdapterTypeFactory(): VideoLinkTypeFactory {
         val videoLinkTypeFactory = VideoLinkTypeFactory()
         videoLinkTypeFactory.setVideoLinkListener(this)
-
         return videoLinkTypeFactory
     }
 
@@ -122,33 +125,15 @@ class AddEditProductDescriptionFragment:
         }
         adapter.data.removeAt(position)
         adapter.notifyItemRemoved(position)
-        with(descriptionViewModel) {
-            for (i in position until adapter.dataSize) {
-                adapter.data.getOrNull(i)?.run {
-                    isFetchingVideoData[i] = false
-                    urlToFetch[i] = inputUrl
-                    if (fetchedUrl[i + 1].orEmpty() != inputUrl) {
-                        onTextChanged(urlToFetch[i].orEmpty(), i)
-                    }
-                }
-            }
-        }
-        textViewAddVideo.visibility =
-                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
         updateSaveButtonStatus()
     }
 
     override fun onTextChanged(url: String, position: Int) {
+        getVideoYoutube(url)
         adapter.data.getOrNull(position)?.run {
             inputUrl = url
-            descriptionViewModel.urlToFetch[position] = url
-            if (inputImage.isNotEmpty() || inputTitle.isNotEmpty() || inputDescription.isNotEmpty()) {
-                inputImage = ""
-                inputTitle = ""
-                inputDescription = ""
-                getRecyclerView(view).post { adapter.notifyItemChanged(position) }
-            }
-            getVideoYoutube(url, position)
+            youtubeAdapterPosition = position
         }
     }
 
@@ -188,6 +173,7 @@ class AddEditProductDescriptionFragment:
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         shopId = userSession.shopId
+        isFirstTimeFetchYoutubeData = true
 
         arguments?.let {
             val cacheManagerId = AddEditProductDescriptionFragmentArgs.fromBundle(it).cacheManagerId
@@ -325,11 +311,11 @@ class AddEditProductDescriptionFragment:
 
     override fun startRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
-        getRecyclerView(view).viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 stopRenderPerformanceMonitoring()
                 stopPerformanceMonitoring()
-                getRecyclerView(view).viewTreeObserver.removeOnGlobalLayoutListener(this)
+                getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -354,11 +340,13 @@ class AddEditProductDescriptionFragment:
                 } else {
                     ProductAddDescriptionTracking.clickAddVideoLink(shopId)
                 }
-                addEmptyVideoUrl()
+                adapter.data.add(VideoLinkModel())
+                adapter.notifyDataSetChanged()
+                textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
             }
         }
 
-        getRecyclerView(view).itemAnimator = object: DefaultItemAnimator() {
+        getRecyclerView(view)?.itemAnimator = object: DefaultItemAnimator() {
             override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
                 return true
             }
@@ -435,30 +423,10 @@ class AddEditProductDescriptionFragment:
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
     }
 
-    private fun addEmptyVideoUrl() {
-        val lastData = adapter.data.lastOrNull()
-        if (lastData == null) {
-            loadData(adapter.dataSize + 1)
-        } else {
-            if (lastData.inputUrl.isNotEmpty()) {
-                loadData(adapter.dataSize + 1)
-            }
-        }
-    }
-
-    private fun getVideoYoutube(url: String, index: Int) {
-        if (!(descriptionViewModel.isFetchingVideoData[index] ?: false)) {
-            descriptionViewModel.isFetchingVideoData[index] = true
-            view?.postDelayed({
-                if (descriptionViewModel.urlToFetch[index] == url) {
-                    descriptionViewModel.fetchedUrl[index] = url
-                    descriptionViewModel.getVideoYoutube(descriptionViewModel.fetchedUrl[index].orEmpty(), index)
-                } else {
-                    descriptionViewModel.isFetchingVideoData[index] = false
-                    getVideoYoutube(descriptionViewModel.urlToFetch[index].orEmpty(), index)
-                }
-            }, VIDEO_REQUEST_DELAY)
-        }
+    @ExperimentalCoroutinesApi
+    @FlowPreview
+    private fun getVideoYoutube(url: String) {
+        descriptionViewModel.urlYoutubeChanged(url)
     }
 
     private fun onFragmentResult() {
@@ -537,78 +505,59 @@ class AddEditProductDescriptionFragment:
 
     private fun observeProductVideo() {
         descriptionViewModel.videoYoutube.observe(viewLifecycleOwner) { result ->
-            val position = result.first
-            val isItemStillTheSame: Boolean
-            descriptionViewModel.isFetchingVideoData[position] = false
-            isItemStillTheSame = when (val requestResult = result.second) {
+            when (result) {
                 is Success -> {
-                    val id = requestResult.data.id
+                    val id = result.data.id
                     if (id == null) {
-                        displayErrorOnSelectedVideo(position)
+                        displayErrorOnSelectedVideo(youtubeAdapterPosition)
                     } else {
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()
-                        setDataOnSelectedVideo(requestResult.data, position)
+                        setDataOnSelectedVideo(result.data, youtubeAdapterPosition)
                     }
                 }
                 is Fail -> {
-                    AddEditProductErrorHandler.logExceptionToCrashlytics(requestResult.throwable)
-                    displayErrorOnSelectedVideo(position)
+                    displayErrorOnSelectedVideo(youtubeAdapterPosition)
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                 }
             }
-            adapter.notifyItemChanged(position)
-            if (isItemStillTheSame && descriptionViewModel.fetchedUrl[position] != descriptionViewModel.urlToFetch[position]) {
-                getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
-            }
-            refreshDuplicateVideo(position)
+            adapter.notifyItemChanged(youtubeAdapterPosition)
             updateSaveButtonStatus()
+            getVideoYoutubeOneByOne()
         }
     }
 
-    private fun displayErrorOnSelectedVideo(index: Int): Boolean {
-        var isItemTheSame = false
-        adapter.data.getOrNull(index)?.apply {
-            if (descriptionViewModel.fetchedUrl[index] == inputUrl) {
-                inputTitle = ""
-                inputDescription = ""
-                inputImage = ""
-                errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
-                isItemTheSame = true
+    private fun getVideoYoutubeOneByOne() {
+        if (!(descriptionViewModel.isAddMode && descriptionViewModel.isFirstMoved) && isFirstTimeFetchYoutubeData) {
+            youtubeAdapterPosition -= 1
+            if (youtubeAdapterPosition != -1) {
+                getVideoYoutube(adapter.data[youtubeAdapterPosition].inputUrl)
+            } else {
+                isFirstTimeFetchYoutubeData = false
             }
         }
-
-        return isItemTheSame
     }
 
-    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoDetailModel, index: Int): Boolean {
-        var isItemTheSame = false
-        adapter.data.getOrNull(index)?.apply {
-            if (descriptionViewModel.fetchedUrl[index] == inputUrl) {
-                inputTitle = youtubeVideoModel.title.orEmpty()
-                inputDescription = youtubeVideoModel.description.orEmpty()
-                inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
-                errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
-                isItemTheSame = true
-            }
+    private fun displayErrorOnSelectedVideo(position: Int) {
+        adapter.data.getOrNull(position)?.apply {
+            inputTitle = ""
+            inputDescription = ""
+            inputImage = ""
+            errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
         }
-
-        return isItemTheSame
     }
 
-    private fun refreshDuplicateVideo(excludeIndex: Int) {
-        ResourceProvider(context).getDuplicateProductVideoErrorMessage()?.run {
-            adapter.data.forEachIndexed { index, video ->
-                if (index != excludeIndex && video.errorMessage == this) {
-                    getVideoYoutube(video.inputUrl, index)
-                }
-            }
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoDetailModel, position: Int) {
+        adapter.data.getOrNull(position)?.apply {
+            inputTitle = youtubeVideoModel.title.orEmpty()
+            inputDescription = youtubeVideoModel.description.orEmpty()
+            inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
+            errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
         }
     }
 
     private fun validateDescriptionText(it: String) {
-        view?.postDelayed({
-            descriptionViewModel.validateProductDescriptionInput(it)
-        }, VALIDATE_REQUEST_DELAY)
+        descriptionViewModel.validateDescriptionChanged(it)
     }
 
     private fun updateDescriptionFieldErrorMessage(message: String) {
@@ -619,13 +568,13 @@ class AddEditProductDescriptionFragment:
 
     private fun applyEditMode() {
         val description = descriptionViewModel.descriptionInputModel?.productDescription ?: ""
-        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList ?: emptyList()
+        val videoLinks = descriptionViewModel.descriptionInputModel?.videoLinkList?.toMutableList()
 
         textFieldDescription?.setText(description)
-        if (videoLinks.isNotEmpty()) {
+        if (!videoLinks.isNullOrEmpty()) {
             super.clearAllData()
             super.renderList(videoLinks)
-
+            textViewAddVideo.visibility = if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
             // start network monitoring when videoLinks is not empty
             startNetworkRequestPerformanceMonitoring()
         } else {
@@ -723,15 +672,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun loadData(page: Int) {
-        val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
-        videoLinkModels.add(VideoLinkModel())
-        super.renderList(videoLinkModels)
-        descriptionViewModel.isFetchingVideoData[adapter.dataSize - 1] = false
-        descriptionViewModel.urlToFetch[adapter.dataSize - 1] = ""
-        descriptionViewModel.fetchedUrl[adapter.dataSize - 1] = ""
-
-        textViewAddVideo.visibility =
-                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+        super.renderList(mutableListOf(VideoLinkModel()))
     }
 
     private fun showVariantDialog() {

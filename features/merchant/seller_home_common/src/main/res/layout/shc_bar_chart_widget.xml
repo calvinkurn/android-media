@@ -18,7 +18,7 @@
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:drawablePadding="@dimen/layout_lvl1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvShcBarChartTitle"
@@ -85,7 +85,7 @@
             android:paddingLeft="@dimen/layout_lvl0"
             android:paddingEnd="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2"
-            android:textColor="@color/Green_G500"
+            android:textColor="@color/Unify_G500"
             android:textSize="@dimen/fontSize_lvl3"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -105,7 +105,8 @@
             app:layout_constraintBottom_toBottomOf="@id/btnShcBarChartMore"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/btnShcBarChartMore"
-            app:srcCompat="@drawable/ic_arrow_right_default" />
+            app:srcCompat="@drawable/ic_arrow_right_default"
+            android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
 
         <include
             layout="@layout/shc_partial_common_widget_state_error"

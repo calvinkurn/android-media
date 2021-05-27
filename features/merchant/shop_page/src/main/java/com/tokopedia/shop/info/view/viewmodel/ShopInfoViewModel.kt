@@ -8,8 +8,8 @@ import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
+import com.tokopedia.shop.info.domain.usecase.GetShopNotesByShopIdUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
@@ -34,6 +34,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopStatisticsResp = MutableLiveData<ShopStatisticsResp>()
     val shopInfo = MutableLiveData<ShopInfoData>()
+    val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
 
     fun getShopInfo(shopId: String) {
         launchCatchError(block = {
@@ -79,6 +80,14 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
                 shopNotesResp.postValue(shopNotes)
             }
         }){}
+    }
+
+    fun getShopReputationBadge(shopId: String) {
+        launchCatchError(coroutineDispatcherProvider.io, block = {
+            getShopReputation(shopId)?.let {
+                shopBadgeReputation.postValue(Success(it))
+            }
+        }) {}
     }
 
     fun getShopStats(shopId: String) {

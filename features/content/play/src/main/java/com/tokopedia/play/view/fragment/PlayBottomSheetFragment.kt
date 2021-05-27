@@ -19,7 +19,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isKeyboardShown
+import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.BottomInsetsState
@@ -27,6 +30,7 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
@@ -80,6 +84,8 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
+    private lateinit var productAnalyticHelper: ProductAnalyticHelper
+
     override fun getScreenName(): String = "Play Bottom Sheet"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +102,7 @@ class PlayBottomSheetFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupObserve()
+        initAnalytic()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -107,6 +114,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
+        productAnalyticHelper.sendImpressedBottomSheetProducts()
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -157,6 +165,20 @@ class PlayBottomSheetFragment @Inject constructor(
         analytic.clickCopyVoucher(voucher)
     }
 
+    override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
+        trackImpressedProduct(products)
+    }
+
+    override fun onProductCountChanged(view: ProductSheetViewComponent) {
+        if (playViewModel.bottomInsets.isKeyboardShown) return
+
+        doShowToaster(
+                bottomSheetType = BottomInsetsType.ProductSheet,
+                toasterType = Toaster.TYPE_NORMAL,
+                message = getString(R.string.play_product_updated)
+        )
+    }
+
     /**
      * VariantSheet View Component Listener
      */
@@ -190,8 +212,12 @@ class PlayBottomSheetFragment @Inject constructor(
         observeStatusInfo()
     }
 
+    private fun initAnalytic() {
+        productAnalyticHelper = ProductAnalyticHelper(analytic)
+    }
+
     private fun openShopPage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
+        openPageByApplink(ApplinkConst.SHOP, partnerId.toString(), pipMode = true)
     }
 
     private fun closeProductSheet() {
@@ -287,9 +313,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
             analytic.clickProduct(product, position)
-            openPageByApplink(product.applink)
-
-            playViewModel.requestPiPBrowsingPage()
+            openPageByApplink(product.applink, pipMode = true)
         }
     }
 
@@ -301,7 +325,17 @@ class PlayBottomSheetFragment @Inject constructor(
         openPageByApplink(ApplinkConst.LOGIN, requestCode = REQUEST_CODE_LOGIN)
     }
 
-    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
+    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false, pipMode: Boolean = false) {
+        if (pipMode && playViewModel.isPiPAllowed && !playViewModel.isFreezeOrBanned) {
+            playViewModel.requestPiPBrowsingPage(
+                    OpenApplinkUiModel(applink = applink, params = params.toList(), requestCode, shouldFinish)
+            )
+        } else {
+            openApplink(applink, *params, requestCode = requestCode, shouldFinish = shouldFinish)
+        }
+    }
+
+    private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
             RouteManager.route(context, applink, *params)
         } else {
@@ -326,6 +360,8 @@ class PlayBottomSheetFragment @Inject constructor(
             if (it is PlayPinnedUiModel.PinnedProduct && it.productTags is PlayProductTagsUiModel.Complete) {
                 if (it.productTags.productList.isNotEmpty()) {
                     productSheetView.setProductSheet(it.productTags)
+
+                    trackImpressedProduct()
                 } else {
                     productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
                 }
@@ -432,5 +468,9 @@ class PlayBottomSheetFragment @Inject constructor(
                 }
             }
         })
+    }
+
+    private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
+        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
     }
 }

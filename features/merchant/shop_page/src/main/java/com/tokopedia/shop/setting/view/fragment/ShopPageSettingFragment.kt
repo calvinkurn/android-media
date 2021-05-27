@@ -121,6 +121,11 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
             if (shopDomain.isNullOrEmpty()) {
                 shopDomain = getQueryParameter(SHOP_DOMAIN)
             }
+            pathSegments?.let{
+                if (it.size > 1) {
+                    shopId = it.getOrNull(1).orEmpty()
+                }
+            }
         }
 
         activity?.run {
@@ -308,6 +313,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
                 bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
                 bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
                 bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopInfo!!.shopCore.shopID)
+                bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_TYPE, customDimensionShopPage.shopType)
 
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
                 intent.putExtra(EXTRA_BUNDLE, bundle)

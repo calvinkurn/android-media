@@ -7,17 +7,32 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/date"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dateContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/chatbot_ticker"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:textColor="@color/grey_500"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardBackgroundColor="#E5F5FF"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        tools:text="13:16 wib" />
+        android:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_68"
+            android:paddingTop="@dimen/spacing_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl1"
+            android:paddingLeft="@dimen/unify_space_12"
+            android:paddingRight="@dimen/unify_space_12"
+            app:typographyType="body_3"
+            tools:text="1 Jan"/>
+
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/senderAvatar"
@@ -28,7 +43,7 @@
         android:visibility="gone"
         tools:src="@drawable/chatbot_avatar"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/date"
+        app:layout_constraintTop_toBottomOf="@id/dateContainer"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography

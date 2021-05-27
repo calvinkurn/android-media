@@ -24,7 +24,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.DeprecatedApiInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthenticator;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
@@ -156,7 +155,6 @@ public class GraphqlClient {
             tkpdOkHttpBuilder.addInterceptor(interceptor);
         }
 
-        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
 
@@ -173,7 +171,6 @@ public class GraphqlClient {
     @NotNull
     protected static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
-        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
 

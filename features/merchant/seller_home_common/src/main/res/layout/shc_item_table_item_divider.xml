@@ -10,5 +10,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/shc_dimen_1dp"
-        android:background="@color/Neutral_N75" />
+        android:background="@color/Unify_N75" />
 </LinearLayout>

@@ -11,7 +11,6 @@ import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
@@ -26,7 +25,6 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
-import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
@@ -61,7 +59,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val bestSellerListener: RecommendationWidgetListener,
                          private val categoryNavigationListener: CategoryNavigationListener,
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
-                         private val bannerComponentListener: BannerComponentListener,
+                         private val bannerComponentListener: BannerComponentListener?,
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
                          private val legoSixAutoListener: Lego6AutoBannerListener
 ) :
@@ -122,10 +120,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int {
         return HomeRecommendationFeedViewHolder.LAYOUT
-    }
-
-    override fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int {
-        return GeolocationPromptViewHolder.LAYOUT
     }
 
     override fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int {
@@ -347,7 +341,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             EmptyBlankViewHolder.LAYOUT -> viewHolder = EmptyBlankViewHolder(view)
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
-            GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
             BannerImageViewHolder.LAYOUT -> viewHolder = BannerImageViewHolder(view, listener)
             ReviewViewHolder.LAYOUT -> viewHolder = ReviewViewHolder(view, homeReviewListener, listener)
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
@@ -366,7 +359,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             view,
                             legoListener,
                             homeComponentListener,
-                            parentRecycledViewPool)
+                            parentRecycledViewPool
+                    )
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder =
                     RecommendationListCarouselViewHolder(
                             view,

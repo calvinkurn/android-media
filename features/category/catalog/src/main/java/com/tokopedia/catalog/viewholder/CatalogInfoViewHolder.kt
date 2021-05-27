@@ -20,7 +20,6 @@ class CatalogInfoViewHolder(private val view: View,
                             private val catalogDetailListener: CatalogDetailListener) : AbstractViewHolder<CatalogInfoDataModel>(view) {
 
     private var imagesAdapter: CatalogImagesAdapter? = null
-    private var lastPosition = RecyclerView.NO_POSITION
     companion object {
         val LAYOUT = R.layout.item_catalog_product_info
     }
@@ -45,10 +44,6 @@ class CatalogInfoViewHolder(private val view: View,
                         val position = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
                         if (position != RecyclerView.NO_POSITION) {
                             imagesPageControl.setCurrentIndicator(position)
-                            if(lastPosition != position && position != 0){
-                                lastPosition = position
-                                catalogDetailListener.onImagesScrolled()
-                            }
                         }
                     }
                 })

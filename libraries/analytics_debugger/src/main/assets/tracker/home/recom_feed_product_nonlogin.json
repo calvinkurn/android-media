@@ -4,43 +4,43 @@
   "query": [
     {
       "eventCategory": "homepage",
-      "item_list": "{{.*}}",
+      "item_list": ".*",
       "event": "select_content",
       "eventAction": "product recommendation click",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [{
-        "dimension11": "{{.*}}",
-        "dimension83": "{{.*}}",
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-        "dimension40": "{{.*}}",
-        "index": "{{\\d*.\\d*}}",
-        "item_name": "{{.*}}",
-        "item_brand": "{{.*}}",
-        "item_variant": "{{.*}}",
-        "item_category": "{{.*}}"
+        "dimension11": ".*",
+        "dimension83": ".*",
+        "item_id": ".*",
+        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "dimension40": ".*",
+        "index": "\\d*.\\d*",
+        "item_name": ".*",
+        "item_brand": ".*",
+        "item_variant": ".*",
+        "item_category": ".*"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "homepage",
-      "item_list": "{{.*}}",
+      "item_list": ".*",
       "event": "view_item_list",
       "eventAction": "product recommendation impression",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "items": [{
-        "dimension11": "{{.*}}",
-        "dimension83": "{{.*}}",
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-        "dimension40": "{{.*}}",
-        "index": "{{\\d*.\\d*}}",
-        "item_name": "{{.*}}",
-        "item_brand": "{{.*}}",
-        "item_variant": "{{.*}}",
-        "item_category": "{{.*}}"
+        "dimension11": ".*",
+        "dimension83": ".*",
+        "item_id": ".*",
+        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "dimension40": ".*",
+        "index": "\\d*.\\d*",
+        "item_name": ".*",
+        "item_brand": ".*",
+        "item_variant": ".*",
+        "item_category": ".*"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -15,9 +17,15 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetTableDataUseCase(
-        private val graphqlRepository: GraphqlRepository,
-        private val mapper: TableMapper
-) : BaseGqlUseCase<List<TableDataUiModel>>() {
+        graphqlRepository: GraphqlRepository,
+        mapper: TableMapper,
+        dispatchers: CoroutineDispatchers
+) : CloudAndCacheGraphqlUseCase<GetTableDataResponse, List<TableDataUiModel>>(
+        graphqlRepository, mapper, dispatchers, GetTableDataResponse::class.java, QUERY, false) {
+
+    override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
+        super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
+    }
 
     override suspend fun executeOnBackground(): List<TableDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetTableDataResponse::class.java, params.parameters)
@@ -26,10 +34,9 @@ class GetTableDataUseCase(
         val errors = gqlResponse.getError(GetTableDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetTableDataResponse>()
-            val tableData = data.fetchSearchTableWidgetData.data
-            return mapper.mapRemoteModelToUiModel(tableData, cacheStrategy.type == CacheType.CACHE_ONLY)
+            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
     }
 

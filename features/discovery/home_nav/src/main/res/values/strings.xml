@@ -27,12 +27,12 @@
     <string name="menu_home_back_to_home">Kembali ke Home</string>
 
     <string name="menu_user_menu_wishlist">Wishlist</string>
-    <string name="menu_user_menu_favorite_shop">Toko Favorit</string>
+    <string name="menu_user_menu_favorite_shop">Toko yang Di-follow</string>
     <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>
     <string name="menu_user_menu_subscription">Langganan</string>
     <string name="menu_user_menu_complain">Pesanan Dikomplain</string>
     <string name="menu_user_menu_tokopedia_care">Bantuan Tokopedia Care</string>
-    <string name="menu_user_menu_qr_code">QR Code</string>
+    <string name="menu_user_menu_qr_code">Scan Kode QR</string>
 
     <string name="menu_user_menu_wishlist_tracker_name">Wishlist</string>
     <string name="menu_user_menu_favorite_shop_tracker_name">Favorite Shop</string>
@@ -42,8 +42,10 @@
     <string name="menu_user_menu_tokopedia_care_tracker_name">Bantuan Tokopedia Care</string>
     <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
 
-    <string name="title_transaction_section">Transaksi berlangsung</string>
-    <string name="menu_transaction_menu_all_transaction">Semua Transaksi</string>
+    <string name="title_transaction_section">Aktivitas saya</string>
+    <string name="title_category_section">Semua Kategori</string>
+    <string name="title_helpcenter_section">Pusat bantuan</string>
+    <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
 
@@ -85,6 +87,7 @@
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>
+    <string name="account_header_store_empty_shop">Mau mulai berbisnis?</string>
     <string name="account_header_store_title">Toko saya:</string>
     <string name="account_header_store_title_role">Peran saya:</string>
 </resources>

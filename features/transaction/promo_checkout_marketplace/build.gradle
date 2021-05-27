@@ -24,11 +24,11 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.applink)
-    //noinspection GradleNotAllowed
-    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 

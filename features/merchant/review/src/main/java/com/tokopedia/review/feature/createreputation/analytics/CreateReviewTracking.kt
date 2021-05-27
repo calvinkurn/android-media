@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.createreputation.analytics
 
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.track.TrackApp
-import java.util.HashMap
+import java.util.*
 
 object CreateReviewTracking {
 
@@ -49,7 +49,7 @@ object CreateReviewTracking {
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
                 "click - kirim ulasan produk",
-                "order_id : " + if(isEditReview) orderId else feedbackId +
+                "order_id : " + if(isEditReview) feedbackId else orderId +
                         " - product_id : " + productId +
                         " - star : " + ratingValue +
                         " - ulasan : " + messageState +

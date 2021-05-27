@@ -31,6 +31,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
+import com.tokopedia.flight.promo_chips.presentation.widget.FlightPromoChips
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.searchV4.di.FlightSearchComponent
@@ -47,6 +49,8 @@ import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.presentation.util.select
 import com.tokopedia.flight.searchV4.presentation.util.unselect
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -80,6 +84,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
     private var isTraceStop = false
 
+    private lateinit var promoChipsWidget: FlightPromoChips
+
     private val filterItems = arrayListOf<SortFilterItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,8 +100,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(getLayout(), container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val viewRoot = inflater.inflate(getLayout(), container, false)
+        viewRoot.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        promoChipsWidget = viewRoot.findViewById(R.id.flight_promo_chips_view)
+        return viewRoot
+    }
 
     override fun onResume() {
         super.onResume()
@@ -156,6 +166,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 }
             }
         })
+
+        initPromoChips()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -199,6 +211,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun renderList(list: List<FlightJourneyModel>) {
         hideLoading()
+        showPromoChips()
 
         // remove all unneeded element (empty/retry/loading/etc)
         if (isLoadingInitialData) {
@@ -294,6 +307,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightFilterModel?.let {
             flightSearchViewModel.filterModel = it
         }
+        if (flightFilterModel?.isHasFilter == false) {
+            promoChipsWidget.resetState()
+        }
         clearAllData()
         flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
@@ -342,8 +358,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
-    override fun onSelectedFromDetail(selectedId: String) {
+    override fun onSelectedFromDetail(detailBottomSheet: FlightDetailBottomSheet, selectedId: String) {
         flightSearchViewModel.onSearchItemClicked(selectedId = selectedId)
+        if (detailBottomSheet.isAdded && detailBottomSheet.isVisible) detailBottomSheet.dismiss()
     }
 
     fun setSearchPassData(flightSearchPassDataModel: FlightSearchPassDataModel) {
@@ -389,6 +406,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             flightSearchViewModel.generateSearchStatistics()
             flightSearchViewModel.initialize(true, isReturnTrip())
             flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
+            flightSearchViewModel.fetchPromoList(isReturnTrip())
         }
     }
 
@@ -467,6 +485,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         showLoading()
         setupQuickFilter()
         fetchSortAndFilterData()
+        promoChipsWidget.resetState()
     }
 
     private fun setupSwipeRefresh() {
@@ -740,6 +759,48 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
+    fun hidePromoChips() {
+        promoChipsWidget.hide()
+    }
+
+    fun showPromoChips() {
+        promoChipsWidget.show()
+    }
+
+    private fun initPromoChips() {
+        flightSearchViewModel.promoData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (!it.data.dataPromoChips.isNullOrEmpty()) {
+                        showPromoChips()
+                        promoChipsWidget.renderPromoList(it.data.dataPromoChips[FLIGHT_PROMO_CHIPS_START_DATE].airlinePrices)
+                    } else {
+                        hidePromoChips()
+                    }
+                }
+                is Fail -> {
+                    hidePromoChips()
+                }
+            }
+        })
+        promoChipsWidget.setListener(promoChipsListener)
+    }
+
+    private val promoChipsListener = object : FlightPromoChips.PromoChipsListener {
+        override fun onClickPromoChips(airlinePrice: AirlinePrice, position: Int) {
+            flightSearchViewModel.onPromotionChipsClicked(position, airlinePrice, isReturnTrip())
+            flightSearchViewModel.filterModel.airlineList = mutableListOf(airlinePrice.airlineID)
+            clearAllData()
+            fetchSortAndFilterData()
+        }
+
+        override fun onUnselectChips() {
+            flightSearchViewModel.filterModel.airlineList = mutableListOf()
+            clearAllData()
+            fetchSortAndFilterData()
+        }
+    }
+
     interface OnFlightSearchFragmentListener {
         fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
                          isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
@@ -765,6 +826,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val QUICK_FILTER_ADDITIONAL_TWO_ORDER = 2
         private const val QUICK_FILTER_ADDITIONAL_ONE_ORDER = 1
         private const val QUICK_FILTER_NO_ADDITIONAL = 0
+
+        private const val FLIGHT_PROMO_CHIPS_START_DATE = 0
 
         private const val FLIGHT_QUICK_FILTER = "Filter"
         private const val FLIGHT_QUICK_FILTER_DIRECT = "Langsung"

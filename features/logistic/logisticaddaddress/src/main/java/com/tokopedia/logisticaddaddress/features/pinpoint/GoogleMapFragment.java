@@ -47,13 +47,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel.PredictionResult;
+import com.tokopedia.logisticCommon.data.utils.GeoLocationUtils;
+import com.tokopedia.logisticCommon.util.LocationHelperKt;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.common.AddressConstants;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
@@ -61,11 +65,7 @@ import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.utils.LocationCache;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
-import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
-import com.tokopedia.logisticCommon.data.utils.GeoLocationUtils;
-import com.tokopedia.logisticCommon.util.LocationHelperKt;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
@@ -96,7 +96,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     private LocationRequest locationRequest;
     private LocationPass locationPass;
     private SuggestionLocationAdapter adapter;
-    private BottomSheetDialog dialog;
+    private BottomSheetUnify bottomSheetUnify;
     private ActionBar actionBar;
     private boolean hasLocation;
     private CompositeSubscription composite = new CompositeSubscription();
@@ -325,7 +325,9 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.show();
+                if (getFragmentManager() != null) {
+                    bottomSheetUnify.show(getFragmentManager(), "E-gold more info bottom sheet");
+                }
                 analyticsGeoLocationListener.sendAnalyticsOnGetCurrentLocationClicked();
             }
         });
@@ -425,12 +427,13 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     public void setManualDestination(String s) {
-        dialog = new BottomSheetDialog(getActivity());
-        dialog.setContentView(R.layout.dialog_extra_google_map);
-        TextView destination = (TextView) dialog.findViewById(R.id.text_address_destination);
+        View child = View.inflate(getContext(), R.layout.dialog_extra_google_map, null);
+        TextView destination = child.findViewById(R.id.text_address_destination);
         if (destination != null) {
             destination.setText(MethodChecker.fromHtml(s).toString());
         }
+        bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.setChild(child);
     }
 
     @Override

@@ -12,7 +12,7 @@ object DigitalCurrencyUtil {
         val kursIndonesia = DecimalFormat.getCurrencyInstance() as DecimalFormat
         kursIndonesia.maximumFractionDigits = 0
         val formatRp = DecimalFormatSymbols()
-        formatRp.currencySymbol = "Rp "
+        formatRp.currencySymbol = "Rp"
         formatRp.groupingSeparator = '.'
         formatRp.monetaryDecimalSeparator = '.'
         formatRp.decimalSeparator = '.'

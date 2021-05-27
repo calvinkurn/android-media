@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -14,6 +13,7 @@ import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.activity.DigitalYoutubeActivity;
 import com.tokopedia.digital.product.view.model.GuideData;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         notifyDataSetChanged();
     }
 
-    private YouTubeThumbnailView.OnInitializedListener youtubeListenerInitialize(String youtubeViewUrl, ProgressBar progressBar) {
+    private YouTubeThumbnailView.OnInitializedListener youtubeListenerInitialize(String youtubeViewUrl, LoaderUnify progressBar) {
         progressBar.setVisibility(View.VISIBLE);
         return new YouTubeThumbnailView.OnInitializedListener() {
             @Override
@@ -108,7 +108,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
         TextView tvTitle;
         YouTubeThumbnailView youtubeTV;
-        ProgressBar progressBar;
+        LoaderUnify progressBar;
 
         public GuideViewHolder(View itemView) {
             super(itemView);

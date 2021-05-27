@@ -12,7 +12,8 @@
             "state": "GOOD",
             "subtitle": "Pertahankan poin minimum 75 untuk tetap menjadi Power Merchant.",
             "error": false,
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           }
         ]
       }

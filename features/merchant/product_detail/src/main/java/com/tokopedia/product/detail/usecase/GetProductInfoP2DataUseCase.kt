@@ -14,8 +14,9 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -204,19 +205,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               }
             }
             installmentRecommendation {
-              message
               data {
-                term
-                mdr_value
-                mdr_type
-                interest_rate
-                minimum_amount
-                maximum_amount
                 monthly_price
                 os_monthly_price
                 partner_code
-                partner_name
-                partner_icon
+                subtitle
               }
             }
             installmentCalculation {
@@ -341,6 +334,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                         title
                         description
                         attributeName
+                        badgeURL
                     }
                 }
             }
@@ -469,6 +463,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
 
+    private var errorLogListener: OnErrorLog? = null
+
     suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean): ProductInfoP2UiData {
         this.requestParams = requestParams
         this.forceRefresh = forceRefresh
@@ -493,6 +489,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData = mapIntoUiData(successData.response)
         } catch (t: Throwable) {
             Timber.d(t)
+            errorLogListener?.invoke(t)
         }
         return p2UiData
     }
@@ -527,6 +524,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
         }
         return p2UiData
+    }
+
+    fun setErrorLogListener(setErrorLogListener: OnErrorLog) {
+        this.errorLogListener = setErrorLogListener
     }
 
     fun clearCache() {

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
@@ -9,31 +10,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 09/06/20
  */
 
-class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper) {
-
-    fun mapRemoteModelToUiModel(widgetList: List<WidgetModel>, isFromCache: Boolean): List<BaseWidgetUiModel<out BaseDataUiModel>> {
-        val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
-        widgetList.onEach {
-            val widgetType = it.widgetType.orEmpty()
-            if (WidgetType.isValidWidget(widgetType)) {
-                mappedList.add(when (widgetType) {
-                    WidgetType.CARD -> mapToCardWidget(it, isFromCache)
-                    WidgetType.CAROUSEL -> mapToCarouselWidget(it, isFromCache)
-                    WidgetType.DESCRIPTION -> mapToDescriptionWidget(it, isFromCache)
-                    WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it, isFromCache)
-                    WidgetType.POST_LIST -> mapToPostWidget(it, isFromCache)
-                    WidgetType.PROGRESS -> mapToProgressWidget(it, isFromCache)
-                    WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
-                    WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
-                    WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
-                    WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it, isFromCache)
-                    WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
-                    else -> mapToSectionWidget(it, isFromCache)
-                })
-            }
-        }
-        return mappedList
-    }
+class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper): BaseResponseMapper<GetLayoutResponse, List<BaseWidgetUiModel<out BaseDataUiModel>>> {
 
     private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {
         return CardWidgetUiModel(
@@ -265,5 +242,32 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 isFromCache = isFromCache,
                 emptyState = widget.emptyStateModel.mapToUiModel()
         )
+    }
+
+    override fun mapRemoteDataToUiData(response: GetLayoutResponse, isFromCache: Boolean): List<BaseWidgetUiModel<out BaseDataUiModel>> {
+        val widgets = response.layout?.widget.orEmpty()
+        if (widgets.isNotEmpty()) {
+            val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
+            widgets.onEach {
+                val widgetType = it.widgetType.orEmpty()
+                if (WidgetType.isValidWidget(widgetType)) {
+                    mappedList.add(when (widgetType) {
+                        WidgetType.CARD -> mapToCardWidget(it, isFromCache)
+                        WidgetType.CAROUSEL -> mapToCarouselWidget(it, isFromCache)
+                        WidgetType.DESCRIPTION -> mapToDescriptionWidget(it, isFromCache)
+                        WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it, isFromCache)
+                        WidgetType.POST_LIST -> mapToPostWidget(it, isFromCache)
+                        WidgetType.PROGRESS -> mapToProgressWidget(it, isFromCache)
+                        WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
+                        WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
+                        WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
+                        WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it, isFromCache)
+                        WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
+                        else -> mapToSectionWidget(it, isFromCache)
+                    })
+                }
+            }
+            return mappedList
+        } else throw RuntimeException("no widget found")
     }
 }

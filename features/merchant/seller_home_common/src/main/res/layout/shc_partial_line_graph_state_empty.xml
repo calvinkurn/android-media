@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:textColor="@color/Green_G500"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/multi_line_empty_state_cta" />

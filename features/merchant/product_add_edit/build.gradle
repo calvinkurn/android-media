@@ -39,9 +39,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.productPhotoAdapter)
-    implementation project(rootProject.ext.libraries.mediauploader)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.features.mediauploader)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
@@ -55,12 +55,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.youtubeCommon)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
-
+    implementation project(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.unifyDependencies.components
@@ -74,6 +74,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -99,6 +100,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.imagePicker)
+    androidTestImplementation project(rootProject.ext.features.productManageList)
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
