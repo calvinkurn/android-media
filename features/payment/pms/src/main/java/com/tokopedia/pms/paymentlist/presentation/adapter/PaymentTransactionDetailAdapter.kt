@@ -39,12 +39,12 @@ class PaymentTransactionDetailAdapter(
         RecyclerView.ViewHolder(view) {
         fun bind(vaTransactionItem: VaTransactionItem, position: Int) {
             view.apply {
-                tvTransactionTitle.text = "Trasaksi ${position+1}- ${vaTransactionItem.productName}"
+                tvTransactionTitle.text = "Transaksi ${position+1}- ${vaTransactionItem.productName}"
                 tvTransactionAmount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     vaTransactionItem.amount, false)
                 tvCancelTransaction.setOnClickListener { clickListener(
                         PaymentTransactionDetailSheet.CANCEL_TRANSACTION,
-                        "Trasaksi ${position+1}- ${vaTransactionItem.productName}",
+                        "Transaksi ${position+1}- ${vaTransactionItem.productName}",
                         vaTransactionItem
                     )
                 }

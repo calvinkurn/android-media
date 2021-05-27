@@ -85,7 +85,7 @@ class BankTransferViewHolder(
             cardIcon.urlSrc = CARD_ICON_URL
             tvPaymentTransactionDate.text = expiryDate
             tvTransactionExpireTime.text =
-                DateFormatUtils.getFormattedDate(expiryTime, "dd MMM, HH:mm")
+                DateFormatUtils.getFormattedDateSeconds(expiryTime, "dd MMM, HH:mm")
         }
     }
 
