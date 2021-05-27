@@ -9,7 +9,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 
 public abstract class TopAdsItemImpressionListener {
 
-    public void onImpressionProductAdsItem(int position, Product product){
+    public void onImpressionProductAdsItem(int position, Product product, CpmData data){
     }
 
     public void onImpressionHeadlineAdsItem(int position, CpmData data){

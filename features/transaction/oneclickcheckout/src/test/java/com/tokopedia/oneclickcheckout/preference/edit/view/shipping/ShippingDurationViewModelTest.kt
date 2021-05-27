@@ -41,6 +41,7 @@ class ShippingDurationViewModelTest {
         token = ""
         ut = ""
         shopId = ""
+        shopTier = 0
         categoryIds = ""
         uniqueId = ""
         originDistrictId = ""

@@ -1,13 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/labelview"
-    style="@style/LabelLayout"
-    android:minHeight="@dimen/dp_64"
-    android:paddingRight="@dimen/dp_8"
-    android:paddingEnd="@dimen/dp_8"
-    app:lv_image_width="@dimen/dp_24"
-    app:lv_image_margin_right="@dimen/dp_16"
-    app:lv_title="@string/app_name"
-    app:lv_title_text_size="@dimen/sp_14"
-    app:lv_sub_title_text_size="@dimen/sp_14"/>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/accounthome_dp_14"
+    android:paddingBottom="@dimen/accounthome_dp_14"
+    android:paddingLeft="@dimen/spacing_lvl1"
+    android:paddingRight="@dimen/spacing_lvl1"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/account_user_item_common_title"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toStartOf="@id/account_user_item_icon_arrow"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:typographyWeight="bold"
+        tools:text="Akun" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:lineHeight="18dp"
+        android:id="@+id/account_user_item_common_body"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:textSize="@dimen/fontSize_lvl2"
+        app:typographyType="body_3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/account_user_item_common_title"
+        app:layout_constraintTop_toBottomOf="@id/account_user_item_common_title"
+        app:layout_constraintEnd_toStartOf="@id/account_user_item_icon_arrow"
+        tools:text="Data Diri, Alamat, Keamanan" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+        android:visibility="gone"
+        android:id="@+id/account_user_item_common_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/account_user_item_common_body"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/account_user_item_common_title" />
+
+    <ImageView
+        android:id="@+id/account_user_item_icon_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_account_home_arrow_right_grey"
+        android:contentDescription="Arrow Icon"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

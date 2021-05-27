@@ -281,12 +281,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
-    // Warning: removing imageCropper lib might cause youtube library crash
-    // when load recommendation at the end of video
-    // Need to recheck
-    implementation(rootProject.ext.miscDependencies.imagecropper) {
-        exclude group: "com.android.support"
-    }
+    implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
@@ -303,8 +298,6 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation 'com.facebook.fresco:fresco:1.10.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore

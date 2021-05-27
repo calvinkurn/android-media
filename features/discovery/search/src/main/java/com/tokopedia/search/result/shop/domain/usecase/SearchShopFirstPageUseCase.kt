@@ -199,6 +199,7 @@ query SearchShop(${'$'}params: String!, ${'$'}headline_params: String, ${'$'}qui
               gold_shop
               gold_shop_badge
               shop_is_official
+              pm_pro_shop
               merchant_vouchers
               product {
                 id
