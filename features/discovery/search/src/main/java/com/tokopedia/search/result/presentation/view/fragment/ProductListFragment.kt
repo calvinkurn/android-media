@@ -565,11 +565,11 @@ class ProductListFragment: BaseDaggerFragment(),
             getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, Any?>)
         } ?: ""
 
-        dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, dimension90))
+        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams, dimension90))
         productItemDataViews.add(item)
 
         trackingQueue?.let {
-            SearchTracking.eventImpressionSearchResultProduct(it, dataLayerList, eventLabel, irisSessionId)
+            SearchTracking.eventImpressionSearchResultProduct(it, dataLayerList, eventLabel, irisSessionId, userId)
         }
     }
 
@@ -724,7 +724,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 trackingQueue,
                 queryKey,
                 SCREEN_SEARCH_PAGE_PRODUCT_TAB,
-                irisSessionId
+                irisSessionId,
+                getUserId(),
         )
 
         trackingQueue?.sendAll()
@@ -805,7 +806,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 product,
                 item.position,
-                SCREEN_SEARCH_PAGE_PRODUCT_TAB
+                SCREEN_SEARCH_PAGE_PRODUCT_TAB,
+                getUserId(),
         )
     }
 
@@ -821,10 +823,11 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
 
         SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductAsObjectDataLayer(userId, filterSortParams, dimension90),
+                item.getProductAsObjectDataLayer(filterSortParams, dimension90),
                 item.isOrganicAds,
                 eventLabel,
-                filterSortParams
+                filterSortParams,
+                userId,
         )
     }
 

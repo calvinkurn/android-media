@@ -56,7 +56,9 @@
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:paddingTop="@dimen/spacing_lvl3"
         android:paddingBottom="@dimen/spacing_lvl3"
-        android:background="@color/Red_R500">
+        android:background="@color/Red_R500"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"

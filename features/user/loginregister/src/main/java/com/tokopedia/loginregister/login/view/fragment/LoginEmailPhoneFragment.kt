@@ -22,7 +22,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -188,7 +187,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
-    private var parentContainer: ConstraintLayout? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -281,6 +279,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupBackgroundColor()
         callbackManager = CallbackManager.Factory.create()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -296,6 +295,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+    }
+
+    private fun setupBackgroundColor() {
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -579,10 +586,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun prepareView() {
-        parentContainer = activity?.findViewById(R.id.parent_container)
-        parentContainer?.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         partialRegisterInputView?.showForgotPassword()
-
         socmedBottomSheet = SocmedBottomSheet(context)
         socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
         socmedBottomSheet?.setCloseClickListener {
