@@ -123,6 +123,11 @@ class MiniCartProductViewHolder(private val view: View,
         if (!element.isProductDisabled && element.productQtyLeft.isNotBlank()) {
             textQtyLeft?.text = element.productQtyLeft
             textQtyLeft?.show()
+            if (element.productVariantName.isNotBlank()) {
+                textQtyLeft?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+            } else {
+                textQtyLeft?.setPadding(0, 0, 0, 0)
+            }
         } else {
             textQtyLeft?.gone()
         }
@@ -166,16 +171,19 @@ class MiniCartProductViewHolder(private val view: View,
         val price = element.productPrice
         val originalPrice = if (priceDropValue > price) price else priceDropValue
         textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false)
+        textSlashPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
     }
 
     private fun renderSlashPriceFromPriceDrop(element: MiniCartProductUiModel) {
         textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productInitialPriceBeforeDrop, false)
+        textSlashPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
     }
 
     private fun renderSlashPriceFromCampaign(element: MiniCartProductUiModel) {
         textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false)
         labelSlashPricePercentage?.text = element.productSlashPriceLabel
         labelSlashPricePercentage?.show()
+        textSlashPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
     }
 
     private fun renderProductImage(element: MiniCartProductUiModel) {

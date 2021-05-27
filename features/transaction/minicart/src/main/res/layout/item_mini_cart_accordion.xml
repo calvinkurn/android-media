@@ -28,7 +28,7 @@
         tools:text="Tampilkan lebih Banyak" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/img_chevron"
+        android:id="@+id/image_chevron"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/unify_chips_ic_chevron_selected" />

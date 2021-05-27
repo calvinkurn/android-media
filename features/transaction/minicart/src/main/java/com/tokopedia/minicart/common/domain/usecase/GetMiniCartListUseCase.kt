@@ -462,9 +462,9 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                             "variant_description": ""
                           },
                           "product_warning_message": "Sisa 3",
-                          "slash_price_label": "",
+                          "slash_price_label": "50%",
                           "product_original_price": 10000,
-                          "initial_price": 5000,
+                          "initial_price": 10000,
                           "product_price": 5000,
                           "product_information": [
                             "Cashback 3%"

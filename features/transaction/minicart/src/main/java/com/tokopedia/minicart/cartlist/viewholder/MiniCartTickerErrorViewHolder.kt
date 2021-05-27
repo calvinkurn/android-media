@@ -32,6 +32,9 @@ class MiniCartTickerErrorViewHolder(private val view: View,
         } else {
             textShow?.gone()
         }
+        textShow?.setOnClickListener {
+            listener.onShowUnavailableItemsCLicked()
+        }
     }
 
 }
