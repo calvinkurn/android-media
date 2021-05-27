@@ -22,6 +22,4 @@ class RechargeCameraActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         toolbar.visibility = View.GONE
     }
-
-
 }

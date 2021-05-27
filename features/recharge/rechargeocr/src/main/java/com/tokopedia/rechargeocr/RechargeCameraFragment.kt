@@ -230,12 +230,15 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     override fun onPause() {
         super.onPause()
-        full_camera_view.close()
+        try {
+            full_camera_view.close()
+        } catch (e: Throwable) {
+            // no-op
+        }
     }
 
     private fun destroyCamera() {
         try {
-            full_camera_view.close()
             full_camera_view.destroy()
         } catch (e: Throwable) {
             // no-op
