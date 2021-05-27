@@ -648,6 +648,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendPieChartImpressionEvent(model, position)
     }
 
+    override fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
+
+    }
+
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendBarChartImpressionEvent(model, position)

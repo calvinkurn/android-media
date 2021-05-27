@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.presentation.adapter.ListAdapterTypeFactory
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
@@ -33,7 +34,6 @@ class PostListViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
-        private const val IMG_EMPTY_STATE = "https://ecs7.tokopedia.net/android/others/shc_post_list_info_empty_state.png"
     }
 
     private val postAdapter = BaseListAdapter(ListAdapterTypeFactory(), this)
@@ -88,7 +88,7 @@ class PostListViewHolder(
             icPostListSeeDetails.gone()
             imgShcPostEmpty.visible()
             tvShcPostEmptyTitle.run {
-                text = element.emptyState.title.takeIf { it.isNotBlank() } ?: getString(R.string.shc_empty_state_title_post_list)
+                text = element.emptyState.title.takeIf { it.isNotBlank() } ?: getString(R.string.shc_empty_state_title)
                 visible()
             }
             tvShcPostEmptyDescription.run {
@@ -100,7 +100,7 @@ class PostListViewHolder(
                 showWithCondition(element.emptyState.ctaText.isNotBlank())
                 setOnClickListener { goToSellerEducationCenter(element) }
             }
-            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, element.emptyState.imageUrl.takeIf { it.isNotBlank() } ?: IMG_EMPTY_STATE)
+            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, element.emptyState.imageUrl.takeIf { it.isNotBlank() } ?: SellerHomeUrl.IMG_EMPTY_STATE)
         }
     }
 

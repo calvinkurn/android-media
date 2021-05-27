@@ -3,7 +3,7 @@
     <string name="shc_load_failed">Gagal memuat</string>
     <string name="shc_failed_to_load">Gagal dimuat</string>
     <string name="shc_failed_to_load_information">Oops, informasi gagal ditampilkan</string>
-    <string name="shc_empty_state_title_post_list">Belum ada informasi untukmu</string>
+    <string name="shc_empty_state_title">Belum ada informasi untukmu</string>
     <string name="shc_more">Selengkapnya</string>
     <string name="shc_score">Skor</string>
     <string name="shc_max_progress">/100</string>

@@ -156,7 +156,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imgShcTableEmpty"
             app:typographyWeight="bold"
-            tools:text="@string/shc_empty_state_title_post_list"
+            tools:text="@string/shc_empty_state_title"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
