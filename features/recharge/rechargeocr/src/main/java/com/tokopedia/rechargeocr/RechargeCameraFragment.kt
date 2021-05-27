@@ -17,7 +17,6 @@ import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
@@ -58,10 +57,8 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupInfoCamera()
         populateView()
-        showCameraView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -204,10 +201,36 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             if (::cameraListener.isInitialized) {
                 full_camera_view.addCameraListener(cameraListener)
             }
-            full_camera_view.open()
+            openCamera()
         } catch (e: Throwable) {
             // no-op
         }
+    }
+
+    private fun openCamera() {
+        activity?.let {
+            permissionCheckerHelper.checkPermissions(it, arrayOf(
+                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                    PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
+
+                        override fun onPermissionGranted() {
+                            full_camera_view.open()
+                        }
+                    }, "")
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        full_camera_view.close()
     }
 
     private fun destroyCamera() {
