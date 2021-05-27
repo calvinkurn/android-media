@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/emoneyPageLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/Unify_N0"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_emoney_pdp_green_gradient"
+            android:orientation="vertical"
+            app:elevation="@dimen/spacing_lvl2"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            android:paddingTop="?attr/actionBarSize">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/emoneyPdpTicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_scrollFlags="scroll"
+                app:tickerType="announcement" />
+
+            <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
+                android:id="@+id/emoneyPdpHeaderView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                app:layout_constraintTop_toBottomOf="@id/emoneyPdpTicker"
+                app:layout_scrollFlags="scroll" />
+
+            <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpInputCardNumberWidget
+                android:id="@+id/emoneyPdpInputCardWidget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                app:layout_constraintTop_toBottomOf="@id/emoneyPdpHeaderView" />
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/emoneyPdpTab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/emoneyPdpInputCardWidget"
+                tools:visibility="visible" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/emoneyPdpViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0"
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="gone" />
+
+        <include
+            android:id="@+id/emoneyPdpShimmeringLayout"
+            layout="@layout/layout_emoney_recent_transaction_shimmering"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:visibility="visible"
+            tools:visibility="gone" />
+
+        <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpProductWidget
+            android:id="@+id/emoneyPdpProductWidget"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N0"
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="gone" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/emoneyBuyWidgetLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardElevation="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
+            android:id="@+id/emoneyBuyWidget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/emoneyFullPageLoadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:background="@color/Unify_N700_32"
+        android:visibility="gone">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/emoneyGlobalError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/Unify_N0"
+        android:visibility="gone"
+        android:orientation="vertical" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/Unify_N0">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginHorizontal="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:corners="4"
+        app:width_weight="0.6" />
+
+    <include layout="@layout/item_emoney_shimmering_layout" />
+
+    <include layout="@layout/item_emoney_shimmering_layout" />
+
+    <include layout="@layout/item_emoney_shimmering_layout" />
+
+    <include layout="@layout/item_emoney_shimmering_layout" />
+
+</LinearLayout>

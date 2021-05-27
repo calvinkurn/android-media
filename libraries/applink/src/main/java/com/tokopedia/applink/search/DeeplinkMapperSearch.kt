@@ -9,10 +9,16 @@ object DeeplinkMapperSearch {
     fun getRegisteredNavigationSearch(deeplink: String): String {
         val uri = Uri.parse(deeplink)
 
+        val query = uri.encodedQuery
+        val queryString = if (query.isNullOrEmpty()) {
+            ""
+        } else {
+            "?" + uri.encodedQuery
+        }
         if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE))
-            return ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + uri.encodedQuery
+            return ApplinkConstInternalDiscovery.AUTOCOMPLETE + queryString
         else if (deeplink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + uri.encodedQuery
+            return ApplinkConstInternalDiscovery.SEARCH_RESULT + queryString
 
         return deeplink
     }

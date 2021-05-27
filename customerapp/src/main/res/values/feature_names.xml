@@ -89,6 +89,7 @@
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
     <string name="recharge_slice_host">recharge_slice</string>
     <string name="recharge_slice_main_path">/main</string>
+    <string name="recharge_pdp_emoney_toolbar_title">E-money</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
@@ -162,6 +163,7 @@
     <string name="survey_layanan">Survey Layanan</string>
     <string name="detail_kendala">Detail Kendala</string>
     <string name="contact_us_inbox">Pesan Bantuan</string>
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
 
     <string name="instant_loan_app_name">Dana Instan</string>
 
@@ -309,6 +311,9 @@
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
+
+    <!-- Dynamic feature for cart -->
+    <string name="checkout_module_title_activity_cart">Keranjang</string>
 
     <!-- Dynamic feature for buyerorder-->
     <string name="df_title_buyer_order">Daftar Transaksi</string>

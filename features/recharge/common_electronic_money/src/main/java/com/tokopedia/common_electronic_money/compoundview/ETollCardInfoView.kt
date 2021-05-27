@@ -167,7 +167,7 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
 
     fun getCardLastBalance(): String {
         if (::attributesEmoneyInquiry.isInitialized) {
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
+            return CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(attributesEmoneyInquiry.lastBalance)
         }
         return ""
     }

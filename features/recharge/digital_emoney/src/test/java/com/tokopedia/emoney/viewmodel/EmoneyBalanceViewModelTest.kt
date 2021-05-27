@@ -175,7 +175,7 @@ class EmoneyBalanceViewModelTest {
         result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(
                 EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
         val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseGetInquirySuccess
 
         //when

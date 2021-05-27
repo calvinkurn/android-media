@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
@@ -75,6 +76,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         return DigitalCategoryDetailPassData.Builder()
                 .categoryId(ETOLL_CATEGORY_ID)
                 .operatorId(operatorId)
+                .menuId(MENU_ID_ELECTRONIC_MONEY)
                 .clientNumber(eTollUpdateBalanceResultView.cardNumber)
                 .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
                 .additionalETollLastUpdatedDate(eTollUpdateBalanceResultView.cardLastUpdatedDate)
@@ -261,7 +263,6 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     companion object {
         const val REQUEST_CODE_LOGIN = 1980
-        const val ETOLL_CATEGORY_ID = "34"
 
         fun newInstance(): Fragment {
             return EmoneyCheckBalanceFragment()

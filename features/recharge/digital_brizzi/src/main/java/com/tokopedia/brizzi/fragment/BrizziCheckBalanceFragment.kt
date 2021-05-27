@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.brizzi.di.DaggerDigitalBrizziComponent
 import com.tokopedia.brizzi.util.DigitalBrizziGqlMutation
@@ -82,6 +83,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     override fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData {
         return DigitalCategoryDetailPassData.Builder()
                 .categoryId(ETOLL_CATEGORY_ID)
+                .menuId(DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY)
                 .operatorId(operatorId)
                 .clientNumber(eTollUpdateBalanceResultView.cardNumber)
                 .additionalETollLastBalance(eTollUpdateBalanceResultView.cardLastBalance)
@@ -280,9 +282,6 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
 
         const val ARCHITECTURE_ARM64 = "arm64-v8a"
         const val ARCHITECTURE_ARM32 = "armeabi-v7a"
-
-        private val ETOLL_CATEGORY_ID = "34"
-
         fun newInstance(): Fragment {
             return BrizziCheckBalanceFragment()
         }
