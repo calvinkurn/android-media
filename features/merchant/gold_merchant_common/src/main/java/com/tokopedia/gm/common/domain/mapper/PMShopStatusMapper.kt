@@ -16,7 +16,7 @@ class PMShopStatusMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(shopStatus: PMShopStatusDataModel): PMStatusUiModel {
         val statusOff = PMStatusUiModel.PM_AUTO_EXTEND_OFF
         return PMStatusUiModel(
-                status = shopStatus.powerMerchant?.status.orEmpty(),
+                status = shopStatus.powerMerchant?.status ?: PMStatusConst.INACTIVE,
                 pmTier = shopStatus.powerMerchant?.pmTire ?: PMConstant.PMTierType.POWER_MERCHANT,
                 expiredTime = getExpiredTimeFmt(shopStatus.powerMerchant?.expiredTime.orEmpty()),
                 autoExtendEnabled = shopStatus.powerMerchant?.autoExtend?.status != statusOff,

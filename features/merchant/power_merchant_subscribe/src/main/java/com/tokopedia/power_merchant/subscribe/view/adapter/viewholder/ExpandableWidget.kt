@@ -85,9 +85,10 @@ class ExpandableWidget(
             adapter = expandableAdapter
         }
 
-        expandableAdapter.data.clear()
-        expandableAdapter.data.addAll(element.items)
-        expandableAdapter.notifyDataSetChanged()
+        if (expandableAdapter.data.isEmpty()) {
+            expandableAdapter.data.addAll(element.items)
+            expandableAdapter.notifyDataSetChanged()
+        }
     }
 
     interface Listener {
