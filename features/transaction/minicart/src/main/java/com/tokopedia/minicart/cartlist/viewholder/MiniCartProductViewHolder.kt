@@ -38,6 +38,13 @@ class MiniCartProductViewHolder(private val view: View,
                                 private val listener: MiniCartListActionListener) :
         AbstractViewHolder<MiniCartProductUiModel>(view) {
 
+    companion object {
+        const val LABEL_CASHBACK = "cashback"
+        const val LABEL_DISCOUNT = "label diskon"
+
+        val LAYOUT = R.layout.item_mini_cart_product
+    }
+
     private val imageProduct: ImageUnify? by lazy {
         view.findViewById(R.id.image_product)
     }
@@ -82,13 +89,6 @@ class MiniCartProductViewHolder(private val view: View,
     }
     private val qtyEditorProduct: QuantityEditorUnify? by lazy {
         view.findViewById(R.id.qty_editor_product)
-    }
-
-    companion object {
-        const val LABEL_CASHBACK = "cashback"
-        const val LABEL_DISCOUNT = "label diskon"
-
-        val LAYOUT = R.layout.item_mini_cart_product
     }
 
     override fun bind(element: MiniCartProductUiModel) {

@@ -102,6 +102,7 @@ class MiniCartListBottomSheet :
         adapter = MiniCartListAdapter(adapterTypeFactory)
         rvMiniCartList?.adapter = adapter
         rvMiniCartList?.layoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
+        rvMiniCartList?.addItemDecoration(miniCartListDecoration)
     }
 
     private fun showLoading() {

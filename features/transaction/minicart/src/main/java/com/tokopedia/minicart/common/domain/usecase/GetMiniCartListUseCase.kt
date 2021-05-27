@@ -616,9 +616,9 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                   ]
                 }
               ],
-              "total_product_count": 2,
+              "total_product_count": 3,
               "total_product_price": 200000,
-              "total_product_error": 1
+              "total_product_error": 2
             }
           }
         }

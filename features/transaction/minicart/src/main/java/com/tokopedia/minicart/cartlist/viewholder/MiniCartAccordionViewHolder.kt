@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.unifyprinciples.Typography
 
 class MiniCartAccordionViewHolder(private val view: View,
                                   private val listener: MiniCartListActionListener)
@@ -14,8 +15,16 @@ class MiniCartAccordionViewHolder(private val view: View,
         val LAYOUT = R.layout.item_mini_cart_accordion
     }
 
-    override fun bind(element: MiniCartAccordionUiModel) {
+    private val textAccordion: Typography? by lazy {
+        view.findViewById(R.id.text_accordion)
+    }
 
+    override fun bind(element: MiniCartAccordionUiModel) {
+        if (element.isCollapsed) {
+            textAccordion?.text = element.showMoreWording
+        } else {
+            textAccordion?.text = element.showLessWording
+        }
     }
 
 }

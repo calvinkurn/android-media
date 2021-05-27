@@ -4,6 +4,8 @@ interface MiniCartListActionListener {
 
     fun onDeleteClicked()
 
+    fun onBulkDeleteUnavailableItems()
+
     fun onQuantityChanged()
 
     fun onNotesChanged()

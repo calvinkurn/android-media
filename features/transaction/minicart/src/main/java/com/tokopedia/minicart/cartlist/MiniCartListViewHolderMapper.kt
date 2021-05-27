@@ -141,7 +141,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
 
     private fun mapAccordionUiModel(wordingShowLess: String, wordingShowMore: String): MiniCartAccordionUiModel {
         return MiniCartAccordionUiModel().apply {
-            isCollapsed = true
+            isCollapsed = false
             showLessWording = wordingShowLess
             showMoreWording = wordingShowMore
         }
