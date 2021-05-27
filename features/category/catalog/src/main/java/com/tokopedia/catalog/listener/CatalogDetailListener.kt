@@ -37,7 +37,7 @@ interface CatalogDetailListener {
     /**
      * CatalogComparisionContainerViewHolder
      */
-    fun comparisionCatalogClicked(comparisionCatalogId : String, position : Int)
+    fun comparisionCatalogClicked(comparisionCatalogId : String)
 
     val childsFragmentManager: FragmentManager?
 

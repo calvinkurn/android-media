@@ -367,7 +367,7 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
-    override fun comparisionCatalogClicked(comparisionCatalogId: String, position: Int) {
+    override fun comparisionCatalogClicked(comparisionCatalogId: String) {
         context?.let {
             CatalogDetailAnalytics.sendEvent(
                     CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,

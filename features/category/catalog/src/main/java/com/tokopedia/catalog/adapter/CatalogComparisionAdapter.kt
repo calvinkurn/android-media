@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,6 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
         const val CATALOG_DETAIL = 0
         const val CATALOG_FEATURE = 1
         const val FIRST_POSITION = 0
-        const val EMPTY_VALUE = "-"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -71,7 +71,7 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
             itemView.findViewById<CardUnify>(R.id.comparision_card).setOnClickListener {
                 comparisionCatalog?.id?.let {catalogId ->
                     if(catalogId.isNotEmpty()){
-
+                        catalogDetailListener.comparisionCatalogClicked(catalogId)
                     }
                 }
             }
@@ -80,10 +80,10 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
 
     inner class ComparisionFeatureViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(position : Int , baseCatalog: ComparisionModel?, comparisionCatalog: ComparisionModel?, catalogDetailListener: CatalogDetailListener) {
-            setKeyOrHyphen(itemView.findViewById<Typography>(R.id.first_key),baseCatalog)
-            setValueOrHyphen(itemView.findViewById<Typography>(R.id.first_value),baseCatalog)
-            setKeyOrHyphen(itemView.findViewById<Typography>(R.id.second_key),baseCatalog)
-            setValueOrHyphen(itemView.findViewById<Typography>(R.id.second_value),comparisionCatalog)
+            setKeyOrHyphen(itemView.context,itemView.findViewById<Typography>(R.id.first_key),baseCatalog)
+            setValueOrHyphen(itemView.context,itemView.findViewById<Typography>(R.id.first_value),baseCatalog)
+            setKeyOrHyphen(itemView.context,itemView.findViewById<Typography>(R.id.second_key),baseCatalog)
+            setValueOrHyphen(itemView.context,itemView.findViewById<Typography>(R.id.second_value),comparisionCatalog)
 
             if(isColoredTile(position)){
                 itemView.findViewById<ImageUnify>(R.id.catalog_feature_bg_image).run {
@@ -101,19 +101,19 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
         return true
     }
 
-    private fun setKeyOrHyphen(typography: Typography , model : ComparisionModel?){
+    private fun setKeyOrHyphen(context : Context, typography: Typography, model : ComparisionModel?){
         if(model != null && !model.key.isNullOrEmpty()){
             typography.text = model.key
         }else {
-            typography.text = EMPTY_VALUE
+            typography.text = context.getString(R.string.catalog_feature_not_available)
         }
     }
 
-    private fun setValueOrHyphen(typography: Typography , model : ComparisionModel?){
+    private fun setValueOrHyphen(context : Context, typography: Typography , model : ComparisionModel?){
         if(model != null && !model.value.isNullOrEmpty()){
             typography.text = model.value
         }else {
-            typography.text = EMPTY_VALUE
+            typography.text = context.getString(R.string.catalog_feature_not_available)
         }
     }
 }
