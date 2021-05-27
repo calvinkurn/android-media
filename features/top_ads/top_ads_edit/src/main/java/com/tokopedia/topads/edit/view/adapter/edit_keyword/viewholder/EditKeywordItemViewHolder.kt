@@ -79,10 +79,10 @@ class EditKeywordItemViewHolder(val view: View,
             }
 
             val search = if(it.data.totalSearch == "-1")
-                TopAdsCommonConstant.UNKNOWN_SEARCH
+                "-"
             else
                 it.data.totalSearch
-            keywordData.text = MethodChecker.fromHtml(String.format(view.context.getString(com.tokopedia.topads.common.R.string.topads_create_keyword_data), competition, search + KALI))
+            keywordData.text = MethodChecker.fromHtml(String.format(view.context.getString(com.tokopedia.topads.common.R.string.topads_create_keyword_data), competition, search))
             keywordName.text = item.data.name
             if(item.data.typeInt == EXACT_POSITIVE)
             typeKeyword.text = SPECIFIC_TYPE

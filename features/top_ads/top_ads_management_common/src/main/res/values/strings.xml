@@ -88,6 +88,7 @@
     <string name="topads_common_keyword_pencarian">Pencarian</string>
     <string name="topads_common_keyword_competition">Kompetisi</string>
     <string name="topads_common_kata_kunci_dipilih">%d kata kunci dipilih</string>
+    <string name="topads_common_kata_kunci_dipilih_no_keyword">kata kunci dipilih</string>
     <string name="topads_common_kata_kunci_lihat">%d kata kunci dipilih <![CDATA["<font color='#42b549'><b>Lihat </b></font> ]]></string>
     <string name="topads_common_tip_memilih_kata_kunci">Tip memilih kata kunci</string>
     <string name="topads_empty_tip_memilih_kata_kunci_title">Tips memilih kata kunci</string>

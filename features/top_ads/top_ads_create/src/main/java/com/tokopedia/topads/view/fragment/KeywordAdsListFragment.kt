@@ -140,6 +140,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private fun showSelectMessage() {
         val count = keywordListAdapter.getSelectedItems().count()
         selected_info?.text = MethodChecker.fromHtml(String.format(getString(R.string.topads_common_kata_kunci_lihat), count))
+        if(count == 0)
+            selected_info?.text = getString(R.string.topads_common_kata_kunci_dipilih_no_keyword)
         btn_next?.isEnabled = count < 50
     }
 
@@ -278,7 +280,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         val item = KeywordDataItem()
         item.keyword = searchBar.searchBarTextField.text.toString()
         item.onChecked = true
-        item.totalSearch = UNKNOWN_SEARCH
+        item.totalSearch = "-"
         keywordSearchAdapter.items.add(0, item)
         keywordSearchAdapter.notifyItemInserted(0)
         addToMainList(0)

@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
@@ -222,7 +223,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                         validation3 = false
                         actionEnable()
                     }
-                    number < currentBudget -> {
+                    number < currentBudget  && currentAutoBidState.isEmpty()-> {
                         daily_budget?.setError(true)
                         daily_budget?.setMessage(
                                 String.format(
@@ -253,6 +254,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
+
+    private fun isMinValidation(input: Int): Boolean {
+        return (input < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty()) ||
+                (input < currentBudget && currentAutoBidState.isEmpty()) && daily_budget.isVisible
     }
 
     private fun saveInitialChoices() {

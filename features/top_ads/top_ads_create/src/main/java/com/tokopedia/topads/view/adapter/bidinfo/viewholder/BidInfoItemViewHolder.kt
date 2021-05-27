@@ -61,7 +61,7 @@ class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int)
                 HIGH -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_high)
                 else -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low)
             }
-            keywordData?.text = MethodChecker.fromHtml(String.format(view.context.getString(com.tokopedia.topads.common.R.string.topads_create_keyword_data), competition, item.data.totalSearch + KALI))
+            keywordData?.text = MethodChecker.fromHtml(String.format(view.context.getString(com.tokopedia.topads.common.R.string.topads_create_keyword_data), competition, item.data.totalSearch))
             keywordName.text = item.data.keyword
             keywordType.text = item.data.keywordType
             if (item.data.bidSuggest != "0")
