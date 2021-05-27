@@ -133,17 +133,16 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         if (canDeleteComment || isInfluencer()) {
             var toBeDeleted = true
             view?.let {
-                Toaster.build(it, getString(R.string.kol_delete_1_comment), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.kol_delete_comment_ok), View.OnClickListener {
+                Toaster.build(it, getString(R.string.kol_delete_1_comment), 3000, Toaster.TYPE_NORMAL, getString(R.string.kol_delete_comment_ok), View.OnClickListener {
                     toBeDeleted = false
                 }).show()
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
-                    delay(Toaster.LENGTH_LONG.toLong())
+                    delay(3000L)
                     if (activity != null && isAdded) {
                         if (toBeDeleted)
                             presenter.deleteComment(id, adapterPosition)
                     }
-
                 }
             }
             return true

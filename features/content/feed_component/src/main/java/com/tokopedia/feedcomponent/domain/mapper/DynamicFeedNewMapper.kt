@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCardDataItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXHome
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
@@ -61,13 +60,13 @@ object DynamicFeedNewMapper {
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
         //please remove this code if you want to show for video post
-        val media = ArrayList<FeedXMedia>()
-        feedXCard.media.map {
-            if (it.type == TYPE_IMAGE) {
-                media.add(it)
-            }
-        }
-        feedXCard.media = media
+//        val media = ArrayList<FeedXMedia>()
+//        feedXCard.media.map {
+//            if (it.type == TYPE_IMAGE) {
+//                media.add(it)
+//            }
+//        }
+//        feedXCard.media = media
         val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData())
         posts.add(dynamicPostUiModel)
     }

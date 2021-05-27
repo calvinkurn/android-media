@@ -12,6 +12,8 @@ data class FeedXCard(
         var id: String = "",
         @SerializedName("publishedAt")
         var publishedAt: String = "",
+        @SerializedName("reportable")
+        var reportable:Boolean = true,
         @SerializedName("mods")
         var mods: List<String> = emptyList(),
 

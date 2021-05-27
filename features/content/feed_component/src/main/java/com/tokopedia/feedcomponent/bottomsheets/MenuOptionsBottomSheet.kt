@@ -12,19 +12,29 @@ import kotlinx.android.synthetic.main.bottomsheet_menu_options.*
 class MenuOptionsBottomSheet : BottomSheetUnify() {
     private var followText: String = ""
     private var isRecommendedPost: Boolean = false
+    private var isReportable: Boolean = false
     var onReport: (() -> Unit)? = null
-    var onDeleteorFollow:(()->Unit)? = null
+    var onDeleteorFollow: (() -> Unit)? = null
 
     companion object {
-        fun newInstance(followText: String, isRecommendedPost: Boolean = false): MenuOptionsBottomSheet {
+        fun newInstance(
+            followText: String,
+            isReportable: Boolean = false,
+            isRecommendedPost: Boolean = false
+        ): MenuOptionsBottomSheet {
             return MenuOptionsBottomSheet().apply {
                 this.followText = followText
                 this.isRecommendedPost = isRecommendedPost
+                this.isReportable = isReportable
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val contentView = View.inflate(context, R.layout.bottomsheet_menu_options, null)
         setChild(contentView)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -33,6 +43,7 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         not_interested.showWithCondition(isRecommendedPost)
+        report.showWithCondition(isReportable)
         follow.text = followText
         follow.setOnClickListener {
             onDeleteorFollow?.invoke()

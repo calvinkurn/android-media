@@ -5,10 +5,8 @@ import android.content.Context
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.TextPaint
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -36,10 +34,13 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.net.URLEncoder
+
+const val SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 class KolCommentNewCardView : LinearLayout {
 
@@ -47,7 +48,11 @@ class KolCommentNewCardView : LinearLayout {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private val comment: Typography
     private val avatar: ImageView
@@ -56,7 +61,6 @@ class KolCommentNewCardView : LinearLayout {
     private val btnReply: UnifyButton
     private val mainView: ConstraintLayout
     private var likeBtn: ImageView
-
 
     private val onMentionClicked = object : MentionSpan.OnClickListener {
         override fun onClick(userId: String) {
@@ -79,7 +83,12 @@ class KolCommentNewCardView : LinearLayout {
 
         }
         orientation = VERTICAL
-        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setBackgroundColor(
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0
+            )
+        )
     }
 
     override fun getLayoutParams(): ViewGroup.LayoutParams {
@@ -110,18 +119,20 @@ class KolCommentNewCardView : LinearLayout {
         if (canComment) btnReply.visible() else btnReply.gone()
         btnReply.setOnClickListener {
             val userId = if (!element.userUrl.isNullOrEmpty()) {
-                val paramList = UriUtil.destructureUri(ApplinkConst.PROFILE, Uri.parse(element.userUrl))
+                val paramList =
+                    UriUtil.destructureUri(ApplinkConst.PROFILE, Uri.parse(element.userUrl))
                 paramList.firstOrNull()
             } else element.userId
 
             userId?.let { id ->
                 listener?.onReplyClicked(
-                        MentionableUserViewModel(
-                                id,
-                                "",
-                                element.name ?: "",
-                                "",
-                                element.isShop)
+                    MentionableUserViewModel(
+                        id,
+                        "",
+                        element.name ?: "",
+                        "",
+                        element.isShop
+                    )
                 )
             }
         }
@@ -142,22 +153,13 @@ class KolCommentNewCardView : LinearLayout {
         likeBtn.gone()
         val tagConverter = TagConverter()
         val commentText: String = buildString {
-          //  if (badge.isVisible) append(SPACE)
+            if (badge.isVisible) append(SPACE)
             append(getCommentText(element))
         }
         comment.text = tagConverter.convertToLinkifyHashtag(
-                SpannableString(MethodChecker.fromHtml(getCommentText(element))), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, null) }
-
+                SpannableString(MethodChecker.fromHtml(commentText)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, null) }
 
         comment.movementMethod = LinkMovementMethod.getInstance()
-
-//        if (!TextUtils.isEmpty(element.tagsLink)) {
-//            UrlUtil.setTextWithClickableTokopediaUrl(comment,
-//                    commentText,
-//                    getUrlClickableSpan(element))
-//        } else {
-//            UrlUtil.setTextWithClickableTokopediaUrl(comment, commentText)
-//        }
     }
 
 
@@ -178,35 +180,38 @@ class KolCommentNewCardView : LinearLayout {
 
         val commentText: Spanned = if (element.isOfficial) {
             badge.visibility = View.VISIBLE
-            MethodChecker.fromHtml( getCommentText(element))
+            MethodChecker.fromHtml(SPACE + getCommentText(element))
         } else {
             badge.visibility = View.GONE
             MethodChecker.fromHtml(getCommentText(element))
         }
 
         comment.text = MentionTextHelper.spanText(
-                commentText,
-                MentionEditText.getMentionColor(context),
-                onMentionClicked,
-                false
+            commentText,
+            MentionEditText.getMentionColor(context),
+            onMentionClicked,
+            false
         )
 
         setOnLongClickListener {
             val sheet = MenuOptionsBottomSheet.newInstance("Hapus", false)
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
-                    ReportBottomSheet.newInstance(element.id?.toInt()
-                            ?: 0, context = object : ReportBottomSheet.OnReportOptionsClick {
-                        override fun onOption1(reasonType: String, reasonDesc: String) {
-                            listener?.onReport(reasonType,reasonDesc,element.id?:"0",element.canDeleteComment())
-//                            listener?.onDeleteComment(element.id ?: "0", element.canDeleteComment())
-//                                    ?: false
-                        }
-                    }).show((context as FragmentActivity).supportFragmentManager, "")
+                ReportBottomSheet.newInstance(element.id?.toInt()
+                    ?: 0, context = object : ReportBottomSheet.OnReportOptionsClick {
+                    override fun onOption1(reasonType: String, reasonDesc: String) {
+                        listener?.onReport(
+                            reasonType,
+                            reasonDesc,
+                            element.id ?: "0",
+                            element.canDeleteComment()
+                        )
+                    }
+                }).show((context as FragmentActivity).supportFragmentManager, "")
             }
             sheet.onDeleteorFollow = {
                 listener?.onDeleteComment(element.id ?: "0", element.canDeleteComment())
-                        ?: false
+                    ?: false
             }
             false
         }
@@ -226,26 +231,12 @@ class KolCommentNewCardView : LinearLayout {
         return ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
     }
 
-    private fun getUrlClickableSpan(element: KolCommentHeaderNewModel): ClickableSpan {
-        return object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                listener?.onTokopediaUrlClicked(element.tagsLink ?: "")
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = true
-                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
-            }
-        }
-    }
-
     interface Listener {
         fun onAvatarClicked(profileUrl: String)
         fun onMentionedProfileClicked(authorId: String)
         fun onDeleteComment(commentId: String, canDeleteComment: Boolean): Boolean
         fun onTokopediaUrlClicked(url: String)
         fun onReplyClicked(mentionableUser: MentionableUserViewModel)
-        fun onReport(reasonType: String,reasonDesc: String,id:String, canDeleteComment: Boolean)
+        fun onReport(reasonType: String, reasonDesc: String, id: String, canDeleteComment: Boolean)
     }
 }

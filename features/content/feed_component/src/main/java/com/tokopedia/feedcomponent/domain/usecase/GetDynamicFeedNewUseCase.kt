@@ -47,6 +47,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         actionButtonLabel
         actionButtonOperationWeb
         actionButtonOperationApp
+        reportable
         media {
           id
           type

@@ -25,14 +25,9 @@ object TimeConverter {
         return generateTime(context, postTime, DEFAULT_FEED_FORMAT)
     }
 
-    fun generateTimeNew(context: Context, postTime: String, type: Int): String {
-        return generateTimeNew(context, postTime, DEFAULT_FEED_FORMAT, type)
-    }
-
     private fun generateTime(context: Context, postTime: String, format: String): String {
         return try {
             val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
-
             val sdf = SimpleDateFormat(format, localeID)
             sdf.timeZone = TimeZone.getDefault()
             val postDate = sdf.parse(postTime)
@@ -45,23 +40,20 @@ object TimeConverter {
 
     }
 
-    private fun generateTimeNew(
+    fun generateTimeNew(
         context: Context,
         postTime: String,
-        format: String,
         type: Int
     ): String {
         return try {
             val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
-
-            val sdf = SimpleDateFormat(format, localeID)
+            val sdf = SimpleDateFormat(DEFAULT_FEED_FORMAT, localeID)
             sdf.timeZone = TimeZone.getDefault()
             val postDate = sdf.parse(postTime)
             if (type == 1)
                 getFormattedTimeComment(context, postDate)
             else
                 getFormattedTimeNew(context, postDate)
-
 
         } catch (e: ParseException) {
             Timber.d(e)
@@ -79,15 +71,13 @@ object TimeConverter {
         val calCurrentTime = Calendar.getInstance()
         calCurrentTime.time = currentTime
 
-        val sdfHour = SimpleDateFormat(HOUR_MINUTE_FORMAT, localeID)
-        val sdfDay = SimpleDateFormat(DAY_MONTH_FORMAT, localeID)
         val sdfYear = SimpleDateFormat(DAY_MONTH_YEAR_FORMAT, localeID)
 
         return if (getDifference(currentTime, postDate) < 60) {
             context.getString(R.string.comment_time_just_now)
 
         } else if (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < 60) {
-            (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString()
+            (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString().plus(" ")
                 .plus(context.getString(R.string.comment_time_minutes_ago))
 
         } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24
@@ -95,7 +85,7 @@ object TimeConverter {
             && calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
             && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
         ) {
-            (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString()
+            (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString().plus(" ")
                 .plus(context.getString(R.string.comment_time_hours_ago))
 
         } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR > 24 &&
@@ -107,7 +97,7 @@ object TimeConverter {
                 calPostDate.get(Calendar.DAY_OF_MONTH)
             )
         ) {
-            (getDifference(currentTime, postDate) / MINUTES_IN_HOUR * 24 * 1000).toString()
+            (getDifference(currentTime, postDate) / MINUTES_IN_HOUR * 24 ).toString().plus(" ")
                 .plus(context.getString(R.string.comment_time_days_ago))
         } else {
             sdfYear.format(postDate)
@@ -124,14 +114,13 @@ object TimeConverter {
         val calCurrentTime = Calendar.getInstance()
         calCurrentTime.time = currentTime
 
-        val sdfHour = SimpleDateFormat(HOUR_MINUTE_FORMAT, localeID)
         val sdfDay = SimpleDateFormat(DAY_MONTH_FORMAT, localeID)
 
         return if (getDifference(currentTime, postDate) < 60) {
             context.getString(R.string.post_time_just_now_new)
 
         } else if (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < 60) {
-            (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString()
+            (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString().plus(" ")
                 .plus(context.getString(R.string.post_time_minutes_ago_new))
 
         } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24
@@ -139,7 +128,7 @@ object TimeConverter {
             && calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
             && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
         ) {
-            (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString()
+            (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString().plus(" ")
                 .plus(context.getString(R.string.post_time_hours_ago_new))
 
         } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR > 24 &&
@@ -151,7 +140,7 @@ object TimeConverter {
                 calPostDate.get(Calendar.DAY_OF_MONTH)
             )
         ) {
-            (getDifference(currentTime, postDate) / MINUTES_IN_HOUR * 24 * 1000).toString()
+            (getDifference(currentTime, postDate) / (MINUTES_IN_HOUR * 24)).toString().plus(" ")
                 .plus(context.getString(R.string.post_time_days_ago))
 
         } else {

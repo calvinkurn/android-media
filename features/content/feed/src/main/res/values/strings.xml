@@ -105,4 +105,7 @@
 
     <string name="feed_con_desc_btn_search">button search</string>
 
+    <!-- Like -->
+    <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
+
 </resources>

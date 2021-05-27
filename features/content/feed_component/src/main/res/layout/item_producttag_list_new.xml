@@ -5,33 +5,29 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_4"
     android:background="@color/Unify_N0"
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="@dimen/dp_8">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_4"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:orientation="horizontal"
-        tools:ignore="UnusedAttribute">
+        android:padding="@dimen/dp_8">
 
         <FrameLayout
             android:id="@+id/productLayout"
             android:layout_width="@dimen/dp_96"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_2"
-            android:layout_marginRight="@dimen/dp_2"
-            android:background="@drawable/bg_frame_rounded">
+            android:layout_height="@dimen/dp_96"
+            android:background="@drawable/bg_frame_rounded"
+            app:layout_constraintBottom_toBottomOf="@id/productNameSection"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/productNameSection">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/productImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/dp_12"
                 android:adjustViewBounds="true"
                 android:background="@color/Unify_N0"
                 android:scaleType="centerCrop"
@@ -43,42 +39,27 @@
             android:id="@+id/productNameSection"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginStart="@dimen/dp_8"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/productLayout"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:lineSpacingExtra="4sp"
                 android:maxLines="1"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
                 tools:text="Enfagrow A+ Susu Anak 1-3 Tahun - Vanilla Enak Sekali Diminum Setiap hari" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/productPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
-                android:ellipsize="end"
-                android:gravity="bottom"
-                android:maxLines="1"
-                android:visibility="visible"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Rp 3.121.500.121.500.121.500.121.500.121.500.121.500"
-                tools:visibility="visible" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4">
+                android:layout_marginTop="@dimen/dp_4"
+                android:orientation="horizontal">
 
                 <com.tokopedia.unifycomponents.Label
                     android:id="@+id/discountLabel"
@@ -91,13 +72,23 @@
                     android:id="@+id/productTag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_6"
-                    android:paddingTop="@dimen/dp_2"
-                    android:paddingRight="@dimen/dp_6"
-                    android:paddingBottom="@dimen/dp_2"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:textColor="#6D7588"
                     app:typographyType="small"
                     tools:text="Cashback 10%" />
             </LinearLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:text="Rp 3.121.500.121.500.121.500.121.500.121.500.121.500"
+                tools:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -106,53 +97,48 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/star"
-                    android:layout_width="@dimen/dp_12"
-                    android:layout_height="@dimen/dp_12"
-                    android:layout_margin="@dimen/feed_component_dp_6"
+                    android:layout_width="@dimen/dp_13"
+                    android:layout_height="@dimen/dp_13"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginBottom="@dimen/dp_6"
                     app:icon_color_light_enable="@color/Unify_Y300"
                     app:icon_name="STAR_FILLED"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:unify_image_type="rect" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_4"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:paddingLeft="@dimen/dp_6"
-                    android:paddingTop="@dimen/dp_2"
-                    android:paddingRight="@dimen/dp_6"
-                    android:paddingBottom="@dimen/dp_2"
+                    android:textColor="#6D7588"
                     app:typographyType="body_3"
                     tools:text="4.7" />
 
-                <com.tokopedia.unifycomponents.DividerUnify
-                    android:layout_width="@dimen/dp_2"
-                    android:layout_height="match_parent"
+                <View
+                    android:layout_width="@dimen/dp_1"
+                    android:layout_height="@dimen/dp_10"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginEnd="@dimen/dp_4" />
+                    android:background="#6D7588" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/soldInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_4"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:paddingLeft="@dimen/dp_6"
-                    android:paddingTop="@dimen/dp_2"
-                    android:paddingRight="@dimen/dp_6"
-                    android:paddingBottom="@dimen/dp_2"
+                    android:textColor="#6D7588"
                     app:typographyType="body_3"
                     tools:text="Terjual 200" />
             </LinearLayout>
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/freeShipping"
-                android:layout_width="@dimen/dp_60"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_4" />
+                android:layout_width="67dp"
+                android:layout_height="@dimen/dp_20" />
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

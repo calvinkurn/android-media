@@ -15,17 +15,17 @@
 
     <!--Post Time new-->
     <string name="post_time_just_now_new">1 mnt</string>
-    <string name="post_time_minutes_ago_new"> mnt</string>
+    <string name="post_time_minutes_ago_new">mnt</string>
     <string name="post_time_hours_ago_new">jam </string>
     <string name="post_time_days_ago">hari</string>
     <string name="post_time_hour_new">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at_new">Kemarin pukul\u0020</string>
 
     <!--Post Time Comment -->
-    <string name="comment_time_just_now">Beberapa detik yang lalu</string>
+    <string name="comment_time_just_now"> Beberapa detik yang lalu</string>
     <string name="comment_time_minutes_ago"> menit yang lalu</string>
-    <string name="comment_time_hours_ago">jam yang lalu</string>
-    <string name="comment_time_days_ago">hari yang lalu</string>
+    <string name="comment_time_hours_ago"> jam yang lalu</string>
+    <string name="comment_time_days_ago"> hari yang lalu</string>
 
     <!-- Action -->
     <string name="feed_content_reported">Konten berhasil dilaporkan</string>
@@ -105,7 +105,7 @@
     <string name="content_desc_headerAction">button action</string>
     <string name="content_desc_menu">button menu</string>
     <string name="content_desc_caption">text caption</string>
-    <string name="content_product_bs_title">Dalam foto ini</string>
+    <string name="content_product_bs_title">Dalam post ini</string>
 
     <string name="feed_color_pojo_dms_hex_black_value">#000000</string>
     <string name="feed_color_pojo_dms_hex_white_value">#fff</string>
@@ -118,11 +118,11 @@
     <string name="feed_common_terjual">Terjual</string>
 
     <!--Follow Functionalities ASSETS-->
-    <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>
+    <string name="feed_component_unfollow_success_toast">Oops, tidak bisa unfollow toko.</string>
     <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> • </b></font> ]]></string>
     <string name="kol_action_follow_color"><![CDATA["<font color='#03AC0E'><b>Follow</b></font> ]]></string>
     <string name="kol_Action_following_color"><![CDATA["<font color='#6D7588'><b>following</b></font> ]]></string>
-    <string name="feed_header_follow_count_text">Rekomendasi • %s</string>
+    <string name="feed_header_follow_count_text">Rekomendasi • %s Followers</string>
 
 
     <!--REPORT BOTTOM SHEETS ASSETS-->
@@ -156,5 +156,9 @@
     <string name="feed_common_reason_desc_abuse">Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial</string>
     <string name="feed_common_reason_desc_inappropriate">Mengandung pornografi</string>
     <string name="feed_common_reason_desc_others">Lainnya</string>
+
+    <!--SHARE-->
+    <string name="feed_share_default_text">Eh, [%s] baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+
 
 </resources>

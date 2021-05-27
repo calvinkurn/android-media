@@ -209,7 +209,7 @@ class FeedPlusTypeFactoryImpl(
                 viewHolder = ShimmerViewHolder(view)
             }
             DynamicPostNewViewHolder.LAYOUT -> {
-                viewHolder = DynamicPostNewViewHolder(view, userSession, dynamicPostListener,gridItemListener)
+                viewHolder = DynamicPostNewViewHolder(view, userSession, dynamicPostListener,videoViewListener,gridItemListener)
             }
             HighlightViewHolder.LAYOUT -> {
                 viewHolder = HighlightViewHolder(view, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
