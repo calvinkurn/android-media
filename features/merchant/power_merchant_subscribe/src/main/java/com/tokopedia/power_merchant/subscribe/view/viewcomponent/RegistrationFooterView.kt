@@ -30,6 +30,9 @@ class RegistrationFooterView : ConstraintLayout {
         tvPmRegistrationTnC.setOnClickListener {
             tncClickListener?.invoke()
         }
+        cbPmRegistrationTnC.setOnCheckedChangeListener { _, isChecked ->
+            checkedListener?.invoke(isChecked)
+        }
     }
 
     fun setOnTncClickListener(action: () -> Unit) {

@@ -129,7 +129,7 @@ class PowerMerchantTracking @Inject constructor(
     fun sendEventClickSubmitQuestionnaire() {
         val event = createEvent(
                 event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
-                category = TrackingConstant.getPowerMerchantCategory(),
+                category = TrackingConstant.CATEGORY_POWER_MERCHANT_OPT_OUT,
                 action = TrackingConstant.ACTION_CLICK_SUBMIT_QUESTIONNAIRE,
                 label = ""
         )

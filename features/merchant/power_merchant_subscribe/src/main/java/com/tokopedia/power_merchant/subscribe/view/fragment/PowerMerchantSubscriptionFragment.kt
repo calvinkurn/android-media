@@ -81,7 +81,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private var isModeratedShop = false
     private var pmBasicInfo: PowerMerchantBasicInfoUiModel? = null
     private var pmGradeBenefitList: List<PMGradeWithBenefitsUiModel>? = null
-    private var currentPmTireType = PMConstant.PMTierType.POWER_MERCHANT
+    private var currentPmRegistrationTireType = PMConstant.PMTierType.POWER_MERCHANT
 
     override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
 
@@ -162,7 +162,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     fun setOnFooterCtaClickedListener(term: RegistrationTermUiModel?, isEligiblePm: Boolean, tncAgreed: Boolean, nextShopTireType: Int) {
         val shopInfo = pmBasicInfo?.shopInfo ?: return
-        val isPmPro = currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         when {
             isModeratedShop -> showModeratedShopBottomSheet()
             shopInfo.isNewSeller && isPmPro -> showNewSellerPmProBottomSheet()
@@ -383,14 +383,14 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         this.pmBasicInfo = data
 
         val defaultTire = PMConstant.PMTierType.POWER_MERCHANT
-        currentPmTireType = arguments?.getInt(KEY_PM_TIER_TYPE, defaultTire) ?: defaultTire
+        currentPmRegistrationTireType = arguments?.getInt(KEY_PM_TIER_TYPE, defaultTire) ?: defaultTire
     }
 
     private fun renderPmRegistrationWidgets() {
         pmBasicInfo?.shopInfo?.let { shopInfo ->
             val registrationHeaderWidget = getRegistrationHeaderWidgetData(shopInfo)
 
-            val isPmPro = currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+            val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
             if (isPmPro) {
                 renderPmProRegistrationWidgets(registrationHeaderWidget)
             } else {
@@ -430,8 +430,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun getPmGradeBenefitWidget(): WidgetGradeBenefitUiModel {
         val gradeBenefitList = pmGradeBenefitList.orEmpty()
         return WidgetGradeBenefitUiModel(
-                selectedPmTireType = currentPmTireType,
-                benefitPages = gradeBenefitList.filter { it.pmTier == currentPmTireType }
+                selectedPmTireType = currentPmRegistrationTireType,
+                benefitPages = gradeBenefitList.filter { it.pmTier == currentPmRegistrationTireType }
         )
     }
 
@@ -560,7 +560,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             return
         }
 
-        val isPmPro = currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val appLink = if (isPmPro) {
             PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
         } else {
@@ -589,7 +589,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
-        val isPmPro = currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val shopScoreThreshold = if (isPmPro) shopInfo.shopScorePmProThreshold else shopInfo.shopScoreThreshold
         val pmLabel = if (isPmPro) getString(R.string.pm_power_merchant_pro) else getString(R.string.pm_power_merchant)
 
@@ -824,12 +824,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun getRegistrationHeaderWidgetData(shopInfo: PMShopInfoUiModel): WidgetRegistrationHeaderUiModel {
         return WidgetRegistrationHeaderUiModel(
                 shopInfo = shopInfo,
-                registrationTerms = if (currentPmTireType == PMConstant.PMTierType.POWER_MERCHANT) {
+                registrationTerms = if (currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT) {
                     PMRegistrationTermHelper.getPmRegistrationTerms(requireContext(), shopInfo)
                 } else {
                     PMRegistrationTermHelper.getPmProRegistrationTerms(requireContext(), shopInfo)
                 },
-                selectedPmType = currentPmTireType
+                selectedPmType = currentPmRegistrationTireType
         )
     }
 

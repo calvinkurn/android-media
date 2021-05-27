@@ -24,6 +24,7 @@ object TrackingConstant {
 
     const val CATEGORY_SELLER_APP = "tokopedia seller app"
     const val CATEGORY_MAIN_APP = "tokopedia main app"
+    const val CATEGORY_POWER_MERCHANT_OPT_OUT = "power merchant opt out questionnaire"
 
     const val ACTION_CLICK_TICKBOX_TNC = "click tickbox term & condition"
     const val ACTION_CLICK_UPGRADE_POWER_MERCHANT = "click upgrade power merchant"
