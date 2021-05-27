@@ -13,6 +13,7 @@ import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnai
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -21,8 +22,8 @@ import javax.inject.Inject
  */
 
 class DeactivationViewModel @Inject constructor(
-        private val getPMDeactivationQuestionnaireUseCase: GetPMDeactivationQuestionnaireUseCase,
-        private val deactivatePmUseCase: DeactivatePMUseCase,
+        private val getPMDeactivationQuestionnaireUseCase: Lazy<GetPMDeactivationQuestionnaireUseCase>,
+        private val deactivatePmUseCase: Lazy<DeactivatePMUseCase>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -44,9 +45,9 @@ class DeactivationViewModel @Inject constructor(
 
     fun getPMCancellationQuestionnaireData(pmTireType: Int) {
         launchCatchError(block = {
-            getPMDeactivationQuestionnaireUseCase.params = GetPMDeactivationQuestionnaireUseCase.createParams(PMConstant.PM_SETTING_INFO_SOURCE, pmTireType)
+            getPMDeactivationQuestionnaireUseCase.get().params = GetPMDeactivationQuestionnaireUseCase.createParams(PMConstant.PM_SETTING_INFO_SOURCE, pmTireType)
             val result = withContext(dispatchers.io) {
-                getPMDeactivationQuestionnaireUseCase.executeOnBackground()
+                getPMDeactivationQuestionnaireUseCase.get().executeOnBackground()
             }
             _pmDeactivationQuestionnaireData.value = Success(result)
         }, onError = {
@@ -56,9 +57,9 @@ class DeactivationViewModel @Inject constructor(
 
     fun submitPmDeactivation(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>, currentShopTire: Int, nextShopTire: Int) {
         launchCatchError(block = {
-            deactivatePmUseCase.params = DeactivatePMUseCase.createRequestParam(questionData, currentShopTire, nextShopTire)
+            deactivatePmUseCase.get().params = DeactivatePMUseCase.createRequestParam(questionData, currentShopTire, nextShopTire)
             val result = Success(withContext(dispatchers.io) {
-                deactivatePmUseCase.executeOnBackground()
+                deactivatePmUseCase.get().executeOnBackground()
             })
             _isSuccessDeactivate.value = result
         }, onError = {
