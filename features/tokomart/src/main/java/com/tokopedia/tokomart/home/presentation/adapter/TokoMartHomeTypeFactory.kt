@@ -6,4 +6,5 @@ interface TokoMartHomeTypeFactory {
     fun type(uiModel: HomeSectionUiModel): Int
     fun type(uiModel: HomeAllCategoryUiModel): Int
     fun type(uiModel: HomeChooseAddressWidgetUiModel): Int
+    fun type(uiModel: HomeTickerUiModel): Int
 }

@@ -8,7 +8,9 @@ import com.tokopedia.tokomart.home.constant.HomeLayoutType
 import com.tokopedia.tokomart.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.tokomart.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokomart.home.domain.model.Tickers
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiModel
 
 object HomeLayoutMapper {
@@ -26,6 +28,7 @@ object HomeLayoutMapper {
     fun mapHomeLayoutList(response: List<HomeLayoutResponse>): List<Visitable<*>> {
         val layoutList = mutableListOf<Visitable<*>>()
         layoutList.add(HomeChooseAddressWidgetUiModel(id = HomeAdditionalWidgetId.CHOOSE_ADDRESS_WIDGET_ID))
+        layoutList.add(HomeTickerUiModel(id = HomeAdditionalWidgetId.TICKER_WIDGET_ID, Tickers(listOf())))
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             val item = mapToHomeUiModel(it)

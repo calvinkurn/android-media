@@ -34,6 +34,7 @@ import com.tokopedia.tokomart.home.presentation.uimodel.*
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeAllCategoryViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeSectionViewHolder
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
 
 class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
@@ -41,6 +42,7 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
     override fun type(uiModel: HomeSectionUiModel): Int = HomeSectionViewHolder.LAYOUT
     override fun type(uiModel: HomeAllCategoryUiModel): Int = HomeAllCategoryViewHolder.LAYOUT
     override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -64,6 +66,7 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
             HomeSectionViewHolder.LAYOUT -> HomeSectionViewHolder(view)
             HomeAllCategoryViewHolder.LAYOUT -> HomeAllCategoryViewHolder(view)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, fragment)
+            HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view)
             // endregion
 
             // region Global Home Component
