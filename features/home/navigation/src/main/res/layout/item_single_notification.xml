@@ -8,7 +8,7 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <com.tokopedia.design.label.LabelView
+    <com.tokopedia.navigation.deprecated.label.LabelView
         android:id="@+id/labelview"
         style="@style/LabelLayout"
         android:minHeight="@dimen/dp_64"
