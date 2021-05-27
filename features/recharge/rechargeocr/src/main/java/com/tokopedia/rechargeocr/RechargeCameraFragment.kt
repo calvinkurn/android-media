@@ -189,9 +189,9 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showImagePreview() {
+        full_camera_view.close()
         full_camera_view.visibility = View.GONE
         image_button_shutter.visibility = View.GONE
-        destroyCamera()
         full_image_preview.visibility = View.VISIBLE
     }
 
@@ -239,6 +239,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun destroyCamera() {
         try {
+            full_camera_view.close()
             full_camera_view.destroy()
         } catch (e: Throwable) {
             // no-op
