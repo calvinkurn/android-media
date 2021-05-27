@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="space_vertical_variant_image">8dp</dimen>
+    <dimen name="space_toaster_offsite_atc_variant">110dp</dimen>
 </resources>

@@ -170,11 +170,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeWishlist()
     }
 
+    private fun showToasterSuccess(message:String) {
+        viewContent?.rootView?.showToasterSuccess(message, R.dimen.space_toaster_offsite_atc_variant)
+    }
+
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner, {
             loadingProgressDialog?.dismiss()
             if (it is Success) {
-                viewContent?.showToasterSuccess("Sukses update")
+                showToasterSuccess("Sukses update")
             }
         })
     }
@@ -208,7 +212,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             if (it is Success) {
                 if (it.data) {
                     //success add wishlist
-                    viewContent.showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.toaster_success_add_wishlist_from_button))
+                    showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.toaster_success_add_wishlist_from_button))
                 }
             } else if (it is Fail) {
                 viewContent.showToasterError(getErrorMessage(it.throwable))
@@ -284,7 +288,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
                 successMessage
             viewModel.updateActivityResult(atcSuccessMessage = message)
-            viewContent?.showToasterSuccess(message)
+            showToasterSuccess(message)
         }
     }
 
