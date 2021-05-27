@@ -42,8 +42,8 @@ class TrackingPageViewModel @Inject constructor(
     val retryAvailability: LiveData<Result<RetryAvailabilityResponse>>
         get() = _retryAvailability
 
-    private val _getDeliveryImage = MutableLiveData<Result<GetDeliveryImageResponse>>()
-    val getDeliveryImage: LiveData<Result<GetDeliveryImageResponse>>
+    private val _getDeliveryImage = MutableLiveData<Result<String>>()
+    val getDeliveryImage: LiveData<Result<String>>
         get() = _getDeliveryImage
 
     fun getTrackingData(orderId: String) {

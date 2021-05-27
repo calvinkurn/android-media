@@ -10,7 +10,7 @@ class GetDeliveryImageRepositoryImpl(private val getDeliveryImageDataSource: Get
     }*/
 
 
-    override suspend fun getDeliveryImage(params: Map<String, Any>): GetDeliveryImageResponse {
+    override suspend fun getDeliveryImage(params: Map<String, Any>): String {
         return getDeliveryImageDataSource.getDeliveryImage(params)
     }
 

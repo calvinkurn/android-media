@@ -15,8 +15,7 @@ interface GetDeliveryImageApi {
     suspend fun getDeliveryImage(@Url url: String): Response<DataResponse<GetDeliveryImageResponse>>
 */
     @GET("logistic/tracking/get-delivery-image")
-    @Headers("Content-Type: application/json")
-    suspend fun getDeliveryImage(@QueryMap params: Map<String, Any>): Response<DataResponse<GetDeliveryImageResponse>>
+    suspend fun getDeliveryImage(@QueryMap params: Map<String, Any>): Response<DataResponse<String>>
 
 
 

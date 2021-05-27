@@ -72,7 +72,12 @@ object TrackingPageModule {
     @ActivityScope
     @Provides
     fun provideGetDeliveryImageRetrofit(retrofitBuilder: Retrofit.Builder, okHttpClient: OkHttpClient): Retrofit {
-        return retrofitBuilder.baseUrl(TrackingPageUrl.BASE_URL).client(okHttpClient).build()
+        return retrofitBuilder
+                .baseUrl(TrackingPageUrl.BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create(Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build()
     }
 
     @Provides

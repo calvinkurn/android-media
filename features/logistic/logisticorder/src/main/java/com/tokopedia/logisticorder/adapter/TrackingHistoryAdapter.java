@@ -41,15 +41,23 @@ import timber.log.Timber;
 
 public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistoryAdapter.TrackingHistoryViewHolder> {
 
+    public interface OnImageClicked {
+        void onImageItemClicked(String imageId, Long orderId);
+    }
+
     private List<TrackHistoryModel> trackingHistoryData;
     private DateUtil dateUtil;
     private Long orderId;
+    private OnImageClicked listener;
 
-    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil, Long orderId) {
+    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil, Long orderId, OnImageClicked listener) {
         this.trackingHistoryData = trackingHistoryData;
         this.dateUtil = dateUtil;
         this.orderId = orderId;
+        this.listener = listener;
     }
+
+
 
     @NonNull
     @Override
@@ -66,7 +74,6 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         holder.time.setText(dateUtil.getFormattedTime(trackingHistoryData.get(position).getTime()));
         setTitleColor(holder, position);
 
-//        holder.comment.setVisibility(View.GONE);
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
 
@@ -90,29 +97,17 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             UserSessionInterface userSession = new UserSession(holder.context);
             String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small",
                     userSession.getUserId(), 1, userSession.getDeviceId());
-            GlideUrl glideUrl = new GlideUrl(url, new LazyHeaders.Builder()
-                    .addHeader("Content-Type", "application/json")
-//                    .addHeader("_SID_Tokopedia_Coba_", "YUnhP0RK_oXXdqBp8jgzlzcHnN4uPVfrvv5RpRMXlqWHu7T6mk4Oadod4MEAzFAY3hY8j4qgs6dDZK459Fh_T2cDBZ1dIzZhqlN_Ekgi1sh51jZ_pCSd-jvIiX5Y8z7S")
-                    .build());
 
             Glide.with(holder.context)
-                    .load(glideUrl)
-                    .addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            Log.d("WHY FAILED -- ", e.toString());
-                            System.out.println(e);
-                            Timber.d(e);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
+                    .load(url)
+                    .placeholder(holder.context.getDrawable(R.drawable.ic_image_error))
+                    .error(holder.context.getDrawable(R.drawable.ic_image_error))
                     .dontAnimate()
                     .into(holder.imageProof);
+
+            holder.imageProof.setOnClickListener(view -> {
+                listener.onImageItemClicked(trackingHistoryData.get(position).getProof().getImageId(), orderId);
+            });
         }
     }
 

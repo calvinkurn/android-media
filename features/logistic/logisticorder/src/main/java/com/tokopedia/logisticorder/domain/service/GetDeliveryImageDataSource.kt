@@ -13,9 +13,9 @@ class GetDeliveryImageDataSource @Inject constructor(private val getDeliveryImag
                 it.body()?.data ?: GetDeliveryImageResponse()
             }*/
 
-    suspend fun getDeliveryImage(params: Map<String, Any>): GetDeliveryImageResponse =
+    suspend fun getDeliveryImage(params: Map<String, Any>): String =
             getDeliveryImageApi.getDeliveryImage(params).let {
-                it.body()?.data ?: GetDeliveryImageResponse()
+                it.body()?.data ?: String()
             }
 }
 

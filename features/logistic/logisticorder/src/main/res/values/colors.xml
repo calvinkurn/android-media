@@ -3,4 +3,5 @@
     <color name="label_color">#868686</color>
     <color name="tracking_secondary_color">#9B9B9B</color>
     <color name="tracking_primary_color">#42b549</color>
+<!--    <color name="transparent_background">#8031353B</color>-->
 </resources>

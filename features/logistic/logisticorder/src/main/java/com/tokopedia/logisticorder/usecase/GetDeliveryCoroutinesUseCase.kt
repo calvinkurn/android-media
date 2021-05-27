@@ -17,7 +17,7 @@ class GetDeliveryCoroutinesUseCase @Inject constructor(
         return getDeliveryImageRepository.getDeliveryImage(url)
     }*/
 
-    suspend fun executeParams(requestParams: RequestParams): GetDeliveryImageResponse {
+    suspend fun executeParams(requestParams: RequestParams): String {
         return getDeliveryImageRepository.getDeliveryImage(requestParams.parameters)
     }
 

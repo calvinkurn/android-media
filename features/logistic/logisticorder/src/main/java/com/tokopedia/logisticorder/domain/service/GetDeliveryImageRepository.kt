@@ -5,5 +5,5 @@ import okhttp3.RequestBody
 
 interface GetDeliveryImageRepository {
 //    suspend fun getDeliveryImage(url: String): GetDeliveryImageResponse
-    suspend fun getDeliveryImage(params: Map<String, Any>): GetDeliveryImageResponse
+    suspend fun getDeliveryImage(params: Map<String, Any>): String
 }

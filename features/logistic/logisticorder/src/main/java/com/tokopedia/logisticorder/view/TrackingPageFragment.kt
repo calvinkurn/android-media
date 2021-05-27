@@ -1,5 +1,7 @@
 package com.tokopedia.logisticorder.view
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.format.DateUtils
@@ -7,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -14,12 +17,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
@@ -29,8 +41,11 @@ import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.DateUtil
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
+import com.tokopedia.logisticorder.view.imagepreview.ImagePreviewLogisticActivity
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity.Companion.createIntent
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.*
@@ -41,10 +56,11 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class TrackingPageFragment: BaseDaggerFragment() {
+class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -85,6 +101,9 @@ class TrackingPageFragment: BaseDaggerFragment() {
     private var mCountDownTimer: CountDownTimer? = null
     private var tickerInfoCourier: Ticker? = null
     private var tickerInfoLayout: LinearLayout? = null
+    private var layoutImageFull: FrameLayout? = null
+    private var btnClose: IconUnify? = null
+    private var imgProof: ImageUnify? = null
 
     override fun getScreenName(): String = ""
 
@@ -147,6 +166,10 @@ class TrackingPageFragment: BaseDaggerFragment() {
 
         tickerInfoCourier = view?.findViewById(R.id.ticker_info_courier)
         tickerInfoLayout = view?.findViewById(R.id.ticker_info_layout)
+
+        layoutImageFull = view?.findViewById(R.id.img_full_layout)
+        btnClose = view?.findViewById(R.id.btn_close)
+        imgProof = view?.findViewById(R.id.img_proof_large)
     }
 
     private fun initObserver() {
@@ -192,11 +215,6 @@ class TrackingPageFragment: BaseDaggerFragment() {
             }
         })
 
-        viewModel.getDeliveryImage.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> Log.d("IMAGENYA", it.data.image.toString())
-            }
-        })
     }
 
     private fun fetchData() {
@@ -224,7 +242,6 @@ class TrackingPageFragment: BaseDaggerFragment() {
         setTicketInfoCourier(trackingDataModel.page)
         mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking()
 
-        viewModel.getDeliveryImage("1e906057-9ed0-422a-8f15-c3133b1e9763", 166826912, "small", userSession.userId, 1, userSession.deviceId)
     }
 
     private fun showLoading() {
@@ -326,7 +343,7 @@ class TrackingPageFragment: BaseDaggerFragment() {
         } else {
             trackingHistory?.visibility = View.VISIBLE
             trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil, mOrderId?.toLong())
+            trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil, mOrderId?.toLong(), this)
         }
     }
 
@@ -426,6 +443,40 @@ class TrackingPageFragment: BaseDaggerFragment() {
                     putString(ARGUMENTS_CALLER, caller)
                 }
             }
+        }
+    }
+
+    override fun onImageItemClicked(imageId: String, orderId: Long) {
+//        layoutImageFull?.visibility = View.VISIBLE
+        val url = getDeliveryImage(imageId, orderId, "large",
+                userSession.userId, 1, userSession.deviceId)
+
+        startActivity(activity?.let {
+            url?.let { url -> ImagePreviewLogisticActivity.createIntent(it, arrayListOf(url)) }
+        })
+/*
+        context?.let {
+            imgProof?.let { imgProof ->
+                Glide.with(it)
+                        .asBitmap()
+                        .load(url)
+                        .dontAnimate()
+
+                        .into(object: CustomTarget<Bitmap>() {
+                            override fun onLoadCleared(placeholder: Drawable?) {
+
+                            }
+
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+
+                            }
+
+                        })
+            }
+        }*/
+
+        btnClose?.setOnClickListener {
+            layoutImageFull?.visibility = View.GONE
         }
     }
 
