@@ -155,10 +155,10 @@ class MiniCartListViewHolderMapper @Inject constructor() {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
             productId = cartDetail.product.productId
+            parentId = cartDetail.product.parentId
             productImageUrl = cartDetail.product.productImage.imageSrc100Square
             productName = cartDetail.product.productName
             productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
-            productQtyLeft = cartDetail.product.productWarningMessage
             productSlashPriceLabel = cartDetail.product.slashPriceLabel
             productOriginalPrice = cartDetail.product.productOriginalPrice
             productWholeSalePrice = 0
@@ -170,11 +170,14 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             productMinOrder = cartDetail.product.productMinOrder
             productMaxOrder = cartDetail.product.productMaxOrder
             productActions = action
+            wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
             maxNotesLength = notesLength
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
                 selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
+            } else {
+                productQtyLeft = cartDetail.product.productWarningMessage
             }
         }
     }

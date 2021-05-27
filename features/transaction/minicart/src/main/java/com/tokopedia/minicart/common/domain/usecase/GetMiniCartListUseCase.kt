@@ -332,7 +332,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         "product": {
                           "product_id": 15628433,
                           "product_weight": 100,
-                          "product_quantity": 1,
+                          "product_quantity": 2,
                           "product_name": "BBO 01 non var",
                           "product_image": {
                             "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/3/4/a6343bb0-7820-4204-8c95-8b92f098d113.jpg"
@@ -377,7 +377,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         "product": {
                           "product_id": 15628657,
                           "product_weight": 1555,
-                          "product_quantity": 1,
+                          "product_quantity": 2,
                           "product_name": "Slash Price Revamp 03-04-21 18:10:84-Non Var-1",
                           "product_image": {
                             "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/6/19/13760252/13760252_15b73a95-ad1e-4b94-aaac-3db950b4070e_640_640"
@@ -650,8 +650,8 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                   ]
                 }
               ],
-              "total_product_count": 3,
-              "total_product_price": 200000,
+              "total_product_count": 5,
+              "total_product_price": 405000,
               "total_product_error": 2
             }
           }

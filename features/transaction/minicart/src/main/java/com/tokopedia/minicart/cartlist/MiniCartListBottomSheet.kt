@@ -135,7 +135,7 @@ class MiniCartListBottomSheet :
     }
 
     override fun onQuantityChanged() {
-
+        viewModel.calculateProduct()
     }
 
     override fun onNotesChanged() {
