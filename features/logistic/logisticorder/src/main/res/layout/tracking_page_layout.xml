@@ -337,33 +337,4 @@
         android:max="100"
         android:visibility="visible" />
 
-    <FrameLayout
-        android:id="@+id/img_full_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#F231353B"
-        android:visibility="gone">
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/btn_close"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_20"
-            app:icon_name="CLOSE"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_light_disabled="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_color_night_disabled="@color/Unify_Static_White"/>
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/img_proof_large"
-            android:layout_width="match_parent"
-            android:layout_height="360dp"
-            app:unify_image_corner_radius="0"
-            app:unify_image_type="rect"
-            android:layout_gravity="center"/>
-
-    </FrameLayout>
-
 </RelativeLayout>

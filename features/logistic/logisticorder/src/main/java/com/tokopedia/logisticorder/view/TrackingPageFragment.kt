@@ -101,9 +101,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     private var mCountDownTimer: CountDownTimer? = null
     private var tickerInfoCourier: Ticker? = null
     private var tickerInfoLayout: LinearLayout? = null
-    private var layoutImageFull: FrameLayout? = null
-    private var btnClose: IconUnify? = null
-    private var imgProof: ImageUnify? = null
 
     override fun getScreenName(): String = ""
 
@@ -166,10 +163,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
         tickerInfoCourier = view?.findViewById(R.id.ticker_info_courier)
         tickerInfoLayout = view?.findViewById(R.id.ticker_info_layout)
-
-        layoutImageFull = view?.findViewById(R.id.img_full_layout)
-        btnClose = view?.findViewById(R.id.btn_close)
-        imgProof = view?.findViewById(R.id.img_proof_large)
     }
 
     private fun initObserver() {
@@ -447,37 +440,12 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     override fun onImageItemClicked(imageId: String, orderId: Long) {
-//        layoutImageFull?.visibility = View.VISIBLE
         val url = getDeliveryImage(imageId, orderId, "large",
                 userSession.userId, 1, userSession.deviceId)
 
         startActivity(activity?.let {
             url?.let { url -> ImagePreviewLogisticActivity.createIntent(it, arrayListOf(url)) }
         })
-/*
-        context?.let {
-            imgProof?.let { imgProof ->
-                Glide.with(it)
-                        .asBitmap()
-                        .load(url)
-                        .dontAnimate()
-
-                        .into(object: CustomTarget<Bitmap>() {
-                            override fun onLoadCleared(placeholder: Drawable?) {
-
-                            }
-
-                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-
-                            }
-
-                        })
-            }
-        }*/
-
-        btnClose?.setOnClickListener {
-            layoutImageFull?.visibility = View.GONE
-        }
     }
 
 }
