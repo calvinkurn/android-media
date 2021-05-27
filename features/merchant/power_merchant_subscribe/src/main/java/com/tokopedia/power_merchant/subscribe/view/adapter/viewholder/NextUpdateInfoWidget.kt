@@ -19,7 +19,7 @@ class NextUpdateInfoWidget(itemView: View) : BaseViewHolder<WidgetNextUpdateUiMo
     override fun bind(element: WidgetNextUpdateUiModel) {
         with(itemView) {
             tvPmNextUpdateDescription.text = context.getString(R.string.pm_next_update_pm_pro_info, element.pmProThreshold).parseAsHtml()
-            tvPmNextUpdateDateInfo.text = context.getString(R.string.pm_label_next_three_months_pm_grade_update, element.nextQuarterlyRefreshDate)
+            tvPmNextUpdateDateInfo.text = context.getString(R.string.pm_label_next_three_months_pm_grade_update, element.autoExtendDate)
         }
     }
 }

@@ -59,6 +59,9 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "          height: '100%',\n" +
                 "          width: '100%',\n" +
                 "          videoId: '${videoId}',\n" +
+                "          playerVars: {\n" +
+                "            'rel': 0\n" +
+                "          }," +
                 "          events: {\n" +
                 "            'onStateChange': onPlayerStateChange\n" +
                 "          }\n" +

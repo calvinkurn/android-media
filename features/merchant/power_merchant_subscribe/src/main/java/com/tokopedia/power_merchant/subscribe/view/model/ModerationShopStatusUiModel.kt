@@ -15,4 +15,7 @@ data class ModerationShopStatusUiModel(
 
     val isModeratedShop: Boolean
         get() = shopStatusId == STATUS_MODERATED || shopStatusId == STATUS_MODERATED_PERMANENTLY
+
+    val isModeratedShopPermanently
+        get() = shopStatusId == STATUS_MODERATED_PERMANENTLY
 }

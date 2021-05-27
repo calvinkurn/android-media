@@ -8,7 +8,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 
 class WidgetNextUpdateUiModel(
         val pmProThreshold: Int,
-        val nextQuarterlyRefreshDate: String
+        val autoExtendDate: String
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
