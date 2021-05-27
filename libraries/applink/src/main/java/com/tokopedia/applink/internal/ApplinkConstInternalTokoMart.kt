@@ -14,6 +14,10 @@ object ApplinkConstInternalTokoMart {
     @JvmField
     val HOME = "$INTERNAL_TOKOMART/home"
 
+    //TokoMartCategoryListActivity
+    @JvmField
+    val CATEGORY_LIST = "$INTERNAL_TOKOMART/category-list?warehouse_id={warehouse_id}"
+
     @JvmField
     val SEARCH = "$INTERNAL_TOKOMART/search"
 

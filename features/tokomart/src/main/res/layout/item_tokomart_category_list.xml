@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageCategory"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="@id/imageCategory"
+        app:layout_constraintEnd_toStartOf="@id/expandCollapseChevron"
+        app:layout_constraintStart_toEndOf="@id/imageCategory"
+        app:layout_constraintTop_toTopOf="@id/imageCategory"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Fruit and Vegetable" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/expandCollapseChevron"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@id/imageCategory"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/textTitle"
+        app:layout_constraintTop_toTopOf="@id/imageCategory" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tokomart_category_divider_height"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:background="@color/Unify_N75"
+        app:layout_constraintBottom_toTopOf="@id/rvChildCategory"
+        app:layout_constraintTop_toBottomOf="@id/imageCategory" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChildCategory"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/spacing_lvl7"
+        android:nestedScrollingEnabled="false"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
+</androidx.constraintlayout.widget.ConstraintLayout>

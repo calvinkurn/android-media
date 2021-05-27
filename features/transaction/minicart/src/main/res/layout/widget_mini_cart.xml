@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.totalamount.TotalAmount xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mini_cart_total_amount"
-    android:layout_marginTop="-12dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.totalamount.TotalAmount xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mini_cart_total_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-12dp" />
+
+    <ImageView
+        android:id="@+id/iv_test"
+        android:layout_width="1dp"
+        android:layout_height="1dp"/>
+
+</LinearLayout>

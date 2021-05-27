@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    tools:layout_height="100dp"
+    app:contentInsetStart="0dp"
+    app:contentInsetEnd="0dp"
+    app:contentInsetStartWithNavigation="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        tools:layout_height="100dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_8">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/icon_toolbar"
+            android:layout_height="@dimen/icon_toolbar"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:scaleType="center"/>
+
+        <LinearLayout
+            android:id="@+id/layout_search"
+            android:layout_toEndOf="@+id/btn_back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/toolbar_bg_corner"
+            android:orientation="horizontal"
+            android:layout_toStartOf="@id/list_icons">
+
+            <ImageView
+                android:id="@+id/search_magnify_icon"
+                android:layout_marginStart="4dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/et_search"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:hint="@string/search_tokopedia"
+                android:inputType="none"
+                android:focusable="false"
+                android:enabled="true"
+                android:textSize="@dimen/sp_16"
+                android:maxLines="1"
+                android:textColorHint="@color/Unify_N700_68"
+                android:background="@null"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/list_icons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="@dimen/dp_4"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btn_sharing"
+                android:contentDescription="@string/content_desc_btn_wishlist"
+                android:layout_width="@dimen/icon_toolbar"
+                android:layout_height="@dimen/icon_toolbar"
+                android:scaleType="center" />
+
+            <ImageView
+                android:id="@+id/btn_cart"
+                android:contentDescription="@string/content_desc_btn_inbox"
+                android:layout_width="@dimen/icon_toolbar"
+                android:layout_height="@dimen/icon_toolbar"
+                android:scaleType="center" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</androidx.appcompat.widget.Toolbar>

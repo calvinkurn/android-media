@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.domain.create.model
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 
 data class CreatePreferenceRequest(
         @SuppressLint("Invalid Data Type")

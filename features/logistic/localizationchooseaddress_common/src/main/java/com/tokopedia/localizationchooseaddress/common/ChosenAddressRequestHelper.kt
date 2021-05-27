@@ -1,4 +1,4 @@
-package com.tokopedia.localizationchooseaddress.util
+package com.tokopedia.localizationchooseaddress.common
 
 import android.content.Context
 import android.os.Parcelable
@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
 import kotlinx.android.parcel.Parcelize
 import javax.inject.Inject

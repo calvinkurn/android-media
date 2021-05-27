@@ -264,6 +264,8 @@ android {
 
 dependencies {
 
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation project(rootProject.ext.features.customer_mid_app)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.coreNetwork)

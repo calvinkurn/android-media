@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
