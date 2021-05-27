@@ -1,5 +1,6 @@
 package com.tokopedia.seller.menu.common.view.viewholder
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +19,6 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.constant.PMProURL
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
@@ -364,15 +364,15 @@ class ShopInfoViewHolder(
         val powerMerchantProStatusText = findViewById<Typography>(R.id.powerMerchantProStatusText)
         when (powerMerchantStatus) {
             is PowerMerchantProStatus.Advanced -> {
-                ivBgPMPro.loadImage(PMProURL.BG_ADVANCE)
+                ivBgPMPro.setImageResource(R.drawable.ic_pm_pro_advance)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
             }
             is PowerMerchantProStatus.Expert -> {
-                ivBgPMPro.loadImage(PMProURL.BG_EXPERT)
+                ivBgPMPro.setImageResource(R.drawable.ic_pm_pro_expert)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
             }
             is PowerMerchantProStatus.Ultimate -> {
-                ivBgPMPro.loadImage(PMProURL.BG_ULTIMATE)
+                ivBgPMPro.setImageResource(R.drawable.ic_pm_pro_ultimate)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
             }
         }
