@@ -92,14 +92,14 @@ object DeeplinkMapperDigital {
                     ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
                 }
                 TEMPLATE_ID_ELECTRONIC_MONEY -> {
-                    handleEmoneyApplink(context, deeplink)
+                    handleEmoneyPdpApplink(context, deeplink)
                 }
                 else -> deeplink
             }
         } ?: deeplink
     }
 
-    private fun handleEmoneyApplink(context: Context, deeplink: String): String {
+    private fun handleEmoneyPdpApplink(context: Context, deeplink: String): String {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         val getNewEmoneyPage = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP, true)
         return if (getNewEmoneyPage) ApplinkConsInternalDigital.ELECTRONIC_MONEY_PDP else

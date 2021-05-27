@@ -95,7 +95,6 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.workManagerUtil)
     implementation project(rootProject.ext.libraries.deviceFingerprint)
-    implementation project(rootProject.ext.features.rechargePdpEmoney)
 
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.attachproduct)

@@ -13,8 +13,8 @@
 
     <string name="recharge_pdp_emoney_products_title">Pilih Nominal</string>
 
-    <string name="recharge_pdp_emoney_check_saldo_title">Cek saldo kamu di sini</string>
-    <string name="recharge_pdp_emoney_check_saldo_description">Yuk, coba cek sisa saldo di kartu e-money kamu.</string>
+    <string name="recharge_pdp_emoney_check_saldo_title">Mau cek saldo? Bisa di sini &#128073;</string>
+    <string name="recharge_pdp_emoney_check_saldo_description">Jangan lupa cek setelah top-up untuk lihat saldo terbaru kamu.</string>
     <string name="recharge_pdp_emoney_check_saldo_cta">Cek Saldo</string>
 
     <string name="recharge_pdp_emoney_card_number_label">No. Kartu</string>
@@ -24,5 +24,12 @@
     <string name="recharge_pdp_emoney_product_detail_bottom_sheet_title">Detail Produk</string>
     <string name="recharge_pdp_emoney_product_price_label">Harga</string>
 
+    <string name="recharge_pdp_emoney_number_error_not_found">Oops, nomornya nggak ketemu. Cek lagi, ya.</string>
+    <string name="recharge_pdp_emoney_number_length_minimal_16_char">Harusnya ada 16 angka, nih. Cek lagi, ya.</string>
+
     <string name="recharge_pdp_emoney_menu_langganan">Langganan</string>
+
+    <string name="recharge_pdp_emoney_total_payment">Total Pembayaran</string>
+    <string name="recharge_pdp_emoney_next">Lanjut</string>
+
 </resources>

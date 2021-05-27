@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.DaggerEmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
@@ -58,7 +59,8 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
                     .operatorId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
                     .productId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
                     .clientNumber(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
-                    .menuId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_MENU_ID))
+                    .menuId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_MENU_ID)
+                            ?: DEFAULT_EMONEY_MENU_ID)
                     .isFromWidget(isFromWidget)
                     .isCouponApplied(isCouponApplied)
                     .build()
@@ -69,7 +71,8 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         }
         super.onCreate(savedInstanceState)
 
-        toolbar.elevation = 0f
+        (toolbar as HeaderUnify).transparentMode = false
+        (toolbar as HeaderUnify).isShowShadow = false
     }
 
     override fun getNewFragment(): Fragment {
@@ -150,6 +153,7 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
 
         const val TAG_EMONEY_MENU = "menu_emoney"
         const val PATH_SUBSCRIPTIONS = "subscribe/"
+        const val DEFAULT_EMONEY_MENU_ID = "267"
 
         private val KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied"
         private val EXTRA_RECHARGE_SLICE = "RECHARGE_PRODUCT_EXTRA"

@@ -12,8 +12,6 @@ import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCas
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.network.constant.ErrorNetMessage
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -33,6 +31,10 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     private val _errorMessage = MutableLiveData<Throwable>()
     val errorMessage: LiveData<Throwable>
         get() = _errorMessage
+
+    private val _inputViewError = MutableLiveData<String>()
+    val inputViewError: LiveData<String>
+        get() = _inputViewError
 
     private val _catalogPrefixSelect = MutableLiveData<Result<TelcoCatalogPrefixSelect>>()
     val catalogPrefixSelect: LiveData<Result<TelcoCatalogPrefixSelect>>
@@ -70,7 +72,9 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         )
     }
 
-    fun getSelectedOperator(inputNumber: String) {
+    fun getSelectedOperator(inputNumber: String, errorNotFoundString: String) {
+        resetInputViewError()
+        if (inputNumber.isEmpty()) return
         try {
             if (catalogPrefixSelect.value is Success) {
                 val operatorSelected = (catalogPrefixSelect.value as Success).data.rechargeCatalogPrefixSelect.prefixes.single {
@@ -78,12 +82,17 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 }
                 _selectedOperator.value = operatorSelected
             } else {
-                _errorMessage.value = MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                if (catalogPrefixSelect.value is Fail) {
+                    _errorMessage.value = (catalogPrefixSelect.value as Fail).throwable
+                }
             }
         } catch (e: Throwable) {
-//            this catch function is still dummy, will be replaced later in the next PR
-            _selectedOperator.value = RechargePrefix(key = "578")
+            _inputViewError.value = errorNotFoundString
         }
+    }
+
+    private fun resetInputViewError() {
+        _inputViewError.value = ""
     }
 
     fun getProductFromOperator(menuId: Int, operatorId: String) {

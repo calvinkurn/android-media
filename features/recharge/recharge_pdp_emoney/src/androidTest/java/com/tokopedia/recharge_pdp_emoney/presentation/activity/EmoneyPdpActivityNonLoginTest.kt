@@ -9,7 +9,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -85,8 +84,10 @@ class EmoneyPdpActivityNonLoginTest {
 
         Espresso.onView(withId(R.id.emoneyHeaderViewCtaButton)).perform(click())
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("12345678910")))
+        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768567891012345")))
         Espresso.onView(withId(R.id.emoneyHeaderViewCardBalance)).check(matches(withText("Rp130.000")))
+
+        Espresso.onView(withText("8768 5678 9101 2345")).check(matches(isDisplayed()))
     }
 
     private fun clickPromoTabAndSalinPromo() {
@@ -119,14 +120,13 @@ class EmoneyPdpActivityNonLoginTest {
     }
 
     private fun clickOnFavNumberOnInputView() {
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName("com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity")))
+        Intents.intending(IntentMatchers.anyIntent())
                 .respondWith(createOrderNumberTypeManual())
         Espresso.onView(withId(R.id.text_field_input)).perform(click())
         Thread.sleep(2000)
 
-        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("12345678910")))
-        Espresso.onView(AllOf.allOf(withText("99999999"), withId(R.id.text_field_input))).check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768567891012345")))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(R.id.text_field_input))).check(matches(isDisplayed()))
         Espresso.onView(withId(R.id.text_field_icon_2)).check(matches(isDisplayed()))
         Espresso.onView(withId(R.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
@@ -139,7 +139,7 @@ class EmoneyPdpActivityNonLoginTest {
     }
 
     private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = "99999999")
+        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = "8768567891012344")
         val resultData = Intent()
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
@@ -149,7 +149,7 @@ class EmoneyPdpActivityNonLoginTest {
 
     private fun createDummyCardResponse(): Instrumentation.ActivityResult {
         val dummyCardData = DigitalCategoryDetailPassData.Builder()
-        dummyCardData.clientNumber("12345678910")
+        dummyCardData.clientNumber("8768567891012345")
         dummyCardData.productId("1010")
         dummyCardData.operatorId("1010")
         dummyCardData.categoryId("1010")
@@ -171,8 +171,8 @@ class EmoneyPdpActivityNonLoginTest {
         )
         Thread.sleep(1000)
         Espresso.onView(withId(R.id.emoneyBuyWidget)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.txt_recharge_checkout_price)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.txt_recharge_checkout_price)).check(matches(withText("Rp10.000")))
+        Espresso.onView(withId(R.id.emoneyPdpCheckoutViewTotalPayment)).check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.emoneyPdpCheckoutViewTotalPayment)).check(matches(withText("Rp10.000")))
 
         Espresso.onView(withId(R.id.emoneyProductListRecyclerView)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<EmoneyPdpProductViewHolder>(0,

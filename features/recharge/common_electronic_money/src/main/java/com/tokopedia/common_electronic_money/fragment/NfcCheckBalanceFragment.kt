@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
@@ -26,11 +27,11 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -260,7 +261,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         activity?.let {
             val bundle = Bundle()
             bundle.putParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
-            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM)
+            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.PRODUCT_TEMPLATE_WITH_CATEGORY_ID,
+                    DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY,
+                    DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY,
+                    DeeplinkMapperDigitalConst.TEMPLATE_ID_ELECTRONIC_MONEY)
             intent.putExtras(bundle)
             startActivity(intent)
         }

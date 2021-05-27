@@ -79,6 +79,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalBrizzi)
     implementation project(rootProject.ext.features.smartBills)
     implementation project(rootProject.ext.features.digitalCheckout)
+    implementation project(rootProject.ext.features.rechargePdpEmoney)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
