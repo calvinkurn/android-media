@@ -37,10 +37,10 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.internalReview)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)

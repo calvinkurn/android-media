@@ -118,7 +118,7 @@ class InactivePhoneOnboardingIdCardFragment : BaseDaggerFragment() {
         context?.let {
             val radius = dpToPx(4)
             val gapWidth = dpToPx(12)
-            val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.dark_N600)
+            val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
             val margin = dpToPx(8)
             val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 BulletSpan(gapWidth, color, radius)

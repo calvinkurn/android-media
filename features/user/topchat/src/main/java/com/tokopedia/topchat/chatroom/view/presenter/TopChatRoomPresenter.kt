@@ -853,11 +853,12 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun addOngoingUpdateProductStock(
+            productId: String,
             product: ProductAttachmentViewModel, adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
         val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
-        onGoingStockUpdate[product.productId] = result
+        onGoingStockUpdate[productId] = result
     }
 
     override fun getSmartReplyWidget(msgId: String) {

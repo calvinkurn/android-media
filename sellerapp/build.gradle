@@ -178,6 +178,9 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
@@ -364,12 +367,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.tokopatch)
 
-    // Warning: removing imageCropper lib might cause youtube library crash
-    // when load recommendation at the end of video
-    // Need to recheck
-    implementation(rootProject.ext.miscDependencies.imagecropper) {
-        exclude group: "com.android.support"
-    }
+    implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
