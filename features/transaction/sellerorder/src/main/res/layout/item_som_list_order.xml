@@ -101,6 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/layout_lvl0"
                 android:background="@drawable/bg_due_response_icon"
+                android:contentDescription="Ikon tenggat waktu"
                 android:paddingStart="@dimen/spacing_lvl2"
                 android:paddingTop="@dimen/spacing_lvl2"
                 android:paddingEnd="@dimen/layout_lvl0"
