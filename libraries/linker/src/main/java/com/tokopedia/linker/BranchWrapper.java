@@ -544,6 +544,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private boolean isSkipUtmEvent(Context context) {
+        if(isFirstOpen(context)) return false;
         if (isBranchUtmOnlyBranchLinkActivated(context) && !APP_OPEN_FROM_BRANCH_LINK) {
             return true;
         }
