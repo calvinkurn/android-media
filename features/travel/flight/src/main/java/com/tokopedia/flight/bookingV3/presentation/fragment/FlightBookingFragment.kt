@@ -766,26 +766,35 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun randomLoadingSubtitle(): List<String> {
-        var list = listOf(getString(com.tokopedia.flight.R.string.flight_booking_loading_text_1),
-                getString(com.tokopedia.flight.R.string.flight_booking_loading_text_2),
-                getString(com.tokopedia.flight.R.string.flight_booking_loading_text_3),
-                getString(com.tokopedia.flight.R.string.flight_booking_loading_text_4))
-        return list.shuffled()
+        try {
+            context?.let {
+                val list = listOf(it.getString(R.string.flight_booking_loading_text_1),
+                        it.getString(R.string.flight_booking_loading_text_2),
+                        it.getString(R.string.flight_booking_loading_text_3),
+                        it.getString(R.string.flight_booking_loading_text_4))
+                return list.shuffled()
+            }
+        } catch (e: Throwable) {
+            return listOf()
+        }
+        return listOf()
     }
 
     private var launchLoadingPageJob = uiScope.launch {
         try {
             if (bookingViewModel.getCartId().isEmpty()) {
                 val list = randomLoadingSubtitle()
-                layout_loading.visibility = View.VISIBLE
-                tv_loading_subtitle.text = list[0]
-                delay(2000L)
-                tv_loading_subtitle.text = list[1]
-                delay(2000L)
-                tv_loading_subtitle.text = list[2]
-                delay(2000L)
-                layout_loading.visibility = View.GONE
-                layout_shimmering.visibility = View.VISIBLE
+                if (list.isNotEmpty()) {
+                    layout_loading.visibility = View.VISIBLE
+                    tv_loading_subtitle.text = list[0]
+                    delay(2000L)
+                    tv_loading_subtitle.text = list[1]
+                    delay(2000L)
+                    tv_loading_subtitle.text = list[2]
+                    delay(2000L)
+                    layout_loading.visibility = View.GONE
+                    layout_shimmering.visibility = View.VISIBLE
+                }
             }
         } catch (e: Throwable) {
         }
@@ -966,20 +975,22 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun showLoadingDialog() {
         context?.let {
             val list = randomLoadingSubtitle()
-            if (!::loadingDialog.isInitialized || !loadingDialog.isShowing) {
-                loadingDialog = DialogUnify(it, 0, 0)
-                loadingDialog.setUnlockVersion()
-                loadingDialog.setCancelable(false)
-                loadingDialog.setOverlayClose(false)
+            if (list.isNotEmpty()) {
+                if (!::loadingDialog.isInitialized || !loadingDialog.isShowing) {
+                    loadingDialog = DialogUnify(it, 0, 0)
+                    loadingDialog.setUnlockVersion()
+                    loadingDialog.setCancelable(false)
+                    loadingDialog.setOverlayClose(false)
 
-                val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
-                loadingDialog.setChild(loadingView)
-                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle)
-                loadingText.text = list[0]
+                    val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+                    loadingDialog.setChild(loadingView)
+                    loadingText = loadingView.findViewById(R.id.tv_loading_subtitle)
+                    loadingText.text = list[0]
 
-                loadingDialog.show()
-            } else {
-                loadingText.text = list[0]
+                    loadingDialog.show()
+                } else {
+                    loadingText.text = list[0]
+                }
             }
         }
     }
