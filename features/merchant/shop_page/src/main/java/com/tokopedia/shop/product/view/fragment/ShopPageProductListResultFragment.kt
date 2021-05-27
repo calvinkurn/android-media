@@ -25,8 +25,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -41,9 +39,10 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -379,7 +378,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun onErrorToggleFavoriteShop(error: Throwable) {
         activity?.run {
             NetworkErrorHelper.showCloseSnackbar(this,
-                    com.tokopedia.network.utils.ErrorHandler.getErrorMessage(this, error)
+                    ErrorHandler.getErrorMessage(this, error)
             )
         }
     }
@@ -425,7 +424,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                                 userId,
                                 shopId.orEmpty(),
                                 shopName.orEmpty(),
-                                com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                ErrorHandler.getErrorMessage(context, throwable),
                                 Log.getStackTraceString(throwable)
                         )
                     }
@@ -446,7 +445,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                                 userId,
                                 shopId.orEmpty(),
                                 shopName.orEmpty(),
-                                com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                ErrorHandler.getErrorMessage(context, throwable),
                                 Log.getStackTraceString(throwable)
                         )
                     }
@@ -484,7 +483,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                                 userId,
                                 shopId.orEmpty(),
                                 shopName.orEmpty(),
-                                com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                ErrorHandler.getErrorMessage(context, throwable),
                                 Log.getStackTraceString(throwable)
                         )
                     }
