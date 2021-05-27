@@ -15,8 +15,8 @@ class PrizeDetailListItemView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     val LAYOUT = R.layout.gami_prize_list_item
-    var image: AppCompatImageView
-    var tvTitle: Typography
+    lateinit var image: AppCompatImageView
+    lateinit var tvTitle: Typography
 
     init {
         View.inflate(context, LAYOUT, this)
