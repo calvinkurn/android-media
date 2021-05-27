@@ -41,17 +41,6 @@
         app:toolbarInitialTheme="light"
         />
 
-    <com.tokopedia.tokomart.common.view.HomeMainToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:gravity="top"
-        android:minHeight="?actionBarSize"
-        app:toolbarInitialTheme="dark"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"/>
-
     <View
         android:id="@+id/status_bar_bg"
         android:layout_width="match_parent"

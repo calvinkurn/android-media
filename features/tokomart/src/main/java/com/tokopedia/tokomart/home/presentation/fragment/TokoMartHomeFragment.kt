@@ -16,9 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -27,7 +25,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -36,14 +33,11 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
-import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
-import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
 import com.tokopedia.tokomart.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
-import com.tokopedia.tokomart.common.view.HomeMainToolbar
 import com.tokopedia.tokomart.common.view.TokoMartHomeView
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.domain.model.Data
@@ -57,7 +51,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokomart_home.*
 import java.util.*
-import java.util.concurrent.Callable
 import javax.inject.Inject
 
 class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
@@ -78,7 +71,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this), TokoMartHomeListDiffer()) }
 
-    private var oldToolbar: HomeMainToolbar? = null
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
     private var localCacheModel: LocalCacheModel? = null
@@ -92,29 +84,9 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     private val homeMainToolbarHeight: Int
         get() {
-            var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-            context?.let {
-                if (isNavOld() && oldToolbar != null) {
-                    height = oldToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                    oldToolbar?.let {
-                        if (!it.isShadowApplied()) {
-                            height += resources.getDimensionPixelSize(R.dimen.dp_8)
-                        }
-                    }
-                } else {
-                    navToolbar?.let {
-                        height = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
-                    }
-                }
-            }
+            var height = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+            height += resources.getDimensionPixelSize(R.dimen.dp_8)
             return height
-        }
-
-    private val afterInflationCallable: Callable<Any?>
-        get() = Callable {
-            calculateSearchBarView(0)
-            null
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,10 +108,8 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setup()
-        setupRecyclerView()
-        observeLiveData()
         getHomeLayout()
-        getSearchHint()
+        updateCurrentPageLocalCacheModelData()
     }
 
     override fun onAttach(context: Context) {
@@ -166,28 +136,27 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
         setupStatusBar()
         setupRecyclerView()
         observeLiveData()
-        updateCurrentPageLocalCacheModelData()
     }
 
     private fun setupNavToolbar() {
         ivHeaderBackground = view?.findViewById(R.id.view_background_image)
         navToolbar = view?.findViewById(R.id.navToolbar)
-        oldToolbar = view?.findViewById(R.id.toolbar)
+        setupTopNavigation()
         navAbTestCondition (
                 ifNavRevamp = {
-                    setupNewNav()
+                    setIconNewTopNavigation()
                 },
                 ifNavOld = {
-                    setupOldNav()
+                    setIconOldTopNavigation()
                 }
         )
     }
 
-    private fun setupNewNav() {
-        oldToolbar?.gone()
-        navToolbar?.show()
+    private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
+            //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
+            setHint(SearchPlaceholder(Data(null, "Cari di TokoNOW!","")))
             rvHome?.addOnScrollListener(NavRecyclerViewScrollListener(
                     navToolbar = toolbar,
                     startTransitionPixel = homeMainToolbarHeight,
@@ -208,77 +177,37 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
                     },
                     fixedIconColor = TOOLBAR_LIGHT_TYPE
             ))
-            val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                    .addIcon(IconList.ID_SHARE) {}
-                    .addIcon(IconList.ID_CART) {}
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            toolbar.setIcon(icons)
         }
         activity?.let {
             navToolbar?.setupToolbarWithStatusBar(it)
         }
     }
 
-    private fun setupOldNav() {
-        oldToolbar?.setAfterInflationCallable(afterInflationCallable)
-        oldToolbar?.show()
-        navToolbar?.gone()
-        viewModel.getNotification()
+    private fun setIconNewTopNavigation() {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_CART) {}
+                .addIcon(IconList.ID_NAV_GLOBAL) {}
+        navToolbar?.setIcon(icons)
+    }
+
+    private fun setIconOldTopNavigation() {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_CART) {}
+        navToolbar?.setIcon(icons)
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
         if (recyclerView.canScrollVertically(1) || dy != 0) {
-            navAbTestCondition(
-                    ifNavOld = {
-                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                            oldToolbar?.showShadow()
-                        }
-                    }, ifNavRevamp = {
-                        navToolbar?.showShadow(lineShadow = true)
-                    }
-            )
+            navToolbar?.showShadow(lineShadow = true)
         } else {
-            navAbTestCondition(
-                    ifNavOld = {
-                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                            oldToolbar?.hideShadow()
-                        }
-                    }, ifNavRevamp = {
-                        navToolbar?.hideShadow(lineShadow = true)
-                    }
-            )
-        }
-    }
-
-    private fun calculateSearchBarView(offset: Int, fixedIconColor: Int = TOOLBAR_DARK_TYPE) {
-        val endTransitionOffset = startToTransitionOffset + searchBarTransitionRange
-        val maxTransitionOffset = endTransitionOffset - startToTransitionOffset
-        //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / maxTransitionOffset * (offset - startToTransitionOffset)
-        //2.5 is maximum
-        if (offsetAlpha < 0) {
-            offsetAlpha = 0f
-        }
-        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            when (fixedIconColor) {
-                TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
-                TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
-            }
-        }
-        if (offsetAlpha >= 255) {
-            offsetAlpha = 255f
-        }
-        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha in 0.0..255.0) {
-                oldToolbar?.setBackgroundAlpha(offsetAlpha)
-                setStatusBarAlpha(offsetAlpha)
-            }
+            navToolbar?.hideShadow(lineShadow = true)
         }
     }
 
     private fun isNavOld(): Boolean {
         return try {
-            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
+//            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
+            return false
         } catch (e: Exception) {
             e.printStackTrace()
             true
@@ -310,13 +239,13 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
                 layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
                 visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
             }
-            setStatusBarAlpha(0f)
+            setStatusBarAlpha()
         }
     }
 
-    private fun setStatusBarAlpha(alpha: Float) {
+    private fun setStatusBarAlpha() {
         val drawable = statusBarBackground?.background
-        drawable?.alpha = alpha.toInt()
+        drawable?.alpha = 0
         statusBarBackground?.background = drawable
     }
 
@@ -338,7 +267,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
                     navAbTestCondition(
                             ifNavOld = {
                                 ivHeaderBackground?.y = -(offset.toFloat())
-                                calculateSearchBarView(recyclerView.computeVerticalScrollOffset())
                             }
                     )
                 }
@@ -364,21 +292,13 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
                 adapter.submitList(it.data)
             }
         }
-
-        observe(viewModel.searchHint) {
-            setHint(it)
-        }
-
-        // only used to count the old toolbar's notif
-        observe(viewModel.notificationCounter) {
-            oldToolbar?.setCartCounter(it.totalCart)
-        }
     }
 
     private fun getHomeLayout() {
         viewModel.getHomeLayout()
     }
 
+    //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
     private fun getSearchHint() {
         viewModel.getSearchHint(isFirstInstall(), userSession.deviceId, userSession.userId)
     }
@@ -405,7 +325,8 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
                 HomeChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
                 true
         )
-        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop
+//        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop
+        return true
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -449,51 +370,26 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
-            navAbTestCondition(
-                    ifNavOld = {
-                        oldToolbar?.setHint(
-                                HintData(data.placeholder.orEmpty(), data.keyword.orEmpty()),
-                                placeholderToHint(data),
-                                isFirstInstall(),
-                                shouldShowTransition(),
-                                durationAutoTransition)
+            navToolbar?.setupSearchbar(
+                    hints = listOf(
+                            HintData(
+                                    data.placeholder.orEmpty(),
+                                    data.keyword.orEmpty()
+                            )
+                    ),
+                    applink = if (data.keyword?.isEmpty() != false) ApplinkConstInternalDiscovery.AUTOCOMPLETE else PARAM_APPLINK_AUTOCOMPLETE,
+                    searchbarClickCallback = {
+                        RouteManager.route(context,
+                                ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                                SOURCE,
+                                data.keyword.safeEncodeUtf8(),
+                                isFirstInstall().toString())
                     },
-                    ifNavRevamp = {
-                        navToolbar?.setupSearchbar(
-                                hints = listOf(
-                                        HintData(
-                                                data.placeholder.orEmpty(),
-                                                data.keyword.orEmpty()
-                                        )
-                                ),
-                                applink = if (data.keyword?.isEmpty() != false) ApplinkConstInternalDiscovery.AUTOCOMPLETE else PARAM_APPLINK_AUTOCOMPLETE,
-                                searchbarClickCallback = {
-                                    RouteManager.route(context,
-                                            ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                                            SOURCE,
-                                            data.keyword.safeEncodeUtf8(),
-                                            isFirstInstall().toString())
-                                },
-                                searchbarImpressionCallback = {},
-                                durationAutoTransition = durationAutoTransition,
-                                shouldShowTransition = shouldShowTransition()
-                        )
-                    }
+                    searchbarImpressionCallback = {},
+                    durationAutoTransition = durationAutoTransition,
+                    shouldShowTransition = shouldShowTransition()
             )
         }
-    }
-
-    private fun placeholderToHint(data: Data): ArrayList<HintData> {
-        var hints = arrayListOf(HintData(data.placeholder.orEmpty(), data.keyword.orEmpty()))
-        data.placeholders?.let { placeholders ->
-            if (placeholders.isNotEmpty()) {
-                hints = arrayListOf()
-                placeholders.forEach { placeholder ->
-                    hints.add(HintData(placeholder.placeholder.orEmpty(), placeholder.keyword.orEmpty()))
-                }
-            }
-        }
-        return hints
     }
 
     private fun shouldShowTransition(): Boolean {
