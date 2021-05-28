@@ -136,8 +136,9 @@ class MiniCartListBottomSheet :
 
     }
 
-    override fun onQuantityChanged() {
+    override fun onQuantityChanged(productId: String, newQty: Int) {
         // Todo : debounce before call calculateProduct
+        viewModel.updateProductQty(productId, newQty)
         viewModel.calculateProduct()
     }
 

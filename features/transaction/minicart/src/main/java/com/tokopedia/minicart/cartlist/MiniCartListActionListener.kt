@@ -6,7 +6,7 @@ interface MiniCartListActionListener {
 
     fun onBulkDeleteUnavailableItems()
 
-    fun onQuantityChanged()
+    fun onQuantityChanged(productId: String, newQty: Int)
 
     fun onNotesChanged()
 

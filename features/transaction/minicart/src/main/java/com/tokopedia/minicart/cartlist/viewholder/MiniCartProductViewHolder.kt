@@ -375,8 +375,7 @@ class MiniCartProductViewHolder(private val view: View,
         qtyEditorProduct?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
         qtyEditorProduct?.setValueChangedListener { newValue, oldValue, isOver ->
             if (element.productQty != newValue) {
-                element.productQty = newValue
-                listener.onQuantityChanged()
+                listener.onQuantityChanged(element.productId, newValue)
             }
         }
         qtyTextWatcher = object : TextWatcher {

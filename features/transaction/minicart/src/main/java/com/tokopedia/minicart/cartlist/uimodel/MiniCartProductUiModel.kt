@@ -36,4 +36,33 @@ data class MiniCartProductUiModel(
         return typeFactory.type(this)
     }
 
+    fun deepCopy(): MiniCartProductUiModel {
+        return MiniCartProductUiModel(
+                cartId = this.cartId,
+                productId = this.productId,
+                parentId = this.parentId,
+                productImageUrl = this.productImageUrl,
+                productName = this.productName,
+                productVariantName = this.productVariantName,
+                productQtyLeft = this.productQtyLeft,
+                productSlashPriceLabel = this.productSlashPriceLabel,
+                productOriginalPrice = this.productOriginalPrice,
+                productWholeSalePrice = this.productWholeSalePrice,
+                productInitialPriceBeforeDrop = this.productInitialPriceBeforeDrop,
+                productPrice = this.productPrice,
+                productInformation = this.productInformation,
+                productNotes = this.productNotes,
+                productQty = this.productQty,
+                productWeight = this.productWeight,
+                productMinOrder = this.productMinOrder,
+                productMaxOrder = this.productMaxOrder,
+                productActions = this.productActions,
+                selectedUnavailableActionId = this.selectedUnavailableActionId,
+                selectedUnavailableActionLink = this.selectedUnavailableActionLink,
+                wholesalePriceGroup = this.wholesalePriceGroup,
+                maxNotesLength = this.maxNotesLength,
+                isProductDisabled = this.isProductDisabled
+        )
+    }
+
 }

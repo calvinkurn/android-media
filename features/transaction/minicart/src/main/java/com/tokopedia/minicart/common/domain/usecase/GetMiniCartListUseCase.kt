@@ -353,19 +353,19 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           "parent_id": 12345,
                           "wholesale_price": [
                             {
-                                "qtyMin" : 5,
-                                "qtyMax" : 10,
-                                "prdPrice" : 90000
+                                "qty_min" : 5,
+                                "qty_max" : 10,
+                                "prd_prc" : 90000
                             },
                             {
-                                "qtyMin" : 11,
-                                "qtyMax" : 15,
-                                "prdPrice" : 80000
+                                "qty_min" : 11,
+                                "qty_max" : 15,
+                                "prd_prc" : 80000
                             },
                             {
-                                "qtyMin" : 16,
-                                "qtyMax" : 20,
-                                "prdPrice" : 70000
+                                "qty_min" : 16,
+                                "qty_max" : 20,
+                                "prd_prc" : 70000
                             }
                           ]
                         }
@@ -398,19 +398,19 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           "parent_id": 12345,
                           "wholesale_price": [
                             {
-                                "qtyMin" : 5,
-                                "qtyMax" : 10,
-                                "prdPrice" : 90000
+                                "qty_min" : 5,
+                                "qty_max" : 10,
+                                "prd_prc" : 90000
                             },
                             {
-                                "qtyMin" : 11,
-                                "qtyMax" : 15,
-                                "prdPrice" : 80000
+                                "qty_min" : 11,
+                                "qty_max" : 15,
+                                "prd_prc" : 80000
                             },
                             {
-                                "qtyMin" : 16,
-                                "qtyMax" : 20,
-                                "prdPrice" : 70000
+                                "qty_min" : 16,
+                                "qty_max" : 20,
+                                "prd_prc" : 70000
                             }
                           ]
                         }

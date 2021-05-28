@@ -30,6 +30,15 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
         })
     }
 
+    fun updateProductQty(productId: String, newQty: Int) {
+        miniCartUiModel.value?.visitables?.forEach { visitable ->
+            if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
+                visitable.productQty = newQty
+                return@forEach
+            }
+        }
+    }
+
     fun calculateProduct() {
         val visitables = miniCartUiModel.value?.visitables ?: mutableListOf()
 
@@ -52,7 +61,7 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
         val productParentQtyMap = mutableMapOf<String, Int>()
         miniCartProductList.forEach { visitable ->
             if (productParentQtyMap.containsKey(visitable.parentId)) {
-                val newQty = productParentQtyMap[visitable.parentId] ?: 0 + visitable.productQty
+                val newQty = (productParentQtyMap[visitable.parentId] ?: 0) + visitable.productQty
                 productParentQtyMap[visitable.parentId] = newQty
             } else {
                 productParentQtyMap[visitable.parentId] = visitable.productQty
@@ -60,15 +69,7 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
         }
 
         // Set wholesale price
-        miniCartProductList.forEach { visitable ->
-            visitable.wholesalePriceGroup.forEach wholesaleLoop@{ wholesalePrice ->
-                val qty = productParentQtyMap[visitable.parentId] ?: 0
-                if (qty >= wholesalePrice.qtyMin) {
-                    visitable.productWholeSalePrice = wholesalePrice.prdPrc
-                    return@wholesaleLoop
-                }
-            }
-        }
+        setWholesalePrice(miniCartProductList, productParentQtyMap, visitables)
 
         // Calculate total price
         var totalQty = 0
@@ -87,6 +88,51 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
 
         miniCartUiModel.value?.visitables = visitables
         _miniCartUiModel.value = miniCartUiModel.value
+    }
+
+    private fun setWholesalePrice(miniCartProductList: MutableList<MiniCartProductUiModel>, productParentQtyMap: MutableMap<String, Int>, visitables: MutableList<Visitable<*>>) {
+        val updatedProductForWholesalePriceItems = mutableListOf<MiniCartProductUiModel>()
+        val updatedProductForWholesalePriceItemsProductId = mutableListOf<String>()
+        miniCartProductList.forEach { visitable ->
+            val updatedProduct = visitable.deepCopy()
+            var isUpdatedWholeSalePrice = false // flag to update ui
+            visitable.wholesalePriceGroup.forEach wholesaleLoop@{ wholesalePrice ->
+                val qty = productParentQtyMap[visitable.parentId] ?: 0
+                var isEligibleForWholeSalePrice = false
+
+                // Set wholesale price if eligible
+                if (qty >= wholesalePrice.qtyMin) {
+                    updatedProduct.productWholeSalePrice = wholesalePrice.prdPrc
+                    isUpdatedWholeSalePrice = true
+                    isEligibleForWholeSalePrice = true
+                    return@wholesaleLoop
+                }
+
+                // Reset wholesale price not eligible and previously has wholesale price
+                if (!isEligibleForWholeSalePrice && visitable.productWholeSalePrice > 0L) {
+                    updatedProduct.productWholeSalePrice = 0
+                    isUpdatedWholeSalePrice = true
+                }
+            }
+
+            if (isUpdatedWholeSalePrice) {
+                updatedProductForWholesalePriceItems.add(updatedProduct)
+                updatedProductForWholesalePriceItemsProductId.add(updatedProduct.productId)
+            }
+        }
+
+        val updatedProductIndex = mutableListOf<Int>()
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled && updatedProductForWholesalePriceItemsProductId.contains(visitable.productId)) {
+                updatedProductIndex.add(index)
+            }
+        }
+
+        var tmpIndex = 0
+        updatedProductIndex.forEach { index ->
+            val tmpVisitable = updatedProductForWholesalePriceItems[tmpIndex++]
+            visitables[index] = tmpVisitable
+        }
     }
 
     private fun validateOverWeight(totalWeight: Int, visitables: MutableList<Visitable<*>>) {
