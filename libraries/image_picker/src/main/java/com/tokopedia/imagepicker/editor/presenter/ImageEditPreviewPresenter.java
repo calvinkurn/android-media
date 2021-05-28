@@ -171,21 +171,10 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
             return;
         }
         Subscription subscription =
-                Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<Bitmap>>() {
-                    @Override
-                    public Observable<Bitmap> call(Bitmap bitmap) {
-                        Bitmap resultBitmap = ImageProcessingUtil.contrastBitmap(bitmap, contrastValue);
-                        return Observable.just(resultBitmap);
-                    }
-                }).flatMap(new Func1<Bitmap, Observable<String>>() {
+                Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
                     @Override
                     public Observable<String> call(Bitmap result) {
-                        Bitmap resultBitmap = WatermarkBuilder
-                                .create(getView().getContext(), result)
-                                .loadWatermarkText("Tokopedia")
-                                .getWatermark()
-                                .getOutputImage();
-
+                        Bitmap resultBitmap = ImageProcessingUtil.contrastBitmap(bitmap, contrastValue);
                         File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, compressFormat);
                         return Observable.just(file.getAbsolutePath());
                     }

@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilderKt;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
@@ -33,8 +34,16 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import kotlin.Pair;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
 import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
@@ -73,6 +82,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private ImageEditPreviewPresenter imageEditPreviewPresenter;
     private int imageIndex;
     private int[] widthHeight;
+
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
@@ -363,13 +374,34 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private void setImageData() {
         showLoadingAndHidePreview();
         processOptions();
-        try {
-            Uri inputUri = Uri.fromFile(new File(edittedImagePath));
-            gestureCropImageView.setImageUri(inputUri,
-                    Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString()));
-        } catch (Exception e) {
 
-        }
+        Uri inputUri = Uri.fromFile(new File(edittedImagePath));
+        Uri outputUri = Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString());
+
+        Subscription preRenderBitmap = Observable.just(inputUri)
+                .flatMap((Func1<Uri, Observable<Uri>>) uri -> {
+                    try {
+                        gestureCropImageView.setImageUri(inputUri,
+                                Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString()));
+                    } catch (Exception ignored) { }
+                    return Observable.just(outputUri);
+                })
+                .delay(2, TimeUnit.SECONDS)
+                .flatMap((Func1<Uri, Observable<Bitmap>>) uri -> {
+                    Bitmap bitmap = WatermarkBuilderKt
+                            .create(requireContext(), gestureCropImageView)
+                            .loadWatermarkText("Tokopedia")
+                            .getWatermark()
+                            .getOutputImage();
+
+                    return Observable.just(bitmap);
+                })
+                .delay(2, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bitmap -> gestureCropImageView.setImageBitmap(bitmap));
+
+        compositeSubscription.add(preRenderBitmap);
     }
 
     private void processOptions() {
@@ -522,6 +554,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         super.onDestroy();
         if (imageEditPreviewPresenter != null) {
             imageEditPreviewPresenter.detachView();
+            compositeSubscription.clear();
         }
     }
 
