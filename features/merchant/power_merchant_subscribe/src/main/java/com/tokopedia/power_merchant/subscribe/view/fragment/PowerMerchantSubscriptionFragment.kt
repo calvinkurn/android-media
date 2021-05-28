@@ -450,7 +450,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
 
         view?.rootView?.let {
-            val actionText = getString(R.string.oke)
+            val actionText = getString(R.string.pm_oke)
 
             it.post {
                 Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
