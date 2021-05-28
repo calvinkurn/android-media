@@ -7,6 +7,7 @@ import com.tokopedia.applink.ApplinkConst.ADD_PATH
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
@@ -43,27 +44,27 @@ object DeeplinkMapperMarketplace {
         }
     }
 
-    fun getInternalShopPage(ctx: Context, uri: Uri, deeplink: String, idList:List<String>?):String {
-        return if (isSpecialShop(uri)) {
+    fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String):String {
+        return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
             DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
-        } else if(isTokoNowShopId(uri)){
-            ApplinkConst.TokoNow.HOME
+        } else if(isTokoNowShopId(shopId)){
+            ApplinkConstInternalTokoMart.HOME
         } else {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, idList?.getOrNull(0))
+            internalAppLink
         }
     }
 
-    private fun isSpecialShop(uri: Uri): Boolean {
-        return (uri.pathSegments[0] == ApplinkConst.SALAM_UMRAH_SHOP_ID)
+    private fun isSpecialShop(shopId: String): Boolean {
+        return shopId == ApplinkConst.SALAM_UMRAH_SHOP_ID
     }
 
-    private fun isTokoNowShopId(uri: Uri): Boolean {
+    private fun isTokoNowShopId(shopId: String): Boolean {
         val tokoNowShopId = if(isStaging()){
             ApplinkConst.TokoNow.TOKO_NOW_STAGING_SHOP_ID
         }else{
             ApplinkConst.TokoNow.TOKO_NOW_PRODUCTION_SHOP_ID
         }
-        return (uri.pathSegments[0] == tokoNowShopId)
+        return shopId == tokoNowShopId
     }
 
     private fun isStaging(): Boolean = TokopediaUrl.getInstance().TYPE == Env.STAGING
