@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.PMProURL
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.R
@@ -300,24 +301,28 @@ class ShopInfoViewHolder(
             }
         }
 
-        val thresholdTransaction  = 110
+        val thresholdTransaction = 110
         val maxTransaction = 100
         val totalTransaction = userShopInfo?.totalTransaction ?: 0
         if (totalTransaction >= thresholdTransaction) {
             hideTransactionSection()
         } else {
-            showTransactionSection()
-            if (totalTransaction > maxTransaction) {
-                txStatsRM.text = MethodChecker.fromHtml(getString(R.string.transaction_passed))
-                txTotalStatsRM.hide()
-            } else {
-                if (userShopInfo?.isBeforeOnDate == true) {
-                    txStatsRM.text = getString(R.string.transaction_since_joining)
+            if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
+                showTransactionSection()
+                if (totalTransaction > maxTransaction) {
+                    txStatsRM.text = MethodChecker.fromHtml(getString(R.string.transaction_passed))
+                    txTotalStatsRM.hide()
                 } else {
-                    txStatsRM.text = getString(R.string.transaction_on_date)
+                    if (userShopInfo.isBeforeOnDate) {
+                        txStatsRM.text = getString(R.string.transaction_since_joining)
+                    } else {
+                        txStatsRM.text = getString(R.string.transaction_on_date)
+                    }
+                    txTotalStatsRM.show()
+                    txTotalStatsRM.text = getString(R.string.total_transaction, totalTransaction.toString())
                 }
-                txTotalStatsRM.show()
-                txTotalStatsRM.text = getString(R.string.total_transaction, totalTransaction.toString())
+            } else {
+                hideTransactionSection()
             }
         }
         return this
@@ -364,6 +369,8 @@ class ShopInfoViewHolder(
         val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
         val ivBgPMPro = findViewById<ShapeableImageView>(R.id.iv_bg_pm_pro)
         val powerMerchantProStatusText = findViewById<Typography>(R.id.powerMerchantProStatusText)
+        val powerMerchantProIcon = findViewById<IconUnify>(R.id.powerMerchantProIcon)
+
         when (powerMerchantStatus) {
             is PowerMerchantProStatus.Advanced -> {
                 ivBgPMPro.loadImage(PMProURL.BG_ADVANCE)
@@ -378,12 +385,14 @@ class ShopInfoViewHolder(
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
             }
         }
-        powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
+        powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault())
+                ?: ""
         val roundedRadius = 16F
         ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
                 .toBuilder()
                 .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
                 .build()
+        powerMerchantProIcon.loadImage(PMProURL.ICON_URL)
         return this
     }
 

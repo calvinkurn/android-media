@@ -29,7 +29,8 @@ class UserShopInfoMapper @Inject constructor() {
                         badge = goldOsResult?.badge ?: "",
                         shopTierName = goldOsResult?.shopTierWording ?: "",
                         shopTier = goldOsResult?.shopTier ?: -1,
-                        pmProGradeName = goldOsResult?.shopGradeWording ?: ""
+                        pmProGradeName = goldOsResult?.shopGradeWording ?: "",
+                        periodTypePmPro = userShopInfoResponse.goldGetPMSettingInfo.periodTypePmPro
                 )
         )
     }

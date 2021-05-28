@@ -11,6 +11,7 @@ data class UserShopInfoWrapper(val shopType: ShopType?,
             var badge: String = "",
             var shopTierName: String = "",
             var shopTier: Int = -1,
-            var pmProGradeName: String = ""
+            var pmProGradeName: String = "",
+            var periodTypePmPro: String = ""
     )
 }

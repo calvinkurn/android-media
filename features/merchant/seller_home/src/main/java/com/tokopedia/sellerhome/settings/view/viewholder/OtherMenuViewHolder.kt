@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gm.common.constant.PMProURL
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.analytics.*
@@ -424,18 +425,22 @@ class OtherMenuViewHolder(private val itemView: View,
         if (totalTransaction >= thresholdTransaction) {
             hideTransactionSection()
         } else {
-            showTransactionSection()
-            if (totalTransaction > maxTransaction) {
-                txStatsRM.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
-                txTotalStatsRM.hide()
-            } else {
-                if (userShopInfo?.isBeforeOnDate == true) {
-                    txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
+            if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
+                showTransactionSection()
+                if (totalTransaction > maxTransaction) {
+                    txStatsRM.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
+                    txTotalStatsRM.hide()
                 } else {
-                    txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+                    if (userShopInfo.isBeforeOnDate) {
+                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
+                    } else {
+                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+                    }
+                    txTotalStatsRM.show()
+                    txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
                 }
-                txTotalStatsRM.show()
-                txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
+            } else {
+                hideTransactionSection()
             }
         }
         return this
@@ -444,6 +449,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
         val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
         val ivBgPMPro = findViewById<ShapeableImageView>(com.tokopedia.seller.menu.common.R.id.iv_bg_pm_pro)
+        val powerMerchantProIcon = findViewById<IconUnify>(com.tokopedia.seller.menu.common.R.id.powerMerchantProIcon)
         val powerMerchantProStatusText = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.powerMerchantProStatusText)
         when (powerMerchantStatus) {
             is PowerMerchantProStatus.Advanced -> {
@@ -465,6 +471,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 .toBuilder()
                 .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
                 .build()
+        powerMerchantProIcon.loadImage(PMProURL.ICON_URL)
         return this
     }
 

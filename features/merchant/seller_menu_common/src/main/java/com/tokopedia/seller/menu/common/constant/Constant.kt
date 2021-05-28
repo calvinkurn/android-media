@@ -7,4 +7,6 @@ package com.tokopedia.seller.menu.common.constant
 object Constant {
 
     const val INVALID_NUMBER_OF_FOLLOWERS: Long = -1
+
+    const val D_DAY_PERIOD_TYPE_PM_PRO = "charging_period_pm_pro"
 }

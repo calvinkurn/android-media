@@ -45,6 +45,9 @@ class GetUserShopInfoUseCase @Inject constructor(
                   }
                 }
               }
+              goldGetPMSettingInfo(shopID: ${'$'}shopId, source: "goldmerchant") {
+                period_type_pm_pro
+              }
             }
         """.trimIndent()
 

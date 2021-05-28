@@ -9,7 +9,10 @@ data class UserShopInfoResponse(
         val shopInfoByID: ShopInfoByID = ShopInfoByID(),
         @Expose
         @SerializedName("userShopInfo")
-        val userShopInfo: UserShopInfo = UserShopInfo()
+        val userShopInfo: UserShopInfo = UserShopInfo(),
+        @Expose
+        @SerializedName("goldGetPMSettingInfo")
+        val goldGetPMSettingInfo: GoldGetPMSettingInfo = GoldGetPMSettingInfo()
 ) {
     data class UserShopInfo(
             @Expose
@@ -74,4 +77,9 @@ data class UserShopInfoResponse(
         }
     }
 
+    data class GoldGetPMSettingInfo(
+            @Expose
+            @SerializedName("period_type_pm_pro")
+            val periodTypePmPro: String = ""
+    )
 }
