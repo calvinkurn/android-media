@@ -88,7 +88,11 @@ data class ShopInfo(
 
         @SerializedName("shopSnippetURL")
         @Expose
-        val shopSnippetUrl: String = ""
+        val shopSnippetUrl: String = "",
+
+        @SerializedName("badgeURL")
+        @Expose
+        val shopTierBadgeUrl: String = ""
 
 ) {
     fun isShopInfoNotEmpty():Boolean {

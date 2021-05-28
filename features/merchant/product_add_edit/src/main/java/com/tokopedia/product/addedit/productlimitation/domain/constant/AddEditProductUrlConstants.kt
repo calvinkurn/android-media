@@ -6,6 +6,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 class AddEditProductUrlConstants {
     companion object {
         const val IMAGE_URL_UPGRADE_TO_PM = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_pm.png"
+        const val IMAGE_URL_UPGRADE_TO_PM_PRO = "https://images.tokopedia.net/img/android/product_service/product_limitation_PM_pro.png"
         const val IMAGE_URL_USE_VARIANT = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_variant.png"
         const val IMAGE_URL_DELETE_PRODUCTS = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_deleting.png"
         const val IMAGE_URL_USE_PROMOTION = "https://images.tokopedia.net/img/android/merchant/add-edit-product/product_limitation_ads.png"

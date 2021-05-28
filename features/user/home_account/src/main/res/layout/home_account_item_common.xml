@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/home_account_dp_2"
     xmlns:tools="http://schemas.android.com/tools">
     <com.tokopedia.iconunify.IconUnify
-        app:icon_color_night_enable="@color/home_account_icon_dark"
+        app:icon_color_night_enable="@color/home_account_dms_icon_dark"
         android:id="@+id/account_user_item_common_icon"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
