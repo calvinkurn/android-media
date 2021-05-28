@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,6 +16,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -130,14 +134,17 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         header_toolbar.setNavigationOnClickListener {
             super.onBackPressed()
         }
-        header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
-
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
-                putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
-                putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
+        header_toolbar.addRightIcon(0).apply {
+            clearImage()
+            setImageDrawable(getIconUnifyDrawable(context, IconUnify.EDIT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+            setOnClickListener {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+                    putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+                    putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                    putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
+                }
+                startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
             }
-            startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
         }
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
