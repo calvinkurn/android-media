@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.category.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail.CategoryDetail
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 
 data class CategoryModel(

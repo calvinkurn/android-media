@@ -4,26 +4,31 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokomart.category.domain.model.CategoryDetail
+import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
+import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail.NavigationItem
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
-import com.tokopedia.tokomart.category.utils.CATEGORY_ID
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
-import com.tokopedia.tokomart.category.utils.CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
+import com.tokopedia.tokomart.searchcategory.utils.WAREHOUSE_ID
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
 class CategoryViewModel @Inject constructor (
         baseDispatcher: CoroutineDispatchers,
-        @param:Named(CATEGORY_ID)
+        @param:Named(TOKONOW_CATEGORY_ID)
         val categoryId: Int,
-        @Named(CATEGORY_QUERY_PARAM_MAP)
+        @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
         @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
         private val getCategoryFirstPageUseCase: UseCase<CategoryModel>,
@@ -42,7 +47,7 @@ class CategoryViewModel @Inject constructor (
         chooseAddressWrapper,
 ) {
 
-    private var navigation: CategoryDetail.Navigation? = null
+    private var navigation: TokonowCategoryDetail.Navigation? = null
 
     override fun onViewCreated() {
         getCategoryFirstPageUseCase.cancelJobs()
@@ -53,13 +58,21 @@ class CategoryViewModel @Inject constructor (
         )
     }
 
-    override fun MutableMap<String, Any>.appendMandatoryParams() {
-        this[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
-        this[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
-        this[SearchApiConst.SRP_PAGE_ID] = categoryId
+    override fun createRequestParams(): RequestParams {
+        val requestParams = super.createRequestParams()
 
-        //temporary for testing, remove this later
-//        this[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+        requestParams.putString(CATEGORY_ID, categoryId.toString())
+        requestParams.putString(WAREHOUSE_ID, HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
+
+        return requestParams
+    }
+
+    override fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
+        super.appendMandatoryParams(tokonowQueryParam)
+
+        tokonowQueryParam[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
+        tokonowQueryParam[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
+        tokonowQueryParam[SearchApiConst.SRP_PAGE_ID] = categoryId
     }
 
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
@@ -93,7 +106,7 @@ class CategoryViewModel @Inject constructor (
             )
     )
 
-    private fun createAisleItem(navigationItem: CategoryDetail.NavigationItem?): CategoryAisleItemDataView {
+    private fun createAisleItem(navigationItem: NavigationItem?): CategoryAisleItemDataView {
         return CategoryAisleItemDataView(
                 name = navigationItem?.name ?: "",
                 imgUrl = navigationItem?.imageUrl ?: "",

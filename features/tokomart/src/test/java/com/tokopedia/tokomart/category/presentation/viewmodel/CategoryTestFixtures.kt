@@ -6,6 +6,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
@@ -56,10 +57,11 @@ open class CategoryTestFixtures {
     }
 
     protected fun createMandatoryTokonowQueryParams() = mapOf(
-                SearchApiConst.NAVSOURCE to TOKONOW_DIRECTORY,
-                SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
-                SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-                SearchApiConst.SRP_PAGE_ID to defaultCategoryId.toString(),
+            SearchApiConst.NAVSOURCE to TOKONOW_DIRECTORY,
+            SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
+            SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+            SearchApiConst.SRP_PAGE_ID to defaultCategoryId.toString(),
+            SearchApiConst.USER_WAREHOUSE_ID to HARDCODED_WAREHOUSE_ID_PLEASE_DELETE,
         )
 
     protected fun `Given get category first page use case will be successful`(

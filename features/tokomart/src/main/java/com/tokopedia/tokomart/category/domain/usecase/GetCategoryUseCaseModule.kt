@@ -1,5 +1,6 @@
 package com.tokopedia.tokomart.category.domain.usecase
 
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.tokomart.category.di.CategoryScope
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
@@ -16,13 +17,13 @@ class GetCategoryUseCaseModule {
     @Provides
     @Named(CATEGORY_FIRST_PAGE_USE_CASE)
     fun provideGetCategoryDataFirstPageUseCase(): UseCase<CategoryModel> {
-        return GetCategoryFirstPageUseCase()
+        return GetCategoryFirstPageUseCase(GraphqlInteractor.getInstance().multiRequestGraphqlUseCase)
     }
 
     @CategoryScope
     @Provides
     @Named(CATEGORY_LOAD_MORE_PAGE_USE_CASE)
     fun provideGetCategoryDataLoadMorePageUseCase(): UseCase<CategoryModel> {
-        return GetCategoryLoadMorePageUseCase()
+        return GetCategoryLoadMorePageUseCase(GraphqlInteractor.getInstance().multiRequestGraphqlUseCase)
     }
 }

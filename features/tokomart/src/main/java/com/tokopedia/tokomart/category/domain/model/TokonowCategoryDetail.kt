@@ -3,15 +3,21 @@ package com.tokopedia.tokomart.category.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class CategoryDetail(
-        @SerializedName("header")
+data class TokonowCategoryDetail(
+        @SerializedName("TokonowCategoryDetail")
         @Expose
-        val header: Header = Header(),
-
-        @SerializedName("data")
-        @Expose
-        val data: Data = Data(),
+        val categoryDetail: CategoryDetail = CategoryDetail(),
 ) {
+
+    data class CategoryDetail(
+            @SerializedName("header")
+            @Expose
+            val header: Header = Header(),
+
+            @SerializedName("data")
+            @Expose
+            val data: Data = Data(),
+    )
 
     data class Header(
             @SerializedName("process_time")

@@ -11,6 +11,8 @@ import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.data.mapper.getCategoryFilter
 import com.tokopedia.tokomart.searchcategory.data.mapper.getQuickFilter
 import com.tokopedia.tokomart.searchcategory.data.mapper.getSearchProduct
+import com.tokopedia.tokomart.searchcategory.utils.CATEGORY_TOKONOW
+import com.tokopedia.tokomart.searchcategory.utils.QUICK_FILTER_TOKONOW
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetSearchFirstPageUseCase(
@@ -38,15 +40,13 @@ class GetSearchFirstPageUseCase(
 
     private fun createCategoryFilterParams(queryParams: Map<String?, Any>): Map<String?, Any> {
         return queryParams.toMutableMap().also {
-//            it[SearchApiConst.SOURCE] = CATEGORY_TOKONOW // Temporary, source should be category tokonow
-            it[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER
+            it[SearchApiConst.SOURCE] = CATEGORY_TOKONOW
         }
     }
 
     private fun createQuickFilterParams(queryParams: Map<String?, Any>): Map<String?, Any> {
         return queryParams.toMutableMap().also {
-//            it[SearchApiConst.SOURCE] = QUICK_FILTER_TOKONOW // Temporary, source should be quick filter tokonow
-            it[SearchApiConst.SOURCE] = SearchApiConst.DEFAULT_VALUE_SOURCE_QUICK_FILTER
+            it[SearchApiConst.SOURCE] = QUICK_FILTER_TOKONOW
         }
     }
 }

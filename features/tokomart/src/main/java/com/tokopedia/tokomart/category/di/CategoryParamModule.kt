@@ -1,7 +1,7 @@
 package com.tokopedia.tokomart.category.di
 
-import com.tokopedia.tokomart.category.utils.CATEGORY_ID
-import com.tokopedia.tokomart.category.utils.CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -14,11 +14,11 @@ class CategoryParamModule(
 
     @CategoryScope
     @Provides
-    @Named(CATEGORY_ID)
+    @Named(TOKONOW_CATEGORY_ID)
     fun provideCategoryId() = categoryId
 
     @CategoryScope
     @Provides
-    @Named(CATEGORY_QUERY_PARAM_MAP)
+    @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
     fun provideQueryParamMap() = queryParamMap
 }

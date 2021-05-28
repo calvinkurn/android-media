@@ -40,6 +40,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.util.DummyDataViewGenerator
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -109,25 +110,21 @@ abstract class BaseSearchCategoryViewModel(
     private fun createTokonowQueryParams(): MutableMap<String, Any> {
         val tokonowQueryParam = mutableMapOf<String, Any>()
 
-        tokonowQueryParam.appendMandatoryParams()
-        tokonowQueryParam.appendDeviceParam()
-        tokonowQueryParam.appendPaginationParam()
+        appendMandatoryParams(tokonowQueryParam)
+        appendPaginationParam(tokonowQueryParam)
         tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
 
         return tokonowQueryParam
     }
 
-    protected open fun MutableMap<String, Any>.appendMandatoryParams() {
-
+    protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
+        tokonowQueryParam[SearchApiConst.DEVICE] = DEFAULT_VALUE_OF_PARAMETER_DEVICE
+        tokonowQueryParam[SearchApiConst.USER_WAREHOUSE_ID] = HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
     }
 
-    protected open fun MutableMap<String, Any>.appendDeviceParam() {
-        this[SearchApiConst.DEVICE] = DEFAULT_VALUE_OF_PARAMETER_DEVICE
-    }
-
-    protected open fun MutableMap<String, Any>.appendPaginationParam() {
-        this[SearchApiConst.PAGE] = nextPage
-        this[SearchApiConst.USE_PAGE] = true
+    protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
+        tokonowQueryParam[SearchApiConst.PAGE] = nextPage
+        tokonowQueryParam[SearchApiConst.USE_PAGE] = true
     }
 
     protected fun onGetFirstPageSuccess(
@@ -401,10 +398,11 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    protected open fun createGetProductCountRequestParams(mapParameter: Map<String, String>): RequestParams {
+    protected open fun createGetProductCountRequestParams(
+            mapParameter: Map<String, String>
+    ): RequestParams {
         val getProductCountParams = mutableMapOf<String, Any>()
-        getProductCountParams.appendMandatoryParams()
-        getProductCountParams.appendDeviceParam()
+        appendMandatoryParams(getProductCountParams)
         getProductCountParams[SearchApiConst.ROWS] = 0
         getProductCountParams.putAll(FilterHelper.createParamsWithoutExcludes(mapParameter))
 
@@ -460,10 +458,12 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
-    private suspend fun updateProductQuantityInBackground(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    private suspend fun updateProductQuantityInBackground(
+            miniCartSimplifiedData: MiniCartSimplifiedData
+    ) {
         withContext(baseDispatcher.io) {
             val cartItems = miniCartSimplifiedData.miniCartItems
-            val cartItemsPartition = cartItems.partition { it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID }
+            val cartItemsPartition = splitCartItemsVariantAndNonVariant(cartItems)
             val cartItemsNonVariant = cartItemsPartition.first
             val cartItemsVariant = cartItemsPartition.second
             val cartItemsVariantGrouped = cartItemsVariant.groupBy { it.productParentId }
@@ -485,6 +485,9 @@ abstract class BaseSearchCategoryViewModel(
             }
         }
     }
+
+    private fun splitCartItemsVariantAndNonVariant(cartItems: List<MiniCartItem>) =
+            cartItems.partition { it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID }
 
     private fun updateProductItemQuantity(
             index: Int,
@@ -527,10 +530,9 @@ abstract class BaseSearchCategoryViewModel(
             categoryFilterDataValue: DataValue = DataValue(),
             val quickFilterDataValue: DataValue = DataValue(),
     ) {
-        val categoryFilterDataValue =
-                DataValue(
-                        filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
-                )
+        val categoryFilterDataValue = DataValue(
+                filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
+        )
     }
 
     protected data class ContentDataView(

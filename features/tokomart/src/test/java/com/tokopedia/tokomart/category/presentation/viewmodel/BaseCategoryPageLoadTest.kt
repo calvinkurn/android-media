@@ -3,10 +3,14 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.tokomart.category.domain.model.CategoryDetail
+import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail
+import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail.NavigationItem
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
+import com.tokopedia.tokomart.searchcategory.utils.CATEGORY_ID
+import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
+import com.tokopedia.tokomart.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import io.mockk.slot
 import org.hamcrest.CoreMatchers.instanceOf
@@ -29,11 +33,18 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     protected fun `Then assert request params map`(
             mandatoryParams: Map<String, String>
     ) {
-        val queryParams = requestParams.parameters[TOKONOW_QUERY_PARAMS] as Map<String, Any>
+        val useCaseRequestParams = requestParams.parameters
+        val queryParams = useCaseRequestParams[TOKONOW_QUERY_PARAMS] as Map<String, Any>
         val actualRequestParamsMap = queryParams.map { it.key to it.value.toString() }.toMap()
 
         `Then assert request params map contains query param map`(actualRequestParamsMap)
-        `Then assert request params map contains mandatory params`(mandatoryParams, actualRequestParamsMap)
+        `Then assert request params map contains mandatory params`(
+                mandatoryParams,
+                actualRequestParamsMap,
+        )
+
+        assertThat(useCaseRequestParams[CATEGORY_ID], shouldBe(defaultCategoryId.toString()))
+        assertThat(useCaseRequestParams[WAREHOUSE_ID], shouldBe(HARDCODED_WAREHOUSE_ID_PLEASE_DELETE))
     }
 
     private fun `Then assert request params map contains query param map`(
@@ -62,7 +73,7 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
 
     protected fun `Then assert visitable list footer`(
             visitableList: List<Visitable<*>>,
-            categoryNavigation: CategoryDetail.Navigation
+            categoryNavigation: TokonowCategoryDetail.Navigation
     ) {
         val lastVisitable = visitableList.last()
         assertThat(lastVisitable, instanceOf(CategoryAisleDataView::class.java))
@@ -75,12 +86,14 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
         categoryAisleItemList[1].assertAisle(categoryNavigation.next)
     }
 
-    private fun CategoryAisleItemDataView.assertAisle(navigationItem: CategoryDetail.NavigationItem) {
+    private fun CategoryAisleItemDataView.assertAisle(navigationItem: NavigationItem) {
         assertThat(this.name, shouldBe(navigationItem.name))
         assertThat(this.imgUrl, shouldBe(navigationItem.imageUrl))
     }
 
-    protected fun `Then assert visitable list end with loading more model`(visitableList: List<Visitable<*>>) {
+    protected fun `Then assert visitable list end with loading more model`(
+            visitableList: List<Visitable<*>>
+    ) {
         assertThat(visitableList.last(), instanceOf(LoadingMoreModel::class.java))
     }
 
