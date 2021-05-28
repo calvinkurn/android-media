@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
@@ -290,20 +291,20 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
         goToProduct?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(1, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.fragment_number_1, stepperModel)
         }
 
         goToKeyword?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(3, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.fragment_number_3, stepperModel)
         }
         goToBudget?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(3, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.fragment_number_3, stepperModel)
         }
         goToAutobid.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(2, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.fragment_number_2, stepperModel)
         }
     }
 

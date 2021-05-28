@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
@@ -93,7 +94,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             stepperListener?.goToNextPage(stepperModel)
         else {
             stepperModel?.redirectionToSummary = false
-            stepperListener?.getToFragment(4, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.fragment_number_4, stepperModel)
         }
     }
 

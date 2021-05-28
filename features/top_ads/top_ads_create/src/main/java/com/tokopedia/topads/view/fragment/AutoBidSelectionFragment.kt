@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
@@ -70,7 +71,7 @@ class AutoBidSelectionFragment: BaseStepperFragment<CreateManualAdsStepperModel>
             stepperListener?.goToNextPage(stepperModel)
         else {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(4, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.fragment_number_4, stepperModel)
         }
     }
 

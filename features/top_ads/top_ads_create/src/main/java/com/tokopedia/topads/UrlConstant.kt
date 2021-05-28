@@ -15,4 +15,9 @@ object UrlConstant {
     const val PATH_GROUP_VALIDATE = "v2.2/promo/group/validate"
     const val PATH_KEYWORD_CREATE = "v2.1/promo/keyword"
     const val MAIN = "Main"
+
+    const val fragment_number_1 = 1
+    const val fragment_number_2 = 2
+    const val fragment_number_3 = 3
+    const val fragment_number_4 = 4
 }
