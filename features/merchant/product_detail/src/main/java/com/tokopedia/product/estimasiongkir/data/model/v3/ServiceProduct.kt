@@ -86,7 +86,7 @@ data class ServiceProduct(
 )
 
 data class Features(
-        @SerializedName("texts")
+        @SerializedName("dynamic_price")
         @Expose
         val dynamicPrice: DynamicPrice = DynamicPrice()
 )
