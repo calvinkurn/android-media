@@ -1,13 +1,16 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
 import android.animation.LayoutTransition
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -105,7 +108,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         BuyerOrderDetailNavigator(requireActivity())
     }
     private val chatIcon: IconUnify by lazy {
-        IconUnify(context = requireContext(), newIconId = IconUnify.CHAT).apply {
+        createChatIcon(requireContext())
+    }
+
+    private fun createChatIcon(context: Context): IconUnify {
+        return IconUnify(requireContext(), IconUnify.CHAT).apply {
             setOnClickListener {
                 viewModel.buyerOrderDetailResult.value?.let {
                     if (it is Success) {
@@ -113,6 +120,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                     }
                 }
             }
+            layoutParams = LinearLayout.LayoutParams(
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt(),
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt()).apply {
+                setMargins(0, 0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
+            }
+            val outValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+            setBackgroundResource(outValue.resourceId)
         }
     }
 
