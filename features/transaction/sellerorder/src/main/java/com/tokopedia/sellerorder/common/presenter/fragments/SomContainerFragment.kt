@@ -7,16 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.presentation.fragment.tablet.SomDetailFragment
 import com.tokopedia.sellerorder.list.presentation.fragments.tablet.SomListFragment
-import com.tokopedia.unifycomponents.ImageUrlLoader
 import kotlinx.android.synthetic.main.fragment_som_container.*
 
 class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, SomDetailFragment.SomOrderDetailListener {
@@ -81,7 +80,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
     }
 
     private fun setupViews() {
-        ImageHandler.loadImageAndCache(ivSomDetailWelcomeIllustration, URL_WELCOME_ILLUSTRATION)
+        ivSomDetailWelcomeIllustration?.loadImage(URL_WELCOME_ILLUSTRATION)
     }
 
     private fun setupSomListWidth(fragmentList: FrameLayout?) {
@@ -109,17 +108,21 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
 
     private fun initiateListFragment() {
         if (!isAdded) return
-        somListFragment = somListFragment ?: childFragmentManager.findFragmentByTag(SomListFragment::class.java.simpleName) as? SomListFragment ?: SomListFragment.newInstance(arguments ?: Bundle.EMPTY)
+        somListFragment = somListFragment
+                ?: childFragmentManager.findFragmentByTag(SomListFragment::class.java.simpleName) as? SomListFragment
+                        ?: SomListFragment.newInstance(arguments ?: Bundle.EMPTY)
         somListFragment?.apply {
             setSomListOrderListener(this@SomContainerFragment)
         }
     }
 
     private fun initiateDetailFragment(orderId: String, passOrderDetail: Boolean): SomDetailFragment {
-        val somDetailFragment = this.somDetailFragment ?: childFragmentManager.findFragmentByTag(SomListFragment::class.java.simpleName) as? SomDetailFragment ?: SomDetailFragment.newInstance(Bundle().apply {
-            putString(SomConsts.PARAM_ORDER_ID, orderId)
-            putBoolean(SomConsts.PARAM_PASS_INVOICE, passOrderDetail)
-        })
+        val somDetailFragment = this.somDetailFragment
+                ?: childFragmentManager.findFragmentByTag(SomListFragment::class.java.simpleName) as? SomDetailFragment
+                ?: SomDetailFragment.newInstance(Bundle().apply {
+                    putString(SomConsts.PARAM_ORDER_ID, orderId)
+                    putBoolean(SomConsts.PARAM_PASS_INVOICE, passOrderDetail)
+                })
         somDetailFragment.apply {
             setOrderDetailListener(this@SomContainerFragment)
         }
