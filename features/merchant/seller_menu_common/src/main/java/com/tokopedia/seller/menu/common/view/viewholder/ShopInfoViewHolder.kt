@@ -4,7 +4,6 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.CornerFamily
@@ -13,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.R
@@ -21,7 +21,6 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.constant.PMProURL
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.constant
+package com.tokopedia.gm.common.constant
 
 object PMStatus {
     const val ACTIVE = "active"

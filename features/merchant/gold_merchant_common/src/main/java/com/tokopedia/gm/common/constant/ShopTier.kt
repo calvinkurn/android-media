@@ -1,4 +1,4 @@
-package com.tokopedia.seller.menu.common.constant
+package com.tokopedia.gm.common.constant
 
 object ShopTier {
     val RM = 0
