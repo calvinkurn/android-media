@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -23,6 +24,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -198,6 +200,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         if (settingsPresenter.adultAgeVerified)
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
+
+        settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
+                getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false))
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ABOUT_US,
                 getString(R.string.title_about_us)))
@@ -388,6 +393,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_SHAKE_ID -> return isItemSelected(getString(R.string.pref_receive_shake), true)
             SettingConstant.SETTING_GEOLOCATION_ID -> return hasLocationPermission()
             SettingConstant.SETTING_SAFE_SEARCH_ID -> return isItemSelected(getString(R.string.pref_safe_mode), false)
+            SettingConstant.SETTING_DARK_MODE -> return isItemSelected(TkpdCache.Key.KEY_DARK_MODE, false)
             else -> return false
         }
     }
@@ -399,12 +405,19 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 saveSettingValue(getString(R.string.pref_receive_shake), value)
             }
             SettingConstant.SETTING_SAFE_SEARCH_ID ->
-                    accountAnalytics.eventClickSetting(SAFE_MODE)
+                accountAnalytics.eventClickSetting(SAFE_MODE)
+            SettingConstant.SETTING_DARK_MODE -> setDarkMode(value)
             else -> {
             }
         }
     }
 
+    private fun setDarkMode(value: Boolean) {
+        val screenMode = if (value) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        AppCompatDelegate.setDefaultNightMode(screenMode)
+        saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, value)
+        //TODO: Analytics
+    }
 
     override fun onClicked(settingId: Int, currentValue: Boolean) {
         when (settingId) {

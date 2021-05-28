@@ -16,6 +16,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -691,9 +693,19 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     createAndShowSafeModeAlertDialog(isActive)
                 }
             }
+            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
+                setupDarkMode(isActive)
+            }
             else -> {
             }
         }
+    }
+
+    private fun setupDarkMode(isActive: Boolean) {
+        val screenMode = if (isActive) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        AppCompatDelegate.setDefaultNightMode(screenMode)
+        accountPref.saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isActive)
+        //TODO: Analytics
     }
 
     private fun createAndShowSafeModeAlertDialog(currentValue: Boolean) {

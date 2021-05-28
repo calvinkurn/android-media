@@ -179,6 +179,7 @@ object AccountConstants {
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_TOKOPOINTS = 48
         const val SETTING_QUALITY_SETTING = 49
+        const val SETTING_DARK_MODE = 50
     }
 
     object KEY {
