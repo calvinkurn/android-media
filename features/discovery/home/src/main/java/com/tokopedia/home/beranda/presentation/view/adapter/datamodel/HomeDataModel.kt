@@ -29,7 +29,7 @@ data class HomeDataModel(
         evaluateChooseAddressData()
     }
 
-    fun addWidgetModel(visitable: Visitable<*>, position: Int? = null, onListUpdated: () -> Unit) {
+    fun addWidgetModel(visitable: Visitable<*>, position: Int? = null, onListUpdated: () -> Unit = {}) {
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
         //prevent duplicate home recommendation feed data model
         if (_list.find { it is HomeRecommendationFeedDataModel } != null &&
@@ -175,9 +175,11 @@ data class HomeDataModel(
     fun copyStaticWidgetDataFrom(homeDataModel: HomeDataModel) {
         copyWidget(homeDataModel) { it is PlayCardDataModel }
         copyWidget(homeDataModel) { it is NewBusinessUnitWidgetDataModel }
+        copyWidget(homeDataModel) { it is HomeRecommendationFeedDataModel }
         copyWidget(homeDataModel) { it is HomeLoadingMoreModel }
         copyWidget(homeDataModel) { it is HomeHeaderOvoDataModel }
         setAndEvaluateHomeChooseAddressData(homeDataModel.homeChooseAddressData)
+        this.list = _list.toList()
     }
 
     fun evaluateRecommendationSection(onNeedTabLoad: () -> Unit) {
@@ -193,7 +195,7 @@ data class HomeDataModel(
                 _list.remove(detectHomeRecom)
                 initRecom(onNeedTabLoad)
             } else {
-                _list.add(detectHomeRecom)
+                addWidgetModel(visitable = detectHomeRecom)
             }
         } else {
             initRecom(onNeedTabLoad)
@@ -207,6 +209,8 @@ data class HomeDataModel(
             val widgetIndex = _list.indexOfFirst { visitable -> validation.invoke(visitable) }
             if(widgetIndex != -1){
                 _list[widgetIndex] = widget
+            } else {
+                addWidgetModel(widget)
             }
         }
     }

@@ -58,7 +58,7 @@ object DeeplinkMapperUohOrder {
                 td == PURCHASE_DELIVERED ||
                 d.startsWith(PURCHASE_HISTORY) ||
                 td == ORDER_HISTORY ||
-                td == OMS_ORDER_DETAIL ||
+                d.startsWith(OMS_ORDER_DETAIL) ||
                 td == TRAVEL_AND_ENTERTAINMENT_ORDER ||
                 td == PURCHASE_ONGOING
     }
