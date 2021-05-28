@@ -2,7 +2,7 @@ package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
 
-object ApplinkConstInternalTokoNow {
+object ApplinkConstInternalTokoMart {
 
     @JvmField
     val HOST_TOKOMART = "tokonow"
@@ -12,7 +12,7 @@ object ApplinkConstInternalTokoNow {
 
     //TokoMartHomeActivity
     @JvmField
-    val HOME = INTERNAL_TOKOMART
+    val HOME = "$INTERNAL_TOKOMART/home"
 
     //TokoMartCategoryListActivity
     @JvmField

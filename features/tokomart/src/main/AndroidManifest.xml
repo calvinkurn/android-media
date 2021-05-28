@@ -16,6 +16,7 @@
 
                 <data
                     android:host="@string/host_tokonow"
+                    android:path="@string/path_tokonow_home"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
