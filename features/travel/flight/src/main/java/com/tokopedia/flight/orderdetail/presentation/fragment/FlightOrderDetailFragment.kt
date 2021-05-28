@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.flight.R
+import com.tokopedia.flight.cancellation.presentation.activity.FlightCancellationPassengerActivity
 import com.tokopedia.flight.cancellation.presentation.fragment.FlightCancellationPassengerFragment
 import com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity
 import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationListActivity
@@ -413,16 +414,19 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun navigateToCancellationPage(cancellationItems: List<FlightCancellationJourney>) {
-//        val intent = FlightCancellationPassengerActivity.createIntent(
-//                requireContext(),
-//                flightOrderDetailViewModel.orderId,
-//                cancellationItems
-//        )
-        val intent = FlightCancellationActivity.createIntent(
-                requireContext(),
-                flightOrderDetailViewModel.orderId,
-                cancellationItems
-        )
+        val intent: Intent = if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_CANCELLATION_NAVIGATION, true)) {
+            FlightCancellationActivity.createIntent(
+                    requireContext(),
+                    flightOrderDetailViewModel.orderId,
+                    cancellationItems
+            )
+        } else {
+            FlightCancellationPassengerActivity.createIntent(
+                    requireContext(),
+                    flightOrderDetailViewModel.orderId,
+                    cancellationItems
+            )
+        }
         startActivityForResult(intent, REQUEST_CODE_CANCELLATION)
     }
 
