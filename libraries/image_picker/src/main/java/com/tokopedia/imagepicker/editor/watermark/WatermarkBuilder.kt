@@ -135,26 +135,32 @@ open class WatermarkBuilder {
 
     companion object {
 
+        @JvmStatic
         fun create(context: Context, backgroundImg: Bitmap): WatermarkBuilder {
             return WatermarkBuilder(context, backgroundImg)
         }
 
+        @JvmStatic
         fun create(context: Context, imageView: ImageView): WatermarkBuilder {
             return WatermarkBuilder(context, imageView)
         }
 
+        @JvmStatic
         fun create(context: Context, @DrawableRes backgroundDrawable: Int): WatermarkBuilder {
             return WatermarkBuilder(context, backgroundDrawable)
         }
 
+        @JvmStatic
         fun create(context: Context, backgroundImg: Bitmap, resizeBackgroundImg: Boolean): WatermarkBuilder {
             return WatermarkBuilder(context, backgroundImg, resizeBackgroundImg)
         }
 
+        @JvmStatic
         fun create(context: Context, imageView: ImageView, resizeBackgroundImg: Boolean): WatermarkBuilder {
             return WatermarkBuilder(context, imageView, resizeBackgroundImg)
         }
 
+        @JvmStatic
         fun create(context: Context, @DrawableRes backgroundDrawable: Int, resizeBackgroundImg: Boolean): WatermarkBuilder {
             return WatermarkBuilder(context, backgroundDrawable, resizeBackgroundImg)
         }
