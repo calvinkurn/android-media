@@ -66,7 +66,7 @@ class UpgradePmProWidget(
     }
 
     private fun setupView(element: WidgetUpgradePmProUiModel) = with(itemView) {
-        imgPmUpgradeBackdrop.loadImageDrawable(R.drawable.bg_pm_upgrade_pm_pro)
+        imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_PRO_BADGE)
         viewPmUpgradeTermSection.setEligibility(element.shopInfo.isEligiblePmPro)
 

@@ -14,7 +14,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="0"
-        tools:src="@drawable/bg_pm_upgrade_pm_pro" />
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPmProBadge"

@@ -42,7 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tickerPmContainer"
         app:unify_image_corner_radius="0"
-        tools:src="@drawable/bg_pm_pro_registration_header" />
+        tools:src="@drawable/bg_pm_registration_header" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgPmHeaderImage"

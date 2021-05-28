@@ -18,6 +18,7 @@ import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiM
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
@@ -289,7 +290,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         val isPmProSelected = tabIndex == 1
 
         if (isPmProSelected) {
-            imgPmHeaderBackdrop.loadImageDrawable(R.drawable.bg_pm_pro_registration_header)
+            imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM_PRO)
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_PRO_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
         } else {
