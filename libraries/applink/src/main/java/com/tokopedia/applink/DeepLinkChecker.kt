@@ -58,7 +58,6 @@ object DeepLinkChecker {
     const val TRAVEL_HOMEPAGE = 37
     const val NATIVE_THANK_YOU = 38
     const val LOGIN_BY_QR = 39
-    const val LOGIN_BY_QR_STAGING = 40
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 

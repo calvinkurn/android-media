@@ -15,7 +15,6 @@ import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
 import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
-import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR_STAGING
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
 import com.tokopedia.applink.DeepLinkChecker.PLAY
@@ -338,10 +337,5 @@ class DeepLinkMatcherTest: DeepLinkMatcherTestFixture() {
     @Test
     fun `check link url of login by QR then should return LOGIN_BY_QR`() {
         assertEqualsDeepLinkMatcher(LOGIN_BY_QR, LOGIN_BY_QR_LINK_URL)
-    }
-
-    @Test
-    fun `check link url of login by QR staging then should return LOGIN_BY_QR_STAGING`() {
-        assertEqualsDeepLinkMatcher(LOGIN_BY_QR_STAGING, LOGIN_BY_QR_LINK_URL)
     }
 }
