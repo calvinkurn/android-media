@@ -48,9 +48,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromApplinkOrIntent()
         startPerformanceMonitoring()
-        if (isNewView()) {
-            setTranslucentTheme()
-        } else {
+        if (!isNewFormVariant() || isEditMode) {
             setWhiteTheme()
             setToolbar()
         }
@@ -86,7 +84,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun onBackPressed() {
-        if (isNewFormVariant() || isEditMode) {
+        if (!isNewFormVariant() || isEditMode) {
             createReviewFragment?.let {
                 CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
                 it.showCancelDialog()
@@ -183,10 +181,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         } catch (th: Throwable) {
             Timber.e(th)
         }
-    }
-
-    private fun setTranslucentTheme() {
-        setTheme(R.style.Theme_AppCompat_Translucent)
     }
 
     private fun setWhiteTheme() {
