@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -14,10 +15,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
-import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
-import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
-import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.*
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_bar_chart_widget.view.*
@@ -259,6 +257,7 @@ class BarChartViewHolder(
                     }
                 }
             }
+            setMarginFromLongestYAxisValue(element)
             animateShowEmptyState()
         }
     }
@@ -301,6 +300,25 @@ class BarChartViewHolder(
 
             override fun onAnimationStart(animation: Animator?) {}
         })
+    }
+
+    /**
+     * Set left margin of empty state dynamically to avoid blocking the Y Axis
+     *
+     * @param   element bar chart widget ui model
+     */
+    private fun setMarginFromLongestYAxisValue(element: BarChartWidgetUiModel) {
+        element.data?.chartData?.yAxis?.lastOrNull()?.valueFmt?.length?.let { valueLength ->
+            val pxPerChar = itemView.resources?.getDimensionPixelOffset(R.dimen.shc_dimen_6dp).orZero()
+            val startMargin = itemView.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).orZero()
+            val textMarginPx = pxPerChar * valueLength
+            val emptyStateLayoutParams = (emptyState?.layoutParams as? ConstraintLayout.LayoutParams)?.apply {
+                setMargins(startMargin + textMarginPx, topMargin, rightMargin, bottomMargin)
+            }
+            emptyStateLayoutParams?.let {
+                emptyState?.layoutParams = it
+            }
+        }
     }
 
     interface Listener : BaseViewHolderListener {
