@@ -353,13 +353,15 @@ class ShopInfoViewHolder(
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }
+                powerMerchantText.text = getString(R.string.power_merchant_upgrade)
+
                 powerMerchantStatusTextView.hide()
-                powerMerchantText.text = getString(R.string.power_merchant_status)
             }
             is PowerMerchantStatus.NotActive -> {
                 powerMerchantStatusTextView.show()
                 upgradePMTextView.hide()
-                powerMerchantText.text = getString(R.string.power_merchant_upgrade)
+                powerMerchantText.text = getString(R.string.power_merchant_status)
+
 
                 powerMerchantStatusTextView.setOnClickListener {
                     goToPowerMerchantSubscribe(TAB_PM_PRO)
