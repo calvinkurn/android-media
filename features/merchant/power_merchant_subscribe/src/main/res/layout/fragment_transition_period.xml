@@ -1,85 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
-    android:layout_gravity="center"
-    tools:context=".view_old.fragment.TransitionPeriodPmFragment">
+    android:padding="@dimen/dp_16">
 
-    <RelativeLayout
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_kyc_verification"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="240dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:contentDescription="@string/pm_content_desc_transition_period_image_kyc"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_kyc_verification"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_8"
         android:gravity="center"
-        android:padding="@dimen/dp_16">
+        android:lineSpacingExtra="@dimen/dp_2"
+        android:text="@string/pm_label_transition_period_header"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700"
+        android:textStyle="bold"
+        app:fontSize="titleBig" />
 
-        <ImageView
-            android:id="@+id/img_kyc_verification"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/pm_content_desc_transition_period_image_kyc"
-            tools:src="@tools:sample/avatars" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_label_transition_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_user_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/dp_2"
+        android:padding="@dimen/dp_8"
+        android:text="@string/pm_label_transition_period_desc"
+        android:textAlignment="center"
+        app:fontSize="title" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_8"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/dp_2"
-            android:text="@string/pm_label_transition_period_header"
-            android:textAlignment="center"
-            android:layout_below="@id/img_kyc_verification"
-            android:textColor="@color/Unify_N700"
-            android:textStyle="bold"
-            app:fontSize="titleBig" />
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_kyc_verification_transition"
+        style="@style/Button.Submit.Green.Full"
+        android:layout_width="@dimen/dp_300"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_label_transition_desc"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/pm_label_transition_period_button" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_label_transition_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_user_name"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_30"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/dp_2"
-            android:padding="@dimen/dp_8"
-            android:text="@string/pm_label_transition_period_desc"
-            android:textAlignment="center"
-            app:fontSize="title" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_learnmore_transition_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_kyc_verification_transition"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/dp_2"
+        android:padding="@dimen/dp_4"
+        android:text="@string/pm_label_transition_period_learnmore"
+        android:textAlignment="center"
+        app:fontSize="title" />
 
-        <Button
-            android:id="@+id/btn_kyc_verification_transition"
-            style="@style/Button.Submit.Green.Full"
-            android:layout_width="@dimen/dp_300"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_label_transition_desc"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="@string/pm_label_transition_period_button" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_learnmore_transition_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btn_kyc_verification_transition"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_8"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/dp_2"
-            android:padding="@dimen/dp_4"
-            android:text="@string/pm_label_transition_period_learnmore"
-            android:textAlignment="center"
-            app:fontSize="title" />
-
-    </RelativeLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
-import kotlinx.android.synthetic.main.item_pm_pro_benefit.view.*
+import kotlinx.android.synthetic.main.item_pm_pro_upsale_benefit.view.*
 
 /**
  * Created By @ilhamsuaib on 02/03/21
@@ -19,7 +19,7 @@ class PMProBenefitAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PotentialViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_pm_pro_benefit, parent, false)
+                .inflate(R.layout.item_pm_pro_upsale_benefit, parent, false)
         return PotentialViewHolder(view)
     }
 
