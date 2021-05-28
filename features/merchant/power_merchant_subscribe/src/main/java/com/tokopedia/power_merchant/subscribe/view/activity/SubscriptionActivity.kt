@@ -11,14 +11,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -38,8 +36,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_pm_subsription.*
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -312,13 +308,15 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         val shopInfo = data.shopInfo
-        val isEligiblePm = if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm
 
         val registrationTerms = if (isPmProSelected) {
             PMRegistrationTermHelper.getPmProRegistrationTerms(this, shopInfo)
         } else {
             PMRegistrationTermHelper.getPmRegistrationTerms(this, shopInfo)
         }
+
+        val isEligiblePm = (if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm)
+                && !registrationTerms.any { !it.isChecked }
 
         val firstPriorityTerm = registrationTerms.filter {
             if (!shopInfo.isNewSeller) {

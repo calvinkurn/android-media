@@ -211,7 +211,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val title: String = getString(R.string.pm_bottom_sheet_moderated_shop_title)
         val description: String = getString(R.string.pm_bottom_sheet_moderated_shop_description)
         val ctaText: String = getString(R.string.pm_content_slider_last_slide_button)
-        val illustrationUrl: String = PMConstant.Images.PM_INACTIVE
+        val illustrationUrl: String = PMConstant.Images.PM_MODERATED_SHOP
 
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
             powerMerchantTracking.sendEventClickAcknowledgeShopModeration()
