@@ -1,10 +1,13 @@
 package com.tokopedia.mvcwidget
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 
 
@@ -91,6 +94,20 @@ fun collapse(v: View) {
 
     a.duration = (((initialHeight / v.context.resources.displayMetrics.density) * 1).toLong())
     v.startAnimation(a)
+}
+
+fun isDarkMode(context: Context): Boolean {
+    return try {
+        when (context.resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+            else -> false
+        }
+    } catch (ignored: Exception) {
+        false
+    }
 }
 
 data class MvcTokomemberBmViewData(val imageUrls: List<String>, val messages: List<String>, val buttonText: String)

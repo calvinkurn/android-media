@@ -3,6 +3,9 @@ package com.tokopedia.mvcwidget.views
 import android.content.Context
 import android.os.Build
 import android.text.Html
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -12,6 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvcwidget.*
@@ -125,6 +129,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
     private var icon: AppCompatImageView
     private var btnFirst: UnifyButton
     private var collapsableContainer : LinearLayout
+    private var iconBackground: AppCompatImageView
     var tvList : Typography
     private var tvSubTitle : Typography
     var btnSecond: UnifyButton
@@ -141,8 +146,12 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         collapsableContainer = findViewById(R.id.container_collapsable)
         tvList = findViewById(R.id.tvList)
         tvSubTitle = findViewById(R.id.tvSubTitle)
+        iconBackground = findViewById(R.id.iconBackground)
         containerContent = findViewById(R.id.container_content)
 
+        if (isDarkMode(context)){
+            iconBackground.setColorFilter(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.dark_N75))
+        }
         radius = dpToPx(8)
         type = TYPE_LARGE
     }
@@ -156,7 +165,13 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         }
 
         followWidget.contentDetails?.let {
-            tvSubTitle.text = returnTextFromHtml(st)
+            val s = returnTextFromHtml(st)
+            val minTransLabel = "{{MinimumTransaction}}"
+            val indexMinTransLabel = s.indexOf(minTransLabel)
+            val highLightColor =  context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500)
+            val sb = SpannableStringBuilder(s).replace(indexMinTransLabel,indexMinTransLabel + minTransLabel.length,followWidget.membershipMinimumTransactionLabel)
+            sb.setSpan(ForegroundColorSpan(highLightColor), indexMinTransLabel, indexMinTransLabel + followWidget.membershipMinimumTransactionLabel?.length!!, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            tvSubTitle.text = sb
         }
 
         when (followWidget.type) {

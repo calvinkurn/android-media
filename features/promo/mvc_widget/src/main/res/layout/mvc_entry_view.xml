@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/mvc_container_height"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipChildren="true"
+    android:clipToPadding="true">
 
     <com.tokopedia.mvcwidget.views.ShadowOutlineLayout
         android:elevation="@dimen/mvc_shadow_elevation"
@@ -30,34 +30,54 @@
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_0"
         android:layout_marginEnd="@dimen/dp_0"
-        android:clipChildren="false">
+        android:clipToPadding="true"
+        android:clipChildren="true">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_3"
+            android:layout_marginStart="@dimen/dp_0"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/mvc_bg_duplicate" />
 
-        <com.tokopedia.mvcwidget.views.SquareImageView
-            android:id="@+id/image_coupon"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="match_parent"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_intersect"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/mvcAnimViewContainer"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_height="@dimen/dp_48"
+            android:layout_width="@dimen/dp_0"
+            app:layout_constraintRight_toLeftOf="@id/image_chevron"
+            android:layout_height="wrap_content">
+
+        <com.tokopedia.mvcwidget.views.SquareImageView
+            android:id="@+id/image_coupon"
+            android:layout_width="@dimen/dp_22"
+            android:layout_height="@dimen/dp_22"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="@dimen/dp_12"
+            tools:layout_height="@dimen/dp_22"
+            android:visibility="visible"
             tools:src="@color/Unify_Y500" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_22"
             android:layout_marginTop="@dimen/dp_6"
             android:lines="1"
+            android:ellipsize="end"
             android:textColor="@color/Unify_N700"
             app:layout_constraintLeft_toRightOf="@id/image_coupon"
-            app:layout_constraintRight_toLeftOf="@+id/image_chevron"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
@@ -65,15 +85,19 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSubTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
             android:layout_marginBottom="@dimen/dp_6"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            app:layout_constraintRight_toRightOf="parent"
             app:typographyType="body_3"
             android:textColor="@color/Unify_N700"
             tools:text="Masih ada 6 Kupon Toko lainnya!" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_chevron"

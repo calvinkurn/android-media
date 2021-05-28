@@ -11,12 +11,6 @@ query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int! , ${'$'}api
           message
         }
         isShown
-        titles {
-          text
-          icon
-        }
-        subTitle
-        imageURL
         animatedInfos {
           title
           subTitle

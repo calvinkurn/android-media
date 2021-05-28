@@ -3,11 +3,13 @@ package com.tokopedia.mvcwidget.views
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.isDarkMode
 import com.tokopedia.promoui.common.dpToPx
 
 const val TYPE_LARGE = 0
@@ -18,16 +20,30 @@ open class FollowCardView @JvmOverloads constructor(
 ) : CardView(context, attrs, defStyleAttr) {
     private var w = 0
     private var h = 0
-    val paint = Paint()
+    val paintSmall = Paint()
+    val paintLarge = Paint()
     var rectLarge = RectF(0f, 0f, 0f, 0f)
     var rectSmall = RectF(0f, 0f, 0f, 0f)
     var type = TYPE_LARGE
 
     init {
-        paint.isAntiAlias = true
-        paint.style = Paint.Style.FILL
-        paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+        paintSmall.isAntiAlias = true
+        paintSmall.style = Paint.Style.FILL
+        paintLarge.isAntiAlias = true
+        paintLarge.style = Paint.Style.FILL
+        if (isDarkMode(context)) {
+            paintSmall.color =
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N100)
+            paintLarge.color =
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N150)
 
+        } else {
+            paintSmall.color =
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
+            paintLarge.color =
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+        }
+        background.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0),PorterDuff.Mode.SRC)
         readFromAttrs(attrs)
     }
 
@@ -82,10 +98,8 @@ open class FollowCardView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
-        paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
-        canvas?.drawArc(rectLarge, -90f, 180f, false, paint)
-        paint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
-        canvas?.drawArc(rectSmall, -90f, 180f, false, paint)
+        canvas?.drawArc(rectLarge, -90f, 180f, false, paintLarge)
+        canvas?.drawArc(rectSmall, -90f, 180f, false, paintSmall)
         super.onDraw(canvas)
     }
 }

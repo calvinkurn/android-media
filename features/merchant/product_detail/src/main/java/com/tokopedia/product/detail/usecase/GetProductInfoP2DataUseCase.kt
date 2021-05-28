@@ -381,12 +381,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               }
             }
             merchantVoucherSummary{
-                title{
-                    text
-                }
-                subtitle
-                imageURL
                 isShown
+                animatedInfos {
+                    title
+                    subTitle
+                    iconURL
+                }
             }
             reviewImage{
               list{

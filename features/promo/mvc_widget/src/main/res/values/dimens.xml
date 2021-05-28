@@ -3,7 +3,7 @@
     <dimen name="mvc_shadow_vert_margin">18dp</dimen>
     <dimen name="mvc_shadow_translation">-2dp</dimen>
     <dimen name="mvc_shadow_left_margin">6dp</dimen>
-    <dimen name="mvc_shadow_right_margin">4dp</dimen>
+    <dimen name="mvc_shadow_right_margin">6dp</dimen>
     <dimen name="mvc_container_height">64dp</dimen>
     <dimen name="mvc_shadow_elevation">6dp</dimen>
     <dimen name="mvc_shadow_outline_height">43dp</dimen>
