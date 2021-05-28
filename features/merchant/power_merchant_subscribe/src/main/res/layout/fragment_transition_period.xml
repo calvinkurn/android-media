@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:layout_gravity="center"
-    tools:context=".view.fragment.TransitionPeriodPmFragment">
+    tools:context=".view_old.fragment.TransitionPeriodPmFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

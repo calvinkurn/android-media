@@ -67,11 +67,14 @@ android {
     }
 }
 dependencies {
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.keys)
+    implementation project(rootProject.ext.libraries.linker)
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)

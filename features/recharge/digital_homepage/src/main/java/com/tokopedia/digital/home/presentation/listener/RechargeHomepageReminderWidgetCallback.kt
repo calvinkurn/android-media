@@ -15,4 +15,8 @@ class RechargeHomepageReminderWidgetCallback(val listener: RechargeHomepageItemL
     override fun onReminderWidgetImpressionListener(reminderData: ReminderWidgetModel) {
         listener.onRechargeReminderWidgetImpression(reminderData.visitableId() ?: "")
     }
+
+    override fun getReminderWidgetData(reminderData: ReminderWidgetModel) {
+        listener.loadRechargeSectionData(reminderData.visitableId() ?: "")
+    }
 }

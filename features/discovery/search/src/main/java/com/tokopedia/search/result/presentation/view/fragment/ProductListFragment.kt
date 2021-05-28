@@ -565,11 +565,11 @@ class ProductListFragment: BaseDaggerFragment(),
             getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, Any?>)
         } ?: ""
 
-        dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, dimension90))
+        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams, dimension90))
         productItemDataViews.add(item)
 
         trackingQueue?.let {
-            SearchTracking.eventImpressionSearchResultProduct(it, dataLayerList, eventLabel, irisSessionId)
+            SearchTracking.eventImpressionSearchResultProduct(it, dataLayerList, eventLabel, irisSessionId, userId)
         }
     }
 
@@ -724,7 +724,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 trackingQueue,
                 queryKey,
                 SCREEN_SEARCH_PAGE_PRODUCT_TAB,
-                irisSessionId
+                irisSessionId,
+                getUserId(),
         )
 
         trackingQueue?.sendAll()
@@ -805,7 +806,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 product,
                 item.position,
-                SCREEN_SEARCH_PAGE_PRODUCT_TAB
+                SCREEN_SEARCH_PAGE_PRODUCT_TAB,
+                getUserId(),
         )
     }
 
@@ -821,10 +823,11 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
 
         SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductAsObjectDataLayer(userId, filterSortParams, dimension90),
+                item.getProductAsObjectDataLayer(filterSortParams, dimension90),
                 item.isOrganicAds,
                 eventLabel,
-                filterSortParams
+                filterSortParams,
+                userId,
         )
     }
 
@@ -966,7 +969,7 @@ class ProductListFragment: BaseDaggerFragment(),
         redirectionListener?.startActivityWithApplink(modifiedApplinkToSearchResult)
     }
 
-    private fun modifyApplinkToSearchResult(applink: String): String {
+    override fun modifyApplinkToSearchResult(applink: String): String {
         val urlParser = URLParser(applink)
 
         val params = urlParser.paramKeyValueMap
@@ -1564,13 +1567,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword)
-
-        val applink = if (broadMatchDataView.applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
-            modifyApplinkToSearchResult(broadMatchDataView.applink)
-        else broadMatchDataView.applink
-
-        redirectionStartActivity(applink, broadMatchDataView.url)
+        presenter?.onBroadMatchSeeMoreClick(broadMatchDataView)
     }
 
     override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {
@@ -1909,5 +1906,39 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun onBannerClicked(bannerDataView: BannerDataView) {
         redirectionStartActivity(bannerDataView.applink, "")
+    }
+
+    override fun trackDynamicProductCarouselImpression(dynamicProductCarousel: BroadMatchItemDataView, type: String) {
+        val trackingQueue = trackingQueue ?: return
+        val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
+        broadMatchItemAsObjectDataLayer.add(dynamicProductCarousel.asImpressionObjectDataLayer())
+
+        SearchTracking.trackEventImpressionDynamicProductCarousel(
+                trackingQueue = trackingQueue,
+                type = type,
+                keyword = queryKey,
+                userId = getUserId(),
+                broadMatchItems = broadMatchItemAsObjectDataLayer,
+        )
+    }
+
+    override fun trackDynamicProductCarouselClick(dynamicProductCarousel: BroadMatchItemDataView, type: String) {
+        val broadMatchItem: MutableList<Any> = ArrayList()
+        broadMatchItem.add(dynamicProductCarousel.asClickObjectDataLayer())
+
+        SearchTracking.trackEventClickDynamicProductCarousel(
+                type = type,
+                keyword = queryKey,
+                userId = getUserId(),
+                broadMatchItems = broadMatchItem,
+        )
+    }
+
+    override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword)
+    }
+
+    override fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String) {
+        SearchTracking.trackEventClickDynamicProductCarouselSeeMore(type, queryKey, dynamicProductCarousel.keyword)
     }
 }

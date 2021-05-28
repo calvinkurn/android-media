@@ -73,7 +73,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
@@ -315,7 +314,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }));
 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -430,7 +428,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
-        getAmplificationPushData();
         return true;
     }
 
@@ -521,31 +518,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
         });
-    }
-
-    private void getAmplificationPushData() {
-        /*
-         * Amplification of push notification.
-         * fetch all of cm_push_notification's
-         * push notification data that aren't rendered yet.
-         * then, put all of push_data into local storage.
-         * */
-        if (getAmplificationRemoteConfig()) {
-            try {
-                AmplificationDataSource.invoke(ConsumerMainApplication.this);
-            } catch (Exception e) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", "");
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            }
-        }
-    }
-
-    private Boolean getAmplificationRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {

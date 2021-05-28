@@ -880,11 +880,11 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return analytics.getHostSource()
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return analytics.getHostTrackingSource()
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -892,6 +892,10 @@ class DiscoveryFragment :
 
     override fun onLocalizingAddressUpdatedFromBackground() {
 
+    }
+
+    override fun getEventLabelHostPage(): String {
+        return analytics.getEventLabel()
     }
 
     private fun fetchUserLatestAddressData() {

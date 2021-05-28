@@ -4,29 +4,21 @@
   "query": [
     {
       "businessUnit": "travel & entertainment",
-      "clientId": ".*",
       "eventCategory": "digital - event",
-      "currentSite": "tokopediadigitalevents",
-      "screenName": ".*",
-      "category": "events",
-      "event": "clickEvent",
-      "userId": ".*",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
       "eventAction": "click lanjutkan",
       "sessionIris": ".*",
       "eventLabel": ".*"
     },
     {
       "businessUnit": "travel & entertainment",
-      "clientId": ".*",
       "eventCategory": "digital - event",
-      "currentSite": "tokopediadigitalevents",
-      "screenName": ".*",
-      "category": "events",
-      "event": "clickEvent",
-      "userId": ".*",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
       "eventAction": "pick date",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ""
     }
   ]
 }
