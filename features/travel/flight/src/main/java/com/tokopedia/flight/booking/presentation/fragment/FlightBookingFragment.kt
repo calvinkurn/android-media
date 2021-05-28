@@ -606,9 +606,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        activity?.let {
-            SplitCompat.installActivity(it)
-        }
+        splitCompat()
         return inflater.inflate(R.layout.fragment_flight_booking_v3, container, false)
     }
 
@@ -656,6 +654,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.setAmenityPriceData(amenityPriceData)
 
         refreshCart()
+    }
+
+    private fun splitCompat() {
+        activity?.let {
+            SplitCompat.installActivity(it)
+        }
     }
 
     private fun initialize() {
