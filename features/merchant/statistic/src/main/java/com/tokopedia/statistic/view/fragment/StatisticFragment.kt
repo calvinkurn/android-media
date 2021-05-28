@@ -270,6 +270,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendClickCarouselCtaEvent(dataKey)
     }
 
+    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {
+        // TODO: Add tracking
+    }
+
     override fun sendPosListItemClickEvent(dataKey: String, title: String) {
         StatisticTracker.sendClickPostItemEvent(dataKey, title)
     }
@@ -306,6 +310,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         StatisticTracker.sendPieChartImpressionEvent(model, position)
+    }
+
+    override fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
+        // TODO: Add tracking
     }
 
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {

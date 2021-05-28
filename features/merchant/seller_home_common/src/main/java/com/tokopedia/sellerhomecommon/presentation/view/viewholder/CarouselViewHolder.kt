@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
+import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -8,11 +9,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.presentation.adapter.CarouselBannerAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_carousel_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_carousel_widget_shimmering.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -31,6 +37,12 @@ class CarouselViewHolder(
     }
 
     private var hasSetSnapHelper = false
+
+    private val emptyState: Group? = itemView?.findViewById(R.id.group_shc_carousel_empty)
+    private val emptyStateImage: ImageUnify? = itemView?.findViewById(R.id.iv_shc_carousel_empty)
+    private val emptyStateTitle: Typography? = itemView?.findViewById(R.id.tv_shc_carousel_empty_title)
+    private val emptyStateDesc: Typography? = itemView?.findViewById(R.id.tv_shc_carousel_empty_desc)
+    private val emptyStateButton: UnifyButton? = itemView?.findViewById(R.id.btn_shc_carousel_empty)
 
     override fun bind(element: CarouselWidgetUiModel) {
         itemView.rvCarouselBanner.isNestedScrollingEnabled = false
@@ -55,6 +67,7 @@ class CarouselViewHolder(
         indicatorCarouselBanner.gone()
         bannerImagesShimmering.visible()
         commonWidgetErrorState.gone()
+        emptyState?.gone()
     }
 
     private fun setOnErrorState() = with(itemView) {
@@ -64,25 +77,19 @@ class CarouselViewHolder(
         bannerImagesShimmering.gone()
         indicatorCarouselBanner.gone()
         btnCarouselSeeAll.gone()
+        emptyState?.gone()
         ImageHandler.loadImageWithId(itemView.imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
     }
 
     private fun setOnSuccessState(element: CarouselWidgetUiModel) {
-        val data = element.data?.items
-
-        if (!data.isNullOrEmpty()) {
-            with(itemView) {
-                tvCarouselBannerTitle.text = element.title
-                tvCarouselBannerTitle.visible()
-                rvCarouselBanner.visible()
-                commonWidgetErrorState.gone()
-                bannerImagesShimmering.gone()
-
-                setupBanner(element)
-                setupCta(element)
-            }
+        with(itemView) {
+            tvCarouselBannerTitle.text = element.title
+            tvCarouselBannerTitle.visible()
+        }
+        if (element.isEmpty()) {
+            setupEmptyState(element)
         } else {
-            listener.removeWidget(adapterPosition, element)
+            setupCarousel(element)
         }
     }
 
@@ -134,6 +141,53 @@ class CarouselViewHolder(
         }
     }
 
+    private fun setupCarousel(element: CarouselWidgetUiModel) {
+        with(itemView) {
+            rvCarouselBanner.visible()
+            commonWidgetErrorState.gone()
+            bannerImagesShimmering.gone()
+            emptyState?.gone()
+
+            setupBanner(element)
+            setupCta(element)
+        }
+    }
+
+    private fun setupEmptyState(element: CarouselWidgetUiModel) {
+        with(itemView) {
+            commonWidgetErrorState.gone()
+            rvCarouselBanner.gone()
+            bannerImagesShimmering.gone()
+            indicatorCarouselBanner.gone()
+            btnCarouselSeeAll.gone()
+
+            emptyState?.visible()
+            emptyStateTitle?.run {
+                text = element.emptyState.title.takeIf { it.isNotBlank() } ?: getString(R.string.shc_empty_state_title)
+                visible()
+            }
+            emptyStateDesc?.run {
+                text = element.emptyState.description
+                showWithCondition(element.emptyState.description.isNotBlank())
+            }
+            emptyStateButton?.run {
+                text = element.emptyState.ctaText
+                showWithCondition(element.emptyState.ctaText.isNotBlank())
+                setOnClickListener {
+                    if (RouteManager.route(itemView.context, element.emptyState.appLink)) {
+                        listener.sendCarouselEmptyStateCtaClickEvent(element)
+                    }
+                }
+            }
+            ImageHandler.loadImageWithoutPlaceholderAndError(emptyStateImage, element.emptyState.imageUrl.takeIf { it.isNotBlank() } ?: SellerHomeUrl.IMG_EMPTY_STATE)
+        }
+    }
+
+    private fun CarouselWidgetUiModel.isEmpty(): Boolean =
+            data?.items.isNullOrEmpty() && isShowEmpty && emptyState.title.isNotBlank()
+                    && emptyState.description.isNotBlank() && emptyState.ctaText.isNotBlank()
+                    && emptyState.appLink.isNotBlank()
+
     interface Listener : BaseViewHolderListener {
 
         fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {}
@@ -141,5 +195,7 @@ class CarouselViewHolder(
         fun sendCarouselClickTracking(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {}
 
         fun sendCarouselCtaClickEvent(dataKey: String) {}
+
+        fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
     }
 }

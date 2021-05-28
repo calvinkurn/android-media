@@ -23,4 +23,6 @@
     <string name="shc_content_desc_image_dot">image dot</string>
     <string name="shc_content_desc_image_error">image error</string>
     <string name="shc_content_desc_image_table_empty">image table empty</string>
+    <string name="shc_content_desc_image_pie_chart_empty">pie chart empty</string>
+    <string name="shc_content_desc_image_carousel_empty">carousel empty</string>
 </resources>
