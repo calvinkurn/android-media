@@ -284,7 +284,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun observePmActivationStatus() {
-        mViewModel.pmActivationStatus.observe(viewLifecycleOwner, Observer {
+        mViewModel.pmActivationStatus.observeOnce(viewLifecycleOwner, Observer {
             hideActivationProgress()
             when (it) {
                 is Success -> setOnPmActivationSuccess(it.data)
@@ -297,7 +297,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun observePmCancelDeactivationSubmission() {
-        mViewModel.pmCancelDeactivationStatus.observe(viewLifecycleOwner, Observer {
+        mViewModel.pmCancelDeactivationStatus.observeOnce(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> setOnCancelDeactivationSuccess(it.data)
                 is Fail -> {
