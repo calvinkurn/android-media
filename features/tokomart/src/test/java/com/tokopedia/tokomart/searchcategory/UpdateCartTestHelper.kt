@@ -39,6 +39,7 @@ class UpdateCartTestHelper(
     private val miniCartSimplifiedData = MiniCartSimplifiedData(
             miniCartWidgetData = miniCartWidgetData,
             miniCartItems = miniCartItems,
+            isShowMiniCartWidget = true,
     )
 
     fun `onViewResumed should update mini cart and quantity in product list`() {
@@ -51,6 +52,7 @@ class UpdateCartTestHelper(
         `Then assert get mini cart simplified use case params`()
         `Then assert mini cart widget live data is updated`(miniCartSimplifiedData.miniCartWidgetData)
         `Then assert product quantity is updated`()
+        `Then assert mini cart widget visibility`()
     }
 
     private fun `Given get mini cart simplified use case will be successful`(
@@ -171,6 +173,12 @@ class UpdateCartTestHelper(
         }
 
         return expectedUpdatedIndices
+    }
+
+    private fun `Then assert mini cart widget visibility`() {
+        val isShowMiniCartWidget = miniCartSimplifiedData.isShowMiniCartWidget
+
+        assertThat(baseViewModel.isShowMiniCartLiveData.value, shouldBe(isShowMiniCartWidget))
     }
 
     fun `onViewUpdateCartItems should update quantity in product list`() {

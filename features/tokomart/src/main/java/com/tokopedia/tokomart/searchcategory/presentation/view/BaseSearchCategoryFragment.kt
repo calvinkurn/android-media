@@ -21,6 +21,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterMod
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
@@ -176,6 +177,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().productCountAfterFilterLiveData.observe(this::setFilterProductCount)
         getViewModel().isL3FilterPageOpenLiveData.observe(this::configureL3BottomSheet)
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
+        getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
     }
 
@@ -313,6 +315,10 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
+    }
+
+    private fun updateMiniCartWidgetVisibility(isVisible: Boolean) {
+        miniCartWidget?.showWithCondition(isVisible)
     }
 
     private fun notifyAdapterItemChange(indices: List<Int>) {

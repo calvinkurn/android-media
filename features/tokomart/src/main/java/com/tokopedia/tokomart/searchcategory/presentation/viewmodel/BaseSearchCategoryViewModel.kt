@@ -82,10 +82,13 @@ abstract class BaseSearchCategoryViewModel(
     protected val isL3FilterPageOpenMutableLiveData = MutableLiveData<Filter?>(null)
     val isL3FilterPageOpenLiveData: LiveData<Filter?> = isL3FilterPageOpenMutableLiveData
 
+    protected val isShowMiniCartMutableLiveData = MutableLiveData(false)
+    val isShowMiniCartLiveData: LiveData<Boolean> = isShowMiniCartMutableLiveData
+
     protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartWidgetData?>(null)
     val miniCartWidgetLiveData: LiveData<MiniCartWidgetData?> = miniCartWidgetMutableLiveData
 
-    private val updatedVisitableIndicesMutableLiveData = MutableLiveData<Event<List<Int>>>(null)
+    protected val updatedVisitableIndicesMutableLiveData = MutableLiveData<Event<List<Int>>>(null)
     val updatedVisitableIndicesLiveData: LiveData<Event<List<Int>>> = updatedVisitableIndicesMutableLiveData
 
     protected var totalData = 0
@@ -450,6 +453,7 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.miniCartWidgetData
+        isShowMiniCartMutableLiveData.value = miniCartSimplifiedData.isShowMiniCartWidget
     }
 
     open fun onViewUpdateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData) {
