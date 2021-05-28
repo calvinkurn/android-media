@@ -56,6 +56,11 @@
             android:name=".cancellation.presentation.activity.FlightCancellationPassengerActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".cancellation_navigation.presentation.FlightCancellationActivity"
+            android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -68,23 +73,6 @@
                     android:pathPattern="@string/path_flight_cancel"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".cancellation_navigation.presentation.FlightCancellationActivity"
-            android:label="@string/activity_label_flight_cancellation"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-<!--            <intent-filter>-->
-<!--                <action android:name="com.tokopedia.internal.VIEW" />-->
-
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-
-<!--                <data-->
-<!--                    android:host="@string/host_flight"-->
-<!--                    android:pathPattern="@string/path_flight_cancel"-->
-<!--                    android:scheme="@string/internal_scheme" />-->
-<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".cancellation.presentation.activity.FlightCancellationReasonActivity"
