@@ -91,7 +91,6 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 2, null) to PRODUCT)
         add(Pattern(EQ, 3, mapOf(1 to "campaign")) to ETALASE)
         add(Pattern(EQ, 4, mapOf(0 to "payment", 1 to "thank-you")) to NATIVE_THANK_YOU)
-
     }
 
     fun match(uri: Uri): Int {
