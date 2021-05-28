@@ -13,7 +13,8 @@
         android:scaleType="centerInside"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_placeholder="@android:color/transparent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textTitle"

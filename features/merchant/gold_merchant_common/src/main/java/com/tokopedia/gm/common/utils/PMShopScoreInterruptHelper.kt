@@ -55,7 +55,7 @@ class PMShopScoreInterruptHelper @Inject constructor(
     fun getPeriodType() = data?.periodType
 
     fun showInterrupt(context: Context, owner: LifecycleOwner, fm: FragmentManager) {
-        if(!remoteConfig.getPmShopScoreInterruptEnabled()) {
+        if (!remoteConfig.getPmShopScoreInterruptEnabled()) {
             return
         }
 
@@ -95,11 +95,12 @@ class PMShopScoreInterruptHelper @Inject constructor(
         return !hasShownCoachMark && hasOpenedInterruptPage() && isTransitionPeriod
     }
 
-    fun openInterruptPage(context: Context) {
+    private fun openInterruptPage(context: Context) {
         val intent = RouteManager.getIntent(context, getInterruptPageUrl(context))
         (context as? Activity)?.startActivityForResult(intent, REQUEST_CODE)
         val numberOfPageOpened = pmCommonPreferenceManager.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
         pmCommonPreferenceManager.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
+        pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
         pmCommonPreferenceManager.apply()
     }
 
@@ -223,15 +224,11 @@ class PMShopScoreInterruptHelper @Inject constructor(
     private fun showInterruptPage(context: Context, data: PowerMerchantInterruptUiModel) {
         if (data.periodType == PeriodType.TRANSITION_PERIOD) {
             if (!hasOpenedInterruptPage()) {
-                pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
-                pmCommonPreferenceManager.apply()
                 openInterruptPage(context)
             }
-        } else {
+        } else if (data.periodType == PeriodType.COMMUNICATION_PERIOD) {
             val hasConsentChecked = hasConsentChecked()
             if (!hasConsentChecked) {
-                pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
-                pmCommonPreferenceManager.apply()
                 openInterruptPage(context)
             }
         }
@@ -256,6 +253,7 @@ class PMShopScoreInterruptHelper @Inject constructor(
     private fun hasConsentChecked(): Boolean {
         return pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_SHOP_SCORE_CONSENT_CHECKED, false).orFalse()
     }
+
     private fun hasOpenedInterruptPage(): Boolean {
         return pmCommonPreferenceManager.getBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, false).orFalse()
     }
