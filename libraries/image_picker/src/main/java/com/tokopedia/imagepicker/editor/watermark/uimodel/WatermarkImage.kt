@@ -12,9 +12,9 @@ import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 
 data class WatermarkImage(
     var image: Bitmap,
-    @DrawableRes var imageDrawable: Int,
+    @DrawableRes var imageDrawable: Int = 0,
     var alpha: Int = 50,
-    var context: Context,
+    var context: Context? = null,
     @FloatRange(from = 0.0, to = 1.0) var size: Double = 0.2,
     var position: WatermarkPosition = WatermarkPosition()
 ) {
@@ -39,7 +39,7 @@ data class WatermarkImage(
 
     fun getBitmapFromDrawable(@DrawableRes imageDrawable: Int): Bitmap {
         return resizeBitmap(
-            BitmapFactory.decodeResource(context.resources, imageDrawable),
+            BitmapFactory.decodeResource(context?.resources, imageDrawable),
             MAX_IMAGE_SIZE
         )
     }

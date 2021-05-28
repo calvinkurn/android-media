@@ -10,15 +10,14 @@ import com.tokopedia.imagepicker.editor.watermark.utils.BitmapUtils
 
 data class Watermark(
     var context: Context,
-    var backgroundImg: Bitmap,
-    var watermarkImg: WatermarkImage,
-    var watermarkImgs: List<WatermarkImage>,
-    var watermarkText: WatermarkText,
+    var backgroundImg: Bitmap? = null,
+    var watermarkImg: WatermarkImage? = null,
+    var watermarkBitmaps: List<WatermarkImage>,
+    var watermarkText: WatermarkText? = null,
     var watermarkTexts: List<WatermarkText>,
-    var outputImage: Bitmap,
-    var canvasBitmap: Bitmap,
-    var isTitleMode: Boolean,
-    var finishListener: BuildFinishListener<Bitmap>
+    var outputImage: Bitmap? = null,
+    var canvasBitmap: Bitmap? = null,
+    var isTitleMode: Boolean
 ) {
 
     init {
@@ -26,23 +25,30 @@ data class Watermark(
         outputImage = backgroundImg
 
         createWatermarkImage(watermarkImg)
-        createWatermarkImages(watermarkImgs)
+        createWatermarkImages(watermarkBitmaps)
         createWatermarkText(watermarkText)
         createWatermarkTexts(watermarkTexts)
     }
 
-    private fun createWatermarkImage(watermarkImg: WatermarkImage) {
+    private fun createWatermarkImage(watermarkImg: WatermarkImage?) {
+        if (backgroundImg == null && watermarkImg == null) {
+            return
+        }
+
         val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermarkImg.alpha
+        watermarkPaint.alpha = watermarkImg!!.alpha
 
         val newBitmap = Bitmap.createBitmap(
-            backgroundImg.width,
-            backgroundImg.height,
-            backgroundImg.config
+            backgroundImg!!.width,
+            backgroundImg!!.height,
+            backgroundImg!!.config
         )
 
-        val watermarkCanvas = Canvas(canvasBitmap)
-        watermarkCanvas.drawBitmap(canvasBitmap, 0f, 0f, null)
+        val watermarkCanvas = Canvas(newBitmap)
+
+        canvasBitmap?.let {
+            watermarkCanvas.drawBitmap(it, 0f, 0f, null)
+        }
 
         var scaledWatermarkBitmap = BitmapUtils.resizeBitmap(
             watermarkImg.image,
@@ -66,8 +72,8 @@ data class Watermark(
         } else {
             watermarkCanvas.drawBitmap(
                 scaledWatermarkBitmap,
-                (watermarkImg.position.positionX * backgroundImg.width).toFloat(),
-                (watermarkImg.position.positionY * backgroundImg.height).toFloat(),
+                (watermarkImg.position.positionX * backgroundImg!!.width).toFloat(),
+                (watermarkImg.position.positionY * backgroundImg!!.height).toFloat(),
                 watermarkPaint
             )
         }
@@ -82,18 +88,24 @@ data class Watermark(
         }
     }
 
-    private fun createWatermarkText(watermarkText: WatermarkText) {
+    private fun createWatermarkText(watermarkText: WatermarkText?) {
+        if (backgroundImg == null && watermarkText == null) {
+            return
+        }
+
         val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermarkText.alpha
+        watermarkPaint.alpha = watermarkText!!.alpha
 
         val newBitmap = Bitmap.createBitmap(
-            backgroundImg.width,
-            backgroundImg.height,
-            backgroundImg.config
+            backgroundImg!!.width,
+            backgroundImg!!.height,
+            backgroundImg!!.config
         )
 
-        val watermarkCanvas = Canvas(canvasBitmap)
-        watermarkCanvas.drawBitmap(canvasBitmap, 0f, 0f, null)
+        val watermarkCanvas = Canvas(newBitmap)
+        canvasBitmap?.let {
+            watermarkCanvas.drawBitmap(it, 0f, 0f, null)
+        }
 
         var scaledWatermarkBitmap = BitmapUtils.textAsBitmap(context, watermarkText)
 
@@ -113,8 +125,8 @@ data class Watermark(
         } else {
             watermarkCanvas.drawBitmap(
                 scaledWatermarkBitmap,
-                (watermarkText.position.positionX * backgroundImg.width).toFloat(),
-                (watermarkText.position.positionY * backgroundImg.height).toFloat(),
+                (watermarkText.position.positionX * backgroundImg!!.width).toFloat(),
+                (watermarkText.position.positionY * backgroundImg!!.height).toFloat(),
                 watermarkPaint
             )
         }
