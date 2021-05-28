@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,6 +16,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.presentation.fragment.tablet.SomDetailFragment
 import com.tokopedia.sellerorder.list.presentation.fragments.tablet.SomListFragment
+import com.tokopedia.unifycomponents.ImageUrlLoader
 import kotlinx.android.synthetic.main.fragment_som_container.*
 
 class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, SomDetailFragment.SomOrderDetailListener {
@@ -33,6 +35,8 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
                 }
             }
         }
+
+        private const val URL_WELCOME_ILLUSTRATION = "https://images.tokopedia.net/img/android/sellerorder/ic_som_welcome_page_illustration.png"
     }
 
     private var somListFragment: SomListFragment? = null
@@ -44,6 +48,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViews()
         attachFragments()
     }
 
@@ -73,6 +78,10 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
 
     override fun onShouldPassInvoice(invoice: String) {
         somListFragment?.applySearchParam(invoice)
+    }
+
+    private fun setupViews() {
+        ImageHandler.loadImageAndCache(ivSomDetailWelcomeIllustration, URL_WELCOME_ILLUSTRATION)
     }
 
     private fun setupSomListWidth(fragmentList: FrameLayout?) {
