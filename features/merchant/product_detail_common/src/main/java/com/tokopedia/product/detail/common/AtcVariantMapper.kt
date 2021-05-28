@@ -19,7 +19,7 @@ object AtcVariantMapper {
         val selected = listOfVariantCategory?.mapNotNull { it.getSelectedOption()?.variantName }?.joinToString()
                 ?: ""
         return if (selected.isEmpty()) {
-            selectedChild?.name?.split("-")?.lastOrNull() ?: ""
+            selectedChild?.name?.split("- ")?.lastOrNull() ?: ""
         } else {
             selected
         }
