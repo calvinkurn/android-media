@@ -20,7 +20,9 @@ import kotlinx.android.synthetic.main.item_campaign_stock_variant_editor.view.*
 
 class SellableStockProductViewHolder(itemView: View?,
                                      private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
-                                     private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
+                                     private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit,
+                                     private val source: String
+): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
 
     private var stockEditTextWatcher: TextWatcher? = null
 
@@ -54,7 +56,8 @@ class SellableStockProductViewHolder(itemView: View?,
                     }
                     this@with.label_campaign_stock_inactive.showWithCondition(!isChecked)
                     onVariantStatusChanged(element.productId, status)
-                    ProductManageTracking.eventClickAllocationProductStatus(isVariant = true, isOn = isChecked)
+                    ProductManageTracking.eventClickAllocationProductStatus(
+                            isVariant = true, isOn = isChecked, source = source)
                 }
             }
             switch_campaign_stock_variant_editor.isEnabled = element.access.editProduct
@@ -90,10 +93,10 @@ class SellableStockProductViewHolder(itemView: View?,
         }
 
         setAddClickListener {
-            ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = true)
+            ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = true, source)
         }
         setSubstractListener {
-            ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = true)
+            ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = true, source)
         }
 
         setupStockEditor(element)

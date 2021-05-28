@@ -31,21 +31,6 @@ public interface RemoteConfig {
     boolean getBoolean(String key, boolean defaultValue);
 
     /**
-     * Gets the value corresponding to the specified key, as a byte array.
-     * @param key The Remote Config parameter key to look up.
-     * @return value as byte array
-     */
-    byte[] getByteArray(String key);
-
-    /**
-     * Gets the value corresponding to the specified key, as a byte array.
-     * @param key The Remote Config parameter key to look up.
-     * @param defaultValue the defaultValue if any error happened
-     * @return value as byte array
-     */
-    byte[] getByteArray(String key, byte[] defaultValue);
-
-    /**
      * Gets the value corresponding to the specified key, as a double.
      * @param key The Remote Config parameter key to look up.
      * @return value as double
