@@ -118,11 +118,6 @@ class EditProductFragment : BaseDaggerFragment() {
         fetchData()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-//        fetchData()
-    }
-
     private fun fetchData() {
         viewModel.getAds(currentPageNum, arguments?.getString(GROUP_ID)?.toInt(), this::onSuccessGetAds)
     }

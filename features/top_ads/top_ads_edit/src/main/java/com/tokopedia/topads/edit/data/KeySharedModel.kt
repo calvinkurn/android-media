@@ -6,8 +6,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class KeySharedModel (
         var name : String ="",
-        val totalSearch: String = "baru",
-        val competition : String = "baru",
+        val totalSearch: String = "-",
+        val competition : String = "-",
         var priceBid:String = "0",
         val minBudget:String = "0",
         val source:String = "",

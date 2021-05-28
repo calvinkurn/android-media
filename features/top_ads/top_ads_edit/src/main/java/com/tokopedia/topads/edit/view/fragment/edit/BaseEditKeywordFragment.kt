@@ -14,7 +14,6 @@ import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapte
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.KeySharedModel
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.GROUP_STRATEGY
@@ -56,8 +55,16 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_edit_keyword_base_layout), container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(
+            resources.getLayout(R.layout.topads_edit_keyword_base_layout),
+            container,
+            false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,13 +72,19 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         renderViewPager()
         keyword.chipType = ChipsUnify.TYPE_SELECTED
         keyword.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_POSITIF, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                CLICK_KATA_KUNCI_POSITIF,
+                ""
+            )
             keyword.chipType = ChipsUnify.TYPE_SELECTED
             neg_keyword.chipType = ChipsUnify.TYPE_NORMAL
             view_pager.currentItem = POSITION0
         }
         neg_keyword.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_NEGATIF, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                CLICK_KATA_KUNCI_NEGATIF,
+                ""
+            )
             neg_keyword.chipType = ChipsUnify.TYPE_SELECTED
             keyword.chipType = ChipsUnify.TYPE_NORMAL
             view_pager.currentItem = POSITION1
@@ -157,9 +170,9 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var addedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         var editedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         val strategies: ArrayList<String> = arrayListOf()
-        var bidGroup =0
+        var bidGroup = 0
 
-        if(bidStrategy.isEmpty()) {
+        if (bidStrategy.isEmpty()) {
             if (fragments?.get(0) is EditKeywordsFragment) {
                 val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
                 addedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_CREATE)
@@ -178,7 +191,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             }
         }
         strategies.clear()
-        if(autobid_selection.text == "Otomatis") {
+        if (autobid_selection.text == "Otomatis") {
             strategies.add("auto_bid")
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
@@ -194,18 +207,20 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     fun getKeywordNameItems(): MutableList<Map<String, Any>> {
         val fragments = (view_pager?.adapter as KeywordEditPagerAdapter?)?.list
-        val items:MutableList<Map<String,Any>> = mutableListOf()
+        val items: MutableList<Map<String, Any>> = mutableListOf()
         if (fragments?.get(0) is EditKeywordsFragment) {
-            positivekeywordsAll?.forEachIndexed {index , it->
-                val map = mapOf("name" to it.name
-                , "id" to it.id , "type" to "positif")
+            positivekeywordsAll?.forEachIndexed { index, it ->
+                val map = mapOf(
+                    "name" to it.name, "id" to it.id, "type" to "positif"
+                )
                 items.add(map)
             }
         }
         if (fragments?.get(1) is EditNegativeKeywordsFragment) {
             negativekeywordsAll?.forEach {
-                val map = mapOf("name" to it.tag
-                        , "id" to it.keywordId , "type" to "negatif")
+                val map = mapOf(
+                    "name" to it.tag, "id" to it.keywordId, "type" to "negatif"
+                )
                 items.add(map)
             }
         }

@@ -82,7 +82,7 @@
     <string name="topads_common_keyword_info_sheet_Sedang">kata kunci dengan pengguna sedang, kompetisi berjalan rata dan cukup ketat.</string>
     <string name="topads_common_keyword_info_sheet_Rendah">kata kunci dengan sedikit pengguna, kompetisi rendah iklanmu berpeluang besar berada di halaman awal</string>
     <string name="topads_common_keyword_competition_high">Tinggi</string>
-    <string name="topads_common_keyword_competition_unknown">Baru</string>
+    <string name="topads_common_keyword_competition_unknown">baru</string>
     <string name="topads_common_keyword_competition_moderation">Sedang</string>
     <string name="topads_common_keyword_competition_low">Rendah</string>
     <string name="topads_common_keyword_pencarian">Pencarian</string>

@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
@@ -66,7 +64,6 @@ import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -109,7 +106,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var info1: ImageUnify
     private lateinit var info2: ImageUnify
     private lateinit var div: View
-
+    private var receivedRecom = false
+    private var receivedKeywords = false
     private var productId: MutableList<String> = mutableListOf()
 
     private var userID: String = ""
@@ -206,10 +204,19 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sharedViewModel.getBudget().observe(viewLifecycleOwner, Observer {
+        sharedViewModel.getBudget().observe(viewLifecycleOwner, {
             budgetInput.textFieldInput.setText(it.toString())
         })
-        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
+        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, {
+            productIds = it.joinToString(",")
+            if (productIds.isNotEmpty() && recommendedKeywords?.isEmpty() == true)
+                viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
+        })
+        sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
+            groupId = it
+            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
+        })
+        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, {
             productId = it
             getLatestBid()
             val suggestions = java.util.ArrayList<DataSuggestions>()
@@ -217,14 +224,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             suggestions.add(DataSuggestions("group", dummyId))
             viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
         })
-        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, Observer{
-            if(it.isEmpty() || minBid == "0") {
+        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
+            if (it.isEmpty() || minBid == "0") {
                 getLatestBid()
             }
         })
-
-        if (productIds.isNotEmpty())
-            viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
     }
 
     private fun getLatestBid() {
@@ -308,7 +312,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
-
     private fun actionEnable(isEnable: Boolean) {
         callBack.buttonDisable(isEnable)
     }
@@ -319,6 +322,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessRecommended(keywords: List<KeywordData>) {
+        receivedRecom = true
         keywords.forEach {
             recommendedKeywords?.addAll(0, it.keywordData)
         }
@@ -327,6 +331,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun checkForCommonData() {
+        if(!receivedKeywords || !receivedRecom)
+            return
         val listItem: MutableList<KeySharedModel> = mutableListOf()
         var commonToRecommendation: Boolean
         existingKeyword?.forEach { selected ->
@@ -344,6 +350,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         listItem.forEach {
             adapter.items.add(EditKeywordItemViewModel(it))
         }
+        setCount()
         adapter.notifyDataSetChanged()
     }
 
@@ -364,15 +371,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun mapToModelManual(selected: GetKeywordResponse.KeywordsItem): KeySharedModel {
         return KeySharedModel(
             selected.tag,
-            "baru",
-            "baru",
+            "-1",
+            getString(R.string.topads_common_keyword_competition_unknown),
             selected.priceBid,
             minSuggestKeyword,
             selected.source,
             selected.type,
             selected.keywordId,
         )
-
     }
 
     private fun mapToModel(
@@ -408,10 +414,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         return bundle
     }
 
-    private fun ifNewKeyword(tag: String): Boolean {
-        return addedKeywords?.find { item -> item.name == tag } != null
-    }
-
     private fun actionStatusChange(position: Int) {
         if (isExistsOriginal(position)) {
             deletedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
@@ -423,12 +425,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(
-                MethodChecker.fromHtml(
                     String.format(
                         getString(R.string.topads_edit_delete_keyword_conf_dialog_title),
                         (adapter.items[position] as EditKeywordItemViewModel).data.name
                     )
-                )
             )
             dialog.setDescription(
                 MethodChecker.fromHtml(
@@ -535,14 +535,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         info2.setOnClickListener {
             InfoBottomSheet.newInstance().show(childFragmentManager, 1)
         }
-
-        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, Observer {
-            productIds = it.joinToString(",")
-        })
-        sharedViewModel.getGroupId().observe(viewLifecycleOwner, Observer {
-            groupId = it
-            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
-        })
         addKeyword.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                 CLICK_TAMBAH_KATA_KUNCI,
@@ -563,6 +555,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
         this.cursor = cursor
+        receivedKeywords = true
         if (data.isEmpty()) {
             setEmptyView()
         } else {
@@ -579,7 +572,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             } else {
                 ticker.visibility = View.GONE
                 checkForCommonData()
-                setCount()
                 setVisibilityOperation(View.VISIBLE)
             }
             recyclerviewScrollListener.updateStateAfterGetData()
@@ -649,7 +641,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             BROAD_POSITIVE,
             "0",
         )
-
     }
 
     override fun onAttach(context: Context) {
@@ -659,7 +650,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         } else {
             throw RuntimeException("The parent fragment must implement ButtonAction")
         }
-
     }
 
     fun sendData(): Bundle {
@@ -686,5 +676,4 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     interface ButtonAction {
         fun buttonDisable(enable: Boolean)
     }
-
 }
