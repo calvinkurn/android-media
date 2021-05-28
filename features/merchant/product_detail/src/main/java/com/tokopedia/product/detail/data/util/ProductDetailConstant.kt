@@ -72,6 +72,7 @@ object ProductDetailConstant {
 
     //Mapper
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
+    const val MINI_SOCIAL_PROOF_2 = "social_proof_mini_2"
     const val PRODUCT_INFO = "product_info"
     const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"

@@ -132,6 +132,12 @@
 
     <string name="slider_counter_builder">%1$d/%2$d</string>
 
+    <!--Social Proof 2-->
+    <string name="label_stock_builder">&lt;b>%1s&lt;/b> stok tersedia</string>
+    <string name="label_terjual_tokonow_builder">Terjual &lt;b>%1s&lt;/b></string>
+    <string name="label_wishlist_tokonow_builder">Wishlist &lt;b>%1s&lt;/b></string>
+    <string name="label_view_tokonow_builder">Dilihat &lt;b>%1s&lt;/b></string>
+
     // Discussion Most Helpful
     <string name="product_detail_discussion_title">Diskusi Paling Membantu</string>
     <string name="product_detail_discussion_see_all">Lihat Semua (%d)</string>

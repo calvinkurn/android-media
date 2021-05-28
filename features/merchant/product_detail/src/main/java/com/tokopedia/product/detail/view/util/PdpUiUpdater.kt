@@ -39,6 +39,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private val miniSocialProofMap: ProductMiniSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
+    private val miniSocialProofTokoNowMap: ProductMiniSocialProofTokoNowDataModel?
+        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_2] as? ProductMiniSocialProofTokoNowDataModel
+
     val basicContentMap: ProductContentDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_CONTENT] as? ProductContentDataModel
 
@@ -165,6 +168,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
                     talkCount = it.basic.stats.countTalk.toIntOrZero()
+                    paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
+                }
+            }
+
+            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_2, loadInitialData) {
+                miniSocialProofTokoNowMap?.run {
+                    rating = it.basic.stats.rating
+                    ratingCount = it.basic.stats.countReview.toIntOrZero()
+                    // TODO vindo : Add stock value here
+                    stock = 24
                     paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
                 }
             }
@@ -304,6 +317,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF) {
                 miniSocialProofMap?.run {
+                    wishlistCount = it.wishlistCount.toIntOrZero()
+                    viewCount = it.productView.toIntOrZero()
+                    shouldRenderSocialProof = true
+                    buyerPhotosCount = it.imageReviews?.imageCount.toIntOrZero()
+                    setSocialProofData()
+                }
+            }
+
+            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_2) {
+                miniSocialProofTokoNowMap?.run {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true

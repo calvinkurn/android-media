@@ -60,6 +60,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductMiniSocialProofViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductMiniSocialProofTokoNowDataModel): Int {
+        return ProductMiniSocialProofTokoNowViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductTickerInfoDataModel): Int {
         return ProductTickerInfoViewHolder.LAYOUT
     }
@@ -119,6 +123,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductMediaViewHolder.LAYOUT -> ProductMediaViewHolder(view, listener)
             ProductContentViewHolder.LAYOUT -> ProductContentViewHolder(view, listener)
             ProductMiniSocialProofViewHolder.LAYOUT -> ProductMiniSocialProofViewHolder(view, listener)
+            ProductMiniSocialProofTokoNowViewHolder.LAYOUT -> ProductMiniSocialProofTokoNowViewHolder(view, listener)
             ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
             ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
             ProductCustomInfoViewHolder.LAYOUT -> ProductCustomInfoViewHolder(view, listener)
