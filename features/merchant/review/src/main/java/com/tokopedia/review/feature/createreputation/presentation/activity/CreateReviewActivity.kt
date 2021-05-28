@@ -13,13 +13,13 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
-import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import timber.log.Timber
 
@@ -29,6 +29,9 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     companion object {
         const val PARAM_RATING = "rating"
         const val DEFAULT_PRODUCT_RATING = 5
+        const val WRITE_FORM_EXPERIMENT_NAME = "ReviewForm_AB"
+        const val WRITE_FORM_BOTTOM_SHEET_VARIANT = "variant_bottomsheet"
+        const val WRITE_FORM_CONTROL_VARIANT = "control_page"
     }
 
 
@@ -83,7 +86,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun onBackPressed() {
-        if (!InboxUnifiedRemoteConfig.isInboxUnified() || isEditMode) {
+        if (isNewFormVariant() || isEditMode) {
             createReviewFragment?.let {
                 CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
                 it.showCancelDialog()
@@ -212,6 +215,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     private fun isNewView(): Boolean {
-        return InboxUnifiedRemoteConfig.isInboxUnified() && !isEditMode
+        return isNewFormVariant() && !isEditMode
+    }
+
+    private fun isNewFormVariant(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                WRITE_FORM_EXPERIMENT_NAME, WRITE_FORM_CONTROL_VARIANT
+        ) == WRITE_FORM_BOTTOM_SHEET_VARIANT
     }
 }
