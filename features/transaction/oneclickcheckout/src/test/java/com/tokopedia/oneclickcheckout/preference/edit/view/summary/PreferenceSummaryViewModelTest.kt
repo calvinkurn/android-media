@@ -1,8 +1,8 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.localizationchooseaddress.util.ChosenAddress
-import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel

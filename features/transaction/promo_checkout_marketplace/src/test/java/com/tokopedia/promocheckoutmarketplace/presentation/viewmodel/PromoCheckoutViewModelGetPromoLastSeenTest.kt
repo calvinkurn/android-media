@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provideGetPromoLastSeenSuccessEmpty
 import com.tokopedia.promocheckoutmarketplace.GetPromoLastSeenDataProvider.provideGetPromoLastSeenSuccessWithData
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
