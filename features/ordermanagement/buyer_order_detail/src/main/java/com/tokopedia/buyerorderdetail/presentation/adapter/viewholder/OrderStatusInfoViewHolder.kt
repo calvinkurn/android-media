@@ -103,7 +103,7 @@ class OrderStatusInfoViewHolder(
 
     private fun goToPrintInvoicePage() {
         element?.let {
-            navigator.goToPrintInvoicePage(it.invoice.url)
+            navigator.goToPrintInvoicePage(it.invoice.url, it.invoice.invoice)
         }
     }
 }

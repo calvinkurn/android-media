@@ -27,6 +27,8 @@ class BuyerOrderDetailNavigator(
         private const val KEY_URL = "url"
         private const val TELEPHONY_URI = "tel:"
         private const val PREFIX_HTTP = "http"
+        private const val INVOICE_REF_NUM = "invoice_ref_num"
+        private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
     }
 
     private fun composeCallIntentData(phoneNumber: String): Uri {
@@ -53,9 +55,11 @@ class BuyerOrderDetailNavigator(
         activity.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
     }
 
-    fun goToPrintInvoicePage(url: String) {
+    fun goToPrintInvoicePage(url: String, invoiceNum: String) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INVOICE)?.apply {
             putExtra(KEY_URL, url)
+            putExtra(INVOICE_REF_NUM, invoiceNum)
+            putExtra(KEY_ORDER_CATEGORY, BuyerOrderDetailConst.CATEGORY_MARKETPLACE)
         }
         activity.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
         applyTransition()
