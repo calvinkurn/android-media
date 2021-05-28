@@ -141,7 +141,12 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         verify(inverse = !shouldRefresh) {
             viewModel.getFilters(false)
-            viewModel.refreshSelectedOrder(orderId, invoice)
+        }
+
+        if (shouldRefresh) {
+            val refreshOrderRequest = viewModel.refreshOrderRequest.observeAwaitValue()
+            assert(refreshOrderRequest?.first == orderId)
+            assert(refreshOrderRequest?.second == invoice)
         }
     }
 

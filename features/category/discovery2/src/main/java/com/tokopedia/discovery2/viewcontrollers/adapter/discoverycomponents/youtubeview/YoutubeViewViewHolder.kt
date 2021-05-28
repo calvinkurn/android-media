@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.you
 import android.content.res.Resources
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -32,10 +33,14 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
         youTubeViewViewModel.getVideoId().observe(fragment.viewLifecycleOwner, Observer {
             videoId = it.videoId ?: ""
             videoName = it.name ?: ""
-            if (shimmerView.visibility == View.VISIBLE) {
-                showVideoInWebView()
-            }
+            showVideoInWebView()
         })
+    }
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let { it ->
+            youTubeViewViewModel.getVideoId().removeObservers(it)
+        }
     }
 
     private fun showVideoInWebView() {
