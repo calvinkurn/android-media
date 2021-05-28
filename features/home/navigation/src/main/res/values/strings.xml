@@ -53,8 +53,8 @@
     <string name="title_showcase">Tampilan simpel, navigasi mudah!</string>
     <string name="desc_showcase">Menu Tokopedia kini tampil lebih rapi. Jelajahi dan buktikan kemudahan navigasinya!</string>
 
-    <string name="previous">Sebelumnya</string>
-    <string name="next">Selanjutnya</string>
+    <string name="navigation_showcase_prev">Sebelumnya</string>
+    <string name="navigation_showcase_next">Selanjutnya</string>
     <string name="coupon_copy_text">Kode voucher tersalin</string>
 
     <string name="navigation_home_label_longpress_beli">Cari</string>
