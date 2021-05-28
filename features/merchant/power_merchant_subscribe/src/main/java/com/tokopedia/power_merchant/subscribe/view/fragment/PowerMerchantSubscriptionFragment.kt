@@ -796,7 +796,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 grade = grade,
                 nextMonthlyRefreshDate = data.nextMonthlyRefreshDate,
                 nextQuarterlyCalibrationRefreshDate = data.nextQuarterlyCalibrationRefreshDate,
-                pmStatus = data.pmStatus,
+                pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 isAutoExtendEnabled = pmBasicInfo?.pmStatus?.autoExtendEnabled.orFalse(),
                 items = benefits
@@ -819,7 +819,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 threshold = shopScoreThreshold,
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
-                pmStatus = data.pmStatus
+                pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE
         )
     }
 
