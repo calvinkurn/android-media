@@ -116,8 +116,14 @@ abstract class BaseSearchCategoryFragment:
     protected fun IconBuilder.addCart(): IconBuilder = this
             .addIcon(ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
 
-    protected fun IconBuilder.addGlobalNav(): IconBuilder = this
-            .addIcon(ID_NAV_GLOBAL, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+    protected fun IconBuilder.addGlobalNav(): IconBuilder =
+            if (getViewModel().hasGlobalMenu)
+                this.addIcon(
+                        ID_NAV_GLOBAL,
+                        disableRouteManager = false,
+                        disableDefaultGtmTracker = false
+                ) { }
+            else this
 
     protected open fun configureMiniCart() {
         val shopIds = listOf("123")

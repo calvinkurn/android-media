@@ -14,6 +14,7 @@ import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
@@ -38,6 +39,7 @@ class CategoryViewModel @Inject constructor (
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
+        abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -45,6 +47,7 @@ class CategoryViewModel @Inject constructor (
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
         chooseAddressWrapper,
+        abTestPlatformWrapper,
 ) {
 
     private var navigation: TokonowCategoryDetail.Navigation? = null

@@ -10,6 +10,7 @@ import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.usecase.coroutines.UseCase
@@ -17,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class SearchViewModel @Inject constructor (
-        private val baseDispatcher: CoroutineDispatchers,
+        baseDispatcher: CoroutineDispatchers,
         @Named(SEARCH_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
         @param:Named(SEARCH_FIRST_PAGE_USE_CASE)
@@ -28,6 +29,7 @@ class SearchViewModel @Inject constructor (
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
+        abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -35,6 +37,7 @@ class SearchViewModel @Inject constructor (
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
         chooseAddressWrapper,
+        abTestPlatformWrapper,
 ) {
 
     val query = queryParamMap[SearchApiConst.Q] ?: ""

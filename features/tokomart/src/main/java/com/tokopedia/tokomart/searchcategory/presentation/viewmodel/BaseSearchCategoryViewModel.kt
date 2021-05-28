@@ -23,6 +23,11 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_OLD
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
@@ -39,6 +44,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDa
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.util.DummyDataViewGenerator
+import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
@@ -49,12 +55,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
-        private val baseDispatcher: CoroutineDispatchers,
+        protected val baseDispatcher: CoroutineDispatchers,
         queryParamMap: Map<String, String>,
         protected val getFilterUseCase: UseCase<DynamicFilterModel>,
         protected val getProductCountUseCase: UseCase<String>,
         protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
+        protected val abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseViewModel(baseDispatcher.io) {
 
     protected val filterController = FilterController()
@@ -63,6 +70,8 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val queryParamMutable = queryParamMap.toMutableMap()
     val queryParam: Map<String, String> = queryParamMutable
+
+    val hasGlobalMenu: Boolean
 
     protected val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
@@ -96,6 +105,20 @@ abstract class BaseSearchCategoryViewModel(
     protected var nextPage = 1
 
     init {
+        updateQueryParamWithDefaultSort()
+
+        hasGlobalMenu = isABTestNavigationRevamp()
+    }
+
+    private fun isABTestNavigationRevamp() =
+            getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP
+
+    private fun getNavigationExpVariant() =
+            abTestPlatformWrapper
+                    .getABTestRemoteConfig()
+                    ?.getString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_VARIANT_OLD)
+
+    private fun updateQueryParamWithDefaultSort() {
         queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
     }
 
