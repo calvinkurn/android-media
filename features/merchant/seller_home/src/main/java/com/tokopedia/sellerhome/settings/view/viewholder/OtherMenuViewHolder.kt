@@ -399,12 +399,12 @@ class OtherMenuViewHolder(private val itemView: View,
                     upgradePMTextView.hide()
                 }
                 powerMerchantStatusTextView.hide()
-                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_status)
+                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
             }
             is PowerMerchantStatus.NotActive -> {
                 powerMerchantStatusTextView.show()
                 upgradePMTextView.hide()
-                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
+                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_status)
                 powerMerchantStatusTextView.setOnClickListener {
                     goToPowerMerchantSubscribe(TAB_PM_PRO)
                 }

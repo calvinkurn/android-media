@@ -362,7 +362,6 @@ class ShopInfoViewHolder(
                 upgradePMTextView.hide()
                 powerMerchantText.text = getString(R.string.power_merchant_status)
 
-
                 powerMerchantStatusTextView.setOnClickListener {
                     goToPowerMerchantSubscribe(TAB_PM_PRO)
                     sellerMenuTracker?.sendEventClickShopType()
