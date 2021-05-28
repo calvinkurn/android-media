@@ -23,11 +23,11 @@ class PowerMerchantActivateUseCase @Inject constructor(
         val gqlErrors = gqlResponse.getError(GoldActivationSubscription::class.java)
         if (gqlErrors.isNullOrEmpty()) {
             val data: GoldActivationSubscription = gqlResponse.getData<GoldActivationSubscription>(GoldActivationSubscription::class.java)
-                    ?: throw MessageErrorException("returns null from backend")
-            val errorMessage = data.goldActivationData.header.message.firstOrNull().orEmpty()
+                    ?: throw RuntimeException("returns null from backend")
+            val message = data.goldActivationData.header.message.firstOrNull().orEmpty()
             return PMActivationStatusUiModel(
                     isSuccess = data.isSuccess(),
-                    errorMessage = errorMessage,
+                    message = message,
                     currentShopTier = data.goldActivationData.data.shopTier
             )
         } else {
@@ -40,7 +40,6 @@ class PowerMerchantActivateUseCase @Inject constructor(
          mutation activatePowerMerchant(${'$'}source: String!, ${'$'}current_shop_tier: Int, ${'$'}next_shop_tier: Int) {
            goldActivationSubscription(source: ${'$'}source, current_shop_tier: ${'$'}current_shop_tier, next_shop_tier: ${'$'}next_shop_tier) {
              header {
-               process_time
                messages
                error_code
                reason

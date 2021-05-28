@@ -14,16 +14,16 @@ data class PMShopInfoUiModel(
         val hasActiveProduct: Boolean = false,
         val isEligiblePm: Boolean = false,
         val isEligiblePmPro: Boolean = false,
-        val itemSoldOneMonth: Int = 0,
-        val itemSoldPmProThreshold: Int = DEFAULT_ORDER_THRESHOLD,
-        val nivOneMonth: Long = 0,
-        val nivPmProThreshold: Long = DEFAULT_NIV_THRESHOLD
+        val itemSoldOneMonth: Long = 0,
+        val itemSoldPmProThreshold: Long = DEFAULT_ORDER_THRESHOLD,
+        val netItemValueOneMonth: Long = 0,
+        val netItemValuePmProThreshold: Long = DEFAULT_NIV_THRESHOLD
 ) {
 
     companion object {
         const val DEFAULT_PM_SHOP_SCORE_THRESHOLD = 60
         const val DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD = 70
-        const val DEFAULT_ORDER_THRESHOLD = 3
+        const val DEFAULT_ORDER_THRESHOLD = 3L
         const val DEFAULT_NIV_THRESHOLD = 350000L
     }
 

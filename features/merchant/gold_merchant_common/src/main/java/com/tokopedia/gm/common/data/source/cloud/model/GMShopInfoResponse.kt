@@ -19,7 +19,7 @@ data class GoldGetPMShopInfoDataModel(
         @SerializedName("is_kyc")
         val isKyc: Boolean? = false,
         @SerializedName("kyc_status_id")
-        val kycStatusId: Int? = 0,
+        val kycStatusId: String? = "0",
         @SerializedName("shop_score_sum")
         val shopScore: Int? = 0,
         @SerializedName("shop_score_threshold")
@@ -35,9 +35,9 @@ data class GoldGetPMShopInfoDataModel(
         @SerializedName("shop_level")
         val shopLevel: Int? = 0,
         @SerializedName("item_sold_one_month")
-        val itemSoldOneMonth: Int? = 0,
+        val itemSoldOneMonth: Long? = 0,
         @SerializedName("item_sold_pm_pro_threshold")
-        val itemSoldPmProThreshold: Int? = 0,
+        val itemSoldPmProThreshold: Long? = 0,
         @SerializedName("niv_one_month")
         val nivOneMonth: Long? = 0,
         @SerializedName("niv_pm_pro_threshold")

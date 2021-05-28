@@ -15,16 +15,12 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(response: PMGradeBenefitInfoModel?): PMGradeBenefitInfoUiModel {
         return PMGradeBenefitInfoUiModel(
-                shopId = response?.shopId.orZero().toString(),
                 nextMonthlyRefreshDate = getRefreshDateFmt(response?.nextMonthlyRefreshDate.orEmpty()),
                 nextQuarterlyCalibrationRefreshDate = getRefreshDateFmt(response?.nextQuarterlyCalibrationRefreshDate.orEmpty()),
                 currentPMGrade = getCurrentPMGrade(response?.currentPMGrade),
                 currentPMBenefits = getPMGradeBenefits(response?.currentPMBenefits),
                 nextPMGrade = getNextPMGrade(response?.nextPMGrade),
-                nextPMBenefits = getPMGradeBenefits(response?.nextPMBenefits),
-                potentialPmGrade = getPMPotentialGrade(response?.potentialPmGrade),
-                potentialPMBenefits = getPMGradeBenefits(response?.potentialBenefits),
-                pmGradeBenefitList = getPMGradeBenefitList(response?.pmGradeBenefitList)
+                nextPMBenefits = getPMGradeBenefits(response?.nextPMBenefits)
         )
     }
 

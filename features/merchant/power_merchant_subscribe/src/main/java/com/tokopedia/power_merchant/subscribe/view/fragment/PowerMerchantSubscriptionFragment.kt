@@ -16,10 +16,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
@@ -170,7 +170,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
             term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
             term is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
-            term is RegistrationTermUiModel.Niv -> showNivTermBottomSheet(shopInfo.nivPmProThreshold)
+            term is RegistrationTermUiModel.NetItemValue -> showNivTermBottomSheet(shopInfo.netItemValuePmProThreshold)
             term is RegistrationTermUiModel.Kyc -> submitKYC(tncAgreed)
         }
     }
@@ -288,7 +288,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             hideActivationProgress()
             when (it) {
                 is Success -> setOnPmActivationSuccess(it.data)
-                is Fail -> setOnPmActivationFailed(it.throwable)
+                is Fail -> {
+                    setOnPmActivationFailed(it.throwable)
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVATION_ERROR, it.throwable)
+                }
             }
         })
     }
@@ -297,7 +300,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         mViewModel.pmCancelDeactivationStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> setOnCancelDeactivationSuccess(it.data)
-                is Fail -> setOnCancelDeactivationFailed(it.throwable)
+                is Fail -> {
+                    setOnCancelDeactivationFailed(it.throwable)
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_CANCEL_DEACTIVATION_ERROR, it.throwable)
+                }
             }
         })
     }
@@ -310,17 +316,16 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun setOnCancelDeactivationSuccess(data: PMActivationStatusUiModel) {
         if (!data.isSuccess) {
-            setOnCancelDeactivationFailed(MessageErrorException(data.errorMessage))
+            setOnCancelDeactivationFailed(RuntimeException(data.message))
             return
         }
 
         notifyCancelPmDeactivationWidget()
 
         view?.run {
-            val message = getString(R.string.pm_cancel_pm_deactivation_success)
             val actionText = getString(R.string.power_merchant_ok_label)
             Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
-            Toaster.build(rootView, message, Toaster.LENGTH_LONG,
+            Toaster.build(rootView, data.message, Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL, actionText)
                     .show()
         }
@@ -437,24 +442,18 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun setOnPmActivationSuccess(data: PMActivationStatusUiModel) {
         if (!data.isSuccess) {
-            setOnPmActivationFailed(MessageErrorException(data.errorMessage))
+            setOnPmActivationFailed(RuntimeException(data.message))
             return
         }
 
         notifyUpgradePmProWidget()
 
         view?.rootView?.let {
-            val isPmPro = data.currentShopTier == PMConstant.ShopTierType.POWER_MERCHANT_PRO
-            val message = if (isPmPro) {
-                getString(R.string.pm_pro_registration_success_message)
-            } else {
-                getString(R.string.pm_registration_success_message)
-            }
             val actionText = getString(R.string.oke)
 
             it.post {
                 Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
-                Toaster.build(it, message, Toaster.LENGTH_LONG,
+                Toaster.build(it, data.message, Toaster.LENGTH_LONG,
                         Toaster.TYPE_NORMAL, actionText)
                         .show()
             }
@@ -519,9 +518,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private fun showOrderTermBottomSheet(itemSoldThreshold: Int) {
+    private fun showOrderTermBottomSheet(itemSoldThreshold: Long) {
         val title = getString(R.string.pm_not_eligible_order_term_title)
-        val description = getString(R.string.pm_not_eligible_order_term_description, itemSoldThreshold)
+        val description = getString(R.string.pm_not_eligible_order_term_description, itemSoldThreshold.toString())
         val primaryCtaText = getString(R.string.pm_learn_ad_and_promotion)
         val secondaryCtaText = getString(R.string.pm_content_slider_last_slide_button)
         val imageUrl = PMConstant.Images.PM_TOTAL_ORDER_TERM
@@ -663,7 +662,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 is Success -> renderPmActiveState(it.data)
                 is Fail -> {
                     showErrorState()
-                    logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVE_IDLE_PAGE_ERROR, it.throwable)
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVE_PAGE_ERROR, it.throwable)
                 }
             }
         })
@@ -748,7 +747,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 }
                 is Fail -> {
                     showErrorState()
-                    logToCrashlytic(PowerMerchantErrorLogger.REGISTRATION_PAGE_ERROR, it.throwable)
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_REGISTRATION_PAGE_ERROR, it.throwable)
                 }
             }
         })
@@ -856,29 +855,29 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun getUpgradePmProWidget(): WidgetUpgradePmProUiModel? {
         pmBasicInfo?.shopInfo?.let {
             val benefitList = listOf(
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_1, Constant.POWER_MERCHANT_PRO_CHARGING),
-                            drawableResIcon = R.drawable.ic_pm_free_shipping_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_1, Constant.POWER_MERCHANT_PRO_CHARGING),
+                            icon = IconUnify.COURIER_FAST
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_2),
-                            drawableResIcon = R.drawable.ic_pm_search_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_2),
+                            icon = IconUnify.SEARCH
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_3),
-                            drawableResIcon = R.drawable.ic_pm_gosend_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_3),
+                            icon = IconUnify.COURIER
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_4),
-                            drawableResIcon = R.drawable.ic_pm_pro_bange_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_4),
+                            icon = IconUnify.BADGE_PMPRO_FILLED
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_5),
-                            drawableResIcon = R.drawable.ic_pm_tokopedia_care_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_5),
+                            icon = IconUnify.CALL_CENTER
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_6),
-                            drawableResIcon = R.drawable.ic_pm_star_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_6),
+                            icon = IconUnify.STAR_CIRCLE
                     )
             )
             return WidgetUpgradePmProUiModel(

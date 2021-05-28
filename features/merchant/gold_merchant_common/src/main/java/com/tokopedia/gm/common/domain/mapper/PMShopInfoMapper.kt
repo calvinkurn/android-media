@@ -18,7 +18,7 @@ class PMShopInfoMapper @Inject constructor() {
         return PMShopInfoUiModel(
                 isNewSeller = response?.isNewSeller.orTrue(),
                 isKyc = response?.isKyc.orFalse(),
-                kycStatusId = response?.kycStatusId ?: KYCStatusId.NOT_VERIFIED,
+                kycStatusId = response?.kycStatusId?.toIntOrNull() ?: KYCStatusId.NOT_VERIFIED,
                 shopScore = response?.shopScore.orZero(),
                 shopScoreThreshold = response?.shopScoreThreshold ?: PMShopInfoUiModel.DEFAULT_PM_SHOP_SCORE_THRESHOLD,
                 shopScorePmProThreshold = response?.shopScorePmProThreshold ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD,
@@ -27,8 +27,8 @@ class PMShopInfoMapper @Inject constructor() {
                 isEligiblePmPro = response?.isEligiblePmPro.orFalse(),
                 itemSoldOneMonth = response?.itemSoldOneMonth.orZero(),
                 itemSoldPmProThreshold = response?.itemSoldPmProThreshold ?: PMShopInfoUiModel.DEFAULT_ORDER_THRESHOLD,
-                nivOneMonth = response?.nivOneMonth.orZero(),
-                nivPmProThreshold = response?.nivPmProThreshold ?: PMShopInfoUiModel.DEFAULT_NIV_THRESHOLD
+                netItemValueOneMonth = response?.nivOneMonth.orZero(),
+                netItemValuePmProThreshold = response?.nivPmProThreshold ?: PMShopInfoUiModel.DEFAULT_NIV_THRESHOLD
         )
     }
 }
