@@ -174,7 +174,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun isImageNotEmpty(): Boolean {
-        return imageData.isNotEmpty()
+        return imageData.filterIsInstance<ImageReviewUiModel>().isNotEmpty()
     }
 
     fun clearImageData() {

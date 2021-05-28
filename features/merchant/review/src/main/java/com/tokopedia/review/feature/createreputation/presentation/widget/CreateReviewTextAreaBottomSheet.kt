@@ -95,12 +95,14 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
                             }
                         }
                         incentiveHelperText?.text = incentiveHelper
-                        show()
                     }
 
                 })
             }
-            incentiveHelperText?.text = this.incentiveHelper
+            incentiveHelperText?.apply {
+                text = incentiveHelper
+                show()
+            }
             setChild(view)
             showCloseIcon = false
             isFullpage = true

@@ -62,6 +62,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         ImageClickListener, ReviewTemplateListener {
 
     companion object {
+        const val GOOD_RATING_THRESHOLD = 3
         fun createInstance(rating: Int, productId: Long, reputationId: Long, utmSource: String): CreateReviewBottomSheet {
             return CreateReviewBottomSheet().apply {
                 this.rating = rating
@@ -187,10 +188,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
-        if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible)
-                ?: ""
-        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, isUserEligible(), (createReviewViewModel.reviewTemplates?.value as? Success)?.data
-                ?: listOf())
+        if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
+        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, isUserEligible(), (createReviewViewModel.reviewTemplates.value as? Success)?.data ?: listOf())
         (textAreaBottomSheet as BottomSheetUnify).setTitle(textAreaTitle?.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
     }
@@ -221,7 +220,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun hideText() {
-        // No Op
+        incentivesHelperText?.hide()
     }
 
     override fun onAddImageClick() {
@@ -540,7 +539,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun isGoodRating(): Boolean {
-        return ratingStars?.clickAt ?: 0 > 3
+        return ratingStars?.clickAt ?: 0 > GOOD_RATING_THRESHOLD
     }
 
     private fun setDismissBehavior() {
@@ -691,7 +690,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             showSendRatingOnlyDialog()
             return
         }
-        showReviewUnsavedWarningDialog()
+        if(!isGoodRating() && textArea?.isEmpty() == false && createReviewViewModel.isImageNotEmpty()) {
+            showReviewUnsavedWarningDialog()
+            return
+        }
+        dismiss()
     }
 
     private fun finishIfRoot(success: Boolean = false, errorMessage: String = "", feedbackId: String = "") {

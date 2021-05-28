@@ -27,6 +27,10 @@ class CreateReviewTextArea : BaseCustomView {
         init()
     }
 
+    override fun clearFocus() {
+        createReviewEditText.clearFocus()
+    }
+
     private fun init() {
         View.inflate(context, R.layout.widget_create_review_text_area, this)
         this@CreateReviewTextArea.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
