@@ -2,6 +2,7 @@ package com.tokopedia.minicart.cartlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
@@ -28,14 +29,17 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
                 title = "Belanjaanmu di TokoNOW!"
             }
         })
+    }
 
+    private fun cloneVisitables(): MutableList<Visitable<*>> {
+        return miniCartUiModel.value?.visitables?.toMutableList() ?: mutableListOf()
     }
 
     fun calculateProduct() {
-        val miniCartUiModelValue = miniCartUiModel.value
+        val visitables = cloneVisitables()
 
         val miniCartProductList = mutableListOf<MiniCartProductUiModel>()
-        miniCartUiModelValue?.visitables?.forEach { visitable ->
+        visitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
                 miniCartProductList.add(visitable)
             }
@@ -80,49 +84,55 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
             totalQty += visitable.productQty
             totalPrice += visitable.productQty * price
             totalWeight += visitable.productQty * visitable.productWeight
-            miniCartUiModelValue?.miniCartWidgetData?.totalProductPrice = totalPrice
-            miniCartUiModelValue?.miniCartWidgetData?.totalProductCount = totalQty
+            miniCartUiModel.value?.miniCartWidgetData?.totalProductPrice = totalPrice
+            miniCartUiModel.value?.miniCartWidgetData?.totalProductCount = totalQty
         }
 
-        validateTickerWarning(totalWeight, miniCartUiModelValue)
+        validateTickerWarning(totalWeight, visitables)
+        miniCartUiModel.value?.visitables = visitables
 
         _miniCartUiModel.value = miniCartUiModel.value
     }
 
-    private fun validateTickerWarning(totalWeight: Int, miniCartUiModelValue: MiniCartUiModel?) {
-        if (totalWeight > miniCartUiModelValue?.maximumShippingWeight ?: 0) {
+    private fun validateTickerWarning(totalWeight: Int, visitables: MutableList<Visitable<*>>) {
+        val maxWeight = miniCartUiModel.value?.maximumShippingWeight ?: 0
+
+        if (totalWeight > maxWeight) {
             var tickerWarning: MiniCartTickerWarningUiModel? = null
-            miniCartUiModelValue?.visitables?.forEachIndexed { index, visitable ->
+            var tickerWarningIndex = -1
+            visitables.forEachIndexed { index, visitable ->
                 if (visitable is MiniCartTickerWarningUiModel) {
                     tickerWarning = visitable
+                    tickerWarningIndex = index
                     return@forEachIndexed
                 }
             }
 
-            val maxWeight = miniCartUiModelValue?.maximumShippingWeight ?: 0
-            val warningWording = miniCartUiModelValue?.maximumShippingWeightErrorMessage ?: ""
+            val warningWording = miniCartUiModel.value?.maximumShippingWeightErrorMessage ?: ""
             val overWeight = (totalWeight - maxWeight) / 1000.0f
             if (tickerWarning == null) {
                 tickerWarning = miniCartListViewHolderMapper.mapTickerWarningUiModel(overWeight, warningWording)
                 tickerWarning?.let {
-                    val firstItem = miniCartUiModelValue?.visitables?.firstOrNull()
+                    val firstItem = visitables.firstOrNull()
                     if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
-                        miniCartUiModel.value?.visitables?.add(1, it)
+                        visitables.add(1, it)
                     } else {
-                        miniCartUiModel.value?.visitables?.add(0, it)
+                        visitables.add(0, it)
                     }
                 }
             } else {
-                tickerWarning?.warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
+                val newTickerWarning = tickerWarning!!.deepCopy()
+                newTickerWarning.warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
+                visitables[tickerWarningIndex] = newTickerWarning
             }
         } else {
-            removeTickerWarning(miniCartUiModelValue)
+            removeTickerWarning(visitables)
         }
     }
 
-    private fun removeTickerWarning(miniCartUiModelValue: MiniCartUiModel?) {
+    private fun removeTickerWarning(visitables: MutableList<Visitable<*>>) {
         var tmpIndex = -1
-        miniCartUiModelValue?.visitables?.forEachIndexed { index, visitable ->
+        visitables.forEachIndexed { index, visitable ->
             if (visitable is MiniCartTickerWarningUiModel) {
                 tmpIndex = index
                 return@forEachIndexed
@@ -130,7 +140,7 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
         }
 
         if (tmpIndex != -1) {
-            miniCartUiModel.value?.visitables?.removeAt(tmpIndex)
+            visitables.removeAt(tmpIndex)
         }
     }
 }

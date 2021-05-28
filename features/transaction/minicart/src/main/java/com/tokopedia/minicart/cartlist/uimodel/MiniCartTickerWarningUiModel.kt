@@ -11,4 +11,10 @@ data class MiniCartTickerWarningUiModel(
         return typeFactory.type(this)
     }
 
+    fun deepCopy(): MiniCartTickerWarningUiModel {
+        return MiniCartTickerWarningUiModel(
+                warningMessage = this.warningMessage
+        )
+    }
+
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.minicart.R
@@ -54,8 +55,7 @@ class MiniCartListBottomSheet :
             hideLoading()
             bottomSheet?.setTitle(it.title)
             miniCartWidget?.updateData(it.miniCartWidgetData)
-            adapter?.clearAllElements()
-            adapter?.addVisitableList(it.visitables)
+            adapter?.updateList(it.visitables)
         })
     }
 
@@ -107,6 +107,7 @@ class MiniCartListBottomSheet :
         rvMiniCartList?.adapter = adapter
         rvMiniCartList?.layoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
         rvMiniCartList?.addItemDecoration(miniCartListDecoration)
+        (rvMiniCartList?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     private fun showLoading() {
