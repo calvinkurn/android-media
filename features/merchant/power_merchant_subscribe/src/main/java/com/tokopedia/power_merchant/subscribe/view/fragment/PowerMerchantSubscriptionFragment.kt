@@ -513,9 +513,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         }
     }
 
-    private fun showOrderTermBottomSheet(itemSoldThreshold: Int) {
+    private fun showOrderTermBottomSheet(itemSoldThreshold: Long) {
         val title = getString(R.string.pm_not_eligible_order_term_title)
-        val description = getString(R.string.pm_not_eligible_order_term_description, itemSoldThreshold)
+        val description = getString(R.string.pm_not_eligible_order_term_description, itemSoldThreshold.toString())
         val primaryCtaText = getString(R.string.pm_learn_ad_and_promotion)
         val secondaryCtaText = getString(R.string.pm_content_slider_last_slide_button)
         val imageUrl = PMConstant.Images.PM_TOTAL_ORDER_TERM
