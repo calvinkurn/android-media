@@ -10,7 +10,6 @@
         android:id="@+id/imagePmNotification"
         android:layout_width="@dimen/pm_spacing_180dp"
         android:layout_height="@dimen/pm_spacing_180dp"
-        android:scaleType="centerInside"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
