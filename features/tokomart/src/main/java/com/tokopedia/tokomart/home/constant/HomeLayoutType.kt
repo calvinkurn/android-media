@@ -1,17 +1,24 @@
 package com.tokopedia.tokomart.home.constant
 
-import androidx.annotation.IntDef
+import androidx.annotation.StringDef
 
+/**
+ * Type for layout that returned by Home Dynamic Channel query.
+ * The layout type defined is based on Home Dynamic Channel GQL
+ * response.
+ */
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(
-    HomeLayoutType.SECTION,
-    HomeLayoutType.ALL_CATEGORY,
-    HomeLayoutType.DYNAMIC_CHANNEL
+@StringDef(
+    HomeLayoutType.BANNER_CAROUSEL,
+    HomeLayoutType.CATEGORY,
+    HomeLayoutType.LEGO_3_IMAGE,
+    HomeLayoutType.LEGO_6_IMAGE
 )
 annotation class HomeLayoutType {
     companion object {
-        const val SECTION = 0
-        const val ALL_CATEGORY = 1
-        const val DYNAMIC_CHANNEL = 2
+        const val BANNER_CAROUSEL = "banner_carousel_v2"
+        const val CATEGORY = "category_tokonow"
+        const val LEGO_3_IMAGE = "lego_3_image"
+        const val LEGO_6_IMAGE = "6_image"
     }
 }

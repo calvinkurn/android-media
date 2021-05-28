@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.view.summary
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.localizationchooseaddress.util.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState

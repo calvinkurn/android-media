@@ -9,8 +9,8 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.util.ChosenAddress
-import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse

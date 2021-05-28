@@ -52,6 +52,7 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.stickyLogin)

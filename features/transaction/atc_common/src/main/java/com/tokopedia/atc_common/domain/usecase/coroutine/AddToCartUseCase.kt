@@ -9,8 +9,8 @@ import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
-import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

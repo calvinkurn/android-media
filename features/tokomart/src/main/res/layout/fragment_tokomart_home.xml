@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rvHome"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/Unify_N0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/view_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/home_header_background_content_description"
+        app:srcCompat="@drawable/ic_header_background"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:descendantFocusability="beforeDescendants" />
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/navToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:minHeight="?actionBarSize"
+        android:visibility="visible"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarBackButton="back"
+        app:toolbarAlwaysShowShadow="true"
+        app:toolbarPageName="/"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarInitialTheme="light"
+        />
+
+    <View
+        android:id="@+id/status_bar_bg"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_25"
+        android:layout_gravity="top"
+        android:background="@color/Unify_G500"
+        android:visibility="visible" />
+</FrameLayout>

@@ -6,9 +6,8 @@
         <activity
             android:name=".home.presentation.activity.TokoMartHomeActivity"
             android:exported="true"
-            android:label="@string/title_tokomart"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/TokoNowHomeTheme">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -16,8 +15,27 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_tokomart"
-                    android:path="@string/path_tokomart_home"
+                    android:host="@string/host_tokonow"
+                    android:path="@string/path_tokonow_home"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".categorylist.presentation.activity.TokoMartCategoryListActivity"
+            android:exported="true"
+            android:label="@string/title_tokonow"
+            android:screenOrientation="portrait"
+            android:theme="@style/CategoryListTheme">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokonow"
+                    android:pathPattern="@string/path_tokonow_category_list"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

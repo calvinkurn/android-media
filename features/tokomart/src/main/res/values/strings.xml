@@ -5,4 +5,12 @@
     <string name="tokomart_common_empty_state_desc_2">Saat ini, kami baru melayani kota %s. Tunggu TokoNOW! tersedia di kotamu, ya!</string>
     <string name="tokomart_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokomart_common_empty_state_button_return">Belanja di Tokopedia</string>
+
+    <string name="tokomart_category_list_bottom_sheet_title">Semua kategori di TokoNOW!</string>
+    <string name="tokomart_see_all">Lihat Semua</string>
+    <string name="tokomart_all_category_text_format">Semua Produk %1$s</string>
+
+    <string name="home_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
+    <string name="home_header_background_content_description">Header Background</string>
 </resources>

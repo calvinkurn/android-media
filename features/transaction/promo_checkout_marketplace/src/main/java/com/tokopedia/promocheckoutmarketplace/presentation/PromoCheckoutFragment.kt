@@ -48,7 +48,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.localizationchooseaddress.util.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE

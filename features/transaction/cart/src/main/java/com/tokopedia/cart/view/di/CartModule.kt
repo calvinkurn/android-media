@@ -17,7 +17,7 @@ import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.localizationchooseaddress.util.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule

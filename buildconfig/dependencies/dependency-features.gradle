@@ -118,6 +118,7 @@ ext {
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
+            localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
             
             mediauploader                   : ":features:media:mediauploader",
             mediaCommon                     : ":features:media:media-common",

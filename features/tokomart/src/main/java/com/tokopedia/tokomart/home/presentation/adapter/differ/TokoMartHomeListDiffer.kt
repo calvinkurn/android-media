@@ -1,10 +1,11 @@
 package com.tokopedia.tokomart.home.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokomart.common.base.adapter.BaseTokoMartDiffer
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeSectionUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiModel
 
-class TokoMartHomeListDiffer: BaseTokoMartDiffer() {
+class TokoMartHomeListDiffer : BaseTokoMartDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 
@@ -12,8 +13,10 @@ class TokoMartHomeListDiffer: BaseTokoMartDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if(oldItem is HomeSectionUiModel && newItem is HomeSectionUiModel) {
-            oldItem.id == newItem.id
+        return if (oldItem is TokoMartHomeLayoutUiModel && newItem is TokoMartHomeLayoutUiModel) {
+            oldItem.visitableId == newItem.visitableId
+        } else if (oldItem is HomeComponentVisitable && newItem is HomeComponentVisitable) {
+            oldItem.visitableId() == newItem.visitableId()
         } else {
             oldItem == newItem
         }
