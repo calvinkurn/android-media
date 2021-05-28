@@ -90,7 +90,6 @@ ext {
             twitterShare            : ":libraries:twitter_share",
             videoUploader           : ":libraries:videouploader",
             weaver                  : ":libraries:weaver",
-            workManagerUtil         : ":libraries:work_manager_util",
             webview                 : ":libraries:webview",
             websocket               : ":libraries:websocket",
             videoplayer             : ":libraries:videoplayer",
