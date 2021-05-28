@@ -5,8 +5,10 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitUiModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
@@ -68,7 +70,7 @@ class UpgradePmProWidget(
 
     private fun setupView(element: WidgetUpgradePmProUiModel) = with(itemView) {
         imgPmUpgradeBackdrop.loadImageDrawable(R.drawable.bg_pm_upgrade_pm_pro)
-        icPmProBadge.loadImageDrawable(R.drawable.ic_pm_badge_pm_pro_filled)
+        icPmProBadge.loadImage(PMConstant.Images.PM_PRO_BADGE)
         viewPmUpgradeTermSection.setEligibility(element.shopInfo.isEligiblePmPro)
 
         if (element.shopInfo.isEligiblePmPro) {

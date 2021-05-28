@@ -24,7 +24,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvPmUpgradePmProTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvPmUpgradePmProTitle"
-        tools:src="@drawable/ic_pm_badge_pm_pro_filled" />
+        tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmUpgradePmProTitle"

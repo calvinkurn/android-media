@@ -10,7 +10,7 @@ interface SubscriptionActivityInterface {
 
     fun showLoadingState()
 
-    fun showErrorState()
+    fun showErrorState(throwable: Throwable)
 
     fun setViewForRegistrationPage()
 

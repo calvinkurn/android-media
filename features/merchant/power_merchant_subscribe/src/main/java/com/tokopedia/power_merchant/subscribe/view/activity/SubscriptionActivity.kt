@@ -11,11 +11,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -35,6 +38,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_pm_subsription.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -132,7 +137,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         globalErrorPmSubscription.gone()
     }
 
-    override fun showErrorState() {
+    override fun showErrorState(throwable: Throwable) {
         loaderPmSubscription.gone()
         imgPmHeaderBackdrop.gone()
         imgPmHeaderImage.gone()
@@ -140,6 +145,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         tabPmSubscription.gone()
         viewPagerPmSubscription.gone()
         globalErrorPmSubscription.visible()
+        globalErrorPmSubscription.setActionClickListener {
+            fetchPmBasicInfo()
+        }
     }
 
     override fun showActivationProgress() {
@@ -165,7 +173,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             when (it) {
                 is Success -> setOnSuccessGetBasicInfo(it.data)
                 is Fail -> {
-                    showErrorState()
+                    showErrorState(it.throwable)
                     logToCrashlytics(it.throwable, PowerMerchantErrorLogger.PM_BASIC_INFO_ERROR)
                 }
             }
@@ -286,11 +294,11 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
         if (isPmProSelected) {
             imgPmHeaderBackdrop.loadImageDrawable(R.drawable.bg_pm_pro_registration_header)
-            imgPmHeaderImage.loadImageDrawable(R.drawable.ic_pm_badge_pm_pro_filled)
+            imgPmHeaderImage.loadImage(PMConstant.Images.PM_PRO_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
         } else {
             imgPmHeaderBackdrop.loadImageDrawable(R.drawable.bg_pm_registration_header)
-            imgPmHeaderImage.loadImageDrawable(R.drawable.ic_pm_badge_pm_filled)
+            imgPmHeaderImage.loadImage(PMConstant.Images.PM_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
         }
 

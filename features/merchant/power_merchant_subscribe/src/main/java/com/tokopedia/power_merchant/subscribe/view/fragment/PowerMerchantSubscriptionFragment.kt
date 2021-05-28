@@ -315,12 +315,12 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun setOnCancelDeactivationSuccess(data: PMActivationStatusUiModel) {
+        notifyCancelPmDeactivationWidget()
         if (!data.isSuccess) {
-            setOnCancelDeactivationFailed(RuntimeException(data.message))
+            val actionText = getString(R.string.power_merchant_ok_label)
+            showErrorToaster(data.message, actionText)
             return
         }
-
-        notifyCancelPmDeactivationWidget()
 
         view?.run {
             val actionText = getString(R.string.power_merchant_ok_label)
@@ -364,13 +364,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         sharedViewModel.getPowerMerchantBasicInfo()
     }
 
-    private fun showErrorState() {
-        (activity as? SubscriptionActivityInterface)?.showErrorState()
+    private fun showErrorState(throwable: Throwable) {
+        (activity as? SubscriptionActivityInterface)?.showErrorState(throwable)
     }
 
     private fun fetchPageContent() {
         if (pmBasicInfo == null) {
-            showErrorState()
+            showErrorState(RuntimeException())
             return
         }
 
@@ -441,12 +441,13 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun setOnPmActivationSuccess(data: PMActivationStatusUiModel) {
+        notifyUpgradePmProWidget()
+
         if (!data.isSuccess) {
-            setOnPmActivationFailed(RuntimeException(data.message))
+            val actionText = getString(R.string.power_merchant_ok_label)
+            showErrorToaster(data.message, actionText)
             return
         }
-
-        notifyUpgradePmProWidget()
 
         view?.rootView?.let {
             val actionText = getString(R.string.oke)
@@ -571,9 +572,11 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun showErrorToaster(message: String, actionText: String) {
         view?.run {
             Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(R.dimen.pm_spacing_100dp)
-            Toaster.build(rvPmRegistration, message, Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR, actionText)
-                    .show()
+            view?.rootView?.let {
+                Toaster.build(it, message, Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR, actionText)
+                        .show()
+            }
         }
     }
 
@@ -661,7 +664,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             when (it) {
                 is Success -> renderPmActiveState(it.data)
                 is Fail -> {
-                    showErrorState()
+                    showErrorState(it.throwable)
                     logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVE_PAGE_ERROR, it.throwable)
                 }
             }
@@ -746,7 +749,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                     renderPmRegistrationWidgets()
                 }
                 is Fail -> {
-                    showErrorState()
+                    showErrorState(it.throwable)
                     logToCrashlytic(PowerMerchantErrorLogger.PM_REGISTRATION_PAGE_ERROR, it.throwable)
                 }
             }
@@ -869,7 +872,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                     ),
                     PMProBenefitUiModel(
                             description = getString(R.string.pm_pro_general_benefit_4),
-                            icon = IconUnify.BADGE_PMPRO_FILLED
+                            imgUrl = PMConstant.Images.PM_PRO_BADGE
                     ),
                     PMProBenefitUiModel(
                             description = getString(R.string.pm_pro_general_benefit_5),

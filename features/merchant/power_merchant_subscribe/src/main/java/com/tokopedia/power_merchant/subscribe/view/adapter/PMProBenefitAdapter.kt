@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
 import kotlinx.android.synthetic.main.item_pm_pro_upsale_benefit.view.*
@@ -34,7 +35,11 @@ class PMProBenefitAdapter(
 
         fun bind(item: PMProBenefitUiModel) {
             with(itemView) {
-                icPmPotentialItem.setImage(item.icon)
+                if (item.imgUrl.isBlank()) {
+                    icPmPotentialItem.setImage(item.icon)
+                } else {
+                    icPmPotentialItem.loadImage(item.imgUrl)
+                }
                 icPmPotentialItem.setBackgroundResource(R.drawable.bg_pm_oval_green)
                 tvPmPotentialItemDescription.text = item.description.parseAsHtml()
             }

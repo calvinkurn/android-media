@@ -13,6 +13,8 @@ object PMConstant {
     const val TRANSITION_PERIOD_START_DATE = "31 Mei 2021"
 
     object Images {
+        const val PM_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant@3x.png"
+        const val PM_PRO_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@3x.png"
         const val PM_NEW_REQUIREMENT = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_requirement.png"
         const val PM_NEW_SCHEMA = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_chema.png"
         const val PM_NEW_BENEFITS = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_benefits.png"
