@@ -221,7 +221,7 @@ class ShopInfoViewHolder(
             }
             is PowerMerchantStatus -> {
                 itemView?.apply {
-                    setPowerMerchantShopStatus(shopType)
+                    setPowerMerchantShopStatus(shopType, shopStatusUiModel)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
@@ -341,13 +341,18 @@ class ShopInfoViewHolder(
         findViewById<Typography>(R.id.tx_total_stats_rm)?.show()
     }
 
-    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus): View {
+    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus, statusUiModel: ShopStatusUiModel): View {
         val upgradePMTextView: Typography = findViewById(R.id.upgradePMText)
         val powerMerchantStatusTextView: Typography = findViewById(R.id.powerMerchantStatusText)
         val powerMerchantText: Typography = findViewById(R.id.powerMerchantText)
+        val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
-                upgradePMTextView.show()
+                if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
+                    upgradePMTextView.show()
+                } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
+                    upgradePMTextView.hide()
+                }
                 powerMerchantStatusTextView.hide()
                 powerMerchantText.text = getString(R.string.power_merchant_status)
             }

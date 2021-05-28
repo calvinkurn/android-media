@@ -304,7 +304,7 @@ class OtherMenuViewHolder(private val itemView: View,
             is PowerMerchantStatus -> {
                 listener.onStatusBarNeedDarkColor(false)
                 layoutInflater?.apply {
-                    setPowerMerchantShopStatus(shopType)
+                    setPowerMerchantShopStatus(shopType, shopStatusUiModel)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
@@ -386,13 +386,18 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus): View {
+    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus, statusUiModel: ShopStatusUiModel): View {
         val upgradePMTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.upgradePMText)
         val powerMerchantStatusTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantStatusText)
         val powerMerchantText: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantText)
+        val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
-                upgradePMTextView.show()
+                if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
+                    upgradePMTextView.show()
+                } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
+                    upgradePMTextView.hide()
+                }
                 powerMerchantStatusTextView.hide()
                 powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_status)
             }
