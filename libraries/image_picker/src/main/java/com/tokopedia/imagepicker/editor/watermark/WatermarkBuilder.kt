@@ -18,6 +18,6 @@ data class WatermarkBuilder(
     val watermarkBitmaps: List<WatermarkImage> = arrayListOf()
 ) {
 
-    ]
+
 
 }
