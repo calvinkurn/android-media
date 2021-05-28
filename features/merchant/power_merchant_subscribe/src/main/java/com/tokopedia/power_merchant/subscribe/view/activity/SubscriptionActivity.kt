@@ -78,9 +78,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        switchPMToWebView()
         super.onCreate(savedInstanceState)
         initInjector()
+        switchPMToWebView()
         setContentView(R.layout.activity_pm_subsription)
         window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
