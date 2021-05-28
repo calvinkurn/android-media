@@ -138,6 +138,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             mCaptureNativeSize?.let {
                 CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.width, mCaptureNativeSize.height) { bitmap ->
                     if (bitmap != null) {
+                        full_image_preview.setImageBitmap(bitmap)
                         val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
                         if (cameraResultFile!= null) {
                             onSuccessImageTakenFromCamera(cameraResultFile)
@@ -149,13 +150,15 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(imageByte, Bitmap.CompressFormat.JPEG)
             if (cameraResultFile!= null) {
                 onSuccessImageTakenFromCamera(cameraResultFile)
+                if (cameraResultFile.exists()) {
+                    ImageHandler.loadImageFromFile(context, full_image_preview, cameraResultFile)
+                }
             }
         }
     }
 
     private fun onSuccessImageTakenFromCamera(cameraResultFile: File) {
         if (cameraResultFile.exists()) {
-            ImageHandler.loadImageFromFile(context, full_image_preview, cameraResultFile)
             imagePath = cameraResultFile.absolutePath
             showImagePreview()
             uploadImageviewModel.uploadImageRecharge(imagePath,
@@ -169,6 +172,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         showCameraView()
+        startCamera()
     }
 
     private fun hideLoading() {
@@ -177,7 +181,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
 
     private fun showCameraView() {
         image_button_shutter.visibility = View.VISIBLE
-        startCamera()
         full_image_preview.visibility = View.GONE
         full_camera_view.visibility = View.VISIBLE
     }
@@ -191,7 +194,6 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     private fun showImagePreview() {
         full_image_preview.visibility = View.VISIBLE
         full_camera_view.visibility = View.GONE
-        full_camera_view.close()
         image_button_shutter.visibility = View.GONE
     }
 
@@ -237,18 +239,13 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun destroyCamera() {
+    override fun onDestroy() {
+        super.onDestroy()
         try {
-            full_camera_view.close()
             full_camera_view.destroy()
         } catch (e: Throwable) {
             // no-op
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        destroyCamera()
     }
 
     override fun getScreenName(): String {
