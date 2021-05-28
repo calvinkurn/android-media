@@ -65,9 +65,7 @@
             app:icon_name="SHOP_FAVORITE"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imagePowerMerchant"
-            app:srcCompat="@drawable/ic_topads_credit"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_topads_credit" />
+            tools:ignore="ContentDescription"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textTopAds"

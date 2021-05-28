@@ -310,17 +310,16 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun setOnCancelDeactivationSuccess(data: PMActivationStatusUiModel) {
         if (!data.isSuccess) {
-            setOnCancelDeactivationFailed(MessageErrorException(data.errorMessage))
+            setOnCancelDeactivationFailed(RuntimeException(data.message))
             return
         }
 
         notifyCancelPmDeactivationWidget()
 
         view?.run {
-            val message = getString(R.string.pm_cancel_pm_deactivation_success)
             val actionText = getString(R.string.power_merchant_ok_label)
             Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
-            Toaster.build(rootView, message, Toaster.LENGTH_LONG,
+            Toaster.build(rootView, data.message, Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL, actionText)
                     .show()
         }
@@ -437,24 +436,18 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     private fun setOnPmActivationSuccess(data: PMActivationStatusUiModel) {
         if (!data.isSuccess) {
-            setOnPmActivationFailed(MessageErrorException(data.errorMessage))
+            setOnPmActivationFailed(RuntimeException(data.message))
             return
         }
 
         notifyUpgradePmProWidget()
 
         view?.rootView?.let {
-            val isPmPro = data.currentShopTier == PMConstant.ShopTierType.POWER_MERCHANT_PRO
-            val message = if (isPmPro) {
-                getString(R.string.pm_pro_registration_success_message)
-            } else {
-                getString(R.string.pm_registration_success_message)
-            }
             val actionText = getString(R.string.oke)
 
             it.post {
                 Toaster.toasterCustomBottomHeight = it.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
-                Toaster.build(it, message, Toaster.LENGTH_LONG,
+                Toaster.build(it, data.message, Toaster.LENGTH_LONG,
                         Toaster.TYPE_NORMAL, actionText)
                         .show()
             }

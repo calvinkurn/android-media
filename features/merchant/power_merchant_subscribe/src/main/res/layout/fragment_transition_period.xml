@@ -25,7 +25,7 @@
             android:contentDescription="@string/pm_content_desc_transition_period_image_kyc"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:textStyle="bold"
             app:fontSize="titleBig" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_label_transition_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             android:gravity="center"
             android:text="@string/pm_label_transition_period_button" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_learnmore_transition_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -65,7 +65,7 @@
                 android:text="@string/pm_terms_agree" />
         </LinearLayout>
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/activateBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

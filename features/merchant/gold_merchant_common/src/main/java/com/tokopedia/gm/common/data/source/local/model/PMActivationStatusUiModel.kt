@@ -8,6 +8,6 @@ import com.tokopedia.gm.common.constant.PMConstant
 
 data class PMActivationStatusUiModel(
         val isSuccess: Boolean = false,
-        val errorMessage: String = "",
+        val message: String = "",
         val currentShopTier: Int = PMConstant.ShopTierType.POWER_MERCHANT
 )
