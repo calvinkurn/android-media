@@ -5,11 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.sellerhome.view.widget.toolbar.SellerHomeToolbar
+    <com.tokopedia.header.HeaderUnify
         android:id="@+id/sahToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize" />
+        android:minHeight="?attr/actionBarSize"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_is_show_back_button="false" />
 
     <View
         android:layout_width="match_parent"
