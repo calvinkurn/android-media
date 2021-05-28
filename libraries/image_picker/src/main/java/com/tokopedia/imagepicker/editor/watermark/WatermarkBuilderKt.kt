@@ -12,7 +12,7 @@ import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapUtils
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 
-open class WatermarkBuilder {
+open class WatermarkBuilderKt {
 
     private var context: Context
     private var backgroundImg: Bitmap? = null
@@ -121,8 +121,8 @@ open class WatermarkBuilder {
         }
     }
 
-    fun getWatermark(): Watermark {
-        return Watermark(
+    fun getWatermark(): WatermarkKt {
+        return WatermarkKt(
             context = context,
             backgroundImg = backgroundImg,
             watermarkImg = watermarkImage,
@@ -136,33 +136,33 @@ open class WatermarkBuilder {
     companion object {
 
         @JvmStatic
-        fun create(context: Context, backgroundImg: Bitmap): WatermarkBuilder {
-            return WatermarkBuilder(context, backgroundImg)
+        fun create(context: Context, backgroundImg: Bitmap): WatermarkBuilderKt {
+            return WatermarkBuilderKt(context, backgroundImg)
         }
 
         @JvmStatic
-        fun create(context: Context, imageView: ImageView): WatermarkBuilder {
-            return WatermarkBuilder(context, imageView)
+        fun create(context: Context, imageView: ImageView): WatermarkBuilderKt {
+            return WatermarkBuilderKt(context, imageView)
         }
 
         @JvmStatic
-        fun create(context: Context, @DrawableRes backgroundDrawable: Int): WatermarkBuilder {
-            return WatermarkBuilder(context, backgroundDrawable)
+        fun create(context: Context, @DrawableRes backgroundDrawable: Int): WatermarkBuilderKt {
+            return WatermarkBuilderKt(context, backgroundDrawable)
         }
 
         @JvmStatic
-        fun create(context: Context, backgroundImg: Bitmap, resizeBackgroundImg: Boolean): WatermarkBuilder {
-            return WatermarkBuilder(context, backgroundImg, resizeBackgroundImg)
+        fun create(context: Context, backgroundImg: Bitmap, resizeBackgroundImg: Boolean): WatermarkBuilderKt {
+            return WatermarkBuilderKt(context, backgroundImg, resizeBackgroundImg)
         }
 
         @JvmStatic
-        fun create(context: Context, imageView: ImageView, resizeBackgroundImg: Boolean): WatermarkBuilder {
-            return WatermarkBuilder(context, imageView, resizeBackgroundImg)
+        fun create(context: Context, imageView: ImageView, resizeBackgroundImg: Boolean): WatermarkBuilderKt {
+            return WatermarkBuilderKt(context, imageView, resizeBackgroundImg)
         }
 
         @JvmStatic
-        fun create(context: Context, @DrawableRes backgroundDrawable: Int, resizeBackgroundImg: Boolean): WatermarkBuilder {
-            return WatermarkBuilder(context, backgroundDrawable, resizeBackgroundImg)
+        fun create(context: Context, @DrawableRes backgroundDrawable: Int, resizeBackgroundImg: Boolean): WatermarkBuilderKt {
+            return WatermarkBuilderKt(context, backgroundDrawable, resizeBackgroundImg)
         }
 
     }

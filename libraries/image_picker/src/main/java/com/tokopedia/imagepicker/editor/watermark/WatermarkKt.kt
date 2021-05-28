@@ -3,12 +3,11 @@ package com.tokopedia.imagepicker.editor.watermark
 import android.content.Context
 import android.graphics.*
 import android.widget.ImageView
-import com.tokopedia.imagepicker.editor.watermark.listener.BuildFinishListener
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkImage
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapUtils
 
-data class Watermark(
+data class WatermarkKt(
     var context: Context,
     var backgroundImg: Bitmap? = null,
     var watermarkImg: WatermarkImage? = null,

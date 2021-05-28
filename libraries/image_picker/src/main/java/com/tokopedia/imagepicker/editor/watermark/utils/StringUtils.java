@@ -1,7 +1,5 @@
 package com.tokopedia.imagepicker.editor.watermark.utils;
 
-import com.tokopedia.imagepicker.editor.watermark.listener.DetectFinishListener;
-
 /**
  * Util class for operations with {@link String}.
  *
@@ -88,21 +86,21 @@ public class StringUtils {
      *
      * @param text Text to search in.
      */
-    public static String getBetweenStrings(String text, boolean isText, DetectFinishListener listener) {
+    public static String getBetweenStrings(String text, boolean isText) {
         String result = null;
         if (isText) {
             try {
                 result = text.substring(text.indexOf(LSB_TEXT_PREFIX_FLAG) + LSB_TEXT_SUFFIX_FLAG.length());
                 result = result.substring(0, result.indexOf(LSB_TEXT_SUFFIX_FLAG));
             } catch (StringIndexOutOfBoundsException e) {
-                listener.onError("No Watermark Found");
+                //listener.onError("No Watermark Found");
             }
         } else {
             try {
                 result = text.substring(text.indexOf(LSB_IMG_PREFIX_FLAG) + LSB_IMG_SUFFIX_FLAG.length());
                 result = result.substring(0, result.indexOf(LSB_IMG_SUFFIX_FLAG));
             } catch (StringIndexOutOfBoundsException e) {
-                listener.onError("No Watermark Found");
+                //listener.onError("No Watermark Found");
             }
         }
 
