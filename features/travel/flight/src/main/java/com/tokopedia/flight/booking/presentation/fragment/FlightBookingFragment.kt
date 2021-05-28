@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -604,8 +605,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
         getComponent(FlightBookingComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_booking_v3, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        splitCompat()
+        return inflater.inflate(R.layout.fragment_flight_booking_v3, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -651,6 +654,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.setAmenityPriceData(amenityPriceData)
 
         refreshCart()
+    }
+
+    private fun splitCompat() {
+        activity?.let {
+            SplitCompat.installActivity(it)
+        }
     }
 
     private fun initialize() {
@@ -766,18 +775,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun randomLoadingSubtitle(): List<String> {
-        try {
-            context?.let {
-                val list = listOf(it.getString(R.string.flight_booking_loading_text_1),
-                        it.getString(R.string.flight_booking_loading_text_2),
-                        it.getString(R.string.flight_booking_loading_text_3),
-                        it.getString(R.string.flight_booking_loading_text_4))
-                return list.shuffled()
-            }
-        } catch (e: Throwable) {
-            return listOf()
-        }
-        return listOf()
+        val list = listOf(getString(R.string.flight_booking_loading_text_1),
+                getString(R.string.flight_booking_loading_text_2),
+                getString(R.string.flight_booking_loading_text_3),
+                getString(R.string.flight_booking_loading_text_4))
+        return list.shuffled()
     }
 
     private var launchLoadingPageJob = uiScope.launch {
