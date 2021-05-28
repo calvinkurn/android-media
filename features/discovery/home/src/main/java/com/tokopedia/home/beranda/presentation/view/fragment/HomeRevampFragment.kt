@@ -998,6 +998,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         if (isAddressChanged) {
+            chooseAddressWidgetInitialized = false
             val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
             val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)

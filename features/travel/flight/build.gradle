@@ -90,6 +90,10 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation project(rootProject.ext.libraries.webview)
 
+    /* Navigation Component */
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
+
     implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7

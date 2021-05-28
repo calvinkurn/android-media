@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
+    implementation project(rootProject.ext.features.medialoader)
 
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.analytics)
