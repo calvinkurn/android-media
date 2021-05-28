@@ -107,7 +107,8 @@ class MiniCartListBottomSheet :
         rvMiniCartList?.adapter = adapter
         rvMiniCartList?.layoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
         rvMiniCartList?.addItemDecoration(miniCartListDecoration)
-        (rvMiniCartList?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        rvMiniCartList?.itemAnimator = null
+//        (rvMiniCartList?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     private fun showLoading() {
@@ -136,6 +137,7 @@ class MiniCartListBottomSheet :
     }
 
     override fun onQuantityChanged() {
+        // Todo : debounce before call calculateProduct
         viewModel.calculateProduct()
     }
 
@@ -153,6 +155,14 @@ class MiniCartListBottomSheet :
                 rvMiniCartList?.smoothScrollToPosition(index)
                 return@forEachIndexed
             }
+        }
+    }
+
+    override fun onToggleShowHideUnavailableItemsClicked() {
+        viewModel.handleUnavailableItemsAccordion()
+        val lastItemPosition = adapter?.list?.size ?: 0 - 1
+        if (lastItemPosition != -1) {
+            rvMiniCartList?.smoothScrollToPosition(lastItemPosition)
         }
     }
 

@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartUiModel
+import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import javax.inject.Inject
 
@@ -19,6 +16,8 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
     private val _miniCartUiModel = MutableLiveData<MiniCartUiModel>()
     val miniCartUiModel: LiveData<MiniCartUiModel>
         get() = _miniCartUiModel
+
+    private val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
     fun getCartList(shopIds: List<String>) {
         getMiniCartListUseCase.setParams(shopIds)
@@ -31,12 +30,8 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
         })
     }
 
-    private fun cloneVisitables(): MutableList<Visitable<*>> {
-        return miniCartUiModel.value?.visitables?.toMutableList() ?: mutableListOf()
-    }
-
     fun calculateProduct() {
-        val visitables = cloneVisitables()
+        val visitables = miniCartUiModel.value?.visitables ?: mutableListOf()
 
         val miniCartProductList = mutableListOf<MiniCartProductUiModel>()
         visitables.forEach { visitable ->
@@ -88,13 +83,13 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
             miniCartUiModel.value?.miniCartWidgetData?.totalProductCount = totalQty
         }
 
-        validateTickerWarning(totalWeight, visitables)
-        miniCartUiModel.value?.visitables = visitables
+        validateOverWeight(totalWeight, visitables)
 
+        miniCartUiModel.value?.visitables = visitables
         _miniCartUiModel.value = miniCartUiModel.value
     }
 
-    private fun validateTickerWarning(totalWeight: Int, visitables: MutableList<Visitable<*>>) {
+    private fun validateOverWeight(totalWeight: Int, visitables: MutableList<Visitable<*>>) {
         val maxWeight = miniCartUiModel.value?.maximumShippingWeight ?: 0
 
         if (totalWeight > maxWeight) {
@@ -121,9 +116,9 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
                     }
                 }
             } else {
-                val newTickerWarning = tickerWarning!!.deepCopy()
-                newTickerWarning.warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
-                visitables[tickerWarningIndex] = newTickerWarning
+                val updatedTickerWarning = tickerWarning!!.deepCopy()
+                updatedTickerWarning.warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
+                visitables[tickerWarningIndex] = updatedTickerWarning
             }
         } else {
             removeTickerWarning(visitables)
@@ -142,5 +137,63 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
         if (tmpIndex != -1) {
             visitables.removeAt(tmpIndex)
         }
+    }
+
+    fun handleUnavailableItemsAccordion() {
+        val visitables = miniCartUiModel.value?.visitables?.toMutableList() ?: mutableListOf()
+        var accordionUiModel: MiniCartAccordionUiModel? = null
+        var indexAccordionUiModel: Int = -1
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is MiniCartAccordionUiModel) {
+                accordionUiModel = visitable
+                indexAccordionUiModel = index
+                return@forEachIndexed
+            }
+        }
+
+        accordionUiModel?.let {
+            if (it.isCollapsed) {
+                expandUnavailableItems(visitables, it, indexAccordionUiModel)
+            } else {
+                collapseUnavailableItems(visitables, it, indexAccordionUiModel)
+            }
+        }
+    }
+
+    private fun collapseUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
+        val tmpUnavailableProducts = mutableListOf<MiniCartProductUiModel>()
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is MiniCartProductUiModel && visitable.isProductDisabled) {
+                tmpUnavailableProducts.add(visitable)
+            }
+        }
+
+        if (tmpUnavailableProducts.size > 1) {
+            val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
+                isCollapsed = !isCollapsed
+            }
+            visitables[indexAccordionUiModel] = updatedAccordionUiModel
+
+            val hiddenUnavailableItems = tmpUnavailableProducts.takeLast(tmpUnavailableProducts.size - 1)
+            tmpHiddenUnavailableItems.clear()
+            tmpHiddenUnavailableItems.addAll(hiddenUnavailableItems)
+            visitables.removeAll(hiddenUnavailableItems)
+
+            miniCartUiModel.value?.visitables = visitables
+            _miniCartUiModel.value = miniCartUiModel.value
+        }
+    }
+
+    private fun expandUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
+        val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
+            isCollapsed = !isCollapsed
+        }
+        visitables[indexAccordionUiModel] = updatedAccordionUiModel
+
+        visitables.addAll(indexAccordionUiModel - 1, tmpHiddenUnavailableItems)
+        tmpHiddenUnavailableItems.clear()
+
+        miniCartUiModel.value?.visitables = visitables
+        _miniCartUiModel.value = miniCartUiModel.value
     }
 }

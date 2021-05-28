@@ -14,4 +14,6 @@ interface MiniCartListActionListener {
 
     fun onShowUnavailableItemsCLicked()
 
+    fun onToggleShowHideUnavailableItemsClicked()
+
 }

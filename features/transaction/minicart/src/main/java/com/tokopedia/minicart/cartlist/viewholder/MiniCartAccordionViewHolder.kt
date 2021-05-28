@@ -31,6 +31,9 @@ class MiniCartAccordionViewHolder(private val view: View,
             textAccordion?.text = element.showLessWording
             imageChevron?.rotation = 180f
         }
+        itemView.setOnClickListener {
+            listener.onToggleShowHideUnavailableItemsClicked()
+        }
     }
 
 }
