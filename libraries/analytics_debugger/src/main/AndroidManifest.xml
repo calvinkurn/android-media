@@ -9,21 +9,18 @@
     <application>
         <activity
             android:name=".debugger.ui.activity.ApplinkDebuggerActivity"
-            android:exported="true"
             android:label="Applink Debugger"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".debugger.ui.activity.FpmDebuggerActivity"
-            android:exported="true"
             android:label="FPM Debugger"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name="com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity"
-            android:exported="true"
             android:label="Analytics Validator"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
@@ -34,26 +31,22 @@
             android:launchMode="singleTask"
             android:label="Topads Verificator"
             android:taskAffinity="com.tokopedia.analytics.task"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
             android:name=".cassava.debugger.AnalyticsDebuggerActivity"
-            android:exported="true"
             android:label="Analytics Debugger"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".debugger.ui.activity.AnalyticsIrisSaveDebuggerActivity"
-            android:exported="true"
             android:label="Analytics Debugger - Iris Save"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".debugger.ui.activity.AnalyticsIrisSendDebuggerActivity"
-            android:exported="true"
             android:label="Analytics Debugger - Iris Send"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
