@@ -1396,20 +1396,30 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 ds.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
             }
         }
-        if (spannableString.indexOf(followers) != -1) {
-            spannableString.setSpan(
+        try {
+            if (spannableString.indexOf(followers) != -1) {
+                spannableString.setSpan(
                     goToFollower,
                     spannableString.indexOf(followers),
                     spannableString.indexOf(followers) + followers.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        } catch (e: Exception) {
+
         }
 
-        if (spannableString.indexOf(following) != -1) {
-            spannableString.setSpan(
+        try {
+            if (spannableString.indexOf(following) != -1) {
+                spannableString.setSpan(
                     goToFollowing,
                     spannableString.indexOf(following),
                     spannableString.indexOf(following) + following.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        } catch (e: Exception) {
+
         }
         return spannableString
     }
