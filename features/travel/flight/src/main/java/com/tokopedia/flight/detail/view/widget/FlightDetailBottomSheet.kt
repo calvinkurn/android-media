@@ -121,7 +121,7 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
                     flightDetailButtonContainer.visibility = View.GONE
                 }
                 flightDetailSelectButton.setOnClickListener {
-                    if (::listener.isInitialized) listener.onSelectedFromDetail(flightDetailModel.id)
+                    if (::listener.isInitialized) listener.onSelectedFromDetail(this@FlightDetailBottomSheet, flightDetailModel.id)
                 }
 
             }
@@ -209,7 +209,7 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onSelectedFromDetail(selectedId: String)
+        fun onSelectedFromDetail(detailBottomSheet: FlightDetailBottomSheet, selectedId: String)
     }
 
     companion object {

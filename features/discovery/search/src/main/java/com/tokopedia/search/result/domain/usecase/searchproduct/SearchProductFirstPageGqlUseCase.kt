@@ -42,7 +42,7 @@ class SearchProductFirstPageGqlUseCase(
         get() = coroutineDispatchers.main + masterJob
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any>
+        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
@@ -69,11 +69,11 @@ class SearchProductFirstPageGqlUseCase(
         return Observable.zip(gqlSearchProductObservable, topAdsImageViewModelObservable, this::setTopAdsImageViewModelList)
     }
 
-    private fun getQueryFromParameters(parameters: Map<String, Any>): String {
+    private fun getQueryFromParameters(parameters: Map<String?, Any?>): String {
         return parameters[SearchApiConst.Q]?.toString() ?: ""
     }
 
-    private fun createHeadlineParams(parameters: Map<String, Any>): String {
+    private fun createHeadlineParams(parameters: Map<String?, Any?>): String {
         val headlineParams = HashMap(parameters)
 
         headlineParams[TopAdsParams.KEY_EP] = HEADLINE
@@ -95,7 +95,7 @@ class SearchProductFirstPageGqlUseCase(
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
 
-    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String, Any>) {
+    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String?, Any?>) {
         if (!requestParams.isSkipHeadlineAds()) {
             val headlineParams = createHeadlineParams(searchProductParams)
             add(createHeadlineAdsRequest(headlineParams = headlineParams))
@@ -280,6 +280,7 @@ class SearchProductFirstPageGqlUseCase(
                                 gold_shop
                                 gold_shop_badge
                                 shop_is_official
+                                pm_pro_shop
                                 merchant_vouchers
                                 product {
                                     id

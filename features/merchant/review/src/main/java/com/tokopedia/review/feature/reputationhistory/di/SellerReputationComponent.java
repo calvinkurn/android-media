@@ -11,7 +11,5 @@ import dagger.Component;
 @SellerReputationScope
 @Component(modules = {SellerReputationModule.class}, dependencies = {ReviewComponent.class})
 public interface SellerReputationComponent {
-
     void inject(SellerReputationFragment sellerReputationFragment);
-
 }

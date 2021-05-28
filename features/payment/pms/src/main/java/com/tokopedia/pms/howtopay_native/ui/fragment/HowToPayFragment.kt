@@ -46,7 +46,6 @@ class HowToPayFragment : BaseDaggerFragment() {
     private lateinit var appLinkPaymentInfo: AppLinkPaymentInfo
     private val HIGHLIGHT_DIGIT_COUNT = 3
 
-    private val TIMBER_TAG = "P2#HOW_TO_PAY#"
     private val TIMBER_CHAR_MAX_LIMIT = 1000
 
 

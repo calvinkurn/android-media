@@ -67,6 +67,8 @@ android {
     }
 }
 dependencies {
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.remoteConfig)

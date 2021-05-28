@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.data.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.parcel.Parcelize
 
 data class DailyBudgetRecommendationModel(
@@ -30,5 +31,7 @@ data class DataBudget(
         val priceDaily: Double = 0.0,
         @SerializedName("suggested_price_daily")
         val suggestedPriceDaily: Double = 0.0,
-        var setCurrentBid: Double = 0.0
+        var setCurrentBid: Double = 0.0,
+        var setPotensiKlik: String = "",
+        val impressHolder: ImpressHolder = ImpressHolder()
 ):Parcelable

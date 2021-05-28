@@ -14,6 +14,9 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -70,10 +73,11 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         }
             }
         }
-
         private const val INPUT_FIELD_ADAPTER_SIZE = 1
-
-        private const val ERROR_MESSAGE = "Error validate cashback voucher"
+        private const val VALIDATE_RUPIAH_INPUT_ERROR = "Validate rupiah input error"
+        private const val VALIDATE_PERCENTAGE_INPUT_ERROR = "Validate rupiah input error"
+        private const val GET_RUPIAH_VOUCHER_RECOMMENDATION_ERROR = "Get rupiah voucher recommendation error"
+        private const val GET_PERCENTAGE_VOUCHER_RECOMMENDATION_ERROR = "Get percentage voucher recommendation error"
     }
 
     private var onNextStep: (VoucherImageType, Int, Int) -> Unit = { _, _, _ -> }
@@ -421,9 +425,13 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                             viewModel.isRupiahInputError = isError
                         }
                         is Fail -> {
-                            val error = result.throwable.message.toBlankOrString()
-                            view?.showErrorToaster(error)
-                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
+                            // show user friendly error message to user
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            view?.showErrorToaster(errorMessage)
+                            // send crash report to firebase crashlytics
+                            MvcErrorHandler.logToCrashlytics(result.throwable, VALIDATE_RUPIAH_INPUT_ERROR)
+                            // log error type to scalyr
+                            ServerLogger.log(Priority.P2, "MVC_VALIDATE_RUPIAH_INPUT_ERROR", mapOf("type" to errorMessage))
                         }
                     }
                     // update the input list values for rupiah
@@ -479,9 +487,13 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                             viewModel.isPercentageInputError = isError
                         }
                         is Fail -> {
-                            val error = result.throwable.message.toBlankOrString()
-                            view?.showErrorToaster(error)
-                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
+                            // show user friendly error message to user
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            view?.showErrorToaster(errorMessage)
+                            // send crash report to firebase crashlytics
+                            MvcErrorHandler.logToCrashlytics(result.throwable, VALIDATE_PERCENTAGE_INPUT_ERROR)
+                            // log error type to scalyr
+                            ServerLogger.log(Priority.P2, "MVC_VALIDATE_PERCENTAGE_INPUT_ERROR", mapOf("type" to errorMessage))
                         }
                     }
                     adapter.notifyDataSetChanged()
@@ -509,8 +521,16 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         if (isActiveCashBackType) viewModel.updateRecommendationStatus(CashbackType.Rupiah)
                     }
                     is Fail -> {
+                        // use default values when the api call failed
                         viewModel.updateVoucherRecommendation(CashbackType.Rupiah, viewModel.getStaticRecommendationData())
                         if (activeCashbackType is CashbackType.Rupiah) viewModel.updateRecommendationStatus(CashbackType.Rupiah)
+                        // show user friendly error message to user
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                        view?.showErrorToaster(errorMessage)
+                        // send crash report to firebase crashlytics
+                        MvcErrorHandler.logToCrashlytics(result.throwable, GET_RUPIAH_VOUCHER_RECOMMENDATION_ERROR)
+                        // log error type to scalyr
+                        ServerLogger.log(Priority.P2, "MVC_GET_RUPIAH_VOUCHER_RECOMMENDATION_ERROR", mapOf("type" to errorMessage))
                     }
                 }
             }
@@ -535,8 +555,16 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
                         if (isActiveCashBackType) viewModel.updateRecommendationStatus(CashbackType.Percentage)
                     }
                     is Fail -> {
+                        // use default values when the api call failed
                         viewModel.updateVoucherRecommendation(CashbackType.Percentage, viewModel.getStaticRecommendationData())
                         if (activeCashbackType is CashbackType.Percentage) viewModel.updateRecommendationStatus(CashbackType.Percentage)
+                        // show user friendly error message to user
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                        view?.showErrorToaster(errorMessage)
+                        // send crash report to firebase crashlytics
+                        MvcErrorHandler.logToCrashlytics(result.throwable, GET_PERCENTAGE_VOUCHER_RECOMMENDATION_ERROR)
+                        // log error type to scalyr
+                        ServerLogger.log(Priority.P2, "MVC_GET_PERCENTAGE_VOUCHER_RECOMMENDATION_ERROR", mapOf("type" to errorMessage))
                     }
                 }
             }

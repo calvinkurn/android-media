@@ -33,7 +33,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_USER_ID, userId)
                         }).toBlocking().single()
-                if (response.isDataError()) {
+                if (response.isStatusError()) {
                     return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
                             ?: "")
                 }
