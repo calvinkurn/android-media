@@ -16,7 +16,7 @@
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
-        android:text="Transaksi 1 - Belanja" />
+        tools:text="Transaksi 1 - Belanja" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTransactionAmount"
@@ -27,7 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTransactionTitle"
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700_68"
-        android:text="Rp1.300.000" />
+        tools:text="Rp1.300.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCancelTransaction"
@@ -38,13 +38,13 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTransactionAmount"
         app:typographyType="heading_6"
         android:textColor="@color/Unify_G500"
-        android:text="Batalkan" />
+        android:text="@string/pms_payment_cancel" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/goToHowToPay"
         android:layout_width="@dimen/pms_dp_80"
         android:layout_height="wrap_content"
-        android:text="Detail"
+        android:text="@string/pms_payment_detail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

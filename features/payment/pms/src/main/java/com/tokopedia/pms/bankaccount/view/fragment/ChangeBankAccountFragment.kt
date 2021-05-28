@@ -96,8 +96,6 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
                 getDimens(com.tokopedia.unifycomponents.R.dimen.unify_font_16).toFloat()
             )
             setOnClickListener { openBankListForSelection() }
-            val paddingEndDimen = getDimens(com.tokopedia.unifycomponents.R.dimen.unify_space_32)
-            //setPadding(paddingLeft, paddingTop, paddingEndDimen, paddingBottom)
         }
 
         input_note_optional.textAreaInput.minLines = 5

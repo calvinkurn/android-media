@@ -44,7 +44,6 @@
                 android:id="@+id/input_account_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/input_dest_bank_account"
@@ -53,12 +52,11 @@
                 app:text_field_label_static="true"
                 app:text_field_message="@string/payment_label_account_number_hint" />
 
-
             <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/input_account_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_12"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/input_account_number"
@@ -72,7 +70,7 @@
                 android:id="@+id/input_note_optional"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:maxLength="@integer/payment_max_counter_notes_bank_account"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +78,7 @@
                 app:text_area_clearable="false"
                 app:text_area_counter="64"
                 app:text_area_label_static="true"
-                app:text_area_placeholder="@string/payment_label_notes_optional"
+                app:text_area_label="@string/payment_label_notes_optional"
                 app:text_field_input_type="text" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
