@@ -161,23 +161,24 @@ class MiniCartListViewModel @Inject constructor(private val executorDispatchers:
     }
 
     private fun collapseUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
-        val tmpUnavailableProducts = mutableListOf<MiniCartProductUiModel>()
+        val tmpUnavailableProducts = mutableListOf<Visitable<*>>()
         visitables.forEachIndexed { index, visitable ->
-            if (visitable is MiniCartProductUiModel && visitable.isProductDisabled) {
+            if (visitable is MiniCartUnavailableReasonUiModel || (visitable is MiniCartProductUiModel && visitable.isProductDisabled)) {
                 tmpUnavailableProducts.add(visitable)
             }
         }
 
-        if (tmpUnavailableProducts.size > 1) {
+        if (tmpUnavailableProducts.size > 2) {
             val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
                 isCollapsed = !isCollapsed
             }
             visitables[indexAccordionUiModel] = updatedAccordionUiModel
 
-            val hiddenUnavailableItems = tmpUnavailableProducts.takeLast(tmpUnavailableProducts.size - 1)
+            tmpUnavailableProducts.removeFirst() // exclude first reason
+            tmpUnavailableProducts.removeFirst() // exclude first unavailable item
             tmpHiddenUnavailableItems.clear()
-            tmpHiddenUnavailableItems.addAll(hiddenUnavailableItems)
-            visitables.removeAll(hiddenUnavailableItems)
+            tmpHiddenUnavailableItems.addAll(tmpUnavailableProducts)
+            visitables.removeAll(tmpUnavailableProducts)
 
             miniCartUiModel.value?.visitables = visitables
             _miniCartUiModel.value = miniCartUiModel.value
