@@ -7,6 +7,7 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.penalty.DeepLinkMapperPenalty
@@ -1788,6 +1789,22 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check buyer cancellation request appLink should return tokopedia internal buyer cancellation request applink in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://buyer/cancellationrequest"
         val appLink = ApplinkConst.ORDER_BUYER_CANCELLATION_REQUEST_PAGE
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokonow search appLink then should return tokopedia internal tokonow search in customerapp`() {
+        val queryParams = "?q=keju"
+        val expectedDeepLink = ApplinkConstInternalTokoMart.SEARCH + queryParams
+        val actualDeeplink = ApplinkConst.TOKONOW_SEARCH + queryParams
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokonow category appLink then should return tokopedia internal tokonow category in customerapp`() {
+        val categoryId = "123"
+        val expectedDeepLink = "${ApplinkConstInternalTokoMart.INTERNAL_TOKOMART}/category/$categoryId/"
+        val appLink = UriUtil.buildUri(ApplinkConst.TOKONOW_CATEGORY, categoryId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }
