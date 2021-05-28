@@ -261,6 +261,7 @@ class ProductListFragment: BaseDaggerFragment(),
         restoreInstanceState(savedInstanceState)
         initViews(view)
         addDefaultSelectedSort()
+        addWarehouseId()
 
         presenter?.onViewCreated()
     }
@@ -513,6 +514,13 @@ class ProductListFragment: BaseDaggerFragment(),
         val searchParameter = searchParameter ?: return
         if (searchParameter.get(SearchApiConst.OB).isEmpty())
             searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+    }
+
+    private fun addWarehouseId() {
+        val searchParameter = searchParameter ?: return
+
+        //need to get user_warehouseId from chooseAddress later
+        searchParameter.set(SearchApiConst.USER_WAREHOUSE_ID, "19926")
     }
 
     override fun trackScreenAuthenticated() {

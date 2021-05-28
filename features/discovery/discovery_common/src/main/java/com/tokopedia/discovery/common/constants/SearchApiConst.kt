@@ -68,6 +68,7 @@ class SearchApiConst {
         const val USER_DISTRICT_ID = "user_districtId"
         const val USER_ADDRESS_ID = "user_addressId"
         const val USER_POST_CODE = "user_postCode"
+        const val USER_WAREHOUSE_ID = "user_warehouseId"
         const val IDENTIFIER = "identifier"
         const val BASE_SRP_APPLINK = "baseSRPApplink"
 

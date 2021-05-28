@@ -108,6 +108,7 @@ public class AutoCompleteActivity extends BaseActivity
         SearchParameter searchParameter = getSearchParameterFromIntentUri(intent);
         baseSRPApplink = getBaseSRPApplink(searchParameter);
         removeBaseSRPApplink(searchParameter);
+        attachWarehouseId(searchParameter);
 
         handleIntentAutoComplete(searchParameter);
 
@@ -122,7 +123,11 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void removeBaseSRPApplink(SearchParameter searchParameter) {
         searchParameter.remove(SearchApiConst.BASE_SRP_APPLINK);
+    }
 
+    private void attachWarehouseId(SearchParameter searchParameter) {
+        //need to get user_warehouseId from chooseAddress later
+        searchParameter.set(SearchApiConst.USER_WAREHOUSE_ID, "19926");
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
