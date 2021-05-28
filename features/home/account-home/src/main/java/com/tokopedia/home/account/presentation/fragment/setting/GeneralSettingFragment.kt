@@ -421,20 +421,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         setAppCompatMode(isDarkMode)
         saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
         accountAnalytics.eventClickThemeSetting(isDarkMode)
-        recreateView()
     }
 
     private fun setAppCompatMode(isDarkMode: Boolean) {
         val screenMode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         AppCompatDelegate.setDefaultNightMode(screenMode)
-    }
-
-    private fun recreateView() {
-        activity?.run {
-            finish()
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            startActivity(Intent(this, this.javaClass))
-        }
     }
 
     override fun onClicked(settingId: Int, currentValue: Boolean) {
