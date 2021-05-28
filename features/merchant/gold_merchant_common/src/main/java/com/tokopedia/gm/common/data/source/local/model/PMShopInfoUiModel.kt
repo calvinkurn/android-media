@@ -16,8 +16,8 @@ data class PMShopInfoUiModel(
         val isEligiblePmPro: Boolean = false,
         val itemSoldOneMonth: Long = 0,
         val itemSoldPmProThreshold: Long = DEFAULT_ORDER_THRESHOLD,
-        val nivOneMonth: Long = 0,
-        val nivPmProThreshold: Long = DEFAULT_NIV_THRESHOLD
+        val netItemValueOneMonth: Long = 0,
+        val netItemValuePmProThreshold: Long = DEFAULT_NIV_THRESHOLD
 ) {
 
     companion object {

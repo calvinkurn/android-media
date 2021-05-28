@@ -27,7 +27,7 @@ object PMRegistrationTermHelper {
 
     fun getPmProRegistrationTerms(context: Context, shopInfo: PMShopInfoUiModel): List<RegistrationTermUiModel> {
         return listOf(getShopScoreTerm(context, shopInfo, true), getTotalOrderTerm(context, shopInfo),
-                getNivTerm(context, shopInfo), getKycTerm(context, shopInfo, true))
+                getNetItemValueTerm(context, shopInfo), getKycTerm(context, shopInfo, true))
     }
 
     private fun getTotalOrderTerm(context: Context, shopInfo: PMShopInfoUiModel): RegistrationTermUiModel.Order {
@@ -62,8 +62,8 @@ object PMRegistrationTermHelper {
         )
     }
 
-    private fun getNivTerm(context: Context, shopInfo: PMShopInfoUiModel): RegistrationTermUiModel.Niv {
-        val isEligible = shopInfo.nivOneMonth >= shopInfo.nivPmProThreshold
+    private fun getNetItemValueTerm(context: Context, shopInfo: PMShopInfoUiModel): RegistrationTermUiModel.NetItemValue {
+        val isEligible = shopInfo.netItemValueOneMonth >= shopInfo.netItemValuePmProThreshold
 
         val resDrawableIcon = if (isEligible) {
             R.drawable.ic_pm_checked
@@ -73,21 +73,21 @@ object PMRegistrationTermHelper {
 
         val title: String
         var isChecked = false
-        val nivFmt = CurrencyFormatHelper.convertToRupiah(shopInfo.nivOneMonth.toString())
-        val nivThresholdFmt = CurrencyFormatHelper.convertToRupiah(shopInfo.nivPmProThreshold.toString())
+        val netItemValueFmt = CurrencyFormatHelper.convertToRupiah(shopInfo.netItemValueOneMonth.toString())
+        val netItemValueThresholdFmt = CurrencyFormatHelper.convertToRupiah(shopInfo.netItemValuePmProThreshold.toString())
 
         if (isEligible) {
             val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-            title = context.getString(R.string.pm_niv_term, textColor, nivFmt)
+            title = context.getString(R.string.pm_niv_term, textColor, netItemValueFmt)
             isChecked = true
         } else {
             val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
-            title = context.getString(R.string.pm_niv_term, textColor, nivFmt)
+            title = context.getString(R.string.pm_niv_term, textColor, netItemValueFmt)
         }
 
-        val description = context.getString(R.string.pm_niv_threshold_term, nivThresholdFmt)
+        val description = context.getString(R.string.pm_niv_threshold_term, netItemValueThresholdFmt)
 
-        return RegistrationTermUiModel.Niv(
+        return RegistrationTermUiModel.NetItemValue(
                 title = title,
                 descriptionHtml = description,
                 resDrawableIcon = resDrawableIcon,

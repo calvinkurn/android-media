@@ -170,7 +170,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
             term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
             term is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
-            term is RegistrationTermUiModel.Niv -> showNivTermBottomSheet(shopInfo.nivPmProThreshold)
+            term is RegistrationTermUiModel.NetItemValue -> showNivTermBottomSheet(shopInfo.netItemValuePmProThreshold)
             term is RegistrationTermUiModel.Kyc -> submitKYC(tncAgreed)
         }
     }

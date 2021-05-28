@@ -54,7 +54,7 @@ class GetShopInfoPeriodUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(shopID: Long): RequestParams = RequestParams.create().apply {
-            putLong(SHOP_ID, shopID.toLong())
+            putLong(SHOP_ID, shopID)
         }
     }
 

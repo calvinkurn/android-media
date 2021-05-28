@@ -27,8 +27,8 @@ class PMShopInfoMapper @Inject constructor() {
                 isEligiblePmPro = response?.isEligiblePmPro.orFalse(),
                 itemSoldOneMonth = response?.itemSoldOneMonth.orZero(),
                 itemSoldPmProThreshold = response?.itemSoldPmProThreshold ?: PMShopInfoUiModel.DEFAULT_ORDER_THRESHOLD,
-                nivOneMonth = response?.nivOneMonth.orZero(),
-                nivPmProThreshold = response?.nivPmProThreshold ?: PMShopInfoUiModel.DEFAULT_NIV_THRESHOLD
+                netItemValueOneMonth = response?.nivOneMonth.orZero(),
+                netItemValuePmProThreshold = response?.nivPmProThreshold ?: PMShopInfoUiModel.DEFAULT_NIV_THRESHOLD
         )
     }
 }
