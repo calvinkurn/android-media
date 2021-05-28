@@ -2002,7 +2002,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     uspImageUrl = viewModel.p2Data.value?.uspImageUrl ?: "",
                     userId = viewModel.userId,
                     forceRefresh = shouldRefreshShippingBottomSheet,
-                    shopTier = viewModel.getShopInfo().shopTier.toIntOrZero()
+                    shopTier = viewModel.getShopInfo().shopTier
             ))
             shouldRefreshShippingBottomSheet = false
             val shippingBs = ProductDetailShippingBottomSheet()
