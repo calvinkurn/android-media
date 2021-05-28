@@ -10,6 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * Created by Irfan Khoirul on 2019-10-08.
@@ -44,6 +46,8 @@ object DeeplinkMapperMarketplace {
     fun getInternalShopPage(ctx: Context, uri: Uri, deeplink: String, idList:List<String>?):String {
         return if (isSpecialShop(uri)) {
             DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
+        } else if(isTokoNowShopId(uri)){
+            ApplinkConst.TokoNow.HOME
         } else {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, idList?.getOrNull(0))
         }
@@ -52,4 +56,15 @@ object DeeplinkMapperMarketplace {
     private fun isSpecialShop(uri: Uri): Boolean {
         return (uri.pathSegments[0] == ApplinkConst.SALAM_UMRAH_SHOP_ID)
     }
+
+    private fun isTokoNowShopId(uri: Uri): Boolean {
+        val tokoNowShopId = if(isStaging()){
+            ApplinkConst.TokoNow.TOKO_NOW_STAGING_SHOP_ID
+        }else{
+            ApplinkConst.TokoNow.TOKO_NOW_PRODUCTION_SHOP_ID
+        }
+        return (uri.pathSegments[0] == tokoNowShopId)
+    }
+
+    private fun isStaging(): Boolean = TokopediaUrl.getInstance().TYPE == Env.STAGING
 }

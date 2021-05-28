@@ -474,6 +474,8 @@ public interface ApplinkConst {
 
     interface TokoNow {
         String HOME = "tokopedia://tokonow";
+        String TOKO_NOW_PRODUCTION_SHOP_ID = "11515028";
+        String TOKO_NOW_STAGING_SHOP_ID = "480552";
     }
 
     interface Query {
