@@ -410,6 +410,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onErrorFollowKol(errorMessage: String) {
+
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
@@ -422,9 +423,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onErrorDeletePost(message: String, id: Int, rowNumber: Int) {
+    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
         view?.let {
-            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(message))
             Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 presenter.deletePost(id, rowNumber)
             })
@@ -880,9 +880,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun onErrorReportContent(message: String) {
+    private fun onErrorReportContent(errorMessage: String) {
         view?.let {
-            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(message))
             Toaster.make(it, errorMessage,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(R.string.label_close), View.OnClickListener { })
@@ -907,8 +906,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         showError(message, null)
     }
 
-    private fun showError(message: String, listener: View.OnClickListener?) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(message))
+    private fun showError(errorMessage: String, listener: View.OnClickListener?) {
         listener?.let {
             Toaster.make(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.title_try_again), it)

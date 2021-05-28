@@ -18,6 +18,7 @@ import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.feed.domain.DynamicFeedShopDomain
 import com.tokopedia.shop.feed.domain.usecase.GetFeedShopFirstUseCase
@@ -148,7 +149,8 @@ class FeedShopPresenter @Inject constructor(
                     return
                 }
                 if (!TextUtils.isEmpty(query.data.error)) {
-                    view.onErrorFollowKol(query.data.error)
+                    val errorMessage = ErrorHandler.getErrorMessage(view.context, MessageErrorException(query.data.error))
+                    view.onErrorFollowKol(errorMessage)
                     return
                 }
 
@@ -156,7 +158,8 @@ class FeedShopPresenter @Inject constructor(
                 if (isSuccess) {
                     view.onSuccessFollowKol()
                 } else {
-                    view.onErrorFollowKol(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                    val errorMessage = ErrorHandler.getErrorMessage(view.context, MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT))
+                    view.onErrorFollowKol(errorMessage)
                 }
             }
         })
@@ -178,9 +181,7 @@ class FeedShopPresenter @Inject constructor(
                     if (GlobalConfig.isAllowDebuggingTools()) {
                         throwable?.printStackTrace()
                     }
-                    view.onErrorFollowKol(
-                            ErrorHandler.getErrorMessage(view.context, throwable)
-                    )
+                    view.onErrorFollowKol(ErrorHandler.getErrorMessage(view.context, throwable))
                 }
             }
 
@@ -192,7 +193,8 @@ class FeedShopPresenter @Inject constructor(
                     return
                 }
                 if (!TextUtils.isEmpty(query.data.error)) {
-                    view.onErrorFollowKol(query.data.error)
+                    val errorMessage = ErrorHandler.getErrorMessage(view.context, MessageErrorException(query.data.error))
+                    view.onErrorFollowKol(errorMessage)
                     return
                 }
 
@@ -200,7 +202,8 @@ class FeedShopPresenter @Inject constructor(
                 if (isSuccess) {
                     view.onSuccessFollowKol()
                 } else {
-                    view.onErrorFollowKol(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                    val errorMessage = ErrorHandler.getErrorMessage(view.context, MessageErrorException(query.data.error))
+                    view.onErrorFollowKol(errorMessage)
                 }
             }
         })
