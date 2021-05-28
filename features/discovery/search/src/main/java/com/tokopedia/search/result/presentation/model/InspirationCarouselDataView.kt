@@ -147,6 +147,19 @@ class InspirationCarouselDataView(
                         "variant", "none / other"
                 )
             }
+
+            fun getInspirationCarouselDynamicProductAsObjectDataLayer(): Any {
+                return DataLayer.mapOf(
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "id", id,
+                        "list", "/search - carousel",
+                        "name", name,
+                        "position", position,
+                        "price", price,
+                        "variant", "none / other"
+                )
+            }
         }
     }
 }

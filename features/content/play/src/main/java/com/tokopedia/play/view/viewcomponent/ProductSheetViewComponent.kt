@@ -163,7 +163,7 @@ class ProductSheetViewComponent(
     fun setProductSheet(model: PlayProductTagsUiModel.Complete) {
         showContent(true)
 
-        if (isProductDecreased(model.productList.size)) showToasterProductUpdated()
+        if (isProductCountChanged(model.productList.size)) listener.onProductCountChanged(this)
 
         tvSheetTitle.text = model.basicInfo.bottomSheetTitle
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
@@ -225,18 +225,10 @@ class ProductSheetViewComponent(
             productList = List(PLACEHOLDER_COUNT) { PlayProductUiModel.Placeholder }
     )
 
-    private fun isProductDecreased(productSize: Int): Boolean {
+    private fun isProductCountChanged(productSize: Int): Boolean {
         return productLineAdapter.getItems().isNotEmpty() &&
                 productLineAdapter.getItems().first() is PlayProductUiModel.Product &&
-                productLineAdapter.itemCount > productSize
-    }
-
-    private fun showToasterProductUpdated() {
-        Toaster.build(
-                rootView,
-                getString(R.string.play_product_updated),
-                type = Toaster.TYPE_NORMAL
-        ).show()
+                productLineAdapter.itemCount != productSize
     }
 
     private fun sendImpression() {
@@ -307,5 +299,6 @@ class ProductSheetViewComponent(
         fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel)
         fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
+        fun onProductCountChanged(view: ProductSheetViewComponent)
     }
 }

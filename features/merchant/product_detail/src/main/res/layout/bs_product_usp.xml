@@ -153,7 +153,7 @@
         android:layout_marginStart="4dp"
         android:scaleType="centerInside"
         android:contentDescription="@null"
-        tools:src="@drawable/ic_free_shipping"
+        tools:src="@drawable/ic_pdp_topchat"
         app:layout_constraintTop_toTopOf="@+id/pdp_usp_static_3_3"
         app:layout_constraintStart_toEndOf="@+id/pdp_usp_static_3_3"/>
 

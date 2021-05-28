@@ -20,7 +20,8 @@ data class BestSellerDataModel(
         val widgetParam: String = "",
         val recommendationItemList: List<RecommendationItem> = listOf(),
         val productCardModelList: List<ProductCardModel> = listOf(),
-        val height: Int = 0
+        val height: Int = 0,
+        var chipsPosition: Int = 1
 ) : RecommendationVisitable{
     override fun visitableId(): String? {
         return id
