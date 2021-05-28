@@ -43,7 +43,7 @@
         <activity
             android:name=".search.presentation.view.SearchActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_tokomart"
+            android:label="@string/title_tokonow"
             android:windowSoftInputMode="adjustNothing"
             android:theme="@style/Theme.White">
 
@@ -53,7 +53,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_tokomart"
+                    android:host="@string/host_tokonow"
                     android:path="@string/path_tokomart_search"/>
             </intent-filter>
 
@@ -62,7 +62,7 @@
         <activity
             android:name=".category.presentation.view.CategoryActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_tokomart"
+            android:label="@string/title_tokonow"
             android:windowSoftInputMode="adjustNothing"
             android:theme="@style/Theme.White">
 
@@ -72,7 +72,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_tokomart"
+                    android:host="@string/host_tokonow"
                     android:pathPattern="@string/path_tokomart_category"/>
             </intent-filter>
 

@@ -388,9 +388,6 @@ public interface ApplinkConst {
     String ACCOUNT_HOST = "account";
     String ACCOUNT = "tokopedia://account";
 
-    String TOKONOW_SEARCH = "tokopedia://tokonow/search";
-    String TOKONOW_CATEGORY = "tokopedia://tokonow/category/{category_id}";
-
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -477,6 +474,8 @@ public interface ApplinkConst {
 
     interface TokoNow {
         String HOME = "tokopedia://tokonow";
+        String SEARCH = "tokopedia://tokonow/search";
+        String CATEGORY = "tokopedia://tokonow/category/{category_id}";
     }
 
     interface Query {

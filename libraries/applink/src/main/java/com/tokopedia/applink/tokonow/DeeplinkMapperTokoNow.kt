@@ -1,12 +1,12 @@
-package com.tokopedia.applink.tokomart
+package com.tokopedia.applink.tokonow
 
 import android.net.Uri
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 
-object DeeplinkMapperTokoMart {
+object DeeplinkMapperTokoNow {
 
-    fun getRegisteredNavigationTokoMartSearch(deeplink: String): String {
+    fun getRegisteredNavigationTokoNowSearch(deeplink: String): String {
         val uri = Uri.parse(deeplink)
 
         val query = uri.encodedQuery
@@ -15,7 +15,7 @@ object DeeplinkMapperTokoMart {
         return ApplinkConstInternalTokoMart.SEARCH + queryString
     }
 
-    fun getRegisteredNavigationTokoMartCategory(uri:Uri, idList: List<String>?): String {
+    fun getRegisteredNavigationTokoNowCategory(uri:Uri, idList: List<String>?): String {
         val query = uri.encodedQuery
         val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
 

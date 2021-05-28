@@ -1796,7 +1796,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check tokonow search appLink then should return tokopedia internal tokonow search in customerapp`() {
         val queryParams = "?q=keju"
         val expectedDeepLink = ApplinkConstInternalTokoMart.SEARCH + queryParams
-        val actualDeeplink = ApplinkConst.TOKONOW_SEARCH + queryParams
+        val actualDeeplink = ApplinkConst.TokoNow.SEARCH + queryParams
         assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
     }
 
@@ -1804,7 +1804,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check tokonow category appLink then should return tokopedia internal tokonow category in customerapp`() {
         val categoryId = "123"
         val expectedDeepLink = "${ApplinkConstInternalTokoMart.INTERNAL_TOKOMART}/category/$categoryId/"
-        val appLink = UriUtil.buildUri(ApplinkConst.TOKONOW_CATEGORY, categoryId)
+        val appLink = UriUtil.buildUri(ApplinkConst.TokoNow.CATEGORY, categoryId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }
