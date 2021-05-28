@@ -76,7 +76,7 @@ class PowerMerchantFeatureView: LinearLayout {
             PowerMerchantFeature(
                 R.string.power_merchant_featured_feature,
                 R.string.power_merchant_featured_feature_description,
-                R.drawable.ic_pm_star_rounded,
+                R.drawable.ic_pm_free_shipping,
                 R.string.power_merchant_featured_feature_clickable_text,
                 PowerMerchantUrl.URL_LEARN_MORE_BENEFIT,
                 featuredFeatureBoldText
@@ -84,7 +84,7 @@ class PowerMerchantFeatureView: LinearLayout {
             PowerMerchantFeature(
                 R.string.power_merchant_premium_account,
                 R.string.power_merchant_premium_account_description,
-                R.drawable.ic_pm_star_rounded,
+                R.drawable.ic_pm_free_shipping,
                 R.string.power_merchant_premium_account_clickable_text,
                 PowerMerchantUrl.URL_PREMIUM_ACCOUNT
             )

@@ -50,12 +50,12 @@ class PowerMerchantBenefitView: ConstraintLayout {
             PowerMerchantBenefit(
                 R.string.power_merchant_top_ads_benefit,
                 R.string.power_merchant_top_ads_benefit_description,
-                R.drawable.ic_pm_star_rounded
+                R.drawable.ic_pm_free_shipping
             ),
             PowerMerchantBenefit(
                 R.string.power_merchant_cost_benefit,
                 R.string.power_merchant_cost_benefit_description,
-                R.drawable.ic_pm_star_rounded
+                R.drawable.ic_pm_free_shipping
             ),
             PowerMerchantBenefit(
                 R.string.power_merchant_broadcast_benefit,

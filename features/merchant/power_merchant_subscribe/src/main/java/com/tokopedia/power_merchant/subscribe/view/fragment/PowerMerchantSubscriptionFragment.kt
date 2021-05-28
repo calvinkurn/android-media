@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
@@ -849,29 +850,29 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     private fun getUpgradePmProWidget(): WidgetUpgradePmProUiModel? {
         pmBasicInfo?.shopInfo?.let {
             val benefitList = listOf(
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_1, Constant.POWER_MERCHANT_PRO_CHARGING),
-                            drawableResIcon = R.drawable.ic_pm_free_shipping_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_1, Constant.POWER_MERCHANT_PRO_CHARGING),
+                            icon = IconUnify.COURIER_FAST
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_2),
-                            drawableResIcon = R.drawable.ic_pm_search_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_2),
+                            icon = IconUnify.SEARCH
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_3),
-                            drawableResIcon = R.drawable.ic_pm_gosend_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_3),
+                            icon = IconUnify.COURIER
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_4),
-                            drawableResIcon = R.drawable.ic_pm_pro_bange_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_4),
+                            icon = IconUnify.BADGE_PMPRO_FILLED
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_5),
-                            drawableResIcon = R.drawable.ic_pm_tokopedia_care_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_5),
+                            icon = IconUnify.CALL_CENTER
                     ),
-                    PMGradeBenefitUiModel(
-                            benefitName = getString(R.string.pm_pro_general_benefit_6),
-                            drawableResIcon = R.drawable.ic_pm_star_rounded
+                    PMProBenefitUiModel(
+                            description = getString(R.string.pm_pro_general_benefit_6),
+                            icon = IconUnify.STAR_CIRCLE
                     )
             )
             return WidgetUpgradePmProUiModel(
