@@ -4,31 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.logisticorder.domain.response.GetDeliveryImageResponse
-import com.tokopedia.logisticorder.domain.response.TrackOrder
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
-import com.tokopedia.logisticorder.usecase.GetDeliveryCoroutinesUseCase
-import com.tokopedia.logisticorder.usecase.GetDeliveryImageUseCase
 import com.tokopedia.logisticorder.usecase.TrackingPageRepository
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import rx.Subscriber
-import java.lang.reflect.Type
 import javax.inject.Inject
 
 class TrackingPageViewModel @Inject constructor(
         private val repo: TrackingPageRepository,
-        private val mapper: TrackingPageMapperNew, private val getDeliveryImageUseCase: GetDeliveryImageUseCase,
-        private val getDeliveryCoroutinesUseCase: GetDeliveryCoroutinesUseCase) : ViewModel() {
+        private val mapper: TrackingPageMapperNew) : ViewModel() {
 
     private val _trackingData = MutableLiveData<Result<TrackingDataModel>>()
     val trackingData: LiveData<Result<TrackingDataModel>>
@@ -41,10 +31,6 @@ class TrackingPageViewModel @Inject constructor(
     private val _retryAvailability = MutableLiveData<Result<RetryAvailabilityResponse>>()
     val retryAvailability: LiveData<Result<RetryAvailabilityResponse>>
         get() = _retryAvailability
-
-    private val _getDeliveryImage = MutableLiveData<Result<String>>()
-    val getDeliveryImage: LiveData<Result<String>>
-        get() = _getDeliveryImage
 
     fun getTrackingData(orderId: String) {
         viewModelScope.launch(onErrorGetTrackingData) {
@@ -67,26 +53,6 @@ class TrackingPageViewModel @Inject constructor(
         }
     }
 
-    /*fun getDeliveryImage(imageId: String, orderId: Long, size: String) {
-        viewModelScope.launch(onErrorGetDeliveryImage) {
-            getDeliveryImageUseCase.getDeliveryImageUrl(imageId, orderId, size)
-            val result = convertToRedeemedResponse(getDeliveryImageUseCase.executeOnBackground())
-            _getDeliveryImage.value = Success(result)
-        }
-    }
-*/
-    fun getDeliveryImage(imageId: String, orderId: Long, size: String, userId: String, osType: Int, deviceId: String) {
-        val baseUrl = "logistic/tracking/get-delivery-image"
-        val url = "$baseUrl?order_id=$orderId&image_id=$imageId&size=$size&user_id=$userId&os_type=$osType&device_id=$deviceId"
-        viewModelScope.launch (onErrorGetDeliveryImage) {
-//            val get-delivery-imagemageResponse = getDeliveryCoroutinesUseCase.execute(url)
-            val getDeliveryImageResponse = getDeliveryCoroutinesUseCase.executeParams(
-                    getDeliveryCoroutinesUseCase.getParams(imageId, orderId, size, userId, osType, deviceId))
-            _getDeliveryImage.value = Success(getDeliveryImageResponse)
-        }
-
-    }
-
     private val onErrorGetTrackingData = CoroutineExceptionHandler { _, throwable ->
         _trackingData.value = Fail(throwable)
     }
@@ -99,11 +65,4 @@ class TrackingPageViewModel @Inject constructor(
         _retryAvailability.value = Fail(throwable)
     }
 
-    private val onErrorGetDeliveryImage = CoroutineExceptionHandler { _, throwable ->
-        _getDeliveryImage.value = Fail(throwable)
-    }
-
-    private fun convertToRedeemedResponse(typeRestResponseMap: Map<Type, RestResponse?>): GetDeliveryImageResponse {
-        return typeRestResponseMap[GetDeliveryImageResponse::class.java]?.getData() as GetDeliveryImageResponse
-    }
 }
