@@ -112,14 +112,14 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     private fun observeSearchList(){
-        viewModel.searchList.observe(this, Observer {
+        viewModel.searchList.observe(viewLifecycleOwner, Observer {
             searchadapter.setItems(it)
             performanceMonitoring.stopTrace()
         })
 
-        viewModel.isItRefreshing.observe(this, Observer { swipe_refresh_layout.isRefreshing = it })
+        viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
 
-        viewModel.errorReport.observe(this, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)){ getData() }.showRetrySnackbar()})
+        viewModel.errorReport.observe(viewLifecycleOwner, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)){ getData() }.showRetrySnackbar()})
     }
 
     private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){

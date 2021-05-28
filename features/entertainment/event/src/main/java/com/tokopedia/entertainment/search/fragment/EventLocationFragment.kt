@@ -69,13 +69,13 @@ class EventLocationFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchList(){
-        viewModel.errorReport.observe(this, Observer {
+        viewModel.errorReport.observe(viewLifecycleOwner, Observer {
             NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)){
                 getLocationData()
             }.showRetrySnackbar()
         })
 
-        viewModel.searchList.observe(this, Observer {
+        viewModel.searchList.observe(viewLifecycleOwner, Observer {
             searchadapter.setItems(it)
         })
     }
