@@ -12,8 +12,6 @@ data class PMGradeBenefitInfoResponse(
 )
 
 data class PMGradeBenefitInfoModel(
-        @SerializedName("shop_id")
-        val shopId: Long? = 0,
         @SerializedName("next_monthly_refresh_date")
         val nextMonthlyRefreshDate: String? = "",
         @SerializedName("next_quarterly_calibration_refresh_date")
@@ -26,10 +24,6 @@ data class PMGradeBenefitInfoModel(
         val nextPMGrade: NextPMGradeModel? = null,
         @SerializedName("next_benefit_list")
         val nextPMBenefits: List<PMGradeBenefitModel>? = null,
-        @SerializedName("potential_pm_grade")
-        val potentialPmGrade: PotentialPmGradeModel? = null,
-        @SerializedName("potential_benefit_list")
-        val potentialBenefits: List<PMGradeBenefitModel>? = null,
         @SerializedName("pm_grade_benefit_list")
         val pmGradeBenefitList: List<PmGradeWithBenefitsModel>? = null
 )

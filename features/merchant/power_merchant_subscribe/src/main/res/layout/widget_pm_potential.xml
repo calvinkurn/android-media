@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/unify_space_12"
-    android:background="@color/Neutral_N0"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/layout_lvl1">

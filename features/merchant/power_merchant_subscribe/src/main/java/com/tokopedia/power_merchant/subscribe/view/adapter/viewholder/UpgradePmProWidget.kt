@@ -12,7 +12,9 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitAdapter
+import com.tokopedia.power_merchant.subscribe.view.adapter.PMProBenefitAdapter
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
+import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetUpgradePmProUiModel
 import kotlinx.android.synthetic.main.widget_upgrade_pm_pro.view.*
@@ -45,8 +47,8 @@ class UpgradePmProWidget(
         }
     }
 
-    private fun showGeneralBenefits(benefits: List<PMGradeBenefitUiModel>) = with(itemView.rvPmUpgradeBenefits) {
-        val benefitAdapter = GradeBenefitAdapter(benefits)
+    private fun showGeneralBenefits(benefits: List<PMProBenefitUiModel>) = with(itemView.rvPmUpgradeBenefits) {
+        val benefitAdapter = PMProBenefitAdapter(benefits)
         layoutManager = object : LinearLayoutManager(context) {
             override fun canScrollVertically(): Boolean = false
         }

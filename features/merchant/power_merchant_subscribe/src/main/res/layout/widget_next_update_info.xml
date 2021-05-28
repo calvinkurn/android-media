@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/layout_lvl2"
+    android:background="@drawable/bg_pm_next_update_info_widget"
+    android:orientation="vertical"
+    android:padding="@dimen/layout_lvl2">
 
-    <LinearLayout
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmNextUpdateDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/layout_lvl2"
-        android:background="@drawable/bg_pm_next_update_info_widget"
-        android:orientation="vertical"
-        android:padding="@dimen/layout_lvl2">
+        android:textColor="@color/Unify_N700"
+        app:typographyType="body_2"
+        tools:text="@string/pm_next_update_pm_pro_info" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvPmNextUpdateDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700"
-            app:typographyType="body_2"
-            tools:text="@string/pm_next_update_pm_pro_info" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvPmNextUpdateDateInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:text="@string/pm_label_next_three_months_pm_grade_update"
-            app:typographyType="body_2"
-            app:typographyWeight="bold" />
-    </LinearLayout>
-</RelativeLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmNextUpdateDateInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:text="@string/pm_label_next_three_months_pm_grade_update"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+</LinearLayout>

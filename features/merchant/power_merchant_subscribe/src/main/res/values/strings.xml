@@ -227,8 +227,8 @@
     <string name="pm_rate_4_star">Puas</string>
     <string name="pm_rate_5_star">Sangat Puas</string>
     <string name="pm_all_questionnaire_must_be_answered">Anda belum menjawab semua pertanyaan</string>
-    <string name="pm_number_of_order"><![CDATA[Pesanan Selesai: <font color=\"%1$s\">%2$d</font>]]></string>
-    <string name="pm_number_of_minimum_order">Min. %1$d pesanan dalam 30 hari terakhir</string>
+    <string name="pm_number_of_order"><![CDATA[Pesanan Selesai: <font color=\"%1$s\">%2$s</font>]]></string>
+    <string name="pm_number_of_minimum_order">Min. %1$s pesanan dalam 30 hari terakhir</string>
     <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_niv_threshold_term">Min. %1$s dalam 30 hari terakhir</string>
     <string name="pm_free_shipping_description">Biaya Bebas Ongkir yang lebih murah</string>
@@ -237,7 +237,7 @@
     <string name="pm_growing_benefit_description">Keuntungan bertambah sesuai level toko</string>
     <string name="pm_pm_pro_statistic_benefit_description">Berbagai keuntungan yang bisa didapatkan!</string>
     <string name="pm_not_eligible_order_term_title">Tingkatkan jumlah pesanan \nTokomu dulu, yuk!</string>
-    <string name="pm_not_eligible_order_term_description">Tokomu harus mendapatkan <b>min. %1$d pesanan</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan jumlah pesananmu, ya!</string>
+    <string name="pm_not_eligible_order_term_description">Tokomu harus mendapatkan <b>min. %1$s pesanan</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan jumlah pesananmu, ya!</string>
     <string name="pm_learn_ad_and_promotion">Pelajari Iklan &amp; Promosi</string>
     <string name="pm_not_eligible_niv_term_title">Tingkatkan pendapatan \nTokomu dulu, yuk!</string>
     <string name="pm_not_eligible_niv_term_description">Tokomu harus mendapatkan pendapatan <b>%1$s</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan pendapatanmu, ya!</string>
@@ -275,9 +275,9 @@
     <string name="pm_registration_success_message">Tokomu berhasil jadi Power Merchant!</string>
     <string name="pm_pro_registration_success_message">Tokomu berhasil jadi Power Merchant PRO!</string>
     <string name="pm_moderated_shop_ticker_title">Tokomu sedang dalam pengawasan Tokopedia</string>
-    <string name="pm_moderated_shop_ticker_description">Tunggu hingga toko kembali aktif untuk daftar jadi Power Merchant</string>
-    <string name="pm_bottom_sheet_moderated_shop_title">Pendaftaran Power Merchant \ntidak dapat dilanjutkan</string>
-    <string name="pm_bottom_sheet_moderated_shop_description">Saat ini, tokomu dalam pengasawan Tokopedia. \nTunggu hingga toko kembali aktif untuk daftar jadi Power Merchant.</string>
+    <string name="pm_moderated_shop_ticker_description">Kamu bisa daftar Power Merchant jika toko kembali aktif.</string>
+    <string name="pm_bottom_sheet_moderated_shop_title">Oops, pendaftaran Power \nMerchant tidak bisa dilanjutkan</string>
+    <string name="pm_bottom_sheet_moderated_shop_description">Saat ini, tokomu dalam pengawasan Tokopedia dan bisa daftar Power Merchant jika toko kembali aktif. Untuk info selengkapnya, hubungi Tokopedia Care.</string>
     <string name="pm_upgrade_to_power_merchant_pro">Upgrade ke Power Merchant PRO</string>
     <string name="pm_pm_pro_deactivation_description">Kamu bisa turunkan status tokomu jadi Power Merchant. Hanya dengan biaya layanan %1$s, kamu tetap bisa menikmati berbagai keuntungan.</string>
     <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_title">Oops, kamu belum bisa daftar dulu ya..</string>

@@ -14,11 +14,11 @@ data class GoldActivationSubscription(
 }
 
 data class GMActivation(
-        @SerializedName("ActivationSubscriptionHeader")
+        @SerializedName("header")
         @Expose
         val header: GMActivationHeader = GMActivationHeader(),
 
-        @SerializedName("ActivationSubscriptionData")
+        @SerializedName("data")
         @Expose
         val data: GMActivationData = GMActivationData()
 )
@@ -37,7 +37,7 @@ data class GMActivationData(
 )
 
 data class GMActivationHeader(
-        @SerializedName("message")
+        @SerializedName("messages")
         @Expose
         val message: List<String> = listOf(),
 
@@ -53,7 +53,7 @@ data class GMActivationHeader(
 data class GMActivationProduct(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String? = "0",
 
         @SerializedName("name")
         @Expose

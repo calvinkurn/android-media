@@ -40,7 +40,7 @@ sealed class RegistrationTermUiModel(
             override val appLinkOrUrl: String? = null
     ) : RegistrationTermUiModel(title, descriptionHtml, resDrawableIcon, isChecked, clickableText, appLinkOrUrl, 2)
 
-    data class Niv(
+    data class NetItemValue(
             override val title: String,
             override val descriptionHtml: String,
             override val resDrawableIcon: Int,

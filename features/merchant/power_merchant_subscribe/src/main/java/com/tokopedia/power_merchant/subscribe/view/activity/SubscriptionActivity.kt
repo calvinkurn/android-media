@@ -21,6 +21,7 @@ import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
@@ -159,8 +160,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     private fun observeShopModerationStatus() {
         sharedViewModel.getShopModerationStatus(userSession.shopId.toLongOrZero())
         observe(sharedViewModel.shopModerationStatus) {
-            if (it is Success) {
-                showModerationShopTicker(it.data)
+            when (it) {
+                is Success -> showModerationShopTicker(it.data)
+                is Fail -> logToCrashlytics(it.throwable, PowerMerchantErrorLogger.PM_SHOP_MODERATION_STATUS_ERROR)
             }
         }
     }
@@ -171,6 +173,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
                 is Success -> setOnSuccessGetBasicInfo(it.data)
                 is Fail -> {
                     showErrorState()
+                    logToCrashlytics(it.throwable, PowerMerchantErrorLogger.PM_BASIC_INFO_ERROR)
                 }
             }
         }
@@ -370,5 +373,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, PowerMerchantDeepLinkMapper.PM_WEBVIEW_URL)
             finish()
         }
+    }
+    
+    private fun logToCrashlytics(throwable: Throwable, message: String) {
+        PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
     }
 }

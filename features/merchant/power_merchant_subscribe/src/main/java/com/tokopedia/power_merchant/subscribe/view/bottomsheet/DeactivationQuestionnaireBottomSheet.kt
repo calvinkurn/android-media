@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.QuestionnaireAdapterFactoryImpl
@@ -134,16 +135,24 @@ class DeactivationQuestionnaireBottomSheet : BaseBottomSheet() {
                     showToaster(errorMessage, ctaText, Snackbar.LENGTH_INDEFINITE) {
                         getDeactivationQuestionnaire()
                     }
+                    logLoCrashlytic(it.throwable, PowerMerchantErrorLogger.PM_DEACTIVATION_QUESTIONNAIRE_ERROR)
                 }
             }
         })
+    }
+
+    private fun logLoCrashlytic(throwable: Throwable, message: String) {
+        PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
     }
 
     private fun observePmDeactivationStatus() {
         mViewModel.isSuccessDeactivate.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> setOnDeactivationSuccess(it.data)
-                is Fail -> setOnDeactivationFail(it.throwable)
+                is Fail -> {
+                    setOnDeactivationFail(it.throwable)
+                    logLoCrashlytic(it.throwable, PowerMerchantErrorLogger.PM_DEACTIVATION_ERROR)
+                }
             }
         })
     }
