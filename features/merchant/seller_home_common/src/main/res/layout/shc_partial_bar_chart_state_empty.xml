@@ -2,7 +2,7 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/multiLineEmptyState"
+    android:id="@+id/bar_chart_empty_state"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -16,7 +16,7 @@
         android:paddingBottom="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvLineGraphEmptyStateTitle"
+            android:id="@+id/tv_shc_bar_chart_empty_state_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_3"
@@ -24,7 +24,7 @@
             tools:text="@string/shc_data_empty_state_title" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvLineGraphEmptyStateDescription"
+            android:id="@+id/tv_shc_bar_chart_empty_state_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -34,7 +34,7 @@
             tools:text="@string/shc_empty_state_description" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvShcMultiLineEmptyStateCta"
+            android:id="@+id/tv_shc_bar_chart_empty_state_cta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"

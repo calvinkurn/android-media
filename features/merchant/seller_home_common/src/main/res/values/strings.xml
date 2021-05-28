@@ -12,9 +12,9 @@
     <string name="shc_last_period">Periode sebelumnya</string>
     <string name="shc_select_category">Pilih Kategori</string>
     <string name="shc_apply_btn">Terapkan</string>
-    <string name="multi_line_empty_state_title">Belum ada data hari ini</string>
-    <string name="multi_line_empty_state_description">Statistik penjualan tokomu akan ditampilkan di sini jika produkmu sudah terjual.</string>
-    <string name="multi_line_empty_state_cta">Yuk, Promosikan Produkmu!</string>
+    <string name="shc_data_empty_state_title">Belum ada data hari ini</string>
+    <string name="shc_empty_state_description">Statistik penjualan tokomu akan ditampilkan di sini jika produkmu sudah terjual.</string>
+    <string name="shc_empty_state_cta">Yuk, Promosikan Produkmu!</string>
     <string name="shc_empty_state_description_post_list">Tenang, kamu tetap bisa ikuti semua update mengenai Seller di Pusat Edukasi Seller, ya.</string>
     <string name="shc_empty_state_button_post_list">Ke Pusat Edukasi Seller</string>
     <string name="shc_content_desc_button_lihat_selengkapnya">button lihat selengkapnya</string>
