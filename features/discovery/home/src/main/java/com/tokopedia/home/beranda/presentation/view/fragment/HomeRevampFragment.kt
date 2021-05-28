@@ -19,7 +19,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
-import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -139,12 +138,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_EXP
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_OLD
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_VARIANT
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_EXP
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_OLD
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_VARIANT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
@@ -223,8 +216,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val EXTRA_URL = "url"
         private const val EXTRA_TITLE = "core_web_view_extra_title"
         private const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
         private const val DEFAULT_UTM_SOURCE = "home_notif"
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
@@ -339,6 +330,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var serverOffsetTime: Long = 0L
     private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
+    private var pmProCoachmarkIsShowing = false
     private var useNewInbox = false
     private var coachmark: CoachMark2? = null
     private var bannerCarouselCallback: BannerComponentCallback? = null
@@ -723,8 +715,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachMarkIsShowing = true
             val coachMarkItem = ArrayList<CoachMark2Item>()
             coachmark = CoachMark2(it)
-
-            coachMarkItem.buildHomeCoachmark()
             coachmark?.let {
                 it.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
@@ -744,7 +734,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
         }
     }
-
 
     private fun CoachMark2Item.setCoachmarkShownPref() {
         when {
@@ -2401,6 +2390,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
+            feedViewHolder.hidePmProCoachmark()
         }
     }
 
