@@ -1053,7 +1053,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         adapter = null
         homeRecyclerView?.layoutManager = null
         layoutManager = null
-        getHomeViewModel().onCloseChannel()
         unRegisterBroadcastReceiverTokoCash()
     }
 
@@ -1089,8 +1088,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observeRequestImagePlayBanner()
         observeViewModelInitialized()
         observeHomeRequestNetwork()
-        observeSalamWidget()
-        observeRechargeRecommendation()
         observeIsNeedRefresh()
         observeSearchHint()
         observePlayWidgetReminder()
@@ -1293,22 +1290,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 getHomeViewModel().clearPlayBanner()
                             }
                         })
-            })
-        }
-    }
-
-    private fun observeSalamWidget() {
-        context?.let {
-            getHomeViewModel().salamWidgetLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertSalamWidget(it.peekContent())
-            })
-        }
-    }
-
-    private fun observeRechargeRecommendation() {
-        context?.let {
-            getHomeViewModel().rechargeRecommendationLiveData.observe(viewLifecycleOwner, Observer {
-                getHomeViewModel().insertRechargeRecommendation(it.peekContent())
             })
         }
     }
@@ -1800,7 +1781,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(ifNavRevamp = {
             if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
-//        getHomeViewModel().showTicker()
         observeHomeNotif()
         pageLoadTimeCallback?.invalidate()
     }
@@ -2217,7 +2197,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels) {
-        getHomeViewModel().getPopularKeywordData()
+        getHomeViewModel().getPopularKeyword()
         PopularKeywordTracking.sendPopularKeywordClickReload(channel, getUserSession().userId)
     }
 
@@ -2231,12 +2211,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        BestSellerWidgetTracker.sendClickTracker(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName, userId, widgetPosition)
+        BestSellerWidgetTracker.sendClickTracker(recommendationItem, bestSellerDataModel, userId, widgetPosition)
         RouteManager.route(context, recommendationItem.appUrl)
     }
 
     override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName, userId, widgetPosition) as HashMap<String, Any>)
+        trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel, userId, widgetPosition) as HashMap<String, Any>)
     }
 
     override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
@@ -2246,9 +2226,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 recommendationItem.createProductCardOptionsModel(widgetPosition))
     }
 
-    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int) {
+    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
         BestSellerWidgetTracker.sendFilterClickTracker(filter.value, bestSellerDataModel.id, bestSellerDataModel.title, userId)
-        getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel)
+        getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel, selectedChipsPosition = selectedChipsPosition)
     }
 
     override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {

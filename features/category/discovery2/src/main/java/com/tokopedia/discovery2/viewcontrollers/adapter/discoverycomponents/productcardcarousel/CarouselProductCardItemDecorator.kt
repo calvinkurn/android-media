@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
 
-internal class CarouselProductCardItemDecorator : RecyclerView.ItemDecoration() {
+internal class CarouselProductCardItemDecorator(val dimen : Int? = null) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
                                 parent: RecyclerView,
@@ -16,9 +16,9 @@ internal class CarouselProductCardItemDecorator : RecyclerView.ItemDecoration() 
         val itemCount = state.itemCount
 
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            outRect.left = dimen ?: view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
         } else if (itemCount > 0 && itemPosition == itemCount - 1) {
-            outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+            outRect.right = dimen ?: view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
         }
     }
 }

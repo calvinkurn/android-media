@@ -79,6 +79,7 @@ const val CATALOG_GQL_TOP_ADS: String ="""query displayTopAds(${'$'}params: Stri
         uri
         owner_id
         is_owner
+        pm_pro_shop
         badges {
           title
           image_url

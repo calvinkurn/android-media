@@ -102,6 +102,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         }
     }
 
+    fun deleteKeyLocally(key:String){
+        editor?.let {
+            it.remove(key)
+            it.commit()
+        }
+    }
+
     fun fetchByType(listener: RemoteConfig.Listener?) {
         editor.clear().commit()
         fetch(listener)
@@ -215,8 +222,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
 
         const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
-        const val POWER_MERCHANT_PRO_POP_UP_SHOW = "pm_pro_show"
-        const val POWER_MERCHANT_PRO_POP_UP_NOT_SHOW = "pm_pro_not_show"
 
         //home component rollence section
 
