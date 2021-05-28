@@ -27,8 +27,6 @@ class UploadProofPaymentActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun isShowCloseButton() = true
-
     override fun getNewFragment(): Fragment {
         val paymentListModel: BasePaymentModel =
             intent.getParcelableExtra(PAYMENT_LIST_MODEL_EXTRA)

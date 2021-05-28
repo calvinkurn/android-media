@@ -5,9 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.pms.bankaccount.data.repository.BankListDataSourceLocal
-import com.tokopedia.pms.bankaccount.data.repository.BankListRepositoryImpl
-import com.tokopedia.pms.bankaccount.domain.BankListRepository
+import com.tokopedia.pms.bankaccount.domain.BankListDataUseCase
+import com.tokopedia.pms.paymentlist.di.PmsScope
 import com.tokopedia.pms.paymentlist.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.pms.paymentlist.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.user.session.UserSession
@@ -42,9 +41,7 @@ class PmsModule {
     }
 
     @Provides
-    fun bankListRepository(bankListDataSourceLocal: BankListDataSourceLocal?): BankListRepository {
-        return BankListRepositoryImpl(bankListDataSourceLocal)
-    }
-
+    @PmsScope
+    fun bankListRepository() = BankListDataUseCase()
 
 }

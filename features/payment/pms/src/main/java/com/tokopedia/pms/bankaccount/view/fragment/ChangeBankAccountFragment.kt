@@ -17,7 +17,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pms.R
 import com.tokopedia.pms.bankaccount.data.model.BankListModel
-import com.tokopedia.pms.bankaccount.domain.BankListRepository
+import com.tokopedia.pms.bankaccount.domain.BankListDataUseCase
 import com.tokopedia.pms.bankaccount.view.activity.ChangeBankAccountActivity.Companion.PAYMENT_LIST_MODEL_EXTRA
 import com.tokopedia.pms.bankaccount.view.bottomsheet.BankDestinationFragment
 import com.tokopedia.pms.bankaccount.view.bottomsheet.OnBankSelectedListener
@@ -39,7 +39,7 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
     @Inject
-    lateinit var bankListRepository: BankListRepository
+    lateinit var bankListDataUseCase: BankListDataUseCase
 
     private val viewModel: ChangeBankAccountViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -72,7 +72,7 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (paymentListModel != null) {
-            bankList = bankListRepository.bankList
+            bankList = bankListDataUseCase.bankList
             initializeTextFields()
         }
         button_use.setOnClickListener(View.OnClickListener {
@@ -97,7 +97,7 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
             )
             setOnClickListener { openBankListForSelection() }
             val paddingEndDimen = getDimens(com.tokopedia.unifycomponents.R.dimen.unify_space_32)
-            setPadding(paddingLeft, paddingTop, paddingEndDimen, paddingBottom)
+            //setPadding(paddingLeft, paddingTop, paddingEndDimen, paddingBottom)
         }
 
         input_note_optional.textAreaInput.minLines = 5
@@ -106,7 +106,7 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
         input_account_number.textFieldInput.setText(paymentListModel!!.senderBankInfo.accountNumber)
         input_account_name.textFieldInput.setText(paymentListModel!!.senderBankInfo.accountName)
 
-        val bankName = getBankNameFromBankId(paymentListModel!!.senderBankInfo.bankId)
+        val bankName = bankListDataUseCase.getBankNameFromBankId(paymentListModel!!.senderBankInfo.bankId)
         input_dest_bank_account.textAreaInput.setText(bankName)
     }
 
@@ -114,19 +114,6 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
         BankDestinationFragment.show(this, childFragmentManager)
     }
 
-    private fun getBankNameFromBankId(bankId: String?): String {
-        for (bankModel in bankList) {
-            if (bankModel.id == bankId) return bankModel.bankName
-        }
-        return bankList.getOrNull(0)?.bankName ?: ""
-    }
-
-    private fun getBankIdFromBankName(bankName: String): String {
-        for (bankModel in bankList) {
-            if (bankModel.bankName == bankName) return bankModel.id
-        }
-        return bankList.getOrNull(0)?.id ?: "1"
-    }
 
     override fun onBankSelected(bankListModel: BankListModel) {
         input_dest_bank_account?.textAreaInput?.setText(bankListModel.bankName)
@@ -140,7 +127,7 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
             accountName = input_account_name?.getEditableValue().toString(),
             accountNumber = input_account_number?.getEditableValue().toString(),
             notes = input_note_optional?.textAreaInput?.text.toString(),
-            destinationBankId = getBankIdFromBankName(input_dest_bank_account?.textAreaInput?.text.toString())
+            destinationBankId = bankListDataUseCase.getBankIdFromBankName(input_dest_bank_account?.textAreaInput?.text.toString())
         )
     }
 
@@ -174,14 +161,14 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
         }
     }
 
-    fun showLoadingDialog() {
+    private fun showLoadingDialog() {
         context?.let {
             loaderDialog = LoaderDialog(it)
             loaderDialog?.show()
         }
     }
 
-    fun hideLoadingDialog() {
+    private fun hideLoadingDialog() {
         loaderDialog?.dialog?.dismiss()
         loaderDialog = null
     }

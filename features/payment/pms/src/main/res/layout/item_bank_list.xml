@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/pms_dp_20"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/unify_space_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/bank_name"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        tools:text="BCA"
-        android:layout_centerVertical="true"/>
-</RelativeLayout>
+        app:typographyWeight="bold"
+        tools:text="BCA" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/viewDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pms_dp_1"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:background="@color/Unify_N75"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bank_name" />
+</androidx.constraintlayout.widget.ConstraintLayout>

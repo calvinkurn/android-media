@@ -9,7 +9,7 @@ import com.tokopedia.pms.bankaccount.data.model.BankListModel
 /**
  * Created by zulfikarrahman on 7/5/18.
  */
-class BankListAdapter(var bankList: List<BankListModel>, val actionItemListener: (BankListModel) -> Unit) :
+class BankListAdapter(var bankList: List<BankListModel>, private val actionItemListener: (BankListModel) -> Unit) :
     RecyclerView.Adapter<BankListViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BankListViewHolder {
         return BankListViewHolder(

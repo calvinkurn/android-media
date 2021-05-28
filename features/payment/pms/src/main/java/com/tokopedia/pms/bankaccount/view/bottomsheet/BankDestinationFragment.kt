@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pms.R
 import com.tokopedia.pms.bankaccount.data.model.BankListModel
-import com.tokopedia.pms.bankaccount.domain.BankListRepository
+import com.tokopedia.pms.bankaccount.domain.BankListDataUseCase
 import com.tokopedia.pms.bankaccount.view.adapter.BankListAdapter
 import com.tokopedia.pms.paymentlist.di.DaggerPmsComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class BankDestinationFragment : BottomSheetUnify() {
 
     @Inject
-    lateinit var bankListRepository: BankListRepository
+    lateinit var bankListDataUseCase: BankListDataUseCase
     private val childLayoutRes = R.layout.pms_base_recycler_bottom_sheet
     private var bankListCallback: OnBankSelectedListener? = null
 
@@ -50,8 +50,8 @@ class BankDestinationFragment : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (::bankListRepository.isInitialized) {
-            baseRecyclerView.adapter = BankListAdapter(bankListRepository.bankList) {
+        if (::bankListDataUseCase.isInitialized) {
+            baseRecyclerView.adapter = BankListAdapter(bankListDataUseCase.bankList) {
                 bankListCallback?.onBankSelected(it)
                 dismiss()
             }
