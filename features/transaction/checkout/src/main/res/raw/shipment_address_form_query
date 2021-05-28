@@ -70,19 +70,19 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               duration
             }
           }
-          #is_disable_change_courier
-          #auto_courier_selection
-          #courier_selection_error {
-            #title
-            #description
-          #}
-          #bo_metadata {
-            #bo_type
-            #bo_eligibilities {
-              #key
-              #value
-            #}
-          #}
+          is_disable_change_courier
+          auto_courier_selection
+          courier_selection_error {
+            title
+            description
+          }
+          bo_metadata {
+            bo_type
+            bo_eligibilities {
+              key
+              value
+            }
+          }
           save_state_flag
           promo_codes
           vehicle_leasing {
