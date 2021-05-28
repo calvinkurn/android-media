@@ -237,11 +237,6 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             titleTextView = itemView.findViewById(R.id.account_user_item_common_title);
             summaryextView = itemView.findViewById(R.id.account_user_item_common_body);
             aSwitch = itemView.findViewById(R.id.account_user_item_common_switch);
-            aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (switchSettingListener != null) {
-                switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
-            }});
-
             itemView.setOnClickListener(view -> aSwitch.toggle());
         }
 
@@ -251,6 +246,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             boolean switchState = switchSettingListener.isSwitchSelected(item.getId());
             aSwitch.setChecked(switchSettingListener != null && switchState);
+            item.setSwitchValue(switchSettingListener != null && switchState);
 
             if (item.isUseOnClick()) {
                 view.setOnClickListener(new View.OnClickListener() {
@@ -260,6 +256,14 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     }
                 });
             }
+
+            aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if (switchSettingListener != null) {
+                    if(isChecked != item.switchValue()) {
+                        item.setSwitchValue(isChecked);
+                        switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
+                    }
+                }});
         }
     }
 

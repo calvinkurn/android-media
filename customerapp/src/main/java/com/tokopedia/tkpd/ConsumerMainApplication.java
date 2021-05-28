@@ -98,9 +98,9 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     @Override
     public void onCreate() {
+        setupAppScreenMode();
         super.onCreate();
         setGrantPermissionSlice();
-        setupAppScreenMode();
     }
 
     public void setGrantPermissionSlice(){
@@ -116,8 +116,8 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     private void setupAppScreenMode() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isDarkMode = settings.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
         int screenMode;
         if (isDarkMode) {
             screenMode = AppCompatDelegate.MODE_NIGHT_YES;

@@ -201,8 +201,13 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
 
-        settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
-                getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false))
+        val isShowDarkMode = remoteConfig.getBoolean(
+                RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+//        if(isShowDarkMode) {
+        if(true) {
+            settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
+                    getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false))
+        }
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ABOUT_US,
                 getString(R.string.title_about_us)))
@@ -406,17 +411,30 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             SettingConstant.SETTING_SAFE_SEARCH_ID ->
                 accountAnalytics.eventClickSetting(SAFE_MODE)
-            SettingConstant.SETTING_DARK_MODE -> setDarkMode(value)
+            SettingConstant.SETTING_DARK_MODE -> setupDarkMode(value)
             else -> {
             }
         }
     }
 
-    private fun setDarkMode(value: Boolean) {
-        val screenMode = if (value) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+    private fun setupDarkMode(isDarkMode: Boolean) {
+        setAppCompatMode(isDarkMode)
+        saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
+        accountAnalytics.eventClickThemeSetting(isDarkMode)
+        recreateView()
+    }
+
+    private fun setAppCompatMode(isDarkMode: Boolean) {
+        val screenMode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         AppCompatDelegate.setDefaultNightMode(screenMode)
-        saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, value)
-        //TODO: Analytics
+    }
+
+    private fun recreateView() {
+        activity?.run {
+            finish()
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            startActivity(Intent(this, this.javaClass))
+        }
     }
 
     override fun onClicked(settingId: Int, currentValue: Boolean) {

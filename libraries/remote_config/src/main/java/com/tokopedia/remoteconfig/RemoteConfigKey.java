@@ -244,4 +244,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_NEW_SHOP_SCORE = "android_enable_new_shop_score";
     public static final String ENABLE_NEW_PENALTY = "android_enable_new_penalty";
 
+    public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
+
 }
