@@ -94,7 +94,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             stepperListener?.goToNextPage(stepperModel)
         else {
             stepperModel?.redirectionToSummary = false
-            stepperListener?.getToFragment(UrlConstant.fragment_number_4, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
         }
     }
 

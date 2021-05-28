@@ -16,8 +16,8 @@ object UrlConstant {
     const val PATH_KEYWORD_CREATE = "v2.1/promo/keyword"
     const val MAIN = "Main"
 
-    const val fragment_number_1 = 1
-    const val fragment_number_2 = 2
-    const val fragment_number_3 = 3
-    const val fragment_number_4 = 4
+    const val FRAGMENT_NUMBER_1 = 1
+    const val FRAGMENT_NUMBER_2 = 2
+    const val FRAGMENT_NUMBER_3 = 3
+    const val FRAGMENT_NUMBER_4 = 4
 }

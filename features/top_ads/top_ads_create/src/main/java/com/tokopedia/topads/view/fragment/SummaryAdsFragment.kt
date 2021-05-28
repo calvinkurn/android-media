@@ -291,20 +291,20 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
         goToProduct?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(UrlConstant.fragment_number_1, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_1, stepperModel)
         }
 
         goToKeyword?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(UrlConstant.fragment_number_3, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_3, stepperModel)
         }
         goToBudget?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(UrlConstant.fragment_number_3, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_3, stepperModel)
         }
         goToAutobid.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(UrlConstant.fragment_number_2, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_2, stepperModel)
         }
     }
 
