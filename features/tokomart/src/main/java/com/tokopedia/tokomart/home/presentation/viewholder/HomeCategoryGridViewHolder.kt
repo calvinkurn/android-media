@@ -2,7 +2,6 @@ package com.tokopedia.tokomart.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager

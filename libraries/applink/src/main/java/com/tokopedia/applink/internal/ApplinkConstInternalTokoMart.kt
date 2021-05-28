@@ -5,7 +5,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 object ApplinkConstInternalTokoMart {
 
     @JvmField
-    val HOST_TOKOMART = "tokomart"
+    val HOST_TOKOMART = "tokonow"
 
     @JvmField
     val INTERNAL_TOKOMART = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TOKOMART}"

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+    -->
+    <string name="title_tokonow" translatable="false">TokoNow</string>
+
+    <!--host-->
+    <string name="host_tokonow" translatable="false">tokonow</string>
+
+    <!--path-->
+    <string name="path_tokonow_home" translatable="false">/home</string>
+    <string name="path_tokonow_category_list" translatable="false">/category-list</string>
+</resources>

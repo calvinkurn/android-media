@@ -391,8 +391,9 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.SELLER_CENTER) { _, _, _, _ -> DeeplinkMapperMerchant.getRegisteredSellerCenter() },
             DLP.startWith(ApplinkConst.SNAPSHOT_ORDER) { ctx, _, deeplink, _ -> DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(ctx, deeplink) },
             DLP.startWith(ApplinkConst.ORDER_BUYER_CANCELLATION_REQUEST_PAGE) { _, _, _, _ -> DeeplinkMapperOrder.getBuyerCancellationRequestInternalAppLink() },
+            DLP.exact(ApplinkConst.TokoNow.HOME, ApplinkConstInternalTokoMart.HOME),
             DLP.startWith(ApplinkConst.TOKONOW_SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationTokoMartSearch(deeplink) },
-            DLP.matchPattern(ApplinkConst.TOKONOW_CATEGORY) { _, uri, _, idList -> getRegisteredNavigationTokoMartCategory(uri, idList) }
+            DLP.matchPattern(ApplinkConst.TOKONOW_CATEGORY) { _, uri, _, idList -> getRegisteredNavigationTokoMartCategory(uri, idList) },
     )
 
     fun getTokopediaSchemeList():List<DLP>{

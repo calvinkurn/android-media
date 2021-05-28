@@ -475,6 +475,10 @@ public interface ApplinkConst {
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
     }
 
+    interface TokoNow {
+        String HOME = "tokopedia://tokonow";
+    }
+
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
