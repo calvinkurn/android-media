@@ -43,7 +43,7 @@ class AwbInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiM
     private fun copyAwb() {
         element?.let {
             Utils.copyText(itemView.context, LABEL_AWB, it.awbNumber)
-            showToaster(itemView.context.getString(R.string.message_invoice_copied))
+            showToaster(itemView.context.getString(R.string.message_awb_copied))
         }
     }
 
