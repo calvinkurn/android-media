@@ -249,6 +249,7 @@
     <string name="pm_update_info_description_clickable_text">Lebih Lanjut</string>
     <string name="pm_update_info_bottom_sheet_message">Update kenaikan paket keuntungan dilakukan setiap bulan dan penurunan setiap 3 bulan. Di update berikutnya <b>tidak akan ada penurunan paket benefit</b></string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro">Dapatkan berbagai keuntungan eksklusif dengan gabung Power Merchant PRO!</string>
+    <string name="pm_get_exclusive_benefit_of_being_pm_pro_eligible">Kamu menjadi penjual terpilih untuk daftar jadi Power Merchant PRO!</string>
     <string name="pm_pro_upgrade_not_eligible_description"><![CDATA[Tingkatkan performa hingga min. %1$d untuk daftar PM PRO dengan biaya layanan <b>%2$s</b>]]></string>
     <string name="pm_pro_upgrade_eligible_description"><![CDATA[Dengan <b>biaya layanan %1$s</b> saja, kamu bisa daftar jadi Power Merchant PRO dan mendapat berbagai keuntungan eksklusif!]]></string>
     <string name="pm_pro_upgrade_tnc_description"><![CDATA[Dengan mendaftar, saya setuju dengan S&K yang berlaku.]]></string>

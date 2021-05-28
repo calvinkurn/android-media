@@ -33,13 +33,13 @@
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/gmc_dimen_22dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:text="@string/pm_get_exclusive_benefit_of_being_pm_pro"
         android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icPmProBadge"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="@string/pm_get_exclusive_benefit_of_being_pm_pro" />
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardPmUpgradeTerms"
