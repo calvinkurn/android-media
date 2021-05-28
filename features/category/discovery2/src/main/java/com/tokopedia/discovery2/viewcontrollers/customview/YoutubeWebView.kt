@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.tokopedia.unifycomponents.toPx
 
 private const val mimeType = "text/html"
 private const val encoding = "UTF-8"
@@ -57,7 +58,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      var player;\n" +
                 "      function onYouTubeIframeAPIReady() {\n" +
                 "        player = new YT.Player('player', {\n" +
-                "          height: '100%',\n" +
+                "          height: 200,\n" +
                 "          width: '${width}',\n" +
                 "          videoId: '${videoId}',\n" +
                 "          events: {\n" +

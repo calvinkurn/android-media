@@ -7,6 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_200"
     android:layout_margin="@dimen/disco_youtube_view_padding"
+    app:contentPadding="@dimen/dp_0"
+    app:cardElevation="@dimen/dp_0"
     app:cardCornerRadius="@dimen/dp_8">
 
 <androidx.constraintlayout.widget.ConstraintLayout
