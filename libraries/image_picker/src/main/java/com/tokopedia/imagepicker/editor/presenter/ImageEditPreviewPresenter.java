@@ -7,6 +7,7 @@ import android.graphics.ColorMatrixColorFilter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
@@ -170,10 +171,21 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
             return;
         }
         Subscription subscription =
-                Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
+                Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<Bitmap>>() {
                     @Override
-                    public Observable<String> call(Bitmap bitmap) {
+                    public Observable<Bitmap> call(Bitmap bitmap) {
                         Bitmap resultBitmap = ImageProcessingUtil.contrastBitmap(bitmap, contrastValue);
+                        return Observable.just(resultBitmap);
+                    }
+                }).flatMap(new Func1<Bitmap, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Bitmap result) {
+                        Bitmap resultBitmap = WatermarkBuilder
+                                .create(getView().getContext(), result)
+                                .loadWatermarkText("Tokopedia")
+                                .getWatermark()
+                                .getOutputImage();
+
                         File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, compressFormat);
                         return Observable.just(file.getAbsolutePath());
                     }
