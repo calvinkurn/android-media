@@ -14,6 +14,5 @@ public class GMParamConstant {
     public static final String RAW_ACTIVATION = "raw_activation";
     public static final String RAW_GM_STATUS = "raw_gm_status";
     public static final String RAW_GM_QUESTIONNAIRE_QUESTION = "raw_gm_questionnaire_question";
-
 }
 
