@@ -1,7 +1,6 @@
 package com.tokopedia.tokomart.home.presentation.adapter
 
 import android.view.View
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -30,17 +29,18 @@ import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.tokomart.common.view.TokoMartHomeView
 import com.tokopedia.tokomart.home.presentation.uimodel.*
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeAllCategoryViewHolder
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeSectionViewHolder
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
+import com.tokopedia.tokomart.home.presentation.view.listener.TokoMartDynamicLegoBannerCallback
+import com.tokopedia.tokomart.home.presentation.viewholder.*
 
-class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
+class TokoMartHomeAdapterTypeFactory(
+        private val listener: TokoMartHomeView? = null
+): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
     // region Toko Mart Home Component
-    override fun type(uiModel: HomeSectionUiModel): Int = HomeSectionViewHolder.LAYOUT
-    override fun type(uiModel: HomeAllCategoryUiModel): Int = HomeAllCategoryViewHolder.LAYOUT
+    override fun type(uiModel: HomeCategoryGridUiModel): Int = HomeCategoryGridViewHolder.LAYOUT
+    override fun type(uiModel: HomeCategoryItemUiModel): Int = HomeCategoryItemViewHolder.LAYOUT
     override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
     // endregion
@@ -63,14 +63,17 @@ class TokoMartHomeAdapterTypeFactory(private val fragment: Fragment): BaseAdapte
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             // region Toko Mart Home Component
-            HomeSectionViewHolder.LAYOUT -> HomeSectionViewHolder(view)
-            HomeAllCategoryViewHolder.LAYOUT -> HomeAllCategoryViewHolder(view)
-            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, fragment)
+            HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
+            HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
+            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, listener)
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view)
             // endregion
 
             // region Global Home Component
-            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(view, null, null)
+            DynamicLegoBannerViewHolder.LAYOUT -> {
+                val listener = TokoMartDynamicLegoBannerCallback(view.context)
+                DynamicLegoBannerViewHolder(view, listener, null)
+            }
             BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, null, null)
             // endregion
             else -> super.createViewHolder(view, type)

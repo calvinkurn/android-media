@@ -10,13 +10,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.view.TokoMartHomeView
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.SOURCE
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
 class HomeChooseAddressWidgetViewHolder(
         itemView: View,
-        private val fragment: Fragment,
-): AbstractViewHolder<HomeChooseAddressWidgetUiModel>(itemView), ChooseAddressWidget.ChooseAddressWidgetListener {
+        private val listener: TokoMartHomeView? = null,
+): AbstractViewHolder<HomeChooseAddressWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -31,29 +32,35 @@ class HomeChooseAddressWidgetViewHolder(
         setupChooseAddressWidget()
     }
 
-    override fun onLocalizingAddressUpdatedFromWidget() {
-        chooseAddressWidget?.updateWidget()
+    private fun bindChooseAddressWidget() {
+        listener?.getFragment()?.let { fragment ->
+            chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
+                override fun onLocalizingAddressUpdatedFromWidget() {
+                    chooseAddressWidget?.updateWidget()
+                }
+
+                override fun onLocalizingAddressServerDown() {
+                    chooseAddressWidget?.hide()
+                }
+
+                override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
+
+                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
+
+                override fun onLocalizingAddressLoginSuccess() { /* to do : refresh page */ }
+
+                override fun getLocalizingAddressHostFragment(): Fragment = fragment
+
+                override fun getLocalizingAddressHostSourceData(): String = SOURCE
+
+                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
+            })
+        }
     }
-
-    override fun onLocalizingAddressServerDown() {
-        chooseAddressWidget?.hide()
-    }
-
-    override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
-
-    override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
-
-    override fun onLocalizingAddressLoginSuccess() { /* to do : refresh page */ }
-
-    override fun getLocalizingAddressHostFragment(): Fragment = fragment
-
-    override fun getLocalizingAddressHostSourceData(): String = SOURCE
-
-    override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
 
     private fun setupChooseAddressWidget() {
         chooseAddressWidget = itemView.findViewById(R.id.choose_address_widget)
-        chooseAddressWidget?.bindChooseAddress(this)
+        bindChooseAddressWidget()
         showCoachMark()
     }
 
