@@ -5,6 +5,7 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.home.constant.HomeLayoutType
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
 import com.tokopedia.tokomart.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
@@ -14,6 +15,7 @@ import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
 
@@ -24,16 +26,19 @@ object HomeLayoutMapper {
         HomeLayoutType.BANNER_CAROUSEL
     )
 
-    fun mapHomeLayoutList(response: List<HomeLayoutResponse>): List<Visitable<*>> {
+    fun mapHomeLayoutList(response: List<HomeLayoutResponse>, tickers: List<TickerData>): List<Visitable<*>> {
         val layoutList = mutableListOf<Visitable<*>>()
         layoutList.add(HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID))
+
+        if (!tickers.isNullOrEmpty()) {
+            layoutList.add(HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers))
+        }
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             mapToHomeUiModel(it)?.let { item ->
                 layoutList.add(item)
             }
         }
-
         return layoutList
     }
 

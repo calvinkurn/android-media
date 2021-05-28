@@ -27,8 +27,7 @@ class HomeTickerViewHolder(
     }
 
     override fun bind(data: HomeTickerUiModel) {
-        val dataList = mapTickerData(data.tickers.tickerList)
-        val adapter = TickerPagerAdapter(itemView.context, dataList)
+        val adapter = TickerPagerAdapter(itemView.context, data.tickers)
         adapter.apply {
             setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
@@ -40,21 +39,9 @@ class HomeTickerViewHolder(
             }
         }
         ticker?.post {
-            ticker?.addPagerView(adapter, dataList)
+            ticker?.addPagerView(adapter, data.tickers)
         }
     }
 
-    private fun mapTickerData(tickerList: List<com.tokopedia.tokomart.home.domain.model.Ticker> ): List<TickerData> {
-        val uiTickerList = mutableListOf<TickerData>()
-        tickerList.map { tickerData ->
-            uiTickerList.add(
-                    TickerData(
-                            title = tickerData.title,
-                            description = tickerData.message,
-                            type = Ticker.TYPE_ANNOUNCEMENT
-                    )
-            )
-        }
-        return uiTickerList
-    }
+
 }
