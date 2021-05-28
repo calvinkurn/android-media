@@ -70,9 +70,9 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
             }
             if (cancellationReasonViewModel.getAttachments().isEmpty()) {
                 cancellationReasonViewModel.buildAttachmentList()
-                cancellationReasonViewModel.buildViewAttachmentList(0)
+                cancellationReasonViewModel.buildViewAttachmentList(DEFAULT_DOC_TYPE_ID)
             } else {
-                cancellationReasonViewModel.buildViewAttachmentList(0)
+                cancellationReasonViewModel.buildViewAttachmentList(DEFAULT_DOC_TYPE_ID)
             }
         }
     }
@@ -298,6 +298,8 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         private const val TAG_DIALOG_FRAGMENT = "TAG_DIALOG_FRAGMENT"
 
         private const val REQUEST_CODE_IMAGE = 1001
+
+        private const val DEFAULT_DOC_TYPE_ID = 0
 
         fun newInstance(cancellationWrapperModel: FlightCancellationWrapperModel): FlightCancellationReasonFragment =
                 FlightCancellationReasonFragment().also {
