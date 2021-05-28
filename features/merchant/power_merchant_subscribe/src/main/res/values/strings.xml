@@ -284,4 +284,5 @@
     <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_title">Oops, kamu belum bisa daftar Power Merchant PRO</string>
     <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_description"><![CDATA[Untuk daftar Power Merchant PRO, kamu perlu skor toko <b>min. %1$d.</b> Saat ini belum ada penilaian untuk tokomu karena penilaian toko baru akan muncul setelah 90 hari bergabung, ya.]]></string>
     <string name="pm_new_seller_shop_score_description">Skor tokomu baru akan muncul setelah 90 hari bergabung, ya! Pelajari Performa Toko</string>
+    <string name="pm_oke">OKE</string>
 </resources>
