@@ -60,9 +60,9 @@ object DeeplinkMapperMarketplace {
 
     private fun isTokoNowShopId(shopId: String): Boolean {
         val tokoNowShopId = if(isStaging()){
-            ApplinkConst.TokoNow.TOKO_NOW_STAGING_SHOP_ID
+            ApplinkConst.TokoNow.TOKONOW_STAGING_SHOP_ID
         }else{
-            ApplinkConst.TokoNow.TOKO_NOW_PRODUCTION_SHOP_ID
+            ApplinkConst.TokoNow.TOKONOW_PRODUCTION_SHOP_ID
         }
         return shopId == tokoNowShopId
     }
