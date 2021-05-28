@@ -10,9 +10,11 @@ object ShopPageLoggerConstant {
         const val SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG = "BUYER_FLOW_SHOP_PRODUCT_STATUS"
         const val SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG = "BUYER_FLOW_SHOP_PRODUCT_SEARCH_STATUS"
         const val SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG = "BUYER_FLOW_SHOP_PRODUCT_RESULT_STATUS"
+        const val SHOP_PAGE_BUYER_FLOW_TAG = "BUYER_FLOW_SHOP_PAGE"
     }
 
     object EXTRA_PARAM_KEY{
+        const val TYPE = "type"
         const val FUNCTION_NAME_KEY = "function_name"
         const val LIVE_DATA_NAME_KEY = "livedata_name"
         const val SHOP_ID_KEY = "shop_id"
