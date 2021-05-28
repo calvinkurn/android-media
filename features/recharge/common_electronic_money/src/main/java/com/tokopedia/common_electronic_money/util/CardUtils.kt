@@ -4,10 +4,9 @@ import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.hexStringToByteArray
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.toHex
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 /**
  * Author errysuprayogi on 15,May,2020
  */
@@ -46,7 +45,7 @@ class CardUtils {
                     return toHex(bytes) == SUCCESSFULLY_EXECUTED
                 }
             } catch (e: Exception) {
-                ServerLogger.log(Priority.P2, EMONEY_TAG, mapOf("err" to "ERROR_EMONEY_CHECKER: ${e.message}"))
+                FirebaseCrashlytics.getInstance().recordException(e)
                 e.printStackTrace()
             }
             return false
@@ -64,7 +63,7 @@ class CardUtils {
                     return toHex(bytes) == BRIZZI_SUCCESSFULLY_EXECUTED
                 }
             } catch (e: Exception) {
-                ServerLogger.log(Priority.P2, BRIZZI_TAG, mapOf("err" to "ERROR_BRIZZI_CHECKER: ${e.message}"))
+                FirebaseCrashlytics.getInstance().recordException(e)
                 e.printStackTrace()
             }
             return false
