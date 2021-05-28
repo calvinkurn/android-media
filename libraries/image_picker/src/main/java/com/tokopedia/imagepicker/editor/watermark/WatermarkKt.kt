@@ -30,12 +30,12 @@ data class WatermarkKt(
     }
 
     private fun createWatermarkImage(watermarkImg: WatermarkImage?) {
-        if (backgroundImg == null && watermarkImg == null) {
+        if (backgroundImg == null || watermarkImg == null) {
             return
         }
 
         val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermarkImg!!.alpha
+        watermarkPaint.alpha = watermarkImg.alpha
 
         val newBitmap = Bitmap.createBitmap(
             backgroundImg!!.width,
@@ -88,12 +88,12 @@ data class WatermarkKt(
     }
 
     private fun createWatermarkText(watermarkText: WatermarkText?) {
-        if (backgroundImg == null && watermarkText == null) {
+        if (backgroundImg == null || watermarkText == null) {
             return
         }
 
         val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermarkText!!.alpha
+        watermarkPaint.alpha = watermarkText.alpha
 
         val newBitmap = Bitmap.createBitmap(
             backgroundImg!!.width,

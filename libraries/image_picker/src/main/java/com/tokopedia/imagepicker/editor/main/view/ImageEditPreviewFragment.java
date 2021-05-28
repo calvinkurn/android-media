@@ -25,6 +25,7 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilderKt;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkKt;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
@@ -387,19 +388,18 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
                     return Observable.just(outputUri);
                 })
                 .delay(2, TimeUnit.SECONDS)
-                .flatMap((Func1<Uri, Observable<Bitmap>>) uri -> {
-                    Bitmap bitmap = WatermarkBuilderKt
+                .flatMap((Func1<Uri, Observable<WatermarkKt>>) uri -> {
+                    WatermarkKt result = WatermarkBuilderKt
                             .create(requireContext(), gestureCropImageView)
                             .loadWatermarkText("Tokopedia")
-                            .getWatermark()
-                            .getOutputImage();
+                            .getWatermark();
 
-                    return Observable.just(bitmap);
+                    return Observable.just(result);
                 })
                 .delay(2, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bitmap -> gestureCropImageView.setImageBitmap(bitmap));
+                .subscribe(result -> result.setToImageView(gestureCropImageView));
 
         compositeSubscription.add(preRenderBitmap);
     }
