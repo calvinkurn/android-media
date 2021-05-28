@@ -1198,7 +1198,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             },
                             {
                                 if (!ShopUtil.isExceptionIgnored(it)) {
-                                    ShopUtil.logShopPagePBuyerFlowAlerting(
+                                    ShopUtil.logShopPageP2BuyerFlowAlerting(
                                             tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                             functionName = ShopHomeViewModel::addProductToCartOcc.name,
                                             liveDataName = "",
