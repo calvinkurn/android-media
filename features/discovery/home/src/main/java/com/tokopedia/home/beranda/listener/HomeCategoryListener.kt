@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.listener
 
-import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
