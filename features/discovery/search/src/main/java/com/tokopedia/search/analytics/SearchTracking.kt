@@ -162,16 +162,22 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackEventClickSearchResultProduct(item: Any?,
-                                           isOrganicAds: Boolean,
-                                           eventLabel: String?,
-                                           filterSortParams: String?) {
+    fun trackEventClickSearchResultProduct(
+        item: Any?,
+        isOrganicAds: Boolean,
+        eventLabel: String?,
+        filterSortParams: String?,
+        userId: String?
+    ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "search result",
-                        "eventAction", "click - product",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf("click",
+                DataLayer.mapOf(TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                        TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT,
+                        TrackAppUtils.EVENT_LABEL, eventLabel,
+                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                        SearchTrackingConstant.USER_ID, userId,
+                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                        ECOMMERCE, DataLayer.mapOf("click",
                         DataLayer.mapOf("actionField",
                                 DataLayer.mapOf("list", getActionFieldString(isOrganicAds)),
                                 "products", DataLayer.listOf(item)
@@ -188,15 +194,21 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventImpressionSearchResultProduct(trackingQueue: TrackingQueue,
-                                           list: List<Any>,
-                                           eventLabel: String?,
-                                           irisSessionId: String) {
-        val map = DataLayer.mapOf("event", "productView",
-                "eventCategory", "search result",
-                "eventAction", "impression - product",
-                "eventLabel", eventLabel,
-                "ecommerce", DataLayer.mapOf(
+    fun eventImpressionSearchResultProduct(
+            trackingQueue: TrackingQueue,
+            list: List<Any>,
+            eventLabel: String?,
+            irisSessionId: String,
+            userId: String
+    ) {
+        val map = DataLayer.mapOf(TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+                TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT,
+                TrackAppUtils.EVENT_LABEL, eventLabel,
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchTrackingConstant.USER_ID, userId,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
                 "impressions", DataLayer.listOf(
                 *list.toTypedArray()

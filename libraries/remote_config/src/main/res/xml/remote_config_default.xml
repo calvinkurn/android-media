@@ -562,6 +562,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>app_push_amplification_enabled_v2</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>app_enable_branch_utm_only_branch_link</key>
         <value>true</value>
     </entry>

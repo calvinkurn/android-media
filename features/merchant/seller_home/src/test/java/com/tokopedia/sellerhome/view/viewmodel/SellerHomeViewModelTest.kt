@@ -23,9 +23,8 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.mockito.ArgumentMatchers.anyString
+import org.junit.jupiter.api.Assertions
+import org.mockito.ArgumentMatchers
 
 /**
  * Created By @ilhamsuaib on 19/03/20
@@ -33,7 +32,7 @@ import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 class SellerHomeViewModelTest {
-
+    
     companion object {
         private const val DATA_KEY_CARD = "CARD"
         private const val DATA_KEY_LINE_GRAPH = "LINE_GRAPH"
@@ -90,6 +89,9 @@ class SellerHomeViewModelTest {
     lateinit var getAnnouncementDataUseCase: GetAnnouncementDataUseCase
 
     @RelaxedMockK
+    lateinit var getRecommendationDataUseCase: GetRecommendationDataUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     @get:Rule
@@ -106,20 +108,21 @@ class SellerHomeViewModelTest {
         MockKAnnotations.init(this)
 
         viewModel = SellerHomeViewModel(
-                dagger.Lazy { userSession },
-                dagger.Lazy { getTickerUseCase },
-                dagger.Lazy { getLayoutUseCase },
-                dagger.Lazy { getShopLocationUseCase },
-                dagger.Lazy { getCardDataUseCase },
-                dagger.Lazy { getLineGraphDataUseCase },
-                dagger.Lazy { getProgressDataUseCase },
-                dagger.Lazy { getPostDataUseCase },
-                dagger.Lazy { getCarouselDataUseCase },
-                dagger.Lazy { getTableDataUseCase },
-                dagger.Lazy { getPieChartDataUseCase },
-                dagger.Lazy { getBarChartDataUseCase },
-                dagger.Lazy { getMultiLineGraphUseCase },
-                dagger.Lazy { getAnnouncementDataUseCase },
+                { userSession },
+                { getTickerUseCase },
+                { getLayoutUseCase },
+                { getShopLocationUseCase },
+                { getCardDataUseCase },
+                { getLineGraphDataUseCase },
+                { getProgressDataUseCase },
+                { getPostDataUseCase },
+                { getCarouselDataUseCase },
+                { getTableDataUseCase },
+                { getPieChartDataUseCase },
+                { getBarChartDataUseCase },
+                { getMultiLineGraphUseCase },
+                { getAnnouncementDataUseCase },
+                { getRecommendationDataUseCase },
                 remoteConfig,
                 coroutineTestRule.dispatchers
         )
@@ -156,7 +159,7 @@ class SellerHomeViewModelTest {
             getTickerUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(tickerList), viewModel.homeTicker.value)
+        Assertions.assertEquals(Success(tickerList), viewModel.homeTicker.value)
     }
 
     @Test
@@ -207,7 +210,7 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(layoutList), viewModel.widgetLayout.value)
+        Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
     }
 
     @Test
@@ -534,7 +537,7 @@ class SellerHomeViewModelTest {
             getShopLocationUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(shopLocation), viewModel.shopLocation.value)
+        Assertions.assertEquals(Success(shopLocation), viewModel.shopLocation.value)
     }
 
     @Test
@@ -586,8 +589,8 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(cardDataResult)
-        assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, viewModel.cardWidgetData.value)
+        Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+        Assertions.assertEquals(expectedResult, viewModel.cardWidgetData.value)
     }
 
     @Test
@@ -628,8 +631,8 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(lineGraphDataResult)
-        assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, viewModel.lineGraphWidgetData.value)
+        Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+        Assertions.assertEquals(expectedResult, viewModel.lineGraphWidgetData.value)
     }
 
     @Test
@@ -673,8 +676,8 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(progressDataList)
-        assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, viewModel.progressWidgetData.value)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.progressWidgetData.value)
     }
 
     @Test
@@ -720,8 +723,8 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(postList)
-        assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, viewModel.postListWidgetData.value)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.postListWidgetData.value)
     }
 
     @Test
@@ -748,7 +751,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get carousel widget data then returns success results`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val carouselList = listOf(CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel())
 
         getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
@@ -766,13 +769,13 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(carouselList)
-        assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, viewModel.carouselWidgetData.value)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.carouselWidgetData.value)
     }
 
     @Test
     fun `get carousel widget data then returns failed results`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val throwable = MessageErrorException("error")
 
         getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
@@ -793,7 +796,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get table widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -811,13 +814,13 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(result)
-        assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, viewModel.tableWidgetData.value)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.tableWidgetData.value)
     }
 
     @Test
     fun `should failed when get table widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -838,7 +841,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get pie chart widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
 
         getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -856,13 +859,13 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(result)
-        assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.pieChartWidgetData.value)
     }
 
     @Test
     fun `should failed when get pie chart widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -883,7 +886,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get bar chart widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
 
         getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -901,13 +904,13 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(result)
-        assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, viewModel.barChartWidgetData.value)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.barChartWidgetData.value)
     }
 
     @Test
     fun `should failed when get bar chart widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -928,7 +931,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get multi line graph widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
 
         getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -946,16 +949,16 @@ class SellerHomeViewModelTest {
         }
 
         //number of data keys and result should same
-        assertTrue(dataKeys.size == result.size)
+        Assertions.assertTrue(dataKeys.size == result.size)
 
         val expectedResult = Success(result)
-        assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
     }
 
     @Test
     fun `should failed when get multi line graph widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -976,7 +979,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get announcement widget data`() = runBlocking {
-        val dataKeys = listOf(anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString())
         val result = listOf(AnnouncementDataUiModel())
 
         getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
@@ -994,16 +997,16 @@ class SellerHomeViewModelTest {
         }
 
         //number of data keys and result should same
-        assertTrue(dataKeys.size == result.size)
+        Assertions.assertTrue(dataKeys.size == result.size)
 
         val expectedResult = Success(result)
-        assertTrue(expectedResult.data.size == dataKeys.size)
-        assertEquals(expectedResult, viewModel.announcementWidgetData.value)
+        Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+        Assertions.assertEquals(expectedResult, viewModel.announcementWidgetData.value)
     }
 
     @Test
     fun `should failed when get announcement widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
 
@@ -1057,8 +1060,8 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(cardDataResult)
-        assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+        Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+        Assertions.assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
     }
 
     // example using get card widget data, any usecase is fine
@@ -1104,8 +1107,8 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(cardDataResult)
-        assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+        Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+        Assertions.assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
     }
 
     @Test
@@ -1142,8 +1145,8 @@ class SellerHomeViewModelTest {
         }
 
         val expectedResult = Success(cardDataResult)
-        assertTrue(dataKeys.size == expectedResult.data.size)
-        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+        Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
+        Assertions.assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
     }
 
     @Test
@@ -1163,7 +1166,7 @@ class SellerHomeViewModelTest {
             val expectedResult = Success(listOf(TickerItemUiModel()))
             val actualResult = viewModel.homeTicker.value
 
-            assertEquals(expectedResult, actualResult)
+            Assertions.assertEquals(expectedResult, actualResult)
         }
     }
 
@@ -1194,7 +1197,7 @@ class SellerHomeViewModelTest {
             val expectedResult = Success(firstTickerList)
             val actualResult = viewModel.homeTicker.value
 
-            assertEquals(expectedResult, actualResult)
+            Assertions.assertEquals(expectedResult, actualResult)
         }
     }
 
@@ -1215,7 +1218,7 @@ class SellerHomeViewModelTest {
             val expectedResult = Fail(error)
             val actualResult = viewModel.homeTicker.value
 
-            assertEquals(expectedResult, actualResult)
+            Assertions.assertEquals(expectedResult, actualResult)
         }
     }
 
