@@ -11,6 +11,7 @@ import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkPosition
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapUtils
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
+import com.yalantis.ucrop.util.FastBitmapDrawable
 
 open class WatermarkBuilderKt {
 
@@ -112,7 +113,7 @@ open class WatermarkBuilderKt {
     private fun backgroundFromImageView(imageView: ImageView) {
         imageView.invalidate()
         if (imageView.drawable != null) {
-            val drawable = imageView.drawable as BitmapDrawable
+            val drawable = imageView.drawable as FastBitmapDrawable
             backgroundImg = if (resizeBackgroundImg) {
                 BitmapUtils.resizeBitmap(drawable.bitmap, MAX_IMAGE_SIZE)
             } else {
