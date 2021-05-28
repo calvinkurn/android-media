@@ -20,7 +20,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
@@ -289,7 +288,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             hideActivationProgress()
             when (it) {
                 is Success -> setOnPmActivationSuccess(it.data)
-                is Fail -> setOnPmActivationFailed(it.throwable)
+                is Fail -> {
+                    setOnPmActivationFailed(it.throwable)
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVATION_ERROR, it.throwable)
+                }
             }
         })
     }
@@ -298,7 +300,10 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         mViewModel.pmCancelDeactivationStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> setOnCancelDeactivationSuccess(it.data)
-                is Fail -> setOnCancelDeactivationFailed(it.throwable)
+                is Fail -> {
+                    setOnCancelDeactivationFailed(it.throwable)
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_CANCEL_DEACTIVATION_ERROR, it.throwable)
+                }
             }
         })
     }
@@ -657,7 +662,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 is Success -> renderPmActiveState(it.data)
                 is Fail -> {
                     showErrorState()
-                    logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVE_IDLE_PAGE_ERROR, it.throwable)
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVE_PAGE_ERROR, it.throwable)
                 }
             }
         })
@@ -742,7 +747,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 }
                 is Fail -> {
                     showErrorState()
-                    logToCrashlytic(PowerMerchantErrorLogger.REGISTRATION_PAGE_ERROR, it.throwable)
+                    logToCrashlytic(PowerMerchantErrorLogger.PM_REGISTRATION_PAGE_ERROR, it.throwable)
                 }
             }
         })
