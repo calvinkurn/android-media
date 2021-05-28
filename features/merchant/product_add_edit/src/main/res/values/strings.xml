@@ -394,6 +394,16 @@
     <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
     <string name="title_product_limitation_add_product_rules">Aturan jumlah produk toko</string>
 
+    <!-- Title Validation -->
+    <string name="title_product_title_validation_bottomsheet">Tips menamakan produk</string>
+    <string name="title_product_title_validation_bottomsheet_success"><![CDATA[Nama produkmu sudah sesuai dengan Syarat & Ketentuan Tokopedia:]]></string>
+    <string name="title_product_title_validation_bottomsheet_error"><![CDATA[Nama produkmu memiliki kata yang tidak sesuai dengan Syarat & Ketentuan. Yuk, cek lagi!]]></string>
+    <string name="label_product_title_validation_bottomsheet_point1">Tidak berisi kata terlarang</string>
+    <string name="label_product_title_validation_bottomsheet_point2">Tidak berisi kata-kata spam atau berisi kata yang berunsur multi-brand</string>
+    <string name="label_product_title_validation_bottomsheet_point3">Tidak ada kesalahan penulisan</string>
+    <string name="label_product_title_validation_bottomsheet_description">Kata yang kurang sesuai pada nama produk dapat mengurangi kemungkinan produkmu muncul di hasil pencarian, lho.</string>
+    <string name="label_product_title_validation_bottomsheet_dismiss">Saya Mengerti</string>
+
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>
     <string name="content_desc_tv_add_product_photo">text tambah foto</string>
