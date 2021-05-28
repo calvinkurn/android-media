@@ -78,6 +78,7 @@
             android:id="@+id/icTransactionExpire"
             android:layout_width="@dimen/unify_space_16"
             android:layout_height="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_4"
             app:icon_color_light_disabled="@color/Unify_Y400"
             app:icon_color_light_enable="@color/Unify_Y400"
             app:icon_color_night_disabled="@color/Unify_Y400"

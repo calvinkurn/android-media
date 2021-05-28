@@ -26,6 +26,8 @@ class CommonPaymentTransferViewHolder(
 
     private val defaultCardTitle =
         view.context.getString(com.tokopedia.pms.R.string.pms_deferred_payment_card_title)
+    private val defaultAmountHeading =
+        view.context.getString(com.tokopedia.pms.R.string.pms_hwp_total_pembayaran)
 
     private fun bindVA(item: VirtualAccountPaymentModel) {
         bindTransactionHeaderData(defaultCardTitle, item.expiryDate, item.expiryTime)
@@ -39,16 +41,21 @@ class CommonPaymentTransferViewHolder(
 
     private fun bindVATransactionAmountData(item: VirtualAccountPaymentModel) {
         bindTransactionAmountData(item.totalAmount)
-        if (item.transactionList.size > 1)
-            view.tvTotalAmountHeading.text = "Total dari ${item.transactionList.size} transkasi"
-        else view.tvTotalAmountHeading.text =
-            view.context.getString(com.tokopedia.pms.R.string.pms_hwp_total_pembayaran)
+        val totalAmountHeader =
+            if (item.transactionList.size > 1) "Total dari ${item.transactionList.size} transkasi"
+            else defaultAmountHeading
+        bindTotalAmountHeading(totalAmountHeader)
+    }
+
+    private fun bindTotalAmountHeading(totalAmountHeader: String = defaultAmountHeading) {
+        view.tvTotalAmountHeading.text = totalAmountHeader
     }
 
     private fun bindKlicBCA(item: KlicBCAPaymentModel) {
         bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime)
         bindPaymentGatewayData(item)
         bindTransactionAmountData(item.amount)
+        bindTotalAmountHeading()
         setCommonClickRedirections(item)
         view.setOnClickListener {
             actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION, item)
@@ -59,6 +66,7 @@ class CommonPaymentTransferViewHolder(
         bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime)
         bindPaymentGatewayData(item)
         bindTransactionAmountData(item.amount)
+        bindTotalAmountHeading()
         setCommonClickRedirections(item)
         view.setOnClickListener {
             actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION, item)
@@ -92,6 +100,8 @@ class CommonPaymentTransferViewHolder(
     private fun bindTransactionAmountData(amount: Int) {
         view.tvTotalPaymentAmount.text =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(amount, false)
+        view.tvTotalAmountHeading.text =
+            view.context.getString(com.tokopedia.pms.R.string.pms_hwp_total_pembayaran)
     }
 
     private fun setCommonClickRedirections(item: BasePaymentModel) {

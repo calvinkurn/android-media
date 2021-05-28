@@ -78,5 +78,6 @@
     <string name="pms_deferred_payment_empty_title">Belum ada transaksi</string>
     <string name="pms_deferred_payment_empty_subtitle">Yuk, mulai belanja dan penuhi berbagai kebutuhanmu di Tokopedia.</string>
     <string name="pms_deferred_payment_empty_action">Mulai Belanja</string>
+    <string name="pms_title_bottomsheet_dest_bank">Pilih Bank Tujuan</string>
 
 </resources>

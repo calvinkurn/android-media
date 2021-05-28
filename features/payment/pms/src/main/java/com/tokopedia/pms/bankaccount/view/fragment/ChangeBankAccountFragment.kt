@@ -135,12 +135,12 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
     fun changeBankAccountDetails() {
         showLoadingDialog()
         viewModel.saveDetailAccount(
-            paymentListModel?.transactionId ?: "",
-            paymentListModel?.merchantCode ?: "",
-            input_dest_bank_account?.textAreaInput?.text.toString(),
-            input_account_number?.getEditableValue().toString(),
-            input_account_name?.getEditableValue().toString(),
-            getBankIdFromBankName(input_note_optional?.textAreaInput?.text.toString())
+            transactionId = paymentListModel?.transactionId ?: "",
+            merchantCode = paymentListModel?.merchantCode ?: "",
+            accountName = input_account_name?.getEditableValue().toString(),
+            accountNumber = input_account_number?.getEditableValue().toString(),
+            notes = input_note_optional?.textAreaInput?.text.toString(),
+            destinationBankId = getBankIdFromBankName(input_dest_bank_account?.textAreaInput?.text.toString())
         )
     }
 

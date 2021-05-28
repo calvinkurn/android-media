@@ -268,8 +268,8 @@
             android:text="@string/payment_label_choose_another_image"
             android:visibility="gone"
             app:unifyButtonSize="large"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="filled" />
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_save"

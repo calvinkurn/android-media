@@ -7,12 +7,14 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker.common.ImagePickerBuilder.Companion.getOriginalImageBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor.extract
@@ -95,8 +97,11 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
             if (isUploaded) {
                 val drawable = getIconUnifyDrawable(
                     requireContext(),
-                    com.tokopedia.iconunify.R.drawable.iconunify_check,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    IconUnify.CHECK_BIG,
+                    ContextCompat.getColor(
+                        requireContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
                 )
 
                 iv_action_image?.setImageDrawable(drawable)
@@ -106,7 +111,8 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
             } else {
                 val drawable = getIconUnifyDrawable(
                     requireContext(),
-                    com.tokopedia.iconunify.R.drawable.iconunify_close)
+                    IconUnify.CLOSE
+                )
                 iv_action_image.setImageDrawable(drawable)
                 button_save.setText(R.string.payment_label_save_image)
                 button_save_choose_another_image.visibility = View.GONE
@@ -161,12 +167,15 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
     }
 
     override fun hideLoadingDialog() {
-       progressDialog?.dialog?.dismiss()
+        progressDialog?.dialog?.dismiss()
         progressDialog = null
     }
 
     override fun onErrorUploadProof(e: Throwable) {
-        showToast(com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, e), Toaster.TYPE_ERROR)
+        showToast(
+            com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, e),
+            Toaster.TYPE_ERROR
+        )
     }
 
     override fun onResultUploadProof(paymentProofResponse: PaymentProofResponse) {
