@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
@@ -150,21 +151,9 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
     private fun renderShop(dataObject: GetOrderSnapshot) {
         ImageHandler.loadImageCircle2(itemView.context, shopLogo, dataObject.shopImagePrimaryUrl)
 
-        val drawable = when {
-            dataObject.isOs -> {
-                ContextCompat.getDrawable(itemView.context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
-            }
-            dataObject.isPm -> {
-                ContextCompat.getDrawable(itemView.context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
-            }
-            else -> {
-                null
-            }
-        }
-
-        if (drawable == null) shopBadge.gone()
+        if (dataObject.shopSummary.badgeUrl.isBlank()) shopBadge.gone()
         else {
-            shopBadge.setImageDrawable(drawable)
+            shopBadge.loadImage(dataObject.shopSummary.badgeUrl)
             shopBadge.visible()
         }
 

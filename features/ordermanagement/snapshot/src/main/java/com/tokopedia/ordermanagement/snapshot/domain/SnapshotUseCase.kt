@@ -47,6 +47,7 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
                     shop_id
                     shop_domain
                     logo
+                    badge_url
                   }
                   product_additional_data{
                     create_time

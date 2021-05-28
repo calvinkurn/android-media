@@ -52,6 +52,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.medialoader)
 
     // unit test
     testImplementation rootProject.ext.testDependencies.mockk

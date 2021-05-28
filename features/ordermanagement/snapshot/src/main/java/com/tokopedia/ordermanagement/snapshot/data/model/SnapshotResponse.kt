@@ -73,7 +73,10 @@ data class ShopSummary(
 	val logo: String = "",
 
 	@field:SerializedName("shop_name")
-	val shopName: String = ""
+	val shopName: String = "",
+
+	@field:SerializedName("badge_url")
+	val badgeUrl: String = ""
 )
 
 data class ProductAdditionalData(
