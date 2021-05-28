@@ -59,7 +59,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
                     cartShopHolderData.shopGroupAvailableData?.shopId,
-                    cartShopHolderData.shopGroupAvailableData?.shopName)
+                    cartShopHolderData.shopGroupAvailableData?.shopName,
+                    cartShopHolderData.shopGroupAvailableData?.isTokoNow ?: false)
         }
     }
 
@@ -304,7 +305,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             val maximumWeight = cartShopHolderData.shopGroupAvailableData?.maximumShippingWeight
                     ?: return
             val extraWeight = (currentWeight - maximumWeight)
-            val descriptionText = cartShopHolderData.shopGroupAvailableData?.maximumWeightWording ?: ""
+            val descriptionText = cartShopHolderData.shopGroupAvailableData?.maximumWeightWording
+                    ?: ""
             if (extraWeight > 0 && descriptionText.isNotEmpty()) {
                 with(binding.llWarningAndError) {
                     tickerWarning.tickerTitle = null

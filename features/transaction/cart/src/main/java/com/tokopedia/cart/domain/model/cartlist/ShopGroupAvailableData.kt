@@ -41,7 +41,8 @@ data class ShopGroupAvailableData(
 
         var shopTicker: String = "",
         var maximumWeightWording: String = "",
-        var maximumShippingWeight: Double = 0.0
+        var maximumShippingWeight: Double = 0.0,
+        var isTokoNow: Boolean = false
 ) : Parcelable {
 
     val cartItemDataList: MutableList<CartItemHolderData>?

@@ -213,6 +213,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.incidentInfo = availableGroup.shop.shopAlertMessage
             it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
             it.shopTicker = availableGroup.shop.shopTicker
+            it.isTokoNow = availableGroup.shop.isTokoNow
             it
         }
     }
@@ -563,6 +564,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isFulfillment = unavailableGroup.isFulFillment
             it.fulfillmentName = unavailableGroup.shipmentInformation.shopLocation
             it.cartString = unavailableGroup.cartString
+            it.isTokoNow = unavailableGroup.shop.isTokoNow
 
             var isDisableAllProducts = true
             isDisableAllProducts = mapShopError(it, unavailableGroup, isDisableAllProducts)

@@ -44,5 +44,7 @@ data class Shop(
         @SerializedName("maximum_weight_wording")
         val maximumWeightWording: String = "",
         @SerializedName("maximum_shipping_weight")
-        val maximumShippingWeight: Double = 0.0
+        val maximumShippingWeight: Double = 0.0,
+        @SerializedName("is_tokonow")
+        val isTokoNow: Boolean = false
 )
