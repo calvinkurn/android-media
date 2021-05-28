@@ -350,7 +350,7 @@ class DigitalCartViewModelTest {
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart()
+        digitalCartViewModel.cancelVoucherCart("")
 
         // then
         assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Success)
@@ -366,7 +366,7 @@ class DigitalCartViewModelTest {
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart()
+        digitalCartViewModel.cancelVoucherCart("")
 
         // then
         assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Fail)
@@ -380,7 +380,7 @@ class DigitalCartViewModelTest {
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart()
+        digitalCartViewModel.cancelVoucherCart("")
 
         // then
         assert(digitalCartViewModel.isSuccessCancelVoucherCart.value is Fail)

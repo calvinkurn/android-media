@@ -18,6 +18,7 @@ import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
@@ -172,7 +173,8 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             uploadImageviewModel.uploadImageRecharge(imagePath,
                     RechargeOcrGqlQuery.rechargeCameraRecognition)
         } else {
-            Toast.makeText(context, getString(R.string.ocr_default_error_message), Toast
+            val throwableMessage = MessageErrorException(getString(R.string.ocr_default_error_message))
+            Toast.makeText(context, ErrorHandler.getErrorMessage(requireContext(), throwableMessage), Toast
                     .LENGTH_LONG).show()
         }
     }

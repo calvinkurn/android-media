@@ -56,7 +56,6 @@ import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
-import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.util.RechargeGeneralGqlQuery
@@ -186,10 +185,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
                 is Fail -> {
                     hideLoading()
-                    var throwable = it.throwable
-                    if (throwable.message == NULL_PRODUCT_ERROR)
-                        throwable = MessageErrorException(getString(R.string.selection_null_product_error))
-                    showGetListError(throwable)
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -220,14 +216,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                         hideLoading()
                     }
 
-                    val throwableMessage = if (it.throwable.message == NULL_PRODUCT_ERROR) {
-                        getString(R.string.selection_null_product_error)
-                    } else {
-                        ErrorHandler.getErrorMessage(requireContext(), it.throwable)
-                    }
-
                     view?.let { v ->
-                        Toaster.build(v, throwableMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
+                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -797,7 +788,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.getOperatorCluster(
                 RechargeGeneralGqlQuery.catalogOperatorSelectGroup,
                 viewModel.createOperatorClusterParams(menuId),
-                recharge_general_swipe_refresh_layout.isRefreshing
+                recharge_general_swipe_refresh_layout.isRefreshing,
+                getString(R.string.selection_null_product_error)
         )
     }
 
@@ -805,7 +797,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.getProductList(
                 com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogProductInput,
                 viewModel.createProductListParams(menuId, operator),
-                recharge_general_swipe_refresh_layout.isRefreshing
+                recharge_general_swipe_refresh_layout.isRefreshing,
+                getString(R.string.selection_null_product_error)
         )
     }
 

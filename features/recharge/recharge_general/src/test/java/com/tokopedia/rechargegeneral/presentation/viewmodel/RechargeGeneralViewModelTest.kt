@@ -1,14 +1,16 @@
 package com.tokopedia.rechargegeneral.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.rechargegeneral.model.*
+import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicField
+import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
+import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -65,7 +67,7 @@ class RechargeGeneralViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        rechargeGeneralViewModel.getOperatorCluster("", mapParams)
+        rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
         assert(actualData is Success)
         val operatorGroups = (actualData as Success).data.operatorGroups
@@ -89,7 +91,7 @@ class RechargeGeneralViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
 
-        rechargeGeneralViewModel.getOperatorCluster("", mapParams)
+        rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
         assert(actualData is Fail)
     }
@@ -98,7 +100,7 @@ class RechargeGeneralViewModelTest {
     fun getOperatorCluster_Fail_ErrorResponse() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
-        rechargeGeneralViewModel.getOperatorCluster("", mapParams)
+        rechargeGeneralViewModel.getOperatorCluster("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.operatorCluster.value
         assert(actualData is Fail)
     }
@@ -122,7 +124,7 @@ class RechargeGeneralViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
-        rechargeGeneralViewModel.getProductList("", mapParams)
+        rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.productList.value
         assert(actualData is Success)
         val product = (actualData as Success).data.enquiryFields
@@ -145,17 +147,18 @@ class RechargeGeneralViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseNull
 
-        rechargeGeneralViewModel.getProductList("", mapParams)
+        val errorMsg = "this is error message"
+        rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = errorMsg)
         val actualData = rechargeGeneralViewModel.productList.value
         assert(actualData is Fail)
-        assertEquals((actualData as Fail).throwable.message, RechargeGeneralViewModel.NULL_PRODUCT_ERROR)
+        assertEquals((actualData as Fail).throwable.message, errorMsg)
     }
 
     @Test
     fun getProductList_Fail_ErrorResponse() {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
-        rechargeGeneralViewModel.getProductList("", mapParams)
+        rechargeGeneralViewModel.getProductList("", mapParams, nullErrorMessage = "")
         val actualData = rechargeGeneralViewModel.productList.value
         assert(actualData is Fail)
     }

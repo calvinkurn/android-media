@@ -188,24 +188,28 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun cancelVoucherCart() {
-        cancelVoucherUseCase.execute(onSuccessCancelVoucher(), onErrorCancelVoucher())
+    fun cancelVoucherCart(defaultErrorMsg: String) {
+        cancelVoucherUseCase.execute(onSuccessCancelVoucher(defaultErrorMsg), onErrorCancelVoucher(defaultErrorMsg))
     }
 
-    private fun onSuccessCancelVoucher(): (CancelVoucherData.Response) -> Unit {
+    private fun onSuccessCancelVoucher(defaultErrorMsg: String): (CancelVoucherData.Response) -> Unit {
         return {
             if (it.response.success) {
                 setPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
                 _isSuccessCancelVoucherCart.postValue(Success(true))
             } else {
-                _isSuccessCancelVoucherCart.postValue(Fail(Throwable("")))
+                _isSuccessCancelVoucherCart.postValue(Fail(MessageErrorException(defaultErrorMsg)))
             }
         }
     }
 
-    private fun onErrorCancelVoucher(): (Throwable) -> Unit {
+    private fun onErrorCancelVoucher(defaultErrorMsg: String): (Throwable) -> Unit {
         return {
-            _isSuccessCancelVoucherCart.postValue(Fail(it))
+            if (it.message.isNullOrEmpty()) {
+                _isSuccessCancelVoucherCart.postValue(Fail(MessageErrorException(defaultErrorMsg)))
+            } else {
+                _isSuccessCancelVoucherCart.postValue(Fail(it))
+            }
         }
     }
 

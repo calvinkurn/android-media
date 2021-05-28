@@ -177,9 +177,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         })
 
         viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
-            var throwableMessage = ErrorHandler.getErrorMessage(requireContext(), it)
-            if (throwableMessage.isNullOrEmpty()) throwableMessage = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-            closeViewWithMessageAlert(throwableMessage)
+            closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it))
         })
 
         viewModel.isSuccessCancelVoucherCart.observe(viewLifecycleOwner, Observer {
@@ -363,11 +361,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
-        var message: String = getString(R.string.digital_checkout_error_remove_coupon_message)
-        if (!throwable.message.isNullOrEmpty()) {
-            message = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-        showToastMessage(message)
+        showToastMessage(ErrorHandler.getErrorMessage(activity, throwable))
     }
 
     private fun showToastMessage(message: String) {
@@ -568,7 +562,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun onResetPromoDiscount() {
         digitalAnalytics.eventClickCancelApplyCoupon(getCategoryName(), getPromoData().promoCode)
-        viewModel.cancelVoucherCart()
+        viewModel.cancelVoucherCart(getString(R.string.digital_checkout_error_remove_coupon_message))
     }
 
     private fun navigateToPromoListPage() {

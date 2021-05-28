@@ -63,7 +63,11 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                 } else _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
 
             }) {
-                _addToCartResult.postValue(Fail(it))
+                if (!it.message.isNullOrEmpty()) {
+                    _addToCartResult.postValue(Fail(MessageErrorException(it.message)))
+                } else {
+                    _addToCartResult.postValue(Fail(it))
+                }
             }
         }
     }
