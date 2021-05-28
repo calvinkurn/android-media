@@ -346,15 +346,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         val pmProAbTestValue =
                 try {
                     remoteConfigInstance?.abTestPlatform?.getString(
-                            AbTestPlatform.POWER_MERCHANT_PRO_POP_UP,
-                            AbTestPlatform.POWER_MERCHANT_PRO_POP_UP_NOT_SHOW
-                    )
+                            AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
                 } catch (e: Exception) {
                     false
                 }
 
         val isPmProRollenceActive =
-                pmProAbTestValue == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP_SHOW
+                pmProAbTestValue == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP
 
         return if (pmProCoachmark == null && isPmProRollenceActive) {
             coachmarkLocalCache?.shouldShowHomePMProCoachMark()?: false
