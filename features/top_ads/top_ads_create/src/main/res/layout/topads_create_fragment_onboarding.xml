@@ -129,7 +129,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center" />
                 </androidx.cardview.widget.CardView>
-                >
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/icon2"

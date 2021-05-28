@@ -112,7 +112,6 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
 
     @Override
     public void onBackPressed() {
-//        getSupportFragmentManager().popBackStackImmediate();
         onBackEvent();
     }
 

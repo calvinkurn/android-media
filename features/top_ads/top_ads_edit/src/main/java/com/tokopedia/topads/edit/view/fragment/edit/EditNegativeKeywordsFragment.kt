@@ -183,10 +183,6 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
-//    fun sendAutoBidValue(autoBidValue: String) {
-//        sharedViewModel.setAutoBidStatus(autoBidValue)
-//    }
-
     private fun onAddKeyword() {
         val intent = Intent(context, SelectNegKeywordActivity::class.java)
         intent.putParcelableArrayListExtra(RESTORED_DATA, restoreData)
