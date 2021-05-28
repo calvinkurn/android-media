@@ -14,17 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
-import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilderKt;
+import com.tokopedia.imagepicker.editor.watermark.Watermark;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkKt;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
@@ -37,11 +33,14 @@ import com.yalantis.ucrop.view.UCropView;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import kotlin.Pair;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -388,8 +387,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
                     return Observable.just(outputUri);
                 })
                 .delay(2, TimeUnit.SECONDS)
-                .flatMap((Func1<Uri, Observable<WatermarkKt>>) uri -> {
-                    WatermarkKt result = WatermarkBuilderKt
+                .flatMap((Func1<Uri, Observable<Watermark>>) uri -> {
+                    Watermark result = WatermarkBuilder
                             .create(requireContext(), gestureCropImageView)
                             .loadWatermarkText("Tokopedia")
                             .getWatermark();
