@@ -224,14 +224,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     smartBillsAnalytics.clickPayFailed(adapter.dataSize, adapter.checkedDataList.size)
 
                     checkout_loading_view.hide()
-                    val throwableMessage = if (it.throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
-                        getString(R.string.smart_bills_checkout_error)
-                    } else {
-                        ErrorHandler.getErrorMessage(requireContext(), it.throwable)
+                    var throwable = it.throwable
+                    if (throwable.message == SmartBillsViewModel.MULTI_CHECKOUT_EMPTY_REQUEST) {
+                        throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
                     }
-
                     view?.let { v ->
-                        Toaster.build(v, throwableMessage, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        Toaster.build(v, throwable.message
+                                ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
