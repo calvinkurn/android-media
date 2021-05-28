@@ -8,10 +8,10 @@
     <TextView
         android:id="@+id/title"
         style="@style/TextView.TitleMedium.Bold"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_8"
         tools:text="Penjualan" />
 
     <androidx.recyclerview.widget.RecyclerView

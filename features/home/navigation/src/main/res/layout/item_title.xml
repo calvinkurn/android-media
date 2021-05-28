@@ -7,6 +7,6 @@
     android:layout_height="wrap_content"
     android:textStyle="bold"
     tools:text="Test title"
-    android:padding="@dimen/dp_10"
+    android:padding="10dp"
     app:typographyWeight="bold"
     app:typographyType="body_1" />
