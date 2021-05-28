@@ -19,6 +19,7 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.homeComponent)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.discoveryCommon)
