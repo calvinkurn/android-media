@@ -30,6 +30,7 @@ object PMConstant {
         const val PM_POTENTIAL_BENEFIT_01 = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_visitor_chart.png"
         const val PM_POTENTIAL_BENEFIT_02 = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_order.png"
         const val PM_POTENTIAL_BENEFIT_03 = "https://images.tokopedia.net/img/android/gold_merchant_common/img_pm_improve_shop_performance.png"
+        const val PM_MODERATED_SHOP = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_moderated_shop.png"
     }
 
     object Urls {

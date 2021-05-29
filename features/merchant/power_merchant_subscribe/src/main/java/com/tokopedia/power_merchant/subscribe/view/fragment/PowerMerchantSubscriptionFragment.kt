@@ -211,7 +211,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val title: String = getString(R.string.pm_bottom_sheet_moderated_shop_title)
         val description: String = getString(R.string.pm_bottom_sheet_moderated_shop_description)
         val ctaText: String = getString(R.string.pm_content_slider_last_slide_button)
-        val illustrationUrl: String = PMConstant.Images.PM_INACTIVE
+        val illustrationUrl: String = PMConstant.Images.PM_MODERATED_SHOP
 
         showNotificationBottomSheet(title, description, ctaText, illustrationUrl, onPrimaryCtaClicked = {
             powerMerchantTracking.sendEventClickAcknowledgeShopModeration()
@@ -284,7 +284,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun observePmActivationStatus() {
-        mViewModel.pmActivationStatus.observe(viewLifecycleOwner, Observer {
+        mViewModel.pmActivationStatus.observeOnce(viewLifecycleOwner, Observer {
             hideActivationProgress()
             when (it) {
                 is Success -> setOnPmActivationSuccess(it.data)
@@ -297,7 +297,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
     }
 
     private fun observePmCancelDeactivationSubmission() {
-        mViewModel.pmCancelDeactivationStatus.observe(viewLifecycleOwner, Observer {
+        mViewModel.pmCancelDeactivationStatus.observeOnce(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> setOnCancelDeactivationSuccess(it.data)
                 is Fail -> {
@@ -796,7 +796,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 grade = grade,
                 nextMonthlyRefreshDate = data.nextMonthlyRefreshDate,
                 nextQuarterlyCalibrationRefreshDate = data.nextQuarterlyCalibrationRefreshDate,
-                pmStatus = data.pmStatus,
+                pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 isAutoExtendEnabled = pmBasicInfo?.pmStatus?.autoExtendEnabled.orFalse(),
                 items = benefits
@@ -819,7 +819,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 threshold = shopScoreThreshold,
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
-                pmStatus = data.pmStatus
+                pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE
         )
     }
 

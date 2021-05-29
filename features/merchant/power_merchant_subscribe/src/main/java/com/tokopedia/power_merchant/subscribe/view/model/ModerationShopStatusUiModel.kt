@@ -1,5 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.model
 
+import com.tokopedia.shop.common.constant.ShopStatusDef
+
 /**
  * Created By @ilhamsuaib on 22/05/21
  */
@@ -8,14 +10,6 @@ data class ModerationShopStatusUiModel(
         val shopStatusId: Int
 ) {
 
-    companion object {
-        private const val STATUS_MODERATED = 3
-        private const val STATUS_MODERATED_PERMANENTLY = 5
-    }
-
     val isModeratedShop: Boolean
-        get() = shopStatusId == STATUS_MODERATED || shopStatusId == STATUS_MODERATED_PERMANENTLY
-
-    val isModeratedShopPermanently
-        get() = shopStatusId == STATUS_MODERATED_PERMANENTLY
+        get() = shopStatusId == ShopStatusDef.MODERATED || shopStatusId == ShopStatusDef.MODERATED_PERMANENTLY
 }
