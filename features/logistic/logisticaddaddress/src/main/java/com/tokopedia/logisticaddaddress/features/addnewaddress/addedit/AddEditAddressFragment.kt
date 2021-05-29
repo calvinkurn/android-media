@@ -199,7 +199,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_kode_pos_mismatch.setText(saveAddressDataModel?.postalCode ?: "")
-        et_phone.setText(userSession.phoneNumber)
+        et_phone.setText(removeSpecialChars(userSession.phoneNumber))
 
         if (!isMismatch && !isMismatchSolved) {
             et_detail_address.clearFocus()
@@ -274,8 +274,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 addTextChangedListener(setWrapperWatcher(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char)))
 
                 setOnFocusChangeListener { _, hasFocus ->
+                    println("++ hasFocus = $hasFocus")
                     if (hasFocus) {
                         AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive(isFullFlow, isLogisticLabel)
+                    } else {
+                        val inputPhone = removeSpecialChars(et_phone.text.toString())
+                        et_phone.setText(inputPhone)
                     }
                 }
             }
@@ -580,7 +584,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             override fun afterTextChanged(text: Editable) {
-
             }
         }
     }
@@ -1071,7 +1074,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 if (contactURI != null) {
                     contact = context?.let { AddEditAddressUtil.convertContactUriToData(it.contentResolver, contactURI) }
                 }
-                et_phone.setText(contact?.contactNumber)
+                val contactNumber = contact?.contactNumber
+                val phoneNumberOnly = removeSpecialChars(contactNumber.toString())
+                et_phone.setText(phoneNumberOnly)
             } else {
                 // this solves issue when positif ANA changed into negatif ANA
                 if (data == null) {
@@ -1081,7 +1086,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 }
             }
         }
+    }
 
+    private fun removeSpecialChars(s: String): String {
+        return s.replace("[^A-Za-z0-9 ]".toRegex(), "").replace(" ","")
     }
 
     private fun setDetailAlamatWatcher(): TextWatcher {
