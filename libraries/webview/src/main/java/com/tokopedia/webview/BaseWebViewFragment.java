@@ -771,6 +771,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 try {
                     hasMoveToNativePage = true;
                     startActivity(intent);
+                    finishActivityIfBackPressedDisabled(hasMoveToNativePage);
                 } catch (Exception ignored) {
                 }
                 return true;
@@ -782,7 +783,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
-        finishActivityAfterMoveToNative(hasMoveToNativePage);
+        finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
     }
 
@@ -872,7 +873,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     // If back pressed is disabled and the webview has moved to a native page,
     // finish the webview activity to avoid user not being able to get out of the webview.
-    private void finishActivityAfterMoveToNative(boolean hasMoveToNativePage) {
+    private void finishActivityIfBackPressedDisabled(boolean hasMoveToNativePage) {
         if (hasMoveToNativePage && getActivity() != null
                 && getActivity() instanceof BaseSimpleWebViewActivity
                 && !((BaseSimpleWebViewActivity) getActivity()).getBackPressedEnabled()) {
