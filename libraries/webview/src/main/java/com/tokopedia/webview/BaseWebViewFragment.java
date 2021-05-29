@@ -771,6 +771,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 try {
                     hasMoveToNativePage = true;
                     startActivity(intent);
+                    finishActivityAfterMoveToNative(hasMoveToNativePage);
                 } catch (Exception ignored) {
                 }
                 return true;
