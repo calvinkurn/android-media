@@ -144,7 +144,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         setSearchBar()
         fetchData()
         delete.setOnClickListener {
-            showConfirmationDialog(context!!)
+            showConfirmationDialog(requireContext())
         }
         btnAddItem.setOnClickListener {
             startEditActivity()

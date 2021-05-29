@@ -47,9 +47,8 @@ class EditKeywordSortSheet : BottomSheetUnify() {
         view.sortList?.let {
             it.onLoadFinish {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
-                }
+                it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
+
 
                 it.setOnItemClickListener { adapterView, view, index, l ->
                     onItemSortClickedBottomSheet(index, sortListItemUnify, it)
@@ -68,9 +67,6 @@ class EditKeywordSortSheet : BottomSheetUnify() {
     private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
         try {
             positionSort = position
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
-            }
             selectedSortText = position
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             onItemClick?.invoke(sortListItemUnify[position].listTitleText)
@@ -94,7 +90,7 @@ class EditKeywordSortSheet : BottomSheetUnify() {
     }
 
     fun setChecked(current: String) {
-        positionSort = if(current == TITLE_1) {
+        positionSort = if (current == TITLE_1) {
             0
         } else {
             1
