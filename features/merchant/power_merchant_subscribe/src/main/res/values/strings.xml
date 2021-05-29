@@ -188,7 +188,7 @@
     <string name="pm_description_kyc_verification_failed"><![CDATA[Tenang, kamu masih bisa verifikasi ulang, kok! <br>Verifikasi Ulang]]></string>
     <string name="pm_description_kyc_verification_failed_directly_pm">Tenang, kamu masih bisa verifikasi ulang \ndan jika berhasil, tokomu langsung jadi Power Merchant!</string>
     <string name="pm_bottom_sheet_shop_score_title">Tingkatkan skor Performa \nTokomu dulu, yuk!</string>
-    <string name="pm_bottom_sheet_shop_score_description">Skor tokomu harus mencapai <b>min. %1$d</b> untuk \ndaftar jadi %2$s. Pelajari tipsnya untuk \nmeningkatkan Performa Tokomu dulu, ya!</string>
+    <string name="pm_bottom_sheet_shop_score_description"><![CDATA[Skor tokomu harus mencapai <b>min. %1$d</b> untuk \ndaftar jadi %2$s. Pelajari tipsnya untuk \nmeningkatkan Performa Tokomu dulu, ya!]]></string>
     <string name="pm_bottom_sheet_active_product_title">Tambahkan minimal 1 \nproduk aktif dulu, yuk!</string>
     <string name="pm_bottom_sheet_active_product_description"><![CDATA[Untuk daftar Power Merchant, tokomu harus <br>punya <b>min. 1 produk</b>. Tambah produk dulu, <br>kemudian daftar lagi, ya!]]></string>
     <string name="pm_interested_to_register">Saya Tertarik Untuk Daftar</string>
@@ -237,10 +237,10 @@
     <string name="pm_growing_benefit_description">Keuntungan bertambah sesuai level toko</string>
     <string name="pm_pm_pro_statistic_benefit_description">Berbagai keuntungan yang bisa didapatkan!</string>
     <string name="pm_not_eligible_order_term_title">Tingkatkan jumlah pesanan \nTokomu dulu, yuk!</string>
-    <string name="pm_not_eligible_order_term_description">Tokomu harus mendapatkan <b>min. %1$s pesanan</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan jumlah pesananmu, ya!</string>
+    <string name="pm_not_eligible_order_term_description"><![CDATA[Tokomu harus mendapatkan <b>min. %1$s pesanan</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan jumlah pesananmu, ya!]]></string>
     <string name="pm_learn_ad_and_promotion">Pelajari Iklan &amp; Promosi</string>
     <string name="pm_not_eligible_niv_term_title">Tingkatkan pendapatan \nTokomu dulu, yuk!</string>
-    <string name="pm_not_eligible_niv_term_description">Tokomu harus mendapatkan pendapatan <b>%1$s</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan pendapatanmu, ya!</string>
+    <string name="pm_not_eligible_niv_term_description"><![CDATA[Tokomu harus mendapatkan pendapatan <b>Rp%1$s</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan pendapatanmu, ya!]]></string>
     <string name="pm_seller_current_grade_label">Berdasarkan levelmu,</string>
     <string name="pm_seller_package_benefit_label">Kamu mendapatkan paket keuntungan</string>
     <string name="pm_benefits_that_you_can_get">Keuntungan yang bisa kamu dapatkan</string>
@@ -249,6 +249,7 @@
     <string name="pm_update_info_description_clickable_text">Lebih Lanjut</string>
     <string name="pm_update_info_bottom_sheet_message">Update kenaikan paket keuntungan dilakukan setiap bulan dan penurunan setiap 3 bulan. Di update berikutnya <b>tidak akan ada penurunan paket benefit</b></string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro">Dapatkan berbagai keuntungan eksklusif dengan gabung Power Merchant PRO!</string>
+    <string name="pm_get_exclusive_benefit_of_being_pm_pro_eligible">Kamu menjadi penjual terpilih untuk daftar jadi Power Merchant PRO!</string>
     <string name="pm_pro_upgrade_not_eligible_description"><![CDATA[Tingkatkan performa hingga min. %1$d untuk daftar PM PRO dengan biaya layanan <b>%2$s</b>]]></string>
     <string name="pm_pro_upgrade_eligible_description"><![CDATA[Dengan <b>biaya layanan %1$s</b> saja, kamu bisa daftar jadi Power Merchant PRO dan mendapat berbagai keuntungan eksklusif!]]></string>
     <string name="pm_pro_upgrade_tnc_description"><![CDATA[Dengan mendaftar, saya setuju dengan S&K yang berlaku.]]></string>
@@ -280,7 +281,8 @@
     <string name="pm_bottom_sheet_moderated_shop_description">Saat ini, tokomu dalam pengawasan Tokopedia dan bisa daftar Power Merchant jika toko kembali aktif. Untuk info selengkapnya, hubungi Tokopedia Care.</string>
     <string name="pm_upgrade_to_power_merchant_pro">Upgrade ke Power Merchant PRO</string>
     <string name="pm_pm_pro_deactivation_description">Kamu bisa turunkan status tokomu jadi Power Merchant. Hanya dengan biaya layanan %1$s, kamu tetap bisa menikmati berbagai keuntungan.</string>
-    <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_title">Oops, kamu belum bisa daftar dulu ya..</string>
+    <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_title">Oops, kamu belum bisa daftar Power Merchant PRO</string>
     <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_description"><![CDATA[Untuk daftar Power Merchant PRO, kamu perlu skor toko <b>min. %1$d.</b> Saat ini belum ada penilaian untuk tokomu karena penilaian toko baru akan muncul setelah 90 hari bergabung, ya.]]></string>
     <string name="pm_new_seller_shop_score_description">Skor tokomu baru akan muncul setelah 90 hari bergabung, ya! Pelajari Performa Toko</string>
+    <string name="pm_oke">OKE</string>
 </resources>

@@ -52,10 +52,10 @@ class GetShopModerationStatusUseCase @Inject constructor(
         """.trimIndent()
 
         fun createParam(shopId: Long): RequestParams {
-            val filedShopInfo = "statusInfo"
+            val filedStatusInfo = "status"
             val inputParams = ParamShopInfoByID(
                     shopIDs = listOf(shopId),
-                    fields = listOf(filedShopInfo)
+                    fields = listOf(filedStatusInfo)
             )
             return RequestParams.create().apply {
                 putObject(PARAM_INPUT, inputParams)

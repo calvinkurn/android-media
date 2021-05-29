@@ -1,7 +1,7 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="360dp"
-    android:height="76dp"
+    android:width="200dp"
+    android:height="40dp"
     android:viewportWidth="360"
     android:viewportHeight="76">
   <group>
@@ -13,7 +13,7 @@
       <path
           android:pathData="M0,0h360v76h-360z">
         <aapt:attr name="android:fillColor">
-          <gradient 
+          <gradient
               android:startY="76"
               android:startX="360"
               android:endY="-124.625"
@@ -30,7 +30,7 @@
         android:strokeAlpha="0.3"
         android:fillAlpha="0.3">
       <aapt:attr name="android:fillColor">
-        <gradient 
+        <gradient
             android:startY="179.19128"
             android:startX="-3.0995383"
             android:endY="199.55905"
@@ -46,7 +46,7 @@
         android:strokeAlpha="0.3"
         android:fillAlpha="0.3">
       <aapt:attr name="android:fillColor">
-        <gradient 
+        <gradient
             android:startY="9.674801"
             android:startX="366.9423"
             android:endY="45.635063"

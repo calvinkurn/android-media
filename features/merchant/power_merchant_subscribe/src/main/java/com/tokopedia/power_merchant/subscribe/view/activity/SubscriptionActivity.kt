@@ -20,7 +20,9 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
@@ -139,7 +141,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         globalErrorPmSubscription.gone()
     }
 
-    override fun showErrorState() {
+    override fun showErrorState(throwable: Throwable) {
         loaderPmSubscription.gone()
         imgPmHeaderBackdrop.gone()
         imgPmHeaderImage.gone()
@@ -147,6 +149,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         tabPmSubscription.gone()
         viewPagerPmSubscription.gone()
         globalErrorPmSubscription.visible()
+        globalErrorPmSubscription.setActionClickListener {
+            fetchPmBasicInfo()
+        }
     }
 
     override fun showActivationProgress() {
@@ -172,7 +177,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             when (it) {
                 is Success -> setOnSuccessGetBasicInfo(it.data)
                 is Fail -> {
-                    showErrorState()
+                    showErrorState(it.throwable)
                     logToCrashlytics(it.throwable, PowerMerchantErrorLogger.PM_BASIC_INFO_ERROR)
                 }
             }
@@ -292,12 +297,12 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         val isPmProSelected = tabIndex == 1
 
         if (isPmProSelected) {
-            imgPmHeaderBackdrop.loadImageDrawable(R.drawable.bg_pm_pro_registration_header)
-            imgPmHeaderImage.loadImageDrawable(R.drawable.ic_pm_badge_pm_pro_filled)
+            imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM_PRO)
+            imgPmHeaderImage.loadImage(PMConstant.Images.PM_PRO_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
         } else {
             imgPmHeaderBackdrop.loadImageDrawable(R.drawable.bg_pm_registration_header)
-            imgPmHeaderImage.loadImageDrawable(R.drawable.ic_pm_badge_pm_filled)
+            imgPmHeaderImage.loadImage(PMConstant.Images.PM_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
         }
 
@@ -311,13 +316,15 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
 
         val shopInfo = data.shopInfo
-        val isEligiblePm = if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm
 
         val registrationTerms = if (isPmProSelected) {
             PMRegistrationTermHelper.getPmProRegistrationTerms(this, shopInfo)
         } else {
             PMRegistrationTermHelper.getPmRegistrationTerms(this, shopInfo)
         }
+
+        val isEligiblePm = (if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm)
+                && !registrationTerms.any { !it.isChecked }
 
         val firstPriorityTerm = registrationTerms.filter {
             if (!shopInfo.isNewSeller) {

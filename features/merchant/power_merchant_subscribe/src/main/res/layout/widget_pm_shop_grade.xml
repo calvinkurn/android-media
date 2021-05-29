@@ -28,7 +28,7 @@
         app:layout_constraintEnd_toEndOf="@+id/containerPmShopGrade"
         app:layout_constraintStart_toStartOf="@+id/containerPmShopGrade"
         app:layout_constraintTop_toTopOf="@+id/containerPmShopGrade"
-        tools:src="@drawable/bg_pm_pro_registration_header" />
+        tools:src="@tools:sample/avatars" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerPmShopGrade"
@@ -76,7 +76,7 @@
             android:layout_margin="@dimen/layout_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:src="@drawable/ic_pm_badge_pm_pro_filled" />
+            tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgPmShopGradeIllustration"
