@@ -35,9 +35,6 @@ class GetAllShopInfoUseCaseTest {
     lateinit var getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
 
     @RelaxedMockK
-    lateinit var shopStatusTypeUseCase: ShopStatusTypeUseCase
-
-    @RelaxedMockK
     lateinit var topAdsAutoTypeUseCase: TopAdsAutoTopupUseCase
 
     @RelaxedMockK
@@ -74,7 +71,7 @@ class GetAllShopInfoUseCaseTest {
     fun `success get all shop info`() = runBlocking {
         val balanceSuccess = OthersBalance()
         val shopTypeSuccess = PowerMerchantStatus.Active
-        val userShopInfoWrapper = UserShopInfoWrapper(shopTypeSuccess)
+        val userShopInfoWrapper = UserShopInfoWrapper(shopType = shopTypeSuccess)
         val totalFollowersSuccess = anyLong()
         val shopBadgeUrlSuccess = anyString()
         val topAdsDepositSuccess = anyFloat()
@@ -103,10 +100,6 @@ class GetAllShopInfoUseCaseTest {
         } returns balanceSuccess
 
         coEvery {
-            shopStatusTypeUseCase.executeOnBackground()
-        } returns shopTypeSuccess
-
-        coEvery {
             getShopTotalFollowersUseCase.executeOnBackground()
         } returns totalFollowersSuccess
 
@@ -122,15 +115,19 @@ class GetAllShopInfoUseCaseTest {
             topAdsAutoTypeUseCase.executeOnBackground()
         } returns isTopAdsAutoTopupSuccess
 
+        coEvery {
+            getUserShopInfoUseCase.executeOnBackground()
+        } returns userShopInfoWrapper
+
         val allShopInfo = mGetAllShopInfoUseCase.executeOnBackground()
 
         coVerify {
             balanceInfoUseCase.executeOnBackground()
-            shopStatusTypeUseCase.executeOnBackground()
             getShopTotalFollowersUseCase.executeOnBackground()
             getShopBadgeUseCase.executeOnBackground()
             topAdsDashboardDepositUseCase.executeOnBackground()
             topAdsAutoTypeUseCase.executeOnBackground()
+            getUserShopInfoUseCase.executeOnBackground()
         }
 
         assertEquals(allShopInfo, allShopInfoSuccess)
