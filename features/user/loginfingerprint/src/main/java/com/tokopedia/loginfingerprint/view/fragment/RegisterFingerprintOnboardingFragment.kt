@@ -17,7 +17,7 @@ import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
-import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
+import com.tokopedia.loginfingerprint.view.dialog.ScanFingerprintDialog
 import com.tokopedia.loginfingerprint.viewmodel.RegisterOnboardingViewModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
