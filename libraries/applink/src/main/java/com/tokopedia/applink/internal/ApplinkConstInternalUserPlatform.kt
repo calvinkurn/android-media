@@ -17,4 +17,6 @@ object ApplinkConstInternalUserPlatform {
     const val LOGIN_PHONE = "${LOGIN}?method=$METHOD_LOGIN_PHONE&p={phone}&source={source}"
     const val LOGIN_THIRD_PARTY = "${LOGIN}?method={method}&source={source}"
 
+    const val CHOOSE_ACCOUNT_FINGERPRINT = "$INTERNAL_USER/choose-account-fingerprint"
+
 }
