@@ -2,6 +2,13 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
+android {
+
+    viewBinding {
+        enabled true
+    }
+}
+
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
