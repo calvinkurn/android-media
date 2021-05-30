@@ -10,7 +10,9 @@
     <string name="applink_digital_deals_title">digital_deals</string>
     <string name="applink_liveness_detection">Liveness Detection</string>
     <string name="applink_notif_troubleshooter">Push Notif Troubleshooter</string>
+    <string name="applink_choose_account_fingerprint">/choose-account-fingerprint</string>
 
     <string name="title_applink_chatbot">Chat Sekarang</string>
     <string name="title_applink_campaign_shake_landing">Promo</string>
+
 </resources>

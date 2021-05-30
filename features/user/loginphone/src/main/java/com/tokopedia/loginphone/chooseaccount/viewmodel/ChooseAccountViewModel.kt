@@ -54,6 +54,10 @@ class ChooseAccountViewModel @Inject constructor(
     val getAccountListPhoneResponse: LiveData<Result<AccountList>>
         get() = mutableGetAccountListPhoneResponse
 
+    private val mutableGetAccountListFingerprint = MutableLiveData<Result<AccountList>>()
+    val getAccountListFingerprintResponse: LiveData<Result<AccountList>>
+        get() = mutableGetAccountListFingerprint
+
     private val mutableLoginPhoneNumberResponse = MutableLiveData<Result<LoginToken>>()
     val loginPhoneNumberResponse: LiveData<Result<LoginToken>>
         get() = mutableLoginPhoneNumberResponse
@@ -146,6 +150,10 @@ class ChooseAccountViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun getAccountListFingerprint() {
+
     }
 
     fun getUserInfo() {

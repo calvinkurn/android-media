@@ -20,7 +20,7 @@ import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
  * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHOOSE_ACCOUNT
  */
 
-class ChooseAccountActivity : BaseSimpleActivity() {
+open class ChooseAccountActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()

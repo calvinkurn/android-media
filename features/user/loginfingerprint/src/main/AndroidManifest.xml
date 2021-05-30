@@ -30,6 +30,26 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:label="@string/title_main"
+            android:name=".view.activity.FingerprintChooseAccountActivity"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_choose_account_fingerprint"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+
     </application>
 
 </manifest>

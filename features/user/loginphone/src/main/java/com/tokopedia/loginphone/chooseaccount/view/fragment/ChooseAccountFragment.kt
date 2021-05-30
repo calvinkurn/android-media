@@ -66,7 +66,7 @@ import kotlin.collections.HashMap
  * @author by nisie on 12/4/17.
  */
 
-class ChooseAccountFragment : BaseDaggerFragment(),
+open class ChooseAccountFragment : BaseDaggerFragment(),
         ChooseAccountContract.ViewAdapter {
 
     @Inject
@@ -95,7 +95,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
-    private val chooseAccountViewModel by lazy {
+    protected val chooseAccountViewModel by lazy {
         viewModelProvider.get(ChooseAccountViewModel::class.java)
     }
 
@@ -275,13 +275,16 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
     }
 
-    private fun getAccountList() {
+    open fun getAccountList() {
         when (viewModel.loginType) {
             FACEBOOK_LOGIN_TYPE -> {
                 viewModel.accessToken?.let {
                     if (it.isNotEmpty())
                         chooseAccountViewModel.getAccountListFacebook(it)
                 }
+            }
+            FINGERPRINT_LOGIN_TYPE -> {
+                chooseAccountViewModel.getAccountListFingerprint()
             }
             else -> {
                 LetUtil.ifLet(viewModel.accessToken, viewModel.phoneNumber) { (accessToken, phoneNumber) ->
@@ -532,7 +535,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     companion object {
         private val MENU_ID_LOGOUT = 111
-
+        const val FINGERPRINT_LOGIN_TYPE = "biometricType"
         const val FACEBOOK_LOGIN_TYPE = "fb"
         const val REQUEST_CODE_PIN_CHALLENGE = 112
         const val PARAM_IS_2FA_KEY = "KEY_FROM_2FA_CHALLENGE"
