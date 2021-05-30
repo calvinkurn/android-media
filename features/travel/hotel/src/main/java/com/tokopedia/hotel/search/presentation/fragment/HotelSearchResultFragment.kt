@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
@@ -80,6 +79,11 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             val selectedParam = it.getParcelable(ARG_FILTER_PARAM) ?: ParamFilterV2()
             if (selectedParam.name.isNotEmpty()) {
                 searchResultviewModel.addFilter(listOf(selectedParam), false)
+            }
+
+            val selectedSort = it.getString(ARG_SORT_PARAM) ?: ""
+            if (selectedSort.isNotEmpty()) {
+                searchResultviewModel.selectedSort = Sort(selectedSort)
             }
 
             searchResultviewModel.initSearchParam(hotelSearchModel)
@@ -166,10 +170,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = getRecyclerView(view)
         recyclerView?.removeItemDecorationAt(0)
-        context?.let {
-            recyclerView?.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
-                    LinearLayoutManager.VERTICAL))
-        }
         searchResultviewModel.fetchTickerData()
     }
 
@@ -468,16 +468,21 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         const val ARG_HOTEL_SEARCH_MODEL = "arg_hotel_search_model"
         const val ARG_FILTER_PARAM = "arg_hotel_filter_param"
+        const val ARG_SORT_PARAM = "arg_hotel_sort_param"
 
         const val SHOW_COACH_MARK_KEY = "hotel_quick_filter_show_coach_mark"
         const val PREFERENCES_NAME = "hotel_quick_filter_preferences"
 
-        fun createInstance(hotelSearchModel: HotelSearchModel, selectedParam: ParamFilterV2): HotelSearchResultFragment {
+        fun createInstance(hotelSearchModel: HotelSearchModel,
+                           selectedParam: ParamFilterV2,
+                           selectedSort: String)
+                : HotelSearchResultFragment {
 
             return HotelSearchResultFragment().also {
                 it.arguments = Bundle().apply {
                     putParcelable(ARG_HOTEL_SEARCH_MODEL, hotelSearchModel)
                     putParcelable(ARG_FILTER_PARAM, selectedParam)
+                    putString(ARG_SORT_PARAM, selectedSort)
                 }
             }
         }

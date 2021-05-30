@@ -32,10 +32,8 @@ class OrderSummaryPageActivityRevampTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
     private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
     private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
-    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
@@ -71,10 +69,11 @@ class OrderSummaryPageActivityRevampTest {
                     productQty = 1
             )
 
-            assertProfileRevampWording("Template Beli Langsung")
-            assertProfileRevampUtama(true)
-
-            assertProfileRevampActionWording("Tambah template")
+        //    Deprecated Test (will delete in next iteration)
+//            assertProfileRevampWording("Template Beli Langsung")
+//            assertProfileRevampUtama(true)
+//
+//            assertProfileRevampActionWording("Tambah template")
 
             assertAddressRevamp(
                     addressName = "Address 1 - User 1 (1)",
@@ -462,6 +461,18 @@ class OrderSummaryPageActivityRevampTest {
     }
 
     @Test
+    fun happyFlow_ShopBadge() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_SHOP_TYPE_PM_PRO_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertShopBadge(shopTypeName = "power merchant pro")
+        }
+    }
+
+    @Test
     fun errorFlow_ErrorGetOccCartPage() {
         cartInterceptor.customGetOccCartThrowable = IOException()
 
@@ -470,6 +481,71 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             assertGlobalErrorVisible()
+        }
+    }
+
+    @Test
+    fun errorFlow_GetOccCartPageReturnNoShipmentData() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_SHIPMENT_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+            assertProductCard(
+                    shopName = "tokocgk",
+                    shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
+                    hasShopBadge = true,
+                    productName = "Product1",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = null,
+                    isFreeShipping = true,
+                    productQty = 1
+            )
+
+            assertAddressRevamp(
+                    addressName = "Address 1 - User 1 (1)",
+                    addressDetail = "Address Street 1, District 1, City 1, Province 1 1",
+                    isMainAddress = true
+            )
+
+            assertShipmentError(
+                    errorMessage = "Durasi pengiriman tidak tersedia Ubah"
+            )
+
+            assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
+
+            assertPaymentButtonEnable(false)
+
+            clickShipmentErrorAction {
+                chooseDurationWithText("Next Day (1 hari)")
+            }
+
+            assertShipmentRevamp(
+                    shippingDuration = "Pengiriman Next Day (1 hari)",
+                    shippingCourier = "JNE",
+                    shippingPrice = "Rp38.000",
+                    shippingEta = null
+            )
+
+            assertPayment("Rp139.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp38.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp139.000"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
         }
     }
 }

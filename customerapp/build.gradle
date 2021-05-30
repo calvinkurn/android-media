@@ -261,6 +261,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation project(rootProject.ext.features.customer_mid_app)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.libraries.coreNetwork)
@@ -271,6 +273,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.promoGamificationCommon)
+    implementation project(rootProject.ext.features.promoMvcWidget)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -279,6 +282,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.productManageCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.mediaCommon)
@@ -323,12 +327,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
-    // Warning: removing imageCropper lib might cause youtube library crash
-    // when load recommendation at the end of video
-    // Need to recheck
-    implementation(rootProject.ext.miscDependencies.imagecropper) {
-        exclude group: "com.android.support"
-    }
+    implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
@@ -345,8 +344,6 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation 'com.facebook.fresco:fresco:1.10.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore
@@ -420,6 +417,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+
+    implementation rootProject.ext.unifyDependencies.empty_state
+    implementation rootProject.ext.unifyDependencies.accordion
 }
 
 apply plugin: 'com.google.gms.google-services'

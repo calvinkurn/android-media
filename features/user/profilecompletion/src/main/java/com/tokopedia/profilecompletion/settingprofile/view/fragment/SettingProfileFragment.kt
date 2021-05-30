@@ -30,6 +30,7 @@ import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTra
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
@@ -78,6 +79,12 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private var tickerAddNameWarning: Ticker? = null
 
     private var chancesChangeName = "0"
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

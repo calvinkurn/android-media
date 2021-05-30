@@ -255,12 +255,10 @@
         </service>
         <service
             android:name=".login.service.RegisterPushNotifService"
-            android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
             android:name=".login.service.GetDefaultChosenAddressService"
-            android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 

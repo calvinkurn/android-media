@@ -3,43 +3,43 @@
   "mode": "exact",
   "query": [
     {
-      "networkSpeed": "{{.+}}",
+      "networkSpeed": ".+",
       "businessUnit": "travel & entertainment",
-      "clientId": "{{.+}}",
+      "clientId": ".+",
       "currentSite": "tokopediadigitalhotel",
-      "isLoggedInStatus": "{{.+}}",
-      "appsflyerId": "{{.+}}",
-      "shopId": "{{.*}}",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
       "screenName": "/hotel/bookingroom",
       "category": "hotel",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.+}}"
+      "userId": ".*",
+      "sessionIris": ".+"
     }, {
       "event": "begin_checkout",
       "eventCategory": "digital - native",
       "eventAction": "click next",
-      "eventLabel": "{{hotel - .+ - .+ - .+ - .+ - .+ - .+ - .+ - .+}}",
+      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
       "screenName": "/hotel/bookingroom",
       "currentSite": "tokopediadigitalhotel",
-      "clientId": "{{.+}}",
-      "sessionIris": "{{.+}}",
-      "userId": "{{.*}}",
+      "clientId": ".+",
+      "sessionIris": ".+",
+      "userId": ".*",
       "businessUnit": "travel & entertainment",
       "category": "hotel",
       "checkout_step": "1",
       "checkout_option": "click checkout",
       "items": [
         {
-          "item_name": "{{.+}}",
-          "item_id": "{{.+}}",
-          "price":"{{\\d*.\\d*}}",
-          "item_brand": "{{.*}}",
+          "item_name": ".+",
+          "item_id": ".+",
+          "price":"\\d*.\\d*",
+          "item_brand": ".*",
           "item_category": "Hotel",
-          "item_variant": "{{.+ - .+}}",
-          "quantity": "{{.+}}",
-          "position": "{{.+}}",
-          "list": "{{.+}}"
+          "item_variant": ".+ - .+",
+          "quantity": ".+",
+          "position": ".+",
+          "list": ".+"
         }
       ]
     }

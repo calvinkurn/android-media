@@ -895,4 +895,15 @@ class LoginEmailPhoneViewModelTest {
             statusPinObserver.onChanged(Fail(throwable))
         }
     }
+
+    @Test
+    fun `clear task`() {
+        viewModel.clearBackgroundTask()
+        verify {
+            tickerInfoUseCase.unsubscribe()
+            discoverUseCase.unsubscribe()
+            loginTokenUseCase.unsubscribe()
+            getProfileUseCase.unsubscribe()
+        }
+    }
 }

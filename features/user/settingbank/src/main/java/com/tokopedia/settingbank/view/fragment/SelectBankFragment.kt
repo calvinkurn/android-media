@@ -2,14 +2,14 @@ package com.tokopedia.settingbank.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -25,11 +25,11 @@ import com.tokopedia.settingbank.view.viewState.OnBankListLoaded
 import com.tokopedia.settingbank.view.viewState.OnBankListLoadingError
 import com.tokopedia.settingbank.view.viewState.OnBankSearchResult
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.fragment_choose_bank_v2.*
+import kotlinx.android.synthetic.main.fragment_choose_bank.*
 import java.util.*
 import javax.inject.Inject
 
-class SelectBankFragment : BottomSheetUnify(), SearchInputView.Listener, SearchInputView.ResetListener, BankListClickListener {
+class SelectBankFragment : BottomSheetUnify(),  BankListClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -75,14 +75,14 @@ class SelectBankFragment : BottomSheetUnify(), SearchInputView.Listener, SearchI
     }
 
     private fun setChild() {
-        childView = LayoutInflater.from(context).inflate(R.layout.fragment_choose_bank_v2,
+        childView = LayoutInflater.from(context).inflate(R.layout.fragment_choose_bank,
                 null, false)
         setChild(childView)
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        selectBankViewModel = viewModelProvider.get(SelectBankViewModel::class.java)
+        selectBankViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(SelectBankViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -177,26 +177,27 @@ class SelectBankFragment : BottomSheetUnify(), SearchInputView.Listener, SearchI
     }
 
     private fun setupSearchInputView() {
-        searchInputTextView.searchImageView.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_search_grayscale_24))
-        searchInputTextView.closeImageButton.setImageDrawable(resources
-                .getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16))
-        searchInputTextView.setListener(this)
-        searchInputTextView.setResetListener(this)
+        searchInputTextView.searchBarTextField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                s?.toString()?.apply { onSearchTextChanged(this) } ?: run { onSearchTextChanged("")}
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+        searchInputTextView.clearListener = { onSearchReset() }
     }
 
-    override fun onSearchSubmitted(text: String?) {
+
+
+    fun onSearchTextChanged(text: String?) {
         text?.let {
             selectBankViewModel.searchBankByQuery(text)
         }
     }
 
-    override fun onSearchTextChanged(text: String?) {
-        text?.let {
-            selectBankViewModel.searchBankByQuery(text)
-        }
-    }
-
-    override fun onSearchReset() {
+    fun onSearchReset() {
         selectBankViewModel.resetSearchResult()
     }
 

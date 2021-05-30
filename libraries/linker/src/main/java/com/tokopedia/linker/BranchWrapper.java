@@ -3,6 +3,7 @@ package com.tokopedia.linker;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.tokopedia.config.GlobalConfig;
@@ -50,6 +51,8 @@ public class BranchWrapper implements WrapperInterface {
     private static boolean isBranchInitialized = false;
     private RemoteConfig remoteConfig;
     private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
+    private final String APP_BRANCH_CALLBACK_TIMEOUT_KEY = "android_branch_callback_timeout_key";
+    private android.os.Handler handler;
     private String KEY_BRANCH_IO_PREF_FILE_NAME = "branch_io_pref";
     private String KEY_APP_FIRST_OPEN = "app_first_open";
     private LocalCacheHandler localCacheHandler;
@@ -148,13 +151,8 @@ public class BranchWrapper implements WrapperInterface {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
                     }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
-                        if (isSkipDeeplink(context)) {
-                            linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
-                                    LinkerUtils.createLinkerError(BranchError.ERR_BRANCH_NO_SHARE_OPTION, null));
-                        } else {
-                            linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
-                                    LinkerUtils.createDeeplinkData(deeplink, promoCode));
-                        }
+                        linkerDeeplinkRequest.getDefferedDeeplinkCallback().onDeeplinkSuccess(
+                                LinkerUtils.createDeeplinkData(deeplink, promoCode));
                     }
                     checkAndSendUtmParams(context, referringParams);
                     if (!TextUtils.isEmpty(deeplink)) {
@@ -301,9 +299,11 @@ public class BranchWrapper implements WrapperInterface {
             } else {
                 BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
                 LinkProperties linkProperties = createLinkProperties(data, data.getSource(), context, userData);
+                setBranchCallbackTimeOutFunction(shareCallback, data, getRemoteConfigTimeOutValue(context, APP_BRANCH_CALLBACK_TIMEOUT_KEY));
                 branchUniversalObject.generateShortUrl(context, linkProperties, new Branch.BranchLinkCreateListener() {
                     @Override
                     public void onLinkCreate(String url, BranchError error) {
+                        removeHandlerTimeoutMessage();
                         if (error == null) {
                             if (shareCallback != null) {
                                 shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
@@ -536,10 +536,6 @@ public class BranchWrapper implements WrapperInterface {
         return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
     }
 
-    private Boolean isSkipDeeplinkNonBranchLinkActivated(Context context) {
-        return getBooleanValue(context, RemoteConfigKey.ENABLE_SKIP_DEEPLINK_FRON_NON_BRANCH_LINK);
-    }
-
     private Boolean getBooleanValue(Context context, String key) {
         if (remoteConfig == null)
             remoteConfig = new FirebaseRemoteConfigImpl(context);
@@ -552,15 +548,6 @@ public class BranchWrapper implements WrapperInterface {
             return true;
         }
         return false;
-    }
-
-
-    private boolean isSkipDeeplink(Context context) {
-        if (APP_OPEN_FROM_BRANCH_LINK || isFirstOpen(context)) {
-            return false;
-        }
-        return isSkipDeeplinkNonBranchLinkActivated(context);
-
     }
 
     private void logNonBranchLinkData(Context context, JSONObject referringParams) {
@@ -591,4 +578,29 @@ public class BranchWrapper implements WrapperInterface {
         return localCacheHandler;
     }
 
+    private long getRemoteConfigTimeOutValue(Context context, String key){
+        if(remoteConfig == null){
+            remoteConfig = new FirebaseRemoteConfigImpl(context);
+        }
+        return remoteConfig.getLong(key);
+    }
+
+    private void setBranchCallbackTimeOutFunction(ShareCallback shareCallback, LinkerData data, long timeoutDuration){
+        handler =  new android.os.Handler(Looper.getMainLooper());
+        handler.postDelayed(
+                new Runnable() {
+                    public void run() {
+                        shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                        Timber.w("P2#BRANCH_LINK_TIMEOUT#error;linkdata='%s'", data.getId());
+                    }
+                },
+                timeoutDuration);
+    }
+
+    //Remove all the pending runnable calls
+    private void removeHandlerTimeoutMessage(){
+        if(handler != null){
+            handler.removeCallbacksAndMessages(null);
+        }
+    }
 }

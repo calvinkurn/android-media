@@ -91,7 +91,7 @@ public abstract class BaseNotificationFactory {
 
     protected int getDrawableLargeIcon() {
         if (GlobalConfig.isSellerApp()) {
-            return com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp_ramadhan;
+            return com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp;
         } else {
             return com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp;
         }

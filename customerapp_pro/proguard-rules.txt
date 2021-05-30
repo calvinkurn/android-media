@@ -136,7 +136,6 @@
     public *;
 }
 
--keep public class com.tokopedia.design.component.BottomNavigation { *; }
 -keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 
 -dontwarn android.net.http.**
@@ -215,8 +214,6 @@
 
 
 # Keep Class com.tokopedia
--keep public class com.tokopedia.design.component.BottomNavigation { *; }
-#-keep public class com.tokopedia.design.text.SpinnerCounterInputView { *; }
 -keep class * extends com.tokopedia.design.base.BaseCustomView { *; }
 #discovery
 -keep class com.tokopedia.discovery2.data.ComponentsItem { *; }
@@ -254,3 +251,10 @@
 -keep class **.HanselDialog.*{*;}
 -keep class * implements io.hansel.**.* {*;}
 -keep class * extends io.hansel.**.* {*;}
+
+
+# data visor
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+-keepclasseswithmembers class * { native <methods>; }
+-keep class com.datavisor.vangogh.** { *; }
+-keep class com.datavisorobfus.** { *; }

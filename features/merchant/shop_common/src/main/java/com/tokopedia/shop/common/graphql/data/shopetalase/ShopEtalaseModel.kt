@@ -3,7 +3,7 @@ package com.tokopedia.shop.common.graphql.data.shopetalase
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_DEFAULT
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

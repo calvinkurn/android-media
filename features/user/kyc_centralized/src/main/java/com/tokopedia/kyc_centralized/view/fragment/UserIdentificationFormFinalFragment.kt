@@ -85,6 +85,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private lateinit var remoteConfig: RemoteConfig
 
     private var retakeActionCode = NOT_RETAKE
+    private var allowedSelfie = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -102,6 +103,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             stepperModel = savedInstanceState.getParcelable(BaseUserIdentificationStepperFragment.EXTRA_KYC_STEPPER_MODEL)
         }
         if (activity != null) {
+            allowedSelfie = activity?.intent?.getBooleanExtra(UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA, false)?: false
             analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
         }
 
@@ -384,6 +386,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private val isKycSelfie: Boolean
         get() {
             try {
+                if(allowedSelfie) return allowedSelfie
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
                     return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }

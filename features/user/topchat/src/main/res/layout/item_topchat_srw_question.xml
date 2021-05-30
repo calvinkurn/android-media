@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="@dimen/unify_space_12"
+    android:paddingStart="@dimen/unify_space_16"
+    tools:ignore="RtlSymmetry">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_srw_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        tools:text="Ini stoknya masih ada, Min?" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        android:padding="@dimen/unify_space_4"
+        app:icon_color_light_enable="@color/Unify_N700_96"
+        app:icon_name="SEND_TEXT" />
+
+</LinearLayout>

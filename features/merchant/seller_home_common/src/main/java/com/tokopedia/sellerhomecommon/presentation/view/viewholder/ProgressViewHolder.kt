@@ -32,7 +32,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
             null == data -> onLoading()
             data.error.isNotBlank() -> {
                 onError(element)
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> onSuccessLoadData(element)
         }

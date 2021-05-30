@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
@@ -9,6 +8,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.productlimitation.domain.model.ProductAddRuleResponse
+import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
 import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
@@ -20,6 +21,7 @@ import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -28,7 +30,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
 
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
 
@@ -329,7 +330,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When productInputModel data changed Expect `() {
+    fun `When productInputModel data changed Expect changes to isDataChanged`() {
         viewModel.productInputModel.value = ProductInputModel()
         viewModel.productInputModel.getOrAwaitValue()
 
@@ -372,7 +373,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         val response = ValidateProductNameResponse().apply {
             productValidateV3.isSuccess = true
-            productValidateV3.data.validationResults = listOf("test", "test", "hello")
+            productValidateV3.data.validationResults = listOf()
         }
 
         onValidateProductName_thenReturn(response)
@@ -398,7 +399,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         val response = ValidateProductNameResponse().apply {
             productValidateV3.isSuccess = true
-            productValidateV3.data.validationResults = listOf("test", "test", "hello")
+            productValidateV3.data.validationResults = listOf()
         }
 
         viewModel.productInputModel.value = ProductInputModel(
@@ -631,6 +632,20 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(0, result?.detailInputModel?.specifications?.size)
     }
 
+    @Test
+    fun `When get product limitation should return success data`() = runBlocking {
+        onGetProductLimitation_thenReturn(ProductAddRuleResponse())
+
+        viewModel.getProductLimitation()
+
+        val result = viewModel.productLimitationData.getOrAwaitValue()
+        verifyProductLimitationData(result)
+    }
+
+    private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {
+        coEvery { productLimitationUseCase.executeOnBackground() } returns successResponse
+    }
+
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
         coEvery { getProductDraftUseCase.executeOnBackground() } returns draft
     }
@@ -785,6 +800,13 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     private fun verifyGetAdminProductPermissionFailed() {
         val result = viewModel.isProductManageAuthorized.value
         assertTrue(result is Fail)
+    }
+
+    private fun verifyProductLimitationData(result: Result<ProductLimitationData>) {
+        coVerify {
+            productLimitationUseCase.executeOnBackground()
+        }
+        assert(result is Success)
     }
 
     private fun getAccessId() =
