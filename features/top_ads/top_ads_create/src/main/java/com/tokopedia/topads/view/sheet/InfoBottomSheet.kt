@@ -1,4 +1,4 @@
-package com.tokopedia.topads.common.view.sheet
+package com.tokopedia.topads.view.sheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.topads.common.R
+import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_info_bs.*
 

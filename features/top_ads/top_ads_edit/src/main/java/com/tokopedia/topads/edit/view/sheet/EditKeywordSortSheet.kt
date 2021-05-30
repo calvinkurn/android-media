@@ -1,7 +1,6 @@
 package com.tokopedia.topads.edit.view.sheet
 
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.topads.common.view.sheet.StaticInfoBottomSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify

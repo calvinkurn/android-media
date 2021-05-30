@@ -1,4 +1,4 @@
-package com.tokopedia.topads.common.view.sheet
+package com.tokopedia.topads.edit.view.sheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.SPECIFIC_TYPE
+import com.tokopedia.topads.edit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_choose_key_bs.*
 
