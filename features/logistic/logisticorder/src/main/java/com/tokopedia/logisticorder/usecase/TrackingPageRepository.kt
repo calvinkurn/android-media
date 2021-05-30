@@ -1,5 +1,6 @@
 package com.tokopedia.logisticorder.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticorder.domain.response.GetLogisticTrackingResponse
@@ -9,7 +10,7 @@ import com.tokopedia.logisticorder.usecase.query.TrackingPageQuery
 import com.tokopedia.logisticorder.utils.getResponse
 import javax.inject.Inject
 
-class TrackingPageRepository @Inject constructor(private val gql: GraphqlRepository){
+class TrackingPageRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository){
 
     suspend fun getTrackingPage(orderId: String, from: String) : GetLogisticTrackingResponse {
         val param = mapOf("input" to mapOf(
