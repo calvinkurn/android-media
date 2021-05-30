@@ -1,4 +1,4 @@
-package com.tokopedia.loginfingerprint.view
+package com.tokopedia.loginfingerprint.view.dialog
 
 import android.annotation.TargetApi
 import android.app.Dialog
@@ -310,7 +310,6 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
             }
 
             override fun onAuthenticationFailed() {
-                counter++
                 if (counter > MAX_ATTEMPTS) {
                     animateLottieError {
                         listener?.onFingerprintError(getString(R.string.error_too_many_attempts), FingerprintManager.FINGERPRINT_ERROR_LOCKOUT)
@@ -324,6 +323,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                         viewState.postValue(STATE_INVALID)
                     }
                 }
+                counter++
                 super.onAuthenticationFailed()
             }
         }
