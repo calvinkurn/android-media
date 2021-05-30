@@ -100,6 +100,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
             Glide.with(holder.context)
                     .load(url)
+                    .centerCrop()
                     .placeholder(holder.context.getDrawable(R.drawable.ic_image_error))
                     .error(holder.context.getDrawable(R.drawable.ic_image_error))
                     .dontAnimate()

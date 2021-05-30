@@ -33,36 +33,38 @@ class TrackingPageViewModel @Inject constructor(
         get() = _retryAvailability
 
     fun getTrackingData(orderId: String) {
-        viewModelScope.launch(onErrorGetTrackingData) {
-            val getTrackingData = repo.getTrackingPage(orderId, " ")
-            _trackingData.value = Success(mapper.mapTrackingData(getTrackingData))
+        viewModelScope.launch {
+            try {
+                val getTrackingData = repo.getTrackingPage(orderId, " ")
+                _trackingData.value = Success(mapper.mapTrackingData(getTrackingData))
+            } catch (e: Throwable) {
+                _trackingData.value = Fail(e)
+            }
+
         }
     }
 
     fun retryBooking(orderId: String) {
-        viewModelScope.launch(onErrorRetryBooking) {
-            val retryBooking = repo.retryBooking(orderId)
-            _retryBooking.value = Success(retryBooking)
+        viewModelScope.launch {
+            try {
+                val retryBooking = repo.retryBooking(orderId)
+                _retryBooking.value = Success(retryBooking)
+            } catch (e: Throwable) {
+                _retryBooking.value = Fail(e)
+            }
         }
     }
 
     fun retryAvailability(orderId: String) {
-        viewModelScope.launch(onErrorRetryAvailability) {
-            val retryAvailability = repo.retryAvailability(orderId)
-            _retryAvailability.value = Success(retryAvailability)
+        viewModelScope.launch {
+            try {
+                val retryAvailability = repo.retryAvailability(orderId)
+                _retryAvailability.value = Success(retryAvailability)
+            } catch (e: Throwable) {
+                _retryAvailability.value = Fail(e)
+            }
+
         }
-    }
-
-    private val onErrorGetTrackingData = CoroutineExceptionHandler { _, throwable ->
-        _trackingData.value = Fail(throwable)
-    }
-
-    private val onErrorRetryBooking = CoroutineExceptionHandler { _, throwable ->
-        _retryBooking.value = Fail(throwable)
-    }
-
-    private val onErrorRetryAvailability = CoroutineExceptionHandler { _, throwable ->
-        _retryAvailability.value = Fail(throwable)
     }
 
 }

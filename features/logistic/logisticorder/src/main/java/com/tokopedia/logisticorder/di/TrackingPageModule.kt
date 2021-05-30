@@ -12,10 +12,6 @@ import dagger.Provides
 
 @Module
 object TrackingPageModule {
-    @Provides
-    @ActivityScope
-    fun provideGraphQlRepository(): GraphqlRepository =
-            GraphqlInteractor.getInstance().graphqlRepository
 
     @ActivityScope
     @Provides

@@ -1,40 +1,24 @@
 package com.tokopedia.logisticorder.view
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
+import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.PageModel
@@ -45,18 +29,16 @@ import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
 import com.tokopedia.logisticorder.view.imagepreview.ImagePreviewLogisticActivity
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity.Companion.createIntent
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -76,31 +58,12 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         ViewModelProvider(this, viewModelFactory).get(TrackingPageViewModel::class.java)
     }
 
+    private var binding by autoClearedNullable<FragmentTrackingPageBinding>()
+
     private var mOrderId: String? = null
     private var mTrackingUrl: String? = null
     private var mCaller: String? = null
-
-    private var loadingScreen: ProgressBar? = null
-    private var referenceNumber: TextView? = null
-    private var deliveryDate: TextView? = null
-    private var storeName: TextView? = null
-    private var storeAddress: TextView? = null
-    private var serviceCode: TextView? = null
-    private var buyerName: TextView? = null
-    private var buyerLocation: TextView? = null
-    private var currentStatus: TextView? = null
-    private var trackingHistory: RecyclerView? = null
-    private var emptyUpdateNotification: LinearLayout? = null
-    private var notificationText: TextView? = null
-    private var notificationHelpStep: RecyclerView? = null
-    private var liveTrackingButton: UnifyButton? = null
-    private var rootView: ViewGroup? = null
-    private var descriptionLayout: LinearLayout? = null
-    private var retryButton: UnifyButton? = null
-    private var retryStatus: TextView? = null
     private var mCountDownTimer: CountDownTimer? = null
-    private var tickerInfoCourier: Ticker? = null
-    private var tickerInfoLayout: LinearLayout? = null
 
     override fun getScreenName(): String = ""
 
@@ -121,12 +84,11 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.tracking_page_layout, container, false)
+        return inflater.inflate(R.layout.fragment_tracking_page, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
         initObserver()
         fetchData()
     }
@@ -136,33 +98,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (mCountDownTimer != null) {
             mCountDownTimer?.cancel()
         }
-    }
-
-    private fun initView() {
-        loadingScreen = view?.findViewById(R.id.main_progress_bar)
-
-        rootView = view?.findViewById(R.id.root_view)
-        referenceNumber = view?.findViewById(R.id.reference_number)
-        deliveryDate = view?.findViewById(R.id.delivery_date)
-        storeName = view?.findViewById(R.id.store_name)
-        storeAddress = view?.findViewById(R.id.store_address)
-        serviceCode = view?.findViewById(R.id.service_code)
-        buyerName = view?.findViewById(R.id.buyer_name)
-        buyerLocation = view?.findViewById(R.id.buyer_location)
-        currentStatus = view?.findViewById(R.id.currenct_status)
-        trackingHistory = view?.findViewById(R.id.tracking_history)
-        trackingHistory?.isNestedScrollingEnabled = false
-        emptyUpdateNotification = view?.findViewById(R.id.empty_update_notification)
-        notificationText = view?.findViewById(R.id.notification_text)
-        notificationHelpStep = view?.findViewById(R.id.notification_help_step)
-        retryButton = view?.findViewById(R.id.retry_pickup_button)
-        descriptionLayout = view?.findViewById(R.id.description_layout)
-        retryStatus = view?.findViewById(R.id.tv_retry_status)
-
-        liveTrackingButton = view?.findViewById(R.id.live_tracking_button)
-
-        tickerInfoCourier = view?.findViewById(R.id.ticker_info_courier)
-        tickerInfoLayout = view?.findViewById(R.id.ticker_info_layout)
     }
 
     private fun initObserver() {
@@ -194,9 +129,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                     }
                 }
                 is Fail -> {
-                    if (view != null) {
-                        showSoftError(it.throwable)
-                    }
+                    showSoftError(it.throwable)
                 }
             }
         })
@@ -219,15 +152,15 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun populateView(trackingDataModel: TrackingDataModel) {
         val model = trackingDataModel.trackOrder
-        referenceNumber?.text = model.shippingRefNum
-        if (model.detail.serviceCode.isEmpty()) descriptionLayout?.visibility = View.GONE
-        if (model.detail.sendDate.isNotEmpty()) deliveryDate?.text = dateUtil.getFormattedDate(model.detail.sendDate)
-        storeName?.text = model.detail.shipperName
-        storeAddress?.text = model.detail.shipperCity
-        serviceCode?.text = model.detail.serviceCode
-        buyerName?.text = model.detail.receiverName
-        buyerLocation?.text = model.detail.receiverCity
-        currentStatus?.text = model.status
+        binding?.referenceNumber?.text = model.shippingRefNum
+        if (model.detail.serviceCode.isEmpty()) binding?.descriptionLayout?.visibility = View.GONE
+        if (model.detail.sendDate.isNotEmpty()) binding?.deliveryDate?.text = dateUtil.getFormattedDate(model.detail.sendDate)
+        binding?.storeName?.text = model.detail.shipperName
+        binding?.storeAddress?.text = model.detail.shipperCity
+        binding?.serviceCode?.text = model.detail.serviceCode
+        binding?.buyerName?.text = model.detail.receiverName
+        binding?.buyerLocation?.text = model.detail.receiverCity
+        binding?.currentStatus?.text = model.status
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
@@ -238,15 +171,15 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun showLoading() {
-        loadingScreen?.visibility = View.VISIBLE
+        binding?.mainProgressBar?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        loadingScreen?.visibility = View.GONE
+        binding?.mainProgressBar?.visibility = View.GONE
     }
 
     private fun showError(error: Throwable) {
-        NetworkErrorHelper.showEmptyState(activity, rootView, this::fetchData)
+        NetworkErrorHelper.showEmptyState(activity, binding?.rootView, this::fetchData)
     }
 
     private fun showSoftError(error: Throwable) {
@@ -256,25 +189,25 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun setRetryButton(active: Boolean, deadline: Long) {
         if (active) {
-            retryButton?.visibility = View.VISIBLE
-            retryButton?.text = getString(R.string.find_new_driver)
-            retryButton?.isEnabled = true
-            retryButton?.setOnClickListener {
-                retryButton?.isEnabled = false
+            binding?.retryPickupButton?.visibility = View.VISIBLE
+            binding?.retryPickupButton?.text = getString(R.string.find_new_driver)
+            binding?.retryPickupButton?.isEnabled = true
+            binding?.retryPickupButton?.setOnClickListener {
+                binding?.retryPickupButton?.isEnabled = false
                 mOrderId?.let { it -> viewModel.retryBooking(it) }
                 mAnalytics.eventClickButtonCariDriver(mOrderId)
             }
-            retryStatus?.visibility = View.GONE
+            binding?.tvRetryStatus?.visibility = View.GONE
             mAnalytics.eventViewButtonCariDriver(mOrderId)
         } else {
-            retryButton?.visibility = View.GONE
+            binding?.retryPickupButton?.visibility = View.GONE
             if (deadline > 0) {
-                retryStatus?.visibility = View.VISIBLE
+                binding?.tvRetryStatus?.visibility = View.VISIBLE
                 val now = System.currentTimeMillis()/1000L
                 val remainingTIme = deadline - now
                 initTimer(remainingTIme)
             } else {
-                retryStatus?.visibility = View.GONE
+                binding?.tvRetryStatus?.visibility = View.GONE
             }
         }
     }
@@ -292,7 +225,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                         String.format(it,
                                 DateUtils.formatElapsedTime(millsUntilFinished / 1000))
                     }
-                    retryStatus?.text = MethodChecker.fromHtml(info)
+                    binding?.tvRetryStatus?.text = MethodChecker.fromHtml(info)
                 }
             }
 
@@ -304,7 +237,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun startSuccessCountdown() {
-        retryButton?.text = getText(R.string.find_new_driver)
+        binding?.retryPickupButton?.text = getText(R.string.find_new_driver)
         Observable.timer(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -325,26 +258,26 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun initialHistoryView() {
-        trackingHistory?.visibility = View.GONE
-        emptyUpdateNotification?.visibility = View.GONE
-        liveTrackingButton?.visibility = View.GONE
+        binding?.trackingHistory?.visibility = View.GONE
+        binding?.emptyUpdateNotification?.visibility = View.GONE
+        binding?.liveTrackingButton?.visibility = View.GONE
     }
 
     private fun setHistoryView(model: TrackOrderModel) {
         if (model.invalid || model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
-            trackingHistory?.visibility = View.GONE
+            binding?.trackingHistory?.visibility = View.GONE
         } else {
-            trackingHistory?.visibility = View.VISIBLE
-            trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil, mOrderId?.toLong(), this)
+            binding?.trackingHistory?.visibility = View.VISIBLE
+            binding?.trackingHistory?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            binding?.trackingHistory?.adapter = TrackingHistoryAdapter(model.trackHistory, dateUtil, mOrderId?.toLong(), this)
         }
     }
 
     private fun setTicketInfoCourier(page: PageModel) {
        if (page.additionalInfo.isEmpty()) {
-           tickerInfoLayout?.visibility = View.GONE
+           binding?.tickerInfoLayout?.visibility = View.GONE
        } else {
-           tickerInfoLayout?.visibility = View.VISIBLE
+           binding?.tickerInfoLayout?.visibility = View.VISIBLE
            if (page.additionalInfo.size > 1) {
                val message = ArrayList<TickerData>()
                for (item in page.additionalInfo) {
@@ -358,14 +291,14 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                    }
 
                })
-               tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
+               binding?.tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
            } else {
                val formattedDesc = formatTitleHtml(page.additionalInfo[0].notes, page.additionalInfo[0].urlDetail, page.additionalInfo[0].urlText)
-               tickerInfoCourier?.setHtmlDescription(formattedDesc)
-               tickerInfoCourier?.tickerTitle = page.additionalInfo[0].title
-               tickerInfoCourier?.tickerType = Ticker.TYPE_ANNOUNCEMENT
-               tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
-               tickerInfoCourier?.setDescriptionClickEvent(object: TickerCallback {
+               binding?.tickerInfoCourier?.setHtmlDescription(formattedDesc)
+               binding?.tickerInfoCourier?.tickerTitle = page.additionalInfo[0].title
+               binding?.tickerInfoCourier?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+               binding?.tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
+               binding?.tickerInfoCourier?.setDescriptionClickEvent(object: TickerCallback {
                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                    }
@@ -381,27 +314,27 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun setEmptyHistoryView(model: TrackOrderModel) {
         if (model.invalid) {
-            emptyUpdateNotification?.visibility = View.VISIBLE
-            notificationText?.text = getString(R.string.warning_courier_invalid)
-            notificationHelpStep?.visibility = View.VISIBLE
-            notificationHelpStep?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            notificationHelpStep?.adapter = EmptyTrackingNotesAdapter()
+            binding?.emptyUpdateNotification?.visibility = View.VISIBLE
+            binding?.notificationText?.text = getString(R.string.warning_courier_invalid)
+            binding?.notificationHelpStep?.visibility = View.VISIBLE
+            binding?.notificationHelpStep?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            binding?.notificationHelpStep?.adapter = EmptyTrackingNotesAdapter()
         } else if (model.orderStatus == 501 || model.change == 0 || model.trackHistory.isEmpty()) {
-            emptyUpdateNotification?.visibility = View.VISIBLE
-            notificationText?.text = getString(R.string.warning_no_courier_change)
-            notificationHelpStep?.visibility = View.GONE
+            binding?.emptyUpdateNotification?.visibility = View.VISIBLE
+            binding?.notificationText?.text = getString(R.string.warning_no_courier_change)
+            binding?.notificationHelpStep?.visibility = View.GONE
         } else {
-            emptyUpdateNotification?.visibility = View.GONE
-            notificationHelpStep?.visibility = View.GONE
+            binding?.emptyUpdateNotification?.visibility = View.GONE
+            binding?.notificationHelpStep?.visibility = View.GONE
         }
     }
 
     private fun setLiveTrackingButton(model: TrackOrderModel) {
         if (mTrackingUrl.isNullOrEmpty() && model.detail.trackingUrl.isEmpty()) {
-            liveTrackingButton?.visibility = View.GONE
+            binding?.liveTrackingButton?.visibility = View.GONE
         } else {
-            liveTrackingButton?.visibility = View.VISIBLE
-            liveTrackingButton?.setOnClickListener {
+            binding?.liveTrackingButton?.visibility = View.VISIBLE
+            binding?.liveTrackingButton?.setOnClickListener {
                 goToLiveTrackingPage(model)
             }
         }
