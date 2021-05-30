@@ -83,10 +83,11 @@
                 android:layout_marginLeft="@dimen/spacing_lvl5"
                 android:layout_marginRight="@dimen/spacing_lvl5"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:drawableStart="@drawable/ic_fingerprint_thumb"
                 android:contentDescription="@string/content_desc_fingerprint_button"
                 android:text="@string/fingerprint_login"
                 android:textAllCaps="false"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost" />
 
