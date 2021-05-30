@@ -10,6 +10,7 @@ object ApplinkConstInternalUserPlatform {
     const val METHOD_LOGIN_PHONE = "phone"
     const val METHOD_LOGIN_GOOGLE = "google"
     const val METHOD_LOGIN_FACEBOOK = "facebook"
+    const val METHOD_LOGIN_FINGERPRINT = "fingerprint"
 
     //LoginActivity
     const val LOGIN = "$INTERNAL_USER/login"
