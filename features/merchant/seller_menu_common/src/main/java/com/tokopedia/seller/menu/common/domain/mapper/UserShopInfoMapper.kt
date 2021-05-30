@@ -36,12 +36,13 @@ class UserShopInfoMapper @Inject constructor() {
     }
 
     private fun getShopType(userShopInfoResponse: UserShopInfoResponse): ShopType? {
+        val statusPM = userShopInfoResponse.userShopInfo.owner.pmStatus
+
         return when (userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS?.shopTier) {
             ShopTier.RM -> {
                 RegularMerchant.NeedUpgrade
             }
             ShopTier.PM -> {
-                val statusPM = userShopInfoResponse.userShopInfo.owner.pmStatus
                 if (getPowerMerchantNotActive(statusPM))
                     PowerMerchantStatus.NotActive
                 else
@@ -62,13 +63,15 @@ class UserShopInfoMapper @Inject constructor() {
                         PowerMerchantProStatus.Ultimate
                     }
                     else -> {
-                        null
+                        if (statusPM == PMStatus.IDLE) {
+                            PowerMerchantProStatus.InActive
+                        } else {
+                            null
+                        }
                     }
                 }
             }
-            else -> {
-                null
-            }
+            else -> null
         }
     }
 

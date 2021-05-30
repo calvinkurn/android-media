@@ -39,4 +39,5 @@ sealed class PowerMerchantProStatus : ShopType(POWER_MERCHANT_PRO_LAYOUT, POWER_
     object Advanced: PowerMerchantProStatus()
     object Expert: PowerMerchantProStatus()
     object Ultimate: PowerMerchantProStatus()
+    object InActive: PowerMerchantProStatus()
 }

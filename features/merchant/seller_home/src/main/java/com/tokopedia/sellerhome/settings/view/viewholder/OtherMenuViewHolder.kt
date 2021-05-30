@@ -26,6 +26,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
+import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
@@ -345,6 +346,15 @@ class OtherMenuViewHolder(private val itemView: View,
                     }
                 }
             }
+            is PowerMerchantProStatus.InActive -> {
+                layoutInflater?.apply {
+                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
+                    }
+                }
+            }
             else -> null
         }
         (itemView.findViewById(R.id.shopStatus) as LinearLayout).run {
@@ -469,6 +479,10 @@ class OtherMenuViewHolder(private val itemView: View,
                 ivBgPMPro.loadImage(PMProURL.BG_ULTIMATE)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
             }
+            is PowerMerchantProStatus.InActive -> {
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                powerMerchantProStatusText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_not_active)
+            }
         }
         powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
         val roundedRadius = 16F
@@ -476,7 +490,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 .toBuilder()
                 .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
                 .build()
-        powerMerchantProIcon.loadImage(PMProURL.ICON_URL)
+        powerMerchantProIcon.loadImage(goldOS?.badge)
         return this
     }
 
