@@ -14,6 +14,7 @@ ext {
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.5.0"
 
+    biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
     exifInterfaceVersion = '1.2.0'
@@ -275,6 +276,7 @@ ext {
             sliceCore             : "androidx.slice:slice-core:$sliceCoreVersion",
             transition            : "androidx.transition:transition:$transitionVersion",
             newRelic              : 'com.newrelic.agent.android:android-agent:5.28.1',
+            biometric             : "androidx.biometric:biometric:$biometricVersion"
     ]
 
     testDependencies = [
