@@ -470,21 +470,23 @@ class OtherMenuViewHolder(private val itemView: View,
             is PowerMerchantProStatus.Advanced -> {
                 ivBgPMPro.loadImage(PMProURL.BG_ADVANCE)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
+                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
             }
             is PowerMerchantProStatus.Expert -> {
                 ivBgPMPro.loadImage(PMProURL.BG_EXPERT)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
+                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
             }
             is PowerMerchantProStatus.Ultimate -> {
                 ivBgPMPro.loadImage(PMProURL.BG_ULTIMATE)
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
+                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
             }
             is PowerMerchantProStatus.InActive -> {
                 powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
                 powerMerchantProStatusText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_not_active)
             }
         }
-        powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
         val roundedRadius = 16F
         ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
                 .toBuilder()
