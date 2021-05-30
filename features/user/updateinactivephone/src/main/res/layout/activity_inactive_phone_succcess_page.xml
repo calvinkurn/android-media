@@ -3,7 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/Neutral_N0"
+  android:background="@color/Unify_N0"
   android:clipToPadding="false"
   android:orientation="vertical">
   
@@ -55,7 +55,7 @@
     android:layout_marginStart="@dimen/spacing_lvl6"
     android:layout_marginEnd="@dimen/spacing_lvl6"
     android:textAlignment="center"
-    android:textColor="@color/dark_N200"
+    android:textColor="@color/Unify_N400"
     app:typographyType="body_2"
     app:layout_constraintTop_toBottomOf="@+id/txtTitle"
     app:layout_constraintLeft_toLeftOf="parent"

@@ -99,7 +99,14 @@ class ProductSheetViewComponent(
         }
     }
 
-    private var isProductsInitialized = false
+    private val layoutManagerVoucherList = object : LinearLayoutManager(rvVoucherList.context, RecyclerView.HORIZONTAL, false) {
+        override fun onLayoutCompleted(state: RecyclerView.State?) {
+            super.onLayoutCompleted(state)
+            listener.onVouchersImpressed(this@ProductSheetViewComponent, getVisibleVouchers())
+        }
+    }
+
+    private var isProductSheetsInitialized = false
 
     init {
         findViewById<ImageView>(R.id.iv_sheet_close)
@@ -115,7 +122,7 @@ class ProductSheetViewComponent(
         }
 
         rvVoucherList.apply {
-            layoutManager = LinearLayoutManager(rvVoucherList.context, RecyclerView.HORIZONTAL, false)
+            layoutManager = layoutManagerVoucherList
             adapter = voucherAdapter
             addItemDecoration(MerchantVoucherItemDecoration(rvVoucherList.context))
         }
@@ -156,7 +163,7 @@ class ProductSheetViewComponent(
     fun setProductSheet(model: PlayProductTagsUiModel.Complete) {
         showContent(true)
 
-        if (isProductDecreased(model.productList.size)) showToasterProductUpdated()
+        if (isProductCountChanged(model.productList.size)) listener.onProductCountChanged(this)
 
         tvSheetTitle.text = model.basicInfo.bottomSheetTitle
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
@@ -218,28 +225,19 @@ class ProductSheetViewComponent(
             productList = List(PLACEHOLDER_COUNT) { PlayProductUiModel.Placeholder }
     )
 
-    private fun isProductDecreased(productSize: Int): Boolean {
+    private fun isProductCountChanged(productSize: Int): Boolean {
         return productLineAdapter.getItems().isNotEmpty() &&
                 productLineAdapter.getItems().first() is PlayProductUiModel.Product &&
-                productLineAdapter.itemCount > productSize
-    }
-
-    private fun showToasterProductUpdated() {
-        Toaster.build(
-                rootView,
-                getString(R.string.play_product_updated),
-                type = Toaster.TYPE_NORMAL
-        ).show()
+                productLineAdapter.itemCount != productSize
     }
 
     private fun sendImpression() {
-        if (isProductsInitialized) {
-            listener.onProductsImpressed(
-                    this@ProductSheetViewComponent,
-                    getVisibleProducts()
-            )
+        if (isProductSheetsInitialized) {
+            listener.onProductsImpressed(this@ProductSheetViewComponent, getVisibleProducts())
+            listener.onVouchersImpressed(this@ProductSheetViewComponent, getVisibleVouchers())
         }
-        else isProductsInitialized = true
+        else isProductSheetsInitialized = true
+
     }
 
     /**
@@ -273,6 +271,20 @@ class ProductSheetViewComponent(
         return emptyList()
     }
 
+    fun getVisibleVouchers(): List<MerchantVoucherUiModel> {
+        val vouchers = voucherAdapter.getItems()
+        if (vouchers.isNotEmpty()) {
+            val startPosition = layoutManagerVoucherList.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManagerVoucherList.findLastCompletelyVisibleItemPosition()
+            if (startPosition > -1 && endPosition < vouchers.size) {
+                return vouchers
+                        .slice(startPosition..endPosition)
+                        .filterIsInstance<MerchantVoucherUiModel>()
+            }
+        }
+        return emptyList()
+    }
+
     companion object {
         private const val PLACEHOLDER_COUNT = 5
     }
@@ -285,6 +297,8 @@ class ProductSheetViewComponent(
         fun onVoucherScrolled(view: ProductSheetViewComponent, lastPositionViewed: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
         fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel)
+        fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
+        fun onProductCountChanged(view: ProductSheetViewComponent)
     }
 }

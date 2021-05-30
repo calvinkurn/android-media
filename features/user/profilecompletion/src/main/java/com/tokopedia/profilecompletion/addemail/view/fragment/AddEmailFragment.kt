@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
@@ -47,6 +48,10 @@ class AddEmailFragment : BaseDaggerFragment() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_add_email_setting_profile, container, false)
@@ -57,7 +62,6 @@ class AddEmailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setListener()
         setObserver()
-
     }
 
     private fun setListener() {
@@ -125,7 +129,7 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     private fun setObserver() {
         viewModel.mutateAddEmailResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> onSuccessAddEmail(it.data)
@@ -135,7 +139,7 @@ class AddEmailFragment : BaseDaggerFragment() {
         )
 
         viewModel.mutateCheckEmailResponse.observe(
-                this,
+                viewLifecycleOwner,
                 Observer {
                     when (it) {
                         is Success -> goToVerificationActivity(it.data)
@@ -197,7 +201,7 @@ class AddEmailFragment : BaseDaggerFragment() {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             if (otpCode.isNotBlank()) {
                 val email = et_email.textFieldInput.text.toString().trim()
-                viewModel.mutateAddEmail(context!!, email, otpCode)
+                viewModel.mutateAddEmail(requireContext(), email, otpCode)
             } else {
                 onErrorShowSnackbar(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))

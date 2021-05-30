@@ -85,14 +85,24 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     }
 
     fun LoadImage(imageview: ImageView, url: String?) {
-        if (imageview.context != null) {
-            Glide.with(imageview.context)
-                    .load(url)
-                    .fitCenter()
-                    .dontAnimate()
-                    .placeholder(R.drawable.chatbot_image_placeloader)
-                    .error(com.tokopedia.abstraction.R.drawable.error_drawable)
-                    .into(imageview)
+        try {
+            if (imageview.context != null) {
+                Glide.with(imageview.context)
+                        .load(url)
+                        .fitCenter()
+                        .dontAnimate()
+                        .placeholder(R.drawable.chatbot_image_placeloader)
+                        .error(com.tokopedia.abstraction.R.drawable.error_drawable)
+                        .into(imageview)
+            }
+        } catch (e: Exception) {
+            if (imageview.context != null) {
+                Glide.with(imageview.context)
+                        .asBitmap()
+                        .load(R.drawable.chatbot_image_placeloader)
+                        .dontAnimate()
+                        .into(imageview)
+            }
         }
     }
 
