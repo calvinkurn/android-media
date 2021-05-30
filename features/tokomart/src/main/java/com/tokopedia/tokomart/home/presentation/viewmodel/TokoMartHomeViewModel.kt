@@ -34,7 +34,7 @@ class TokoMartHomeViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
     private val getTickerUseCase: GetTickerUseCase,
-    dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -67,6 +67,7 @@ class TokoMartHomeViewModel @Inject constructor(
     fun getHomeLayout() {
         launchCatchError(block = {
             val getTickerAsync = asyncCatchError(
+                    context = dispatchers.io,
                     block = {
                         getTicker()
                     },
@@ -76,6 +77,7 @@ class TokoMartHomeViewModel @Inject constructor(
                     })
 
             val getResponseAsync = asyncCatchError(
+                    context = dispatchers.io,
                     block = {
                         getHomeLayoutListUseCase.execute()
                     },
@@ -83,6 +85,7 @@ class TokoMartHomeViewModel @Inject constructor(
                         _homeLayoutList.postValue(Fail(it))
                         null
                     })
+
             getResponseAsync.await()?.let { homeLayoutResponse ->
                 layoutList = mapHomeLayoutList(
                         homeLayoutResponse,
@@ -125,8 +128,7 @@ class TokoMartHomeViewModel @Inject constructor(
     }
 
     private suspend fun getTicker(): List<Ticker> {
-        getTickerUseCase.params = getTickerUseCase.createParams()
-        return getTickerUseCase.executeOnBackground()
+        return getTickerUseCase.execute()
                 .ticker
                 .tickerList
     }
