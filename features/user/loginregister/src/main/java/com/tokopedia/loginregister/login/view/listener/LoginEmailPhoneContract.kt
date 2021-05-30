@@ -124,6 +124,8 @@ interface LoginEmailPhoneContract {
 
         fun goToChooseAccountPageFacebook(accessToken: String)
 
+        fun goToChooseAccountPageFingerprint()
+
         fun goToAddPin2FA(enableSkip2FA: Boolean)
 
         fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String)
