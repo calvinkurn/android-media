@@ -52,8 +52,6 @@ interface LoginEmailPhoneContract {
 
         fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener
 
-        fun isFromRegister(): Boolean
-
         fun stopTrace()
 
         fun setLoginSuccessSellerApp()
