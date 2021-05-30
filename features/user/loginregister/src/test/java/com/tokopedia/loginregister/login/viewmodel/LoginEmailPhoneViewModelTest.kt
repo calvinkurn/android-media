@@ -97,7 +97,6 @@ class LoginEmailPhoneViewModelTest {
     private val mockFragment = mockk<Fragment>(relaxed = true)
     private val mockCallbackManager = mockk<CallbackManager>(relaxed = true)
     private val messageException = MessageErrorException("error bro")
-    private val stringError = "Error bro"
     private val accessToken = mockk<AccessToken>(relaxed = true)
     private val phone = "0822424112312"
 
@@ -157,9 +156,7 @@ class LoginEmailPhoneViewModelTest {
         val responseData = RegisterCheckData()
         val response = RegisterCheckPojo(data = responseData)
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterCheckPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
 
         viewModel.registerCheck(testId)
 
@@ -171,9 +168,7 @@ class LoginEmailPhoneViewModelTest {
     fun `on Failed Register Check`() {
         val testId = "123456"
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } throws throwable
 
         viewModel.registerCheck(testId)
 
