@@ -1,7 +1,7 @@
 package com.tokopedia.loginfingerprint.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
+import com.tokopedia.loginfingerprint.view.dialog.ScanFingerprintDialog
 import com.tokopedia.loginfingerprint.view.fragment.RegisterFingerprintOnboardingFragment
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
