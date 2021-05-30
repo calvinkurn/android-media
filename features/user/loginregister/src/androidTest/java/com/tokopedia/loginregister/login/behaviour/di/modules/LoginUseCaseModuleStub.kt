@@ -16,13 +16,11 @@ import com.tokopedia.loginregister.login.di.LoginScope
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.StatusFingerprintpojo
 import com.tokopedia.loginregister.login.domain.StatusPinUseCase
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.usecase.*
-import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -47,9 +45,11 @@ class LoginUseCaseModuleStub {
         return GeneratePublicKeyUseCaseStub(useCase)
     }
 
+    @LoginScope
     @Provides
     fun provideLoginTokenUseCaseV2(stub: LoginTokenV2UseCaseStub): LoginTokenV2UseCase = stub
 
+    @LoginScope
     @Provides
     fun provideLoginTokenUseCaseV2Stub(graphqlRepository: GraphqlRepository, @Named(SessionModule.SESSION_MODULE) userSessionInterface: UserSessionInterface): LoginTokenV2UseCaseStub {
         val useCase = GraphqlUseCaseStub<LoginTokenPojoV2>(graphqlRepository)
