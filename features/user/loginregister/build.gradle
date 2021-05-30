@@ -100,6 +100,8 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.biometric
+
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
