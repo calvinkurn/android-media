@@ -186,9 +186,7 @@ class LoginEmailPhoneViewModelTest {
 
         val testId = "123456"
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterCheckPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
 
         viewModel.registerCheck(testId)
 
