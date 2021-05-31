@@ -15,7 +15,8 @@ data class CartItemData(
         var isDisableAllProducts: Boolean = false,
         var isFulfillment: Boolean = false,
         var selectedUnavailableActionId: Int = 0,
-        var selectedUnavailableActionLink: String = ""
+        var selectedUnavailableActionLink: String = "",
+        var shouldValidateWeight: Boolean = false
 ) : Parcelable {
 
     @Parcelize

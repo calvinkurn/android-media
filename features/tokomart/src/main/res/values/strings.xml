@@ -13,4 +13,10 @@
     <string name="home_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
     <string name="home_header_background_content_description">Header Background</string>
+
+    <string name="tokomart_search_title">Hasil pencarian di TokoNOW!</string>
+    <string name="tokomart_all_category">Semua Kategori</string>
+    <string name="tokomart_search_category_product_count_template">%s Produk</string>
+    <string name="tokomart_category_aisle_header">Lihat kategori lainnya</string>
+
 </resources>

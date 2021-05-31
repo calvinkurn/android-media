@@ -136,6 +136,12 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
         actualProduct.optionPosition shouldBe optionPosition
         actualProduct.position shouldBe productPosition
         actualProduct.optionTitle shouldBe optionTitle
+        actualProduct.shopLocation shouldBe expectedProduct.shop.city
+        actualProduct.badgeItemDataViewList.listShouldBe(expectedProduct.badgeList) { actual, expected ->
+            actual.title shouldBe  expected.title
+            actual.imageUrl shouldBe expected.imageUrl
+            actual.isShown shouldBe expected.isShown
+        }
         productPosition++
     }
 }

@@ -103,6 +103,7 @@ public class RatesDataConverter {
         shipmentCartData.setShippingServices(shippingServices);
         shipmentCartData.setInsurance(1);
         shipmentCartData.setDeliveryPriceTotal(0);
+        shipmentCartData.setBoMetadata(groupShop.getBoMetadata());
     }
 
     private String getCategoryIds(List<Product> products) {

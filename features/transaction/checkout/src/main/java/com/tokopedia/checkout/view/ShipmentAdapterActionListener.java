@@ -110,4 +110,6 @@ public interface ShipmentAdapterActionListener {
     void onSwapInUserAddress();
 
     FragmentManager getCurrentFragmentManager();
+
+    void scrollToPositionWithOffset(int position, float dy);
 }

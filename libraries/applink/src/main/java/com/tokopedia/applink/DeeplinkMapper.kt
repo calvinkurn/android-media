@@ -69,6 +69,8 @@ import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.getSomShippedApp
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.shouldRedirectToSellerApp
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 import com.tokopedia.applink.teleporter.Teleporter
+import com.tokopedia.applink.tokonow.DeeplinkMapperTokoNow.getRegisteredNavigationTokoNowCategory
+import com.tokopedia.applink.tokonow.DeeplinkMapperTokoNow.getRegisteredNavigationTokoNowSearch
 import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.config.GlobalConfig
 
@@ -389,7 +391,9 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.SELLER_CENTER) { _, _, _, _ -> DeeplinkMapperMerchant.getRegisteredSellerCenter() },
             DLP.startWith(ApplinkConst.SNAPSHOT_ORDER) { ctx, _, deeplink, _ -> DeeplinkMapperOrder.getSnapshotOrderInternalAppLink(ctx, deeplink) },
             DLP.startWith(ApplinkConst.ORDER_BUYER_CANCELLATION_REQUEST_PAGE) { _, _, _, _ -> DeeplinkMapperOrder.getBuyerCancellationRequestInternalAppLink() },
-            DLP.exact(ApplinkConst.TokoNow.HOME, ApplinkConstInternalTokoMart.HOME)
+            DLP.exact(ApplinkConst.TokoNow.HOME, ApplinkConstInternalTokoMart.HOME),
+            DLP.startWith(ApplinkConst.TokoNow.SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationTokoNowSearch(deeplink) },
+            DLP.matchPattern(ApplinkConst.TokoNow.CATEGORY) { _, uri, _, idList -> getRegisteredNavigationTokoNowCategory(uri, idList) },
     )
 
     fun getTokopediaSchemeList():List<DLP>{

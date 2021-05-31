@@ -199,6 +199,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isHasPromoList = availableGroup.hasPromoList
             it.cartString = availableGroup.cartString
             it.promoCodes = availableGroup.promoCodes
+            it.maximumWeightWording = availableGroup.shop.maximumWeightWording
+            it.maximumShippingWeight = availableGroup.shop.maximumShippingWeight
             it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
@@ -210,6 +212,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             }
             it.incidentInfo = availableGroup.shop.shopAlertMessage
             it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
+            it.shopTicker = availableGroup.shop.shopTicker
+            it.isTokoNow = availableGroup.shop.isTokoNow
             it
         }
     }
@@ -310,6 +314,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             when (shopGroupData) {
                 is ShopGroupAvailableData -> {
                     it.isParentHasErrorOrWarning = !(!shopGroupData.isError && !shopGroupData.isWarning)
+                    it.shouldValidateWeight = shopGroupData.shouldValidateWeight
                 }
                 is ShopGroupWithErrorData -> {
                     it.selectedUnavailableActionId = selectedUnavailableActionId
@@ -559,6 +564,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isFulfillment = unavailableGroup.isFulFillment
             it.fulfillmentName = unavailableGroup.shipmentInformation.shopLocation
             it.cartString = unavailableGroup.cartString
+            it.isTokoNow = unavailableGroup.shop.isTokoNow
 
             var isDisableAllProducts = true
             isDisableAllProducts = mapShopError(it, unavailableGroup, isDisableAllProducts)
