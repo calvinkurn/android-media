@@ -340,6 +340,9 @@ abstract class BaseSearchCategoryFragment:
         if (categoryChooserBottomSheet != null) return
 
         categoryChooserBottomSheet = CategoryChooserBottomSheet()
+        categoryChooserBottomSheet?.setOnDismissListener {
+            getViewModel().onViewDismissL3FilterPage()
+        }
         categoryChooserBottomSheet?.show(
                 parentFragmentManager,
                 getViewModel().queryParam,
