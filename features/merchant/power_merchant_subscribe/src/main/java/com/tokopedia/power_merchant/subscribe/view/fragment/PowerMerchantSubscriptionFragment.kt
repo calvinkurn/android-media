@@ -691,7 +691,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
-        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()
+        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue() && isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
             getUpgradePmProWidget()?.let {

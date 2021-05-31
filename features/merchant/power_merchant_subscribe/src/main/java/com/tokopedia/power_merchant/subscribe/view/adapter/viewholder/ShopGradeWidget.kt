@@ -6,7 +6,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
@@ -76,7 +80,11 @@ class ShopGradeWidget(
         tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), getShopScoreFmt(element.shopScore)).parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
         val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-        val thresholdInfo = context.getString(R.string.pm_shop_score_threshold_description_final_period, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+        val thresholdInfo = if (element.pmStatus == PMStatusConst.ACTIVE) {
+            context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+        } else {
+            context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+        }
         tvPmShopGradeThreshold.text = thresholdInfo.parseAsHtml()
 
         val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
@@ -88,17 +96,10 @@ class ShopGradeWidget(
         }
     }
 
-    private fun getPmTireLabel(pmTierType: Int): String {
-        return if (pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
-            getString(R.string.pm_power_merchant_pro)
-        } else {
-            getString(R.string.pm_power_merchant)
-        }
-    }
-
     private fun getShopScoreTextColor(element: WidgetShopGradeUiModel): String {
+        val minScore = 1
         return when (element.shopScore) {
-            in 1..element.threshold -> {
+            in minScore..element.threshold -> {
                 PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
             }
             else -> PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
@@ -113,13 +114,8 @@ class ShopGradeWidget(
     }
 
     private fun setupShopGrade(element: WidgetShopGradeUiModel) = with(itemView) {
-        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        tvPmShopGrade.text = if (isPmPro) {
-            getString(R.string.pm_power_merchant_pro)
-        } else {
-            getString(R.string.pm_power_merchant)
-        }
-        imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl, R.drawable.bg_pm_registration_header)
+        tvPmShopGrade.text = getPmTireLabel(element.pmTierType)
+        imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl)
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
         val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
         if (isPmStatusActive) {
@@ -130,6 +126,22 @@ class ShopGradeWidget(
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_inactive)
         }
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
+        tvPmShopGrade.setTextColor(getPmLabelTextColor(element.pmStatus))
+    }
+
+    private fun getPmTireLabel(pmTierType: Int): String {
+        return if (pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
+            getString(R.string.pm_power_merchant_pro)
+        } else {
+            getString(R.string.pm_power_merchant)
+        }
+    }
+
+    private fun getPmLabelTextColor(pmStatus: String): Int {
+        return when(pmStatus) {
+            PMStatusConst.ACTIVE -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            else -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        }
     }
 
     private fun getPMStatusLabel(pmStatus: String): String {
