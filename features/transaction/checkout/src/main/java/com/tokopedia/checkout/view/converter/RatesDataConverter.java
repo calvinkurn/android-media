@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.converter;
 
-import com.google.gson.Gson;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
