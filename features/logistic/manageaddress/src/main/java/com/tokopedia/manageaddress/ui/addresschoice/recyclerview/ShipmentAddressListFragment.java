@@ -33,7 +33,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.manageaddress.R;
-import com.tokopedia.manageaddress.di.addresschoice.DaggerAddressChoiceComponent;
+import com.tokopedia.manageaddress.di.DaggerAddressChoiceComponent;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
 import com.tokopedia.manageaddress.ui.addresschoice.AddressListContract;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;

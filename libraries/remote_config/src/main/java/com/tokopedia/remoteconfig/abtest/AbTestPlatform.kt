@@ -47,15 +47,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return defaultValue
     }
 
-
-    override fun getByteArray(key: String?): ByteArray {
-        throw RuntimeException("Method is not implemented yet")
-    }
-
-    override fun getByteArray(key: String?, defaultValue: ByteArray?): ByteArray {
-        throw RuntimeException("Method is not implemented yet")
-    }
-
     override fun getDouble(key: String?): Double {
         throw RuntimeException("Method is not implemented yet")
     }
@@ -99,6 +90,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (editor != null) {
             editor.putString(key, value)
             editor.commit()
+        }
+    }
+
+    fun deleteKeyLocally(key:String){
+        editor?.let {
+            it.remove(key)
+            it.commit()
         }
     }
 
@@ -214,14 +212,17 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
         const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
 
+        const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
+
         //home component rollence section
 
         const val HOME_COMPONENT_LEGO4BANNER_EXP= "lego4_test"
         const val HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round"
         const val HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding"
-        const val HOME_COMPONENT_CATEGORYWIDGET_EXP= "catwidget_test"
-        const val HOME_COMPONENT_CATEGORYWIDGET_OLD = "current_design"
-        const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT = "new_design"
+        const val HOME_COMPONENT_CATEGORYWIDGET_EXP= "cat_test"
+        const val HOME_COMPONENT_CATEGORYWIDGET_OLD = "control"
+        const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE = "text_inside"
+        const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX = "text_box"
 
         // end of home component rollence section
 

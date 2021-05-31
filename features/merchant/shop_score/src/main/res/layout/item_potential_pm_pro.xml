@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_12">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitlePMPro"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_potential_pm_pro"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDescPMPro"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/desc_potential_pm_pro"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitlePMPro"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shop_pm_pro_potential"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_benefit_pm_pro"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescPMPro"
+            app:typographyType="heading_5" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_shop_pm_pro_potential_benefit"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toTopOf="@id/tv_see_all_benefit_pm_pro"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_shop_pm_pro_potential"
+            app:layout_constraintTop_toBottomOf="@id/tv_shop_pm_pro_potential"
+            tools:itemCount="3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_see_all_benefit_pm_pro"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/text_see_all_benefit_pm_pro"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintStart_toStartOf="@id/rv_shop_pm_pro_potential_benefit"
+            app:layout_constraintTop_toBottomOf="@id/rv_shop_pm_pro_potential_benefit"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_chevron_right_benefit_pm_pro"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="@id/tv_see_all_benefit_pm_pro"
+            app:layout_constraintStart_toEndOf="@id/tv_see_all_benefit_pm_pro"
+            app:layout_constraintTop_toTopOf="@id/tv_see_all_benefit_pm_pro" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

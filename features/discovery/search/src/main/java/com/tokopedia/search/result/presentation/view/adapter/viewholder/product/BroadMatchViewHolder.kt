@@ -65,7 +65,7 @@ class BroadMatchViewHolder(
                             shopBadgeList = it.badgeItemDataViewList.toProductCardModelShopBadges(),
                             freeOngkir = it.freeOngkirDataView.toProductCardModelFreeOngkir(),
                             isTopAds = it.isOrganicAds,
-                            hasThreeDots = true
+                            hasThreeDots = it.carouselProductType.hasThreeDots
                     )
                 },
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

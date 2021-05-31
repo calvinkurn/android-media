@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_12">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitleNonEligiblePowerMerchant"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_non_eligible_status_power_merchant"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDescNonEligiblePowerMerchant"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/desc_non_eligible_power_merchant"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleNonEligiblePowerMerchant"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shop_pm_potential"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_shop_pm_potential"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescNonEligiblePowerMerchant"
+            app:typographyType="heading_5" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_shop_pm_potential_benefit"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_shop_pm_potential"
+            app:layout_constraintTop_toBottomOf="@id/tv_shop_pm_potential"
+            tools:listitem="@layout/item_potential_pm_benefit" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

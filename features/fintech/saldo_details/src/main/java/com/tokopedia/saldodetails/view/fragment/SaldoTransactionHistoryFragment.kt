@@ -16,13 +16,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.date.util.SaldoDatePickerUtil
+import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent
-import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.viewmodels.SaldoHistoryViewModel
 import com.tokopedia.saldodetails.utils.ErrorType
 import com.tokopedia.saldodetails.utils.IN_VALID_DATE_ERROR

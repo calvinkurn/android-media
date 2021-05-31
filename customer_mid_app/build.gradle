@@ -94,7 +94,6 @@ dependencies {
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.libraries.workManagerUtil)
     implementation project(rootProject.ext.libraries.deviceFingerprint)
     implementation project(rootProject.ext.libraries.logger)
 
@@ -210,7 +209,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.measurementApi
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
@@ -282,12 +280,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
-    // Warning: removing imageCropper lib might cause youtube library crash
-    // when load recommendation at the end of video
-    // Need to recheck
-    implementation(rootProject.ext.miscDependencies.imagecropper) {
-        exclude group: "com.android.support"
-    }
+    implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
@@ -304,8 +297,6 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation 'com.facebook.fresco:fresco:1.10.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore

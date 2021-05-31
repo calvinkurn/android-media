@@ -37,6 +37,7 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     protected var sellerBroadcastProductCarouselChatReplies = GetExistingChatPojo()
     protected var sellerProductAttachment = ChatAttachmentResponse()
     protected var sellerProductVariantAttachment = ChatAttachmentResponse()
+    protected var sellerProductVariantAttachmentWithParentId = ChatAttachmentResponse()
 
     private val templateChats = listOf(
             "I am seller", "Yes, this product is ready"
@@ -95,6 +96,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         )
         sellerProductVariantAttachment = AndroidFileUtil.parse(
                 "seller/success_get_chat_attachments_with_product_variant.json",
+                ChatAttachmentResponse::class.java
+        )
+        sellerProductVariantAttachmentWithParentId = AndroidFileUtil.parse(
+                "seller/success_get_chat_attachments_with_product_variant_parentid.json",
                 ChatAttachmentResponse::class.java
         )
     }

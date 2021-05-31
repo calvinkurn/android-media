@@ -428,14 +428,13 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionPrivateVoucher(vouchers: List<MerchantVoucherUiModel>) {
-        val voucherId = vouchers.firstOrNull { it.highlighted }?.id ?: return
+    fun impressionPrivateVoucher(voucher: MerchantVoucherUiModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "impression on private voucher",
-                        KEY_EVENT_LABEL to "$mChannelId - $voucherId - ${mChannelType.value}",
+                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,

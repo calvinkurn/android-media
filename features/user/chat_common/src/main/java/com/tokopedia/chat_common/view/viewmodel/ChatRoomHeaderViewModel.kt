@@ -20,7 +20,7 @@ data class ChatRoomHeaderViewModel constructor(
         val badge: String = ""
 ) : Parcelable {
 
-    fun isOfficialStore(): Boolean = label == Companion.TAG_OFFICIAL
+    fun isOfficialAccountTokopedia(): Boolean = label == Companion.TAG_OFFICIAL
 
     object Companion {
         const val MODE_DEFAULT_GET_CHAT: Int = 1

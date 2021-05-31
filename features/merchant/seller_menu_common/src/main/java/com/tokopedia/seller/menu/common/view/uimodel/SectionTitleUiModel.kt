@@ -5,7 +5,7 @@ import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 
 open class SectionTitleUiModel(
-    @StringRes val title: Int,
+    @StringRes val title: Int? = null,
     @StringRes val ctaText: Int? = null,
     val type: SectionTitleType
 ): SettingUiModel {
