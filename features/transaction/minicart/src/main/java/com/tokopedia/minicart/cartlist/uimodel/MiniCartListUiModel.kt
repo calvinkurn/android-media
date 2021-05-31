@@ -3,7 +3,7 @@ package com.tokopedia.minicart.cartlist.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 
-data class MiniCartUiModel(
+data class MiniCartListUiModel(
         var title: String = "",
         var maximumShippingWeight: Int = 0,
         var maximumShippingWeightErrorMessage: String = "",

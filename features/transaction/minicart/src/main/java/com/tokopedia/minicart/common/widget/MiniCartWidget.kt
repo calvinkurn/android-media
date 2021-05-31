@@ -29,11 +29,13 @@ class MiniCartWidget @JvmOverloads constructor(
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var miniCartListBottomSheet: MiniCartListBottomSheet
+
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
     private var ivTest: ImageView? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
-    private lateinit var totalAmountChevronListener: () -> Unit
 
     lateinit var viewModel: MiniCartWidgetViewModel
 
@@ -48,7 +50,7 @@ class MiniCartWidget @JvmOverloads constructor(
     fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true) {
         val application = fragment.activity?.application
         initializeInjector(application)
-        initializeView(shopIds, fragment)
+        initializeView(fragment)
         initializeListener(listener)
         initializeViewModel(fragment)
         if (autoInitializeData) {
@@ -67,17 +69,12 @@ class MiniCartWidget @JvmOverloads constructor(
         })
     }
 
-    private fun initializeView(shopIds: List<String>, fragment: Fragment) {
+    private fun initializeView(fragment: Fragment) {
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         totalAmount?.let {
             it.enableAmountChevron(true)
             it.amountChevronView.setOnClickListener {
-                if (::totalAmountChevronListener.isInitialized) {
-                    totalAmountChevronListener.invoke()
-                } else {
-                    val miniCartListBottomSheet = MiniCartListBottomSheet()
-                    miniCartListBottomSheet.show(shopIds, fragment, ::onMiniCartBottomSheetDismissed)
-                }
+                miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, ::onMiniCartBottomSheetDismissed)
             }
         }
         totalAmount?.context?.let {
@@ -99,7 +96,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * This will trigger view model to fetch latest data from backend and update the UI
     * */
     fun updateData(shopIds: List<String>) {
-        viewModel.getLatestState(shopIds)
+        viewModel.getLatestWidgetState(shopIds)
     }
 
     /*
@@ -112,10 +109,6 @@ class MiniCartWidget @JvmOverloads constructor(
                 totalProductPrice = miniCartWidgetData.totalProductPrice,
                 totalProductCount = miniCartWidgetData.totalProductCount
         ))
-    }
-
-    fun setTotalAmountChevronListener(totalAmountChevronListener: () -> Unit) {
-        this.totalAmountChevronListener = totalAmountChevronListener
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {

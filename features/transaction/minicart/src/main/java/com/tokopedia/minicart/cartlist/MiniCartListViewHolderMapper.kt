@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 class MiniCartListViewHolderMapper @Inject constructor() {
 
-    fun mapUiModel(miniCartData: MiniCartData): MiniCartUiModel {
-        return MiniCartUiModel().apply {
+    fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
+        return MiniCartListUiModel().apply {
             title = miniCartData.data.headerTitle
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
             visitables = mapVisitables(miniCartData)

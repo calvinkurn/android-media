@@ -1,66 +1,66 @@
 package com.tokopedia.minicart.cartlist
 
+import android.content.Context
 import android.content.res.Resources
 import android.view.View
-import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
-import com.tokopedia.minicart.cartlist.di.DaggerMiniCartListComponent
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.widget.MiniCartWidget
+import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.minicart.common.widget.MiniCartWidgetViewModel
+import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
-class MiniCartListBottomSheet :
-        MiniCartWidgetListener,
-        MiniCartListActionListener {
+class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration) : MiniCartWidgetListener, MiniCartListActionListener {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var miniCartListDecoration: MiniCartListDecoration
-
-    lateinit var viewModel: MiniCartListViewModel
+    lateinit var viewModel: MiniCartWidgetViewModel
     private var bottomSheet: BottomSheetUnify? = null
-    private var miniCartWidget: MiniCartWidget? = null
+    private var totalAmount: TotalAmount? = null
     private var rvMiniCartList: RecyclerView? = null
     private var adapter: MiniCartListAdapter? = null
 
-    fun show(shopIds: List<String>, fragment: Fragment, onDismiss: () -> Unit) {
-        initializeInjector(fragment)
-        initializeView(shopIds, fragment, onDismiss)
-        initializeViewModel(fragment)
-        initializeCartData(shopIds)
+    fun show(context: Context?,
+             fragmentManager: FragmentManager,
+             lifecycleOwner: LifecycleOwner,
+             viewModel: MiniCartWidgetViewModel,
+             onDismiss: () -> Unit) {
+        context?.let {
+            initializeView(it, fragmentManager, onDismiss)
+            initializeViewModel(viewModel, lifecycleOwner)
+            initializeCartData()
+        }
     }
 
-    private fun initializeCartData(shopIds: List<String>) {
-        showLoading()
-        viewModel.getCartList(shopIds)
-    }
-
-    private fun initializeViewModel(fragment: Fragment) {
-        viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartListViewModel::class.java)
-        viewModel.miniCartUiModel.observe(fragment.viewLifecycleOwner, {
+    fun initializeViewModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
+        this.viewModel = viewModel
+        viewModel.miniCartListListUiModel.observe(lifecycleOwner, {
             hideLoading()
             bottomSheet?.setTitle(it.title)
-            miniCartWidget?.updateData(it.miniCartWidgetData)
             adapter?.updateList(it.visitables)
+            updateTotalAmount(it.miniCartWidgetData)
         })
     }
 
-    private fun initializeView(shopIds: List<String>, fragment: Fragment, onDismiss: () -> Unit) {
-        fragment.activity?.let { fragmentActivity ->
+    private fun initializeCartData() {
+        showLoading()
+        viewModel.getCartList()
+    }
+
+    private fun initializeView(context: Context, fragmentManager: FragmentManager, onDismiss: () -> Unit) {
+        context.let {
             bottomSheet = BottomSheetUnify().apply {
                 showCloseIcon = false
                 showHeader = true
@@ -74,41 +74,51 @@ class MiniCartListBottomSheet :
                 }
             }
 
-            val view = View.inflate(fragmentActivity, R.layout.layout_bottomsheet_mini_cart_list, null)
+            val view = View.inflate(it, R.layout.layout_bottomsheet_mini_cart_list, null)
             bottomSheet?.setChild(view)
-            bottomSheet?.show(fragment.parentFragmentManager, this.javaClass.simpleName)
+            bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
 
-            miniCartWidget = view.findViewById(R.id.mini_cart_widget)
-            miniCartWidget?.initialize(shopIds, fragment, this, false)
-            miniCartWidget?.setTotalAmountChevronListener {
-                // Todo : open summary bottomsheet
-            }
-
-            intializeRecyclerView(view, fragment)
+            initializeTotalAmount(view)
+            initializeRecyclerView(view)
         }
     }
 
-    private fun initializeInjector(fragment: Fragment) {
-        fragment.activity?.let {
-            val baseAppComponent = it.applicationContext
-            if (baseAppComponent is BaseMainApplication) {
-                DaggerMiniCartListComponent.builder()
-                        .baseAppComponent(baseAppComponent.baseAppComponent)
-                        .build()
-                        .inject(this)
-            }
-        }
-    }
-
-    private fun intializeRecyclerView(view: View, fragment: Fragment) {
+    private fun initializeRecyclerView(view: View) {
         rvMiniCartList = view.findViewById(R.id.rv_mini_cart_list)
         val adapterTypeFactory = MiniCartListAdapterTypeFactory(this)
         adapter = MiniCartListAdapter(adapterTypeFactory)
         rvMiniCartList?.adapter = adapter
-        rvMiniCartList?.layoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
+        rvMiniCartList?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvMiniCartList?.addItemDecoration(miniCartListDecoration)
         rvMiniCartList?.itemAnimator = null
 //        (rvMiniCartList?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+    }
+
+    private fun initializeTotalAmount(view: View) {
+        totalAmount = view.findViewById(R.id.total_amount)
+        totalAmount?.amountChevronView?.setOnClickListener {
+            // Show total amount bottomsheet
+        }
+        totalAmount?.enableAmountChevron(true)
+        totalAmount?.amountChevronView?.setOnClickListener {
+
+        }
+        totalAmount?.context?.let {
+            val chatIcon = getIconUnifyDrawable(it, IconUnify.CHAT, ContextCompat.getColor(it, R.color.Unify_G500))
+            totalAmount?.setAdditionalButton(chatIcon)
+        }
+        if (totalAmount?.isTotalAmountLoading == false) {
+            totalAmount?.isTotalAmountLoading = true
+        }
+    }
+
+    private fun updateTotalAmount(miniCartWidgetData: MiniCartWidgetData) {
+        totalAmount?.apply {
+            setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
+            setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+        }
+        totalAmount?.isTotalAmountLoading = false
     }
 
     private fun showLoading() {
