@@ -23,6 +23,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_TOKEN = "token"
     const val PARAM_ACTION = "action"
     const val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    const val PARAM_IS_SMART_REGISTER = "isSmartRegister"
     const val PARAM_IS_PENDING = "isPending"
     const val PARAM_LOGIN_TYPE = "loginType"
     const val PARAM_IS_SQ_CHECK = "isSqCheck"

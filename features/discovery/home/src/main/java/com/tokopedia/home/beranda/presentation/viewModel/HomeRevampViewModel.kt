@@ -984,13 +984,14 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun updateHomeData(homeNewDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
+        homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
         this.homeDataModel = homeNewDataModel
+
         if (!homeNewDataModel.isProcessingDynamicChannle) {
             homeNewDataModel.evaluateHomeFlagData(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
                     onNeedToGetBalanceData = { getBalanceWidgetData() }
             )
-            homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
             homeNewDataModel.evaluateRecommendationSection(
                     onNeedTabLoad = { getFeedTabData() }
             )
