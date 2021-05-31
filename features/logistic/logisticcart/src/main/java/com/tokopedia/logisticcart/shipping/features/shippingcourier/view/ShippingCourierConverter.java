@@ -79,6 +79,7 @@ public class ShippingCourierConverter {
         courierItemData.setUt(shippingCourierUiModel.getProductData().getUnixTime());
         courierItemData.setBlackboxInfo(shippingCourierUiModel.getBlackboxInfo());
         courierItemData.setSelected(true);
+        courierItemData.setPreOrderModel(shippingCourierUiModel.getPreOrderModel());
 
         /*on time delivery*/
         if (shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {

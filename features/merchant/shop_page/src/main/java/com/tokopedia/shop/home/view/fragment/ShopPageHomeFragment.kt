@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -70,6 +71,8 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.*
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_RENDER
@@ -111,6 +114,7 @@ import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -209,6 +213,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     private val sortName
         get() = viewModel?.getSortNameById(sortId).orEmpty()
+    val userId: String
+        get() = viewModel?.userId.orEmpty()
     private var recyclerViewTopPadding = 0
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
@@ -464,15 +470,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
                 }
                 is Fail -> {
-                    onErrorGetShopHomeLayoutData(it.throwable)
                     val throwable = it.throwable
-                    ShopUtil.logTimberWarning(
-                            "SHOP_PAGE_HOME_TAB_WIDGET_ERROR",
-                            mapOf("shop_id" to shopId,
-                                    "error_message" to ErrorHandler.getErrorMessage(context, throwable),
-                                    "error_trace" to Log.getStackTraceString(throwable)
-                            )
-                    )
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeLiveData.name,
+                                liveDataName = ShopHomeViewModel::shopHomeLayoutData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+                        )
+                    }
+                    onErrorGetShopHomeLayoutData(throwable)
                 }
             }
             getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -498,6 +510,22 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         addProductListHeader()
                     updateProductListData(hasNextPage, productListData, totalProductOnShop, true)
                     productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
+                }
+                is Fail -> {
+                    val throwable = it.throwable
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeLiveData.name,
+                                liveDataName = ShopHomeViewModel::productListData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+                        )
+                    }
                 }
             }
         })
@@ -1169,6 +1197,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 )
                             },
                             {
+                                if (!ShopUtil.isExceptionIgnored(it)) {
+                                    ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                            tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                            functionName = ShopHomeViewModel::addProductToCartOcc.name,
+                                            liveDataName = "",
+                                            userId = userId,
+                                            shopId = shopId,
+                                            shopName = shopName,
+                                            errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                            stackTrace = Log.getStackTraceString(it),
+                                            errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+                                    )
+                                }
                                 onErrorAddToCart(it)
                             }
                     )
@@ -1186,6 +1227,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                 )
                             },
                             {
+                                if (!ShopUtil.isExceptionIgnored(it)) {
+                                    ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                            tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                            functionName = ShopHomeViewModel::addProductToCart.name,
+                                            liveDataName = "",
+                                            userId = userId,
+                                            shopId = shopId,
+                                            shopName = shopName,
+                                            errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                            stackTrace = Log.getStackTraceString(it),
+                                            errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+                                    )
+                                }
                                 onErrorAddToCart(it)
                             }
                     )
@@ -1354,10 +1408,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
-            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+            showToastSuccess(
+                    message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
+                    ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                    ctaAction = {
+                        goToWishlist()
+                    }
+            )
             shopHomeAdapter.updateWishlistProduct(it.id ?: "", true)
             trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, true)
         }
+    }
+
+    private fun goToWishlist() {
+        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
     }
 
     private fun onErrorAddWishlist(errorMessage: String?) {
@@ -1379,6 +1443,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             onSuccessAddToCart(it, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
                         },
                         {
+                            if (!ShopUtil.isExceptionIgnored(it)) {
+                                ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                        tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                        functionName = ShopHomeViewModel::addProductToCart.name,
+                                        liveDataName = "",
+                                        userId = userId,
+                                        shopId = shopId,
+                                        shopName = shopName,
+                                        errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                        stackTrace = Log.getStackTraceString(it),
+                                        errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+                                )
+                            }
                             onErrorAddToCart(it)
                         }
                 )
@@ -1411,6 +1488,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun showToastSuccess(message: String) {
         activity?.run {
             Toaster.build(findViewById(android.R.id.content), message).show()
+        }
+    }
+
+    private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
+        activity?.run {
+            ctaAction?.let { ctaClickListener ->
+                Toaster.build(findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        ctaText,
+                        ctaClickListener
+                ).show()
+            } ?: Toaster.build(findViewById(android.R.id.content),
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    ctaText
+            ).show()
         }
     }
 
@@ -1900,8 +1996,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> showToastSuccess(
                         when (it.data) {
-                            PlayWidgetReminderType.Remind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                            PlayWidgetReminderType.UnRemind -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                            PlayWidgetReminderType.Reminded -> getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                            PlayWidgetReminderType.NotReminded -> getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
                         }
                 )
                 is Fail -> showErrorToast(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))

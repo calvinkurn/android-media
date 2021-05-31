@@ -1,9 +1,8 @@
 package com.tokopedia.sellerorder.list.presentation.bottomsheets
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -13,36 +12,40 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListBulkProcessOrderTypeFactory
 import com.tokopedia.sellerorder.list.presentation.models.BaseSomListBulkProcessOrderUiModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottomsheet_som_list_bulk_process_order.*
+import com.tokopedia.unifycomponents.UnifyButton
 
-class SomListBulkProcessOrderBottomSheet : BottomSheetUnify() {
+class SomListBulkProcessOrderBottomSheet(
+        context: Context
+) : SomBottomSheet(LAYOUT, true, true, false, "", context, true) {
+
+    companion object {
+        private val LAYOUT = R.layout.bottomsheet_som_list_bulk_process_order
+    }
 
     private var listener: SomListBulkProcessOrderBottomSheetListener? = null
     private val typeFactory: SomListBulkProcessOrderTypeFactory = SomListBulkProcessOrderTypeFactory(listener)
     private val adapter = BaseListAdapter<BaseSomListBulkProcessOrderUiModel, SomListBulkProcessOrderTypeFactory>(typeFactory)
 
-    private var childViews: View? = null
     private var showBulkActionButton: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        allowDismiss()
-        childViews = View.inflate(context, R.layout.bottomsheet_som_list_bulk_process_order, null)
-        setChild(childViews)
+    override fun setupChildView() {
+        childViews?.run {
+            setRecyclerView()
+            setBulkAcceptOrderButtonClickListener()
+            findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.showWithCondition(showBulkActionButton)
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setRecyclerView()
-        setBulkAcceptOrderButtonClickListener()
-        btnBulkProcessOrder?.showWithCondition(showBulkActionButton)
+    override fun show() {
+        allowDismiss()
+        super.show()
     }
 
     private fun setRecyclerView() {
-        rvBulkProcessOrder.apply {
+        childViews?.findViewById<RecyclerView>(R.id.rvBulkProcessOrder)?.apply {
             context?.let {
                 adapter = this@SomListBulkProcessOrderBottomSheet.adapter
                 layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
@@ -53,23 +56,21 @@ class SomListBulkProcessOrderBottomSheet : BottomSheetUnify() {
     }
 
     private fun setBulkAcceptOrderButtonClickListener() {
-        btnBulkProcessOrder.setOnClickListener {
-            btnBulkProcessOrder.isLoading = true
-            preventDismiss()
-            listener?.onBulkProcessOrderButtonClicked()
+        childViews?.run {
+            findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.setOnClickListener {
+                findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.isLoading = true
+                preventDismiss()
+                listener?.onBulkProcessOrderButtonClicked()
+            }
         }
     }
 
     private fun preventDismiss() {
-        isCancelable = false
-        isHideable = false
-        overlayClickDismiss = false
+        dismissOnClickOverlay = false
     }
 
     private fun allowDismiss() {
-        isCancelable = true
-        isHideable = true
-        overlayClickDismiss = true
+        dismissOnClickOverlay = true
     }
 
     fun setItems(menuItems: List<Visitable<SomListBulkProcessOrderTypeFactory>>) {
@@ -77,12 +78,12 @@ class SomListBulkProcessOrderBottomSheet : BottomSheetUnify() {
     }
 
     fun showButtonAction() {
-        btnBulkProcessOrder?.show()
+        childViews?.findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.show()
         showBulkActionButton = true
     }
 
     fun hideButtonAction() {
-        btnBulkProcessOrder?.gone()
+        childViews?.findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.gone()
         showBulkActionButton = false
     }
 
@@ -92,10 +93,8 @@ class SomListBulkProcessOrderBottomSheet : BottomSheetUnify() {
     }
 
     fun onBulkAcceptOrderFailed() {
-        btnBulkProcessOrder.isLoading = false
+        childViews?.findViewById<UnifyButton>(R.id.btnBulkProcessOrder)?.isLoading = false
     }
-
-    fun getChildViews() = childViews
 
     interface SomListBulkProcessOrderBottomSheetListener {
         fun onBulkProcessOrderButtonClicked()

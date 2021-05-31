@@ -49,7 +49,7 @@ class DynamicOnboardingViewModel @Inject constructor(
         action()
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         dynamicOnboardingUseCase.cancelJobs()
     }

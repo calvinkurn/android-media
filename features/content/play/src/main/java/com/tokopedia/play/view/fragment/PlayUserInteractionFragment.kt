@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
@@ -23,6 +24,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
+import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
@@ -61,10 +63,10 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.changeConstraint
+import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -170,6 +172,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
+    private lateinit var productAnalyticHelper: ProductAnalyticHelper
+
     /**
      * Animation
      */
@@ -193,6 +197,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
         setupView(view)
         setupInsets(view)
         setupObserve()
@@ -208,6 +213,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isOpened = false
+        productAnalyticHelper.sendImpressedFeaturedProducts()
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -375,8 +381,8 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Product Featured View Component Listener
      */
-    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
-        analytic.impressionFeaturedProduct(product, position)
+    override fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
+        productAnalyticHelper.trackImpressedProducts(products)
     }
 
     override fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int) {
@@ -410,6 +416,10 @@ class PlayUserInteractionFragment @Inject constructor(
         scope.launch(dispatchers.immediate) {
             invalidateChatListBounds(maxTopPosition = maxTopPosition)
         }
+    }
+
+    private fun initAnalytic() {
+        productAnalyticHelper = ProductAnalyticHelper(analytic)
     }
 
     private fun setupView(view: View) {
@@ -642,6 +652,7 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedViewOnStateChanged(pinnedModel = it)
             productFeaturedViewOnStateChanged(pinnedModel = it)
             quickReplyViewOnStateChanged(pinnedModel = it)
+
         })
     }
 
@@ -672,6 +683,8 @@ class PlayUserInteractionFragment @Inject constructor(
             view?.postDelayed({
                 view?.show()
             }, PlayVideoScalingManager.ANIMATION_DURATION)
+
+            if (map.isKeyboardShown) dismissToaster()
 
             gradientBackgroundViewOnStateChanged(bottomInsets = map)
             toolbarViewOnStateChanged(bottomInsets = map)
@@ -798,8 +811,10 @@ class PlayUserInteractionFragment @Inject constructor(
         if (!this::onStatsInfoGlobalLayoutListener.isInitialized) {
             onStatsInfoGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
-                    playFragment.stopRenderMonitoring()
-                    statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if (isAdded) {
+                        playFragment.stopRenderMonitoring()
+                        statsInfoView.rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
                 }
             }
             statsInfoView.rootView.viewTreeObserver.addOnGlobalLayoutListener(onStatsInfoGlobalLayoutListener)
@@ -973,7 +988,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun openProductSheet() {
         playViewModel.onShowProductSheet(productSheetMaxHeight)
-        sendTrackerImpressionBottomSheetProduct()
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
@@ -1070,19 +1084,6 @@ class PlayUserInteractionFragment @Inject constructor(
         scope.launch {
             delay(AUTO_SWIPE_DELAY)
             playNavigation.navigateToNextPage()
-        }
-    }
-
-    private fun sendTrackerImpressionBottomSheetProduct() {
-        val playResult = playViewModel.observableProductSheetContent.value
-        if (playResult is PlayResult.Success) {
-            val productTag = playResult.data
-            if (productTag.productList.first() is PlayProductUiModel.Product) {
-                with(analytic) { impressionProductList(productTag.productList.filterIsInstance<PlayProductUiModel.Product>()) }
-            }
-            if (productTag.voucherList.isNotEmpty()) {
-                analytic.impressionPrivateVoucher(productTag.voucherList.filterIsInstance<MerchantVoucherUiModel>())
-            }
         }
     }
 

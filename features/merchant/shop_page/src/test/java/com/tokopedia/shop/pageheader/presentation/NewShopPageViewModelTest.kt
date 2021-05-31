@@ -11,12 +11,11 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
-import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
@@ -37,6 +36,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 
 class NewShopPageViewModelTest {
 
@@ -79,6 +79,9 @@ class NewShopPageViewModelTest {
     @RelaxedMockK
     lateinit var getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>
 
+    @RelaxedMockK
+    lateinit var getShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>
+
 
     @RelaxedMockK
     lateinit var context: Context
@@ -109,6 +112,7 @@ class NewShopPageViewModelTest {
                 getShopPageHeaderLayoutUseCase,
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
+                getShopOperationalHoursListUseCase,
                 testCoroutineDispatcherProvider
         )
     }
@@ -413,5 +417,23 @@ class NewShopPageViewModelTest {
         assert(shopPageViewModel.shopPageShopShareData.value == null)
     }
 
+    @Test
+    fun `check whether shopOperationalHoursListData value is success`() {
+        val mockShopId = "123"
+        coEvery {
+            getShopOperationalHoursListUseCase.get().executeOnBackground()
+        } returns ShopOperationalHoursListResponse()
+        shopPageViewModel.getShopOperationalHoursList(mockShopId)
+        assert(shopPageViewModel.shopOperationalHoursListData.value is Success)
+    }
 
+    @Test
+    fun `check whether shopOperationalHoursListData value is fail if exception happened`() {
+        val mockShopId = "123"
+        coEvery {
+            getShopOperationalHoursListUseCase.get().executeOnBackground()
+        } throws Throwable()
+        shopPageViewModel.getShopOperationalHoursList(mockShopId)
+        assert(shopPageViewModel.shopOperationalHoursListData.value is Fail)
+    }
 }

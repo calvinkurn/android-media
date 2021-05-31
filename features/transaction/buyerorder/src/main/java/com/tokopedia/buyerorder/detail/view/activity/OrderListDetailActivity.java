@@ -123,11 +123,11 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
                     if (category.contains(OrderCategory.DIGITAL)) {
                         getSupportFragmentManager().beginTransaction()
-                                .add(com.tokopedia.design.R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
+                                .add(com.tokopedia.abstraction.R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
 
                     } else if (category.contains("")) {
                         getSupportFragmentManager().beginTransaction()
-                                .add(com.tokopedia.design.R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream)).commit();
+                                .add(com.tokopedia.abstraction.R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment, upstream)).commit();
                     }
                 }
             } else {

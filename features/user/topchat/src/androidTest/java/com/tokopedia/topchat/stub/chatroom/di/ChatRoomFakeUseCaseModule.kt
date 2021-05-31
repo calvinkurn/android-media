@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.mediauploader.domain.UploaderUseCase
-import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
@@ -39,7 +39,7 @@ class ChatRoomFakeUseCaseModule {
     fun provideGetChatUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<GetExistingChatPojo>,
             mapper: TopChatRoomGetExistingChatMapper,
-            dispatchers: CoroutineTestDispatchersProvider
+            dispatchers: CoroutineDispatchers
     ): GetChatUseCaseStub {
         return GetChatUseCaseStub(gqlUseCase, mapper, dispatchers)
     }
@@ -57,7 +57,7 @@ class ChatRoomFakeUseCaseModule {
     fun provideChatAttachmentUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
             mapper: ChatAttachmentMapper,
-            dispatchers: CoroutineTestDispatchersProvider
+            dispatchers: CoroutineDispatchers
     ): ChatAttachmentUseCaseStub {
         return ChatAttachmentUseCaseStub(gqlUseCase, mapper, dispatchers)
     }
@@ -75,7 +75,7 @@ class ChatRoomFakeUseCaseModule {
     fun provideStickerGroupUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<ChatListGroupStickerResponse>,
             cacheManager: TopchatCacheManager,
-            dispatchers: CoroutineTestDispatchersProvider
+            dispatchers: CoroutineDispatchers
     ): ChatListGroupStickerUseCaseStub {
         return ChatListGroupStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }
@@ -93,7 +93,7 @@ class ChatRoomFakeUseCaseModule {
     fun provideStickerListUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<StickerResponse>,
             cacheManager: TopchatCacheManager,
-            dispatchers: CoroutineTestDispatchersProvider
+            dispatchers: CoroutineDispatchers
     ): ChatListStickerUseCaseStub {
         return ChatListStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }
@@ -133,7 +133,7 @@ class ChatRoomFakeUseCaseModule {
     @ChatScope
     fun provideGetShopFollowingUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<ShopFollowingPojo>,
-            dispatchers: CoroutineTestDispatchersProvider
+            dispatchers: CoroutineDispatchers
     ): GetShopFollowingUseCaseStub {
         return GetShopFollowingUseCaseStub(gqlUseCase, dispatchers)
     }
@@ -151,7 +151,7 @@ class ChatRoomFakeUseCaseModule {
     fun provideUploadImageUseCaseStub(
             uploadImageUseCase: UploaderUseCase,
             chatImageServerUseCase: ChatImageServerUseCase,
-            dispatchers: CoroutineTestDispatchersProvider
+            dispatchers: CoroutineDispatchers
     ): TopchatUploadImageUseCaseStub {
         return TopchatUploadImageUseCaseStub(uploadImageUseCase, chatImageServerUseCase, dispatchers)
     }
@@ -215,7 +215,7 @@ class ChatRoomFakeUseCaseModule {
     fun provideChatBackgroundUseCaseStub(
             gqlUseCase: GraphqlUseCaseStub<ChatBackgroundResponse>,
             cacheManager: TopchatCacheManager,
-            dispatchers: CoroutineTestDispatchersProvider
+            dispatchers: CoroutineDispatchers
     ): ChatBackgroundUseCaseStub {
         return ChatBackgroundUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }

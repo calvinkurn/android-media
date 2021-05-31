@@ -11,12 +11,12 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
@@ -44,6 +44,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAtta
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
+import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
@@ -51,13 +52,13 @@ import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
+import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
+import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
@@ -115,6 +116,9 @@ abstract class TopchatRoomTest {
 
     protected open lateinit var activity: TopChatRoomActivityStub
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
+    protected open var keyboardStateIdling: CountingIdlingResource = CountingIdlingResource(
+            "ChatRoom-Keyboard"
+    )
 
     protected open val exMessageId = "66961"
 
@@ -139,18 +143,24 @@ abstract class TopchatRoomTest {
                 "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
     }
 
-    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
         setupResponse()
-        val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+                .fakeAppModule(FakeAppModule(applicationContext))
+                .build()
         chatComponentStub = DaggerChatComponentStub.builder()
-                .baseAppComponent(baseComponent)
+                .fakeBaseAppComponent(baseComponent)
                 .chatRoomContextModule(ChatRoomContextModule(context))
                 .build()
         chatComponentStub.inject(this)
         setupDefaultResponseWhenFirstOpenChatRoom()
+        IdlingRegistry.getInstance().register(keyboardStateIdling)
+    }
+
+    @After
+    open fun tearDown() {
+        IdlingRegistry.getInstance().unregister(keyboardStateIdling)
     }
 
     protected open fun setupResponse() {
@@ -232,7 +242,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun inflateTestFragment() {
-        activity.setupTestFragment(chatComponentStub)
+        activity.setupTestFragment(chatComponentStub, keyboardStateIdling)
         waitForFragmentResumed()
     }
 
@@ -444,6 +454,21 @@ abstract class TopchatRoomTest {
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
                 position, R.id.img_sr_blue_dot
         )).check(matches(visibilityMatcher))
+    }
+
+    protected fun assertKeyboardIsVisible() {
+        val isKeyboardOpened = isKeyboardOpened()
+        assertThat(isKeyboardOpened, `is`(true))
+    }
+
+    protected fun assertKeyboardIsNotVisible() {
+        val isKeyboardOpened = isKeyboardOpened()
+        assertThat(isKeyboardOpened, `is`(false))
+    }
+
+    protected fun isKeyboardOpened(): Boolean {
+        val rootView = activity.findViewById<View>(R.id.main)
+        return isKeyboardOpened(rootView)
     }
 
     protected fun generateTemplateResponse(

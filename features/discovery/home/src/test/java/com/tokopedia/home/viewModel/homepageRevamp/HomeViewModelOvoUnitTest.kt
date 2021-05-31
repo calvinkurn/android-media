@@ -90,18 +90,12 @@ class HomeViewModelOvoUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase
         ).apply{
-            setNeedToShowGeolocationComponent(true)
-            setGeolocationPermission(true)
         }
         homeViewModel.setNewBalanceWidget(false)
 
         homeViewModel.refresh(true)
 
         homeViewModel.isRequestNetworkLiveData.observeOnce {
-            assert(it != null)
-        }
-
-        homeViewModel.sendLocationLiveData.observeOnce {
             assert(it != null)
         }
     }

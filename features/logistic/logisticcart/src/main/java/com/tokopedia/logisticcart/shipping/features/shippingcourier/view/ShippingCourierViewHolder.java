@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
@@ -30,7 +31,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tvCourier;
     private TextView tvPriceOrDuration;
-    private ImageView imgCheck;
+    private IconUnify imgCheck;
     private TextView tvPromoPotency;
     private View separator;
     private Label codLabel;

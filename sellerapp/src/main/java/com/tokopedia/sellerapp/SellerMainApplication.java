@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
+import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.authentication.AuthHelper;
@@ -39,6 +40,7 @@ import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.ToasterActivityLifecycle;
+import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -47,7 +49,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
-import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
@@ -286,7 +287,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
     }
 
     private void registerActivityLifecycleCallbacks() {
-        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
@@ -294,6 +295,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
     }
 
     @Override

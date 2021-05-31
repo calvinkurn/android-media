@@ -36,7 +36,6 @@ class OrderHistoryViewHolder(
     private var freeShipping: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
     private var buyAgainButton: UnifyButton? = itemView?.findViewById(R.id.tv_buy)
     private var wishListButton: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
-    private val labelEmptyStockColor = "#80000000"
 
     override fun bind(product: Product?) {
         if (product == null) return
@@ -71,7 +70,7 @@ class OrderHistoryViewHolder(
             if (product.hasEmptyStock) {
                 show()
                 unlockFeature = true
-                setLabelType(labelEmptyStockColor)
+                setLabelType(context.getString(R.string.orderhistory_label_empty_stock_color))
             } else {
                 hide()
             }

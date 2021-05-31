@@ -231,7 +231,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetInboxDetail(Throwable throwable) {
-        if (getActivity() != null && mainView != null)
+        if (getActivity() != null && mainView != null && getContext() != null)
             NetworkErrorHelper.showEmptyState(getActivity(), mainView, ReviewErrorHandler.getErrorMessage(getContext(), throwable),
                     () -> presenter.getInboxDetail(
                             reputationId,
@@ -290,7 +290,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorRefreshInboxDetail(Throwable throwable) {
-        if (getActivity() != null)
+        if (getActivity() != null & getContext() != null)
             NetworkErrorHelper.showSnackbar(getActivity(), ReviewErrorHandler.getErrorMessage(getContext(), throwable));
     }
 
@@ -509,13 +509,13 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToShopDetail(int shopId) {
+    public void onGoToShopDetail(long shopId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
         startActivity(intent);
     }
 
     @Override
-    public void onGoToPeopleProfile(int userId) {
+    public void onGoToPeopleProfile(long userId) {
         startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, String.valueOf(userId)));
     }
 

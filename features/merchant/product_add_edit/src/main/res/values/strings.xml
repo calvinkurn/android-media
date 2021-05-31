@@ -346,7 +346,6 @@
 
     <!-- Location Validation -->
     <string name="label_for_toaster_success_set_shop_location">Yay, berhasil menambah lokasi pengiriman.</string>
-    <string name="label_for_toaster_fail_set_shop_location">Terjadi kendala pada server, silahkan coba kembali</string>
     <string name="label_for_action_text_toaster_success_set_shop_location">Oke</string>
     <string name="label_for_dialog_title_that_shop_has_no_location">Mau tambah produk baru?</string>
     <string name="label_for_dialog_desc_that_shop_has_no_location">Eits, lengkapi dulu lokasi pengirimanmu di halaman Pengaturan agar bisa hitung estimasi ongkir.</string>
@@ -370,6 +369,30 @@
     <string name="action_specification_change">Ubah</string>
     <string name="action_specification_refresh">Muat Ulang</string>
     <string name="action_specification_counter">, +%1$d lainnya</string>
+
+    <!-- Product Limitation -->
+    <string name="label_product_limitation_start_date">10 Mei 2021</string>
+    <string name="label_product_limitation_ticker">Mulai %1$s, ada perubahan Syarat &amp; Ketentuan jumlah produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="action_product_limitation_item">Pelajari</string>
+    <string name="action_product_limitation_item_goto_productlist">Ke Daftar Produk</string>
+    <string name="title_product_limitation_item_upgradepm">Tingkatkan kuota dengan upgrade ke Power Merchant</string>
+    <string name="label_product_limitation_item_upgradepm">Kuota produkmu akan bertambah dan dapatkan juga keuntungan lainnya!</string>
+    <string name="title_product_limitation_item_upgradepmpro">Tingkatkan kuota dengan upgrade ke Power Merchant Pro</string>
+    <string name="label_product_limitation_item_upgradepmpro">Nikmati berbagai keuntungan eksklusif, termasuk tambahan kuota produk!</string>
+    <string name="title_product_limitation_item_usevariant">Gunakan fitur Varian untuk produk yang mirip</string>
+    <string name="label_product_limitation_item_usevariant">Tambah produk sebagai varian di dalam produk yang mirip di tokomu.</string>
+    <string name="title_product_limitation_item_delete">Hapus produk yang kurang diminati pembeli</string>
+    <string name="label_product_limitation_item_delete">Tambahkan produk dengan hapus produk yang habis atau kurang diminati pembeli.</string>
+    <string name="title_product_limitation_item_usepromotion">Pasang iklan dan promosi untuk tingkatkan penjualan</string>
+    <string name="label_product_limitation_item_usepromotion">Semakin banyak produk yang terjual, semakin banyak kuota produk untuk tokomu!</string>
+    <string name="title_product_limitation_bottomsheet_ticker">Kamu bisa upload hingga %1$d produk</string>
+    <string name="label_product_limitation_bottomsheet_ticker">Jumlah maks. produk yang dapat ditambahkan didasarkan oleh tipe Seller. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="label_product_limitation_bottomsheet_ticker_exceed">Jumlah produk di tokomu sudah mencapai maks. kuota sebanyak %1$d produk. <![CDATA[<font color=\'#42b549\'><b>Selengkapnya</b></font>.]]></string>
+    <string name="title_product_limitation_bottomsheet_info">Bagaimana cara menambahkan lebih banyak produk?</string>
+    <string name="label_product_limitation_bottomsheet_button">Kembali ke Daftar Produk</string>
+    <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
+    <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
+    <string name="title_product_limitation_add_product_rules">Aturan jumlah produk toko</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

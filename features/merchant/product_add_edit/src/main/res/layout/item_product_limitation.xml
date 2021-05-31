@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardUnify"
+        android:layout_width="@dimen/product_limitation_action_item_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:paddingTop="@dimen/spacing_lvl7"
+        app:card_type="border"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
+                android:textColor="@color/Unify_N700"
+                app:typographyType="heading_4" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_lvl1" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selectable_white_background"
+                android:gravity="center_vertical"
+                android:padding="@dimen/spacing_lvl3"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingEnd="@dimen/layout_lvl1"
+                android:text="@string/action_product_limitation_item"
+                android:textColor="@color/Unify_G500"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+        </LinearLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_card"
+        android:src="@drawable/product_add_edit_ic_tips_bulb"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl7"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

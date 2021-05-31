@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import androidx.annotation.Keep
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -136,6 +137,7 @@ import javax.inject.Inject
  * @author anggaprasetiyo on 18/01/18.
  */
 
+@Keep
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
@@ -472,7 +474,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 refreshHandler = RefreshHandler(it, swipeRefreshLayout, this)
             }
             progressDialog = AlertDialog.Builder(it)
-                    .setView(R.layout.purchase_platform_progress_dialog_view)
+                    .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
                     .setCancelable(false)
                     .create()
         }
@@ -821,6 +823,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
 
             binding?.navToolbar?.apply {
+                viewLifecycleOwner.lifecycle.addObserver(this)
                 setOnBackButtonClickListener(
                         disableDefaultGtmTracker = true,
                         backButtonClickListener = ::onBackPressed
@@ -1991,7 +1994,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_funnel_label)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = ""
             promoCheckoutBtnCart.setOnClickListener {
                 dPresenter.doUpdateCartForPromo()
@@ -2005,7 +2008,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.ACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_funnel_label)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             promoCheckoutBtnCart.desc = getString(R.string.promo_desc_no_selected_item)
             promoCheckoutBtnCart.setOnClickListener {
                 showToastMessageGreen(getString(R.string.promo_choose_item_cart))
@@ -2028,7 +2031,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 lastApplyData.defaultEmptyPromoMessage
             }
             else -> {
-                getString(R.string.promo_funnel_label)
+                getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
             }
         }
 
@@ -2799,7 +2802,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, actionText, tmpCtaClickListener)
                         .show()
             } else {
-                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.resources.getString(R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
+                Toaster.build(it, tmpMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, it.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
                         .show()
             }
         }
@@ -2812,6 +2815,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         showToastMessageRed(errorMessage)
+    }
+
+    override fun showToastMessageRed() {
+        showToastMessageRed("")
     }
 
     override fun showToastMessageGreen(message: String, actionText: String, onClickListener: View.OnClickListener?) {
@@ -2828,7 +2835,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, actionText, tmpCtaClickListener)
                         .show()
             } else {
-                Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, v.resources.getString(R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
+                Toaster.build(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, v.resources.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok), tmpCtaClickListener)
                         .show()
             }
         }
@@ -3350,8 +3357,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         binding?.apply {
             promoCheckoutBtnCart.state = ButtonPromoCheckoutView.State.INACTIVE
             promoCheckoutBtnCart.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-            promoCheckoutBtnCart.title = getString(R.string.promo_checkout_inactive_label)
-            promoCheckoutBtnCart.desc = getString(R.string.promo_checkout_inactive_desc)
+            promoCheckoutBtnCart.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
+            promoCheckoutBtnCart.desc = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
             promoCheckoutBtnCart.setOnClickListener {
                 renderPromoCheckoutLoading()
                 dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
