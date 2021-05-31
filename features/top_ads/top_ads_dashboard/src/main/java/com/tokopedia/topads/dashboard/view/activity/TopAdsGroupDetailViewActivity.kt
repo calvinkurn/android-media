@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,6 +16,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -55,6 +59,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var priceSpent: String? = ""
     private var groupStatus: String? = ""
     private var groupName: String? = ""
+    private var autoBidStatus: String = ""
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_group_detail_view_layout
@@ -97,13 +102,18 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         val list: MutableList<FragmentTabItem> = mutableListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         tab_layout?.addNewTab(PRODUK)
-        tab_layout?.addNewTab(KATA_KUNCI)
-        tab_layout?.addNewTab(NEG_KATA_KUNCI)
-        tab_layout?.customTabMode = TabLayout.MODE_FIXED
+        if(autoBidStatus.isEmpty()) {
+            tab_layout?.addNewTab(KATA_KUNCI)
+            tab_layout?.addNewTab(NEG_KATA_KUNCI)
+            tab_layout?.customTabMode = TabLayout.MODE_FIXED
+        } else {
+            tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
+        }
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
+        bundle.putString(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
         list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(NEG_KATA_KUNCI, NegKeywordTabFragment.createInstance(bundle)))
@@ -124,13 +134,17 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         header_toolbar.setNavigationOnClickListener {
             super.onBackPressed()
         }
-        header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
-
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
-                putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+        header_toolbar.addRightIcon(0).apply {
+            clearImage()
+            setImageDrawable(getIconUnifyDrawable(context, IconUnify.EDIT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+            setOnClickListener {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
+                    putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
+                    putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                    putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
+                }
+                startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
             }
-            startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
         }
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
@@ -166,7 +180,15 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         groupName = data.groupName
         groupTotal = data.groupTotal.toInt()
         priceDaily = data.priceDaily
-        budgetPerClick.text = "Rp " + data.priceBid
+        if(data.strategies.isNotEmpty()) {
+            autoBidStatus = data.strategies[0]
+            per_click.visibility = View.GONE
+            budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.autobid_otomatis)
+        } else {
+            autoBidStatus = ""
+            per_click.visibility = View.VISIBLE
+            budgetPerClick.text = "Rp " + data.priceBid
+        }
         group_name.text = groupName
         btn_switch.setOnCheckedChangeListener(null)
         btn_switch.isChecked = data.status == ACTIVE || data.status == TIDAK_TAMPIL
