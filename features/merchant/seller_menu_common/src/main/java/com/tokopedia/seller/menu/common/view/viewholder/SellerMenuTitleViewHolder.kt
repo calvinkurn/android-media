@@ -34,12 +34,14 @@ class SellerMenuTitleViewHolder(
     }
 
     override fun bind(menu: SectionTitleUiModel) {
-        itemView.textTitle.shouldShowWithAction(!menu.title.isNullOrBlank()) {
+        itemView.textTitle?.shouldShowWithAction(!menu.title.isNullOrBlank()) {
             itemView.textTitle.text = menu.title
         }
 
-        itemView.textCta.shouldShowWithAction(!menu.ctaText.isNullOrBlank()) {
-            itemView.textCta.text = menu.ctaText
+        if (getLayout(menu.type) == SECTION_WITH_CTA_LAYOUT) {
+            itemView.textCta?.shouldShowWithAction(!menu.ctaText.isNullOrBlank()) {
+                itemView.textCta.text = menu.ctaText
+            }
         }
 
         menu.onClickApplink?.let { appLink ->
