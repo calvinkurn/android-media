@@ -22,7 +22,7 @@ class UohListUseCase @Inject constructor(private val gqlRepository: GraphqlRepos
             val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<UohListOrder.Data>()
             Success(response.uohOrders)
         } catch (e: Exception) {
-            Fail(MessageErrorException(e.message))
+            Fail(e)
         }
     }
 

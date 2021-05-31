@@ -30,7 +30,7 @@ public class AddWishListSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         viewListener.onErrorAddWishList(
-                ErrorHandler.getErrorMessage(context, new MessageErrorException(e.getMessage())), productId);
+                ErrorHandler.getErrorMessage(context, e), productId);
     }
 
     @Override
