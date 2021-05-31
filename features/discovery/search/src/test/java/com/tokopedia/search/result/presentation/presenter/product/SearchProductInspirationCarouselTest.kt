@@ -653,12 +653,19 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         applink shouldBe inspirationCarouselProduct.applink
         priceString shouldBe inspirationCarouselProduct.priceStr
         ratingAverage shouldBe inspirationCarouselProduct.ratingAverage
+        shopLocation shouldBe inspirationCarouselProduct.shop.city
 
         labelGroupDataList.listShouldBe(inspirationCarouselProduct.labelGroupList) { actual, expected ->
             actual.title shouldBe expected.title
             actual.position shouldBe expected.position
             actual.type shouldBe expected.type
             actual.imageUrl shouldBe expected.url
+        }
+
+        badgeItemDataViewList.listShouldBe(inspirationCarouselProduct.badgeList) { actual, expected ->
+            actual.title shouldBe  expected.title
+            actual.imageUrl shouldBe expected.imageUrl
+            actual.isShown shouldBe expected.isShown
         }
 
         carouselProductType.shouldBeInstanceOf<DynamicCarouselProduct>()

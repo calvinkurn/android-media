@@ -1279,7 +1279,9 @@ class ProductListPresenter @Inject constructor(
                                 priceString = product.priceStr,
                                 ratingAverage = product.ratingAverage,
                                 labelGroupDataList = product.labelGroupDataList,
-                                carouselProductType = DynamicCarouselProduct(option.inspirationCarouselType)
+                                carouselProductType = DynamicCarouselProduct(option.inspirationCarouselType),
+                                badgeItemDataViewList = product.badgeItemDataViewList,
+                                shopLocation = product.shopLocation,
                         )
                     }
             )
