@@ -60,4 +60,9 @@ class SearchCategoryChooserFilterTest: SearchTestFixtures(), CategoryChooserFilt
     fun `test apply filter from category chooser`() {
         categoryChooserFilterPageTestHelper.`test apply filter from category chooser`()
     }
+
+    @Test
+    fun `test dismiss category chooser`() {
+        categoryChooserFilterPageTestHelper.`test dismiss category chooser`()
+    }
 }

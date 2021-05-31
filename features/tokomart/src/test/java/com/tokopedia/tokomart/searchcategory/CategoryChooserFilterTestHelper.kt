@@ -15,6 +15,7 @@ import io.mockk.CapturingSlot
 import io.mockk.InternalPlatformDsl.toStr
 import io.mockk.every
 import io.mockk.slot
+import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
@@ -193,6 +194,7 @@ class CategoryChooserFilterTestHelper(
 
         callback.`Then assert first page use case is called twice`(requestParamsSlot)
         `Then verify query params is updated from category filter`(requestParams)
+        `Then verify category chooser is dismissed`()
     }
 
     private fun `When view apply filter from category chooser`() {
@@ -208,6 +210,25 @@ class CategoryChooserFilterTestHelper(
                 queryParams[chosenCategoryFilter.key].toString(),
                 shouldBe(chosenCategoryFilter.value)
         )
+    }
+
+    private fun `Then verify category chooser is dismissed`() {
+        assertThat(baseViewModel.isL3FilterPageOpenLiveData.value, nullValue())
+    }
+
+    fun `test dismiss category chooser`() {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+
+        `Given view setup from created until open category chooser`()
+
+        `When view dismiss L3 filter page`()
+
+        `Then verify category chooser is dismissed`()
+    }
+
+    private fun `When view dismiss L3 filter page`() {
+        baseViewModel.onViewDismissL3FilterPage()
     }
 
     interface Callback {

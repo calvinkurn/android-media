@@ -29,9 +29,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
-import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
@@ -474,7 +472,13 @@ abstract class BaseSearchCategoryViewModel(
 
         refreshQueryParamFromFilterController()
 
+        onViewDismissL3FilterPage()
+
         onViewReloadPage()
+    }
+
+    fun onViewDismissL3FilterPage() {
+        isL3FilterPageOpenMutableLiveData.value = null
     }
 
     open fun onViewResumed() {
