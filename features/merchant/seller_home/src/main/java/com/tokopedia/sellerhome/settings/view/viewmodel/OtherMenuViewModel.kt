@@ -11,6 +11,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
@@ -80,7 +81,7 @@ class OtherMenuViewModel @Inject constructor(
     fun getShopPeriodType() {
         launchCatchError(block = {
             val periodData = withContext(dispatcher.io) {
-                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
                 getShopInfoPeriodUseCase.executeOnBackground()
             }
             _shopPeriodType.value = Success(periodData)

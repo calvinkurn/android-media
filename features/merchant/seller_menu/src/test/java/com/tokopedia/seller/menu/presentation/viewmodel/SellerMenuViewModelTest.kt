@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 
 import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
+import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreDetailItemServiceModel
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.MessageErrorException
@@ -25,7 +26,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     @Test
     fun `when getAllSettingShopInfo type comm period success should set live data success`() {
         coroutineTestRule.runBlockingTest {
-            val shopScoreResponse = ShopScoreResult()
+            val shopScoreResponse = ShopScoreResult(data = ShopScoreDetailItemServiceModel(value = 70))
             val shopSettingsResponse = createShopSettingsResponse()
 
             onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)

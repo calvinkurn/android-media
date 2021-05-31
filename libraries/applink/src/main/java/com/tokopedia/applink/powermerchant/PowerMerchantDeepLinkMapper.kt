@@ -24,8 +24,8 @@ object PowerMerchantDeepLinkMapper {
      * */
     fun getInternalAppLinkPmProInterrupt(appLink: String): String {
         val uri = Uri.parse(appLink)
-        val state = uri.getQueryParameter(QUERY_PARAM_STATE)
-        val params = mapOf<String, Any?>(QUERY_PARAM_STATE to state)
+        val state = uri.getQueryParameter(QUERY_PARAM_STATE) ?: ""
+        val params = mapOf<String, Any>(QUERY_PARAM_STATE to state)
 
         val applink = if (GlobalConfig.isSellerApp()) {
             ApplinkConstInternalSellerapp.SELLER_HOME

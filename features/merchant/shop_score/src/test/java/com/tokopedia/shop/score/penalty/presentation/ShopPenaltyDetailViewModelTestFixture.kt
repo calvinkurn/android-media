@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.mockk
@@ -18,12 +19,7 @@ abstract class ShopPenaltyDetailViewModelTestFixture {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
-
     lateinit var penaltyMapper: PenaltyMapper
-
-    lateinit var coroutineDispatchers: CoroutineDispatchers
 
     protected lateinit var shopPenaltyDetailViewModel: ShopPenaltyDetailViewModel
 
@@ -31,8 +27,7 @@ abstract class ShopPenaltyDetailViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         penaltyMapper = mockk(relaxed = true)
-        coroutineDispatchers = CoroutineDispatchersProvider
-        shopPenaltyDetailViewModel = ShopPenaltyDetailViewModel(coroutineDispatchers, penaltyMapper)
+        shopPenaltyDetailViewModel = ShopPenaltyDetailViewModel(CoroutineTestDispatchersProvider, penaltyMapper)
     }
 
     @After

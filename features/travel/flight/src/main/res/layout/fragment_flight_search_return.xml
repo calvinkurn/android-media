@@ -24,7 +24,7 @@
         app:tickerShapeType="full"
         tools:visibility="visible" />
 
-    <com.tokopedia.flight.searchV4.presentation.widget.DepartureTripLabelView
+    <com.tokopedia.flight.search.presentation.widget.DepartureTripLabelView
         android:id="@+id/departureTripLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

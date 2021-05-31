@@ -179,7 +179,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private boolean isWhiteColor(String hexColor) {
-        return hexColor.equals("#ffffff") || hexColor.equals("#fff");
+        return hexColor.equals(context.getString(R.string.white_color_hex))
+                || hexColor.equals(context.getString(R.string.white_color_hex_simpler));
     }
 
     private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {

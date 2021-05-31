@@ -1,9 +1,9 @@
 package com.tokopedia.shop.home.domain
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeRequest
 import com.tokopedia.usecase.coroutines.UseCase

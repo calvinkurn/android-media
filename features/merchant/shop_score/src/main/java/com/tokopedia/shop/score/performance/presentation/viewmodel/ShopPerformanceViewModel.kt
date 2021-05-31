@@ -8,6 +8,7 @@ import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.score.performance.domain.mapper.ShopScoreMapper
 import com.tokopedia.shop.score.performance.domain.model.ShopLevelTooltipParam
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreLevelParam
@@ -54,7 +55,7 @@ class ShopPerformanceViewModel @Inject constructor(
     fun getShopInfoPeriod() {
         launchCatchError(block = {
             val dataShopInfo = withContext(dispatchers.io) {
-                shopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                shopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
                 shopInfoPeriodUseCase.executeOnBackground()
             }
             _shopInfoPeriod.postValue(Success(dataShopInfo))

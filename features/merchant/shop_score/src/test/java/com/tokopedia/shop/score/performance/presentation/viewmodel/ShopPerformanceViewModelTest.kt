@@ -8,14 +8,15 @@ import com.tokopedia.shop.score.performance.domain.model.ShopScoreLevelResponse
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
 
     @Test
     fun `when getShopInfo should set live data success`() {
-        coroutineTestRule.runBlockingTest {
+        runBlocking {
             val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD, shopAge = 80, isNewSeller = true)
             onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodUiModel)
             shopPerformanceViewModel.getShopInfoPeriod()
@@ -29,7 +30,7 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
 
     @Test
     fun `when getShopInfo should set live data error`() {
-        coroutineTestRule.runBlockingTest {
+        runBlocking {
             val errorException = MessageErrorException()
             onGetShopInfoPeriodUseCaseError_thenReturn(errorException)
             shopPerformanceViewModel.getShopInfoPeriod()
@@ -42,7 +43,7 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
 
     @Test
     fun `when getShopScoreLevel should set live data success`() {
-        coroutineTestRule.runBlockingTest {
+        runBlocking {
             val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD, shopAge = 80, isNewSeller = true)
             val shopScoreWrapperResponse = ShopScoreWrapperResponse(
                     shopScoreLevelResponse = ShopScoreLevelResponse.ShopScoreLevel(
@@ -62,7 +63,7 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
 
     @Test
     fun `when getShopScoreLevel should set live data error`() {
-        coroutineTestRule.runBlockingTest {
+        runBlocking {
             val errorException = MessageErrorException()
             val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD, shopAge = 80, isNewSeller = true)
             onGetShopPerformanceUseCaseError_thenReturn(errorException)

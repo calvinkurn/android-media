@@ -1,15 +1,12 @@
 package com.tokopedia.shop.pageheader.domain.interactor
 
-import com.google.gson.GsonBuilder
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetShopPageHeaderLayoutUseCase @Inject constructor(

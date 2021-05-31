@@ -4,6 +4,7 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -30,6 +31,10 @@ public class FeedAnalytics {
     private static final String EVENT_ECOMMERCE = "ecommerce";
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_USER_ID_MOD = "userIdmodulo";
+    private static final String KEY_BUSINESS_UNIT = "content";
+    private static final String KEY_CURRENT_SITE = "tokopediamarketplace";
+    private static final String KEY_BUSINESS_UNIT_EVENT = "businessUnit";
+    private static final String KEY_CURRENT_SITE_EVENT = "currentSite";
 
     private static final String CATEGORY_FEED = "Feed";
 
@@ -39,6 +44,7 @@ public class FeedAnalytics {
 
     private static final String PRODUCT_VIEW = "productView";
     private static final String PRODUCT_CLICK = "productClick";
+    private static final String PROMOTIONS= "promotions";
     private static final String POST_CLICK_VALUE = "click new post";
 
     private static final String DASH = " - ";
@@ -634,5 +640,106 @@ public class FeedAnalytics {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public void sendFeedTopAdsHeadlineAdsImpression(String eventAction, String eventLabel, String adId, int position, String userId) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, PROMO_VIEW,
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                        EVENT_ACTION, eventAction,
+                        EVENT_LABEL, eventLabel,
+                        KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
+                        KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
+                        KEY_USER_ID, userId,
+                        EVENT_ECOMMERCE, DataLayer.mapOf(
+                                PROMO_VIEW, DataLayer.mapOf(
+                                        PROMOTIONS, getHeadlineList(adId, position)
+                                )
+                        )
+                )
+        );
+    }
+
+
+    public void sendFeedTopAdsHeadlineProductImpression(String eventAction, String eventLabel, List<Product> products, int position, String userId) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, PRODUCT_VIEW,
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                        EVENT_ACTION, eventAction,
+                        EVENT_LABEL, eventLabel,
+                        KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
+                        KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
+                        KEY_USER_ID, userId,
+                        EVENT_ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", getProductList(products, position))
+                )
+        );
+    }
+
+
+    public void sendFeedTopAdsHeadlineProductClick(String eventAction, String eventLabel, List<Product> products, int position, String userId) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, PRODUCT_CLICK,
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                        EVENT_ACTION, eventAction,
+                        EVENT_LABEL, eventLabel,
+                        KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
+                        KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
+                        KEY_USER_ID, userId,
+                        EVENT_ECOMMERCE, DataLayer.mapOf(
+                                "click", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf(
+                                                "list", "/feed - topads"),
+                                        "products", getProductList(products, position)))
+                )
+        );
+    }
+
+    private List<Object> getHeadlineList(String adId, int position) {
+        ArrayList<Object> productList = new ArrayList<>();
+
+        HashMap<String, Object> productItem = new HashMap<>();
+        productItem.put("name", "/feed - topads - card");
+        productItem.put("id", adId);
+        productItem.put("position", position);
+        productList.add(productItem);
+        return productList;
+    }
+
+    private List<Object> getProductList(List<Product> items, int position) {
+        ArrayList<Object> productList = new ArrayList<>();
+
+        for(int i=0; i<items.size(); i++) {
+            HashMap<String, Object> productItem = new HashMap<>();
+            productItem.put("name", items.get(i).getName());
+            productItem.put("id", items.get(i).getId());
+            productItem.put("position", position);
+            productItem.put("list", "/feed - topads");
+            productItem.put("price", formatStringToInt(items.get(i).getPriceFormat()));
+            productItem.put("variant", "");
+            productItem.put("brand", "");
+            productItem.put("category", "");
+            productItem.put("creative_name", items.get(i).getImage().getM_url());
+            productList.add(productItem);
+        }
+        return productList;
+    }
+
+    public void sendTopAdsHeadlineClickevent(String eventAction, String eventLabel, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, EVENT_CLICK_FEED,
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                        EVENT_ACTION, eventAction,
+                        EVENT_LABEL, eventLabel,
+                        KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
+                        KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
+                        KEY_USER_ID, userId)
+        );
+
     }
 }

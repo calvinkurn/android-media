@@ -80,8 +80,8 @@ class OtherMenuViewModelTest {
                         coroutineTestRule.dispatchers,
                         getAllShopInfoUseCase,
                         getShopFreeShippingInfoUseCase,
-                        getShopInfoPeriodUseCase,
                         getShopOperationalUseCase,
+                        getShopInfoPeriodUseCase,
                         userSession,
                         remoteConfig
                 )

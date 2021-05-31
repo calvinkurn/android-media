@@ -165,7 +165,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 if (cpmData.cpm?.cpmShop?.isFollowed != null && topAdsShopFollowBtnClickListener != null) {
                     bindFavorite(cpmData.cpm.cpmShop.isFollowed)
                     btnFollow.setOnClickListener {
-                        cpmData.cpm?.cpmShop?.id?.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1) }
+                        cpmData.cpm?.cpmShop?.id?.let { it1 -> topAdsShopFollowBtnClickListener?.onFollowClick(it1, cpmData.id) }
                         if (!cpmData.cpm.cpmShop.isFollowed) {
                             topAdsUrlHitter.hitClickUrl(className, cpmData.adClickUrl, "", "", "")
                         }

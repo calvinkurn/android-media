@@ -17,6 +17,7 @@ import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.seller.menu.domain.usecase.GetShopScoreLevelUseCase
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
@@ -72,7 +73,7 @@ class SellerMenuViewModel @Inject constructor(
     fun getShopAccountTickerPeriod() {
         launchCatchError(block = {
             val data = withContext(dispatchers.io) {
-                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toIntOrZero())
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
                 getShopInfoPeriodUseCase.executeOnBackground()
             }
             _shopAccountTickerPeriod.postValue(Success(data))

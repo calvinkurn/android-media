@@ -277,6 +277,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openNativeThankYouPage(linkSegment, defaultBundle);
                     screenName = "";
                     break;
+                case DeepLinkChecker.LOGIN_BY_QR:
+                    openLoginByQr(uriData);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -287,6 +291,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             }
         }
+    }
+
+    private void openLoginByQr(Uri uriData) {
+        RouteManager.route(context, ApplinkConst.QR_LOGIN + "?" + uriData.getQuery());
     }
 
     private void openNativeThankYouPage(List<String> linkSegment, Bundle defaultBundle) {
@@ -668,7 +676,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
                         Intent productIntent = RouteManager.getIntent(context,
                                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
-                                uriData,
                                 linkSegment.get(0),
                                 linkSegment.get(1),
                                 affiliateString);

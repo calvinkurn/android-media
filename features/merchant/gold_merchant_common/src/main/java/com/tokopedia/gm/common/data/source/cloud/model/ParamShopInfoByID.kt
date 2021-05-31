@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ParamShopInfoByID(
         @Expose
         @SerializedName("shopIDs")
-        val shopIDs: List<Int> = listOf(),
+        val shopIDs: List<Long> = listOf(),
         @Expose
         @SerializedName("fields")
         val fields: List<String> = listOf("create_info"),

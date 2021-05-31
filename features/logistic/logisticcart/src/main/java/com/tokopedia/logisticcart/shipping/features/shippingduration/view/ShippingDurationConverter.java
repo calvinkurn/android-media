@@ -1,7 +1,11 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.FeaturesData;
+import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
@@ -53,6 +57,10 @@ public class ShippingDurationConverter {
                 shippingRecommendationData.setLogisticPromo(
                         convertToPromoModel(ratesData.getRatesDetailData().getPromoStacking()));
 
+                // Setting up for Logistic Pre Order
+                shippingRecommendationData.setPreOrderModel(
+                        convertToPreOrderModel(ratesData.getRatesDetailData().getPreOrder()));
+
                 // Has service / duration list
                 shippingRecommendationData.setShippingDurationViewModels(
                         convertShippingDuration(ratesData.getRatesDetailData()));
@@ -81,7 +89,7 @@ public class ShippingDurationConverter {
             shippingDurationUiModel.setEtaErrorCode(serviceData.getTexts().getErrorCode());
             List<ShippingCourierUiModel> shippingCourierUiModels =
                     convertToShippingCourierViewModel(shippingDurationUiModel,
-                            serviceData.getProducts(), ratesId, blackboxInfo);
+                            serviceData.getProducts(), ratesId, blackboxInfo, convertToPreOrderModel(ratesDetailData.getPreOrder()));
             shippingDurationUiModel.setShippingCourierViewModelList(shippingCourierUiModels);
             if (shippingCourierUiModels.size() > 0) {
                 shippingDurationUiModels.add(shippingDurationUiModel);
@@ -107,6 +115,15 @@ public class ShippingDurationConverter {
                 );
                shippingDurationUiModel.setMerchantVoucherModel(merchantVoucherModel);
             }
+
+            if (serviceData.getFeatures() != null) {
+                FeaturesData featuresData = serviceData.getFeatures();
+
+                DynamicPriceModel dynamicPriceModel = new DynamicPriceModel(
+                        featuresData.getDynamicPricing().getTextLabel()
+                );
+                shippingDurationUiModel.setDynamicPriceModel(dynamicPriceModel);
+            }
         }
 
         return shippingDurationUiModels;
@@ -123,11 +140,12 @@ public class ShippingDurationConverter {
     private List<ShippingCourierUiModel> convertToShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
                                                                            List<ProductData> productDataList,
                                                                            String ratesId,
-                                                                           String blackboxInfo) {
+                                                                           String blackboxInfo,
+                                                                           PreOrderModel preOrderModel) {
         List<ShippingCourierUiModel> shippingCourierUiModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
             addShippingCourierViewModel(shippingDurationUiModel, ratesId,
-                    shippingCourierUiModels, productData, blackboxInfo);
+                    shippingCourierUiModels, productData, blackboxInfo, preOrderModel);
         }
 
         return shippingCourierUiModels;
@@ -136,12 +154,14 @@ public class ShippingDurationConverter {
     private void addShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
                                              String ratesId,
                                              List<ShippingCourierUiModel> shippingCourierUiModels,
-                                             ProductData productData, String blackboxInfo) {
+                                             ProductData productData, String blackboxInfo,
+                                             PreOrderModel preOrderModel) {
         ShippingCourierUiModel shippingCourierUiModel = new ShippingCourierUiModel();
         shippingCourierUiModel.setProductData(productData);
         shippingCourierUiModel.setBlackboxInfo(blackboxInfo);
         shippingCourierUiModel.setServiceData(shippingDurationUiModel.getServiceData());
         shippingCourierUiModel.setRatesId(ratesId);
+        shippingCourierUiModel.setPreOrderModel(preOrderModel);
         shippingCourierUiModels.add(shippingCourierUiModel);
     }
 
@@ -155,6 +175,15 @@ public class ShippingDurationConverter {
                 promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
                 promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName(),
                 promo.getCod(), promo.getEta(), promo.isBebasOngkirExtra());
+    }
+
+    private PreOrderModel convertToPreOrderModel(PreOrder preOrder) {
+        if (preOrder == null) return null;
+        return new PreOrderModel(
+                preOrder.getHeader(),
+                preOrder.getLabel(),
+                preOrder.getDisplay()
+        );
     }
 
     private boolean isPromoStackingApplied(RatesDetailData ratesDetailData) {
