@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.view_old.util
+package com.tokopedia.power_merchant.subscribe.common.utils
 
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -10,9 +10,5 @@ class PowerMerchantRemoteConfig @Inject constructor(
 
     fun isFreeShippingEnabled(): Boolean {
         return !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-    }
-
-    fun isTransitionPeriodEnabled(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
     }
 }
