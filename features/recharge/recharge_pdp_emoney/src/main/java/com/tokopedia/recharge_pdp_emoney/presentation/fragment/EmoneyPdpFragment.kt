@@ -350,15 +350,25 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             when (requestCode) {
                 REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER -> {
                     val favNumber = data?.getParcelableExtra<TopupBillsFavNumberItem>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
-                    favNumber?.let { renderClientNumber(it) }
+                    favNumber?.let {
+                        renderClientNumber(it)
+
+                        //to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
+                        detailPassData.clientNumber = it.clientNumber
+                        detailPassData.additionalETollBalance = ""
+                    }
                 }
 
                 REQUEST_CODE_EMONEY_PDP_CAMERA_OCR -> {
                     val clientNumber = data?.getStringExtra(DigitalExtraParam.EXTRA_NUMBER_FROM_CAMERA_OCR)
 
                     clientNumber?.let {
-                        showToastMessage(getString(R.string.recharge_pdp_success_message_scan_ocr));
-                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = clientNumber))
+                        showToastMessage(getString(R.string.recharge_pdp_success_message_scan_ocr))
+                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = it))
+
+                        //to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
+                        detailPassData.clientNumber = it
+                        detailPassData.additionalETollBalance = ""
                     }
                 }
 
@@ -432,6 +442,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onRemoveNumberIconClick() {
         EmoneyPdpAnalyticsUtils.clickClearCardNumber(userSession.userId)
+        emoneyCardNumber = ""
         showRecentNumberAndPromo()
     }
 
