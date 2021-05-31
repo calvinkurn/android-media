@@ -135,6 +135,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setAnonymousOptionClickListener()
         setPaddings()
         setRatingInitialState()
+        setOnTouchListenerToHideKeyboard()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -210,6 +211,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun trackWhenHasFocus(textLength: Int) {
         CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), textLength == 0, isEditMode, feedbackId.toString())
+        setHelperText(textLength)
     }
 
     override fun onTextChanged(textLength: Int) {
@@ -295,6 +297,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 } else {
                     hideTemplates()
                 }
+                clearFocusAndHideSoftInput(view)
             }
         })
     }
@@ -387,11 +390,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     return
                 }
             }
+            hideLoading()
             updateProductId(productData.productID)
             setProductDetail(productData)
             CreateReviewTracking.reviewOnViewTracker(orderID, productId.toString())
         }
-        hideLoading()
     }
 
     private fun onSuccessGetOvoIncentive(ovoDomain: ProductRevIncentiveOvoDomain?) {
@@ -690,7 +693,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             showSendRatingOnlyDialog()
             return
         }
-        if(!isGoodRating() && textArea?.isEmpty() == false && createReviewViewModel.isImageNotEmpty()) {
+        if(!isGoodRating() && (textArea?.isEmpty() == false || createReviewViewModel.isImageNotEmpty())) {
             showReviewUnsavedWarningDialog()
             return
         }
@@ -815,5 +818,20 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         getForm()
         getIncentiveOvoData()
         getTemplates()
+    }
+
+    private fun setOnTouchListenerToHideKeyboard() {
+        templatesRecyclerView?.setCustomTouchListener()
+        anonymousOption?.setCustomTouchListener()
+        photosRecyclerView?.setCustomTouchListener()
+        incentivesTicker?.setCustomTouchListener()
+        textAreaTitle?.setCustomTouchListener()
+    }
+
+    private fun View.setCustomTouchListener() {
+        this.setOnTouchListener { v, event ->
+            clearFocusAndHideSoftInput(view)
+            return@setOnTouchListener false
+        }
     }
 }

@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
@@ -21,6 +23,7 @@ class CreateReviewProductCard : BaseCustomView {
     private var productImage: AppCompatImageView? = null
     private var productName: Typography? = null
     private var productVariant: Typography? = null
+    private var constraintLayout: ConstraintLayout? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -50,6 +53,7 @@ class CreateReviewProductCard : BaseCustomView {
         productImage = findViewById(R.id.review_form_product_image)
         productName = findViewById(R.id.review_form_product_name)
         productVariant = findViewById(R.id.review_form_product_variant)
+        constraintLayout = findViewById(R.id.review_form_product_card_layout)
     }
 
     private fun showProductName(name: String) {
@@ -65,6 +69,14 @@ class CreateReviewProductCard : BaseCustomView {
             text = context.getString(R.string.review_pending_variant, variant)
             show()
         }
-        productName?.maxLines = PRODUCT_NAME_MAX_LINES_WITH_VARIANT
+        productName?.apply {
+            maxLines = PRODUCT_NAME_MAX_LINES_WITH_VARIANT
+            constraintLayout?.let {
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(constraintLayout)
+                constraintSet.clear(R.id.review_form_product_name, ConstraintSet.BOTTOM)
+                constraintSet.applyTo(constraintLayout)
+            }
+        }
     }
 }

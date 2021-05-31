@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/review_form_product_card_layout"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2"
     android:layout_width="match_parent"
@@ -25,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/review_form_product_image"
         app:layout_constraintTop_toTopOf="@id/review_form_product_image"
+        app:layout_constraintBottom_toBottomOf="@id/review_form_product_image"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Nike Air Force 1 Low White Red Casual Shoes" />
