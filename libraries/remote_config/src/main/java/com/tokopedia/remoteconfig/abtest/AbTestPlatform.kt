@@ -217,9 +217,10 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val HOME_COMPONENT_LEGO4BANNER_EXP= "lego4_test"
         const val HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round"
         const val HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding"
-        const val HOME_COMPONENT_CATEGORYWIDGET_EXP= "catwidget_test"
-        const val HOME_COMPONENT_CATEGORYWIDGET_OLD = "current_design"
-        const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT = "new_design"
+        const val HOME_COMPONENT_CATEGORYWIDGET_EXP= "cat_test"
+        const val HOME_COMPONENT_CATEGORYWIDGET_OLD = "control"
+        const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE = "text_inside"
+        const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX = "text_box"
 
         // end of home component rollence section
 
