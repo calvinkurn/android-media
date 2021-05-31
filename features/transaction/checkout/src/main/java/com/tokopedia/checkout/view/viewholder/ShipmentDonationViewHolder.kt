@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
@@ -19,14 +20,33 @@ class ShipmentDonationViewHolder(itemView: View, private val shipmentAdapterActi
     private val imgDonationInfo: IconUnify = itemView.findViewById(R.id.img_donation_info)
     private val llContainer: ViewGroup = itemView.findViewById(R.id.ll_container)
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "NewApi")
     fun bindViewHolder(shipmentDonationModel: ShipmentDonationModel) {
-        llContainer.setOnClickListener { cbDonation.isChecked = !cbDonation.isChecked }
+        llContainer.setOnClickListener {
+            if (shipmentDonationModel.isEnabled) {
+                cbDonation.isChecked = !cbDonation.isChecked
+            }
+        }
         cbDonation.isChecked = shipmentDonationModel.isChecked
         cbDonation.skipAnimation()
         tvDonationTitle.text = shipmentDonationModel.donation.title
-        imgDonationInfo.setOnClickListener { showBottomSheet(shipmentDonationModel) }
-        cbDonation.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean -> shipmentAdapterActionListener.onDonationChecked(isChecked) }
+        imgDonationInfo.setOnClickListener {
+            if (shipmentDonationModel.isEnabled) {
+                showBottomSheet(shipmentDonationModel)
+            }
+        }
+        cbDonation.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            if (shipmentDonationModel.isEnabled) {
+                shipmentAdapterActionListener.onDonationChecked(isChecked)
+            }
+        }
+        if (shipmentDonationModel.isEnabled) {
+            cbDonation.isEnabled = true
+            llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+        } else {
+            cbDonation.isEnabled = false
+            llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
+        }
     }
 
     private fun showBottomSheet(shipmentDonationModel: ShipmentDonationModel) {

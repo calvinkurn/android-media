@@ -1,9 +1,11 @@
 package com.tokopedia.checkout.view.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
@@ -22,18 +24,38 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
     private val imgEmasInfo: IconUnify = itemView.findViewById(R.id.img_emas_info)
     private val llContainer: LinearLayout = itemView.findViewById(R.id.ll_container)
 
+    @SuppressLint("NewApi")
     fun bindViewHolder(egoldAttributeModel: EgoldAttributeModel) {
-        llContainer.setOnClickListener { buyEmas.isChecked = !buyEmas.isChecked }
+        llContainer.setOnClickListener {
+            if (egoldAttributeModel.isEnabled) {
+                buyEmas.isChecked = !buyEmas.isChecked
+            }
+        }
         buyEmas.isChecked = egoldAttributeModel.isChecked
         tvEmasTitle.text = egoldAttributeModel.titleText
-        imgEmasInfo.setOnClickListener { showBottomSheet(egoldAttributeModel) }
+        imgEmasInfo.setOnClickListener {
+            if (egoldAttributeModel.isEnabled) {
+                showBottomSheet(egoldAttributeModel)
+            }
+        }
         tvEmasDesc.text = MethodChecker.fromHtml(
                 String.format(llContainer.context.getString(R.string.emas_checkout_desc),
                         egoldAttributeModel.subText,
                         removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false))
                 )
         )
-        buyEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean -> shipmentAdapterActionListener.onEgoldChecked(isChecked) }
+        buyEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            if (egoldAttributeModel.isEnabled) {
+                shipmentAdapterActionListener.onEgoldChecked(isChecked)
+            }
+        }
+        if (egoldAttributeModel.isEnabled) {
+            buyEmas.isEnabled = true
+            llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+        } else {
+            buyEmas.isEnabled = false
+            llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
+        }
     }
 
     private fun showBottomSheet(egoldAttributeModel: EgoldAttributeModel) {

@@ -21,7 +21,6 @@ import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -33,7 +32,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -262,7 +260,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         // Get total error product
         val errorProductCount = getErrorProductCount(dataList)
 
-        // Collect all Cart Item
+        // Collect all Cart Item & also calculate total weight on each shop
         val tmpAllCartItemDataList = getAvailableCartItemDataList(dataList)
 
         // Set cart item parent id
@@ -284,18 +282,27 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     private fun getAvailableCartItemDataList(dataList: List<CartShopHolderData>): ArrayList<CartItemHolderData> {
         // Collect all Cart Item, if has no error and selected
+        // Also calculate total weight on each shop
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         for (cartShopHolderData in dataList) {
             if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
-                    cartShopHolderData.shopGroupAvailableData?.isError == false &&
-                    (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
-                cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
-                    for (cartItemHolderData in it) {
-                        if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
-                            allCartItemDataList.add(cartItemHolderData)
+                    cartShopHolderData.shopGroupAvailableData?.isError == false) {
+                var shopWeight = 0.0
+                if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
+                    cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
+                        for (cartItemHolderData in it) {
+                            if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
+                                allCartItemDataList.add(cartItemHolderData)
+                                val quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
+                                        ?: 0
+                                val weight = cartItemHolderData.cartItemData?.originData?.weightPlan
+                                        ?: 0.0
+                                shopWeight += quantity * weight
+                            }
                         }
                     }
                 }
+                cartShopHolderData.shopGroupAvailableData?.totalWeight = shopWeight
             }
         }
 

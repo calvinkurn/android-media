@@ -19,7 +19,7 @@ interface ActionListener {
 
     fun getDefaultCartErrorMessage(): String
 
-    fun onCartShopNameClicked(shopId: String?, shopName: String?)
+    fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
 
     fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean)
 

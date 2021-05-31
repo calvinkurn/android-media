@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.converter;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShopTypeInfo;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
@@ -15,7 +14,6 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData;
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
@@ -192,6 +190,10 @@ public class ShipmentDataConverter {
             }
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
+            shipmentCartItemModel.setDisableChangeCourier(groupShop.isDisableChangeCourier());
+            shipmentCartItemModel.setAutoCourierSelection(groupShop.getAutoCourierSelection());
+            shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
+            shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getDescription());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -202,6 +204,7 @@ public class ShipmentDataConverter {
         if (shipmentCartItemModel.isAllItemError()) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 cartItemModel.setError(true);
+                cartItemModel.setShopError(true);
             }
         }
     }
@@ -216,6 +219,8 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setAllItemError(true);
         }
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
+        shipmentCartItemModel.setFirstProductErrorIndex(groupShop.getFirstProductErrorIndex());
+        shipmentCartItemModel.setProductErrorCount(groupShop.getProductErrorCount());
         if (orderIndex > 0) {
             shipmentCartItemModel.setOrderNumber(orderIndex);
         }

@@ -2,12 +2,15 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class GroupShop(
         var isError: Boolean = false,
         var errorMessage: String = "",
+        var firstProductErrorIndex: Int = -1,
+        var productErrorCount: Int = 0,
         var shop: Shop = Shop(),
         var shopShipments: List<ShopShipment> = emptyList(),
         var products: List<Product> = emptyList(),
@@ -26,5 +29,9 @@ data class GroupShop(
         var isLeasingProduct: Boolean = false,
         var bookingFee: Int = 0,
         var listPromoCodes: List<String> = emptyList(),
-        var shipmentInformationData: ShipmentInformationData = ShipmentInformationData()
+        var shipmentInformationData: ShipmentInformationData = ShipmentInformationData(),
+        var isDisableChangeCourier: Boolean = false,
+        var autoCourierSelection: Boolean = false,
+        var boMetadata: BoMetadata = BoMetadata(),
+        var courierSelectionErrorData: CourierSelectionErrorData = CourierSelectionErrorData()
 ) : Parcelable

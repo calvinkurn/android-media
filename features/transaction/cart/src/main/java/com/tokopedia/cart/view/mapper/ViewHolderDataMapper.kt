@@ -26,7 +26,8 @@ class ViewHolderDataMapper @Inject constructor() {
                 shopId = shopGroupWithErrorData.shopId,
                 shopName = shopGroupWithErrorData.shopName,
                 shopBadgeUrl = shopGroupWithErrorData.shopTypeInfoData.shopBadge,
-                isFulfillment = shopGroupWithErrorData.isFulfillment
+                isFulfillment = shopGroupWithErrorData.isFulfillment,
+                isTokoNow = shopGroupWithErrorData.isTokoNow
         )
     }
 
