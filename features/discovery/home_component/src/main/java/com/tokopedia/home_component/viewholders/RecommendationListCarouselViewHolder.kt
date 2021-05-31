@@ -17,6 +17,7 @@ import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecor
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -148,6 +149,14 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
             }
         }
+    }
+
+    private fun setChannelDivider(element: RecommendationListCarouselDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{

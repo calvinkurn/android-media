@@ -1,101 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_8"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent">
-
-    <View
-        android:id="@+id/background"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/Unify_Y200"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="H,2:1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />
-
-    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
-        android:id="@+id/home_component_header_view"
+    android:layout_height="wrap_content">
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/banner_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/home_component_margin_default"
-        android:layout_marginLeft="@dimen/home_component_margin_default"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        android:textSize="@dimen/sp_18"
-        android:maxLines="1"
-        android:ellipsize="end"
-        app:layout_constraintBottom_toTopOf="@+id/banner_description"
-        app:layout_constraintEnd_toStartOf="@+id/banner_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/background"
-        app:layout_constraintVertical_chainStyle="spread"
-        app:typographyType="heading_3"
-        tools:text="Gratis Ongkir"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/banner_description"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/home_component_margin_default"
-        android:layout_marginLeft="@dimen/home_component_margin_default"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constraintBottom_toTopOf="@+id/dc_banner_rv"
-        app:layout_constraintEnd_toStartOf="@+id/banner_button"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner_title"
-        app:layout_constraintVertical_bias="0.0"
-        app:typographyType="body_3"
-        tools:text="untuk pembelian pertama adjoandowand owado ndsn udwnd dnwacnnncuid!"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/banner_button"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/home_component_margin_default"
-        android:layout_marginRight="@dimen/home_component_margin_default"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintBottom_toTopOf="@+id/dc_banner_rv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/background"
-        app:unifyButtonSize="small"
-        tools:text="Cek Sekarang" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dc_banner_rv"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_Static_Black"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner_description"
-        app:layout_goneMarginTop="@dimen/dp_4"/>
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/Unify_Y200"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="H,2:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />
+
+        <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+            android:id="@+id/home_component_header_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/banner_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/home_component_margin_default"
+            android:layout_marginLeft="@dimen/home_component_margin_default"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:textSize="@dimen/sp_18"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toTopOf="@+id/banner_description"
+            app:layout_constraintEnd_toStartOf="@+id/banner_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/background"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:typographyType="heading_3"
+            tools:text="Gratis Ongkir"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/banner_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/home_component_margin_default"
+            android:layout_marginLeft="@dimen/home_component_margin_default"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@+id/dc_banner_rv"
+            app:layout_constraintEnd_toStartOf="@+id/banner_button"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/banner_title"
+            app:layout_constraintVertical_bias="0.0"
+            app:typographyType="body_3"
+            tools:text="untuk pembelian pertama adjoandowand owado ndsn udwnd dnwacnnncuid!"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/banner_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/home_component_margin_default"
+            android:layout_marginRight="@dimen/home_component_margin_default"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toTopOf="@+id/dc_banner_rv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/background"
+            app:unifyButtonSize="small"
+            tools:text="Cek Sekarang" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dc_banner_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/banner_description"
+            app:layout_goneMarginTop="@dimen/dp_4"/>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_B500"/>
+</LinearLayout>

@@ -9,7 +9,8 @@
         android:id="@+id/home_component_divider_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_height="10dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         tools:background="@color/Unify_Static_Black"/>
     <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/content_container"
         android:layout_width="match_parent"
@@ -40,6 +41,7 @@
         android:id="@+id/home_component_divider_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_height="10dp"
-        tools:background="@color/Unify_Static_Black"/>
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_B500"/>
 </LinearLayout>
