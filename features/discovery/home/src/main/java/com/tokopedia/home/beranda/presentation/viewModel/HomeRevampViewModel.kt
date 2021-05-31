@@ -273,13 +273,22 @@ open class HomeRevampViewModel @Inject constructor(
                         queryParam = bestSellerDataModel.widgetParam
                 )
                 recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
-
-                val recomData = getRecommendationUseCase.get().getData(
-                        GetRecommendationRequestParam(
-                                pageName = bestSellerDataModel.pageName,
-                                queryParam = bestSellerDataModel.widgetParam
-                        )
-                )
+                val activatedChip = recomFilterList.find { it.isActivated }
+                val recomData = if (activatedChip == null) {
+                    getRecommendationUseCase.get().getData(
+                            GetRecommendationRequestParam(
+                                    pageName = bestSellerDataModel.pageName,
+                                    queryParam = bestSellerDataModel.widgetParam
+                            )
+                    )
+                } else {
+                    getRecommendationUseCase.get().getData(
+                            GetRecommendationRequestParam(
+                                    pageName = bestSellerDataModel.pageName,
+                                    queryParam = if(activatedChip.isActivated) activatedChip.value else ""
+                            )
+                    )
+                }
 
                 if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                     val recomWidget = recomData.first().copy(
@@ -288,7 +297,7 @@ open class HomeRevampViewModel @Inject constructor(
                     val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
                     updateWidget(dataModel.copy(
                             id = bestSellerDataModel.id,
-                            pageName = bestSellerDataModel.pageName,
+                            pageName = dataModel.pageName,
                             widgetParam = bestSellerDataModel.widgetParam
                     ), index)
                 } else {
@@ -300,9 +309,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel){
-        val data = _homeLiveData.value?.list?.toMutableList()
-        data?.withIndex()?.find { it.value is BestSellerDataModel && (it.value as BestSellerDataModel).id == bestSellerDataModel.id }?.let {
+    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, selectedChipsPosition: Int){
+        findWidget<BestSellerDataModel> { currentDataModel, index ->
             launchCatchError(coroutineContext, block = {
                 val recomData = getRecommendationUseCase.get().getData(
                         GetRecommendationRequestParam(
@@ -315,7 +323,7 @@ open class HomeRevampViewModel @Inject constructor(
                             recommendationFilterChips = bestSellerDataModel.filterChip
                     )
                     val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
-                    val newModel = (it.value as BestSellerDataModel).copy(
+                    val newModel = currentDataModel.copy(
                             seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
                             recommendationItemList = newBestSellerDataModel.recommendationItemList,
                             productCardModelList = newBestSellerDataModel.productCardModelList,
@@ -323,16 +331,17 @@ open class HomeRevampViewModel @Inject constructor(
                             filterChip = newBestSellerDataModel.filterChip.map{
                                 it.copy(isActivated = filterChip.name == it.name
                                         && filterChip.isActivated)
-                            }
+                            },
+                            chipsPosition = (selectedChipsPosition+1)
                     )
-                    updateWidget(newModel, it.index)
+                    updateWidget(newModel, index)
                 } else {
                     updateWidget(bestSellerDataModel.copy(
                             filterChip = bestSellerDataModel.filterChip.map{
                                 it.copy(isActivated = filterChip.name == it.name
                                         && !filterChip.isActivated)
                             }
-                    ), it.index)
+                    ), index)
                 }
             }){ _ ->
                 updateWidget(bestSellerDataModel.copy(
@@ -340,7 +349,7 @@ open class HomeRevampViewModel @Inject constructor(
                             it.copy(isActivated = filterChip.name == it.name
                                     && !filterChip.isActivated)
                         }
-                ), it.index)
+                ), index)
             }
         }
     }
@@ -975,13 +984,14 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun updateHomeData(homeNewDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
+        homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
         this.homeDataModel = homeNewDataModel
+
         if (!homeNewDataModel.isProcessingDynamicChannle) {
             homeNewDataModel.evaluateHomeFlagData(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
                     onNeedToGetBalanceData = { getBalanceWidgetData() }
             )
-            homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
             homeNewDataModel.evaluateRecommendationSection(
                     onNeedTabLoad = { getFeedTabData() }
             )

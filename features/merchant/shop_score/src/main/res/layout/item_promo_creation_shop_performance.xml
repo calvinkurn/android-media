@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardPromoCreation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl2">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardContent"
+        android:layout_width="@dimen/width_card_recommendation_feature"
+        android:layout_height="@dimen/height_card_recommendation_feature"
+        android:layout_marginTop="@dimen/promo_promo_creation_card_top_margin"
+        app:card_type="shadow"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/layout_lvl1"
+            android:paddingEnd="@dimen/layout_lvl1"
+            android:paddingBottom="@dimen/layout_lvl1">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvItemRecommendedTitle"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_6"
+                tools:text="Broadcast Chat" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvItemRecommendedDescription"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvItemRecommendedTitle"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="Semakin banyak yang berkunjung, produkmu semakin berpotensi jadi laris manis." />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <FrameLayout
+        android:id="@+id/bg_squircle_recommendation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/cardContent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cardContent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivRecommendedPromo"
+            android:layout_width="@dimen/shop_performance_promo_creation_icon_size"
+            android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:adjustViewBounds="true"
+            android:padding="@dimen/dp_12" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

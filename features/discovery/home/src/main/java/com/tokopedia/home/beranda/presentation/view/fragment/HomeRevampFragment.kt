@@ -216,6 +216,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
+        private const val REQUEST_CODE_LOGIN = 131
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -998,6 +999,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         if (isAddressChanged) {
+            chooseAddressWidgetInitialized = false
             val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
             val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
@@ -1529,12 +1531,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onGoToLogin() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
-        val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
-        intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        activity?.let {
-            it.startActivities(arrayOf(intentHome, intent))
-            it.finish()
-        }
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     private fun onGoToCreateShop() {
@@ -1691,6 +1688,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 handleWishlistAction(productCardOptionsModel)
                             }
                         })
+            }
+            REQUEST_CODE_LOGIN -> {
+                activity?.let {
+                    val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+                    val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    if (resultCode == Activity.RESULT_OK &&
+                            getUserSession().isLoggedIn &&
+                            data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == false
+                    ) {
+                        it.startActivities(arrayOf(intentHome, intentNewUser))
+                    } else {
+                        it.startActivity(intentHome)
+                    }
+                    it.finish()
+                }
             }
         }
     }
@@ -2222,12 +2235,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        BestSellerWidgetTracker.sendClickTracker(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName, userId, widgetPosition)
+        BestSellerWidgetTracker.sendClickTracker(recommendationItem, bestSellerDataModel, userId, widgetPosition)
         RouteManager.route(context, recommendationItem.appUrl)
     }
 
     override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName, userId, widgetPosition) as HashMap<String, Any>)
+        trackingQueue?.putEETracking(BestSellerWidgetTracker.getImpressionTracker(recommendationItem, bestSellerDataModel, userId, widgetPosition) as HashMap<String, Any>)
     }
 
     override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
@@ -2237,9 +2250,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 recommendationItem.createProductCardOptionsModel(widgetPosition))
     }
 
-    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int) {
+    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
         BestSellerWidgetTracker.sendFilterClickTracker(filter.value, bestSellerDataModel.id, bestSellerDataModel.title, userId)
-        getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel)
+        getHomeViewModel().getRecommendationWidget(filter, bestSellerDataModel, selectedChipsPosition = selectedChipsPosition)
     }
 
     override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {

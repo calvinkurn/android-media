@@ -50,6 +50,7 @@
     <string name="path_any" translatable="false">/.*\\/</string>
 
     <string name="path_order_snapshot" translatable="false">/snapshot</string>
+    <string name="path_order_buyer_cancellation_request_page" translatable="false">/cancellationrequest</string>
 
 
 </resources>

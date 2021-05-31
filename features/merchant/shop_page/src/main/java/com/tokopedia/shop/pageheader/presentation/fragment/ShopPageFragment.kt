@@ -1042,6 +1042,7 @@ class ShopPageFragment :
             shopPageHeaderDataModel.broadcaster = shopPageHeaderContentData.broadcasterConfig
             shopPageHeaderDataModel.shopSnippetUrl = shopPageHeaderContentData.shopInfo.shopSnippetUrl
             shopPageHeaderDataModel.shopCoreUrl = shopPageHeaderContentData.shopInfo.shopCore.url
+            shopPageHeaderDataModel.shopBadge = shopPageHeaderContentData.shopInfo.goldOS.badge
             if (!isMyShop) {
                 chatButton.setImageResource(iconChatFloatingButton)
                 chatButton.show()

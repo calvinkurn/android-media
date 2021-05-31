@@ -6,10 +6,9 @@
     <application>
         <activity
             android:name=".list.presentation.activities.SomListActivity"
-            android:label="@string/title_som_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/SomListTheme"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

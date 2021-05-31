@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
-import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat;
+import com.tokopedia.flight.search.presentation.model.statistics.AirlineStat;
 
 /**
  * Created by alvarisi on 12/21/17.
