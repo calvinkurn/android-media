@@ -212,6 +212,8 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
         const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
 
+        const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
+
         //home component rollence section
 
         const val HOME_COMPONENT_LEGO4BANNER_EXP= "lego4_test"
