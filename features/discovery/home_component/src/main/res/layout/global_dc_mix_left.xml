@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="@dimen/unify_space_8">
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:id="@+id/background_loader"

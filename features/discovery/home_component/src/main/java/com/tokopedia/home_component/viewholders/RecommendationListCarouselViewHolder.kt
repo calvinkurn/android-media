@@ -28,7 +28,9 @@ import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.*
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_header
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -61,6 +63,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         val channelConfig = channel.channelConfig
 
         setViewportImpression(element)
+        setChannelDivider(element)
 
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {

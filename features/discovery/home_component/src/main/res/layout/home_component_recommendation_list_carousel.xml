@@ -19,7 +19,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_title"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_marginTop="@dimen/dp_12">
+        android:paddingBottom="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8">
 
         <View
             android:id="@+id/list_carousel_view"

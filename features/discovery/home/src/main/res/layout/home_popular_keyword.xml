@@ -16,6 +16,7 @@
         android:id="@+id/container_popular_keyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/unify_space_8"
         android:paddingTop="@dimen/dp_8">
 
         <ViewStub

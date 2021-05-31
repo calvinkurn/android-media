@@ -5,6 +5,7 @@
     android:id="@+id/recharge_bu_content_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_8"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent">
 

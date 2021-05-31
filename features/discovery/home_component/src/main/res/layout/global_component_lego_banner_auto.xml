@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_title"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:paddingBottom="@dimen/unify_space_8"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <com.tokopedia.home_component.customview.DynamicChannelHeaderView

@@ -19,6 +19,7 @@
         app:layout_constraintTop_toBottomOf="@+id/channel_title"
         android:descendantFocusability="blocksDescendants"
         android:id="@+id/content_container"
+        android:paddingBottom="@dimen/unify_space_8"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <com.tokopedia.home_component.customview.DynamicChannelHeaderView
