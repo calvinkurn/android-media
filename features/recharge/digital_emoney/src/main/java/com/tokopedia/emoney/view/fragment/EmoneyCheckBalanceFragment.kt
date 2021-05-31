@@ -115,7 +115,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             } else {
                 showError(ErrorHandler.getErrorMessage(context, MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD)),
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
-                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
                         true)
             }
         } else if(CardUtils.isBrizziCard(intent)) {
@@ -166,8 +166,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         emoneyBalanceViewModel.errorCardMessage.observe(this, Observer {
-            showError(ErrorHandler.getErrorMessage(context, it), resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
-                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card),
+            showError(ErrorHandler.getErrorMessage(context, it),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
                     true
             )
         })

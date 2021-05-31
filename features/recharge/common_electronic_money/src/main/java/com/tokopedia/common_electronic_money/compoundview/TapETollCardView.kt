@@ -9,8 +9,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -101,11 +102,9 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         buttonTryAgain.visibility = if(isButtonShow) View.VISIBLE else View.GONE
 
         if(!imageUrl.isNullOrEmpty()){
-            imageviewError.loadImage(imageUrl){
-                setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
-            }
+            imageviewError.loadImage(imageUrl, R.drawable.emoney_ic_nfc_inactive_placeholder)
         } else {
-            imageviewError.loadImage(resources.getDrawable(R.drawable.emoney_revamp_connection_issue))
+            imageviewError.loadImageDrawable(R.drawable.emoney_revamp_connection_issue)
         }
 
         buttonTryAgain.apply {
@@ -128,9 +127,7 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
         textLabel.text = errorMessage
         lottieAnimationView.visibility = View.GONE
         imageviewError.visibility = View.VISIBLE
-        imageviewError.loadImage(resources.getString(R.string.emoney_nfc_not_found)){
-            setPlaceHolder(R.drawable.emoney_ic_nfc_inactive_placeholder)
-        }
+        imageviewError.loadImage(resources.getString(R.string.emoney_nfc_not_found), R.drawable.emoney_ic_nfc_inactive_placeholder)
         buttonTryAgain.visibility = View.GONE
     }
 
