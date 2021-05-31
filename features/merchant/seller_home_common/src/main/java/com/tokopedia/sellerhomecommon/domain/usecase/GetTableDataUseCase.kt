@@ -52,7 +52,7 @@ class GetTableDataUseCase(
             val dataKeys = dataKey.map {
                 DataKeyModel(
                         key = it.first,
-                        jsonParams = dynamicParameter.copy(limit = limit, postFilter = it.second).toJsonString()
+                        jsonParams = dynamicParameter.copy(limit = limit, tableFilter = it.second).toJsonString()
                 )
             }
             return RequestParams.create().apply {
