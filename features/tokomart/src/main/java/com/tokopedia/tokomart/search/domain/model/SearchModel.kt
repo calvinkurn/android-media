@@ -3,6 +3,8 @@ package com.tokopedia.tokomart.search.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.home_component.data.DynamicHomeChannelCommon
+import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 
 data class SearchModel(
@@ -17,4 +19,8 @@ data class SearchModel(
         @SerializedName("quick_filter")
         @Expose
         val quickFilter: DataValue = DataValue(),
+
+        @SerializedName("channel")
+        @Expose
+        val bannerChannel: Channels = Channels(),
 )

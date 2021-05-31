@@ -19,18 +19,19 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
+import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
+import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
@@ -43,7 +44,6 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataV
 import com.tokopedia.tokomart.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataView
-import com.tokopedia.tokomart.searchcategory.presentation.model.util.DummyDataViewGenerator
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
@@ -186,7 +186,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createHeaderVisitableList(headerDataView: HeaderDataView): List<Visitable<*>> {
         val headerList = mutableListOf(
                 ChooseAddressDataView(),
-                DummyDataViewGenerator.generateBannerDataView(),
+                createBannerDataView(headerDataView),
                 TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
         )
 
@@ -199,6 +199,14 @@ abstract class BaseSearchCategoryViewModel(
         headerList.add(ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText))
 
         return headerList
+    }
+
+    private fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
+        val channel = headerDataView.bannerChannel
+        val position = 1
+        val channelModel = DynamicChannelComponentMapper.mapChannelToComponent(channel, position)
+
+        return BannerDataView(channelModel)
     }
 
     private fun createCategoryFilterItemList(categoryFilter: Filter) =
@@ -556,6 +564,7 @@ abstract class BaseSearchCategoryViewModel(
             val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
             categoryFilterDataValue: DataValue = DataValue(),
             val quickFilterDataValue: DataValue = DataValue(),
+            val bannerChannel: Channels = Channels(),
     ) {
         val categoryFilterDataValue = DataValue(
                 filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)

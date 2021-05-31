@@ -87,6 +87,7 @@ class CategoryViewModel @Inject constructor (
                 aceSearchProductHeader = categoryModel.searchProduct.header,
                 categoryFilterDataValue = categoryModel.categoryFilter,
                 quickFilterDataValue = categoryModel.quickFilter,
+                bannerChannel = categoryModel.bannerChannel,
         )
 
         val contentDataView = ContentDataView(

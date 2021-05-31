@@ -64,6 +64,7 @@ class SearchViewModel @Inject constructor (
                 aceSearchProductHeader = searchModel.searchProduct.header,
                 categoryFilterDataValue = searchModel.categoryFilter,
                 quickFilterDataValue = searchModel.quickFilter,
+                bannerChannel = searchModel.bannerChannel,
         )
 
         val contentDataView = ContentDataView(

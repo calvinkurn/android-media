@@ -1,18 +1,20 @@
 package com.tokopedia.tokomart.search.domain.usecase
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.data.createAceSearchProductRequest
 import com.tokopedia.tokomart.searchcategory.data.createCategoryFilterRequest
+import com.tokopedia.tokomart.searchcategory.data.createDynamicChannelRequest
 import com.tokopedia.tokomart.searchcategory.data.createQuickFilterRequest
 import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
+import com.tokopedia.tokomart.searchcategory.data.mapper.getBanner
 import com.tokopedia.tokomart.searchcategory.data.mapper.getCategoryFilter
 import com.tokopedia.tokomart.searchcategory.data.mapper.getQuickFilter
 import com.tokopedia.tokomart.searchcategory.data.mapper.getSearchProduct
 import com.tokopedia.tokomart.searchcategory.utils.CATEGORY_TOKONOW
 import com.tokopedia.tokomart.searchcategory.utils.QUICK_FILTER_TOKONOW
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_SEARCH
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetSearchFirstPageUseCase(
@@ -28,6 +30,7 @@ class GetSearchFirstPageUseCase(
         graphqlUseCase.addRequest(createAceSearchProductRequest(queryParams))
         graphqlUseCase.addRequest(createCategoryFilterRequest(categoryFilterParams))
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
+        graphqlUseCase.addRequest(createDynamicChannelRequest(TOKONOW_SEARCH))
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 
@@ -35,6 +38,7 @@ class GetSearchFirstPageUseCase(
                 searchProduct = getSearchProduct(graphqlResponse),
                 categoryFilter = getCategoryFilter(graphqlResponse),
                 quickFilter = getQuickFilter(graphqlResponse),
+                bannerChannel = getBanner(graphqlResponse),
         )
     }
 

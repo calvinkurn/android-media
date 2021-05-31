@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -21,6 +22,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterMod
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -32,7 +34,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.common.base.listener.BannerComponentListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
@@ -221,11 +223,13 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onBannerClick(applink: String) {
-        // TODO: Route to applink
-        Toaster.build(requireView(),
-                "Navigate to Applink",
-                Toaster.TYPE_NORMAL,
-                Toaster.LENGTH_SHORT)
+        context?.let {
+            RouteManager.route(it, applink)
+        }
+    }
+
+    override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
+
     }
 
     override fun openFilterPage() {
