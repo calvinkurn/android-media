@@ -40,7 +40,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
 
     private fun setupView(element: WidgetGradeBenefitUiModel) = with(itemView) {
         tvPmLearMorePowerMerchant.setOnClickListener {
-            RouteManager.route(context, Constant.Url.POWER_MERCHANT_FEATURES)
+            RouteManager.route(context, element.ctaApplink)
         }
 
         val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO

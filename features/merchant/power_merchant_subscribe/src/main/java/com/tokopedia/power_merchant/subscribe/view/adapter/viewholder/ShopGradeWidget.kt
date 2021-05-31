@@ -91,7 +91,7 @@ class ShopGradeWidget(
         tvPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         icPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         tvPmShopScoreTips.setOnClickListener {
-            RouteManager.route(context, Constant.Url.URL_SHOP_PERFORMANCE_TIPS)
+            RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
             powerMerchantTracking.sendEventClickTipsToImproveShopScore()
         }
     }
