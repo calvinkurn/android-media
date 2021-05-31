@@ -42,6 +42,7 @@
             android:paddingEnd="@dimen/shc_dimen_12dp"
             android:paddingBottom="@dimen/shc_dimen_6dp"
             android:textColor="@color/Unify_N700"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvTableWidgetTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvTableWidgetTitle"
