@@ -1791,4 +1791,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val appLink = ApplinkConst.ORDER_BUYER_CANCELLATION_REQUEST_PAGE
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
+    
+    @Test
+    fun `check login by qr appLink then should return tokopedia internal login by qr in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/qr-login"
+        assertEqualsDeepLinkMapper(ApplinkConst.QR_LOGIN, expectedDeepLink)
+    }
 }
