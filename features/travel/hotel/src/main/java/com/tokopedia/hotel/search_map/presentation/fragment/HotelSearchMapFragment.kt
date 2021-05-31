@@ -593,6 +593,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         googleMap.uiSettings.isZoomGesturesEnabled = true
                         googleMap.uiSettings.isRotateGesturesEnabled = false
                         googleMap.uiSettings.isScrollGesturesEnabled = true
+                        googleMap.uiSettings.isTiltGesturesEnabled = false
 
                         if (!isViewFullMap) {
                             trackingHotelUtil.searchViewFullMap(context,
@@ -762,6 +763,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isZoomGesturesEnabled = true
             googleMap.uiSettings.isRotateGesturesEnabled = false
             googleMap.uiSettings.isScrollGesturesEnabled = true
+            googleMap.uiSettings.isTiltGesturesEnabled = false
 
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveStartedListener(this)
