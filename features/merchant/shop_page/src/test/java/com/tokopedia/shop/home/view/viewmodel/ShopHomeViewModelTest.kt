@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -97,6 +98,8 @@ class ShopHomeViewModelTest {
     lateinit var shopProductSortMapper: ShopProductSortMapper
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
+    @RelaxedMockK
+    lateinit var context: Context
     private lateinit var viewModel: ShopHomeViewModel
 
     private val mockShopId = "1234"
@@ -267,7 +270,7 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(null)
-        viewModel.getMerchantVoucherCoupon(mockShopId)
+        viewModel.getMerchantVoucherCoupon(mockShopId, context)
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
     }
@@ -286,7 +289,7 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } throws Throwable()
-        viewModel.getMerchantVoucherCoupon(mockShopId)
+        viewModel.getMerchantVoucherCoupon(mockShopId, context)
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Fail)
     }
@@ -296,7 +299,7 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(null)
-        viewModel.getMerchantVoucherCoupon(mockShopId)
+        viewModel.getMerchantVoucherCoupon(mockShopId, context)
     }
 
     @Test
@@ -309,7 +312,7 @@ class ShopHomeViewModelTest {
                 )
         )
         viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
-        viewModel.getMerchantVoucherCoupon(mockShopId)
+        viewModel.getMerchantVoucherCoupon(mockShopId, context)
         assertTrue(viewModel.shopHomeLayoutData.value is Success)
     }
 
