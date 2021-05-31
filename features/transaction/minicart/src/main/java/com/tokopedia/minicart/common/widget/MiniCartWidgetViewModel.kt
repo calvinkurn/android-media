@@ -10,6 +10,7 @@ import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartWidgetDataUseCase
 import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MiniCartWidgetViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,

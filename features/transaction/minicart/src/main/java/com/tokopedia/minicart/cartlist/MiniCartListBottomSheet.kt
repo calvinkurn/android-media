@@ -22,6 +22,7 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration) : MiniCartWidgetListener, MiniCartListActionListener {
@@ -31,6 +32,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private var totalAmount: TotalAmount? = null
     private var rvMiniCartList: RecyclerView? = null
     private var adapter: MiniCartListAdapter? = null
+    private var delayCalculation: Job? = null
 
     fun show(context: Context?,
              fragmentManager: FragmentManager,
@@ -70,6 +72,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 clearContentPadding = true
                 customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
                 setOnDismissListener {
+                    delayCalculation?.cancel()
                     onDismiss.invoke()
                 }
             }
@@ -133,6 +136,14 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         adapter?.hideLoading()
     }
 
+    private fun calculateProduct() {
+        delayCalculation?.cancel()
+        delayCalculation = GlobalScope.launch(Dispatchers.Main) {
+            delay(250)
+            viewModel.calculateProduct()
+        }
+    }
+
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         // no-op
@@ -147,9 +158,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onQuantityChanged(productId: String, newQty: Int) {
-        // Todo : debounce before call calculateProduct
         viewModel.updateProductQty(productId, newQty)
-        viewModel.calculateProduct()
+        calculateProduct()
     }
 
     override fun onNotesChanged() {

@@ -28,6 +28,7 @@ import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.*
 import java.util.*
 
 
@@ -89,6 +90,13 @@ class MiniCartProductViewHolder(private val view: View,
     }
 
     private var qtyTextWatcher: TextWatcher? = null
+    private var delayChangeQty: Job? = null
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        delayChangeQty?.cancel()
+        qtyTextWatcher = null
+    }
 
     override fun bind(element: MiniCartProductUiModel) {
         renderProductImage(element)
@@ -384,10 +392,14 @@ class MiniCartProductViewHolder(private val view: View,
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.toString().toIntOrZero() > element.productMaxOrder) {
-                    qtyEditorProduct?.setValue(element.productMaxOrder)
-                } else if (s.toString().toIntOrZero() < element.productMinOrder) {
-                    qtyEditorProduct?.setValue(element.productMinOrder)
+                delayChangeQty?.cancel()
+                delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
+                    delay(250)
+                    if (s.toString().toIntOrZero() > element.productMaxOrder) {
+                        qtyEditorProduct?.setValue(element.productMaxOrder)
+                    } else if (s.toString().toIntOrZero() < element.productMinOrder) {
+                        qtyEditorProduct?.setValue(element.productMinOrder)
+                    }
                 }
             }
 
