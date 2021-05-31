@@ -11,6 +11,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
+import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
@@ -45,7 +46,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     shopHomeProductViewModel = it,
                     isHasATC = isHasATC(element),
                     isHasOCCButton = element.name != RECENT_ACTIVITY,
-                    occButtonText = if(element.name == BUY_AGAIN) {
+                    occButtonText = if(isAtcOcc(element.name)) {
                         itemView.context.getString(
                                 R.string.occ_text
                         )
@@ -62,7 +63,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                         carouselProductCardPosition,
                         element,
                         productItem,
-                        isOcc = element.name == BUY_AGAIN
+                        isOcc = isAtcOcc(element.name)
                 )
             }
         }
@@ -123,6 +124,10 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         tvCarouselTitle = itemView.findViewById(R.id.tv_title)
         recyclerView = itemView.findViewById(R.id.rvCarouselRecommendation)
     }
+
+    private fun isAtcOcc(
+            widgetName: String
+    ) : Boolean = widgetName == BUY_AGAIN || widgetName == REMINDER
 
     private fun isHasATC(
        element : ShopHomeCarousellProductUiModel?
