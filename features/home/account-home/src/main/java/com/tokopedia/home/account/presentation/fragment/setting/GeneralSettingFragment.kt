@@ -203,8 +203,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
         val isShowDarkMode = remoteConfig.getBoolean(
                 RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-//        if(isShowDarkMode) {
-        if(true) {
+        if(isShowDarkMode) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false))
         }
