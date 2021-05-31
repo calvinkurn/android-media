@@ -19,4 +19,9 @@ data class FinishOrderParams(
         var lang: String = "id",
         @SerializedName("os_type")
         var osType: String = ""
-)
+) {
+    fun isValid(): Boolean {
+        val numericRegex = Regex("\\d+")
+        return orderId.matches(numericRegex) && orderId != "0" && userId.matches(numericRegex) && userId != "0"
+    }
+}

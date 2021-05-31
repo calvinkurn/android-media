@@ -60,4 +60,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
+
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
+
+apply from: '../../../jacoco_task.gradle'

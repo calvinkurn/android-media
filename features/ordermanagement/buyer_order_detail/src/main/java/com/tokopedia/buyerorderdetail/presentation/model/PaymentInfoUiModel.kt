@@ -11,7 +11,7 @@ data class PaymentInfoUiModel(
         val paymentMethodInfoItem: PaymentInfoItemUiModel,
         val ticker: TickerUiModel
 ) {
-    open class PaymentInfoItemUiModel(
+    data class PaymentInfoItemUiModel(
             val label: String,
             val value: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
@@ -20,10 +20,10 @@ data class PaymentInfoUiModel(
         }
     }
 
-    class PaymentGrandTotalUiModel(
-            label: String,
-            value: String
-    ) : PaymentInfoItemUiModel(label, value) {
+    data class PaymentGrandTotalUiModel(
+            val label: String,
+            val value: String
+    ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }

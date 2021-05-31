@@ -56,16 +56,22 @@ class BuyerOrderDetailViewModel @Inject constructor(
         get() = _multiAtcResult
 
     private fun getOrderId(): String {
-        return buyerOrderDetailResult.value.takeIf { it is Success }?.let {
-            (it as Success).data.orderStatusUiModel.orderStatusHeaderUiModel.orderId
-        }.orEmpty()
+        val currentBuyerOrderDetailResult = buyerOrderDetailResult.value
+        return if (currentBuyerOrderDetailResult is Success) {
+            currentBuyerOrderDetailResult.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId
+        } else "0"
     }
 
     private fun getFinishOrderActionStatus(): String {
-        val statusId = buyerOrderDetailResult.value.takeIf { it is Success }?.let {
-            (it as Success).data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId
-        }.orEmpty()
+        val statusId = getOrderStatusId()
         return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < 600) BuyerOrderDetailConst.ACTION_FINISH_ORDER else ""
+    }
+
+    private fun getOrderStatusId(): String {
+        val currentBuyerOrderDetailResult = buyerOrderDetailResult.value
+        return if (currentBuyerOrderDetailResult is Success) {
+            currentBuyerOrderDetailResult.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId
+        } else ""
     }
 
     private fun getShopId(): String {
@@ -87,7 +93,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
-    fun getBuyerOrderDetail(orderId: String, paymentId: String, cart: String = "") {
+    fun getBuyerOrderDetail(orderId: String, paymentId: String, cart: String) {
         launchCatchError(block = {
             val param = GetBuyerOrderDetailParams(cart, orderId, paymentId)
             _buyerOrderDetailResult.postValue(Success(getBuyerOrderDetailUseCase.get().execute(param)))
