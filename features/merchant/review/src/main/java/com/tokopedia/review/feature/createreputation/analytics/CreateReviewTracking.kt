@@ -278,7 +278,7 @@ object CreateReviewTracking {
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
                 CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SUBMIT,
-                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT, orderId, productId, rating, textLength > 0, textLength, numberOfPicture, isAnonymous.toString(), isEligible.toString(), isTemplateAvailable.toString(), templateSelectedCount.toString()),
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT, orderId, productId, rating, textLength > 0, textLength, numberOfPicture, isAnonymous.toString(), isEligible.toString(), isTemplateAvailable.toString(), templateSelectedCount),
                 productId,
                 userId
         ))
