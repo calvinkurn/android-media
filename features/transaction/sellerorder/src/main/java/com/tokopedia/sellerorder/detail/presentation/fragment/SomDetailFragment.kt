@@ -15,9 +15,7 @@ import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.*
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -39,9 +37,6 @@ import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.convertFormatDate
-import com.tokopedia.kotlin.extensions.convertMonth
-import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -134,7 +129,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         RefreshHandler.OnRefreshHandlerListener,
         SomBottomSheetRejectOrderAdapter.ActionListener,
         SomDetailAdapter.ActionListener,
-        SomBottomSheetRejectReasonsAdapter.ActionListener, Toolbar.OnMenuItemClickListener,
+        SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener {
 
     @Inject
@@ -293,15 +288,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {
         showBuyerRequestCancelBottomSheet(it)
     }
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.som_action_chat -> {
-                doClickChat()
-                true
-            }
-            else -> false
-        }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         som_detail_toolbar?.addCustomRightContent(chatIcon)
@@ -1380,13 +1366,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
-                som_detail_toolbar?.inflateMenu(R.menu.chat_menu)
                 som_detail_toolbar?.title = getString(R.string.title_som_detail)
                 som_detail_toolbar?.isShowBackButton = showBackButton()
                 som_detail_toolbar?.setNavigationOnClickListener {
                     onBackPressed()
                 }
-                som_detail_toolbar?.setOnMenuItemClickListener(this@SomDetailFragment)
             }
         }
     }
