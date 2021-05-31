@@ -11,6 +11,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
@@ -30,6 +34,8 @@ import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -77,6 +83,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        switchPMToWebView()
         setContentView(R.layout.activity_pm_subsription)
         window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
@@ -365,6 +372,16 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         bottomSheet.show(supportFragmentManager)
     }
 
+    private fun switchPMToWebView() {
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
+        val isSwitchPMToWebView =  remoteConfig.getBoolean(RemoteConfigKey.PM_SWITCH_TO_WEB_VIEW, false)
+
+        if (isSwitchPMToWebView) {
+            RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, PowerMerchantDeepLinkMapper.PM_WEBVIEW_URL)
+            finish()
+        }
+    }
+    
     private fun logToCrashlytics(throwable: Throwable, message: String) {
         PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
     }
