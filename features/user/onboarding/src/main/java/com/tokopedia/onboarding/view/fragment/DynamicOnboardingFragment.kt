@@ -93,7 +93,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                     intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     if (resultCode == Activity.RESULT_OK &&
                             userSession.isLoggedIn &&
-                            data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == true
+                            data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == false
                     ) {
                         it.startActivities(arrayOf(intentHome, intentNewUser))
                     } else {
