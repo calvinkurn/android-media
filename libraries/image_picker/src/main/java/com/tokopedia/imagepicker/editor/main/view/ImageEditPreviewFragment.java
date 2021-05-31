@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
 import com.tokopedia.imagepicker.editor.watermark.Watermark;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilderKt;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkKt;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
@@ -378,29 +380,23 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         Uri inputUri = Uri.fromFile(new File(edittedImagePath));
         Uri outputUri = Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString());
 
-        Subscription preRenderBitmap = Observable.just(inputUri)
-                .flatMap((Func1<Uri, Observable<Uri>>) uri -> {
-                    try {
-                        gestureCropImageView.setImageUri(inputUri,
-                                Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString()));
-                    } catch (Exception ignored) { }
-                    return Observable.just(outputUri);
-                })
-                .delay(2, TimeUnit.SECONDS)
-                .flatMap((Func1<Uri, Observable<Watermark>>) uri -> {
-                    Watermark result = WatermarkBuilder
+        try {
+            gestureCropImageView.setImageUri(inputUri, outputUri);
+        } catch (Exception ignored) { }
+
+        new Handler().postDelayed(() -> {
+            Subscription preRenderBitmap = Observable.just(inputUri)
+                    .flatMap((Func1<Uri, Observable<Uri>>) uri -> Observable.just(outputUri))
+                    .flatMap((Func1<Uri, Observable<WatermarkKt>>) uri -> Observable.just(WatermarkBuilderKt
                             .create(requireContext(), gestureCropImageView)
                             .loadWatermarkText("Tokopedia")
-                            .getWatermark();
+                            .getWatermark()))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result -> result.setToImageView(gestureCropImageView));
 
-                    return Observable.just(result);
-                })
-                .delay(2, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> result.setToImageView(gestureCropImageView));
-
-        compositeSubscription.add(preRenderBitmap);
+            compositeSubscription.add(preRenderBitmap);
+        }, 2000);
     }
 
     private void processOptions() {
