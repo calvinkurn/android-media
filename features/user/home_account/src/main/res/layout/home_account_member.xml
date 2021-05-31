@@ -23,7 +23,7 @@
         android:paddingTop="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/layout_lvl0"
         android:paddingBottom="@dimen/spacing_lvl3"
-        app:icon_color_night_enable="@color/home_account_icon_dark"
+        app:icon_color_night_enable="@color/home_account_dms_icon_dark"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@+id/home_account_member_layout_title"
         app:layout_constraintEnd_toEndOf="parent"
