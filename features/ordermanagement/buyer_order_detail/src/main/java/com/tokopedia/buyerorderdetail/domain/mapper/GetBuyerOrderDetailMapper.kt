@@ -12,8 +12,8 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
-                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId),
-                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta)
+                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
+                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id)
         )
     }
 
@@ -27,7 +27,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
     private fun mapOrderStatusUiModel(orderStatus: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.OrderStatus, tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo, preOrder: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.PreOrder, invoice: String, invoiceUrl: String, deadline: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Deadline, paymentDate: String, orderId: String): OrderStatusUiModel {
         return OrderStatusUiModel(
                 orderStatusHeaderUiModel = mapOrderStatusHeaderUiModel(orderStatus, preOrder, orderId),
-                orderStatusInfoUiModel = mapOrderStatusInfoUiModel(invoice, invoiceUrl, deadline, paymentDate),
+                orderStatusInfoUiModel = mapOrderStatusInfoUiModel(invoice, invoiceUrl, deadline, paymentDate, orderStatus.id, orderId),
                 ticker = mapTicker(tickerInfo)
         )
     }
@@ -42,16 +42,16 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String): ProductListUiModel {
+    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel {
         return ProductListUiModel(
-                productList = mapProductList(products, orderId),
-                productListHeaderUiModel = mapProductListHeaderUiModel(shop)
+                productList = mapProductList(products, orderId, orderStatusId),
+                productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId)
         )
     }
 
-    private fun mapShipmentInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta): ShipmentInfoUiModel {
+    private fun mapShipmentInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta, orderId: String, orderStatusId: String): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
-                awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum),
+                awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
                 courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
                 courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
                 headerUiModel = mapPlainHeader(BuyerOrderDetailConst.SECTION_HEADER_SHIPMENT_INFO),
@@ -135,11 +135,13 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapOrderStatusInfoUiModel(invoice: String, invoiceUrl: String, deadline: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Deadline, paymentDate: String): OrderStatusUiModel.OrderStatusInfoUiModel {
+    private fun mapOrderStatusInfoUiModel(invoice: String, invoiceUrl: String, deadline: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Deadline, paymentDate: String, orderStatusId: String, orderId: String): OrderStatusUiModel.OrderStatusInfoUiModel {
         return OrderStatusUiModel.OrderStatusInfoUiModel(
                 deadline = mapDeadlineUiModel(deadline),
                 invoice = mapInvoiceUiModel(invoice, invoiceUrl),
-                purchaseDate = paymentDate
+                purchaseDate = paymentDate,
+                orderId = orderId,
+                orderStatusId = orderStatusId
         )
     }
 
@@ -203,12 +205,14 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapProductListHeaderUiModel(shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop): ProductListUiModel.ProductListHeaderUiModel {
+    private fun mapProductListHeaderUiModel(shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel.ProductListHeaderUiModel {
         return ProductListUiModel.ProductListHeaderUiModel(
                 header = BuyerOrderDetailConst.SECTION_HEADER_PRODUCT_LIST,
+                orderId = orderId,
                 shopBadgeUrl = shop.badgeUrl,
                 shopName = shop.shopName,
-                shopId = shop.shopId
+                shopId = shop.shopId,
+                orderStatusId = orderStatusId
         )
     }
 
@@ -216,17 +220,18 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         return if (os) 2 else if (pm) 1 else 0
     }
 
-    private fun mapProductList(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, orderId: String): List<ProductListUiModel.ProductUiModel> {
+    private fun mapProductList(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, orderId: String, orderStatusId: String): List<ProductListUiModel.ProductUiModel> {
         return products.map {
-            mapProduct(it, orderId)
+            mapProduct(it, orderId, orderStatusId)
         }
     }
 
-    private fun mapProduct(product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product, orderId: String): ProductListUiModel.ProductUiModel {
+    private fun mapProduct(product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product, orderId: String, orderStatusId: String): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
                 button = mapActionButton(product.button),
                 orderDetailId = product.orderDetailId,
                 orderId = orderId,
+                orderStatusId = orderStatusId,
                 price = product.price,
                 priceText = product.priceText,
                 productId = product.productId,
@@ -257,9 +262,11 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
         )
     }
 
-    private fun mapAwbInfoUiModel(shippingRefNum: String): ShipmentInfoUiModel.AwbInfoUiModel {
+    private fun mapAwbInfoUiModel(shippingRefNum: String, orderStatusId: String, orderId: String): ShipmentInfoUiModel.AwbInfoUiModel {
         return ShipmentInfoUiModel.AwbInfoUiModel(
-                awbNumber = shippingRefNum
+                awbNumber = shippingRefNum,
+                orderId = orderId,
+                orderStatusId = orderStatusId
         )
     }
 

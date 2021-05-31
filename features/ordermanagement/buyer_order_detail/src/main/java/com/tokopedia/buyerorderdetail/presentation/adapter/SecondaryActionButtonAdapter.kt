@@ -41,7 +41,7 @@ class SecondaryActionButtonAdapter(private val listener: ActionButtonClickListen
             itemView.tvBuyerOrderDetailSecondaryActionButton.text = button?.label.orEmpty()
             itemView.tvBuyerOrderDetailSecondaryActionButton.setOnClickListener {
                 button?.let {
-                    listener.onActionButtonClicked(button)
+                    listener.onActionButtonClicked(false, button)
                 }
             }
         }

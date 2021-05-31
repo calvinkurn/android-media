@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_awb.view.*
@@ -44,6 +45,7 @@ class AwbInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiM
         element?.let {
             Utils.copyText(itemView.context, LABEL_AWB, it.awbNumber)
             showToaster(itemView.context.getString(R.string.message_awb_copied))
+            BuyerOrderDetailTracker.eventClickCopyOrderAwb(it.orderStatusId, it.orderId)
         }
     }
 

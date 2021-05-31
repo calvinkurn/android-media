@@ -4,6 +4,7 @@ import android.animation.LayoutTransition
 import android.graphics.Color
 import android.view.View
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
@@ -98,12 +99,14 @@ class OrderStatusInfoViewHolder(
         element?.let {
             Utils.copyText(itemView.context, LABEL_INVOICE, it.invoice.invoice)
             showToaster(itemView.context.getString(R.string.message_invoice_copied))
+            BuyerOrderDetailTracker.eventClickCopyOrderInvoice(it.orderStatusId, it.orderId)
         }
     }
 
     private fun goToPrintInvoicePage() {
         element?.let {
             navigator.goToPrintInvoicePage(it.invoice.url, it.invoice.invoice)
+            BuyerOrderDetailTracker.eventClickSeeOrderInvoice(it.orderStatusId, it.orderId)
         }
     }
 }

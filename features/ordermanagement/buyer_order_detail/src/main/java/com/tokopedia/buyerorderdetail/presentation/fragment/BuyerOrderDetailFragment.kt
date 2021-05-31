@@ -19,6 +19,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerConstant
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
@@ -117,6 +119,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 viewModel.buyerOrderDetailResult.value?.let {
                     if (it is Success) {
                         navigator.goToAskSeller(it.data)
+                        BuyerOrderDetailTracker.eventClickChatIcon(
+                                it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId,
+                                it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId)
                     }
                 }
             }
@@ -167,17 +172,48 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    override fun onActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        when (button.key) {
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> onAskSellerActionButtonClicked()
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> onRequestCancelActionButtonClicked(button)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> onTrackShipmentActionButtonClicked(button)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button.url)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_VIEW_COMPLAINT -> onViewComplaintActionButtonClicked(button.url)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER, BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> onReceiveConfirmationActionButtonClicked(button)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> onHelpActionButtonClicked(button)
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> onBuyAgainAllProductButtonClicked()
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_GIVE_REVIEW -> onGiveReviewActionButtonClicked(button.url)
+    override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: ActionButtonsUiModel.ActionButton) {
+        val buttonName = when (button.key) {
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> {
+                onAskSellerActionButtonClicked()
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHAT_SELLER
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> {
+                onRequestCancelActionButtonClicked(button)
+                BuyerOrderDetailTrackerConstant.BUTTON_CANCEL_ORDER
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> {
+                onTrackShipmentActionButtonClicked(button)
+                BuyerOrderDetailTrackerConstant.BUTTON_TRACK_ORDER
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> {
+                onComplaintActionButtonClicked(button.url)
+                BuyerOrderDetailTrackerConstant.BUTTON_COMPLAINT_ORDER
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_VIEW_COMPLAINT -> {
+                onViewComplaintActionButtonClicked(button.url)
+                ""
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER, BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> {
+                onReceiveConfirmationActionButtonClicked(button)
+                BuyerOrderDetailTrackerConstant.BUTTON_FINISH_ORDER
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> {
+                onHelpActionButtonClicked(button)
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_HELP
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> {
+                onBuyAgainAllProductButtonClicked()
+                ""
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_GIVE_REVIEW -> {
+                onGiveReviewActionButtonClicked(button.url)
+                BuyerOrderDetailTrackerConstant.BUTTON_REVIEW_ORDER
+            }
+            else -> ""
+        }
+        if (buttonName.isNotBlank()) {
+            trackClickActionButton(isFromPrimaryButton, buttonName)
         }
     }
 
@@ -238,6 +274,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onViewComplaintActionButtonClicked(url: String) {
         navigator.openAppLink(url)
+        viewModel.buyerOrderDetailResult.value.let {
+            if (it is Success) {
+                BuyerOrderDetailTracker.eventClickSeeComplaint(
+                        it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId,
+                        it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId
+                )
+            }
+        }
     }
 
     private fun onReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
@@ -494,7 +538,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         return View.OnClickListener {
             viewModel.buyerOrderDetailResult.value?.let {
                 if (it is Success) {
-                    onActionButtonClicked(it.data.actionButtonsUiModel.primaryActionButton)
+                    onActionButtonClicked(true, it.data.actionButtonsUiModel.primaryActionButton)
                 }
             }
         }
@@ -595,6 +639,18 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun stopLoadTimeMonitoring() {
         rvBuyerOrderDetail?.post {
             buyerOrderDetailLoadMonitoring?.stopRenderPerformanceMonitoring()
+        }
+    }
+
+    private fun trackClickActionButton(fromPrimaryButton: Boolean, buttonName: String) {
+        viewModel.buyerOrderDetailResult.value?.let {
+            if (it is Success) {
+                BuyerOrderDetailTracker.eventClickActionButton(
+                        isPrimaryButton = fromPrimaryButton,
+                        buttonName = buttonName,
+                        orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                        orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
+            }
         }
     }
 }

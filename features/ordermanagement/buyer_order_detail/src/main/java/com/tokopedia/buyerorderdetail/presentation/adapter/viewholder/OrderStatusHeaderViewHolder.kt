@@ -2,8 +2,8 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info_header
 class OrderStatusHeaderViewHolder(
         itemView: View?,
         private val navigator: BuyerOrderDetailNavigator
-) : AbstractViewHolder<OrderStatusUiModel.OrderStatusHeaderUiModel>(itemView) {
+) : BaseToasterViewHolder<OrderStatusUiModel.OrderStatusHeaderUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_status_info_header
@@ -23,11 +23,11 @@ class OrderStatusHeaderViewHolder(
         setupSeeOrderStatusDetail()
     }
 
-    private var orderId: String = ""
+    private var element: OrderStatusUiModel.OrderStatusHeaderUiModel? = null
 
     override fun bind(element: OrderStatusUiModel.OrderStatusHeaderUiModel?) {
         element?.let {
-            orderId = it.orderId
+            this.element = element
             setupIndicatorColor(it.indicatorColor)
             setupStatusHeader(it.orderStatus)
             setupPreOrderLabel(it.preOrder)
@@ -41,7 +41,7 @@ class OrderStatusHeaderViewHolder(
                 val newItem = it.second
                 if (oldItem is OrderStatusUiModel.OrderStatusHeaderUiModel && newItem is OrderStatusUiModel.OrderStatusHeaderUiModel) {
                     itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-                    this.orderId = newItem.orderId
+                    this.element = element
                     if (oldItem.indicatorColor != newItem.indicatorColor) {
                         setupIndicatorColor(newItem.indicatorColor)
                     }
@@ -62,7 +62,13 @@ class OrderStatusHeaderViewHolder(
     private fun setupSeeOrderStatusDetail() {
         itemView.tvBuyerOrderDetailSeeDetail?.apply {
             setOnClickListener {
-                navigator.goToTrackOrderPage(orderId)
+                val element = element
+                if (element == null || element.orderId.isBlank()) {
+                    showToaster(context.getString(R.string.error_message_please_reload_order_detail))
+                } else {
+                    navigator.goToTrackOrderPage(element.orderId)
+                    BuyerOrderDetailTracker.eventClickSeeOrderHistoryDetail(element.orderStatusId, element.orderId)
+                }
             }
         }
     }

@@ -12,7 +12,9 @@ data class ProductListUiModel(
             val header: String,
             val shopBadgeUrl: String,
             val shopId: String,
-            val shopName: String
+            val shopName: String,
+            val orderId: String,
+            val orderStatusId: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -23,6 +25,7 @@ data class ProductListUiModel(
             val button: ActionButtonsUiModel.ActionButton,
             val orderDetailId: String,
             val orderId: String,
+            val orderStatusId: String,
             val price: String,
             val priceText: String,
             val productId: String,

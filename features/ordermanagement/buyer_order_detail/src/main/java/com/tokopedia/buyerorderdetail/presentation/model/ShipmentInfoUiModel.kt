@@ -23,7 +23,9 @@ data class ShipmentInfoUiModel(
     }
 
     data class AwbInfoUiModel(
-            val awbNumber: String
+            val awbNumber: String,
+            val orderId: String,
+            val orderStatusId: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

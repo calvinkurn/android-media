@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.iconunify.IconUnify
@@ -65,7 +66,10 @@ class ProductListHeaderViewHolder(
     }
 
     private fun goToShopPage() {
-        element?.let { navigator.goToShopPage(it.shopId) }
+        element?.let {
+            navigator.goToShopPage(it.shopId)
+            BuyerOrderDetailTracker.eventClickShopName(it.orderStatusId, it.orderId)
+        }
     }
 
     private fun setupClickListener() {

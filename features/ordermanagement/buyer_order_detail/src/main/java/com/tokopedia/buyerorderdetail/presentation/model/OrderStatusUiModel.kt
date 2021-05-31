@@ -30,6 +30,8 @@ data class OrderStatusUiModel(
     data class OrderStatusInfoUiModel(
             val deadline: DeadlineUiModel,
             val invoice: InvoiceUiModel,
+            val orderId: String,
+            val orderStatusId: String,
             val purchaseDate: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {

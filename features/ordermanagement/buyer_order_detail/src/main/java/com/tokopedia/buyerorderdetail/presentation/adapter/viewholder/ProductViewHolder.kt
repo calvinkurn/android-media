@@ -7,6 +7,7 @@ import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.Utils
@@ -85,7 +86,10 @@ class ProductViewHolder(
     }
 
     private fun goToProductSnapshotPage() {
-        element?.let { navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId) }
+        element?.let {
+            navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
+            BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
+        }
     }
 
     private fun onActionButtonClicked() {
@@ -106,6 +110,7 @@ class ProductViewHolder(
     private fun seeSimilarProducts() {
         element?.let {
             navigator.openAppLink(it.button.url)
+            BuyerOrderDetailTracker.eventClickSimilarProduct(it.orderStatusId, it.orderId)
         }
     }
 
