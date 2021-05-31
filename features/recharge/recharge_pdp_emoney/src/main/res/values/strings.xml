@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="recharge_pdp_emoney_toolbar_title">E-money</string>
+    <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
 
     <string name="recharge_pdp_emoney_check_saldo">Cek Saldo</string>
     <string name="recharge_pdp_emoney_update_saldo">Update Saldo</string>

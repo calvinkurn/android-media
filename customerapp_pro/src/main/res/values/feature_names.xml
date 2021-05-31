@@ -82,7 +82,7 @@
     <string name="digital_title_postpaid_page">Pascabayar</string>
     <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
-    <string name="recharge_pdp_emoney_toolbar_title">E-money</string>
+    <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
