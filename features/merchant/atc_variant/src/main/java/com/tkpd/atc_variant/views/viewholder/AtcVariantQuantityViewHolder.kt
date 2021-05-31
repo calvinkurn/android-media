@@ -8,6 +8,7 @@ import com.tkpd.atc_variant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atc_variant.views.AtcVariantListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Yehezkiel on 11/05/21
@@ -20,13 +21,14 @@ class AtcVariantQuantityViewHolder(private val view: View,
     }
 
     private val quantityEditor = view.findViewById<QuantityEditorUnify>(R.id.qty_variant_stock)
+    private val txtMinOrder = view.findViewById<Typography>(R.id.txt_desc_quantity)
     private val container = view.findViewById<ConstraintLayout>(R.id.container_atc_variant_qty_editor)
 
-    private fun showContainer() = with(itemView) {
+    private fun showContainer() {
         container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
-    private fun hideContainer() = with(itemView) {
+    private fun hideContainer() {
         container?.layoutParams?.height = 0
     }
 
@@ -38,6 +40,8 @@ class AtcVariantQuantityViewHolder(private val view: View,
                 element.quantity = quantityEditor.getValue()
                 listener.onQuantityUpdate(quantityEditor.getValue(), element.productId)
             }
+
+            txtMinOrder.text = view.context.getString(R.string.atc_variant_min_order_builder, element.minOrder)
 
             quantityEditor.setSubstractListener {
                 element.quantity = quantityEditor.getValue()
