@@ -187,7 +187,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else {
             showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_device_not_support),
                     resources.getString(com.tokopedia.brizzi.R.string.brizzi_device_is_not_supported),
-                    resources.getString(com.tokopedia.brizzi.R.string.emoney_nfc_not_found),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_not_found),
                     false
             )
         }
