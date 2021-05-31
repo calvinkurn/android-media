@@ -11,8 +11,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
-import com.tokopedia.url.Env
-import com.tokopedia.url.TokopediaUrl
 
 /**
  * Created by Irfan Khoirul on 2019-10-08.
@@ -59,13 +57,7 @@ object DeeplinkMapperMarketplace {
     }
 
     private fun isTokoNowShopId(shopId: String): Boolean {
-        val tokoNowShopId = if(isStaging()){
-            ApplinkConst.TokoNow.TOKONOW_STAGING_SHOP_ID
-        }else{
-            ApplinkConst.TokoNow.TOKONOW_PRODUCTION_SHOP_ID
-        }
-        return shopId == tokoNowShopId
+        return shopId == ApplinkConst.TokoNow.TOKONOW_PRODUCTION_SHOP_ID
     }
 
-    private fun isStaging(): Boolean = TokopediaUrl.getInstance().TYPE == Env.STAGING
 }
