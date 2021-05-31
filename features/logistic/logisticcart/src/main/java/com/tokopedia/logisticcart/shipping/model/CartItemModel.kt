@@ -17,6 +17,7 @@ data class CartItemModel(
         var weightUnit: Int = 0,
         var weight: Double = 0.0,
         var weightFmt: String = "",
+        var weightActual: Double = 0.0,
         var quantity: Int = 0,
         var noteToSeller: String = "",
         var imageUrl: String = "",
