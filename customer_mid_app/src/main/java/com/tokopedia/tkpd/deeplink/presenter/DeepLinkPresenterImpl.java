@@ -278,7 +278,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = "";
                     break;
                 case DeepLinkChecker.LOGIN_BY_QR:
-                case DeepLinkChecker.LOGIN_BY_QR_STAGING:
                     openLoginByQr(uriData);
                     screenName = "";
                     break;
