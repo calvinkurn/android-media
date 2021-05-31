@@ -79,11 +79,10 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
     private var localCacheModel: LocalCacheModel? = null
     private var ivHeaderBackground: ImageView? = null
     private var sharedPrefs: SharedPreferences? = null
-    private var searchBarTransitionRange = 0
-    private var startToTransitionOffset = 0
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var isRefreshWidget = false
+    private var movingPosition = 0
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -94,9 +93,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
-        startToTransitionOffset = resources.getDimensionPixelOffset(R.dimen.dp_1)
-
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
@@ -160,26 +156,20 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
             rvHome?.addOnScrollListener(NavRecyclerViewScrollListener(
                     navToolbar = toolbar,
                     startTransitionPixel = homeMainToolbarHeight,
-                    toolbarTransitionRangePixel = searchBarTransitionRange,
+                    toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range),
                     navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                         override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
                         override fun onSwitchToLightToolbar() { /* nothing to do */ }
                         override fun onSwitchToDarkToolbar() {
-                            navAbTestCondition(
-                                    ifNavRevamp = {
-                                        navToolbar?.hideShadow()
-                                    }
-                            )
+                            navToolbar?.hideShadow()
                         }
-                        override fun onYposChanged(yOffset: Int) {
-                            ivHeaderBackground?.y = -(yOffset.toFloat())
-                        }
+                        override fun onYposChanged(yOffset: Int) {}
                     },
                     fixedIconColor = TOOLBAR_LIGHT_TYPE
             ))
-        }
-        activity?.let {
-            navToolbar?.setupToolbarWithStatusBar(it)
+            activity?.let {
+                toolbar.setupToolbarWithStatusBar(it)
+            }
         }
     }
 
@@ -197,7 +187,9 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
-        if (recyclerView.canScrollVertically(1) || dy != 0) {
+        movingPosition += dy
+        ivHeaderBackground?.y = -(movingPosition.toFloat())
+        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
             navToolbar?.showShadow(lineShadow = true)
         } else {
             navToolbar?.hideShadow(lineShadow = true)
@@ -261,13 +253,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     evaluateHomeComponentOnScroll(recyclerView, dy)
-
-                    val offset = recyclerView.computeVerticalScrollOffset()
-                    navAbTestCondition(
-                            ifNavOld = {
-                                ivHeaderBackground?.y = -(offset.toFloat())
-                            }
-                    )
                 }
             })
         }
