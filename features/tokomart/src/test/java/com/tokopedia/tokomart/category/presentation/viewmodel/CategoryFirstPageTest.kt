@@ -11,7 +11,11 @@ import com.tokopedia.tokomart.searchcategory.assertTitleDataView
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
+import org.hamcrest.CoreMatchers
+import org.junit.Assert
+import org.junit.Assert.assertThat
 import org.junit.Test
+import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
@@ -28,6 +32,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list footer`(visitableList, categoryModel.categoryDetail.data.navigation)
         `Then assert has next page value`(false)
+        `Then assert auto complete applink from API`(categoryModel)
     }
 
     private fun `Then assert first page visitables`(
@@ -62,6 +67,12 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
     }
 
+    private fun `Then assert auto complete applink from API`(categoryModel: CategoryModel) {
+        val expectedApplink = categoryModel.searchProduct.data.autocompleteApplink
+
+        assertThat(categoryViewModel.autoCompleteApplink, shouldBe(expectedApplink))
+    }
+
     @Test
     fun `test first page has next page`() {
         val categoryModel = "category/first-page-16-products.json".jsonToObject<CategoryModel>()
@@ -75,5 +86,6 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
+        `Then assert auto complete applink from API`(categoryModel)
     }
 }

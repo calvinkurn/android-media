@@ -29,7 +29,10 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.Product
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProduct
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterDataView
@@ -67,11 +70,12 @@ abstract class BaseSearchCategoryViewModel(
     protected val filterController = FilterController()
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
-
     protected val queryParamMutable = queryParamMap.toMutableMap()
-    val queryParam: Map<String, String> = queryParamMutable
 
+    val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
+    var autoCompleteApplink = ""
+        private set
 
     protected val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
@@ -158,7 +162,8 @@ abstract class BaseSearchCategoryViewModel(
             contentDataView: ContentDataView,
     ) {
         totalData = headerDataView.aceSearchProductHeader.totalData
-        totalFetchedData += contentDataView.productList.size
+        totalFetchedData += contentDataView.aceSearchProductData.productList.size
+        autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
 
         val filterList =
                 headerDataView.quickFilterDataValue.filter +
@@ -281,7 +286,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
-            contentDataView.productList.map(::mapToProductItemDataView)
+            contentDataView.aceSearchProductData.productList.map(::mapToProductItemDataView)
 
     private fun mapToProductItemDataView(product: Product): ProductItemDataView {
         return ProductItemDataView(
@@ -365,7 +370,7 @@ abstract class BaseSearchCategoryViewModel(
     abstract fun executeLoadMore()
 
     protected open fun onGetLoadMorePageSuccess(contentDataView: ContentDataView) {
-        totalFetchedData += contentDataView.productList.size
+        totalFetchedData += contentDataView.aceSearchProductData.productList.size
 
         updateVisitableListForNextPage(contentDataView)
         updateVisitableListLiveData()
@@ -573,7 +578,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected data class ContentDataView(
-            val productList: List<Product> = listOf(),
+            val aceSearchProductData: SearchProductData = SearchProductData(),
     )
 
     companion object {

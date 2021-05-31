@@ -15,8 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -28,6 +33,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
@@ -46,7 +52,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.unifycomponents.Toaster
+import java.util.HashMap
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -108,6 +114,10 @@ abstract class BaseSearchCategoryFragment:
         navToolbar.bringToFront()
         navToolbar.setToolbarPageName(toolbarPageName)
         navToolbar.setIcon(createNavToolbarIconBuilder())
+        navToolbar.setupSearchbar(
+                hints = getNavToolbarHint(),
+                searchbarClickCallback = ::onSearchBarClick,
+        )
     }
 
     protected abstract fun createNavToolbarIconBuilder(): IconBuilder
@@ -126,6 +136,43 @@ abstract class BaseSearchCategoryFragment:
                         disableDefaultGtmTracker = false
                 ) { }
             else this
+
+    protected open fun getNavToolbarHint() =
+            listOf(HintData("", ""))
+
+    protected open fun onSearchBarClick(hint: String) {
+        val context = context ?: return
+
+        val autoCompleteApplink = getAutoCompleteApplink()
+        val params = getModifiedAutoCompleteQueryParam(autoCompleteApplink)
+        val finalApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" +
+                UrlParamUtils.generateUrlParamString(params)
+
+        RouteManager.route(context, finalApplink)
+    }
+
+    protected open fun getAutoCompleteApplink(): String {
+        val viewModelAutoCompleteApplink = getViewModel().autoCompleteApplink
+
+        return if (viewModelAutoCompleteApplink.isEmpty())
+            getBaseAutoCompleteApplink()
+        else
+            viewModelAutoCompleteApplink
+    }
+
+    protected open fun getBaseAutoCompleteApplink() =
+            ApplinkConstInternalDiscovery.AUTOCOMPLETE
+
+    protected open fun getModifiedAutoCompleteQueryParam(
+            autoCompleteApplink: String
+    ): Map<String?, String> {
+        val urlParser = URLParser(autoCompleteApplink)
+
+        val params = urlParser.paramKeyValueMap
+        params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokoMart.SEARCH
+
+        return params
+    }
 
     protected open fun configureMiniCart() {
         val shopIds = listOf("123")
@@ -164,7 +211,8 @@ abstract class BaseSearchCategoryFragment:
     protected open fun RecyclerView.addProductItemDecoration() {
         try {
             val context = context ?: return
-            val spacing = context.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+            val unifySpace16 = com.tokopedia.unifyprinciples.R.dimen.unify_space_16
+            val spacing = context.getDimensionPixelSize(unifySpace16)
 
             if (itemDecorationCount >= 1)
                 invalidateItemDecorations()
