@@ -2,7 +2,6 @@ package com.tokopedia.wishlist.common.subscriber;
 
 import android.content.Context;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.wishlist.common.R;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
