@@ -5,9 +5,9 @@ import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantRemoteConfig
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetShopModerationStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
-import com.tokopedia.power_merchant.subscribe.view_old.util.PowerMerchantRemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
