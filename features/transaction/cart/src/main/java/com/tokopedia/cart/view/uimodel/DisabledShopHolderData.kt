@@ -9,5 +9,6 @@ data class DisabledShopHolderData(
         var shopName: String = "",
         var shopBadgeUrl: String = "",
         var isFulfillment: Boolean = false,
-        var showDivider: Boolean = false
+        var showDivider: Boolean = false,
+        var isTokoNow: Boolean = false
 )

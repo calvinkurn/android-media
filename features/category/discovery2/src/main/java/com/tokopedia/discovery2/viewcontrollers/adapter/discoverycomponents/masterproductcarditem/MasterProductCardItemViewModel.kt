@@ -49,7 +49,8 @@ class MasterProductCardItemViewModel(val application: Application, val component
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
 
-    init {
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
         componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
@@ -83,6 +84,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
+    }
+
+    fun getUserID():String? {
+        return UserSession(application).userId
     }
 
     fun getDataItemValue() = dataItem
@@ -137,6 +142,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                         campaignNotifyResponse.checkCampaignNotifyMeResponse?.let { campaignResponse ->
                             if (campaignResponse.success == true) {
                                 productItemData.notifyMe = !it
+                                dataItem.value = productItemData
                                 notifyMeCurrentStatus.value = productItemData.notifyMe
                                 showNotifyToast.value = Pair(false, campaignResponse.message)
                                 this@MasterProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.parentComponentId, components.pageEndPoint)

@@ -32,23 +32,23 @@
         android:orientation="vertical"
         android:layout_gravity="center_vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvProductName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
             tools:text="Nama Produk"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:textSize="@dimen/sp_14" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCompletionPercentage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:singleLine="true"
             tools:text="38% complete"
-            android:textColor="#868686"
+            android:textColor="@color/Unify_N300"
             android:textSize="@dimen/sp_12" />
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
@@ -68,21 +68,19 @@
         android:id="@+id/vgTrashCan"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_weight=".15"
         android:padding="@dimen/dp_5"
         android:background="@drawable/selectable_white_background"
-        android:clickable="true">
+        android:clickable="true"
+        android:focusable="true">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ivTrashCan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside"
-            android:padding="8dp"
+            app:icon_name="DELETE"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_trash_can"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     </FrameLayout>
 </LinearLayout>

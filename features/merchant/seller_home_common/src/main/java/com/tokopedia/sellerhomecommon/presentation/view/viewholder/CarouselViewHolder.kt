@@ -43,7 +43,7 @@ class CarouselViewHolder(
             null == data -> setOnLoadingState()
             data.error.isNotBlank() -> {
                 setOnErrorState()
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccessState(element)
         }
@@ -64,7 +64,7 @@ class CarouselViewHolder(
         bannerImagesShimmering.gone()
         indicatorCarouselBanner.gone()
         btnCarouselSeeAll.gone()
-        ImageHandler.loadImageWithId(itemView.imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+        ImageHandler.loadImageWithId(itemView.imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
     }
 
     private fun setOnSuccessState(element: CarouselWidgetUiModel) {

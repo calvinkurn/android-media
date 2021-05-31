@@ -3,6 +3,7 @@ package com.tokopedia.shop.open.testcase
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -32,6 +33,7 @@ import com.tokopedia.shop.open.util.clickClickableSpan
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
@@ -78,7 +80,7 @@ class ShopOpenAnalyticTest {
     }
 
     private fun testInputShopNameAndDomain() {
-        onView(firstView(withId(R.id.btn_back_input_shop)))
+        onView(allOf(instanceOf(AppCompatImageButton::class.java), isDescendantOfA(withId(R.id.toolbar_input_shop))))
                 .perform(click())
 
         onView(withText("Batal"))
@@ -130,7 +132,7 @@ class ShopOpenAnalyticTest {
             ))
         }
 
-        onView(firstView(withId(R.id.btn_back_quisioner_page)))
+        onView(allOf(instanceOf(AppCompatImageButton::class.java), isDescendantOfA(withId(R.id.toolbar_questioner))))
                 .perform(click())
 
         onView(withText("Batal"))
@@ -142,7 +144,7 @@ class ShopOpenAnalyticTest {
                 withId(R.id.checkbox_choice))))
                 .perform(click())
 
-        onView(firstView(withId(R.id.btn_skip_quisioner_page)))
+        onView(allOf(withText("Lewati"), isDescendantOfA(withId(R.id.toolbar_questioner))))
                 .perform(click())
 
         onView(withText("Batal"))

@@ -23,6 +23,8 @@ object TalkTrackingConstants {
     const val TRACKING_POSITION = "position"
     const val TRACKING_PROMOTIONS = "promotions"
     const val TRACKING_CREATIVE = "creative"
+    const val TRACKING_CREATIVE_URL = "creative_url"
+    const val TRACKING_SHOP_ID = "shopId"
 
     const val EVENT_ACTION_CLICK = "click -"
     const val EVENT_TALK = "clickPDP"
@@ -33,4 +35,5 @@ object TalkTrackingConstants {
     const val SCREEN_NAME_TALK = "/product-talk"
     const val IDR_CURRENCY = "IDR"
     const val EVENT_CATEGORY_INBOX_PRODUCT = "inbox talk - %s"
+    const val BUSINESS_UNIT_TALK_INBOX = "product detail page"
 }

@@ -14,7 +14,7 @@ import java.util.concurrent.Executors
 /**
  * Created by Lukas on 20/10/20.
  */
-class MainNavListAdapter(val mainNavTypeFactoryImpl: MainNavTypeFactoryImpl): ListAdapter<Visitable<*>, AbstractViewHolder<Visitable<*>>>(
+class MainNavListAdapter(private val mainNavTypeFactoryImpl: MainNavTypeFactoryImpl): ListAdapter<Visitable<*>, AbstractViewHolder<Visitable<*>>>(
         AsyncDifferConfig.Builder(MainNavDiffCallback)
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
                 .build()

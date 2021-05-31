@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentViewModel;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAttachmentUiModel;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class ReviewProductModelContent implements ReviewProductModel, Parcelable
     protected float reviewStar;
     protected String reviewMessage;
     protected String reviewTime;
-    protected List<ImageAttachmentViewModel> reviewAttachment;
+    protected List<ImageAttachmentUiModel> reviewAttachment;
     protected String sellerName;
     protected String shopId;
     protected String reviewId;
@@ -72,7 +72,7 @@ public class ReviewProductModelContent implements ReviewProductModel, Parcelable
         this.reviewTime = reviewTime;
     }
 
-    public void setReviewAttachment(List<ImageAttachmentViewModel> reviewAttachment) {
+    public void setReviewAttachment(List<ImageAttachmentUiModel> reviewAttachment) {
         this.reviewAttachment = reviewAttachment;
     }
 
@@ -132,7 +132,7 @@ public class ReviewProductModelContent implements ReviewProductModel, Parcelable
         return reviewTime;
     }
 
-    public List<ImageAttachmentViewModel> getReviewAttachment() {
+    public List<ImageAttachmentUiModel> getReviewAttachment() {
         return reviewAttachment;
     }
 
@@ -248,7 +248,7 @@ public class ReviewProductModelContent implements ReviewProductModel, Parcelable
         this.reviewStar = in.readFloat();
         this.reviewMessage = in.readString();
         this.reviewTime = in.readString();
-        this.reviewAttachment = in.createTypedArrayList(ImageAttachmentViewModel.CREATOR);
+        this.reviewAttachment = in.createTypedArrayList(ImageAttachmentUiModel.CREATOR);
         this.sellerName = in.readString();
         this.shopId = in.readString();
         this.reviewId = in.readString();

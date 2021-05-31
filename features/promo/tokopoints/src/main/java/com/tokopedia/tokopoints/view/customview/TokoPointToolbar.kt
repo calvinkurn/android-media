@@ -67,7 +67,7 @@ class TokoPointToolbar : Toolbar {
             val v = getChildAt(NAV_ICON_POSITION)
             if (v != null && v.layoutParams is LayoutParams && v is AppCompatImageButton) {
                 val lp = v.getLayoutParams() as LayoutParams
-                lp.width = context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_48)
+                lp.width = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_48)
                 v.setLayoutParams(lp)
                 v.invalidate()
                 v.requestLayout()
@@ -90,8 +90,8 @@ class TokoPointToolbar : Toolbar {
     fun switchToDarkMode() {
         if (currentToolbarState == ToolbarState.TOOLBAR_DARK) return
         currentToolbarState = ToolbarState.TOOLBAR_DARK
-        val whiteColor = MethodChecker.getColor(context, R.color.tp_toolbar_navigation_white_color)
-        val greyColor = MethodChecker.getColor(context, R.color.tp_toolbar_navigation_grey_color)
+        val whiteColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val greyColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
         toggleNavigationIconColor(whiteColor, greyColor)
         val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor",
                 whiteColor, greyColor)
@@ -112,8 +112,8 @@ class TokoPointToolbar : Toolbar {
     fun switchToTransparentMode() {
         if (currentToolbarState == ToolbarState.TOOLBAR_TRANSPARENT) return
         currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT
-        val whiteColor = MethodChecker.getColor(context, R.color.tp_toolbar_navigation_white_color)
-        val greyColor = MethodChecker.getColor(context, R.color.tp_toolbar_navigation_grey_color)
+        val whiteColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val greyColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400)
         toggleNavigationIconColor(greyColor, whiteColor)
         val colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor)
         colorAnim.duration = 200
@@ -122,7 +122,7 @@ class TokoPointToolbar : Toolbar {
     }
 
     fun applyAlphaToToolbarBackground(alpha: Float) {
-        mContext?.resources?.getColor(android.R.color.white)?.let { adjustAlpha(it, alpha) }?.let {
+        mContext?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)?.let { adjustAlpha(it, alpha) }?.let {
             setBackgroundColor(it)
         }
     }

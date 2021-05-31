@@ -5,11 +5,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,10 +32,6 @@ class SellerHomeModule {
 
     @SellerHomeScope
     @Provides
-    fun provideCoroutineDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
-
-    @SellerHomeScope
-    @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
             FirebaseRemoteConfigImpl(context)
 
@@ -51,5 +46,12 @@ class SellerHomeModule {
     fun provideFreeShippingTracker(userSession: UserSessionInterface): SettingFreeShippingTracker {
         val analytics = TrackApp.getInstance().gtm
         return SettingFreeShippingTracker(analytics, userSession)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideOperationalTracker(): SettingShopOperationalTracker {
+        val analytics = TrackApp.getInstance().gtm
+        return SettingShopOperationalTracker(analytics)
     }
 }

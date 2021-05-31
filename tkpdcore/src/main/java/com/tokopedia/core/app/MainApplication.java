@@ -1,16 +1,12 @@
 package com.tokopedia.core.app;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-
-import androidx.multidex.MultiDex;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
-import com.tokopedia.core.TkpdCoreRouter;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -31,14 +27,12 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
+import java.io.File;
 
 
-public abstract class MainApplication extends CoreNetworkApplication implements TkpdCoreRouter {
+public abstract class MainApplication extends CoreNetworkApplication {
 
-    public static final int DATABASE_VERSION = 7;
-    public static String PACKAGE_NAME;
-    public static MainApplication instance;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
@@ -49,30 +43,29 @@ public abstract class MainApplication extends CoreNetworkApplication implements 
     private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
     private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
 
-
-    public static MainApplication getInstance() {
-        return instance;
-    }
-
     protected void initRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(MainApplication.this);
+    public UserSession getUserSession() {
+        return userSession;
     }
 
-    public static int getCurrentVersion(Context context) {
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionCode;
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        File extCacheDir = this.getExternalCacheDir();
+        if (extCacheDir == null) {
+            GlobalConfig.EXTERNAL_CACHE_DIR = "";
+        } else {
+            GlobalConfig.EXTERNAL_CACHE_DIR = extCacheDir.getAbsolutePath();
         }
-        return 0;
+        File extFileDir = this.getExternalFilesDir(null);
+        if (extFileDir == null) {
+            GlobalConfig.EXTERNAL_FILE_DIR = "";
+        } else {
+            GlobalConfig.EXTERNAL_FILE_DIR = extFileDir.getAbsolutePath();
+        }
     }
 
     public static boolean isDebug() {
@@ -82,10 +75,8 @@ public abstract class MainApplication extends CoreNetworkApplication implements 
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
         userSession = new UserSession(this);
         initCrashlytics();
-        PACKAGE_NAME = getPackageName();
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
@@ -167,10 +158,6 @@ public abstract class MainApplication extends CoreNetworkApplication implements 
         return appComponent;
     }
 
-    public void setAppComponent(AppComponent appComponent) {
-        this.appComponent = appComponent;
-    }
-
     //this method needs to be called from here in case of migration get it tested from CM team
     @NotNull
     private Boolean initBranch(){
@@ -193,34 +180,5 @@ public abstract class MainApplication extends CoreNetworkApplication implements 
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext());
         return true;
-    }
-
-    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
-    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
-        return Class.forName(activityFullPath);
     }
 }

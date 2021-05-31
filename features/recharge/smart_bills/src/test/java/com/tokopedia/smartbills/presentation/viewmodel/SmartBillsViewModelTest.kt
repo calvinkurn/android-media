@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.smartbills.SmartBillsTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
 import com.tokopedia.usecase.coroutines.Fail
@@ -55,7 +55,7 @@ class SmartBillsViewModelTest {
         gqlResponseFail = GraphqlResponse(result, errors, false)
 
         smartBillsViewModel =
-                SmartBillsViewModel(graphqlRepository, smartBillsRepository, SmartBillsTestDispatchersProvider())
+                SmartBillsViewModel(graphqlRepository, smartBillsRepository, CoroutineTestDispatchersProvider)
 
         coEvery { userSession.userId } returns "0123456"
         coEvery { userSession.deviceId } returns "android-3.70"
@@ -110,7 +110,7 @@ class SmartBillsViewModelTest {
     fun getStatementBills_Success() {
         val statementBillsResponse = RechargeStatementBills.Response(RechargeStatementBills(
             month = 4, monthText = "April", isOngoing = true, bills = listOf(
-                RechargeBills(0, 1, "test", checkoutFields = listOf(checkoutField))
+                RechargeBills(false, 0, 1, "test", checkoutFields = listOf(checkoutField))
             )
         ))
         val result = HashMap<Type, Any>()
@@ -267,7 +267,7 @@ class SmartBillsViewModelTest {
 
     @Test
     fun createMultiCheckoutParams_Success() {
-        val bills = listOf(RechargeBills(0, 1, checkoutFields = listOf(checkoutField)))
+        val bills = listOf(RechargeBills(false, 0, 1, checkoutFields = listOf(checkoutField)))
         val actual = smartBillsViewModel.createMultiCheckoutParams(bills, userSession)
         assertNotNull(actual)
         actual?.run {

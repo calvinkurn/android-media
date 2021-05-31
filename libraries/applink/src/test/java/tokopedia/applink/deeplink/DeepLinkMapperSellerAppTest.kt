@@ -1,8 +1,10 @@
 package tokopedia.applink.deeplink
 
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.config.GlobalConfig
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -179,4 +181,86 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CONTENT_CREATE_POST, expectedDeepLink)
     }
 
+    @Test
+    fun `check seller info detail appLink then should return tokopedia internal seller info detail in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://sellerinfo"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_INFO_DETAIL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check shipping editor appLink then should return tokopedia internal seller shipping editor in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-settings-shipping"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SHIPPING_EDITOR, expectedDeepLink)
+    }
+
+    @Test
+    fun `check statistic appLink then should return tokopedia internal statistic in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/statistic_dashboard"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.STATISTIC_DASHBOARD, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller history appLink then should return seller home seller history in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_HISTORY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller history appLink then should return seller home seller history in sellerapp with search param`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product"
+        assertEqualsDeepLinkMapper("${ApplinkConst.SELLER_HISTORY}?search=product", expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller history internal appLink then should return seller home seller history in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder"
+        assertEqualsDeepLinkMapper(ApplinkConstInternalOrder.HISTORY, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller history internal appLink then should return seller home seller history in sellerapp with search param`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product"
+        assertEqualsDeepLinkMapper("${ApplinkConstInternalOrder.HISTORY}?search=product", expectedDeepLink)
+    }
+
+    @Test
+    fun `check reputation applink with tab param then should return internal review in sellerapp`() {
+        val tabInboxReview = "inbox-review"
+        val tabParam = "tab"
+
+        val appLink = Uri.parse(ApplinkConst.REPUTATION)
+                .buildUpon()
+                .appendQueryParameter(tabParam, tabInboxReview)
+                .build()
+                .toString()
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/review?${tabParam}=${tabInboxReview}"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, tabParam to tabInboxReview)
+    }
+
+    @Test
+    fun `check talk applink with filter param then should return internal talk in sellerapp`() {
+        val filterUnread = "unread"
+        val filterParam = "filter"
+
+        val appLink = Uri.parse(ApplinkConst.TALK)
+                .buildUpon()
+                .appendQueryParameter(filterParam, filterUnread)
+                .build()
+                .toString()
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/inbox-talk?${filterParam}=${filterUnread}"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+        assertEqualsDeeplinkParameters(appLink, filterParam to filterUnread)
+    }
+
+    @Test
+    fun `check shop setting appLink then should return tokopedia internal shop setting in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/menu-setting"
+        val appLink = UriUtil.buildUri(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP, "1479278")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
 }

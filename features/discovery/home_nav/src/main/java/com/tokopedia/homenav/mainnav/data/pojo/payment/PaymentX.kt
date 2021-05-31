@@ -21,5 +21,7 @@ data class PaymentX(
         val transactionID: String? = "",
         @SerializedName("applink")
         @Expose
-        val applink: String? = ""
+        val applink: String? = "",
+        @SerializedName("bankImg")
+        val bankImg: String? = ""
 )

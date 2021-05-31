@@ -142,7 +142,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                     }
 
                 })
-                .setNegativeButton(com.tokopedia.imagepicker.R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(com.tokopedia.resources.common.R.string.general_label_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }

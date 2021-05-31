@@ -13,7 +13,6 @@ import dagger.Module
 import dagger.Provides
 
 @Module(includes = [AddEditProductDraftViewModelModule::class])
-@AddEditProductDraftScope
 class AddEditProductDraftModule {
 
     @AddEditProductDraftScope

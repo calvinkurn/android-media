@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.custom
 
 import android.content.Context
+import android.graphics.drawable.Animatable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
@@ -21,5 +22,18 @@ class PlayUnifyLoader : AppCompatImageView {
                     .load(com.tokopedia.resources.common.R.drawable.ic_loading_indeterminate)
                     .into(this)
         }
+    }
+
+    fun pause() {
+        gifDrawable { stop() }
+    }
+
+    fun start() {
+        gifDrawable { start() }
+    }
+
+    private fun gifDrawable(handler: Animatable.() -> Unit) {
+        val theDrawable = drawable
+        if (theDrawable is Animatable) theDrawable.handler()
     }
 }

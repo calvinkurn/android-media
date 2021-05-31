@@ -29,6 +29,9 @@ object FlightSliceProviderUtil {
             header {
                 title = context.getString(R.string.slice_flight_title)
                 subtitle = context.getString(R.string.slice_flight_failed_desc)
+                primaryAction = SliceAction.create(buildIntentFromOrderListApplink(context),
+                        IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
+                        SMALL_IMAGE, "")
             }
         }
     }
@@ -39,6 +42,9 @@ object FlightSliceProviderUtil {
             header {
                 title = context.getString(R.string.slice_flight_title)
                 subtitle = context.getString(R.string.slice_empty_order_list)
+                primaryAction = SliceAction.create(buildIntentFromOrderListApplink(context),
+                        IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
+                        SMALL_IMAGE, "")
             }
         }
     }
@@ -74,6 +80,9 @@ object FlightSliceProviderUtil {
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
                     title = context.getString(R.string.slice_flight_title)
+                    primaryAction = SliceAction.create(buildIntentFromOrderListApplink(context),
+                            IconCompat.createWithResource(context, com.tokopedia.abstraction.R.drawable.tab_indicator_ab_tokopedia),
+                            SMALL_IMAGE, "")
                 }
 
                 orderList.forEach {
@@ -125,11 +134,11 @@ object FlightSliceProviderUtil {
 
     private fun buildIntentFromOrderListApplink(context: Context): PendingIntent =
             PendingIntent.getActivity(context, 0,
-            TravelSliceActivity.createFlightOrderListIntent(context, ApplinkConst.FLIGHT_ORDER),
+                    TravelSliceActivity.createFlightOrderListIntent(context, ApplinkConst.FLIGHT_ORDER),
                     PendingIntent.FLAG_UPDATE_CURRENT)
 
     private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent =
-        PendingIntent.getActivity(context, 0,
-                TravelSliceActivity.createFlightOrderDetailIntent(context, applink),
-                PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getActivity(context, 0,
+                    TravelSliceActivity.createFlightOrderDetailIntent(context, applink),
+                    PendingIntent.FLAG_UPDATE_CURRENT)
 }

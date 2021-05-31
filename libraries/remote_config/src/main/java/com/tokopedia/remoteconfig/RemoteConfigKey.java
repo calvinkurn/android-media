@@ -43,6 +43,7 @@ public class RemoteConfigKey {
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String CUSTOMER_HOTEL_SHOW_PROMO = "android_customer_hotel_show_promo";
     public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
+    public static final String CUSTOMER_HOTEL_SEARCH_WITH_MAP = "android_customer_hotel_search_with_map";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST = "app_flag_flight_rapid_test";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING = "app_flag_flight_seat_distancing";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
@@ -88,9 +89,6 @@ public class RemoteConfigKey {
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
-    public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
-    public static final String ANDROID_MAIN_APP_ENABLED_CACHE_PDP = "android_main_app_enabled_cache_pdp";
-
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
     public static final String NONB2_TTL = "app_nonb_2_ttl";
@@ -111,6 +109,8 @@ public class RemoteConfigKey {
     public static final String HOME_GEOLOCATION_COMPONENT_DESCRIPTION = "android_customer_home_geolocation_component_description";
     public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
     public static final String HOME_USE_GLOBAL_COMPONENT = "android_customer_home_use_global_component";
+
+    public static final String RECOMMENDATION_ENABLE_COMPARISON_WIDGET = "android_customer_recom_enable_comparison_widget";
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
@@ -150,8 +150,6 @@ public class RemoteConfigKey {
     public static final String TOPCHAT_OLD = "android_topchat_old";
     public static final String TOPCHAT_SELLER_BROADCAST = "android_topchat_seller_broadcast";
     public static final String ENABLE_PASS_GA_CLIENT_ID_WEB = "enable_pass_ga_client_to_web";
-
-    public static final String APP_ENABLE_INSURANCE_RECOMMENDATION = "app_enable_insurance_recommendation";
 
     public static final String LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE = "android_mainapp_merchant_label_free_ongkir_title";
     public static final String MAINAPP_FREE_ONGKIR_MSG = "android_mainapp_merchant_freeongkir_title";
@@ -198,6 +196,7 @@ public class RemoteConfigKey {
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
+    public static final String ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK = "app_enable_branch_utm_only_branch_link";
 
     public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
     public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
@@ -210,7 +209,7 @@ public class RemoteConfigKey {
     public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
-    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled";
+    public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled_v2";
 
     public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
 
@@ -218,7 +217,7 @@ public class RemoteConfigKey {
     public static final String FREE_SHIPPING_FEATURE_DISABLED = "android_free_shipping_feature_disabled";
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
-    public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
+    public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear_v2";
     public static final String CM_CAMPAIGN_ID_EXCLUDE_LIST = "android_cm_push_exclude_list_removal";
 
     public static final String CUSTOMER_APP_UPDATE = "android_customer_app_update";
@@ -230,9 +229,9 @@ public class RemoteConfigKey {
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
 
-    public static final String ENABLE_UOH = "android_enable_uoh";
+    public static final String NAVIGATION_ENABLE_NOTIF = "android_customer_navigation_enable_notif";
 
-    public static final String SELLER_HOME_DASHBOARD_ENABLE_CACHE = "seller_home_dashboard_enable_cache";
+    public static final String ENABLE_UOH = "android_enable_uoh";
 
     public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
 
@@ -241,4 +240,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
+
+    public static final String ENABLE_NEW_SHOP_SCORE = "android_enable_new_shop_score";
+    public static final String ENABLE_NEW_PENALTY = "android_enable_new_penalty";
+
 }

@@ -16,7 +16,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDA
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
@@ -30,7 +30,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                                     var actionDelete: ((pos: Int) -> Unit),
                                     var actionStatusChange: ((pos: Int, status: Int) -> Unit),
                                     private var editDone: ((groupId: Int) -> Unit),
-                                    private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemViewModel>(view) {
+                                    private var onClickItem: ((id: Int, priceSpent: String) -> Unit)) : HeadLineAdItemsViewHolder<HeadLineAdItemsItemModel>(view) {
 
     companion object {
         @LayoutRes
@@ -41,10 +41,13 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         TopadsSelectActionSheet.newInstance()
     }
 
-    override fun bind(item: HeadLineAdItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String) {
+    override fun bind(item: HeadLineAdItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String) {
         item.let {
 
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
+            view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
+            view.img_key.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))
+            view.scheduleImg.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
             view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
             if (selectedMode) {
                 view.img_menu.visibility = View.INVISIBLE
@@ -70,7 +73,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
             view.group_title.text = it.data.groupName
             view.label.text = it.data.groupStatusDesc
             if (countList.isNotEmpty() && adapterPosition < countList.size && adapterPosition != RecyclerView.NO_POSITION) {
-                view.total_item.text = countList[adapterPosition].totalAds.toString()
+                view.total_item.text = countList[adapterPosition].totalProducts.toString()
                 view.key_count.text = countList[adapterPosition].totalKeywords.toString()
             }
             setProgressBar(it.data)
@@ -82,8 +85,6 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                     view.pengeluaran_count.text = statsData[index].statTotalSpent
                     view.produk_terjual_count.text = statsData[index].statTotalConversion
                     view.pendapatan_count.text = statsData[index].groupTotalIncome
-                    view.total_item.visibility = View.GONE
-                    view.img_total.visibility = View.GONE
                     if (it.data.groupEndDate != TIDAK_DIBATASI) {
                         view.scheduleImg.visibility = View.VISIBLE
                         view.scheduleDate.visibility = View.VISIBLE
@@ -130,7 +131,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId, true)
         }
     }
 

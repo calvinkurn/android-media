@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.data.mapper
 
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ShopParam
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
@@ -14,11 +15,12 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 
 object ProductManageVariantMapper {
 
-    fun mapToVariantsResult(response: GetProductV3): GetVariantResult {
+    fun mapToVariantsResult(response: GetProductV3, access: ProductManageAccess): GetVariantResult {
         val variant = response.variant
         val variantSelections = variant.selections
         val variantSizeCharts = variant.sizeCharts
         val productName = response.productName
+        val isAllStockEmpty = response.isAllStockEmpty()
 
         val variants = response.variant.products.map {
             val variantName = getVariantName(it.combination, variantSelections)
@@ -28,27 +30,46 @@ object ProductManageVariantMapper {
                 it.status,
                 it.combination,
                 it.isPrimary,
+                it.isCampaign,
                 it.price,
                 it.sku,
                 it.stock,
                 it.pictures,
-                response.isAllStockEmpty()
+                isAllStockEmpty,
+                access
             )
         }
 
         return GetVariantResult(productName, variants, variantSelections, variantSizeCharts)
     }
 
-    fun EditVariantResult.updateVariant(
-        variantId: String,
-        updateBlock: (ProductVariant) -> ProductVariant
-    ): EditVariantResult {
+    fun EditVariantResult.updateVariant(variantId: String, updateBlock: (ProductVariant) -> ProductVariant): EditVariantResult {
         val variantList = variants.toMutableList()
         val variant = variants.find { it.id == variantId }
         val index = variants.indexOf(variant)
 
         variantList[index] = updateBlock.invoke(variantList[index])
-        return EditVariantResult(productId, productName, variantList, selections, sizeCharts)
+        return copy(variants = variantList)
+    }
+
+    fun EditVariantResult.setEditStockAndStatus(currentProductVariantList: List<ProductVariant>): EditVariantResult {
+        var editStock = false
+        var editStatus = false
+
+        currentProductVariantList.forEachIndexed { index, variant ->
+            val variantStockInput = variants.getOrNull(index)?.stock
+            val variantStatusInput = variants.getOrNull(index)?.status
+
+            if(variantStockInput != variant.stock) {
+                editStock = true
+            }
+
+            if(variantStatusInput != variant.status) {
+                editStatus = true
+            }
+        }
+
+        return copy(editStock = editStock, editStatus = editStatus)
     }
 
     fun mapResultToUpdateParam(shopId: String, result: EditVariantResult): UpdateVariantParam {
@@ -85,7 +106,7 @@ object ProductManageVariantMapper {
         return UpdateVariantParam(shopParam, result.productId, variantInputParam)
     }
 
-    fun mapVariantsToEditResult(productId: String, result: GetVariantResult): EditVariantResult? {
+    fun mapVariantsToEditResult(productId: String, result: GetVariantResult): EditVariantResult {
         val productName = result.productName
         val variants = result.variants
         val selections = result.selections

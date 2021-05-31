@@ -16,6 +16,7 @@ import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
@@ -43,6 +44,7 @@ class TestRecommendationPageViewModel {
     private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
     private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getPrimaryProductUseCase = mockk<GetPrimaryProductUseCase>(relaxed = true)
+    private val getTopadsIsAdsUseCase = mockk<GetTopadsIsAdsUseCase>(relaxed = true)
     private val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -54,9 +56,11 @@ class TestRecommendationPageViewModel {
             removeWishListUseCase = removeWishListUseCase,
             topAdsWishlishedUseCase = topAdsWishlishedUseCase,
             addToCartUseCase = addToCartUseCase,
+            getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
             getPrimaryProductUseCase = getPrimaryProductUseCase
     )
     private val recommendation = RecommendationItem(productId = 1234)
+    private val recommendationTopads = RecommendationItem(productId = 1234, isTopAds = true, wishlistUrl = "1234")
 
     @Test
     fun `get success data from network without product info`(){
@@ -140,7 +144,7 @@ class TestRecommendationPageViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onNext(mockWishlistModel)
         }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, true){ success, _ ->
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true){ success, _ ->
             status = success
         }
         assert(status == true)
@@ -154,7 +158,7 @@ class TestRecommendationPageViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onError(mockk())
         }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, true){ success, _ ->
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true){ success, _ ->
             status = success
         }
         assert(status == false)
@@ -216,6 +220,20 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
+    fun `null product info atc`(){
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_ERROR,
+                data = DataModel(
+                        success = 0
+                )
+        ))
+        viewModel.onAddToCart(ProductInfoDataModel())
+        Assert.assertTrue(viewModel.addToCartLiveData.value == null)
+    }
+
+    @Test
     fun `throw error atc`(){
         every {
             addToCartUseCase.createObservable(any())
@@ -236,6 +254,20 @@ class TestRecommendationPageViewModel {
         ))
         viewModel.onBuyNow(ProductInfoDataModel(productDetailData = ProductDetailData()))
         Assert.assertTrue(viewModel.buyNowLiveData.value?.status == Status.SUCCESS)
+    }
+
+    @Test
+    fun `null product info buy now`(){
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_ERROR,
+                data = DataModel(
+                        success = 0
+                )
+        ))
+        viewModel.onBuyNow(ProductInfoDataModel())
+        Assert.assertTrue(viewModel.addToCartLiveData.value == null)
     }
 
     @Test

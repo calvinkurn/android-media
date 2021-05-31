@@ -20,8 +20,8 @@ class UohFinishOrderUseCase @Inject constructor(private val gqlRepository: Graph
             val request = GraphqlRequest(QUERY, UohFinishOrder.Data::class.java, generateParam(param))
             val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<UohFinishOrder.Data>()
             Success(response.finishOrderBuyer)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
+        } catch (e: Exception) {
+            Fail(e)
         }
     }
 

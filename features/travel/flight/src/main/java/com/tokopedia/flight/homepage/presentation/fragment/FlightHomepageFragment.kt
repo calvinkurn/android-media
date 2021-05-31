@@ -20,8 +20,8 @@ import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLINK
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
@@ -34,12 +34,13 @@ import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
-import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.travelcalendar.singlecalendar.SinglePickCalendarWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -238,7 +239,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                     arrivalAirport,
                     flightClassId
             )
-            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
+            flightCalendarDialog.setListener(object : SinglePickCalendarWidget.ActionListener {
                 override fun onDateSelected(dateSelected: Date) {
                     val errorResourceId = flightHomepageViewModel.validateDepartureDate(dateSelected)
                     if (errorResourceId == -1) {
@@ -309,13 +310,14 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
-        // do nothing for now, will use for tracking later
+        flightHomepageViewModel.sendTrackingVideoBannerClick(bannerData)
     }
 
     private fun renderVideoBannerView(bannerData: TravelCollectiveBannerModel) {
         flightHomepageVideoBanner.listener = this
         flightHomepageVideoBanner.setData(bannerData)
         flightHomepageVideoBanner.build()
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(flightHomepageVideoBanner.getData())
     }
 
     private fun hideVideoBannerView() {

@@ -35,7 +35,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
 }
 
 dependencies {
@@ -47,8 +46,14 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation project(rootProject.ext.libraries.logger)
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.supportLibDependencies.exifinterface
+
+    implementation rootProject.ext.miscDependencies.lifeCycleCommon
     implementation rootProject.ext.miscDependencies.sliceCore
+    implementation rootProject.ext.miscDependencies.workManager
 }
 
 project.ext {

@@ -218,7 +218,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun setupDeleteCounter(firstDeletedItem: ShowcaseProduct) {
-        ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
+        // try catch to avoid ImageUnify crash on set image to delete product counter image
+        try {
+            if(productChoosenImage?.context?.isValidGlideContext() == true)
+                ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
+        } catch (e : Throwable) {}
         productCounterText?.text = context?.getString(
                 R.string.deleted_product_counter_text,
                 getDeletedProductSize().toString()

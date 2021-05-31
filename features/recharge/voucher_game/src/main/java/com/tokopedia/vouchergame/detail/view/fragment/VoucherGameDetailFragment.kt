@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
@@ -37,6 +36,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -45,6 +45,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
+import com.tokopedia.vouchergame.common.util.VoucherGameGqlQuery
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
@@ -75,6 +76,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var voucherGameViewModel: VoucherGameDetailViewModel
+
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     lateinit var adapter: VoucherGameDetailAdapter
 
@@ -259,6 +262,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         //do nothing
     }
 
+    override fun onLoadingAtc(showLoading: Boolean) {
+        checkout_view.onBuyButtonLoading(showLoading)
+    }
+
     override fun onCatalogPluginDataError(error: Throwable) {
 
     }
@@ -269,14 +276,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
@@ -325,6 +332,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
             override fun onCustomInputClick() {
                 if (field.isCustomInput && dropdownData.isNotEmpty()) { showInputDropdown(field, dropdownData) }
+            }
+
+            override fun onTextChangeInput() {
+                //do nothing
             }
         }
     }
@@ -544,8 +555,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             getMenuDetail(it)
-            voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    R.raw.query_voucher_game_products),
+            voucherGameViewModel.getVoucherGameProducts(VoucherGameGqlQuery.voucherGameProducts,
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }
@@ -622,6 +632,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
         return checkout_view
+    }
+
+    override fun initAddToCartViewModel() {
+        addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
     }
 
     override fun onClickNextBuyButton() {

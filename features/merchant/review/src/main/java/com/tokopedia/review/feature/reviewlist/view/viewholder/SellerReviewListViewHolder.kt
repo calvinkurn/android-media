@@ -5,11 +5,14 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.roundDecimal
 import com.tokopedia.review.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_rating_produk.view.*
 
@@ -27,11 +30,12 @@ class SellerReviewListViewHolder(val view: View,
     private val tgRatingCount: Typography = view.findViewById(R.id.tgRatingCount)
     private val tgReviewCount: Typography = view.findViewById(R.id.tgReviewCount)
     private val ivRating: AppCompatImageView = view.findViewById(R.id.ivRating)
+    private val labelKejarUlasan: Label = view.findViewById(R.id.kejarUlasanLabel)
 
     override fun bind(element: ProductReviewUiModel) {
         view.itemRatingProduct.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
-        ivItemProduct.setImageUrl(element.productImageUrl.orEmpty())
+        ivItemProduct.loadImage(element.productImageUrl.orEmpty())
         tgTitleProduct.text = element.productName
 
         tgRatingCount.text = element.rating?.roundDecimal()
@@ -46,6 +50,8 @@ class SellerReviewListViewHolder(val view: View,
                 }
             }
         }
+
+        labelKejarUlasan.showWithCondition(element.isKejarUlasan)
 
         itemView.setOnClickListener {
             sellerReviewListener.onItemProductReviewClicked(element.productID.orZero(), adapterPosition, element.productImageUrl.orEmpty())

@@ -50,26 +50,9 @@ class DigitalModule {
 
     @DigitalScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        if (context is NetworkRouter) {
-            return context
-        }
-        throw RuntimeException("Application must implement " + NetworkRouter::class.java.canonicalName)
-    }
-
-    @DigitalScope
-    @Provides
     @DigitalChuckQualifier
     fun provideChuckInterceptor(@ApplicationContext context: Context): Interceptor {
         return ChuckerInterceptor(context)
-    }
-
-    @Provides
-    @DigitalScope
-    fun provideDigitalInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: NetworkRouter,
-                                  userSession : UserSessionInterface): DigitalInterceptor {
-        return DigitalInterceptor(context, networkRouter, userSession)
     }
 
     @Provides

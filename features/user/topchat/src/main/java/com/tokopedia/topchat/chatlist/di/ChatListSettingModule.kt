@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
  * @author : Steven 2019-08-08
  */
 
-@ChatListScope
 @Module
 class ChatListSettingModule {
     @Provides

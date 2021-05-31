@@ -6,8 +6,10 @@ import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,12 +19,14 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
 import com.tokopedia.home_component.util.invertIfDarkMode
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.home_popular_keyword.view.*
 
 /**
  * @author by yoasfs on 2020-02-18
@@ -30,7 +34,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PopularKeywordViewHolder (val view: View,
                                 val homeCategoryListener: HomeCategoryListener,
-                                val popularKeywordListener: PopularKeywordListener)
+                                private val popularKeywordListener: PopularKeywordListener)
     : AbstractViewHolder<PopularKeywordListDataModel>(view) {
     companion object {
         @LayoutRes
@@ -45,6 +49,9 @@ class PopularKeywordViewHolder (val view: View,
     var tvReload: Typography? = null
     var ivReload: AppCompatImageView? = null
     var loadingView: View? = null
+    var channelSubtitle: TextView? = null
+
+    private val errorPopularKeyword = view.findViewById<LocalLoad>(R.id.error_popular_keyword)
     private val rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
 
@@ -73,6 +80,8 @@ class PopularKeywordViewHolder (val view: View,
             recyclerView.adapter = adapter
         }
         adapter?.submitList(element.popularKeywordList)
+        if(element.isErrorLoad || element.popularKeywordList.isEmpty()) recyclerView.gone()
+        else recyclerView.visible()
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
     }
@@ -80,6 +89,7 @@ class PopularKeywordViewHolder (val view: View,
     private fun initStub(element: PopularKeywordListDataModel) {
         try {
             val channelTitleStub: View? = itemView.findViewById(R.id.channel_title)
+            val channelSubtitleStub: View? = itemView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
             val tvReloadStub: View? = itemView.findViewById(R.id.tv_reload)
             val ivReloadStub: View? = itemView.findViewById(R.id.iv_reload)
             val loadingViewStub: View? = itemView.findViewById(R.id.loading_popular)
@@ -94,7 +104,8 @@ class PopularKeywordViewHolder (val view: View,
             }
 
             channelTitleStub?.let {
-                if (element.channel.header.name.isNotEmpty()) {
+                val title = if (element.title.isNotEmpty()) element.title else element.channel.header.name
+                if (title.isNotEmpty()) {
                     it.visibility = View.VISIBLE
                     channelTitle = if (channelTitleStub is ViewStub &&
                             !isViewStubHasBeenInflated(channelTitleStub)) {
@@ -103,16 +114,37 @@ class PopularKeywordViewHolder (val view: View,
                     } else {
                         itemView.findViewById(R.id.channel_title)
                     }
-                    channelTitle?.text = element.channel.header.name
+                    channelTitle?.text = title
                     channelTitle?.visibility = View.VISIBLE
                     channelTitle?.setTextColor(
                             if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
                             else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
                     )
-                } else {
-                    it.visibility = View.GONE
+                    itemView.loader_popular_keyword_title.gone()
+                    anchorReloadButtonTo(R.id.channel_title)
                 }
             }
+            /**
+             * Requirement:
+             * Only show channel subtitle when it is exist
+             */
+            val channelSubtitleName = element.subTitle
+            if (channelSubtitleName.isNotEmpty()) {
+                channelSubtitle = if (channelSubtitleStub is ViewStub &&
+                        !isViewStubHasBeenInflated(channelSubtitleStub)) {
+                    val stubChannelView = channelSubtitleStub.inflate()
+                    stubChannelView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
+                } else {
+                    itemView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
+                }
+                channelSubtitle?.text = channelSubtitleName
+                channelSubtitle?.visibility = View.VISIBLE
+
+                anchorReloadButtonTo(R.id.channel_subtitle)
+            } else {
+                channelSubtitle?.visibility = View.GONE
+            }
+
             tvReloadStub?.let {
                 it.visibility = View.VISIBLE
                 tvReload = if (tvReloadStub is ViewStub &&
@@ -135,9 +167,33 @@ class PopularKeywordViewHolder (val view: View,
                 }
                 ivReload?.setOnClickListener(reloadClickListener(element))
             }
+            if(!element.isErrorLoad) {
+                errorPopularKeyword?.hide()
+                channelTitle?.show()
+                ivReload?.show()
+                tvReload?.show()
+            } else {
+                errorPopularKeyword.show()
+                itemView.loader_popular_keyword_title.hide()
+                ivReload?.hide()
+                tvReload?.hide()
+                channelTitle?.hide()
+                channelSubtitle?.hide()
+                loadingView?.hide()
+            }
+            errorPopularKeyword.progressState = false
+            errorPopularKeyword?.refreshBtn?.setOnClickListener(reloadClickListener(element))
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun anchorReloadButtonTo(anchorRef: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(itemView.container_popular_keyword)
+        constraintSet.connect(R.id.iv_reload, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.iv_reload, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(itemView.container_popular_keyword)
     }
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
@@ -146,9 +202,17 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun reloadClickListener(element: PopularKeywordListDataModel): View.OnClickListener {
         return View.OnClickListener {
-            ivReload?.startAnimation(rotateAnimation)
+            if (ivReload?.isVisible == true) {
+                ivReload?.startAnimation(rotateAnimation)
+            }
+
+            if (channelTitle == null || channelTitle?.isVisible == false) {
+                itemView.loader_popular_keyword_title.visible()
+            }
             loadingView?.show()
+            errorPopularKeyword.hide()
             adapter?.clearList()
+            errorPopularKeyword.progressState = true
             popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.channel)
         }
     }
@@ -166,7 +230,7 @@ class PopularKeywordViewHolder (val view: View,
 
     interface PopularKeywordListener {
         fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels)
-        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int)
-        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String,  positionInWidget: Int)
+        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel,  positionInWidget: Int)
+        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel,  positionInWidget: Int)
     }
 }

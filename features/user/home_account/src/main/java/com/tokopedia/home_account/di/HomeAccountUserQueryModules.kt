@@ -15,16 +15,8 @@ import javax.inject.Named
  * ade.hadian@tokopedia.com
  */
 
-@HomeAccountUserScope
 @Module
 class HomeAccountUserQueryModules {
-
-//    @HomeAccountUserScope
-//    @Provides
-//    @IntoMap
-//    @StringKey(AdditionalCheckConstants.QUERY_CHECK_BOTTOM_SHEET)
-//    fun provideRawQueryStatusPin(@AdditionalCheckContext context: Context): String =
-//            GraphqlHelper.loadRawString(context.resources, R.raw.query_show_interrupt)
 
     @HomeAccountUserScope
     @Provides
@@ -47,4 +39,24 @@ class HomeAccountUserQueryModules {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
     }
 
+    @HomeAccountUserScope
+    @Provides
+    @IntoMap
+    @StringKey(AccountConstants.Query.QUERY_GET_BALANCE)
+    fun provideRawQueryGetBalance(@HomeAccountUserContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_balance)
+
+    @HomeAccountUserScope
+    @Provides
+    @IntoMap
+    @StringKey(AccountConstants.Query.QUERY_TOKOPOINTS_DRAWER_LIST)
+    fun provideRawQueryTokopointsDrawerList(@HomeAccountUserContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_tokopoints_drawer_list)
+
+    @HomeAccountUserScope
+    @Provides
+    @IntoMap
+    @StringKey(AccountConstants.Query.QUERY_GET_USER_ASSET_CONFIG)
+    fun provideRawQueryGetUserAssetConfig(@HomeAccountUserContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_user_asset_config)
 }

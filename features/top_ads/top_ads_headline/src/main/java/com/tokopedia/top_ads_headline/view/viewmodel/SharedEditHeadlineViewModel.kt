@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.top_ads_headline.Constants.EDIT_HEADLINE_PAGE
 import com.tokopedia.top_ads_headline.Constants.HEADLINE
 import com.tokopedia.top_ads_headline.Constants.STATUS_INACTIVE
@@ -15,10 +18,13 @@ import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import kotlinx.coroutines.launch
+import rx.Subscriber
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 private const val TYPE_BANNER = "banner"
@@ -36,8 +42,9 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     private fun getBidInfoDetail(headlineAdStepperModel: HeadlineAdStepperModel) {
         viewModelScope.launch {
-            val selectedProductIds: MutableList<Int>? = editHeadlineAdLiveData.value?.selectedProductIds
-                    ?: mutableListOf()
+            val selectedProductIds: List<Long>? = editHeadlineAdLiveData.value?.selectedProductIds?.map {
+                it.toLong()
+            }
             val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
             bidInfoUseCase.setParams(listOf(suggestions), HEADLINE, EDIT_HEADLINE_PAGE)
             bidInfoUseCase.executeQuerySafeMode({ result ->
@@ -58,19 +65,27 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     fun getHeadlineAdId(groupId: Int, shopId: Int, onError: (message: String) -> Unit) {
         viewModelScope.launch {
-            topAdsGetGroupProductUseCase.setParams(groupId, 0, "", "", null, "", "", shopId, TYPE_BANNER)
-            topAdsGetGroupProductUseCase.executeQuerySafeMode(
-                    {
-                        if (it.data.isNotEmpty()) {
-                            adId = it.data.first().adId
-                            getHeadlineAdDetail(it.data.first().adId.toString(), shopId.toString(), onError)
-                        }
-                    },
-                    {
-                        onError(it.message ?: "")
-                        it.printStackTrace()
+            val requestParams = topAdsGetGroupProductUseCase.setParams(groupId, 0, "", "", null, "", "", TYPE_BANNER)
+            topAdsGetGroupProductUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
+                override fun onCompleted() {
+                }
+
+                override fun onError(e: Throwable?) {
+                    e?.printStackTrace()
+                }
+
+                override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                    val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
+                    val restResponse: RestResponse? = typeResponse[token]
+                    val response = restResponse?.getData() as DataResponse<NonGroupResponse>
+                    val nonGroupResponse = response.data.topadsDashboardGroupProducts
+                    if (nonGroupResponse.data.isNotEmpty()) {
+                        adId = nonGroupResponse.data.first().adId
+                        getHeadlineAdDetail(nonGroupResponse.data.first().adId.toString(), shopId.toString(), onError)
                     }
-            )
+                }
+            })
+
         }
     }
 
@@ -97,7 +112,7 @@ class SharedEditHeadlineViewModel @Inject constructor(
 
     private fun setEditAdHeadlineData(ad: SingleAd): HeadlineAdStepperModel {
         val editHeadlineAdModel = HeadlineAdStepperModel()
-        editHeadlineAdModel.adBidPrice = ad.priceBid
+        editHeadlineAdModel.adBidPrice = ad.priceBid.toDouble()
         editHeadlineAdModel.dailyBudget = ad.priceDaily.toFloat()
         editHeadlineAdModel.startDate = "${ad.adStartDate} ${ad.adStartTime}"
         editHeadlineAdModel.endDate = "${ad.adEndDate} ${ad.adEndTime}"

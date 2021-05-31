@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class TopAdsProductModel(
         @SerializedName("productID")
-        val productID: Int = 0,
+        val productID: String = "0",
         @SerializedName("productName")
         val productName: String = "",
         @SerializedName("productPrice")
@@ -21,7 +21,7 @@ data class TopAdsProductModel(
         @SerializedName("productURI", alternate = ["productURL"])
         val productUri: String = "",
         @SerializedName("adID")
-        val adID: Int = 0,
+        val adID: String = "0",
         @SerializedName("adStatus")
         val adStatus: Int = 0,
         @SerializedName("groupName")
@@ -32,10 +32,6 @@ data class TopAdsProductModel(
         val departmentName: String = "",
         @SerializedName("departmentID")
         val departmentID: Int = 0,
-        @SerializedName("suggestedBid")
-        val suggestedBid: Int = 0,
-        @SerializedName("priceBid")
-        val priceBid: Int = 0,
         @SerializedName("productRating")
         val productRating: Int = 0,
         @SerializedName("productReviewCount")

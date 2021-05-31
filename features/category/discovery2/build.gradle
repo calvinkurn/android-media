@@ -23,6 +23,7 @@ android {
     }
 }
 dependencies {
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -38,7 +39,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.circularViewPager)
+    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.features.categoryNavBottomSheet)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -54,6 +57,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -69,10 +73,12 @@ dependencies {
     implementation rootProject.ext.firebase.crashlytics
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.productCard)
+    api project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.playWidget)
 
 
     androidTestImplementation rootProject.ext.testDependencies.assertJCore
-    androidTestImplementation rootProject.ext.testDependencies.couroutinesTest
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
@@ -84,6 +90,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
 
 
 }

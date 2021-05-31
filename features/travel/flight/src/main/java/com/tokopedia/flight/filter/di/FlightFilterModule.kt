@@ -1,7 +1,7 @@
 package com.tokopedia.flight.filter.di
 
-import com.tokopedia.flight.searchV4.data.FlightSearchGQLQuery
-import com.tokopedia.flight.searchV4.data.cloud.FlightSearchDataCloudSource
+import com.tokopedia.flight.search.data.FlightSearchGQLQuery
+import com.tokopedia.flight.search.data.cloud.FlightSearchDataCloudSource
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -9,7 +9,6 @@ import javax.inject.Named
 /**
  * @author by furqan on 17/02/2020
  */
-@FlightFilterScope
 @Module
 class FlightFilterModule {
     @FlightFilterScope

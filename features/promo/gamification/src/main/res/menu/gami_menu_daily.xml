@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_info"
+        android:title="@string/gami_info_label"
+        android:icon="@drawable/gf_ic_info"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/label_share"
+        android:icon="@drawable/gami_gift_share"
+        app:showAsAction="always"/>
+
+</menu>

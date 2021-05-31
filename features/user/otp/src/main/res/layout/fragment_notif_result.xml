@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/otp_dp_12"
+            android:textAlignment="center"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl6"
             app:layout_constraintLeft_toLeftOf="parent"

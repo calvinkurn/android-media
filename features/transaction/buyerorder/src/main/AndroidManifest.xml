@@ -1,13 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.buyerorder">
 
     <application>
-        <activity android:name=".detail.view.activity.SeeInvoiceActivity"
-            android:screenOrientation="portrait"
+        <activity
+            android:name=".detail.view.activity.SeeInvoiceActivity"
             android:configChanges="uiMode"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -19,20 +21,18 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".detail.view.activity.OrderListwebViewActivity"
-            android:screenOrientation="portrait"
+        <activity
+            android:name=".detail.view.activity.OrderListwebViewActivity"
             android:configChanges="uiMode"
-            android:theme="@style/Theme.White"/>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".detail.view.activity.OrderListDetailActivity"
             android:label="@string/title_order_detail"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
-
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.White">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -42,29 +42,24 @@
                     android:host="@string/host_marketplace"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_digital"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_order"
                     android:path=""
                     android:scheme="@string/internal_scheme"
-                    tools:ignore="AppLinkUrlError"/>
-
+                    tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".list.view.activity.OrderListActivity"
             android:label="@string/title_buyer_order_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
-
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.White">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -74,119 +69,90 @@
                     android:host="@string/host_transaction_buyer"
                     android:path="@string/path_order_list_buyer"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_buyer"
                     android:path="@string/path_order_confirmed"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_buyer"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_order_list"
                     android:path=""
                     android:scheme="@string/internal_scheme"
-                    tools:ignore="AppLinkUrlError"/>
-
+                    tools:ignore="AppLinkUrlError" />
                 <data
                     android:host="@string/host_buyer"
                     android:path="@string/path_order_processed"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_buyer"
                     android:path="@string/path_order_shipped"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_buyer"
                     android:path="@string/path_order_delivered"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_buyer"
                     android:path="@string/path_shipping_confirm"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_buyer"
                     android:path="@string/path_history"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_deals"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_digital"
                     android:path="@string/path_orderlist"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_orderlist"
                     android:path="@string/path_orderlist_digital"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_events"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_giftcards"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_insurance"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
-
                 <data
                     android:host="@string/host_modaltoko"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_hotel"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_flight"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_belanja"
                     android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_order"
                     android:path="@string/path_marketplace"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".detail.view.activity.BuyerRequestCancelActivity"
             android:label="@string/title_buyer_request_cancel"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name="com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity"
-            android:label="@string/title_uoh_list"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -194,13 +160,29 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_order"
-                    android:path="@string/path_order_unified"/>
-
+                    android:host="@string/host_buyer"
+                    android:path="@string/path_order_buyer_cancellation_request_page"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".unifiedhistory.list.view.activity.UohListActivity"
+            android:label="@string/title_uoh_list"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_order"
+                    android:path="@string/path_order_unified"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

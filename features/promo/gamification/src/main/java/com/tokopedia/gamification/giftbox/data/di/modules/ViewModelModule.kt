@@ -14,7 +14,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@GiftBoxScope
 abstract class ViewModelModule {
 
     @GiftBoxScope

@@ -57,7 +57,6 @@ dependencies {
     implementation project(rootProject.ext.features.catalog)
     implementation project(rootProject.ext.features.kategori)
     implementation project(rootProject.ext.features.categoryLevels)
-    implementation project(rootProject.ext.features.hotlist)
     implementation project(rootProject.ext.features.findNative)
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
 
@@ -65,6 +64,7 @@ dependencies {
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.interestPick)
+    implementation project(rootProject.ext.features.feed)
 
     //Digital
     implementation project(rootProject.ext.features.digitalTopupBills)
@@ -79,6 +79,7 @@ dependencies {
     implementation project(rootProject.ext.features.smartBills)
     implementation project(rootProject.ext.features.recharge_slice)
     implementation project(rootProject.ext.features.travel_slice)
+    implementation project(rootProject.ext.features.digitalCheckout)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
@@ -92,6 +93,7 @@ dependencies {
     implementation project(rootProject.ext.features.ovoPayWithQr)
     implementation project(rootProject.ext.features.wallet)
     implementation project(rootProject.ext.features.ovop2p)
+    implementation project(rootProject.ext.features.paylater)
 
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
@@ -140,11 +142,19 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.inbox)
 
     //Transaction
+    implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
-    implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.features.buyerorder)
+    implementation project(rootProject.ext.features.snapshot)
+
+    //Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
+
+    //Library
+    implementation project(rootProject.ext.libraries.imagePicker)
 }

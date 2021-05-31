@@ -10,7 +10,7 @@ data class ProductShopSpeed(
 
 data class ProductShopPackSpeedQuery(
         @SerializedName("hour")
-        val hour: Int = 0,
+        val hour: Long = 0,
 
         // Pesanan di proses dalam 2 jam
         @SerializedName("speedFmt")

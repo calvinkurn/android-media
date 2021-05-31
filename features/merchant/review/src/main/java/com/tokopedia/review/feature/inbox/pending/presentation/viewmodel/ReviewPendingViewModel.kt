@@ -68,7 +68,7 @@ class ReviewPendingViewModel @Inject constructor(
         }
     }
 
-    fun markAsSeen(inboxReviewId: Int) {
+    fun markAsSeen(inboxReviewId: Long) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
                 markAsSeenUseCase.setParams(inboxReviewId)

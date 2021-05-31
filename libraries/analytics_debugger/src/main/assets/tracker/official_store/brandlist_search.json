@@ -1,0 +1,13 @@
+{
+  "readme": "Brandlist search page",
+  "mode": "exact",
+  "query": [
+    {
+      "event" : "clickOSAllBrands",
+      "eventCategory" : ".*",
+      "eventAction" : "click search - search result|click search - no search result|click - shop - optional parameter - login",
+      "eventLabel" : ".*",
+      "sessionIris": ".*"
+    }
+  ]
+}

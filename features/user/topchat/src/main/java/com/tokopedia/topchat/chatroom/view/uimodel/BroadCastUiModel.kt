@@ -15,6 +15,7 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
     val singleProduct: ProductAttachmentViewModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT] as? ProductAttachmentViewModel
     val messageUiModel: MessageViewModel? get() = items[AttachmentType.Companion.TYPE_MESSAGE] as? MessageViewModel
     val isOpposite: Boolean
+    val reply: Reply
 
     constructor(reply: Reply, items: Map<String, Visitable<*>>, isOpposite: Boolean) : super(
             messageId = reply.msgId.toString(),
@@ -27,6 +28,7 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
             message = reply.msg,
             source = reply.source
     ) {
+        this.reply = reply
         this.items = items
         this.isOpposite = isOpposite
     }
@@ -37,5 +39,9 @@ class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
 
     fun hasVoucher(): Boolean {
         return voucherUiModel != null
+    }
+
+    fun isSingleProduct(): Boolean {
+        return singleProduct != null
     }
 }

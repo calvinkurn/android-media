@@ -22,7 +22,7 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
     override fun bind(element: TickerDataModel?) {
         element?.let {element->
-            element.tickers?.let {tickers->
+            element.tickers.let {tickers->
                 val tickerDataList: MutableList<TickerData> = ArrayList()
 
                 for (tickerData in tickers) {
@@ -47,6 +47,14 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                         listener.onCloseTicker();
                     }
                 })
+
+                tickerComponent.postDelayed({
+                    try {
+                        view.findViewById<View>(R.id.ticker_content_multiple).requestLayout()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }, 1000)
             }
         }
     }

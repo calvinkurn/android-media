@@ -9,15 +9,21 @@ import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_electronic_money.util.CardUtils;
+import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
 
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public static void onNewIntent(Context context, Intent intent) {
         if (intent != null &&
@@ -51,16 +57,47 @@ public class NFCSubscriber implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityResumed(Activity activity) {
         if (nfcAdapter != null) {
-            pendingIntent = PendingIntent.getActivity(activity, 0,
-                    activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-            nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
+            permissionCheckerHelper = new PermissionCheckerHelper();
+            permissionCheckerHelper.checkPermission(activity,
+                    PermissionCheckerHelper.Companion.PERMISSION_NFC,
+                    (new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(@NotNull String permissionText) {
+                            permissionCheckerHelper.onPermissionDenied(activity.getApplicationContext(), permissionText);
+                        }
+
+                        @Override
+                        public void onNeverAskAgain(@NotNull String permissionText) {
+                            permissionCheckerHelper.onNeverAskAgain(activity.getApplicationContext(), permissionText);
+                        }
+
+                        @Override
+                        public void onPermissionGranted() {
+                            try {
+                                if (nfcAdapter.isEnabled()) {
+                                    pendingIntent = PendingIntent.getActivity(activity, 0,
+                                            activity.getIntent().setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+                                    nfcAdapter.enableForegroundDispatch(activity, pendingIntent, new IntentFilter[]{}, null);
+                                }
+                            } catch (SecurityException e) {
+                                FirebaseCrashlytics.getInstance().recordException(e);
+                            }
+                        }
+                    })
+                    , activity.getBaseContext().getResources().getString(R.string.permission_emoney_not_granted)
+            );
+
         }
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
         if (nfcAdapter != null)
-            nfcAdapter.disableForegroundDispatch(activity);
+            try {
+                nfcAdapter.disableForegroundDispatch(activity);
+            } catch (SecurityException e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
+            }
     }
 
     @Override

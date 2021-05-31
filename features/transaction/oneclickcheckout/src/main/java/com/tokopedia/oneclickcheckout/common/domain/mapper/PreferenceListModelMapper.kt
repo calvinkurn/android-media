@@ -54,6 +54,7 @@ object PreferenceModelMapper {
             serviceId = shipment.serviceId
             serviceDuration = shipment.serviceDuration
             serviceName = shipment.serviceName
+            estimation = shipment.estimation
         }
     }
 
@@ -63,7 +64,6 @@ object PreferenceModelMapper {
             description = payment.description
             gatewayName = payment.gatewayName
             image = payment.image
-            url = payment.url
             metadata = payment.metadata
             tickerMessage = payment.tickerMessage
         }

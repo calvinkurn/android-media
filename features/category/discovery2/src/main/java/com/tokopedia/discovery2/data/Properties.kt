@@ -44,6 +44,12 @@ data class Properties(
         var targetId: String? = null,
 
         @SerializedName("template")
-        val template: String = GRID
+        val template: String = GRID,
+
+        @SerializedName("timer_style")
+        val timerStyle: String? = null,
+
+        @SerializedName("category_detail")
+        val categoryDetail: Boolean = false
 
 )

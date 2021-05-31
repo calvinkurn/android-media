@@ -1,0 +1,21 @@
+{
+  "readme": "Wishlist add to cart",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "wishlist page",
+      "ecommerce": "",
+      "event": "addToCart",
+      "eventAction": "click - beli on wishlist",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "wishlist page",
+      "event": "clickWishlist",
+      "eventAction": "click - cek keranjang on wishlist",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

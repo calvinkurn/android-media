@@ -141,19 +141,23 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
             "$customStartDate - $customEndDate"
         } else
             context?.getString(R.string.topads_dash_custom_date_desc) ?: ""
-        datePickerSheet = DatePickerSheet.newInstance(context!!, index ?: 2, dateRange)
-        datePickerSheet?.show()
-        datePickerSheet?.onItemClick = { date1, date2, position ->
-            handleDate(date1, date2, position)
-            loadData(0)
+        context?.let {
+            datePickerSheet = DatePickerSheet.newInstance(it, index ?: 2, dateRange)
+            datePickerSheet?.show()
+            datePickerSheet?.onItemClick = { date1, date2, position ->
+                handleDate(date1, date2, position)
+                loadData(0)
+            }
+            datePickerSheet?.customDatepicker = {
+                startCustomDatePicker()
+            }
         }
-        datePickerSheet?.customDatepicker = {
-            startCustomDatePicker()
-        }
+
     }
 
     private fun startCustomDatePicker() {
         val sheet = CustomDatePicker.getInstance()
+        sheet.setCreditSheet()
         sheet.setListener(this)
         sheet.show(childFragmentManager, DATE_PICKER_SHEET)
     }

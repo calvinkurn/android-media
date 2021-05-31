@@ -20,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -36,31 +37,50 @@ inline fun View.changeConstraint(transform: ConstraintSet.() -> Unit) {
     constraintSet.applyTo(this)
 }
 
+//TODO("Check this as sometimes this causes memory leak, maybe check both old and new vto?")
 suspend inline fun View.awaitMeasured() = suspendCancellableCoroutine<Unit> { cont ->
     if (measuredWidth > 0 && measuredHeight > 0) cont.resume(Unit)
     else {
+        val vto = viewTreeObserver
         val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 if (measuredWidth > 0 && measuredHeight > 0) {
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    cont.resume(Unit)
+                    when {
+                        vto.isAlive -> vto.removeOnGlobalLayoutListener(this)
+                        else -> viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                    if (cont.isActive) cont.resume(Unit)
                 }
             }
         }
-        cont.invokeOnCancellation { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
-        viewTreeObserver.addOnGlobalLayoutListener(listener)
+        cont.invokeOnCancellation {
+            when {
+                vto.isAlive -> vto.removeOnGlobalLayoutListener(listener)
+                else -> viewTreeObserver.removeOnGlobalLayoutListener(listener)
+            }
+        }
+        vto.addOnGlobalLayoutListener(listener)
     }
 }
 
 suspend inline fun View.awaitNextGlobalLayout() = suspendCancellableCoroutine<Unit> { cont ->
+    val vto = viewTreeObserver
     val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
-            viewTreeObserver.removeOnGlobalLayoutListener(this)
-            cont.resume(Unit)
+            when {
+                vto.isAlive -> vto.removeOnGlobalLayoutListener(this)
+                else -> viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+            if (cont.isActive) cont.resume(Unit)
         }
     }
-    cont.invokeOnCancellation { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
-    viewTreeObserver.addOnGlobalLayoutListener(listener)
+    cont.invokeOnCancellation {
+        when {
+            vto.isAlive -> vto.removeOnGlobalLayoutListener(listener)
+            else -> viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+    }
+    vto.addOnGlobalLayoutListener(listener)
 }
 
 inline fun View.doOnPreDraw(crossinline action: (view: View) -> Unit) {
@@ -123,7 +143,7 @@ suspend inline fun View.awaitLayout() = suspendCancellableCoroutine<Unit> { cont
                     oldBottom: Int
             ) {
                 view.removeOnLayoutChangeListener(this)
-                cont.resume(Unit)
+                if (cont.isActive) cont.resume(Unit)
             }
         }
 
@@ -158,11 +178,7 @@ fun EditText.setTextFieldColor(@ColorRes color: Int) {
                     color
             ), PorterDuff.Mode.SRC_ATOP)
 
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-        background = drawable
-    } else {
-        setBackgroundDrawable(drawable)
-    }
+    background = drawable
 }
 
 fun Fragment.cleanBackstack() {
@@ -228,4 +244,8 @@ fun Fragment.recreateView() {
             ?.detach(this)
             ?.attach(this)
             ?.commit()
+}
+
+fun dismissToaster() {
+    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 }

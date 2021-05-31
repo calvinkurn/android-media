@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_play_voucher_gray"
+    android:padding="@dimen/spacing_lvl3"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_pinned_voucher_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:scaleType="center"
+        tools:src="@drawable/ic_play_special_voucher"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pinned_voucher_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_voucher_title_image_margin"
+        android:includeFontPadding="false"
+        android:inputType="textNoSuggestions"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toTopOf="@id/tv_pinned_voucher_description"
+        app:layout_constraintStart_toEndOf="@id/iv_pinned_voucher_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Gratis ongkir 30rb"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pinned_voucher_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:includeFontPadding="false"
+        android:inputType="textNoSuggestions"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_pinned_voucher_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_pinned_voucher_title"
+        app:typographyType="small"
+        tools:text="min. pembelian 100rb"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

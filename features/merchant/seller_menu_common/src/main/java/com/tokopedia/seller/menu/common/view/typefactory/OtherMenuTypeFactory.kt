@@ -21,4 +21,6 @@ interface OtherMenuTypeFactory {
     fun type(sectionTitleUiModel: SectionTitleUiModel): Int
     fun type(shopProductUiModel: ShopProductUiModel): Int
     fun type(sellerFeatureUiModel: SellerFeatureUiModel): Int
+    fun type(settingLoadingUiModel: SettingLoadingUiModel): Int
+    fun type(tickerShopScoreUiModel: TickerShopScoreUiModel): Int
 }

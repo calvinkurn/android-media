@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
@@ -16,20 +15,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking
+import com.tokopedia.topupbills.common.util.DigitalTopupBillsGqlQuery
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
@@ -45,6 +42,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.math.abs
@@ -72,8 +70,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var rechargeAnalytics: RechargeAnalytics
+
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
@@ -205,7 +202,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
                     if (userSession.isLoggedIn) {
-                        navigateToCart()
+                        addToCart()
                     }
                 }
             }
@@ -213,14 +210,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     fun getPrefixOperatorData() {
-        viewModel.getPrefixOperator(GraphqlHelper.loadRawString(resources,
-                R.raw.query_prefix_select_telco), getTelcoMenuId())
         viewModel.catalogPrefixSelect.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessCustomData()
                 is Fail -> onErrorCustomData()
             }
         })
+        viewModel.getPrefixOperator(DigitalTopupBillsGqlQuery.prefixSelectTelco, getTelcoMenuId())
     }
 
     private fun onSuccessCustomData() {
@@ -261,13 +257,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     private fun initiateMenuTelco(recom: List<TopupBillsRecommendation>, promo: List<TopupBillsPromo>) {
         listMenu.clear()
         var idTab = 1L
-        if (promo.isNotEmpty()) {
-            viewModel.setPromoTelco(promo)
-            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
-        }
         if (recom.isNotEmpty()) {
             viewModel.setRecommendationTelco(recom)
             listMenu.add(TelcoTabItem(null, TelcoComponentName.RECENTS, idTab++))
+        }
+        if (promo.isNotEmpty()) {
+            viewModel.setPromoTelco(promo)
+            listMenu.add(TelcoTabItem(null, TelcoComponentName.PROMO, idTab++))
         }
 
         viewModel.setTitleMenu(listMenu.size < 2)
@@ -307,14 +303,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }

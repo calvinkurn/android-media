@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/page_description"
-            android:textColor="@color/color_subtitle_setting_profile" />
+            android:textColor="@color/Unify_N700_68" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/chooseDate"
@@ -37,7 +37,7 @@
             android:gravity="center"
             android:text="@string/button_save"
             android:textAllCaps="false"
-            android:textColor="@color/color_white" />
+            android:textColor="@color/Unify_N0" />
     </LinearLayout>
 
     <ProgressBar

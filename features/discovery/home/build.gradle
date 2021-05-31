@@ -53,13 +53,13 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.dynamicBanner)
-    implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.homeComponent)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -83,7 +83,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.diffUtilRecycler)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
@@ -91,7 +90,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.track)
@@ -99,6 +97,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.traceroute)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.logger)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -113,7 +112,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
 
     // Tkpd internal
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -156,6 +154,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.weaver)
 
     implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -176,6 +176,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

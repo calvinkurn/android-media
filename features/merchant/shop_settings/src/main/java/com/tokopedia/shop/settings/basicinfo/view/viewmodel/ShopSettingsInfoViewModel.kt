@@ -12,6 +12,10 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShop
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseShopSettingsInfoQualifier
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,6 +33,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
         private val getShopStatusUseCase: GetShopStatusUseCase,
         private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
+        @GqlGetShopInfoUseCaseShopSettingsInfoQualifier
+        private val getShopInfoUseCase: GQLGetShopInfoUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -44,15 +50,47 @@ class ShopSettingsInfoViewModel @Inject constructor (
     val shopStatusData: LiveData<Result<GoldGetPmOsStatus>>
         get() = _shopStatusData
 
+    private val _shopBadgeData = MutableLiveData<Result<String>>()
+    val shopBadgeData: LiveData<Result<String>>
+        get() = _shopBadgeData
+
     private val _updateScheduleResult = MutableLiveData<Result<String>>()
     val updateScheduleResult: LiveData<Result<String>>
         get() = _updateScheduleResult
 
+    fun resetAllLiveData() {
+        _checkOsMerchantTypeData.value = null
+        _shopBasicData.value = null
+        _shopStatusData.value = null
+        _updateScheduleResult.value = null
+        _shopBadgeData.value = null
+    }
+
     fun getShopData(shopId: String, includeOS: Boolean) {
         launchCatchError(dispatchers.io, block = {
+            _shopBadgeData.postValue(Success(getShopBadgeData(shopId).await().orEmpty()))
             _shopBasicData.postValue(Success(getShopBasicDataAsync().await()))
             _shopStatusData.postValue(Success(getShopStatusAsync(shopId, includeOS).await()))
         }, onError = {})
+    }
+
+    private fun getShopBadgeData(shopId: String): Deferred<String?> {
+        return asyncCatchError(
+                dispatchers.io,
+                block = {
+                    getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(
+                            listOf(shopId.toIntOrZero()),
+                            "",
+                            source = GQLGetShopInfoUseCase.SHOP_PAGE_SOURCE,
+                            fields = listOf(
+                                    GQLGetShopInfoUseCase.FIELD_OTHER_GOLD_OS
+                            )
+                    )
+                    getShopInfoUseCase.executeOnBackground().goldOS.badge
+                },
+                onError = {
+                    null
+                })
     }
 
     fun updateShopSchedule(

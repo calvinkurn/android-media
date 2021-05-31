@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -40,6 +41,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.miscDependencies.multiDex
+
+    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 project.ext {
@@ -51,3 +54,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

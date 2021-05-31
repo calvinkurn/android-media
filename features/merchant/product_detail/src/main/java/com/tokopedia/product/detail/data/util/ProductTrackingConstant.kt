@@ -8,6 +8,7 @@ object ProductTrackingConstant {
         const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
+        const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
     }
 
     object Tracking {
@@ -63,19 +64,26 @@ object ProductTrackingConstant {
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_DEFAULT_VALUE = "IDR"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         const val VALUE_NONE_OTHER = "none / other"
+        const val VALUE_FALSE = "false"
         const val KEY_PRODUCT_ID = "productId"
         const val KEY_LAYOUT = "layout"
         const val KEY_COMPONENT = "component"
         const val KEY_ISLOGGIN = "isLoggedInStatus"
         const val KEY_ADD = "add"
         const val BUSINESS_UNIT = "physical goods"
+        const val BUSINESS_UNIT_PDP = "product detail page"
         const val CURRENT_SITE = "tokopediamarketplace"
         const val CURRENT_SITE_FINTECH = "tokopediafintechinsurance"
         const val KEY_FINTECH = "fintech"
         const val KEY_INSURANCE = "insurance"
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
+
+        //Tradein
+        const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
+        const val TRADEIN_TRUE_NON_DIAGNOSTIC = "true non diagnostic"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"
@@ -118,7 +126,6 @@ object ProductTrackingConstant {
         const val CLICK_READ_MORE = "click - baca selengkapnya"
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
-        const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BUTTON_CHAT = "click - sticky chat"
@@ -140,7 +147,6 @@ object ProductTrackingConstant {
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
         const val CLICK_WHOLESALE = "click - info harga grosir"
-        const val CLICK_REVIEW_IMAGE_MEDIA = "click - foto dari pembeli on product image"
         const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
         const val CLICK_TICKER = "click - selengkapnya on component ticker"
         const val CLICK_CUSTOM_INFO = "click - custom info component"
@@ -185,12 +191,20 @@ object ProductTrackingConstant {
         const val CLICK_FULLSCREEN_VIDEO = "click - fullscreen on video"
         const val CLICK_INTERACTION_VIDEO = "click - video on product image"
         const val CLICK_MUTE_VIDEO = "click - mute on video"
+
+        const val CLICK_CHECK_CART = "click - cek keranjang"
+        const val CLICK_PELAJARI_TOKO_CABANG = "click pelajari dikirim dari tokocabang"
+        const val CLICK_SEE_OTHER_COURIER = "click - lihat kurir lainnya"
+        const val CLICK_SHIPMENT_ERROR_COMPONENT = "click - ganti alamat when error on component shipping"
+        const val VIEW_SHIPMENT_ERROR_BOTTOM_SHEET = "impression - bottomsheet on pdp"
+        const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHAT = "click - chat penjual on bottomsheet error"
+        const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHOOSE_ADDRESS = "click - ganti alamat on bottomsheet error"
     }
 
 
     object Label {
         const val EMPTY_LABEL = ""
-        const val PDP = "pdp"
+        const val PDP = "PDP"
         const val DISCUSSION_EMPTY_QUESTION = "count thread:0;variant selected:%s;variant available:%s;"
         const val DISCUSSION_SEE_ALL ="count thread:%s;"
         const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
@@ -200,6 +214,10 @@ object ProductTrackingConstant {
         const val VIDEO_DURATION = "duration:"
         const val VIDEO_LAST_STOP_TIME = "stop time:"
         const val VIDEO_AUTO_PLAY = "auto play:"
+        const val EVENT_LABEL_CLICK_SHIPMENT = "title:%s;labelShipping:%s;cod:%s"
+        const val EVENT_LABEL_CLICK_SHIPMENT_ERROR = "error message:%s;"
+        const val VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET = "bottomsheet title:%s;"
+
     }
 
     object Report {
@@ -214,6 +232,7 @@ object ProductTrackingConstant {
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
+        const val EVENT_CLICK_COURIER = "clickCourier"
     }
 
     object Affiliate {
@@ -241,6 +260,12 @@ object ProductTrackingConstant {
     object TopAds {
         const val PDP_BANNER_TOPADS = "/product - tdn banner ads"
         const val DFAULT_CREATIVE_NAME_BANNER_TOP_ADS = "none / other"
+        const val RECOMMENDATION_COMPARISON = "comparison widget"
+        const val RECOMMENDATION_CAROUSELL = "carousell"
+    }
+
+    object MiniSocialProof {
+        const val CLICK_BUYER_PHOTOS = "click - foto dari pembeli on social proof"
     }
 
 }

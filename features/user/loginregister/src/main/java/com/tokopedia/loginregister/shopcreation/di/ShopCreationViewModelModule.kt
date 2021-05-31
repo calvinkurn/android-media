@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  * ade.hadian@tokopedia.com
  */
 
-@ShopCreationScope
 @Module
 abstract class ShopCreationViewModelModule {
 

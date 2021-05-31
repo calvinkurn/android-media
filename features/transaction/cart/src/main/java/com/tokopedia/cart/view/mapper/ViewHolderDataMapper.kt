@@ -6,10 +6,6 @@ import com.tokopedia.cart.domain.model.cartlist.UnavailableGroupData
 import com.tokopedia.cart.view.uimodel.*
 import javax.inject.Inject
 
-/**
- * Created by Irfan Khoirul on 2019-10-16.
- */
-
 class ViewHolderDataMapper @Inject constructor() {
 
     fun mapDisabledItemHeaderHolderData(disabledProductCount: Int): DisabledItemHeaderHolderData {
@@ -29,8 +25,9 @@ class ViewHolderDataMapper @Inject constructor() {
         return DisabledShopHolderData(
                 shopId = shopGroupWithErrorData.shopId,
                 shopName = shopGroupWithErrorData.shopName,
-                shopBadgeUrl = shopGroupWithErrorData.shopBadge,
-                isFulfillment = shopGroupWithErrorData.isFulfillment
+                shopBadgeUrl = shopGroupWithErrorData.shopTypeInfoData.shopBadge,
+                isFulfillment = shopGroupWithErrorData.isFulfillment,
+                isTokoNow = shopGroupWithErrorData.isTokoNow
         )
     }
 

@@ -2,13 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_N0"
     android:orientation="vertical">
 
     <com.tokopedia.webview.TkpdWebView
         android:id="@+id/swd_tnc_webview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:scrollbars="none" />
 </LinearLayout>

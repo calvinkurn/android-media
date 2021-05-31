@@ -8,14 +8,12 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawStrin
 class SellerReviewDetailMockResponse: MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
-        addMockResponse(KEY_CONTAINS_REVIEW_AGGREGATE_BY_PRODUCT, getRawString(context, R.raw.review_detail_review_aggregate_by_product), FIND_BY_CONTAINS)
         addMockResponse(KEY_CONTAINS_FEEDBACK_DATA_PER_PRODUCT, getRawString(context, R.raw.review_detail_feedback_data_per_product), FIND_BY_CONTAINS)
         return this
     }
 
     companion object {
         private const val KEY_CONTAINS_FEEDBACK_DATA_PER_PRODUCT = "productrevFeedbackDataPerProduct"
-        private const val KEY_CONTAINS_REVIEW_AGGREGATE_BY_PRODUCT = "productrevGetReviewAggregateByProduct"
     }
 
 }

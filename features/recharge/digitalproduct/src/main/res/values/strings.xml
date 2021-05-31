@@ -82,5 +82,7 @@
     <string name="digital_generate_token_checkout">%1$s_%2$s</string>
 
     <string name="digital_empty_state_checkout_title">Ada gangguan di rumah Toped</string>
+    <string name="digital_transaction_failed_title">Oops, gagal melanjutkan pembayaran</string>
     <string name="digital_empty_state_checkout_btn">Coba Lagi</string>
+    <string name="digital_image_url_failed_transaction">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
 </resources>

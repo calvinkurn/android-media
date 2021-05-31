@@ -1,86 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:padding="@dimen/padding_dp_16"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/account_user_item_profile_container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/ic_account_backdrop"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:padding="@dimen/padding_dp_16"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <include
+        android:id="@+id/home_account_profile_section"
+        layout="@layout/home_account_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_account_dp_54"
-        android:id="@+id/account_user_item_profile_avatar"
-        android:layout_width="@dimen/home_account_dp_64"
-        android:layout_height="@dimen/home_account_dp_64"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_corner_radius="4" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl4"
-        android:id="@+id/account_user_item_profile_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/home_account_dp_20"
-        app:layout_constraintStart_toEndOf="@+id/account_user_item_profile_avatar"
-        app:layout_constraintTop_toTopOf="@+id/account_user_item_profile_avatar"
-        app:typographyWeight="bold"
-        android:lineHeight="22dp"
-        tools:text="Babang Nico" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl2"
-        android:id="@+id/account_user_item_profile_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/home_account_dp_2"
-        app:typographyType="body_3"
-        android:lineHeight="18dp"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_name"
-        app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_name"
-        tools:text="082242454504" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/fontSize_lvl2"
-        android:id="@+id/account_user_item_profile_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/home_account_dp_2"
-        android:lineHeight="18dp"
-        app:typographyType="body_3"
-        app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_phone"
-        app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_phone"
-        tools:text="yoris.prayogo@tokopedia.com" />
-
-    <ImageView
-        android:id="@+id/account_user_item_profile_edit"
-        android:paddingLeft="@dimen/home_account_dp_20"
-        android:paddingTop="@dimen/home_account_dp_12"
-        android:paddingBottom="@dimen/home_account_dp_12"
-        android:layout_marginRight="@dimen/home_account_dp_6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/account_user_item_profile_email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/account_user_item_profile_name"
-        app:srcCompat="@drawable/ic_account_edit" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/home_account_profile_financial_section"
         layout="@layout/home_account_financial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_avatar" />
+        app:layout_constraintTop_toBottomOf="@id/home_account_profile_section" />
 
     <include
         android:id="@+id/home_account_profile_member_section"

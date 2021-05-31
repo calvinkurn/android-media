@@ -7,17 +7,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFragment
-import com.tokopedia.profilecompletion.changepin.view.fragment.ChangePinFrom2FAFragment
+import com.tokopedia.profilecompletion.changepin.view.fragment.ResetPinFragment
 import com.tokopedia.profilecompletion.changepin.view.fragment.ForgotPinFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -33,8 +33,8 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return if(intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
-            ChangePinFrom2FAFragment.createInstance(bundle)
+        return if(intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, false) == true) {
+            ResetPinFragment.createInstance(bundle)
         } else {
             ChangePinFragment.createInstance(bundle)
         }
@@ -61,7 +61,7 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@ChangePinActivity, com.tokopedia.unifyprinciples.R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this@ChangePinActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
         }
     }
 
@@ -71,13 +71,11 @@ class ChangePinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSe
             setWindowFlag(true)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

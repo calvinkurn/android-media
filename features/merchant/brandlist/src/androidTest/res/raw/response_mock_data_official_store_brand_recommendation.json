@@ -1,0 +1,61 @@
+[{
+  "data": {
+    "OfficialStoreBrandsRecommendation": {
+      "totalShops": 6,
+      "shops": [{
+        "id": 4083433,
+        "name": "Indonesia Mall ",
+        "url": "tokopedia://shop/4083433",
+        "logoUrl": "https://ecs7.tokopedia.net/img/cache/244/attachment/2020/3/13/76758066/76758066_450672dc-b2ad-4df5-b341-d63a2967345a.png",
+        "imageUrl": "",
+        "additionalInformation": "",
+        "exclusive_logo_url": "https://ecs7.tokopedia.net/img/cache/244/attachment/2020/3/13/76758066/76758066_abe415c3-b938-437b-9a94-319a1b83de98.png"
+      }, {
+        "id": 7107495,
+        "name": "HAFELE",
+        "url": "tokopedia://shop/7107495",
+        "logoUrl": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/10/29/7107495/7107495_d1bba668-310c-476d-8ad5-7930ab974eb1.jpg",
+        "imageUrl": "",
+        "additionalInformation": "",
+        "exclusive_logo_url": "https://ecs7.tokopedia.net/img/attachment/2020/2/27/123/123_8b15d03e-d11a-4c9d-9154-b36ce7e03d5e.jpg"
+      }, {
+        "id": 2790339,
+        "name": "iLO by Hippo",
+        "url": "tokopedia://shop/2790339",
+        "logoUrl": "https://ecs7.tokopedia.net/img/cache/244/attachment/2020/3/13/76758066/76758066_5d1cf419-c6a5-45f2-a9dc-067cac4d610e.png",
+        "imageUrl": "",
+        "additionalInformation": "",
+        "exclusive_logo_url": "https://ecs7.tokopedia.net/img/cache/244/attachment/2020/3/13/76758066/76758066_1c65bc68-b445-44de-8551-b5f89a3ff66c.png"
+      }, {
+        "id": 3573499,
+        "name": "Jordanie Mask",
+        "url": "tokopedia://shop/3573499",
+        "logoUrl": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/8/6/3573499/3573499_b564d662-0052-47e8-86c9-853719a5e792.png",
+        "imageUrl": "",
+        "additionalInformation": "",
+        "exclusive_logo_url": "https://ecs7.tokopedia.net/img/attachment/2020/2/27/123/123_9637b113-f61b-4783-80ee-3e60fbe66e47.png"
+      }, {
+        "id": 2310022,
+        "name": "ACMIC ",
+        "url": "tokopedia://shop/2310022",
+        "logoUrl": "https://ecs7.tokopedia.net/img/cache/244/attachment/2017/12/27/24962071/24962071_0caae84b-7b72-4e4e-8ffa-b7852acf74f2.png",
+        "imageUrl": "",
+        "additionalInformation": "",
+        "exclusive_logo_url": "https://ecs7.tokopedia.net/img/attachment/2020/2/27/123/123_664ae4e8-7198-478e-8cc1-a95b06b3bfd4.jpg"
+      }, {
+        "id": 271905,
+        "name": "Gadget Point Store",
+        "url": "tokopedia://shop/271905",
+        "logoUrl": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/6/29/271905/271905_e1272788-1577-4342-9a11-87f45f0b7d49.png",
+        "imageUrl": "",
+        "additionalInformation": "",
+        "exclusive_logo_url": "https://ecs7.tokopedia.net/img/cache/244/attachment/2020/3/14/76758066/76758066_dd21a6c0-44a9-4bee-950c-28683996bd9d.png"
+      }],
+      "header": {
+        "title": "Brand Populer",
+        "ctaText": "Lihat Semua",
+        "link": ""
+      }
+    }
+  }
+}]

@@ -136,9 +136,9 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     private void setCardViewElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_8));
+            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
         } else {
-            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
+            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0));
         }
     }
 

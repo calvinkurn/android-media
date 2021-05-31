@@ -8,6 +8,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 data class PieChartWidgetUiModel(
+        override val id: String,
         override val widgetType: String,
         override val title: String,
         override val subtitle: String,
@@ -21,6 +22,7 @@ data class PieChartWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<PieChartDataUiModel> {
 
@@ -29,6 +31,10 @@ data class PieChartWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<PieChartDataUiModel> {
-        return PieChartWidgetUiModel(widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return PieChartWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<PieChartDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

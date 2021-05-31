@@ -16,6 +16,10 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
+
+    viewBinding {
+        enabled true
+    }
 }
 
 repositories {
@@ -34,7 +38,6 @@ buildscript {
 }
 dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
@@ -65,6 +68,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.logisticCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//

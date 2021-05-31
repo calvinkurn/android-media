@@ -6,41 +6,25 @@ package com.tokopedia.sellerorder.common.util
 object SomConsts {
     const val PARAM_INPUT = "input"
     const val PARAM_SELLER = "seller"
-    const val PARAM_CLIENT = "android"
-    const val PARAM_LIST_ORDER = "param_list_order"
     const val PARAM_LANG_ID = "id"
     const val PARAM_ORDER_ID = "order_id"
-    const val PARAM_TAB_ACTIVE = "tab_active"
     const val PARAM_CURR_IS_CHANGE_SHIPPING = "is_change_shipping"
-    const val PARAM_SHOP_ID = "shop_id"
     const val PARAM_BOOKING_CODE = "bookingCode"
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_ORDER_CODE = "order_code"
-    const val PARAM_USER_ROLES = "user_roles"
     const val PARAM_INVOICE = "invoice"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
 
-    const val CATEGORY_ORDER_STATUS = "status"
-    const val CATEGORY_ORDER_TYPE = "orderType"
-    const val CATEGORY_COURIER_TYPE = "courier"
-
     const val TAB_ACTIVE = "tab_active"
     const val TAB_STATUS = "tab_status"
     const val FILTER_STATUS_ID = "filter_status_id"
     const val FILTER_ORDER_TYPE = "filter_order_type"
-    const val FILTER_TYPE_CHECKBOX = "checkbox"
-    const val FILTER_TYPE_RADIO = "radio"
-    const val FILTER_TYPE_LABEL = "label"
-    const val FILTER_TYPE_SEPARATOR = "separator"
     const val FROM_WIDGET_TAG = "from widget"
 
     const val STATUS_ALL_ORDER = "all_order"
     const val STATUS_NEW_ORDER = "new_order"
-    const val STATUS_DONE = "done"
-    const val STATUS_ORDER_CANCELLED = "order_canceled"
-    const val STATUS_DELIVERED = "delivered"
 
     const val STATUS_NAME_ALL_ORDER = "Semua Pesanan"
 
@@ -58,15 +42,18 @@ object SomConsts {
     const val RESULT_PROCESS_REQ_PICKUP = "result_process_req_pickup"
     const val RESULT_CONFIRM_SHIPPING = "result_confirm_shipping"
     const val RESULT_SET_DELIVERED = "result_set_delivered"
+    const val RESULT_REFRESH_ORDER = "result_refresh_order"
 
     const val KEY_ACCEPT_ORDER = "accept_order"
     const val KEY_REJECT_ORDER = "reject_order"
     const val KEY_TRACK_SELLER = "track"
     const val KEY_REQUEST_PICKUP = "request_pickup"
     const val KEY_CONFIRM_SHIPPING = "confirm_shipping"
+    const val KEY_STATUS_COMPLAINT = "complaint"
     const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint"
     const val KEY_SET_DELIVERED = "set_delivered"
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
+    const val KEY_PRINT_AWB = "print"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -86,9 +73,6 @@ object SomConsts {
     const val TITLE_UBAH_RESI = "Ubah Nomor Resi"
     const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
     const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
-
-    const val START_DATE = "start_date"
-    const val END_DATE = "end_date"
 
     const val INPUT_ORDER_ID = "#orderId"
     const val INPUT_SHIPPING_REF = "#shippingRef"
@@ -118,22 +102,8 @@ object SomConsts {
 
     const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
     const val ALREADY_PRINT_LABEL = "Sudah Dicetak"
-    const val NOT_YET_PRINTED = 0
-    const val ALREADY_PRINT = 1
-
-    const val TODAY_LABEL = "Hari ini"
-    const val TOMORROW_LABEL = "Besok"
-    const val TODAY_TOMORROW_LABEL = "Lusa"
-    const val TODAY = 1
-    const val TOMORROW = 2
-    const val TODAY_TOMORROW = 3
-
-    const val IS_PRE_ORDER = 1
-    const val IS_SAME_DAY = 2
-    const val IS_NEXT_DAY = 9
-    const val IS_PICKUP_DELIVERY = 3
-    const val IS_PPP = 4
-    const val IS_COD = 8
+    const val NOT_YET_PRINTED = 1
+    const val ALREADY_PRINT = 2
 
     const val ERROR_GET_USER_ROLES = "Error when get user roles in %s."
     const val ERROR_REJECT_CANCEL_ORDER = "Error when rejecting cancel order."
@@ -169,10 +139,13 @@ object SomConsts {
     const val SORT_BY_TOTAL_OPEN_DESCENDING = 1
     const val SORT_BY_PAYMENT_DATE_DESCENDING = 2
 
-    // Remote Configs
-    const val ENABLE_NEW_SOM = "android_enable_new_som"
-
     // Som List Illustration
     const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
     const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
+
+    // Som print awb
+    const val PATH_PRINT_AWB = "shipping-label"
+    const val PRINT_AWB_ORDER_ID_QUERY_PARAM = "order_id"
+    const val PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM = "mark_as_printed"
+    const val PRINT_AWB_WEBVIEW_TITLE = "Pengaturan Label Pengiriman"
 }

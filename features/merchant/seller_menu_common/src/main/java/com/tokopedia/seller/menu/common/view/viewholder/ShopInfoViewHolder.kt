@@ -7,39 +7,41 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.setting_balance.view.*
-import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.*
-import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
 import kotlinx.android.synthetic.main.layout_seller_menu_shop_info.view.*
+import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.*
+import kotlinx.android.synthetic.main.setting_balance.view.*
+import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
 class ShopInfoViewHolder(
-    itemView: View,
-    private val listener: ShopInfoListener?,
-    private val trackingListener: SettingTrackingListener,
-    private val userSession: UserSessionInterface?,
-    private val sellerMenuTracker: SellerMenuTracker?
-): AbstractViewHolder<ShopInfoUiModel>(itemView) {
+        itemView: View,
+        private val listener: ShopInfoListener?,
+        private val trackingListener: SettingTrackingListener,
+        private val userSession: UserSessionInterface?,
+        private val sellerMenuTracker: SellerMenuTracker?
+) : AbstractViewHolder<ShopInfoUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -68,9 +70,11 @@ class ShopInfoViewHolder(
                         shopStatusUiModel?.let { setShopStatusType(it) }
                         saldoBalanceUiModel?.let { setSaldoBalance(it) }
                         shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                        shopFollowersUiModel?.let {
+                            setShopTotalFollowers(it)
+                            setDotVisibility(it.shopFollowers)
+                        }
 
-                        dot?.visible()
                         localLoadOthers?.gone()
                         shopStatus?.visible()
                         saldoBalance?.visible()
@@ -80,9 +84,11 @@ class ShopInfoViewHolder(
 
                         shopStatusUiModel?.let { setShopStatusType(it) }
                         shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let { setShopTotalFollowers(it) }
+                        shopFollowersUiModel?.let {
+                            setShopTotalFollowers(it)
+                            setDotVisibility(it.shopFollowers)
+                        }
 
-                        dot?.visible()
                         shopStatus?.visible()
                         localLoadOthers?.run {
                             setup()
@@ -109,6 +115,12 @@ class ShopInfoViewHolder(
         }
     }
 
+    private fun setDotVisibility(shopFollowers: Long) {
+        val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
+        val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
+        itemView.successShopInfoLayout?.dot?.visibility = dotVisibility
+    }
+
     private fun showNameAndAvatar() {
         setShopName(userSession?.shopName.orEmpty())
         setShopAvatar(ShopAvatarUiModel(userSession?.shopAvatar.orEmpty()))
@@ -121,22 +133,37 @@ class ShopInfoViewHolder(
     }
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
-        itemView.shopScore.text = uiModel.shopScore.toString()
-        itemView.shopScoreLayout.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession?.shopId)
-            sellerMenuTracker?.sendEventClickShopScore()
+        val shopAgeSixty = 60
+        with(itemView) {
+            if (uiModel.shopAge < shopAgeSixty) {
+                shopScore.text = getString(R.string.seller_menu_shop_score_empty_label)
+                shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                shopScoreMaxLabel?.hide()
+            } else {
+                shopScore.text = uiModel.shopScore.toString()
+                shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                shopScoreMaxLabel?.show()
+            }
+            shopScoreLayout.setOnClickListener {
+                listener?.onScoreClicked()
+            }
+            listener?.onScoreImpressed()
         }
     }
 
     @SuppressLint("SetTextI18n")
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
+        val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
+        val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
         itemView.successShopInfoLayout.shopFollowers?.run {
+            visibility = followersVisibility
             text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
                 goToShopFavouriteList()
             }
         }
+        itemView.successShopInfoLayout.dot.visibility = followersVisibility
     }
 
     private fun setShopName(shopName: String) {
@@ -179,7 +206,7 @@ class ShopInfoViewHolder(
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.shopType
         val itemView: View = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
-        val shopStatusLayout: View? = when(shopType) {
+        val shopStatusLayout: View? = when (shopType) {
             is RegularMerchant -> {
                 itemView.apply {
                     setRegularMerchantShopStatus(shopType)
@@ -219,9 +246,9 @@ class ShopInfoViewHolder(
         }
     }
 
-    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
+    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant): View {
         regularMerchantStatus.run {
-            text = when(regularMerchant) {
+            text = when (regularMerchant) {
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
                 is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)
             }
@@ -230,12 +257,12 @@ class ShopInfoViewHolder(
         return this
     }
 
-    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus) : View {
+    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus): View {
         var statusText = context.resources.getString(R.string.setting_on_verification)
         var textColor = GREY_TEXT_COLOR
         var statusDrawable = GREY_TIP
         var powerMerchantDrawableIcon = GREY_POWER_MERCHANT_ICON
-        when(powerMerchantStatus) {
+        when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 statusText = context.resources.getString(R.string.setting_active)
                 textColor = GREEN_TEXT_COLOR
@@ -282,6 +309,8 @@ class ShopInfoViewHolder(
     }
 
     interface ShopInfoListener {
+        fun onScoreClicked()
+        fun onScoreImpressed()
         fun onSaldoClicked()
         fun onRefreshShopInfo()
     }

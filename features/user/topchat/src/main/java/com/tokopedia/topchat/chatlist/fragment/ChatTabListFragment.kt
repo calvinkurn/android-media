@@ -51,7 +51,7 @@ import javax.inject.Inject
 
 open class ChatTabListFragment constructor() : BaseDaggerFragment(), ChatListContract.TabFragment {
 
-    override fun getScreenName(): String = "chat-tab-list"
+    override fun getScreenName(): String = "/new-inbox/chat"
 
     private lateinit var fragmentAdapter: ChatListPagerAdapter
     private val tabList = ArrayList<ChatListPagerAdapter.ChatListTab>()

@@ -14,11 +14,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
+import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
@@ -31,6 +31,8 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_HOMEPAGE
 import com.tokopedia.hotel.destination.data.model.PopularSearch
@@ -48,6 +50,7 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -88,7 +91,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
     private lateinit var remoteConfig: RemoteConfig
-
     private var bannerWidthInPixels = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,13 +146,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         measureBannerWidth()
     }
 
-    private fun measureBannerWidth() {
-        val displayMetrics = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = (displayMetrics.widthPixels / 1.1).toInt()
-        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_homepage, container, false)
 
@@ -164,12 +159,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         loadTickerData()
 
         if (hotelHomepageModel.locName.isEmpty()) {
-            homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
+            homepageViewModel.getDefaultHomepageParameter(HotelGqlQuery.DEFAULT_HOMEPAGE_PARAMETER)
         }
-    }
-
-    private fun loadTickerData() {
-        homepageViewModel.fetchTickerData()
     }
 
     override fun onResume() {
@@ -255,54 +246,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
         })
     }
 
-    private fun hideTickerView() {
-        hotelHomepageTicker.hide()
+    override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
+        trackingHotelUtil.hotelClickVideoBanner(context, bannerData, HOMEPAGE_SCREEN_NAME)
     }
 
-    private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        if (travelTickerModel.title.isNotEmpty()) hotelHomepageTicker.tickerTitle = travelTickerModel.title
-        var message = travelTickerModel.message
-        if (travelTickerModel.url.isNotEmpty()) message += getString(R.string.hotel_ticker_desc, travelTickerModel.url)
-        hotelHomepageTicker.setHtmlDescription(message)
-        hotelHomepageTicker.tickerType = Ticker.TYPE_WARNING
-        hotelHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (linkUrl.isNotEmpty()) {
-                    RouteManager.route(context, linkUrl.toString())
-                }
-            }
-
-            override fun onDismiss() {}
-
-        })
-        if (travelTickerModel.url.isNotEmpty()) {
-            hotelHomepageTicker.setOnClickListener {
-                RouteManager.route(requireContext(), travelTickerModel.url)
-            }
-        }
-
-        hotelHomepageTicker.show()
-    }
-
-    private fun renderHotelParam(hotelPropertyDefaultHome: HotelPropertyDefaultHome) {
-        hotelHomepageModel.checkInDate = hotelPropertyDefaultHome.checkIn
-        hotelHomepageModel.checkOutDate = hotelPropertyDefaultHome.checkOut
-        checkCheckInAndCheckOutDate()
-        hotelHomepageModel.roomCount = hotelPropertyDefaultHome.totalRoom
-        hotelHomepageModel.adultCount = hotelPropertyDefaultHome.totalGuest
-        onDestinationChanged(hotelPropertyDefaultHome.label, searchId = hotelPropertyDefaultHome.searchId,
-                searchType = hotelPropertyDefaultHome.searchType, shouldTrackChanges = false)
+    override fun onPopularCityClicked(popularSearch: PopularSearch) {
+        RouteManager.route(requireContext(), getString(R.string.hotel_search_result_applink_format,
+                popularSearch.type, popularSearch.searchId, popularSearch.name))
     }
 
     override fun onErrorRetryClicked() {
         loadPromoData()
-    }
-
-    private fun stopTrace() {
-        if (!isTraceStop) {
-            performanceMonitoring?.stopTrace()
-            isTraceStop = true
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -350,6 +304,63 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     override fun onItemClick(item: TravelRecentSearchModel.Item, position: Int) {
         trackingHotelUtil.hotelLastSearchClick(context, item, position, HOMEPAGE_SCREEN_NAME)
+    }
+
+    private fun hideTickerView() {
+        hotelHomepageTicker.hide()
+    }
+
+    private fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        if (travelTickerModel.title.isNotEmpty()) hotelHomepageTicker.tickerTitle = travelTickerModel.title
+        var message = travelTickerModel.message
+        if (travelTickerModel.url.isNotEmpty()) message += getString(R.string.hotel_ticker_desc, travelTickerModel.url)
+        hotelHomepageTicker.setHtmlDescription(message)
+        hotelHomepageTicker.tickerType = Ticker.TYPE_WARNING
+        hotelHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (linkUrl.isNotEmpty()) {
+                    RouteManager.route(context, linkUrl.toString())
+                }
+            }
+
+            override fun onDismiss() {}
+
+        })
+        if (travelTickerModel.url.isNotEmpty()) {
+            hotelHomepageTicker.setOnClickListener {
+                RouteManager.route(requireContext(), travelTickerModel.url)
+            }
+        }
+
+        hotelHomepageTicker.show()
+    }
+
+    private fun renderHotelParam(hotelPropertyDefaultHome: HotelPropertyDefaultHome) {
+        hotelHomepageModel.checkInDate = hotelPropertyDefaultHome.checkIn
+        hotelHomepageModel.checkOutDate = hotelPropertyDefaultHome.checkOut
+        checkCheckInAndCheckOutDate()
+        hotelHomepageModel.roomCount = hotelPropertyDefaultHome.totalRoom
+        hotelHomepageModel.adultCount = hotelPropertyDefaultHome.totalGuest
+        onDestinationChanged(hotelPropertyDefaultHome.label, searchId = hotelPropertyDefaultHome.searchId,
+                searchType = hotelPropertyDefaultHome.searchType, shouldTrackChanges = false)
+    }
+
+    private fun measureBannerWidth() {
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        bannerWidthInPixels = (displayMetrics.widthPixels / 1.1).toInt()
+        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.hotel_banner_offset)
+    }
+
+    private fun loadTickerData() {
+        homepageViewModel.fetchTickerData()
+    }
+
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring?.stopTrace()
+            isTraceStop = true
+        }
     }
 
     private fun initView() {
@@ -402,7 +413,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         tv_hotel_homepage_destination.textFieldInput.setText(hotelHomepageModel.locName)
         tv_hotel_homepage_checkin_date.textFieldInput.setText(hotelHomepageModel.checkInDateFmt)
         tv_hotel_homepage_checkout_date.textFieldInput.setText(hotelHomepageModel.checkOutDateFmt)
-        tv_hotel_homepage_night_count.text = String.format(getString(R.string.hotel_homepage_night_counter, hotelHomepageModel.nightCounter))
+        tv_hotel_homepage_night_count.text = String.format(getString(R.string.hotel_homepage_night_counter), hotelHomepageModel.nightCounter)
         tv_hotel_homepage_guest_info.textFieldInput.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
                 hotelHomepageModel.roomCount, hotelHomepageModel.adultCount))
     }
@@ -422,6 +433,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_homepage_video_banner.listener = this
         hotel_homepage_video_banner.setData(videoBannerModel)
         hotel_homepage_video_banner.build()
+        trackingHotelUtil.hotelVideoBannerImpression(context, hotel_homepage_video_banner.getData(), HOMEPAGE_SCREEN_NAME)
     }
 
     private fun showPopularCitiesWidget(show: Boolean) {
@@ -570,15 +582,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     val hotelSearchModel = HotelSearchModel(name = hotelHomepageModel.locName,
                             id = hotelHomepageModel.locId,
                             type = hotelHomepageModel.locType,
-                            lat = hotelHomepageModel.locLat.toFloat(),
-                            long = hotelHomepageModel.locLong.toFloat(),
+                            lat = hotelHomepageModel.locLat,
+                            long = hotelHomepageModel.locLong,
                             checkIn = hotelHomepageModel.checkInDate,
                             checkOut = hotelHomepageModel.checkOutDate,
                             room = hotelHomepageModel.roomCount,
                             adult = hotelHomepageModel.adultCount,
                             searchType = hotelHomepageModel.searchType,
                             searchId = hotelHomepageModel.searchId)
-                    startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    if (DeeplinkMapperTravel.isHotelSrpShowMap(this) && DeeplinkMapperTravel.isABTestHotelShowMap()) {
+                        startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    } else {
+                        startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
+                    }
                 }
             }
         }
@@ -599,7 +615,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun loadRecentSearchData() {
-        homepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_recent_search))
+        homepageViewModel.getRecentSearch(HotelGqlQuery.RECENT_SEARCH_DATA)
     }
 
     val bannerImpressionIndex: HashSet<Int> = hashSetOf()
@@ -639,12 +655,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 data as TravelCollectiveBannerModel.Banner
 
                 val image = view.findViewById<ImageUnify>(R.id.hotelPromoImageCarousel)
-                image.layoutParams.width = if (bannerWidthInPixels > 0) {
-                    bannerWidthInPixels
+                if (bannerWidthInPixels > 0) {
+                    image.layoutParams.height = (BANNER_HEIGHT_RATIO * bannerWidthInPixels).toInt()
+                    image.layoutParams.width = bannerWidthInPixels
                 } else {
-                    resources.getDimensionPixelSize(R.dimen.hotel_banner_width)
+                    image.layoutParams.height = resources.getDimensionPixelSize(R.dimen.hotel_banner_height)
+                    image.layoutParams.width = resources.getDimensionPixelSize(R.dimen.hotel_banner_width)
                 }
-                image.setImageUrl(data.attribute.imageUrl, BANNER_HEIGHT_RATIO, placeholderHeight = resources.getDimensionPixelSize(R.dimen.hotel_banner_height), isSkipCache = true)
+                image.loadImage(data.attribute.imageUrl)
                 image.setOnClickListener {
                     onPromoClicked(data, data.position)
                 }
@@ -665,7 +683,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         tv_hotel_last_search_title.text = data.title
         tv_hotel_homepage_delete_last_search.setOnClickListener {
-            homepageViewModel.deleteRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.gql_mutation_hotel_delete_recent_search))
+            homepageViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH)
         }
         rv_hotel_homepage_last_search.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         rv_hotel_homepage_last_search.adapter = HotelLastSearchAdapter(data.items, this)
@@ -703,18 +721,20 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun onPromoClicked(promo: TravelCollectiveBannerModel.Banner?, position: Int) {
         promo?.let {
-            trackingHotelUtil.hotelClickBanner(context, it, position, HOMEPAGE_SCREEN_NAME)
-            when {
-                RouteManager.isSupportApplink(context, it.attribute.appUrl) -> {
-                    RouteManager.route(context, it.attribute.appUrl)
-                }
-                getRegisteredNavigation(context!!, it.attribute.appUrl).isNotEmpty() -> {
-                    RouteManager.route(context, getRegisteredNavigation(context!!, it.attribute.appUrl))
-                }
-                it.attribute.webUrl.isNotEmpty() -> {
-                    RouteManager.route(context, it.attribute.webUrl)
-                }
-                else -> {
+            context?.let { contextNotNull ->
+                trackingHotelUtil.hotelClickBanner(contextNotNull, it, position, HOMEPAGE_SCREEN_NAME)
+                when {
+                    RouteManager.isSupportApplink(contextNotNull, it.attribute.appUrl) -> {
+                        RouteManager.route(contextNotNull, it.attribute.appUrl)
+                    }
+                    getRegisteredNavigation(contextNotNull, it.attribute.appUrl).isNotEmpty() -> {
+                        RouteManager.route(contextNotNull, getRegisteredNavigation(contextNotNull, it.attribute.appUrl))
+                    }
+                    it.attribute.webUrl.isNotEmpty() -> {
+                        RouteManager.route(contextNotNull, it.attribute.webUrl)
+                    }
+                    else -> {
+                    }
                 }
             }
         }
@@ -752,7 +772,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/android/res/singleDpi/bg_hotel_homepage_tiny.png"
+        const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
@@ -782,14 +802,5 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         if (room != 0) putInt(EXTRA_ROOM, room)
                     }
                 }
-    }
-
-    override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
-        // do nothing for now, will use for tracking later
-    }
-
-    override fun onPopularCityClicked(popularSearch: PopularSearch) {
-        RouteManager.route(requireContext(), getString(R.string.hotel_search_result_applink_format,
-                popularSearch.type, popularSearch.searchId, popularSearch.name))
     }
 }

@@ -102,6 +102,7 @@ class ValidateUsePromoCheckoutMapper {
             var code = ""
             voucherOrdersItem?.code?.let { code = it }
             return PromoCheckoutVoucherOrdersItemUiModel(
+                    success = voucherOrdersItem?.success ?: false,
                     code = code,
                     type = voucherOrdersItem?.type ?: "",
                     uniqueId = voucherOrdersItem?.uniqueId ?: "",
@@ -157,7 +158,8 @@ class ValidateUsePromoCheckoutMapper {
                     desc = usageSummaries.description,
                     type = usageSummaries.type,
                     amountStr = usageSummaries.amountString,
-                    amount = usageSummaries.amount)
+                    amount = usageSummaries.amount,
+                    currencyDetailStr = usageSummaries.currencyDetailsStr)
         }
 
         private fun mapToBenefitSummaryInfoUiModel(benefitSummaryInfo: BenefitSummaryInfo?): BenefitSummaryInfoUiModel {

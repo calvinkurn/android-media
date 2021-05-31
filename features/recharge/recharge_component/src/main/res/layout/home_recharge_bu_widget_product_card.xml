@@ -28,6 +28,7 @@
             tools:visibility="visible">
 
             <ImageView
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:id="@+id/imageProductBackgroundOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -37,6 +38,7 @@
         </FrameLayout>
 
         <ImageView
+            android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
@@ -59,6 +61,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:id="@+id/imageProductIcon"
                 android:layout_width="@dimen/layout_lvl5"
                 android:layout_height="@dimen/layout_lvl5"
@@ -92,7 +95,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:maxLines="2"
+            android:maxLines="3"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -115,6 +118,13 @@
             tools:text="Cashback"
             tools:visibility="visible" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineDiscount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.83"/>
+
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelDiscount"
             android:layout_width="wrap_content"
@@ -124,7 +134,7 @@
             android:visibility="gone"
             app:labelType="general_light_red"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/labelPrice"
+            app:layout_constraintTop_toBottomOf="@id/guidelineDiscount"
             tools:text="20%"
             tools:visibility="visible" />
 
@@ -148,6 +158,13 @@
             tools:text="Rp8.499.000"
             tools:visibility="visible" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.904"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewPrice"
             android:layout_width="@dimen/layout_lvl0"
@@ -163,7 +180,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewSlashedPrice"
+            app:layout_constraintTop_toBottomOf="@id/guideline"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp7.999.000"

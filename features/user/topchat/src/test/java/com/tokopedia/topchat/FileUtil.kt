@@ -18,4 +18,8 @@ object FileUtil {
         val stringFile = readFileContent(fileName)
         return CommonUtil.fromJson(stringFile, typeOfT)
     }
+
+    fun <T> parseContent(content: String, typeOfT: Type): T {
+        return CommonUtil.fromJson(content, typeOfT)
+    }
 }

@@ -115,14 +115,14 @@
 
     <string name="review_pending_network_error_title">Koneksi internetmu terganggu!</string>
     <string name="review_pending_network_error_content">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
-    <string name="review_pending_tab_title">Menunggu Diulas (%s)</string>
-    <string name="review_pending_tab_title_no_count">Menunggu Diulas</string>
+    <string name="review_pending_tab_title">Menunggu Diulas</string>
     <string name="review_pending_network_error_retry_button">Coba Lagi</string>
-    <string name="review_pending_no_product_empty_title">Belum ada barang untuk kamu ulas</string>
-    <string name="review_pending_no_product_empty_content">Saatnya kamu belanja dan kasih ulasanmu ke jutaan orang!</string>
+    <string name="review_pending_no_product_empty_title">Minum kopi sambil makan kue bolu</string>
+    <string name="review_pending_no_product_empty_content">Saatnya belanja dan kasih ulasan untuk barang-barang incaranmu!</string>
     <string name="review_pending_variant">Varian: %s</string>
     <string name="review_pending_deleted_product_error_toaster">Maaf, barang ini sudah dihapus. Simpan saja ulasanmu di hati.</string>
     <string name="review_pending_invalid_to_review">Oops, kamu tidak bisa ulas barang ini karena sudah melebihi batas waktu.</string>
+    <string name="review_pending_shop_button">Mulai Belanja</string>
 
     <string name="review_history_tab_title">Riwayat</string>
     <string name="review_history_search_bar_hint">Cari produk di sini</string>
@@ -155,6 +155,7 @@
     <string name="review_edit_dialog_continue_writing">Lanjut Tulis Ulasan</string>
     <string name="review_edit_dialog_exit">Ya, Keluar</string>
     <string name="review_edit_fail">Ulasan tidak tersimpan. Cek koneksi internetmu dan coba lagi, ya</string>
+    <string name="review_edit_blank_error">Oops, tulis dulu komentarmu terkait barang ini atau pelayanan toko.</string>
 
     <string name="review_seller_tab_title">Ulasan Pembeli</string>
 
@@ -182,7 +183,6 @@
     <string name="deadline_suffix">hari lagi</string>
     <string name="progress_dialog_loading">Loading</string>
     <string name="submit_review">Kirim</string>
-    <string name="favorite_button">Follow</string>
     <string name="already_favorite">\u2713</string>
     <string name="seller">Penjual</string>
     <string name="filter_time">Waktu</string>
@@ -252,15 +252,16 @@
         <item>Semua</item>
         <item>Belum Dibaca</item>
     </string-array>
+    <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
-    <!-- ovo incentive -->
-    <string name="ovo_incentive_review_pending">Dapatkan OVO Points</string>
+    <!-- incentive -->
+    <string name="incentive_review_pending">Dapatkan Hadiah Points</string>
     <string name="review_create_incomplete_title">Ulasanmu belum lengkap, nih</string>
-    <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap kamu bisa bantu calon pembeli lain &amp; dapat OVO Points.</string>
+    <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap kamu bisa bantu calon pembeli lain &amp; dapat hadiah Points.</string>
     <string name="review_create_incomplete_cancel">Lengkapi Ulasan Dulu</string>
     <string name="review_create_incomplete_send_anyways">Kirim Sekarang Aja</string>
     <string name="review_create_text_area_empty">Tulis pengalamanmu di sini, min. 40 karakter, ya! &#128521;</string>
-    <string name="review_create_text_area_partial">Ayo, tinggal dikit lagi kamu bisa dapat OVO Points. &#128588;&#127995;</string>
+    <string name="review_create_text_area_partial">Ayo, tinggal dikit lagi kamu bisa dapat hadiah Points. &#128588;&#127995;</string>
     <string name="review_create_text_area_eligible">Oke, sudah siap kirim! Pastikan udah lengkap, ya. &#127881;</string>
     <string name="review_create_rating_condition">Kasih ratingnya</string>
     <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
@@ -268,7 +269,63 @@
     <string name="review_create_send_another">Kasih Ulasan Lagi</string>
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
-    <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d OVO Points dan masuk ke saldomu maks. 24 jam.</string>
+    <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d Points yang akan masuk dalam waktu maks. 24 jam.</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
 
+    <!-- Review Reminder -->
+    <string name="review_reminder_tab_title_1">Kirim Pesan</string>
+    <string name="review_reminder_tab_title_2">Performa</string>
+    <string name="review_reminder_title">Pengingat Ulasan</string>
+    <string name="review_reminder_ticker_title">Ada fitur baru, nih: Pengingat Ulasan</string>
+    <string name="review_reminder_ticker_description"><![CDATA[Kini, kamu bisa ingatkan pembeli untuk kasih ulasan produk lewat <a href="(%1$s)">Pengingat Ulasan.</a>]]></string>
+    <string name="review_reminder_description">Ingatkan pembeli untuk kasih ulasan melalui chat</string>
+    <string name="review_reminder_title_message">Pesan Pengingat Ulasan</string>
+    <string name="review_reminder_subtitle_message">Tampilan chat yang dilihat oleh pembeli</string>
+    <string name="review_reminder_sample_buyer">Pembeli</string>
+    <string name="review_reminder_sample_item_name">Nike Air Force 1 Low</string>
+    <string name="review_reminder_edit_message">Ubah Pesan</string>
+    <string name="review_reminder_title_product">Produk yang belum diulas</string>
+    <string name="review_reminder_subtitle_product">Pesan hanya akan dikirim untuk 1 produk per invoice</string>
+    <string name="review_reminder_button_send">Kirim</string>
+    <string name="review_reminder_how_to_title_1">2 cara buka halaman Pengingat Ulasan</string>
+    <string name="review_reminder_how_to_description_1">1. Klik <b>Pengingat Ulasan</b> di halaman depan Tokopedia Seller, atau\n\n2. Klik tab <b>Inbox Ulasan</b> di halaman Ulasan, lalu klik tombol <b>Kirim Pengingat Ulasan</b>.</string>
+    <string name="review_reminder_how_to_title_2">2 langkah pakai fitur Pengingat Ulasan</string>
+    <string name="review_reminder_how_to_description_2">1. Buat pesan Pengingat Ulasan versimu agar terlihat lebih personal. Pesan akan tersimpan sebagai template.\n\n2. Klik kirim dan pembeli akan terima chat darimu.</string>
+    <string name="review_reminder_performance_title">Performa Bulanan Pengingat Ulasan</string>
+    <string name="review_reminder_performance_description">Total pengingat berhasil terkirim</string>
+    <string name="review_reminder_performance_incoming_review">Total ulasan masuk</string>
+    <string name="review_reminder_performance_coachmark">Bisa terjadi penyesuaian di total chat terkirim untuk menghindari spam ke pembeli.</string>
+    <string name="review_reminder_postfix_chat">%1$d Chat</string>
+    <string name="review_reminder_dialog_send_title">Kirim Pengingat Ulasan ini?</string>
+    <string name="review_reminder_dialog_description"><![CDATA[Estimasi terkirim ke:<br><br><b>%1$d Pembeli</b> (%2$d Produk)]]></string>
+    <string name="review_reminder_dialog_send_button_primary">Kirim</string>
+    <string name="review_reminder_dialog_send_button_secondary">Ubah Pesan</string>
+    <string name="review_reminder_coachmark_1_title">Ingatkan pembeli untuk kasih ulasan melalui chat</string>
+    <string name="review_reminder_coachmark_2_title">Ubah pesan chat di sini</string>
+    <string name="review_reminder_coachmark_3_title">Daftar produk yang belum diulas</string>
+    <string name="review_reminder_coachmark_1_description">Pesan hanya bisa dikirim min. 7 hari setelah transaksi selesai ke pembeli yang belum tulis ulasan dan pernah chat sebelumnya.</string>
+    <string name="review_reminder_coachmark_2_description">Kamu dapat mengubah isi pesan sesuai dengan keinginanmu.</string>
+    <string name="review_reminder_coachmark_3_description">Cek produk apa saja yang belum mendapat ulasan di sini.</string>
+    <string name="review_reminder_estimation"><![CDATA[Estimasi terkirim ke <b>%1$d pembeli</b> (%2$d produk)]]></string>
+    <string name="review_reminder_edit_message_title">Pesan Chat</string>
+    <string name="review_reminder_edit_message_subtitle">Tulis chat Pengingat Ulasan versimu sendiri</string>
+    <string name="review_reminder_edit_message_add_buyer">Tambah Nama Pembeli</string>
+    <string name="review_reminder_edit_message_button_save">Simpan</string>
+    <string name="review_reminder_item_product_buyer">(%1$s pembeli)</string>
+    <string name="review_reminder_no_products">Belum ada produk yang bisa diulas</string>
+    <string name="review_reminder_how_to_title">Cara pakai pengingat ulasan</string>
+    <string name="review_reminder_snackbar_error">Oops, halaman bermasalah. Cek koneksimu dan coba refresh, ya.</string>
+    <string name="review_reminder_snackbar_sending">Chat sedang dikirim. Cek detail laporannya di tab Performa.</string>
+    <string name="review_reminder_button_review_reminder_with_counter">Kirim Pengingat Ulasan (%1$d)</string>
+    <string name="review_reminder_button_review_reminder">Kirim Pengingat Ulasan</string>
+    <string name="review_reminder_bottom_sheet_edit_message_label">Wajib</string>
+    <string name="review_reminder_bottom_sheet_edit_message_hint_label">Isi Pesan</string>
+    <string name="review_reminder_bottom_sheet_edit_message_error_message">Oops, sudah melebihi maks. karakter.</string>
+    <string name="review_reminder_snackbar_error_action">Refresh</string>
+    <string name="review_reminder_content_description_top_shadow">Top Shadow</string>
+
+    <!-- Kejar Ulasan -->
+    <string name="kejar_ulasan_label">Kejar Ulasan</string>
+    <string name="kejar_ulasan_coach_mark_title">Cek ulasan yang ditandai</string>
+    <string name="kejar_ulasan_coach_mark_subtitle">Ulasan yang masuk lewat Kejar Ulasan akan disertai dengan tanda khusus seperti ini, ya!</string>
 </resources>

@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductData
@@ -27,6 +28,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.dialog_product_stock_handler.*
 import kotlinx.android.synthetic.main.item_empty_state.*
@@ -87,10 +90,9 @@ class ProductStockHandlerDialog(
         })
 
         viewModel.productStockReminder.observe(viewLifecycleOwner, Observer {
-            val successMessage = getString(R.string.product_reminder_success)
+            val successMessage = getString(R.string.title_success_bump_reminder)
             val actionText = getString(R.string.notifcenter_btn_title_ok)
             onSuccessListener(successMessage, actionText)
-            btnReminder?.isEnabled = false
         })
 
         viewModel.addToCart.observe(viewLifecycleOwner, Observer {
@@ -115,6 +117,19 @@ class ProductStockHandlerDialog(
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             showToastErrorMessage(it)
         })
+
+        viewModel.deleteReminder.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    val successMessage = getString(R.string.title_success_delete_reminder)
+                    onSuccessToastMessage(successMessage)
+                }
+                is Fail -> {
+                    setReminderButton()
+                    showToastErrorMessage(ErrorHandler.getErrorMessage(context, it.throwable))
+                }
+            }
+        })
     }
 
     override fun renderView() {
@@ -127,8 +142,12 @@ class ProductStockHandlerDialog(
         element.getAtcProduct()?.let { product ->
             // set product card data
             productCard?.setOnClickListener { onProductCardClicked(product) }
-            btnReminder?.setOnClickListener { onProductStockReminderClicked(product) }
-            buttonReminderValidation(product.typeButton)
+            val typeButton = if(product.hasReminder) {
+                TYPE_DELETE_REMINDER_BUTTON
+            } else {
+                product.typeButton
+            }
+            buttonReminderValidation(typeButton)
             setDataProductCard(product)
 
             // get product highlight
@@ -212,7 +231,10 @@ class ProductStockHandlerDialog(
         if (product.stock < SINGLE_PRODUCT_STOCK) {
             viewModel.setProductReminder(product.productId, element.notificationId)
         } else {
-            listener.addProductToCheckout(element.userInfo, element)
+            viewModel.addProductToCart(
+                    userSession.userId,
+                    product
+            )
         }
     }
 
@@ -220,6 +242,12 @@ class ProductStockHandlerDialog(
         dialogWindow()?.let {
             val onActionClick = View.OnClickListener { onClick() }
             Toaster.make(it, title, Toaster.LENGTH_LONG, TYPE_NORMAL, actionText, onActionClick)
+        }
+    }
+
+    private fun onSuccessToastMessage(message: String) {
+        dialogWindow()?.let {
+            Toaster.make(it, message, Toaster.LENGTH_LONG, TYPE_NORMAL)
         }
     }
 
@@ -236,8 +264,10 @@ class ProductStockHandlerDialog(
                 btnReminder?.buttonType = UnifyButton.Type.TRANSACTION
             }
             TYPE_REMINDER_BUTTON -> {
-                btnReminder?.text = context?.getString(R.string.notifcenter_btn_reminder)
-                btnReminder?.buttonType = UnifyButton.Type.MAIN
+                setReminderButton()
+            }
+            TYPE_DELETE_REMINDER_BUTTON -> {
+                setDeleteReminderButton()
             }
         }
     }
@@ -263,9 +293,34 @@ class ProductStockHandlerDialog(
         dismissAllowingStateLoss()
     }
 
+    private fun setReminderButton() {
+        btnReminder?.text = context?.getString(R.string.notifcenter_btn_reminder)
+        btnReminder?.buttonType = UnifyButton.Type.MAIN
+        btnReminder?.buttonVariant = UnifyButton.Variant.FILLED
+        element.getAtcProduct()?.let {product ->
+            btnReminder?.setOnClickListener {
+                setDeleteReminderButton()
+                onProductStockReminderClicked(product)
+            }
+        }
+    }
+
+    private fun setDeleteReminderButton() {
+        btnReminder?.buttonType = UnifyButton.Type.ALTERNATE
+        btnReminder?.buttonVariant = UnifyButton.Variant.GHOST
+        btnReminder?.text = context?.getString(R.string.notifcenter_btn_delete_reminder)
+        btnReminder?.setOnClickListener {
+            setReminderButton()
+            element.getAtcProduct()?.productId?.let {
+                viewModel.deleteReminder(it, element.notificationId)
+            }
+        }
+    }
+
     companion object {
         private const val TYPE_BUY_BUTTON = 0
         private const val TYPE_REMINDER_BUTTON = 1
+        private const val TYPE_DELETE_REMINDER_BUTTON = 2
 
         private const val SINGLE_PRODUCT_STOCK = 1
     }

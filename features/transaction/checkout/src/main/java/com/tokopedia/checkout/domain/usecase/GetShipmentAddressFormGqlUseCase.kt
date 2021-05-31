@@ -1,10 +1,11 @@
 package com.tokopedia.checkout.domain.usecase
 
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
@@ -16,8 +17,9 @@ import javax.inject.Named
 
 class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRESS_FORM_QUERY) private val queryString: String,
                                                            private val graphqlUseCase: GraphqlUseCase,
-                                                           private val shipmentMapper: IShipmentMapper,
-                                                           private val schedulers: ExecutorSchedulers) : UseCase<CartShipmentAddressFormData>() {
+                                                           private val shipmentMapper: ShipmentMapper,
+                                                           private val schedulers: ExecutorSchedulers,
+                                                           private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<CartShipmentAddressFormData>() {
 
     companion object {
         const val SHIPMENT_ADDRESS_FORM_QUERY = "SHIPMENT_ADDRESS_FORM_QUERY"
@@ -33,6 +35,7 @@ class GetShipmentAddressFormGqlUseCase @Inject constructor(@Named(SHIPMENT_ADDRE
     }
 
     override fun createObservable(requestParam: RequestParams): Observable<CartShipmentAddressFormData> {
+        chosenAddressRequestHelper.addChosenAddressParam(requestParam)
         val params = mapOf(SHIPMENT_ADDRESS_FORM_PARAMS to requestParam.parameters)
         val graphqlRequest = GraphqlRequest(queryString, ShipmentAddressFormGqlResponse::class.java, params)
         graphqlUseCase.clearRequest()

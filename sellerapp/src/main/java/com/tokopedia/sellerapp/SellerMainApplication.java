@@ -16,15 +16,10 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.github.moduth.blockcanary.BlockCanary;
 import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.moengage.inapp.InAppManager;
-import com.moengage.inapp.InAppMessage;
-import com.moengage.inapp.InAppTracker;
-import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -35,7 +30,17 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.keys.Keys;
+import com.tokopedia.logger.LogManager;
+import com.tokopedia.logger.LoggerProxy;
+import com.tokopedia.moengage_wrapper.MoengageInteractor;
+import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
+import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
+import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -43,20 +48,23 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
-import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerapp.utils.timber.LoggerActivityLifecycleCallbacks;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.permission.SlicePermission;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.SecretKey;
+
 import kotlin.Pair;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHORITY;
@@ -65,31 +73,18 @@ import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHOR
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
-        InAppManager.InAppMessageListener {
+public class SellerMainApplication extends SellerRouterApplication implements
+        MoengagePushListener, MoengageInAppListener {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
+    private static final String REMOTE_CONFIG_SCALYR_KEY_LOG = "android_sellerapp_log_config_scalyr";
+    private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_sellerapp_log_config_new_relic";
+    private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-    }
-
-    @Override
-    public void onInAppShown(InAppMessage message) {
-        InAppTracker.getInstance(this).trackInAppClicked(message);
-    }
-
-    @Override
-    public boolean showInAppMessage(InAppMessage message) {
-        InAppTracker.getInstance(this).trackInAppClicked(message);
-        return false;
-    }
-
-    @Override
-    public void onInAppClosed(InAppMessage message) {
-
     }
 
     @Override
@@ -144,6 +139,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         setVersionName();
+        initFileDirConfig();
         FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
@@ -157,12 +153,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
 
-        TimberWrapper.init(this);
         super.onCreate();
-        MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
-        InAppManager.getInstance().setInAppListener(this);
-        initCacheApi();
+        initLogManager();
+        MoengageInteractor.INSTANCE.setPushListener(SellerMainApplication.this);
+        MoengageInteractor.INSTANCE.setInAppListener(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
+        GraphqlClient.setContextData(this);
         GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
         NetworkClient.init(this);
         initializeAbTestVariant();
@@ -172,14 +168,101 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         initBlockCanary();
         TokoPatch.init(this);
         initSlicePermission();
+
+        Loader.init(this);
     }
 
-    private void initCacheManager(){
+    private void initCacheManager() {
         PersistentCacheManager.init(this);
         cacheManager = PersistentCacheManager.instance;
     }
 
-    private void setVersionName(){
+    private void initLogManager(){
+        LogManager.init(SellerMainApplication.this, new LoggerProxy() {
+            final AESEncryptorECB encryptor = new AESEncryptorECB();
+            final SecretKey secretKey = encryptor.generateKey(com.tokopedia.sellerapp.utils.constants.Constants.ENCRYPTION_KEY);
+
+            @Override
+            public Function1<String, String> getDecrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.decrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @Override
+            public Function1<String, String> getEncrypt() {
+                return new Function1<String, String>() {
+                    @Override
+                    public String invoke(String s) {
+                        return encryptor.encrypt(s, secretKey);
+                    }
+                };
+            }
+
+            @NotNull
+            @Override
+            public String getVersionName() {
+                return GlobalConfig.RAW_VERSION_NAME;
+            }
+
+            @Override
+            public int getVersionCode() {
+                return GlobalConfig.VERSION_CODE;
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrToken() {
+                return Keys.getAUTH_SCALYR_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicToken() {
+                return Keys.getAUTH_NEW_RELIC_API_KEY();
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicUserId() {
+                return Keys.getAUTH_NEW_RELIC_USER_ID();
+            }
+
+            @Override
+            public boolean isDebug() {
+                return GlobalConfig.DEBUG;
+            }
+
+            @NotNull
+            @Override
+            public String getUserId() {
+                return getUserSession().getUserId();
+            }
+
+            @NotNull
+            @Override
+            public String getParserScalyr() {
+                return PARSER_SCALYR_SA;
+            }
+
+            @NotNull
+            @Override
+            public String getScalyrConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_SCALYR_KEY_LOG);
+            }
+
+            @NotNull
+            @Override
+            public String getNewRelicConfig() {
+                return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
+            }
+        });
+    }
+
+    private void setVersionName() {
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             Pair<String, String> versions = AuthHelper.getVersionName(pInfo.versionName);
@@ -200,11 +283,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
     }
 
-    public void initBlockCanary(){
+    public void initBlockCanary() {
         BlockCanary.install(context, new BlockCanaryContext()).start();
     }
 
     private void registerActivityLifecycleCallbacks() {
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -212,6 +296,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
+        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
     }
 
     @Override
@@ -231,7 +317,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
     }
 
-    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
+    protected AbTestPlatform.Listener getRemoteConfigListener() {
+        return null;
+    }
 
     private void setVersionCode() {
         try {
@@ -250,13 +338,15 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
     }
 
-    private void initCacheApi() {
-        CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        new CacheApiWhiteListUseCase(this).executeSync(
-                CacheApiWhiteListUseCase.createParams(
-                        CacheApiWhiteList.getWhiteList(),
-                        String.valueOf(getCurrentVersion(getApplicationContext())))
-        );
+    public int getCurrentVersion(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     //Please do not delete this function to keep AppNotificationReceiver
@@ -277,7 +367,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return remoteConfig != null
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
     }
-
 
 
     @Override

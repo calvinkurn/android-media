@@ -6,6 +6,12 @@
     <string name="title_talk_discuss">Diskusi</string>
     <string name="title_reply_page">Balas Pertanyaan</string>
     <string name="title_write_page">Kirim Pertanyaan</string>
+    <string name="title_seller_settings_page">Pengaturan Diskusi</string>
+    <string name="title_smart_reply_settings_page">Smart Reply</string>
+    <string name="title_smart_reply_detail_page">Stok Produk</string>
+    <string name="title_template_page">Pengaturan Diskusi</string>
+    <string name="title_edit_template_page">Ubah Template</string>
+    <string name="title_add_template_page">Tambah Template</string>
 
     <!-- REPORT TALK -->
     <string name="report_talk_question">Bantu Kami Memahami Apa yang Terjadi. Mengapa Anda melaporkan hal ini?</string>
@@ -42,12 +48,12 @@
     <string name="toaster_unfollow_fail">Gagal unfollow Diskusi ini. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_editText_placeholder">Tulis jawabanmu…</string>
     <string name="reply_header_tnc">Diskusi adalah tempat kamu bertanya dan kasih jawaban seputar produk. Tetap sopan dan jangan lupa &lt;a href = "https://www.tokopedia.com/help/article/a-2480">baca S&amp;K.&lt;/a></string>
-    <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>
+    <string name="reply_toaster_success">Komentar berhasil dikirim.</string>
     <string name="reply_toaster_message_too_long">Jawabanmu sudah melebihi maks. karakter.</string>
-    <string name="reply_toaster_network_error">Pertanyaanmu tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="reply_toaster_network_error">Komentar gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_toaster_length_too_short_error">Kamu harus masukkan min. 5 karakter.</string>
-    <string name="delete_toaster_success">Jawabanmu berhasil dihapus.</string>
-    <string name="delete_toaster_network_error">Jawaban belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="delete_toaster_success">Komentarmu berhasil dihapus.</string>
+    <string name="delete_toaster_network_error">Komentar belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="delete_dialog_title">Beneran mau dihapus?</string>
     <string name="delete_dialog_content">Soalnya, satu jawaban kamu bisa berikan manfaat bagi ratusan calon pembeli lain</string>
     <string name="delete_dialog_question_description">Semua jawaban di Diskusi ini akan hilang jika pertanyaan dihapus</string>
@@ -57,6 +63,7 @@
     <string name="reply_total_answer">Jawaban (%d)</string>
     <string name="delete_question_bottom_sheet">Hapus Pertanyaan</string>
     <string name="delete_answer_bottom_sheet">Hapus Jawaban</string>
+    <string name="edit_product_bottom_sheet">Ubah Deskripsi Produk</string>
     <string name="report_bottom_sheet_text">Laporkan</string>
     <string name="reply_header_follow_button">Follow</string>
     <string name="reply_header_following_button">Following</string>
@@ -65,12 +72,13 @@
     <string name="reply_empty_title_default">Bantu jawab, yuk!</string>
     <string name="reply_empty_subtitle_default">Karena jawabanmu begitu berarti buat orang lain</string>
     <string name="reply_product_deleted">Barang ini sudah dihapus</string>
-    <string name="reply_unmask">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
-    <string name="reply_unmask_yes">Ya</string>
-    <string name="reply_unmask_no">Tidak</string>
+    <string name="reply_unmask">Tokopedia tidak menampilkan konten diskusi ini karena melanggar S&amp;K. Tetap tampilkan?</string>
+    <string name="reply_unmask_yes">Sembunyikan</string>
+    <string name="reply_unmask_no">Tampilkan</string>
     <string name="reply_unmask_toaster_negative">Konten tidak ditampilkan.</string>
     <string name="reply_unmask_toaster_positive">Konten berhasil ditampilkan.</string>
     <string name="reply_unmask_toaster_error">Ada kesalahan jaringan. Silakan pilih kembali jawabanmu.</string>
+    <string name="reply_warning_ticker">Laporan kamu terkait konten ini sedang diproses maks. 3x24 jam agar dihilangkan dari halaman produk.</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
 
@@ -84,14 +92,84 @@
 
     <string name="inbox_read">Sudah Dibaca</string>
     <string name="inbox_unread">Belum Dibaca</string>
-    <string name="inbox_total_count">%s jawaban</string>
-    <string name="inbox_total_count_empty_seller">Jawab Pertanyaan</string>
-    <string name="inbox_date">• %s</string>
+    <string name="inbox_total_count_old">%s jawaban</string>
+    <string name="inbox_total_count_empty_seller_old">Jawab Pertanyaan</string>
+    <string name="inbox_date_old">• %s</string>
     <string name="inbox_total_count_empty_buyer">Belum ada jawaban</string>
     <string name="inbox_empty_title">Lagi nggak ada diskusi</string>
     <string name="inbox_empty_read_discussion">Semua diskusi yang sudah dibaca akan tampil di sini</string>
     <string name="inbox_empty_unread_discussion">Semua diskusi yang belum dibaca akan tampil di sini</string>
-    <string name="inbox_all_empty">Belum ada diskusi, nih.</string>
+    <string name="inbox_all_empty">Belum ada diskusi, nih</string>
     <string name="inbox_toaster_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="inbox_total_count_empty_seller">Balas Diskusi</string>
+    <string name="inbox_total_count">%s komentar</string>
+    <string name="inbox_empty_seller_subtitle">Terus aktif jualan ya supaya pembeli mampir ke tokomu dan memulai diskusi</string>
+    <string name="inbox_empty_seller_unread_title">Yay, semua diskusi sudah dibaca</string>
+    <string name="inbox_empty_seller_unread_subtitle">Pastikan sudah kamu balas juga, ya!</string>
+    <string name="inbox_unresponded">Belum Direspon</string>
+    <string name="inbox_problem">Bermasalah</string>
+    <string name="inbox_problem_empty">Tidak ada diskusi yang bermasalah</string>
+    <string name="inbox_problem_empty_subtitle">Tetap pantau terus isi diskusimu, ya!</string>
+    <string name="inbox_unresponded_empty_title">Yay, semua diskusi sudah direspon</string>
+    <string name="inbox_unresponded_empty_subtitle">Gercep balas diskusi, pembeli jadi makin yakin dan hepi!</string>
+    <string name="inbox_autoreplied_empty_title">Belum ada diskusi yang dibalas otomatis</string>
+    <string name="inbox_autoreplied_empty_subtitle">Yuk, cobain Smart Reply supaya bisa balas diskusi lebih cepat.</string>
+    <string name="inbox_auto_replied">Dibalas Otomatis</string>
+    <string name="inbox_coach_mark_filter_title">Cek filter baru diskusi di sini</string>
+    <string name="inbox_coach_mark_filter_subtitle">Ada diskusi yang belum dibalas dan terlewat? Nggak perlu khawatir, kamu bisa langsung cari dengan filter Belum Direspon.</string>
+    <string name="inbox_coach_mark_reported_title">Bisa cari diskusi yang dilaporkan juga</string>
+    <string name="inbox_coach_mark_reported_subtitle">Temukan diskusi yang pernah kamu laporkan dan diskusi yang terdeteksi melanggar S&amp;K Tokopedia dengan filter ini. </string>
+    <string name="inbox_coach_mark_smart_reply_title">Balasan otomatis dari Smart Reply</string>
+    <string name="inbox_coach_mark_smart_reply_subtitle">Sekarang diskusi tentang stok bisa dibalas otomatis oleh Smart Reply. Yuk, atur pesan balasannya di halaman Pengaturan!</string>
+    <string name="inbox_coach_mark_finish">Selesai</string>
+    <string name="inbox_ticker_title">Pembeli nungguin balasanmu nih!</string>
+    <string name="inbox_ticker_description">Notifikasi pada diskusi yang belum kamu respon akan hilang otomatis setelah 14 hari.</string>
+
+    <string name="settings_toolbar">Pengaturan Diskusi</string>
+    <string name="settings_template_item">Template Balasan</string>
+    <string name="settings_smart_reply_item">Smart Reply</string>
+    <string name="settings_label_seller_app">Tokopedia Seller App</string>
+    <string name="smart_reply_header">Balas otomatis pertanyaan pembeli khusus stok produk dengan fitur Smart Reply.</string>
+    <string name="smart_reply_learn">Pelajari Smart Reply</string>
+    <string name="smart_reply_performance_title">Performa Smart Reply</string>
+    <string name="smart_reply_performance_subtitle">Performa dalam 30 hari</string>
+    <string name="smart_reply_total_discussions_replied_label">Diskusi dibalas Smart Reply</string>
+    <string name="smart_reply_speed_label">Kecepatan menjawab Smart Reply</string>
+    <string name="smart_reply_percentage_replied_label">Persentase dibalas Smart Reply</string>
+    <string name="smart_reply_settings_title">Pengaturan Smart Reply</string>
+    <string name="smart_reply_stock_settings_subtitle">Stok Produk</string>
+    <string name="smart_reply_settings_description">Smart Reply hanya akan menjawab diskusi untuk &lt;b>produk tanpa varian.&lt;/b></string>
+    <string name="smart_reply_active_label">Aktif</string>
+    <string name="smart_reply_inactive_label">Tidak Aktif</string>
+    <string name="smart_reply_detail_ticker">Update selalu stok produkmu untuk menghindari pembatalan pesanan oleh pembeli.</string>
+    <string name="smart_reply_detail_stock_availability_title">Ketersediaan Stok</string>
+    <string name="smart_reply_available_stock_text_area_label">Stok Tersedia</string>
+    <string name="smart_reply_unavailable_stock_text_area_label">Stok Kosong</string>
+    <string name="smart_reply_detail_save_button">Simpan</string>
+    <string name="smart_reply_available_stock_text_area_default_text">Ready. Yuk, beli sekarang!😄</string>
+    <string name="smart_reply_unavailable_stock_text_area_default_text">Maaf, stoknya lagi kosong.☹️</string>
+    <string name="smart_reply_dummy_buyer_text">Pembeli • beberapa saat lalu</string>
+    <string name="smart_reply_dummy_question_text">Ready stok?</string>
+    <string name="smart_reply_dummy_seller_reply_time">• beberapa saat lalu</string>
+    <string name="smart_reply_label">SmartReply</string>
+    <string name="smart_reply_dummy_reply">Ready. Yuk, beli sekarang!😄</string>
+    <string name="smart_reply_success_deactivate">Smart Reply berhasil dinonaktifkan.</string>
+    <string name="smart_reply_success_activate">Smart Reply berhasil dinaktifkan.</string>
+    <string name="smart_reply_success_saved">Pesan Smart Reply berhasil disimpan.</string>
+
+    <string name="template_list_title">Template Balasan</string>
+    <string name="template_list_subtitle">Balas diskusi pembeli lebih cepat hingga 5 template.</string>
+    <string name="template_list_button">Tambah Template</string>
+    <string name="template_list_success_add_template">Yay, template diskusi berhasil disimpan!</string>
+    <string name="template_list_success_delete_template">Template diskusi berhasil dihapus.</string>
+    <string name="template_list_success_activate_template">Template diskusi berhasil diaktifkan.</string>
+    <string name="template_list_success_deactivate_template">Template diskusi berhasil dinonaktifkan.</string>
+    <string name="template_list_toaster_fail">Template diskusi gagal disimpan. Coba lagi, ya.</string>
+    <string name="template_list_rearrange_toaster_fail">Urutan template diskusi gagal diubah. Coba ubah lagi, ya.</string>
+    <string name="template_delete_toaster_fail">Template diskusi gagal dihapus.</string>
+    <string name="template_list_delete">Hapus</string>
+    <string name="template_list_add_template_placeholder">Buat template barumu di sini\n\nContoh:\nHalo, barang ini ready ya silakan order</string>
+    <string name="template_list_fail_load_template_list">Wah, internet putus. Cek paket data atau WiFi-mu, ya. </string>
+    <string name="template_list_add_edit_template_limit">Template diskusi melebihi batas maks. karakter.</string>
 
 </resources>

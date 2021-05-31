@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoEmptyRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantResponseSuccess
@@ -53,7 +54,7 @@ class PromoCheckoutViewModelApplyPromoTest {
     private var uiModelMapper: PromoCheckoutUiModelMapper = spyk()
     private var analytics: PromoCheckoutAnalytics = mockk()
     private var gson = Gson()
-    private var userSession: UserSessionInterface = mockk()
+    private var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -61,7 +62,7 @@ class PromoCheckoutViewModelApplyPromoTest {
     @Before
     fun setUp() {
         dispatcher = Dispatchers.Unconfined
-        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, userSession, gson)
+        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, gson, chosenAddressRequestHelper)
     }
 
     @Test

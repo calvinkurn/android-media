@@ -78,7 +78,7 @@ public class AlphabeticalSideBar extends View {
         magnifierBackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         magnifierTextPaint = new Paint();
-        magnifierTextPaint.setColor(getContext().getResources().getColor(R.color.Unify_N0));
+        magnifierTextPaint.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
         magnifierTextPaint.setTextSize(magnifierTextSize);
         magnifierTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         magnifierTextPaint.setTextAlign(Paint.Align.CENTER);

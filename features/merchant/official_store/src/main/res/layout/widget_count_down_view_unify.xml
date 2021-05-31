@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+        <TextView
+            android:id="@+id/hourView"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:background="@drawable/background_countdown_unify"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_R400"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="00" />
+
+        <TextView
+            android:id="@+id/col1"
+            style="@style/TextView.Small.OrangeRed.Bold"
+            android:padding="@dimen/dp_2"
+            android:text=":"
+            android:textColor="@color/Unify_R400" />
+
+        <TextView
+            android:id="@+id/minuteView"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:background="@drawable/background_countdown_unify"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_R400"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="00" />
+
+        <TextView
+            android:id="@+id/col2"
+            style="@style/TextView.Small.OrangeRed.Bold"
+            android:padding="@dimen/dp_2"
+            android:text=":"
+            android:textColor="@color/Unify_R400" />
+
+        <TextView
+            android:id="@+id/secondView"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:background="@drawable/background_countdown_unify"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_R400"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            tools:text="00" />
+
+</LinearLayout>

@@ -1,14 +1,16 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
+import android.net.Uri
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -16,9 +18,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.CapturingSlot
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers
@@ -40,10 +40,11 @@ internal open class ProductListPresenterTestFixtures {
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val getLocalSearchRecommendationUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
+    protected val getInspirationCarouselChipsProductsUseCase = mockk<UseCase<InspirationCarouselChipsProductModel>>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val remoteConfig = mockk<RemoteConfig>()
-    protected val searchOnBoardingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
+    protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -60,18 +61,20 @@ internal open class ProductListPresenterTestFixtures {
                 searchProductLoadMoreUseCase,
                 recommendationUseCase,
                 userSession,
-                searchOnBoardingLocalCache,
-                dagger.Lazy { getDynamicFilterUseCase },
-                dagger.Lazy { getProductCountUseCase },
-                dagger.Lazy { getLocalSearchRecommendationUseCase },
+                searchCoachMarkLocalCache,
+                { getDynamicFilterUseCase },
+                { getProductCountUseCase },
+                { getLocalSearchRecommendationUseCase },
+                { getInspirationCarouselChipsProductsUseCase },
                 topAdsUrlHitter,
                 testSchedulersProvider,
-                dagger.Lazy { remoteConfig }
+                { remoteConfig }
         )
         productListPresenter.attachView(productListView)
 
         verify {
             productListView.abTestRemoteConfig
+            productListView.isChooseAddressWidgetEnabled
         }
     }
 
@@ -82,7 +85,7 @@ internal open class ProductListPresenterTestFixtures {
             organicPositionStart: Int = 0
     ) {
         val visitableList = visitableListSlot.captured
-        val productItemViewModelList = visitableList.filterIsInstance<ProductItemViewModel>()
+        val productItemViewModelList = visitableList.filterIsInstance<ProductItemDataView>()
 
         val topAdsTemplatePosition = getTopAdsProductPositionByTemplate(searchProductModel)
 
@@ -118,7 +121,7 @@ internal open class ProductListPresenterTestFixtures {
     }
 
     private fun Visitable<*>.assertTopAdsProduct(topAdsProduct: Data, position: Int) {
-        val productItem = this as ProductItemViewModel
+        val productItem = this as ProductItemDataView
 
         productItem.isTopAds shouldBe true
         productItem.topadsClickUrl shouldBe topAdsProduct.productClickUrl
@@ -129,7 +132,7 @@ internal open class ProductListPresenterTestFixtures {
     }
 
     protected fun Visitable<*>.assertOrganicProduct(organicProduct: SearchProductModel.Product, position: Int) {
-        val productItem = this as ProductItemViewModel
+        val productItem = this as ProductItemDataView
 
         productItem.isOrganicAds shouldBe organicProduct.isOrganicAds()
         productItem.position shouldBe position

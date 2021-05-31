@@ -15,6 +15,7 @@ android {
 }
 
 dependencies {
+	implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.miscDependencies.gson
 
     implementation project(rootProject.ext.libraries.analytics)

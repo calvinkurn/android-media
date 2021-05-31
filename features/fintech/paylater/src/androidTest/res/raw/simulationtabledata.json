@@ -1,0 +1,126 @@
+[
+  {
+    "data": {
+      "paylater_getSimulation": {
+        "gateways": [
+          {
+            "gateway_id": 1,
+            "gateway_name": "INDODANA",
+            "simulation_detail": [
+              {
+                "installment_per_month": 103051,
+                "installment_per_month_ceil": 103051,
+                "total_fee": 103051,
+                "total_fee_ceil": 104000,
+                "total_interest": 0,
+                "total_interest_ceil": 0,
+                "interest_pct": 0,
+                "total_with_provision": 103051,
+                "total_with_provision_ceil": 104000,
+                "is_recommended": false,
+                "tenure": 1
+              },
+              {
+                "installment_per_month": 37441.86,
+                "installment_per_month_ceil": 37442,
+                "total_fee": 112325.59,
+                "total_fee_ceil": 114000,
+                "total_interest": 9274.59,
+                "total_interest_ceil": 10000,
+                "interest_pct": 3,
+                "total_with_provision": 103051,
+                "total_with_provision_ceil": 104000,
+                "is_recommended": false,
+                "tenure": 3
+              },
+              {
+                "installment_per_month": 20266.7,
+                "installment_per_month_ceil": 20267,
+                "total_fee": 121600.18,
+                "total_fee_ceil": 123000,
+                "total_interest": 18549.18,
+                "total_interest_ceil": 19000,
+                "interest_pct": 3,
+                "total_with_provision": 103051,
+                "total_with_provision_ceil": 104000,
+                "is_recommended": false,
+                "tenure": 6
+              },
+              {
+                "installment_per_month": 11679.11,
+                "installment_per_month_ceil": 11679,
+                "total_fee": 140149.36,
+                "total_fee_ceil": 142000,
+                "total_interest": 37098.36,
+                "total_interest_ceil": 38000,
+                "interest_pct": 3,
+                "total_with_provision": 103051,
+                "total_with_provision_ceil": 104000,
+                "is_recommended": false,
+                "tenure": 12
+              }
+            ]
+          },
+          {
+            "gateway_id": 2,
+            "gateway_name": "KREDIVO",
+            "simulation_detail": [
+              {
+                "installment_per_month": 105082,
+                "installment_per_month_ceil": 105082,
+                "total_fee": 105082,
+                "total_fee_ceil": 106000,
+                "total_interest": 0,
+                "total_interest_ceil": 0,
+                "interest_pct": 0,
+                "total_with_provision": 105082,
+                "total_with_provision_ceil": 106000,
+                "is_recommended": false,
+                "tenure": 1
+              },
+              {
+                "installment_per_month": 37214,
+                "installment_per_month_ceil": 37214,
+                "total_fee": 111641.992,
+                "total_fee_ceil": 113000,
+                "total_interest": 8077.99,
+                "total_interest_ceil": 9000,
+                "interest_pct": 2.6,
+                "total_with_provision": 103564,
+                "total_with_provision_ceil": 104000,
+                "is_recommended": false,
+                "tenure": 3
+              },
+              {
+                "installment_per_month": 19953.33,
+                "installment_per_month_ceil": 19953,
+                "total_fee": 119719.984,
+                "total_fee_ceil": 121000,
+                "total_interest": 16155.98,
+                "total_interest_ceil": 17000,
+                "interest_pct": 2.6,
+                "total_with_provision": 103564,
+                "total_with_provision_ceil": 104000,
+                "is_recommended": false,
+                "tenure": 6
+              },
+              {
+                "installment_per_month": 11323,
+                "installment_per_month_ceil": 11323,
+                "total_fee": 135875.968,
+                "total_fee_ceil": 137000,
+                "total_interest": 32311.97,
+                "total_interest_ceil": 33000,
+                "interest_pct": 2.6,
+                "total_with_provision": 103564,
+                "total_with_provision_ceil": 104000,
+                "is_recommended": false,
+                "tenure": 12
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

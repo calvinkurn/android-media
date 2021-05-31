@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/cassava_nav"
+    app:startDestination="@id/analyticsDebuggerFragment">
+
+    <fragment
+        android:id="@+id/analyticsDebuggerFragment"
+        android:name="com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerFragment"
+        android:label="Logs" >
+        <action
+            android:id="@+id/action_analyticsDebuggerFragment_to_analyticsDebuggerDetailFragment"
+            app:destination="@id/analyticsDebuggerDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/analyticsDebuggerDetailFragment"
+        android:name="com.tokopedia.analyticsdebugger.cassava.debugger.DebuggerListDetailFragment"
+        android:label="Log Detail" >
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <argument
+            android:name="timestamp"
+            app:argType="string" />
+        <argument
+            android:name="datum"
+            app:argType="string" />
+    </fragment>
+</navigation>

@@ -45,10 +45,10 @@
     <string name="connected_websocket">"Terhubung!"</string>
     <string name="title_last_online">Terakhir online</string>
     <string name="online">Online</string>
-    <string name="topchat_online_minutes_ago">Terakhir online %1$d menit yang lalu</string>
-    <string name="topchat_online_hours_ago">Terakhir online %1$d jam yang lalu</string>
-    <string name="topchat_online_days_ago">Terakhir online %1$d hari yang lalu</string>
-    <string name="topchat_online_months_ago">Terakhir online %1$d bulan yang lalu</string>
+    <string name="topchat_online_minutes_ago">Terakhir online %1$d menit lalu</string>
+    <string name="topchat_online_hours_ago">Terakhir online %1$d jam lalu</string>
+    <string name="topchat_online_days_ago">Terakhir online %1$d hari lalu</string>
+    <string name="topchat_online_months_ago">Terakhir online %1$d bulan lalu</string>
 
     <string name="chat_blocked_text" formatted="false">Anda berhenti menerima %s dari %s hingga
         %s</string>
@@ -60,5 +60,7 @@
 
     <string name="action_buy">Beli</string>
     <string name="action_resume_on_browser">Lanjut di Browser</string>
+
+    <string name="is_typing">"lagi ngetik"</string>
 
 </resources>

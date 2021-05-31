@@ -1,22 +1,23 @@
 package com.tokopedia.buyerorder
 
-import android.app.Application
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
-import com.tokopedia.buyerorder.test.R
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analyticsdebugger.cassava.validator.Utils.getJsonDataFromAsset
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.Utils.getJsonDataFromAsset
+import com.tokopedia.buyerorder.test.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
+import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import org.junit.*
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * Created by fwidjaja on 06/11/20.
@@ -24,24 +25,23 @@ import org.junit.*
 class UohRecommendationTrackingTest {
 
     companion object {
-        private const val QUERY_SUMMARY_RECOMMENDATION_UOH = "tracker/transaction/uoh_recommendation_summary.json"
         private const val KEY_UOH_ORDERS = "GetOrderHistory"
         private const val KEY_UOH_RECOMMENDATION = "productRecommendation"
-        private const val IDLING_RESOURCE = "uoh_fake_login"
     }
 
     @get:Rule
     var activityRule = IntentsTestRule(UohListActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val idlingResourceLogin: CountingIdlingResource = CountingIdlingResource(IDLING_RESOURCE)
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
         gtmLogDBSource.deleteAll().subscribe()
 
-        IdlingRegistry.getInstance().register(idlingResourceLogin)
         IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
 
         setupGraphqlMockResponse {
@@ -49,7 +49,7 @@ class UohRecommendationTrackingTest {
             addMockResponse(KEY_UOH_RECOMMENDATION, InstrumentationMockHelper.getRawString(context, R.raw.response_uoh_recommendation_items), MockModelConfig.FIND_BY_CONTAINS)
         }
 
-        InstrumentationAuthHelper.loginToAnUser(context.applicationContext as Application, idlingResourceLogin)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         onIdle()
 
         activityRule.launchActivity(null)
@@ -59,14 +59,12 @@ class UohRecommendationTrackingTest {
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(UohIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(idlingResourceLogin)
         activityRule.finishActivity()
     }
 
     @Test
     fun test_uoh_recommendation_summary() {
-        val query = getJsonDataFromAsset(context, QUERY_SUMMARY_RECOMMENDATION_UOH)
-                ?: throw AssertionError("Validator Query not found")
+        val query = "tracker/transaction/uoh_recommendation_summary.json"
 
         runBot {
             loading()
@@ -74,7 +72,7 @@ class UohRecommendationTrackingTest {
             clickAtcRecommendation()
             clickRecommendationCard()
         } submit {
-            hasPassedAnalytics(gtmLogDBSource, query)
+            hasPassedAnalytics(cassavaTestRule, query)
         }
     }
 }

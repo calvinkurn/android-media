@@ -15,6 +15,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -45,6 +46,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, isOnSuccessCalled)
         assertEquals(OccGlobalEvent.Loading, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any()) }
+        verify(inverse = true) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
@@ -307,7 +309,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
-    fun `Checkout On Invalid Profile Id`() {
+    fun `Checkout On Invalid Address Id`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(), isValid = true)
@@ -579,5 +581,59 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Then
         assertEquals(true, isOnSuccessCalled)
         verify(exactly = 1) { orderSummaryAnalytics.eventClickBayarSuccess(any(), any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `Checkout Success With PPP Ticked`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = OrderCart(product = helper.product.copy(
+                purchaseProtectionPlanData = PurchaseProtectionPlanData(
+                        isProtectionAvailable = true,
+                        stateChecked = PurchaseProtectionPlanData.STATE_TICKED
+                ))
+        )
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+
+        // When
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        // Then
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), true, any()) }
+    }
+
+    @Test
+    fun `Checkout Success With PPP Unticked`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = OrderCart(product = helper.product.copy(
+                purchaseProtectionPlanData = PurchaseProtectionPlanData(
+                        isProtectionAvailable = true,
+                        stateChecked = PurchaseProtectionPlanData.STATE_UNTICKED
+                ))
+        )
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
+
+        // When
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        // Then
+        assertEquals(true, isOnSuccessCalled)
+        verify(exactly = 1) { orderSummaryAnalytics.eventPPClickBayar(any(), any(), any(), any(), false, any()) }
     }
 }

@@ -5,22 +5,23 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyViewModel
+import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyModel
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 
 /**
  * Created by Pika on 2/6/20.
  */
 
-class AutoAdsItemsEmptyViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoAdsItemsEmptyViewModel>(view) {
+class AutoAdsItemsEmptyViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoAdsItemsEmptyModel>(view) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.topads_dash_group_empty_state
     }
-    override fun bind(item: AutoAdsItemsEmptyViewModel, statsData: MutableList<WithoutGroupDataItem>) {
+
+    override fun bind(item: AutoAdsItemsEmptyModel, statsData: MutableList<WithoutGroupDataItem>) {
         view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
         view.text_title.text = view.context.getString(R.string.topads_dash_empty_non_group_title)
         view.text_desc.text = view.context.getString(R.string.topads_dash_empty_non_group_desc)

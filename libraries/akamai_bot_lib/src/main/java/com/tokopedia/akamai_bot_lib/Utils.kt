@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.akamai.botman.CYFMonitor
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -27,10 +29,14 @@ fun getSensorData() = CYFMonitor.getSensorData()
 val registeredGqlFunctions = mapOf(
         "login_token" to "login",
         "register" to "register",
+        "login_token_v2" to "login",
+        "register_v2" to "register",
         "OTPValidate" to "otp",
         "OTPRequest" to "otp",
         "richieSubmitWithdrawal" to "ttwdl",
         "pdpGetLayout" to "pdpGetLayout",
+        "pdpGetData" to "pdpGetData",
+        "pdpGetDetailBottomSheet" to "pdpGetDetailBottomSheet",
         "atcOCS" to "atconeclickshipment",
         "getPDPInfo" to "product_info",
         "shopInfoByID" to "shop_info",
@@ -40,8 +46,7 @@ val registeredGqlFunctions = mapOf(
         "gamiCrack" to "gamicrack",
         "add_to_cart_occ" to "atcocc",
         "one_click_checkout" to "checkoutocc",
-        "add_to_cart_transactional" to "atc",
-        "add_to_cart" to "atc",
+        "add_to_cart_v2" to "atc",
         "checkout" to "checkout",
         "coupon_list_recommendation" to "clrecom",
         "hachikoRedeem" to "claimcoupon"
@@ -111,12 +116,23 @@ fun <E> setExpire(
         saveTime: (param: Long) -> Unit,
         setValue: () -> Unit,
         getValue: () -> E): E {
-    val curr_time = currentTime.invoke()
-    val alreadyNotedTime1 = alreadyNotedTime.invoke()
+    val currTime = currentTime.invoke()
+    val savedTime = alreadyNotedTime.invoke()
 
-    if ((curr_time - alreadyNotedTime1) >= sdValidTime) {
-        saveTime(curr_time)
+    if ((currTime - savedTime) >= sdValidTime) {
+        saveTime(currTime)
+        val previousValue = getValue.invoke()
         setValue()
+        val currentValue = getValue.invoke()
+        val valueChanged = currentValue?.equals(previousValue)?:false
+        if (valueChanged) {
+            ServerLogger.log(Priority.P1, "AKAMAI_SENSOR_SAME", mapOf("type" to "shared_pref",
+                    "expired" to "true",
+                    "value_changed" to valueChanged.toString(),
+                    "expired_time" to (savedTime+sdValidTime).toString(),
+                    "current_time" to currTime.toString()
+            ))
+        }
         return getValue.invoke()
     } else {
         return getValue.invoke()

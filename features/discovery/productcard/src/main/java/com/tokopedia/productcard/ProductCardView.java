@@ -4,34 +4,31 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.unifyprinciples.Typography;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+
+import static com.tokopedia.media.loader.JvmMediaLoader.loadImageFitCenter;
 
 public class ProductCardView extends BaseCustomView {
     protected TextView textName;
     protected TextView textPrice;
     protected TextView textDiscount;
     protected TextView textSlashedPrice;
-    protected ImpressedImageView imageView;
+    protected AppCompatImageView imageView;
     protected View topAdsIcon;
     protected View wishlistButton;
     protected ImageView ratingView;
     protected TextView reviewCountView;
-    protected LinearLayout ratingContainer;
     protected Typography textAddTocart;
     protected int layout;
     protected boolean fixedHeight = false;
@@ -93,7 +90,6 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
-        ratingContainer = view.findViewById(com.tokopedia.topads.sdk.R.id.rating_review_container);
         badgesContainerView = view.findViewById(R.id.badge_container);
         textLocation = view.findViewById(R.id.location);
         textAddTocart = view.findViewById(R.id.tv_atc);
@@ -132,7 +128,7 @@ public class ProductCardView extends BaseCustomView {
     }
 
     public void setImageUrl(String imageUrl) {
-        ImageHandler.loadImageFitCenter(getContext(), imageView, imageUrl);
+        loadImageFitCenter(imageView, imageUrl);
     }
 
     public void setTopAdsVisible(boolean isVisible) {
@@ -160,21 +156,11 @@ public class ProductCardView extends BaseCustomView {
         }
     }
 
-    public void setBadges(List<String> urls){
-        badgesContainerView.removeAllViews();
-        if (urls.isEmpty()) badgesContainerView.setVisibility(View.GONE);
-        for(String url: urls){
-            View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.topads.sdk.R.layout.layout_badge, null);
-            ImageHandler.loadImageFitCenter(getContext(), view.findViewById(R.id.badge), url);
-            badgesContainerView.addView(view);
-        }
-    }
-
     public void setLocation(String location){
         textLocation.setText(location);
     }
 
-    public ImpressedImageView getImageView() {
+    public ImageView getImageView() {
         return imageView;
     }
 

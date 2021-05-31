@@ -9,6 +9,9 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
@@ -29,7 +32,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUsePromoRevamp
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -41,8 +43,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                                                  private val graphqlRepository: GraphqlRepository,
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
                                                  private val analytics: PromoCheckoutAnalytics,
-                                                 private val userSession: UserSessionInterface,
-                                                 private val gson: Gson)
+                                                 private val gson: Gson,
+                                                 private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
     : BaseViewModel(dispatcher) {
 
     // Fragment UI Model. Store UI model and state on fragment level
@@ -141,30 +143,32 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Get Promo List */
     //---------------------------------------//
 
-    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String) {
+    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null) {
         launchCatchError(block = {
-            doGetPromoList(mutation, promoRequest, promoCode)
+            doGetPromoList(mutation, promoRequest, promoCode, chosenAddress)
         }) { throwable ->
             setFragmentStateLoadPromoListFailed(throwable)
         }
     }
 
-    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String) {
+    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String, chosenAddress: ChosenAddress?) {
         // Set request data
-        val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest)
+        val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest, chosenAddress)
 
         // Get response data
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, getPromoRequestParam)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<CouponListRecommendationResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         // Handle response data
         handleGetPromoListResponse(response, tmpPromoCode)
     }
 
-    private fun setGetPromoRequestData(tmpPromoCode: String, promoRequest: PromoRequest): HashMap<String, Any> {
+    private fun setGetPromoRequestData(tmpPromoCode: String, promoRequest: PromoRequest, chosenAddress: ChosenAddress?): Map<String, Any?> {
         val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
 
         resetGetPromoRequestData(promoCode, promoRequest)
@@ -186,10 +190,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
         removeDuplicateAttemptedPromoRequestData(promoRequest, promoCode)
 
-        val getPromoRequestParam = HashMap<String, Any>()
-        getPromoRequestParam["params"] = CouponListRecommendationRequest(promoRequest = promoRequest)
-
-        return getPromoRequestParam
+        return mapOf(
+                "params" to CouponListRecommendationRequest(promoRequest = promoRequest),
+                // Add current selected address from local cache
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress ?: chosenAddressRequestHelper.getChosenAddress())
+        )
     }
 
     private fun setGetPromoRequestDataFromSelectedPromoItem(it: PromoListItemUiModel, order: Order, promoRequest: PromoRequest) {
@@ -437,9 +442,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
                 // Initialize promo list item
                 val tmpCouponList = ArrayList<PromoListItemUiModel>()
-                couponSubSection.coupons.forEach { couponItem ->
+                couponSubSection.coupons.forEachIndexed { index, couponItem ->
                     val promoItem = uiModelMapper.mapPromoListItemUiModel(
-                            couponItem, promoHeader.uiData.identifierId, couponSubSection.isEnabled, preSelectedPromoList
+                            couponItem, promoHeader.uiData.identifierId,
+                            couponSubSection.isEnabled, preSelectedPromoList,
+                            index
                     )
                     if (eligibilityHeader.uiState.isEnabled) {
                         if (promoHeader.uiState.isCollapsed) {
@@ -543,6 +550,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             it.uiData.preAppliedPromoCode = preSelectedPromoCodes
             it.uiState.hasPreAppliedPromo = hasPreSelectedPromo
             it.uiState.hasAnyPromoSelected = hasPreSelectedPromo
+            it.uiState.hasFailedToLoad = false
+            it.uiData.exception = null
             _fragmentUiModel.value = it
         }
     }
@@ -568,16 +577,16 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Apply Promo */
     //------------------------------------//
 
-    fun applyPromo(mutation: String, requestParam: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+    fun applyPromo(mutation: String, requestParam: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>, chosenAddress: ChosenAddress? = null) {
         launchCatchError(block = {
-            doApplyPromo(mutation, requestParam, bboPromoCodes)
+            doApplyPromo(mutation, requestParam, bboPromoCodes, chosenAddress)
         }) { throwable ->
             // Notify fragment apply promo to stop loading
             setApplyPromoStateFailed(throwable)
         }
     }
 
-    private suspend fun doApplyPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+    private suspend fun doApplyPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>, chosenAddress: ChosenAddress?) {
         // Set request data
         setApplyPromoRequestData(validateUsePromoRequest)
 
@@ -595,15 +604,19 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         val applyPromoRequestParam = mapOf(
                 "params" to mapOf(
                         "promo" to validateUsePromoRequest
-                )
+                ),
+                // Add current selected address from local cache
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress ?: chosenAddressRequestHelper.getChosenAddress())
         )
 
         // Get response data
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, applyPromoRequestParam)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<ValidateUseResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         // Handle response data
         handleApplyPromoResponse(response, selectedPromoList, validateUsePromoRequest)
@@ -837,6 +850,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     private fun setApplyPromoStateFailed(throwable: Throwable) {
+        // Initialize response action state if needed
+        initApplyPromoResponseAction()
         applyPromoResponseAction.value?.let {
             it.state = ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR
             it.exception = throwable
@@ -867,11 +882,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         tmpMutation = tmpMutation.replace("#isOCC", (validateUsePromoRequest.cartType == "occ").toString())
 
         // Get response
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<ClearPromoResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         handleClearPromoResponse(response, validateUsePromoRequest, toBeRemovedPromoCodes)
     }
@@ -988,11 +1005,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     private suspend fun doGetPromoLastSeen(query: String) {
         // Get response
+        PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
             graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<GetPromoSuggestionResponse>()
         }
+        PromoCheckoutIdlingResource.decrement()
 
         handleGetPromoLastSeenResponse(response)
     }

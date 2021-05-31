@@ -12,9 +12,6 @@ data class DynamicProductInfoP1(
 
     fun isProductActive(): Boolean = getFinalStock().toIntOrNull() ?: 0 > 0 && basic.isActive()
 
-    val isPreOrder: Boolean
-        get() = data.preOrder.isActive
-
     val isUsingOvo: Boolean
         get() = data.campaign.isUsingOvo
 

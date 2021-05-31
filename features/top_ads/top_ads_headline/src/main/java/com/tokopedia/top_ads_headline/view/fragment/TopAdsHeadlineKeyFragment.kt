@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.Constants.ACTION_CREATE
 import com.tokopedia.top_ads_headline.Constants.ACTIVE_STATUS
 import com.tokopedia.top_ads_headline.Constants.POSITIVE_PHRASE
@@ -26,6 +27,7 @@ import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
@@ -38,6 +40,7 @@ import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_headline_keyword_list_fragment.*
 import javax.inject.Inject
 
@@ -47,12 +50,18 @@ import javax.inject.Inject
 
 private const val KEY_LIMIT = 50
 const val SEARCH_NOT_AVAILABLE = "-1"
+private const val VIEW_PILIH_KATA_KUNCI = "view - pilih kata kunci"
+private const val CLICK_TAMBAH = "click - tambah keyword on pilih kata kunci page"
+private const val CLICK_TIPS = "click - tips on pilih kata kunci page"
+private const val CLICK_LANJUTKAN = "click - lanjutkan on pilih kata kunci page"
 
 class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var minSuggestedBid = 0
+    @Inject
+    lateinit var userSession: UserSessionInterface
+    private var minSuggestedBid = "0"
 
     companion object {
         fun createInstance() = TopAdsHeadlineKeyFragment()
@@ -65,6 +74,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private var deletedKeywords: ArrayList<String> = arrayListOf()
     private var addedKeywords: ArrayList<KeywordDataItem> = arrayListOf()
     private var editedKeywords: ArrayList<KeywordDataItem> = arrayListOf()
+    private var totalKeywordList = mutableListOf<KeywordDataItem>()
 
 
     private val viewModel by lazy {
@@ -88,6 +98,10 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
+        totalKeywordList.clear()
+        totalKeywordList.addAll(getManualAddedKeywords())
+        totalKeywordList.addAll(getSelectedKeywords())
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordCLickEvent(CLICK_LANJUTKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}}", totalKeywordList, userSession.userId)
     }
 
     private fun getManualAddedKeywords(): MutableList<KeywordDataItem> {
@@ -104,7 +118,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                         keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword(
                                 type = POSITIVE_PHRASE,
                                 status = ACTIVE_STATUS,
-                                priceBid = it.bidSuggest,
+                                priceBid = it.bidSuggest.toLong(),
                                 tag = it.keyword)
                 ))
             }
@@ -186,6 +200,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         }
         tipBtn?.addItem(tooltipView)
         tipBtn.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TIPS, "{${userSession.shopId} - {${stepperModel?.groupName}}", userSession.userId)
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title1))
@@ -204,7 +219,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     override fun updateToolBar() {
-        when(activity){
+        when (activity) {
             is HeadlineStepperActivity -> {
                 (activity as HeadlineStepperActivity).updateToolbarTitle(getString(R.string.topads_headline_keywrod_title))
             }
@@ -227,7 +242,15 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onKeywordBidChange)
         keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onKeywordBidChange, stepperModel?.selectedKeywords)
         getLatestBid()
-        viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (stepperModel?.selectedProductIds?.isEmpty() == false) {
+            val list: MutableList<String>? = stepperModel?.selectedProductIds
+            viewModel.getSuggestionKeyword(list?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
+        } else
+            onEmptySuggestion()
     }
 
     private fun onKeywordBidChange(enable: Boolean, keywordData: KeywordDataItem) {
@@ -240,8 +263,10 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun getLatestBid() {
-        val selectedProductIds: MutableList<Int>? = stepperModel?.selectedProductIds
-                ?: mutableListOf()
+
+        val selectedProductIds: List<Long>? = stepperModel?.selectedProductIds?.map {
+            it.toLong()
+        }
         val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
         viewModel.getBidInfo(listOf(suggestions), this::onSuccessSuggestion, this::onEmptySuggestion)
     }
@@ -249,9 +274,9 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
-        keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0)
-        stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: 0
-        minSuggestedBid = data.firstOrNull()?.minBid ?: 0
+        keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: "0")
+        stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: "0"
+        minSuggestedBid = data.firstOrNull()?.minBid ?: "0"
     }
 
     private fun setAdapter() {
@@ -269,10 +294,11 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 item.keyword = editText.textFieldInput.text.toString()
                 item.totalSearch = SEARCH_NOT_AVAILABLE
                 item.fromSearch = true
-                item.bidSuggest = minSuggestedBid
+                item.bidSuggest = minSuggestedBid.toString()
                 keywordSelectedAdapter.items.add(item)
                 keywordSelectedAdapter.notifyItemInserted(keywordSelectedAdapter.itemCount - 1)
-                if(!addedKeywords.contains(item)){
+                if (!addedKeywords.contains(item)) {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TAMBAH, "{${userSession.shopId}} - {${stepperModel?.groupName}} - {${item.keyword}}", userSession.userId)
                     addedKeywords.add(item)
                 }
                 setCount()
@@ -298,19 +324,22 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun onSuccessSuggestionKeywords(list: List<KeywordData>) {
-        keywordListAdapter.setList(list, list.firstOrNull()?.minBid
+        keywordListAdapter.setList(list, list.firstOrNull()?.minBid?.toIntOrZero()
                 ?: 0, stepperModel?.selectedKeywords, stepperModel?.stateRestoreKeyword)
         setCount()
+        list.forEachIndexed { index, keywordData ->
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordViewEvent(VIEW_PILIH_KATA_KUNCI, "{${userSession.shopId}} - {${stepperModel?.groupName}}", keywordData.keywordData, userSession.userId)
+        }
     }
 
     private fun onItemChecked(keywordData: KeywordDataItem) {
-        if(keywordData.onChecked){
-            if(!addedKeywords.contains(keywordData)){
+        if (keywordData.onChecked) {
+            if (!addedKeywords.contains(keywordData)) {
                 addedKeywords.add(keywordData)
             }
             deletedKeywords.remove(keywordData.keyword)
-        }else{
-            if(!deletedKeywords.contains(keywordData.keyword)){
+        } else {
+            if (!deletedKeywords.contains(keywordData.keyword)) {
                 deletedKeywords.add(keywordData.keyword)
             }
             addedKeywords.remove(keywordData)
@@ -319,7 +348,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun onItemUnselect(pos: Int, keywordData: KeywordDataItem) {
-        if(!deletedKeywords.contains(keywordData.keyword)){
+        if (!deletedKeywords.contains(keywordData.keyword)) {
             deletedKeywords.add(keywordData.keyword)
         }
         removeFromList(pos)

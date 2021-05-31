@@ -47,7 +47,7 @@ class FollowRecomAdapter(
                 FollowRecommendationCardViewHolder(view)
             }
             TYPE_LOADING -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.loading_layout, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.baselist.R.layout.loading_layout, parent, false)
                 FollowRecommendationLoadMoreViewHolder(view)
             }
             else -> throw IllegalStateException("No such type")
@@ -191,7 +191,7 @@ class FollowRecomAdapter(
                 ivProfile.loadImageCircle(element.avatar)
             } else {
                 ivProfile.setImageDrawable(
-                        MethodChecker.getDrawable(itemView.context, R.drawable.error_drawable)
+                        MethodChecker.getDrawable(itemView.context, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                 )
             }
 
@@ -234,7 +234,7 @@ class FollowRecomAdapter(
                 layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
             } else {
                 ivBadge.hide()
-                layoutParams.leftMargin = itemView.context.resources.getDimension(R.dimen.dp_0).toInt()
+                layoutParams.leftMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_0).toInt()
             }
         }
 
@@ -255,7 +255,7 @@ class FollowRecomAdapter(
                 imageView.loadImage(imageUrl)
             } else {
                 imageView.setBackgroundColor(
-                        MethodChecker.getColor(imageView.context, R.color.feed_image_default)
+                        MethodChecker.getColor(imageView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
                 )
             }
         }

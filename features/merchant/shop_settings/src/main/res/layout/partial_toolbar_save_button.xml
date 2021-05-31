@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/Unify_N0">
+    android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -18,14 +17,15 @@
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSave"
-            style="@style/TextView.Title.Green"
+            app:typographyWeight="reguler"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/dp_14"
-            android:layout_marginRight="@dimen/dp_14"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"

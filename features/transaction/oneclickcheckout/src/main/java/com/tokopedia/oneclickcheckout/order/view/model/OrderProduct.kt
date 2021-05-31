@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view.model
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(
-        var parentId: Long = 0,
         var productId: Long = 0,
         var productName: String = "",
         var productPrice: Long = 0,
@@ -14,22 +13,24 @@ data class OrderProduct(
         var originalPrice: String = "",
         var discountedPercentage: Float = 0f,
         var isFreeOngkir: Boolean = false,
+        var isFreeOngkirExtra: Boolean = false,
         var freeOngkirImg: String = "",
         var weight: Int = 0,
         var weightActual: Int = 0,
         var quantity: QuantityUiModel = QuantityUiModel(),
         var notes: String = "",
         var cashback: String = "",
-        var warehouseId: Int = 0,
-        var isPreorder: Int = 0,
-        var categoryId: Int = 0,
+        var warehouseId: Long = 0,
+        var isPreOrder: Int = 0,
+        var categoryId: String = "",
         var category: String = "",
         var productFinsurance: Int = 0,
         var isSlashPrice: Boolean = false,
-        var campaignId: Int = 0,
+        var campaignId: String = "",
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
-        var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData()
+        var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
+        var preOrderDuration: Int = 0
 ) {
 
     fun getPrice(): Long {

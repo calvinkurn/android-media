@@ -3,10 +3,10 @@ package com.tokopedia.play.util.channel.state
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
@@ -17,22 +17,25 @@ import javax.inject.Inject
  * Created by jegul on 29/09/20
  */
 class PlayViewerChannelStateProcessor constructor(
-        private val playVideoManager: PlayVideoManager,
+        private val playVideoPlayer: PlayVideoWrapper,
         private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser,
         private val channelTypeSource: () -> PlayChannelType,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val scope: CoroutineScope
 ) {
 
     @PlayScope
     class Factory @Inject constructor(
-            private val playVideoManager: PlayVideoManager,
             private val exoPlaybackExceptionParser: ExoPlaybackExceptionParser,
-            private val dispatcher: CoroutineDispatcherProvider
+            private val dispatcher: CoroutineDispatchers
     ) {
-        fun create(scope: CoroutineScope, channelTypeSource: () -> PlayChannelType): PlayViewerChannelStateProcessor {
+        fun create(
+                playVideoPlayer: PlayVideoWrapper,
+                scope: CoroutineScope,
+                channelTypeSource: () -> PlayChannelType
+        ): PlayViewerChannelStateProcessor {
             return PlayViewerChannelStateProcessor(
-                    playVideoManager = playVideoManager,
+                    playVideoPlayer = playVideoPlayer,
                     exoPlaybackExceptionParser = exoPlaybackExceptionParser,
                     channelTypeSource = channelTypeSource,
                     dispatcher = dispatcher,
@@ -49,7 +52,7 @@ class PlayViewerChannelStateProcessor constructor(
 
     init {
         scope.launch(dispatcher.immediate) {
-            playVideoManager.getVideoStateFlow()
+            playVideoPlayer.getVideoStateFlow()
                     .flowOn(dispatcher.io)
                     .collectLatest { handleState(it) }
         }
@@ -69,6 +72,7 @@ class PlayViewerChannelStateProcessor constructor(
     }
 
     private fun invalidateState() {
+        println("ChannelState Invalidate")
         broadcastState(shouldFreezeChannel())
     }
 
@@ -87,6 +91,7 @@ class PlayViewerChannelStateProcessor constructor(
     }
 
     private fun handleState(state: PlayVideoState) {
+        println("ChannelState State: $state")
         when (state) {
             is PlayVideoState.Error -> mError = state.error
             PlayVideoState.Buffering -> invalidateState()
@@ -102,6 +107,7 @@ class PlayViewerChannelStateProcessor constructor(
     }
 
     private fun isErrorFromBroadcaster(error: Throwable?): Boolean {
+        println("ChannelState Error: $error")
         if (error == null || error !is ExoPlaybackException) return false
         val parsedException = exoPlaybackExceptionParser.parse(error)
 

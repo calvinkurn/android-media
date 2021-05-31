@@ -34,8 +34,9 @@
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
-    <string name="setting_menu_shop_statistic">Statistik Toko</string>
+    <string name="setting_menu_statistic">Statistik</string>
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
+    <string name="setting_menu_product_package">Kemasan Produk</string>
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
     <string name="setting_menu_set_activation_page_cod">Layanan Bayar di Tempat</string>
     <string name="setting_menu_exclusive_feature">FITUR EKSKLUSIF</string>
@@ -95,4 +96,21 @@
     <string name="seller_home_loading">Loading...</string>
     <string name="centralized_promo_promo_creation_free_shipping_title">Bebas Ongkir</string>
     <string name="centralized_promo_promo_creation_free_shipping_description">Fitur Bebas Ongkir dapat meningkatkan penjualan dan menarik calon pembeli.</string>
+    <string name="sah_stock_location_ticker_title">Hanya menampilkan stok lokasi utama</string>
+    <string name="sah_stock_location_ticker_description">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
+    <string name="centralized_promo_content_desc_image_promo_post">image promo post</string>
+    <string name="centralized_promo_content_desc_image_recommended_promo">image recommended promo</string>
+    <string name="centralized_promo_content_desc_button_lihat_detail_promo">button lihat detail promo</string>
+    <string name="sah_content_desc_image_widget_error">image widget error</string>
+    <string name="sah_recommendation_coach_mark_title">Lihat Performa Toko di Home</string>
+    <string name="sah_recommendation_coach_mark_description">Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!</string>
+    <string name="sah_other_menu_coach_mark_title">Lihat detail Performamu di sini, ya!</string>
+    <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan grade tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
+    <string name="settings_shop_status_label">Status toko:</string>
+    <string name="settings_operational_hour_open">BUKA</string>
+    <string name="settings_operational_hour_closed">TUTUP</string>
+    <string name="settings_operational_hour_not_set">LIBUR</string>
+    <string name="shop_operational_hour_24_hour">24 Jam</string>
+    <string name="shop_operational_hour_set_operational_time">Atur jam buka toko</string>
+    <string name="sah_content_desc_image_operational_hour">image operational hour</string>
 </resources>

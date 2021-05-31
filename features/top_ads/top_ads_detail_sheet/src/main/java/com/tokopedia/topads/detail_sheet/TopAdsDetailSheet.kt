@@ -129,7 +129,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                 if (groupId == SINGLE_AD) {
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, SINGLE_USER_ADS)
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
-                        putExtra(GROUPID, adId.toInt())
+                        putExtra(GROUPID, adId)
                     }
                     startActivityForResult(intent, EDIT_WITHOUT_GROUP_REQUEST_CODE)
                 } else {
@@ -197,7 +197,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             btn_switch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
             txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
         }
-        viewModel.getGroupProductData(userSession.shopId, groupId.toInt(), ::onSuccessProductInfo)
+        viewModel.getGroupProductData(groupId.toInt(), ::onSuccessProductInfo)
         if (groupId == SINGLE_AD && category != TYPE_AUTO) {
             singleAd.visibility = View.VISIBLE
             txtBudget.visibility = View.GONE

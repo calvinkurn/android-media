@@ -14,7 +14,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:text="@string/power_merchant_registration_status_label"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl5"
@@ -23,7 +23,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textStatus"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
@@ -34,7 +34,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textDescription"
-        android:textColor="@color/light_N700"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"

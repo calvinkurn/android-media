@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.requestpickup
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -9,6 +8,7 @@ import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickupPar
 import com.tokopedia.sellerorder.requestpickup.domain.SomConfirmReqPickupUseCase
 import com.tokopedia.sellerorder.requestpickup.domain.SomProcessReqPickupUseCase
 import com.tokopedia.sellerorder.requestpickup.presentation.viewmodel.SomConfirmReqPickupViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
@@ -28,7 +28,7 @@ class SomConfirmReqPickupViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = SomTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var somConfirmReqPickupViewModel: SomConfirmReqPickupViewModel
     private var listCourier = listOf<SomConfirmReqPickup.Data.MpLogisticPreShipInfo.DataSuccess.Detail.Shipper>()
     private var listMsg = listOf<String>()

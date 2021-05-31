@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TotalLike(
         @SerializedName("total_like")
-        val totalLike: Int = 0,
+        val totalLike: Long = 0,
 
         @SerializedName("total_like_formatted")
         var totalLikeFormatted: String = ""

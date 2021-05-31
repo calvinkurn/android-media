@@ -2,8 +2,18 @@
 <resources>
     <dimen name="dp_52">52dp</dimen>
 
+    <dimen name="login_register_1dp">1dp</dimen>
+    <dimen name="login_register_52dp">52dp</dimen>
     <dimen name="login_layout_12">12dp</dimen>
     <dimen name="shop_img_size">58dp</dimen>
     <dimen name="shop_vertical_padding">16dp</dimen>
+
+    <dimen name="base_add_phone_line_width">74dp</dimen>
+    <dimen name="base_add_phone_line_height">1dp</dimen>
+
+    <dimen name="external_register_140_dp">140dp</dimen>
+    <dimen name="external_register_160_dp">160dp</dimen>
+    <dimen name="external_register_190_dp">190dp</dimen>
+    <dimen name="external_register_270_dp">270dp</dimen>
 
 </resources>

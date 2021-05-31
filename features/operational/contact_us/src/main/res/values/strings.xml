@@ -126,6 +126,13 @@
     <string name="contact_us_tool_tip_text">Chat Sekarang</string>
     <string name="contactus_chat_bot_applink">tokopedia://chatbot/%s</string>
     <string name="contact_us_step_two_response_failure_message">Maaf, permintaan Anda tidak dapat diproses. Silahkan coba beberapa saat lagi.</string>
+    <string name="contact_us_sent_error_message">Pesanmu gagal dikirim, coba kirim ulang</string>
+
+    <string name="contact_us_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
+    <string name="contact_us_label_clear_cache_ok">Lakukan</string>
+    <string name="contact_us_label_clear_cache_cancel">Batal</string>
+    <string name="contact_us_clear_cache_warning">Peringatan</string>
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
 
 
     <string-array name="contactus_csat_question">

@@ -156,7 +156,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
             val spannedTermsConditionText = SpannableString(fullTermsConditionText)
             spannedTermsConditionText.setSpan(
                     ForegroundColorSpan(
-                            MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.dark_G500)
+                            MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
                     ), termsConditionIndex, termsConditionIndex + termsConditionText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
             )
 

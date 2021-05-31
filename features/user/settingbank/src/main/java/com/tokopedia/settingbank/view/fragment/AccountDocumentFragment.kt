@@ -1,6 +1,7 @@
 package com.tokopedia.settingbank.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -20,10 +20,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.di.SettingBankComponent
-import com.tokopedia.settingbank.domain.AddBankRequest
-import com.tokopedia.settingbank.domain.BankAccount
-import com.tokopedia.settingbank.domain.SettingBankErrorHandler
-import com.tokopedia.settingbank.domain.UploadDocumentPojo
+import com.tokopedia.settingbank.domain.model.AddBankRequest
+import com.tokopedia.settingbank.domain.model.BankAccount
+import com.tokopedia.settingbank.domain.model.SettingBankErrorHandler
+import com.tokopedia.settingbank.domain.model.UploadDocumentPojo
 import com.tokopedia.settingbank.util.AccountConfirmationType
 import com.tokopedia.settingbank.util.ImageUtils
 import com.tokopedia.settingbank.view.activity.SettingBankActivity
@@ -99,8 +99,8 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        uploadDocumentViewModel = viewModelProvider.get(UploadDocumentViewModel::class.java)
+        uploadDocumentViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(UploadDocumentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,6 +115,9 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         startObservingViewModels()
         setBankAccountData()
         setDocKycUI()
+        progressBar.setOnClickListener {
+            //no implementation required
+        }
     }
 
     private fun setBankAccountData() {
@@ -155,9 +158,11 @@ class AccountDocumentFragment : BaseDaggerFragment() {
             AccountConfirmationType.FAMILY -> bankSettingAnalytics.eventFamilyDocumentSubmitClick()
             AccountConfirmationType.COMPANY -> bankSettingAnalytics.eventCompanyDocumentSubmitClick()
         }
-        val uploadDocumentPojo = getUploadDocumentPojo()
-        uploadDocumentPojo?.let {
-            uploadDocumentViewModel.uploadDocument(it)
+        context?.let {context->
+            val uploadDocumentPojo = getUploadDocumentPojo(context)
+            uploadDocumentPojo?.let {
+                uploadDocumentViewModel.uploadDocument(it)
+            }
         }
     }
 
@@ -255,7 +260,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getUploadDocumentPojo(): UploadDocumentPojo? {
+    private fun getUploadDocumentPojo(context: Context): UploadDocumentPojo? {
         val docType = when (accountConfirmationType) {
             AccountConfirmationType.OTHER -> DOC_TYPE_OTHER
             AccountConfirmationType.FAMILY -> DOC_TYPE_FAMILY
@@ -274,7 +279,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
                 document_name = ImageUtils.getFileName(selectedFilePath),
                 document_base64 = ImageUtils.encodeToBase64(selectedFilePath),
                 document_ext = ImageUtils.getFileExt(selectedFilePath),
-                document_mime = ImageUtils.getMimeType(context!!, selectedFilePath))
+                document_mime = ImageUtils.getMimeType(context, selectedFilePath))
     }
 
 }

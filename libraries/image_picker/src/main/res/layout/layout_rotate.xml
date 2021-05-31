@@ -10,12 +10,13 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_reset"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:text="@string/reset"
         style="@style/TextView.Title"
+        android:textColor="@color/Unify_N700"
         android:layout_gravity="center_horizontal"/>
 
     <RelativeLayout
@@ -45,34 +46,32 @@
             app:thumb_color="@color/Unify_N0"
             app:thumb_radius="@dimen/dp_12" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_48"
             android:layout_marginStart="@dimen/dp_48"
             android:layout_marginTop="@dimen/dp_12"
             android:text="@string/min_value_rotate"
+            android:textColor="@color/Unify_N400"
             android:layout_alignParentBottom="true"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginEnd="@dimen/dp_48"
-            android:layout_marginRight="@dimen/dp_48"
             android:layout_marginTop="@dimen/dp_12"
             android:text="@string/max_value_rotate"
+            android:textColor="@color/Unify_N400"
             android:layout_alignParentBottom="true"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_6"
-            android:paddingStart="@dimen/dp_6"
             android:layout_alignParentBottom="true"
+            android:textColor="@color/Unify_N400"
             android:text="@string/default_rotate_value" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -80,10 +79,8 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_rotate_90" />
     </RelativeLayout>

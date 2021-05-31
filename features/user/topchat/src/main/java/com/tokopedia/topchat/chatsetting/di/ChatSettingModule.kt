@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-@ChatSettingScope
 class ChatSettingModule(val context: Context) {
 
     @Provides
@@ -25,5 +24,4 @@ class ChatSettingModule(val context: Context) {
     @ChatSettingScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
 }

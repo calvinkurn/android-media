@@ -31,16 +31,6 @@ object StatisticTracker {
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendSelectSectionTabEvent(sectionTitle: String) {
-        val map = TrackingHelper.createMap(
-                TrackingConstant.CLICK_SHOP_INSIGHT,
-                TrackingConstant.SHOP_INSIGHT,
-                TrackingConstant.CLICK_TABS,
-                sectionTitle
-        )
-        TrackingHelper.sendGeneralEvent(map)
-    }
-
     fun sendCardImpressionEvent(model: CardWidgetUiModel, position: Int) {
         val state = model.data?.state.orEmpty()
         val cardValue = model.data?.value ?: "0"
@@ -270,8 +260,101 @@ object StatisticTracker {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendPageTabImpressionEvent(userId: String, tabName: String) {
+        val eventMap = createEventMap(
+                event = TrackingConstant.VIEW_STATISTIC_IRIS,
+                action = TrackingConstant.IMPRESSION_MENU_TAB,
+                label = tabName,
+                userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendPageTabClickEvent(userId: String, tabName: String) {
+        val eventMap = createEventMap(
+                event = TrackingConstant.CLICK_STATISTIC,
+                action = TrackingConstant.CLICK_MENU_TAB,
+                label = tabName,
+                userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendCalendarImpressionEvent(userId: String, tabName: String, chosenPeriod: String) {
+        val eventMap = createEventMap(
+                event = TrackingConstant.VIEW_STATISTIC_IRIS,
+                action = String.format(TrackingConstant.IMPRESSION_CALENDAR, tabName),
+                label = chosenPeriod,
+                userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendCalendarClickEvent(userId: String, tabName: String, chosenPeriod: String) {
+        val eventMap = createEventMap(
+                event = TrackingConstant.CLICK_STATISTIC,
+                action = String.format(TrackingConstant.CLICK_MENU_CALENDAR, tabName),
+                label = chosenPeriod,
+                userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendThreeDotsImpressionEvent(userId: String) {
+        val eventMap = createEventMap(
+                event = TrackingConstant.VIEW_STATISTIC_IRIS,
+                action = TrackingConstant.IMPRESSION_3_DOT,
+                label = "",
+                userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendThreeDotsClickEvent(userId: String) {
+        val eventMap = createEventMap(
+                event = TrackingConstant.CLICK_STATISTIC,
+                action = TrackingConstant.CLICK_MENU_3_DOT,
+                label = "",
+                userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendActionMenuBottomSheetImpressionEvent(userId: String, tabName: String, label: String) {
+        val eventMap = createEventMap(
+                event = TrackingConstant.VIEW_STATISTIC_IRIS,
+                action = String.format(TrackingConstant.IMPRESSION_MENU_LAINNYA, tabName),
+                label = label,
+                userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendActionMenuBottomSheetClickEvent(userId: String, tabName: String, label: String) {
+        val eventMap = createEventMap(
+                event = TrackingConstant.CLICK_STATISTIC,
+                action = String.format(TrackingConstant.CLICK_MENU_MENU_LAINNYA, tabName),
+                label = label,
+                userId = userId
+        )
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    private fun createEventMap(event: String, action: String, label: String, userId: String): MutableMap<String, Any> {
+        return TrackingHelper.createMap(
+                event = event,
+                category = TrackingConstant.SELLER_APP_STATISTIC,
+                action = action,
+                label = label
+        ).apply {
+            this[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+            this[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+            this[TrackingConstant.USER_ID] = userId
+        }
     }
 
     private fun getBannerPromotions(items: List<CarouselItemUiModel>, position: Int): List<Map<String, String>> {

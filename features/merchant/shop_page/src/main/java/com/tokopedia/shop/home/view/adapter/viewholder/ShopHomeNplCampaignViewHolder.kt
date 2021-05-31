@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +27,8 @@ import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBanne
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
-import kotlinx.android.synthetic.main.layout_shop_home_npl_remind_me.view.*
+import kotlinx.android.synthetic.main.layout_shop_home_npl_remind_me_notified.view.*
+import kotlinx.android.synthetic.main.layout_shop_home_npl_remind_me_un_notified.view.*
 import kotlinx.android.synthetic.main.layout_shop_home_npl_timer.view.*
 import kotlinx.coroutines.*
 import java.math.RoundingMode
@@ -42,6 +44,27 @@ class ShopHomeNplCampaignViewHolder(
 
     private val masterJob = SupervisorJob()
     private var isRemindMe: Boolean? = null
+    private val layoutRemindMe: View?
+        get() = if(isRemindMe == true)
+            itemView.layout_remind_me_notified
+        else
+            itemView.layout_remind_me_un_notified
+    private val loaderRemindMe: View?
+        get() = if(isRemindMe == true)
+            itemView.loader_remind_me_notified
+        else
+            itemView.loader_remind_me_un_notified
+    private val imageNotification: ImageView?
+        get() = if(isRemindMe == true)
+            itemView.image_notification_notified
+        else
+            itemView.image_notification_un_notified
+    private val textRemindMe: Typography?
+        get() = if(isRemindMe == true)
+            itemView.text_remind_me_notified
+        else
+            itemView.text_remind_me_un_notified
+
     override val coroutineContext = masterJob + Dispatchers.Main
 
     companion object {
@@ -138,7 +161,7 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_145)
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_145)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
@@ -154,44 +177,32 @@ class ShopHomeNplCampaignViewHolder(
             it.bannerType.equals(selectedBannerType, true)
         }?.imageUrl.orEmpty()
         itemView.banner_background?.apply {
-            setImageUrl(bannerUrl, heightRatio = 1f)
+            try {
+                if(context.isValidGlideContext())
+                    setImageUrl(bannerUrl, heightRatio = 1f)
+            } catch (e: Throwable) { }
         }
     }
 
     private fun setRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
         isRemindMe = model.data?.firstOrNull()?.isRemindMe
         isRemindMe?.let {
-            itemView.layout_remind_me?.show()
-            itemView.layout_remind_me?.setOnClickListener {
-                if (itemView.loader_remind_me?.isVisible == false) {
+            hideAllRemindMeLayout()
+            layoutRemindMe?.show()
+            layoutRemindMe?.setOnClickListener {
+                if (loaderRemindMe?.isVisible == false) {
                     shopHomeCampaignNplWidgetListener.onClickRemindMe(model)
                 }
             }
             if (it) {
-                itemView.layout_remind_me?.background = MethodChecker.getDrawable(
-                        itemView.context,
-                        R.drawable.bg_rounded_rect_shop_home_npl_remind_me_true
-                )
-                itemView.image_notification?.setImageDrawable(MethodChecker.getDrawable(
-                        itemView.context,
-                        R.drawable.ic_npl_remind_me_true
-                ))
                 hideRemindMeText(model, it)
                 model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
             } else {
                 val isHideRemindMeTextAfterXSeconds = model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds ?: false
-                itemView.layout_remind_me?.background = MethodChecker.getDrawable(
-                        itemView.context,
-                        R.drawable.bg_rounded_rect_shop_home_npl_remind_me_false
-                )
-                itemView.image_notification?.setImageDrawable(MethodChecker.getDrawable(
-                        itemView.context,
-                        R.drawable.ic_npl_remind_me_false
-                ))
                 if(isHideRemindMeTextAfterXSeconds){
                     hideRemindMeText(model, it)
                 }else{
-                    itemView.text_remind_me?.show()
+                    textRemindMe?.show()
                     launchCatchError(block = {
                         delay(DURATION_TO_HIDE_REMIND_ME_WORDING)
                         if (isRemindMe == false) {
@@ -205,9 +216,14 @@ class ShopHomeNplCampaignViewHolder(
         }
     }
 
+    private fun hideAllRemindMeLayout() {
+        itemView.layout_remind_me_notified.hide()
+        itemView.layout_remind_me_un_notified.hide()
+    }
+
     private fun hideRemindMeText(model: ShopHomeNewProductLaunchCampaignUiModel, isRemindMe: Boolean) {
         val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
-        itemView.text_remind_me?.apply {
+        textRemindMe?.apply {
             val colorText = if(isRemindMe){
                 com.tokopedia.unifyprinciples.R.color.Unify_N0
             }else{
@@ -227,12 +243,12 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun checkRemindMeLoading(model: ShopHomeNewProductLaunchCampaignUiModel) {
         if (model.data?.firstOrNull()?.showRemindMeLoading == true) {
-            itemView.image_notification?.hide()
-            itemView.text_remind_me?.hide()
-            itemView.loader_remind_me?.show()
+            imageNotification?.hide()
+            textRemindMe?.hide()
+            loaderRemindMe?.show()
         } else {
-            itemView.image_notification?.show()
-            itemView.loader_remind_me?.hide()
+            imageNotification?.show()
+            loaderRemindMe?.hide()
         }
     }
 

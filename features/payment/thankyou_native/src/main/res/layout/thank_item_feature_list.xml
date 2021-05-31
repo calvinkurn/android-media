@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl4"
-    android:layout_marginStart="@dimen/thank_dp_12"
-    android:layout_marginEnd="@dimen/thank_dp_12">
+    android:layout_marginStart="@dimen/unify_space_12"
+    android:layout_marginEnd="@dimen/unify_space_12">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,6 +17,8 @@
             android:layout_width="@dimen/layout_lvl4"
             android:layout_height="@dimen/layout_lvl4"
             android:scaleType="centerInside"
+            app:unify_image_corner_radius = "0"
+            app:layout_constraintBottom_toBottomOf="@+id/tvFeatureItemDescription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -26,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivFeatureItem"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +41,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivFeatureItem"
             app:layout_constraintTop_toBottomOf="@id/tvFeatureItemTitle"

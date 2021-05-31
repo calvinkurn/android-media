@@ -15,7 +15,7 @@ data class Variant(
 data class ProductVariant(
         @SerializedName("status")
         val status: String,
-        @SerializedName("id")
+        @SerializedName("productID")
         val id: String,
         @SerializedName("combination")
         val combination: List<Int>,

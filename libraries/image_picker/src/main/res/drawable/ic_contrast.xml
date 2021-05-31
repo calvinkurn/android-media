@@ -5,10 +5,10 @@
         android:viewportHeight="24.0">
     <path
         android:pathData="M12.003,3.04v18.067l5.067,-1.28 3.654,-4.948 0.516,-3.988 -1.882,-4.326 -3.474,-3.095z"
-        android:fillColor="#4C4C4C"/>
+        android:fillColor="@color/Unify_N600"/>
     <path
         android:pathData="M12,12m-9.2,0a9.2,9.2 0,1 1,18.4 0a9.2,9.2 0,1 1,-18.4 0"
-        android:strokeColor="#4C4C4C"
+        android:strokeColor="@color/Unify_N600"
         android:fillColor="#00000000"
         android:strokeWidth="1.6"/>
 </vector>

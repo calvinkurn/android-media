@@ -6,9 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -42,6 +44,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRAN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAIN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_DELIVERED
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_ONGOING
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCESSED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
@@ -109,12 +112,12 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_KEUANGAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_MP
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
@@ -128,9 +131,8 @@ import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetK
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
-import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.kotlin.extensions.convertMonth
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
@@ -200,29 +202,33 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var tempFilterStatusLabel: String = ""
     private var tempFilterCategoryLabel: String = ""
     private var tempFilterType: Int = -1
+    private var tempStartDate: String = ""
+    private var tempEndDate: String = ""
     private var filter1: SortFilterItem? = null
     private var filter2: SortFilterItem? = null
     private var filter3: SortFilterItem? = null
-    private var defaultStartDate = ""
-    private var defaultStartDateStr = ""
-    private var defaultEndDate = ""
-    private var defaultEndDateStr = ""
+    private var chosenStartDate: GregorianCalendar? = null
+    private var chosenEndDate: GregorianCalendar? = null
     private var arrayFilterDate: Array<String>? = arrayOf()
     private var onLoadMore = false
     private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
     private var currPage = 1
     private var currRecommendationListPage = 0
-    private var textChangedJob: Job? = null
     private var isReset = false
     private var filterStatus = ""
     private var orderIdNeedUpdated = ""
     private var currIndexNeedUpdate = -1
-    private var isTyping = false
     private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
     private val REQUEST_CODE_LOGIN = 288
+    private val MIN_KEYWORD_CHARACTER_COUNT = 3
+
+    @SuppressLint("SimpleDateFormat")
+    private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
+    @SuppressLint("SimpleDateFormat")
+    private val splitStringDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
     private val uohListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
@@ -381,6 +387,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
                     }
+                    PARAM_UOH_ONGOING -> {
+                        status = DALAM_PROSES
+                        statusLabel = TRANSAKSI_BERLANGSUNG
+                        paramUohOrder.verticalCategory = ""
+                    }
                 }
                 paramUohOrder.status = status
                 currFilterType = UohConsts.TYPE_FILTER_STATUS
@@ -419,38 +430,50 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
-        search_bar?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                textChangedJob?.cancel()
-                textChangedJob = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500L)
-
-                    if (!isTyping) {
-                        isTyping = true
-                        resetFilter()
-                    }
-
-                    paramUohOrder.searchableText = s.toString()
-                    refreshHandler?.startRefresh()
-                    scrollRecommendationListener.resetState()
-                    userSession.userId?.let { UohAnalytics.submitSearch(s.toString(), it) }
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-        })
-
         search_bar?.searchBarIcon?.setOnClickListener {
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
             search_bar?.searchBarTextField?.text?.clear()
+            triggerSearch()
+        }
+
+        search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                UohUtils.hideKeyBoard(search_bar.context, view)
+                if (search_bar?.searchBarTextField?.text?.length ?: 0 < MIN_KEYWORD_CHARACTER_COUNT) {
+                    showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
+                } else {
+                    triggerSearch()
+                }
+                true
+            } else false
         }
 
         addEndlessScrollListener()
+    }
+
+    private fun getLimitDate(): GregorianCalendar {
+        var returnDate = GregorianCalendar()
+        val defDate = orderList.dateLimit
+        val splitDefDate = defDate.split("-")
+        if (splitDefDate.isNotEmpty() && splitDefDate.size == 3) {
+            returnDate = stringToCalendar("${splitDefDate[0].toInt()}-${(splitDefDate[1].toInt()-1)}-${splitDefDate[2].toInt()}")
+        }
+        return returnDate
+    }
+
+    private fun setDefaultDatesForDatePicker() {
+        chosenStartDate = getLimitDate()
+        chosenEndDate = GregorianCalendar()
+    }
+
+    private fun triggerSearch() {
+        search_bar?.searchBarTextField?.text?.toString()?.let { keyword ->
+            resetFilter()
+            paramUohOrder.searchableText = keyword
+            refreshHandler?.startRefresh()
+            scrollRecommendationListener.resetState()
+            userSession.userId?.let { UohAnalytics.submitSearch(keyword, it) }
+        }
     }
 
     private fun addEndlessScrollListener() {
@@ -506,7 +529,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 is Success -> {
                     orderList = it.data
 
-                    if (!isFilterClicked && currPage == 1) renderChipsFilter()
+                    if (!isFilterClicked && currPage == 1) {
+                        renderChipsFilter()
+                        setDefaultDatesForDatePicker()
+                    }
 
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
@@ -554,32 +580,30 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingFinishOrder() {
-        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.finishOrderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     responseFinishOrder = it.data
                     if (responseFinishOrder.success == 1) {
-                        if (responseFinishOrder.message.isNotEmpty()) {
-                            showToaster(responseFinishOrder.message.first(), Toaster.TYPE_NORMAL)
-                        }
+                        responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
                         loadOrderHistoryList(orderIdNeedUpdated)
                     } else {
                         if (responseFinishOrder.message.isNotEmpty()) {
-                            showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                            responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         } else {
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
                 }
                 is Fail -> {
-                    showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                    responseFinishOrder.message.firstOrNull()?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                 }
             }
         })
     }
 
     private fun observingAtcMulti() {
-        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.atcMultiResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val msg = StringUtils.convertListToStringDelimiter(it.data.atcMulti.buyAgainData.message, ",")
@@ -597,7 +621,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingLsFinishOrder() {
-        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.lsPrintFinishOrderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     responseLsPrintFinishOrder = it.data.oiaction
@@ -622,7 +646,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingFlightResendEmail() {
-        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val flightEmailResponse = it.data.flightResendEmailV2
@@ -646,7 +670,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingTrainResendEmail() {
-        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.trainResendEmailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val trainEmailResponse = it.data.trainResendBookingEmail
@@ -670,7 +694,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingRechargeSetFail() {
-        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.rechargeSetFailResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val isSuccess = it.data.rechargeSetOrderToFail.attributes.isSuccess
@@ -688,11 +712,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingAtc() {
-        uohListViewModel.atcResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        uohListViewModel.atcResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    if (it.data.isDataError()) {
-                        it.data.getAtcErrorMessage()?.let { errorMsg -> showToaster(errorMsg, Toaster.TYPE_ERROR) }
+                    if (it.data.isStatusError()) {
+                        val atcErrorMessage = it.data.getAtcErrorMessage()
+                        if (atcErrorMessage != null) {
+                            showToaster(atcErrorMessage, Toaster.TYPE_ERROR)
+                        } else {
+                            context?.getString(R.string.fail_cancellation)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, Toaster.TYPE_ERROR) }
+                        }
                     } else {
                         val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
                         showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
@@ -705,8 +734,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         })
     }
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    @SuppressLint("SimpleDateFormat")
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
@@ -766,7 +793,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter3?.listener = {
             onClickFilterCategory()
         }
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
+                || filterStatus.equals(PARAM_UOH_ONGOING, true) && !isReset) {
             filter3?.title = ALL_PRODUCTS
 
         } else if ((filterStatus.equals(PARAM_MARKETPLACE, true)
@@ -775,7 +803,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true)) && !isReset) {
-            filter3?.title = orderList.categories.first().label
+            filter3?.title = orderList.categories.firstOrNull()?.label.toString()
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             filter3?.title = orderList.categories[1].label
@@ -793,7 +821,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter3?.let { chips.add(it) }
 
         // date
-        val typeDate = if (isReset || isFirstLoad) {
+        val typeDate = if (isReset || isFirstLoad || filterStatus.equals(PARAM_UOH_ONGOING, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -809,13 +837,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         uoh_sort_filter?.addItem(chips)
         uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd")
-            val outputFormat = SimpleDateFormat("d MMM yyyy")
-            val limitDate = inputFormat.parse(orderList.dateLimit)
-            val limitDateStr = outputFormat.format(limitDate)
-            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-            val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(UohConsts.DATE_LIMIT, limitDateStr)
-            resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
+            val limitDate = splitStringDateFormat.parse(orderList.dateLimit)
+            limitDate?.let { limitDate ->
+                val limitDateStr = monthStringDateFormat.format(limitDate)
+                view?.let { view ->
+                    context?.let { context -> UohUtils.hideKeyBoard(context, view) }
+                }
+                val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(UohConsts.DATE_LIMIT, limitDateStr)
+                resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
+            }
+
             resetFilter()
             refreshHandler?.startRefresh()
             scrollRecommendationListener.resetState()
@@ -890,7 +921,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true))
                         && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_MP
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DIGITAL
@@ -934,6 +965,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         tempFilterCategoryKey = ""
         tempFilterCategoryLabel = ""
 
+        tempStartDate = ""
+        tempEndDate = ""
+
         isFilterClicked = false
         isReset = true
         uoh_sort_filter?.resetAllFilters()
@@ -942,6 +976,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         filter3?.title = ALL_PRODUCTS
         paramUohOrder = UohListParam()
         setInitialValue()
+        setDefaultDatesForDatePicker()
     }
 
     private fun renderOrderList() {
@@ -1013,12 +1048,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
             listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
-            recommendationList.first().recommendationItemList.forEach {
+            recommendationList.firstOrNull()?.recommendationItemList?.forEach {
                 listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.addList(listRecomm)
         } else {
-            recommendationList.first().recommendationItemList.forEach {
+            recommendationList.firstOrNull()?.recommendationItemList?.forEach {
                 listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.appendList(listRecomm)
@@ -1057,6 +1092,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     UohConsts.TYPE_FILTER_DATE -> {
                         currFilterDateKey = tempFilterDateKey
                         currFilterDateLabel = tempFilterDateLabel
+
+                        paramUohOrder.createTimeStart = tempStartDate
+                        paramUohOrder.createTimeEnd = tempEndDate
+
                         if (tempFilterDateKey != "0") {
                             filter1?.type = ChipsUnify.TYPE_SELECTED
                         } else {
@@ -1073,8 +1112,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             }
                             val splitStartDate = paramUohOrder.createTimeStart.split('-')
                             val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                            dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
-                            filter1?.title = dateOption
+                            if (splitStartDate.isNotEmpty() && splitStartDate.size == 3 && splitEndDate.isNotEmpty() && splitEndDate.size == 3) {
+                                dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
+                                filter1?.title = dateOption
+                            }
                             labelTrackingDate = getString(R.string.tkpdtransaction_filter_custom_date)
                         } else {
                             dateOption = currFilterDateLabel
@@ -1106,6 +1147,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
                     }
                     UohConsts.TYPE_FILTER_CATEGORY -> {
+                        filterStatus = ""
                         val labelTrackingCategory: String
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
@@ -1154,6 +1196,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun showBottomSheetFinishOrder(index: Int, orderId: String, isFromKebabMenu: Boolean, status: String) {
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_finish_order_uoh, null).apply {
+
+            ic_finish_detail_1?.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.ic_bound_icon)
+            }
+
+            ic_finish_detail_2?.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.ic_bound_icon)
+            }
 
             btn_finish_order?.setOnClickListener {
                 bottomSheetKebabMenu?.dismiss()
@@ -1270,8 +1320,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         fragmentManager?.let { bottomSheetResendEmail?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    @SuppressLint("SimpleDateFormat")
     override fun onOptionItemClick(label: String, value: String, filterType: Int) {
         isFilterClicked = true
         tempFilterType = filterType
@@ -1286,8 +1334,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
-                            paramUohOrder.createTimeStart = ""
-                            paramUohOrder.createTimeEnd = ""
+                            tempStartDate = ""
+                            tempEndDate = ""
 
                         }
                         label.toInt() == 1 -> {
@@ -1296,45 +1344,44 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             }
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -30)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
-                            paramUohOrder.createTimeStart = startDate
-                            paramUohOrder.createTimeEnd = endDate
+                            tempStartDate = startDate.toString()
+                            tempEndDate = endDate
 
                         }
                         label.toInt() == 2 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
+                            val startDate = getCalculatedFormattedDate("yyyy-MM-dd", -90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
-                            paramUohOrder.createTimeStart = orderList.dateLimit
-                            paramUohOrder.createTimeEnd = endDate
+                            tempStartDate = startDate.toString()
+                            tempEndDate = endDate
 
                         }
                         label.toInt() == 3 -> {
-                            val inputFormat = SimpleDateFormat("yyyy-MM-dd")
-                            val outputFormat = SimpleDateFormat("d MMM yyyy")
-                            val startDateStrInput = inputFormat.parse(orderList.dateLimit)
-                            val startDateStr = outputFormat.format(startDateStrInput)
-                            val endDateStr = Date().toFormattedString("dd MMM yyyy")
                             bottomSheetOption?.apply {
                                 cl_choose_date?.visible()
+                                tempStartDate = chosenStartDate?.let { it -> calendarToStringFormat(it, "yyyy-MM-dd") }.toString()
+                                tempEndDate = chosenEndDate?.let { it -> calendarToStringFormat(it, "yyyy-MM-dd") }.toString()
+                                    tf_start_date?.textFieldInput?.setText(chosenStartDate?.let { it ->
+                                        calendarToStringFormat(
+                                            it, "dd MMM yyyy")
+                                    })
+                                    tf_start_date?.textFieldInput?.isFocusable = false
+                                    tf_start_date?.textFieldInput?.isClickable = true
+                                    tf_start_date?.textFieldInput?.setOnClickListener {
+                                        showDatePicker(START_DATE)
+                                    }
 
-                                if (defaultStartDateStr.isNotEmpty()) {
-                                    tf_start_date?.textFieldInput?.setText(defaultStartDateStr)
-                                } else {
-                                    tf_start_date?.textFieldInput?.setText(startDateStr)
-                                }
-                                tf_start_date?.textFieldInput?.isFocusable = false
-                                tf_start_date?.textFieldInput?.isClickable = true
-                                tf_start_date?.textFieldInput?.setOnClickListener { showDatePicker(START_DATE) }
-
-                                if (defaultEndDateStr.isNotEmpty()) {
-                                    tf_end_date?.textFieldInput?.setText(defaultEndDateStr)
-                                } else {
-                                    tf_end_date?.textFieldInput?.setText(endDateStr)
-                                }
-                                tf_end_date?.textFieldInput?.isFocusable = false
-                                tf_end_date?.textFieldInput?.isClickable = true
-                                tf_end_date?.textFieldInput?.setOnClickListener { showDatePicker(END_DATE) }
+                                    tf_end_date?.textFieldInput?.setText(chosenEndDate?.let { it ->
+                                        calendarToStringFormat(
+                                            it, "dd MMM yyyy")
+                                    })
+                                    tf_end_date?.textFieldInput?.isFocusable = false
+                                    tf_end_date?.textFieldInput?.isClickable = true
+                                    tf_end_date?.textFieldInput?.setOnClickListener {
+                                        showDatePicker(END_DATE)
+                                    }
                             }
                         }
                     }
@@ -1360,84 +1407,67 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         }
     }
 
+    private fun stringToCalendar(stringParam: CharSequence) : GregorianCalendar {
+        val split = stringParam.split("-")
+        return if (split.isNotEmpty() && split.size == 3) {
+            GregorianCalendar(split[0].toInt(), split[1].toInt(), split[2].toInt())
+        } else GregorianCalendar()
+    }
+
+    private fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
+        return DateFormat.format(format, dateParam.time)
+    }
+
     @SuppressLint("SetTextI18n")
     private fun showDatePicker(flag: String) {
         context?.let { context ->
-            val minDate = Calendar.getInstance()
+            var minDate = GregorianCalendar()
+            var maxDate = GregorianCalendar()
+            var currDate = GregorianCalendar()
 
-            val resultMinDate = orderList.dateLimit.split('-')
-            if (resultMinDate.isNotEmpty()) {
-                minDate.set(Calendar.YEAR, resultMinDate[0].toInt())
-                minDate.set(Calendar.MONTH, resultMinDate[1].toInt())
-                minDate.set(Calendar.DATE, resultMinDate[2].toInt())
-            }
-            val maxDate = Calendar.getInstance()
-            val isEndDateFilled = paramUohOrder.createTimeEnd.isNotEmpty()
-            if (isEndDateFilled && flag.equals(START_DATE, true)) {
-                val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                if (splitEndDate.isNotEmpty()) {
-                    maxDate.set(splitEndDate[0].toInt(), splitEndDate[1].toInt() - 1, splitEndDate[2].toInt())
-                }
-            }
-            val isStartDateFilled = paramUohOrder.createTimeStart.isNotEmpty()
-            if (isStartDateFilled && flag.equals(END_DATE, true)) {
-                val splitStartDate = paramUohOrder.createTimeStart.split('-')
-                if (splitStartDate.isNotEmpty()) {
-                    minDate.set(splitStartDate[0].toInt(), splitStartDate[1].toInt() - 1, splitStartDate[2].toInt())
-                }
+            if (flag.equals(START_DATE, true)) {
+                chosenEndDate?.let { maxDate = it }
+                chosenStartDate?.let { currDate = it }
+                minDate = getLimitDate()
+
+            } else if (flag.equals(END_DATE, true)) {
+                chosenStartDate?.let { minDate = it }
+                chosenEndDate?.let { currDate = it }
             }
 
-            val currentDate = Calendar.getInstance()
+            val datePicker = DateTimePickerUnify(context, minDate, currDate, maxDate, null, DateTimePickerUnify.TYPE_DATEPICKER).apply {
+                datePickerButton.setOnClickListener {
+                    val resultDate = getDate()
+                    val monthInt = resultDate.get(Calendar.MONTH) + 1
+                    var monthStr = monthInt.toString()
+                    if (monthStr.length == 1) monthStr = "0$monthStr"
 
-            val splitDate = if (flag.equals(START_DATE, true)) {
-                if (paramUohOrder.createTimeStart.isNotEmpty()) {
-                    paramUohOrder.createTimeStart.split('-')
-                } else {
-                    val chooseStartDate = orderList.dateLimit
-                    chooseStartDate.split('-')
-                }
-            } else {
-                if (paramUohOrder.createTimeEnd.isNotEmpty()) {
-                    paramUohOrder.createTimeEnd.split('-')
-                } else {
-                    val chooseEndDate = Date().toFormattedString("yyyy-MM-dd")
-                    chooseEndDate.split('-')
-                }
-            }
+                    var dateStr = resultDate.get(Calendar.DATE).toString()
+                    if (dateStr.length == 1) dateStr = "0$dateStr"
 
-            if (splitDate.isNotEmpty()) {
-                splitDate.let {
-                    currentDate.set(it[0].toInt(), it[1].toInt() - 1, it[2].toInt())
-                    val datePicker = DatePickerUnify(context, minDate, currentDate, maxDate)
-                    fragmentManager?.let { it1 -> datePicker.show(it1, "") }
-                    datePicker.datePickerButton.setOnClickListener {
-                        val resultDate = datePicker.getDate()
-                        val monthInt = resultDate[1]+1
-                        var monthStr = monthInt.toString()
-                        if (monthStr.length == 1) monthStr = "0$monthStr"
-
-                        var dateStr = resultDate[0].toString()
-                        if (dateStr.length == 1) dateStr = "0$dateStr"
-
-                        if (flag.equals(START_DATE, true)) {
-                            paramUohOrder.createTimeStart = "${resultDate[2]}-$monthStr-$dateStr"
-                            bottomSheetOption?.tf_start_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                            defaultStartDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
-                        } else {
-                            paramUohOrder.createTimeEnd = "${resultDate[2]}-$monthStr-$dateStr"
-                            bottomSheetOption?.tf_end_date?.textFieldInput?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
-                            defaultEndDateStr = "$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}"
-                        }
-                        datePicker.dismiss()
-                    }
                     if (flag.equals(START_DATE, true)) {
-                        datePicker.setTitle(getString(R.string.uoh_custom_start_date))
+                        chosenStartDate = resultDate as GregorianCalendar
+                        bottomSheetOption?.tf_start_date?.textFieldInput?.setText("${calendarToStringFormat(
+                            resultDate as GregorianCalendar, "dd MMM yyyy")}")
+                        tempStartDate = calendarToStringFormat(resultDate, "yyyy-MM-dd").toString()
+
                     } else {
-                        datePicker.setTitle(getString(R.string.uoh_custom_end_date))
+                        chosenEndDate = resultDate as GregorianCalendar
+                        bottomSheetOption?.tf_end_date?.textFieldInput?.setText("${calendarToStringFormat(
+                            resultDate as GregorianCalendar, "dd MMM yyyy")}")
+                        tempEndDate = calendarToStringFormat(resultDate, "yyyy-MM-dd").toString()
                     }
-                    datePicker.setCloseClickListener { datePicker.dismiss() }
+                    dismiss()
                 }
+
+                if (flag.equals(START_DATE, true)) {
+                    setTitle(context.getString(R.string.uoh_custom_start_date))
+                } else {
+                    setTitle(context.getString(R.string.uoh_custom_end_date))
+                }
+                setCloseClickListener { dismiss() }
             }
+            datePicker.show(parentFragmentManager, "")
         }
     }
 
@@ -1542,45 +1572,50 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             ))
             i++
         }
+
         userSession.userId?.let { UohAnalytics.clickOrderCard(order.verticalCategory, it, arrayListProducts) }
+
+        // requested as old flow (from old order list)
+        UohAnalytics.orderDetailOpenScreenEvent()
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
-        val button = order.metadata.buttons.first()
-        if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-            RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
-        } else {
-            when {
-                button.actionType.equals(GQL_FINISH_ORDER, true) -> {
-                    orderIdNeedUpdated = order.orderUUID
-                    showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
-                }
-                button.actionType.equals(GQL_ATC, true) -> {
-                    atc(order)
-                }
-                button.actionType.equals(GQL_TRACK, true) -> {
-                    val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
-                    RouteManager.route(context, applinkTrack)
-                }
-                button.actionType.equals(GQL_LS_FINISH, true) -> {
-                    orderIdNeedUpdated = order.orderUUID
-                    showBottomSheetLsFinishOrder(index, order.verticalID)
-                }
-                button.actionType.equals(GQL_LS_LACAK, true) -> {
-                    val linkUrl = button.appURL
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
-                }
-                button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
-                    currIndexNeedUpdate = index
-                    orderIdNeedUpdated = order.orderUUID
-                    if (order.verticalID.isNotEmpty()) {
-                        uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
+        order.metadata.buttons.firstOrNull()?.let { button ->
+            if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
+                RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
+            } else {
+                when {
+                    button.actionType.equals(GQL_FINISH_ORDER, true) -> {
+                        orderIdNeedUpdated = order.orderUUID
+                        showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
+                    }
+                    button.actionType.equals(GQL_ATC, true) -> {
+                        atc(order)
+                    }
+                    button.actionType.equals(GQL_TRACK, true) -> {
+                        val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
+                        RouteManager.route(context, applinkTrack)
+                    }
+                    button.actionType.equals(GQL_LS_FINISH, true) -> {
+                        orderIdNeedUpdated = order.orderUUID
+                        showBottomSheetLsFinishOrder(index, order.verticalID)
+                    }
+                    button.actionType.equals(GQL_LS_LACAK, true) -> {
+                        val linkUrl = button.appURL
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+                    }
+                    button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
+                        currIndexNeedUpdate = index
+                        orderIdNeedUpdated = order.orderUUID
+                        if (order.verticalID.isNotEmpty()) {
+                            uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
+                        }
                     }
                 }
             }
-        }
 
-        userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+            userSession.userId?.let { UohAnalytics.clickPrimaryButtonOnOrderCard(order.verticalCategory, button.label, it) }
+        }
     }
 
     override fun onEmptyResultResetBtnClicked() {
@@ -1745,8 +1780,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         intent.putExtra(ApplinkConst.Chat.INVOICE_ID, order.verticalID)
         intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode)
         if (order.metadata.products.isNotEmpty()) {
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.first().title)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.first().imageURL)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, order.metadata.products.firstOrNull()?.title)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, order.metadata.products.firstOrNull()?.imageURL)
         }
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, order.metadata.paymentDateStr)
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)

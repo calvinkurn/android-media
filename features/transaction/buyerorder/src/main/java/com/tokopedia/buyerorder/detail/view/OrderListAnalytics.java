@@ -35,6 +35,7 @@ public class OrderListAnalytics {
     private static final String PRODUCT_EVENT_CATEGORY = "my purchase list - mp";
     private static final String PRODUCT_EVENT_DETAIL = "my purchase list detail - mp";
     private static final String PRODUCT_EVENT_ACTION = "click product";
+    private static final String CLICK_PRODUCT_NAME = "click product name";
     private static final String FILTER_EVENT_ACTION = "click quick filter";
     private static final String DATE_EVENT_ACTION = "submit date filter";
     private static final String DATE_FILTER_CLICK_EVENT_ACTION = "click filter button";
@@ -61,6 +62,7 @@ public class OrderListAnalytics {
 
     private static final String ID = "id";
     private static final String CATEGORY_DEALS = "deals";
+    private static final String CATEGORY_MARKETPLACE = "marketplace";
     private static final String CATEGORY_EVENTS = "hiburan";
     private static final String NAME = "name";
     private static final String PRICE = "price";
@@ -128,6 +130,7 @@ public class OrderListAnalytics {
     private static final String ACTION_FIELD = "actionField";
     private static final String PRODUCTS = "products";
     private static final String CLICK = "click";
+    private static final String CLICK_BOM = "clickBOM";
     private static final String IMPRESSIONS = "impressions";
     private static final String BUY_AGAIN_OPTION_PRODUCT = "product";
     private static final String TICKER_EVENT_ACTION = "view ticker";
@@ -139,6 +142,7 @@ public class OrderListAnalytics {
     private static final String IS_LOGIN_STATUS = "isLoggedInStatus";
 
     private static final String ORDER_LIST = "/order list";
+    private static final String MAIN_APP = "main app android";
 
     @Inject
     public OrderListAnalytics() {
@@ -312,7 +316,7 @@ public class OrderListAnalytics {
         for (Items item : items) {
             MetaDataInfo metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             HashMap<String, Object> product = new HashMap<>();
-            product.put(ID, String.valueOf(item.getId()));
+            product.put(ID, item.getId());
             product.put(NAME, metaDataInfo != null && metaDataInfo.getEntityProductName() != null
                     ? metaDataInfo.getEntityProductName() : item.getTitle());
             product.put(PRICE, item.getTotalPrice());
@@ -326,7 +330,7 @@ public class OrderListAnalytics {
             product.put(KEY_SHOP_TYPE, NONE);
             String cartId = NONE;
             for (AtcMultiData.AtcMulti.BuyAgainData.AtcProduct atcProduct : responseBuyAgainList) {
-                if (atcProduct.getProductId() == item.getId()) {
+                if (item.getId().equalsIgnoreCase(String.valueOf(atcProduct.getProductId()))) {
                     cartId = String.valueOf(atcProduct.getCartId());
                     break;
                 }
@@ -678,4 +682,15 @@ public class OrderListAnalytics {
         ));
     }
 
+    public void hitClickProductName(String statusOrder, String userId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, CLICK_BOM,
+                TrackAppUtils.EVENT_CATEGORY, PRODUCT_EVENT_CATEGORY,
+                TrackAppUtils.EVENT_ACTION, CLICK_PRODUCT_NAME,
+                TrackAppUtils.EVENT_LABEL, statusOrder,
+                BUSINESS_UNIT, CATEGORY_MARKETPLACE,
+                CURRENT_SITE, MAIN_APP,
+                USER_ID, userId
+        ));
+    }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.product.addedit.optionpicker.adapter.OptionTypeFactory
 
 data class OptionModel(
         var text: String = "",
-        var isSelected:Boolean = false): Visitable<OptionTypeFactory> {
+        var isSelected: Boolean = false
+): Visitable<OptionTypeFactory> {
     override fun type(typeFactory: OptionTypeFactory): Int = typeFactory.type(this)
 }

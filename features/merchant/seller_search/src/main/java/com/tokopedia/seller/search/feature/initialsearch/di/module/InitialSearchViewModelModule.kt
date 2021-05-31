@@ -13,7 +13,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@InitialSearchScope
 abstract class InitialSearchViewModelModule {
     
     @InitialSearchScope

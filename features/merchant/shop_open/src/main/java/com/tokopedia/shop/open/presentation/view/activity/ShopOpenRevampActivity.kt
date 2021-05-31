@@ -1,10 +1,7 @@
 package com.tokopedia.shop.open.presentation.view.activity
 
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -24,6 +21,7 @@ import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampQuisione
 import com.tokopedia.shop.open.presentation.view.fragment.ShopOpenRevampSplashScreenFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
 
@@ -39,8 +37,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_shop_open_revamp)
         setupFirstFragment()
-        setupStatusBar()
-
+        setBackgroundColor()
         intent.extras?.let {
             isNeedLocation = intent.getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_IS_NEED_LOC, false)
             bundle = it
@@ -116,16 +113,23 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
                 .commit()
     }
 
-    private fun setupStatusBar(){
-        val window: Window = getWindow()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    private fun setBackgroundColor() {
+        window?.decorView?.apply {
+            if (context.isDarkMode()) {
+                setBackgroundColor(
+                        androidx.core.content.ContextCompat.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_N50
+                        )
+                )
+            } else {
+                setBackgroundColor(
+                        androidx.core.content.ContextCompat.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        )
+                )
+            }
         }
     }
-
 }

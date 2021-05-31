@@ -9,5 +9,5 @@ class DataSuggestions(
         @field:SerializedName("type")
         var type: String?,
         @field:SerializedName("ids")
-        var ids: List<Int>?
+        var ids: List<Long>?
 )

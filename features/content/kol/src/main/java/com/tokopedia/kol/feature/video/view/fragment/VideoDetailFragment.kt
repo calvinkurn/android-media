@@ -12,8 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.Toast
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -292,13 +292,13 @@ class VideoDetailFragment:
             if (it.avatarBadgeImage.isNotBlank()) {
                 authorBadge.show()
                 authorBadge.loadImage(it.avatarBadgeImage)
-                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_4), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_4), 0, authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0)
             } else {
                 authorBadge.hide()
-                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0, authorTitle.getDimens(com.tokopedia.design.R.dimen.dp_8), 0)
+                authorTitle.setMargin(authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, authorTitle.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0)
             }
 
-            authorTitle.text = it.avatarTitle
+            authorTitle.text = MethodChecker.fromHtml(it.avatarTitle)
 
             it.avatarDate = TimeConverter.generateTime(activity!!, it.avatarDate)
             authorSubtitile.text = it.avatarDate
@@ -374,14 +374,14 @@ class VideoDetailFragment:
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.text = like.fmt
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeText.context, com.tokopedia.design.R.color.white)
+                        MethodChecker.getColor(likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 )
             }
             else -> {
                 likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
                 likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
                 likeText.setTextColor(
-                        MethodChecker.getColor(likeIcon.context, com.tokopedia.design.R.color.white)
+                        MethodChecker.getColor(likeIcon.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 )
             }
         }

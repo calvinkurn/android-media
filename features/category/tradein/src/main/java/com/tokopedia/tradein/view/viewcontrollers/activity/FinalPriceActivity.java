@@ -11,7 +11,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,6 +30,7 @@ import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.KYCDetails;
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,22 +52,22 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
     /**
      * price_valid_until
      */
-    private TextView mTvValidTill;
-    private TextView mTvModelName;
-    private TextView mTvSellingPrice;
-    private TextView mTvDeviceReview;
-    private TextView mTvModelNew;
-    private TextView mTvPriceNew;
-    private TextView mTvPriceExchange;
-    private TextView mTvFinalAmount;
-    private TextView mTvTnc;
+    private Typography mTvValidTill;
+    private Typography mTvModelName;
+    private Typography mTvSellingPrice;
+    private Typography mTvDeviceReview;
+    private Typography mTvModelNew;
+    private Typography mTvPriceNew;
+    private Typography mTvPriceExchange;
+    private Typography mTvFinalAmount;
+    private Typography mTvTnc;
 
     private ArrayList<View> viewsTradeIn;
     /**
      * buy_now
      */
-    private TextView mTvButtonPayOrKtp;
-    private TextView tvTitle;
+    private Typography mTvButtonPayOrKtp;
+    private Typography tvTitle;
     private int tradeInStringId = R.string.tukar_tambah;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_HARGA_FINAL;
     private static final String KERO_TOKEN = "token";
@@ -317,7 +317,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
 
             }
         };
-        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         spannableString.setSpan(clickableSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(foregroundColorSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -345,7 +345,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
 
             }
         };
-        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);

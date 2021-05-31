@@ -22,6 +22,7 @@ data class CartWishlistItemHolderData(
         var category: String = "",
         var url: String = "",
         var freeShipping: Boolean = false,
+        var freeShippingExtra: Boolean = false,
         var freeShippingUrl: String = "",
         var variant: String = "" // Currently empty, not provided from backend
 )

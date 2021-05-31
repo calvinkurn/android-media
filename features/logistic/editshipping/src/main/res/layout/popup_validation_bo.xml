@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:closeButtonVisibility="gone"
-        app:tckv_content_text_size = "@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,15 +22,15 @@
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_no_1"
-        app:layout_constraintTop_toBottomOf="@id/ticker_validation_bo" />
+        app:layout_constraintTop_toBottomOf="@id/ticker_validation_bo"
+        android:contentDescription="null"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/point_one"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_one"
@@ -44,15 +43,15 @@
         android:layout_marginTop="@dimen/dp_16"
         app:srcCompat="@drawable/ic_no_2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/point_one" />
+        app:layout_constraintTop_toBottomOf="@id/point_one"
+        android:contentDescription="null"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/point_two"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_two"
@@ -65,15 +64,15 @@
         android:layout_marginTop="@dimen/dp_16"
         app:srcCompat="@drawable/ic_no_3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/point_two" />
+        app:layout_constraintTop_toBottomOf="@id/point_two"
+        android:contentDescription="null"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/point_three"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_three"
@@ -96,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_5"
             android:layout_weight="1"
-            android:text="Nonaktifkan"
+            android:text="@string/button_deactivate"
             android:textStyle="bold"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />
@@ -107,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_5"
             android:layout_weight="1"
-            android:text="Tetap Aktifkan"
+            android:text="@string/button_activate"
             android:textStyle="bold"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />

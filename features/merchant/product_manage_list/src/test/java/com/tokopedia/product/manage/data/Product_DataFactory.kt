@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.data
 
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
@@ -22,9 +23,10 @@ fun createProduct(
     url: String? = "productUrl",
     sku: String? = "sku",
     pictures: List<Picture>? = emptyList(),
-    topAds: ProductTopAds? = null
+    topAds: ProductTopAds? = null,
+    isCampaign: Boolean = false
 ): Product {
-    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds)
+    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign)
 }
 
 fun createProductUiModel(
@@ -42,7 +44,9 @@ fun createProductUiModel(
     multiSelectActive: Boolean = false,
     isChecked: Boolean = false,
     hasStockReserved: Boolean = false,
-    topAds: TopAdsInfo? = null
+    topAds: TopAdsInfo? = null,
+    access: ProductManageAccess? = createShopOwnerAccess(),
+    isCampaign: Boolean = false
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -59,6 +63,8 @@ fun createProductUiModel(
         multiSelectActive,
         isChecked,
         hasStockReserved,
-        topAds
+        topAds,
+        access,
+        isCampaign
     )
 }

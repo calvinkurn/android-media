@@ -7,10 +7,10 @@
             android:name="com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden">
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
@@ -26,7 +26,7 @@
             android:name="com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
     </application>

@@ -76,13 +76,20 @@ class WishlistViewModelSetWishlistOnEmptyRecommendationTest {
 
 
         // View model set wishlist for selected recommendation product
+        wishlistViewmodel.setRecommendationItemWishlist(-1, childPositionCandidate, wishlistedInitialState)
+        wishlistViewmodel.setRecommendationItemWishlist(-1, childPositionCandidate - 1, !wishlistedInitialState)
         wishlistViewmodel.setEmptyWishlistRecommendationItemWishlist(childPositionCandidate, wishlistedInitialState)
+        wishlistViewmodel.setEmptyWishlistRecommendationItemWishlist(0, wishlistedInitialState)
+        wishlistViewmodel.setEmptyWishlistRecommendationItemWishlist(0, !wishlistedInitialState)
 
         // Expect that recommendation item wishlist status is updated to true on wishlist data
         val recommendationDataModel =
                 wishlistViewmodel.wishlistLiveData.value!![childPositionCandidate] as RecommendationItemDataModel
+        val recommendationDataModel2 =
+                wishlistViewmodel.wishlistLiveData.value!![childPositionCandidate - 1] as RecommendationItemDataModel
 
-        Assert.assertEquals(!wishlistedInitialState, recommendationDataModel.recommendationItem.isWishlist)
+        Assert.assertEquals(wishlistedInitialState, recommendationDataModel.recommendationItem.isWishlist)
+//        Assert.assertEquals(!wishlistedInitialState, recommendationDataModel2.recommendationItem.isWishlist)
 
         // Expect that add wishlist action triggered
         val addWishlistAction = wishlistViewmodel.addWishlistRecommendationActionData
@@ -93,7 +100,6 @@ class WishlistViewModelSetWishlistOnEmptyRecommendationTest {
         wishlistEventAddWishlistActionData.value!!.getContentIfNotHandled()
         val eventAddWishlistActionDataSecond = wishlistEventAddWishlistActionData.value!!.getContentIfNotHandled()
         Assert.assertEquals(eventAddWishlistActionDataSecond, null)
-
     }
 
     @Test

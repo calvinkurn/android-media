@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -25,18 +24,16 @@ import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
-import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
-import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
+import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -89,18 +86,6 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    fun provideChatRoomApi(@Named("retrofit") retrofit: Retrofit): ChatRoomApi {
-        return retrofit.create(ChatRoomApi::class.java)
-    }
-
-    @ChatScope
-    @Provides
-    fun provideGetTemplateChatUseCase(api: ChatRoomApi, mapper: GetTemplateChatRoomMapper): GetTemplateChatRoomUseCase {
-        return GetTemplateChatRoomUseCase(api, mapper)
-    }
-
-    @ChatScope
-    @Provides
     fun provideResponseInterceptor(): ErrorResponseInterceptor {
         return HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java)
     }
@@ -140,11 +125,15 @@ class ChatModuleStub {
     @ChatScope
     @Provides
     fun provideRxWebSocketUtil(
-            tkpdAuthInterceptor: TkpdAuthInterceptor,
-            fingerprintInterceptor: FingerprintInterceptor
+            rxWebSocketUtilStub: RxWebSocketUtilStub
     ): RxWebSocketUtil {
-        val interceptors = listOf(tkpdAuthInterceptor, fingerprintInterceptor)
-        return RxWebSocketUtil.getInstance(interceptors)
+        return rxWebSocketUtilStub
+    }
+
+    @ChatScope
+    @Provides
+    fun provideRxWebSocketUtilStub(): RxWebSocketUtilStub {
+        return RxWebSocketUtilStub()
     }
 
     @ChatScope
@@ -159,7 +148,6 @@ class ChatModuleStub {
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(CacheApiInterceptor(context))
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)

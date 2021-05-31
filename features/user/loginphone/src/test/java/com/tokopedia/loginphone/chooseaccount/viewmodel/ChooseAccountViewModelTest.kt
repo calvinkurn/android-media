@@ -3,8 +3,6 @@ package com.tokopedia.loginphone.chooseaccount.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.util.getParamInt
 import com.tokopedia.loginphone.chooseaccount.data.AccountList
 import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant
@@ -16,9 +14,9 @@ import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -32,8 +30,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
-import rx.observers.Subscribers
 import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
@@ -49,6 +45,8 @@ class ChooseAccountViewModelTest {
     @RelaxedMockK
     lateinit var getProfileUseCase: GetProfileUseCase
     @RelaxedMockK
+    lateinit var getAdminTypeUseCase: GetAdminTypeUseCase
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
     lateinit var getAccountListFBResponseObserver: Observer<Result<AccountList>>
@@ -62,6 +60,8 @@ class ChooseAccountViewModelTest {
     lateinit var goToActivationPageObserver: Observer<MessageErrorException>
     @RelaxedMockK
     lateinit var goToSecurityQuestionObserver: Observer<String>
+    @RelaxedMockK
+    lateinit var showLocationAdminPopUpObserver: Observer<Result<Boolean>>
 
     private lateinit var viewmodel: ChooseAccountViewModel
 
@@ -79,6 +79,7 @@ class ChooseAccountViewModelTest {
                 userSession,
                 loginTokenUseCase,
                 getProfileUseCase,
+                getAdminTypeUseCase,
                 rawQueries,
                 testDispatcher
         )
@@ -307,6 +308,41 @@ class ChooseAccountViewModelTest {
 
         val result = viewmodel.getUserInfoResponse.value as Fail
         assertEquals(throwable, result.throwable)
+    }
+
+    @Test
+    fun `when getUserInfo success should set show location admin pop up true`() {
+        viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
+
+        coEvery { getProfileUseCase.execute(any()) } coAnswers {
+            firstArg<GetProfileSubscriber>().getAdminTypeUseCase?.let { getAdminTypeUseCase = it }
+            firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
+        }
+
+        viewmodel.getUserInfo()
+
+        val expectedLocationAdmin = true
+        val actualLocationAdmin = (viewmodel.showAdminLocationPopUp.value as? Success)?.data
+
+        verify { showLocationAdminPopUpObserver.onChanged(any<Success<Boolean>>()) }
+        assertEquals(expectedLocationAdmin, actualLocationAdmin)
+    }
+
+    @Test
+    fun `when getUserInfo error should set show location admin pop up fail`() {
+        viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
+
+        coEvery { getProfileUseCase.execute(any()) } coAnswers {
+            firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
+        }
+
+        viewmodel.getUserInfo()
+
+        val expectedError = throwable
+        val actualError = (viewmodel.showAdminLocationPopUp.value as? Fail)?.throwable
+
+        verify { showLocationAdminPopUpObserver.onChanged(any<Success<Boolean>>()) }
+        assertEquals(expectedError, actualError)
     }
 
     companion object {

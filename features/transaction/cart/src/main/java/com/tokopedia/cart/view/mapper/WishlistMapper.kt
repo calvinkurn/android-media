@@ -24,7 +24,7 @@ class WishlistMapper @Inject constructor() {
         val cartWishlistItemHolderData = CartWishlistItemHolderData()
         cartWishlistItemHolderData.id = wishlist.id
         cartWishlistItemHolderData.name = wishlist.name
-        cartWishlistItemHolderData.rawPrice = wishlist.price.toString()
+        cartWishlistItemHolderData.rawPrice = wishlist.price
         cartWishlistItemHolderData.price = wishlist.priceFmt
         cartWishlistItemHolderData.imageUrl = wishlist.imageUrl
         cartWishlistItemHolderData.url = wishlist.url
@@ -33,8 +33,13 @@ class WishlistMapper @Inject constructor() {
         cartWishlistItemHolderData.reviewCount = wishlist.reviewCount
         cartWishlistItemHolderData.minOrder = wishlist.minimumOrder
         cartWishlistItemHolderData.category = wishlist.getCategoryBreadcrumb()
-        cartWishlistItemHolderData.freeShipping = wishlist.freeOngkir.isActive
-        cartWishlistItemHolderData.freeShippingUrl = if (wishlist.freeOngkir.isActive) wishlist.freeOngkir.imageUrl else ""
+        cartWishlistItemHolderData.freeShippingExtra = wishlist.freeOngkirExtra?.isActive == true
+        cartWishlistItemHolderData.freeShipping = wishlist.freeOngkir?.isActive == true
+        cartWishlistItemHolderData.freeShippingUrl = when {
+            wishlist.freeOngkirExtra?.isActive == true -> wishlist.freeOngkirExtra?.imageUrl ?: ""
+            wishlist.freeOngkir?.isActive == true -> wishlist.freeOngkir?.imageUrl ?: ""
+            else -> ""
+        }
         if (wishlist.shop != null) {
             cartWishlistItemHolderData.shopId = wishlist.shop.id
             cartWishlistItemHolderData.shopName = wishlist.shop.name

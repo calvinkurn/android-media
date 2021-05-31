@@ -4,4 +4,6 @@
     <dimen name="dp_132">132dp</dimen>
     <dimen name="dp_86">86dp</dimen>
     <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_260">260dp</dimen>
+    <dimen name="dp_100">100dp</dimen>
 </resources>

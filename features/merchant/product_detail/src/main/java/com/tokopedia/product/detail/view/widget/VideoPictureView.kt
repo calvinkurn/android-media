@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.widget
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -44,6 +45,8 @@ class VideoPictureView @JvmOverloads constructor(
         }
 
         if (videoPictureAdapter == null || shouldRenderViewPager) {
+            //Media changed, so reset video
+            listener?.getProductVideoCoordinator()?.onDestroy()
             setupViewPager(media)
             renderVideoAtFirstPosition()
             setPageControl(media)
@@ -109,7 +112,11 @@ class VideoPictureView @JvmOverloads constructor(
 
     private fun setPageControl(media: List<MediaDataModel>?) {
         imageSliderPageControl?.setIndicator(media?.size ?: 0)
-        imageSliderPageControl?.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            imageSliderPageControl?.activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        } else {
+            imageSliderPageControl?.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
+        }
         imageSliderPageControl?.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
     }
 

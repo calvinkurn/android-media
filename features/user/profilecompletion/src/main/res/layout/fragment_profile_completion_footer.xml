@@ -16,8 +16,8 @@
         android:textStyle="normal"
         android:padding="@dimen/padding_large_prof_comp"
         android:background="@drawable/profilecompletion_prof_comp_bg_textview_rounded"
-        android:backgroundTint="@color/grey_300"
-        android:textColor="@color/grey_500"
+        android:backgroundTint="@color/Unify_N100"
+        android:textColor="@color/Unify_N200"
         />
 
     <ProgressBar

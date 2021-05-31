@@ -27,7 +27,8 @@ class GetNavNotification @Inject constructor(
             val data: NavNotificationPojo = gqlResponse.getData(NavNotificationPojo::class.java)
             return NavNotificationModel(
                     unreadCountComplain = data.notifications.resolutionAs.buyer,
-                    unreadCountInboxTicket = data.notifications.inbox.inbox_ticket
+                    unreadCountInboxTicket = data.notifications.inbox.inbox_ticket,
+                    unreadCountReview = data.notifications.inbox.review
             )
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
@@ -44,6 +45,7 @@ class GetNavNotification @Inject constructor(
                             }
                             inbox {
                                 inbox_ticket
+                                review
                             }
                     }
                 }""".trimIndent()

@@ -43,6 +43,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM_MESSAGE
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -108,7 +109,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (id == R.id.action_menu_share) {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE))
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + requireArguments().getString(CommonConstant.EXTRA_CATALOG_CODE))
             startActivity(Intent.createChooser(sharingIntent, null))
             return true
         }
@@ -120,11 +121,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         initListener()
         if (arguments == null) {
             if (activity != null) {
-                activity!!.finish()
+                requireActivity().finish()
             }
             return
         }
-        code = arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE)
+        code = requireArguments().getString(CommonConstant.EXTRA_CATALOG_CODE)
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
         mViewModel.getCatalogDetail(code ?: "")
@@ -218,7 +219,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun getAppContext(): Context {
-        return context!!
+        return requireContext()
     }
 
     override fun showLoader() {
@@ -253,7 +254,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun getActivityContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun getScreenName(): String {
@@ -385,7 +386,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null || mSubscriptionCouponTimer == null) {
             return
         }
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
+        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
         if (realCode != null && !realCode.isEmpty()) {
             btnAction2.setText(R.string.tp_label_use)
             btnAction2.isEnabled = true
@@ -395,7 +396,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
-            btnAction2.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.design.R.color.white))
+            setButtonTextColor(btnAction2)
             mSubscriptionCouponTimer.unsubscribe()
         }
     }
@@ -404,7 +405,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null || mSubscriptionCouponTimer == null) {
             return
         }
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
+        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
         btnAction2.setText(R.string.tp_label_refresh_repeat)
         btnAction2.isEnabled = true
         mSubscriptionCouponTimer.unsubscribe()
@@ -414,15 +415,15 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null) {
             return
         }
-        val quota: Typography = view!!.findViewById(R.id.text_quota_count)
+        val quota: Typography = requireView().findViewById(R.id.text_quota_count)
         val quotaContainer: LinearLayout? = view?.findViewById(R.id.quota_container)
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
-        val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
+        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
+        val imgBanner = requireView().findViewById<ImageView>(R.id.img_banner)
         btnAction2.isEnabled = !data.isDisabledButton
         if (data.isDisabledButton) {
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, R.color.disabled_color))
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         } else {
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.design.R.color.white))
+            setButtonTextColor(btnAction2)
         }
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
@@ -433,7 +434,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             val upperText = StringBuilder()
             for (i in data.upperTextDesc.indices) {
                 if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc[i] + "</font>")
+                    upperText.append("<font color='${ColorUtil.getColorFromResToString(quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + data?.upperTextDesc?.get(i) + "</font>")
                 } else {
                     upperText.append(data.upperTextDesc[i]).append(" ")
                 }
@@ -446,7 +447,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         } else {
             ImageUtil.unDimImage(imgBanner)
         }
-        pointValue?.setTextColor(ContextCompat.getColor(pointValue!!.getContext(), com.tokopedia.design.R.color.unify_Y500))
+        pointValue?.setTextColor(ContextCompat.getColor(pointValue!!.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Y500))
     }
 
     override fun onPreValidateError(title: String, message: String) {
@@ -463,13 +464,13 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private fun decorateDialog(dialog: AlertDialog) {
         if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.tkpd_main_green))
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400))
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
         }
         if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.grey_warm))
+                    com.tokopedia.unifyprinciples.R.color.Unify_N200))
         }
     }
 
@@ -489,26 +490,26 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val minUsageLabel = view?.findViewById<Typography>(R.id.tv_min_txn_label)
         val minUsageValue = view?.findViewById<Typography>(R.id.tv_min_txn_value)
         val transactionContainer = view?.findViewById<ConstraintLayout>(R.id.container_transaksi)
-        val quota: Typography = view!!.findViewById(R.id.text_quota_count)
-        val description: Typography = view!!.findViewById(R.id.text_description)
-        val disabledError: Typography = view!!.findViewById(R.id.text_disabled_error)
-        val giftSectionMainLayout: ConstraintLayout = view!!.findViewById(R.id.gift_section_main_layout)
-        val giftImage: Typography = view!!.findViewById(R.id.gift_image)
-        val giftButton: Typography = view!!.findViewById(R.id.gift_btn)
-        val bottomSeparator = view!!.findViewById<View>(R.id.tp_bottom_separator)
+        val quota: Typography = requireView().findViewById(R.id.text_quota_count)
+        val description: Typography = requireView().findViewById(R.id.text_description)
+        val disabledError: Typography = requireView().findViewById(R.id.text_disabled_error)
+        val giftSectionMainLayout: ConstraintLayout = requireView().findViewById(R.id.gift_section_main_layout)
+        val giftImage: Typography = requireView().findViewById(R.id.gift_image)
+        val giftButton: Typography = requireView().findViewById(R.id.gift_btn)
+        val bottomSeparator = requireView().findViewById<View>(R.id.tp_bottom_separator)
         giftImage.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.ic_catalog_gift_btn), null, null, null)
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
-        val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
-        val labelPoint: Typography = view!!.findViewById(R.id.text_point_label)
-        val textDiscount: Typography = view!!.findViewById(R.id.text_point_discount)
+        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
+        val imgBanner = requireView().findViewById<ImageView>(R.id.img_banner)
+        val labelPoint: Typography = requireView().findViewById(R.id.text_point_label)
+        val textDiscount: Typography = requireView().findViewById(R.id.text_point_discount)
         btnAction2.visibility = View.VISIBLE
         btnAction2.isEnabled = !data.isDisabledButton
         description.text = data.title
         btnAction2.text = data.buttonStr
         btnAction2.setBackgroundResource(R.drawable.bg_button_buy_orange_tokopoints)
         ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
-        val tvHowToUse: TkpdWebView = view!!.findViewById(R.id.how_to_use_content)
-        val tvTnc: TkpdWebView = view!!.findViewById(R.id.tnc_content)
+        val tvHowToUse: TkpdWebView = requireView().findViewById(R.id.how_to_use_content)
+        val tvTnc: TkpdWebView = requireView().findViewById(R.id.tnc_content)
         if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
             tvTnc.loadData(data.tnc, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
         } else {
@@ -522,7 +523,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             view?.findViewById<Typography>(R.id.how_to_use)?.hide()
             tvHowToUse.hide()
         }
-        val pointValue: Typography = view!!.findViewById(R.id.text_point_value_coupon)
+        val pointValue: Typography = requireView().findViewById(R.id.text_point_value_coupon)
         pointValue.text = "Gratis"
         //Quota text handling
         if (data.upperTextDesc.isNullOrEmpty()) {
@@ -533,7 +534,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             val upperText = StringBuilder()
             for (i in data.upperTextDesc!!.indices) {
                 if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc!![i] + "</font>")
+                    upperText.append("<font color='${ColorUtil.getColorFromResToString(quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + data?.upperTextDesc?.get(i) + "</font>")
                 } else {
                     upperText.append(data.upperTextDesc!![i]).append(" ")
                 }
@@ -572,17 +573,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled) {
             ImageUtil.dimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         } else {
             ImageUtil.unDimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         }
         if (data.isDisabledButton) {
             giftSectionMainLayout.visibility = View.GONE
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.abstraction.R.color.black_12))
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
         } else {
             giftSectionMainLayout.visibility = View.VISIBLE
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.design.R.color.white))
+            setButtonTextColor(btnAction2)
         }
         if (data.pointsSlash <= 0) {
             labelPoint.visibility = View.GONE
@@ -629,7 +630,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                     AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
                     mCouponName)
         }
-        pointValueText = view!!.findViewById(R.id.text_point_value_label)
+        pointValueText = requireView().findViewById(R.id.text_point_value_label)
         if (!mUserSession!!.isLoggedIn) {
             pointValueText!!.setText("Masuk untuk tukar Points")
         }
@@ -683,6 +684,14 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val sendGiftFragment = SendGiftFragment()
         sendGiftFragment.arguments = bundle
         sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
+    }
+
+    fun setButtonTextColor(btnContinue : Typography){
+        context?.let {
+            if (isDarkMode(it) || !isDarkMode(it)){
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            }
+        }
     }
 
     private fun setMenuVisibility(menu: Menu , isMenuVisible: Boolean){

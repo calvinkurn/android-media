@@ -41,6 +41,7 @@
         android:contentDescription="@string/content_desc_tfu_minimum_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tfu_available_stock"
         app:text_field_input_type="number"

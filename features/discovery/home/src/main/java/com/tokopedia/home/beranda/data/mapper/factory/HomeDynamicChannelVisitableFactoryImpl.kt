@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
+import com.tokopedia.home.analytics.v2.LegoBannerTracking
 import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -33,16 +34,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
 
     companion object{
-        private const val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=1"
-        private const val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
-        private const val DEFAULT_BANNER_APPLINK_3 = ApplinkConst.PROMO
-
-        private const val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja500new.jpg"
-        private const val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros500new.jpg"
-        private const val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo500new.jpg"
         private const val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
+        private const val PROMO_NAME_LEGO_6_AUTO_IMAGE = "/ - p%s - lego banner 6 auto - %s - %s"
+
         private const val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
         private const val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
+        private const val PROMO_NAME_LEGO_2_IMAGE = "/ - p%s - lego banner 2 image - %s"
         private const val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
         private const val PROMO_NAME_CATEGORY_WIDGET = "/ - p%s - category widget banner - %s"
         private const val PROMO_NAME_SPRINT = "/ - p%s - %s"
@@ -51,8 +48,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val PROMO_NAME_DC_MIX_BANNER = "/ - p%s - dynamic channel mix - banner - %s"
         private const val PROMO_NAME_UNKNOWN = "/ - p%s - %s - %s"
         private const val PROMO_NAME_TOPADS_BANNER = "/ - p%s - dynamic channel ads - %s"
+        private const val PROMO_NAME_BANNER_CAROUSEL = "/ - p%s - dynamic channel carousel - %s"
 
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
+        private const val VALUE_BANNER_DEFAULT = "default"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
     }
 
@@ -65,18 +64,18 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return this
     }
 
-    override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean): HomeDynamicChannelVisitableFactory {
+    override fun addDynamicChannelVisitable(addLoadingMore: Boolean, useDefaultWhenEmpty: Boolean, startPosition: Int): HomeDynamicChannelVisitableFactory {
         var dynamicChannelList = mutableListOf<DynamicHomeChannel.Channels>()
         if ((homeChannelData?.dynamicHomeChannel == null
                         || homeChannelData?.dynamicHomeChannel?.channels == null
                         || homeChannelData?.dynamicHomeChannel?.channels?.isEmpty() == true) && useDefaultWhenEmpty) {
             homeDefaultDataSource
             dynamicChannelList = homeDefaultDataSource.createDefaultHomeDynamicChannel().channels as MutableList<DynamicHomeChannel.Channels>
-        } else {
+        } else if (homeChannelData?.dynamicHomeChannel?.channels?.isNotEmpty() == true) {
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
         dynamicChannelList.forEachIndexed { index, channel ->
-            val position = index+1
+            val position = index+ 1 + startPosition
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
@@ -85,8 +84,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
                             channel = channel,
                             trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
                             isCombined = true)
-                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
+                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE,
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE,
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE-> {
                     createDynamicLegoBannerComponent(channel, position, isCache)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO -> {
+                    createDynamicLegoBannerSixAutoComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
                     createDynamicChannel(channel)
@@ -176,6 +181,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
                     createBestSellingWidget(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
+                    createBannerChannel(channel, position)
+                }
             }
         }
         if (addLoadingMore) {
@@ -238,6 +246,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createDynamicLegoBannerComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(mappingDynamicLegoBannerComponent(
+                channel,
+                isCache,
+                verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createDynamicLegoBannerSixAutoComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingDynamicLegoSixAutoBannerComponent(
                 channel,
                 isCache,
                 verticalPosition
@@ -317,11 +335,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 // do nothing
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_6_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO) {
+                channel.promoName = String.format(PROMO_NAME_LEGO_6_AUTO_IMAGE, position.toString(), "individual_grid", channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_3_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE ||
                     channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_4_IMAGE, position.toString(), channel.header.name)
+            } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE)  {
+                channel.promoName = String.format(PROMO_NAME_LEGO_2_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO || channel.layout == DynamicHomeChannel.Channels.LAYOUT_ORGANIC) {
                 channel.promoName = String.format(PROMO_NAME_SPRINT, position.toString(), channel.header.name)
                 channel.setPosition(position)
@@ -344,6 +366,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
             } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS) {
                 channel.promoName = String.format(PROMO_NAME_TOPADS_BANNER, position.toString(), channel.header.name)
                 channel.setPosition(position)
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2) {
+                channel.promoName = String.format(PROMO_NAME_BANNER_CAROUSEL, position.toString(),
+                        if (channel.header.name.isNotEmpty()) channel.header.name
+                        else VALUE_BANNER_DEFAULT
+                )
+                channel.setPosition(position)
             }
             else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name
@@ -363,6 +391,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                                       isCombined: Boolean,
                                       isCache: Boolean): Visitable<*> {
         val viewModel = DynamicChannelDataModel()
+        channel.isCache = isCache
         viewModel.channel = channel
         if (!isCache) {
             viewModel.trackingData = trackingData
@@ -390,6 +419,21 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return viewModel
     }
 
+    private fun mappingDynamicLegoSixAutoBannerComponent(channel: DynamicHomeChannel.Channels,
+                                                         isCache: Boolean,
+                                                         verticalPosition: Int): Visitable<*> {
+        val viewModel = DynamicLegoBannerSixAutoDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
+        )
+        if (!isCache) {
+            HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(
+                    trackingQueue,
+                    LegoBannerTracking.convertLegoSixAutoBannerDataLayerForCombination(channel, verticalPosition))
+        }
+        return viewModel
+    }
+
     private fun mappingRecommendationListCarouselComponent(channel: DynamicHomeChannel.Channels,
                                                            isCache: Boolean,
                                                            verticalPosition: Int): Visitable<*> {
@@ -397,11 +441,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isCache = isCache
         )
-        if (!isCache) {
-            trackingQueue?.putEETracking(
-                    RecommendationListTracking.getRecommendationListImpression(channel,  userId = userSessionInterface?.userId ?: "") as HashMap<String, Any>
-            )
-        }
         return viewModel
     }
 
@@ -443,7 +482,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
-        visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+        if (!isCache) visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+    }
+
+    private fun createBannerChannel(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(BannerDataModel(DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition), isCache))
     }
 
     private fun createTopAdsBannerModel(channel: DynamicHomeChannel.Channels) {
@@ -451,7 +494,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createReminderWidget(source: ReminderEnum){
-        if (!isCache) visitableList.add(ReminderWidgetModel(source=source))
+        if (!isCache) visitableList.add(ReminderWidgetModel(source=source, id = generateReminderWidgetId(source)))
+    }
+
+    private fun generateReminderWidgetId(source: ReminderEnum): String {
+        val numberOfExistingSource = visitableList.filter {
+            it is ReminderWidgetModel && it.source.name == source.name
+        }.size
+        return source.name+(numberOfExistingSource+1)
     }
 
     private fun createRechargeBUWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {

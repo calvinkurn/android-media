@@ -12,6 +12,7 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAY_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_SELLER_INSIGHT_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_SHOP_FUND_ICON
+import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_SMART_REPLY_DISCUSSION_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_STATISTICS_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_STOCK_REMINDER_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_TEMPLATE_CHAT_ICON
@@ -177,6 +178,18 @@ sealed class SellerFeatureUiModel(
             titleId = R.string.seller_migration_tab_ads_broadcast_chat_title,
             descriptionId = R.string.seller_migration_entry_point_broadcast_chat_description,
             data = data
+    )
+
+    class DiscussionTemplateUiModel: SellerFeatureUiModel(
+            imageUrl = URL_TEMPLATE_CHAT_ICON,
+            titleId = R.string.seller_migration_template_title,
+            descriptionId = R.string.seller_migration_template_subtitle
+    )
+
+    class DiscussionSmartReplyUiModel: SellerFeatureUiModel(
+            imageUrl = URL_SMART_REPLY_DISCUSSION_ICON,
+            titleId = R.string.seller_migration_smart_reply_title,
+            descriptionId = R.string.seller_migration_smart_reply_subtitle
     )
 
     override fun type(typeFactory: SellerFeatureAdapterTypeFactory): Int {

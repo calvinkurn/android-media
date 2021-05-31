@@ -6,10 +6,16 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.notification.common.utils.NotificationTargetPriorities
 import com.tokopedia.notifications.CMPushNotificationManager
+import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.model.*
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.ArrayList
+import com.tokopedia.notification.common.utils.NotificationValidationManager.NotificationPriorityType as NotificationPriorityType
 
 const val HOURS_24_IN_MILLIS: Long = 24 * 60 * 60 * 1000L
 
@@ -29,64 +35,56 @@ object PayloadConverter {
 
     fun convertToBaseModel(data: Bundle): BaseNotificationModel {
         val model = BaseNotificationModel()
-        model.icon = data.getString(CMConstant.PayloadKeys.ICON, "")
-        if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_PRIORITY)) {
-            model.priorityPreOreo = Integer.parseInt(data.getString(CMConstant.PayloadKeys.NOTIFICATION_PRIORITY, "2"))
+        model.icon = data.getString(ICON, "")
+        if (data.containsKey(NOTIFICATION_PRIORITY)) {
+            model.priorityPreOreo = data.getString(NOTIFICATION_PRIORITY, "2").toIntOrZero()
         }
-        model.soundFileName = data.getString(CMConstant.PayloadKeys.SOUND, "")
-        model.notificationId = Integer.parseInt(data.getString(CMConstant.PayloadKeys.NOTIFICATION_ID, "500"))
-        model.campaignId = java.lang.Long.parseLong(data.getString(CMConstant.PayloadKeys.CAMPAIGN_ID, "0"))
-        model.parentId = java.lang.Long.parseLong(data.getString(CMConstant.PayloadKeys.PARENT_ID, "0"))
-        model.tribeKey = data.getString(CMConstant.PayloadKeys.TRIBE_KEY, "")
-        model.type = data.getString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, "")
-        model.channelName = data.getString(CMConstant.PayloadKeys.CHANNEL, "")
-        model.title = data.getString(CMConstant.PayloadKeys.TITLE, "")
-        model.detailMessage = data.getString(CMConstant.PayloadKeys.DESCRIPTION, "")
-        model.message = data.getString(CMConstant.PayloadKeys.MESSAGE, "")
+        model.soundFileName = data.getString(SOUND, "")
+        model.notificationId = data.getString(NOTIFICATION_ID, "500").toIntOrZero()
+        model.campaignId = data.getString(CAMPAIGN_ID, "0").toLongOrZero()
+        model.parentId = data.getString(PARENT_ID, "0").toLongOrZero()
+        model.elementId = data.getString(ELEMENT_ID, "")
+        model.tribeKey = data.getString(TRIBE_KEY, "")
+        model.type = data.getString(NOTIFICATION_TYPE, "")
+        model.channelName = data.getString(CHANNEL, "")
+        model.title = data.getString(TITLE, "")
+        model.detailMessage = data.getString(DESCRIPTION, "")
+        model.message = data.getString(MESSAGE, "")
         model.media = getMedia(data)
-        model.appLink = data.getString(CMConstant.PayloadKeys.APP_LINK, ApplinkConst.HOME)
+        model.appLink = data.getString(APP_LINK, ApplinkConst.HOME)
         val actionButtonList = getActionButtons(data)
         if (actionButtonList != null)
             model.actionButton = actionButtonList
         model.persistentButtonList = getPersistentNotificationData(data)
         model.videoPushModel = getVideoNotificationData(data)
-        model.customValues = data.getString(CMConstant.PayloadKeys.CUSTOM_VALUE, "")
+        model.customValues = data.getString(CUSTOM_VALUE, "")
         val carouselList = getCarouselList(data)
         if (carouselList != null) {
             model.carouselList = carouselList
-            model.carouselIndex = data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0)
+            model.carouselIndex = data.getInt(CAROUSEL_INDEX, 0)
         }
-        model.isVibration = (data.getString(CMConstant.PayloadKeys.VIBRATE) ?: "true").toBoolean()
-        model.isUpdateExisting = (data.getString(CMConstant.PayloadKeys.UPDATE_NOTIFICATION) ?: "false").toBoolean()
-        model.isTest = (data.getString(CMConstant.PayloadKeys.IS_TEST) ?: "false").toBoolean()
+        model.isVibration = isBooleanTrue(data, VIBRATE)
+        model.isUpdateExisting = isBooleanTrue(data, UPDATE_NOTIFICATION)
+        model.isTest = isBooleanTrue(data, IS_TEST)
         val gridList = getGridList(data)
         if (gridList != null)
             model.gridList = gridList
         val productInfoList = getProductInfoList(data)
         if (productInfoList != null)
             model.productInfoList = productInfoList
-        model.subText = data.getString(CMConstant.PayloadKeys.SUB_TEXT)
-        model.visualCollapsedImageUrl = data.getString(CMConstant.PayloadKeys.VISUAL_COLLAPSED_IMAGE)
-        model.visualExpandedImageUrl = data.getString(CMConstant.PayloadKeys.VISUAL_EXPANDED_IMAGE)
-        model.campaignUserToken = data.getString(CMConstant.PayloadKeys.CAMPAIGN_USER_TOKEN, "")
+        model.subText = data.getString(SUB_TEXT)
+        model.visualCollapsedImageUrl = data.getString(VISUAL_COLLAPSED_IMAGE)
+        model.visualCollapsedElementId = data.getString(VISUAL_COLLAPSED_ELEMENT_ID)
+        model.visualExpandedImageUrl = data.getString(VISUAL_EXPANDED_IMAGE)
+        model.visualExpandedElementId = data.getString(VISUAL_EXPANDED_ELEMENT_ID)
+        model.campaignUserToken = data.getString(CAMPAIGN_USER_TOKEN, "")
 
-        //start end time,
         model.notificationMode = getNotificationMode(data)
 
-        model.startTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_START_TIME)) {
-            try {
-                data.getString(CMConstant.PayloadKeys.NOTIFICATION_START_TIME)?.toLong() ?: 0
-            } catch (e: Exception) {
-                0L
-            }
-        } else 0L
-        model.endTime = if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_END_TIME)) {
-            try {
-                data.getString(CMConstant.PayloadKeys.NOTIFICATION_END_TIME)?.toLong() ?: 0
-            } catch (e: Exception) {
-                0L
-            }
-        } else 0L
+        //start end time,
+        model.startTime = dataToLong(data, NOTIFICATION_START_TIME)
+        model.endTime = dataToLong(data, NOTIFICATION_END_TIME)
+
         if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
                         model.endTime == 0L)) {
             model.startTime = System.currentTimeMillis()
@@ -94,35 +92,167 @@ object PayloadConverter {
         }
 
         model.status = NotificationStatus.PENDING
-        model.notificationProductType = data.getString(CMConstant.PayloadKeys.NOTIFICATION_PRODUCT_TYPE)
+        model.notificationProductType = data.getString(NOTIFICATION_PRODUCT_TYPE)
 
         // notification attribution
-        model.transactionId = data.getString(CMConstant.PayloadKeys.TRANSACTION_ID)
-        model.userTransactionId = data.getString(CMConstant.PayloadKeys.USER_TRANSACTION_ID)
-        model.userId = data.getString(CMConstant.PayloadKeys.USER_ID)
-        model.shopId = data.getString(CMConstant.PayloadKeys.SHOP_ID)
-        model.blastId = data.getString(CMConstant.PayloadKeys.BLAST_ID)
+        model.transactionId = data.getString(TRANSACTION_ID)
+        model.userTransactionId = data.getString(USER_TRANSACTION_ID)
+        model.userId = data.getString(USER_ID)
+        model.shopId = data.getString(SHOP_ID)
+        model.blastId = data.getString(BLAST_ID)
 
         // webHook parameters
-        model.webHookParam = data.getString(CMConstant.PayloadKeys.WEBHOOK_PARAM)
+        model.webHookParam = data.getString(WEBHOOK_PARAM)
 
         return model
     }
 
-    private fun getNotificationMode(data: Bundle): NotificationMode {
-        try {
-            if (data.containsKey(CMConstant.PayloadKeys.NOTIFICATION_MODE)) {
-                return if (data.getString(CMConstant.PayloadKeys.NOTIFICATION_MODE)?.toBoolean() == true) NotificationMode.OFFLINE
-                else NotificationMode.POST_NOW
+    fun convertToBaseModel(data: AmplificationBaseNotificationModel): BaseNotificationModel {
+        val model = BaseNotificationModel()
+        model.icon = data.icon
+        model.priorityPreOreo = data.priorityPreOreo ?: 2
+        model.soundFileName = data.soundFileName
+        model.notificationId = data.notificationId ?: 500
+        model.campaignId = data.campaignId ?: 0
+        model.parentId = data.parentId ?: 0
+        model.elementId = data.elementId
+        model.tribeKey = data.tribeKey
+        model.type = data.type
+        model.channelName = data.channelName
+        model.title = data.title
+        model.detailMessage = data.detailMessage
+        model.message = data.message
+        model.media = data.media
+        model.appLink = data.appLink ?: ApplinkConst.HOME
+        data.actionButton?.let {
+            val actionButtonList = ArrayList<ActionButton>()
+            it.forEach { actionButtonNullable ->
+                actionButtonNullable?.let { actionButtonNonNullable ->
+                    actionButtonList.add(actionButtonNonNullable)
+                }
             }
-        } catch (e: Exception) {
+            model.actionButton = actionButtonList
+        }
+        data.persistentButtonList?.let {
+            val persButtonList = ArrayList<PersistentButton>()
+            it.forEach { persButtonNullable ->
+                persButtonNullable?.let { persButtonNonNullable ->
+                    persButtonList.add(persButtonNonNullable)
+                }
+            }
+            model.persistentButtonList = persButtonList
+        }
+        model.videoPushModel = data.videoPushModel?.let { JSONObject(it) }
+        model.customValues = data.customValues
+        data.carouselList?.let {
+            val carouselList = ArrayList<Carousel>()
+            it.forEach { carouselNullable ->
+                carouselNullable?.let { carouselNonNullable ->
+                    carouselList.add(carouselNonNullable)
+                }
+            }
+            model.carouselList = carouselList
+            model.carouselIndex = data.carouselIndex ?: 0
         }
 
-        return NotificationMode.POST_NOW
+        model.isVibration = data.isVibration ?: true
+        model.isUpdateExisting = data.isUpdateExisting ?: false
+        model.isTest = data.isTest == true
+
+        data.gridList?.let {
+            val gridList = ArrayList<Grid>()
+            it.forEach { gridNullable ->
+                gridNullable?.let { gridNonNullable ->
+                    gridList.add(gridNonNullable)
+                }
+            }
+            model.gridList = gridList
+        }
+
+        data.productInfoList?.let {
+            val productList = ArrayList<ProductInfo>()
+            it.forEach { productNullable ->
+                productNullable?.let { productNonNullable ->
+                    productList.add(productNonNullable)
+                }
+            }
+            model.productInfoList = productList
+        }
+        model.subText = data.subText
+        model.visualCollapsedImageUrl = data.visualCollapsedImageUrl
+        model.visualExpandedImageUrl = data.visualExpandedImageUrl
+        model.visualCollapsedElementId = data.visualCollapsedElementId
+        model.visualExpandedElementId = data.visualExpandedElementId
+        model.campaignUserToken = data.campaignUserToken
+
+        model.notificationMode =  if (data.notificationMode == true) NotificationMode.OFFLINE else NotificationMode.POST_NOW
+
+        //start end time,
+        model.startTime = data.startTime.toLongOrZero()
+        model.endTime = data.endTime.toLongOrZero()
+
+        if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
+                        model.endTime == 0L)) {
+            model.startTime = System.currentTimeMillis()
+            model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
+        }
+
+        model.status = NotificationStatus.PENDING
+        model.notificationProductType = data.notificationProductType
+
+        // notification attribution
+        model.transactionId = data.transactionId
+        model.userTransactionId = data.userTransactionId
+        model.userId = data.userId
+        model.shopId = data.shopId
+        model.blastId = data.blastId
+
+        // webHook parameters
+        model.webHookParam = data.webHookParam
+
+        return model
+    }
+
+    fun advanceTargetNotification(bundle: Bundle): NotificationTargetPriorities {
+        val mainAppPriority = bundle.getString(MAIN_APP_PRIORITY, "1")
+        val sellerAppPriority = bundle.getString(SELLER_APP_PRIORITY, "1")
+        val isAdvanceTarget = isBooleanTrue(bundle, ADVANCE_TARGET)
+
+        val appPriorities = when {
+            mainAppPriority.toInt() < sellerAppPriority.toInt() -> NotificationPriorityType.MainApp
+            mainAppPriority.toInt() > sellerAppPriority.toInt() -> NotificationPriorityType.SellerApp
+            else -> NotificationPriorityType.Both
+        }
+
+        return NotificationTargetPriorities(appPriorities, isAdvanceTarget)
+    }
+
+    private fun isBooleanTrue(data: Bundle, key: String): Boolean {
+        return try {
+            return data.containsKey(key) && data.getString(key)?.toBoolean() == true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun dataToLong(data: Bundle, key: String): Long {
+        return try {
+            return data.getString(key)?.toLong() ?: 0L
+        } catch (e: Exception) {
+            0L
+        }
+    }
+
+    private fun getNotificationMode(data: Bundle): NotificationMode {
+        return if (isBooleanTrue(data, NOTIFICATION_MODE)) {
+            NotificationMode.OFFLINE
+        } else {
+            NotificationMode.POST_NOW
+        }
     }
 
     private fun getMedia(extras: Bundle): Media? {
-        val actions = extras.getString(CMConstant.PayloadKeys.MEDIA)
+        val actions = extras.getString(MEDIA)
         if (TextUtils.isEmpty(actions)) {
             return null
         }
@@ -136,7 +266,7 @@ object PayloadConverter {
     }
 
     private fun getActionButtons(extras: Bundle): ArrayList<ActionButton>? {
-        val actions = extras.getString(CMConstant.PayloadKeys.ACTION_BUTTON)
+        val actions = extras.getString(ACTION_BUTTON)
         if (TextUtils.isEmpty(actions)) {
             return null
         }
@@ -154,7 +284,7 @@ object PayloadConverter {
     }
 
     private fun getPersistentNotificationData(bundle: Bundle): ArrayList<PersistentButton>? {
-        val persistentData = bundle.getString(CMConstant.PayloadKeys.PERSISTENT_DATA)
+        val persistentData = bundle.getString(PERSISTENT_DATA)
         if (TextUtils.isEmpty(persistentData)) {
             return null
         }
@@ -172,7 +302,7 @@ object PayloadConverter {
     }
 
     private fun getProductInfoList(bundle: Bundle): ArrayList<ProductInfo>? {
-        val productInfoListStr = bundle.getString(CMConstant.PayloadKeys.PRODUCT_INFO_LIST)
+        val productInfoListStr = bundle.getString(PRODUCT_INFO_LIST)
         if (TextUtils.isEmpty(productInfoListStr)) {
             return null
         }
@@ -189,7 +319,7 @@ object PayloadConverter {
     }
 
     private fun getGridList(bundle: Bundle): ArrayList<Grid>? {
-        val persistentData = bundle.getString(CMConstant.PayloadKeys.GRID_DATA)
+        val persistentData = bundle.getString(GRID_DATA)
         if (TextUtils.isEmpty(persistentData)) {
             return null
         }
@@ -207,7 +337,7 @@ object PayloadConverter {
 
     private fun getVideoNotificationData(bundle: Bundle): JSONObject? {
 
-        val values = bundle.getString(CMConstant.PayloadKeys.VIDEO_DATA)
+        val values = bundle.getString(VIDEO_DATA)
         if (TextUtils.isEmpty(values)) {
             return null
         }
@@ -221,7 +351,7 @@ object PayloadConverter {
     }
 
     private fun getCarouselList(extras: Bundle): ArrayList<Carousel>? {
-        val carouselData = extras.getString(CMConstant.PayloadKeys.CAROUSEL_DATA)
+        val carouselData = extras.getString(CAROUSEL_DATA)
         if (TextUtils.isEmpty(carouselData)) {
             return extras.getParcelableArrayList(CMConstant.ReceiverExtraData.CAROUSEL_DATA)
         }

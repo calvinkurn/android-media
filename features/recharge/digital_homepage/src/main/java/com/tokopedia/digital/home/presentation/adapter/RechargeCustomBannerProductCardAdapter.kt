@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
@@ -57,7 +56,6 @@ class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSec
 
                 setOnClickListener {
                     listener.onRechargeSectionItemClicked(element)
-                    RouteManager.route(context, element.applink)
                 }
             }
         }

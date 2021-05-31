@@ -34,8 +34,9 @@ dependencies {
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
-
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.track)
@@ -44,6 +45,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
@@ -68,9 +70,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 

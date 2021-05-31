@@ -59,3 +59,6 @@ https://phab.tokopedia.com/XXXXX
 - **approved for new module** - send along with the approval to cast the magic 
 *(more info: @tokopedia/android-gatekeeper-new-module)*
 
+- **approved for dark mode** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-dark-mode)*
+

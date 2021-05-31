@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.common.view.model
 
 import androidx.lifecycle.LiveData
+import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccErrorData
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
@@ -32,6 +33,7 @@ sealed class OccGlobalEvent {
     data class AtcSuccess(val message: String = ""): OccGlobalEvent()
     data class Prompt(val prompt: OccPrompt): OccGlobalEvent()
     data class ForceOnboarding(val onboarding: OccMainOnboarding): OccGlobalEvent()
+    data class UpdateLocalCacheAddress(val addressModel: AddressModel): OccGlobalEvent()
 }
 
 data class OccEvent<out T: Any>(private val data: T) {

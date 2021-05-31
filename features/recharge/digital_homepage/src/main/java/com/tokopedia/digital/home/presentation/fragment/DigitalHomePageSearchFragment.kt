@@ -14,11 +14,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
@@ -28,13 +26,14 @@ import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
+import com.tokopedia.digital.home.util.DigitalHomepageGqlQuery
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.view_recharge_home_search.*
 import javax.inject.Inject
 
-class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
+open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
         DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener {
 
     @Inject
@@ -47,15 +46,14 @@ class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCateg
     lateinit var viewModel: DigitalHomePageSearchViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.view_recharge_home_search, container, false)
-        return view
+        return inflater.inflate(R.layout.view_recharge_home_search, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             viewModel = viewModelProvider.get(DigitalHomePageSearchViewModel::class.java)
         }
     }
@@ -77,8 +75,8 @@ class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCateg
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
-            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                text.toString()?.let { query -> searchCategory(query) }
+            override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
+                onSearchBarTextChanged(text.toString())
             }
         })
         context?.run {
@@ -86,16 +84,16 @@ class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCateg
             inputMethodManager.showSoftInput(digital_homepage_search_view_search_bar.searchBarTextField, InputMethod.SHOW_FORCED)
         }
 
-        val recyclerView = getRecyclerView(view) as VerticalRecyclerView
-        recyclerView.clearItemDecoration()
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val recyclerView = getRecyclerView(view) as? VerticalRecyclerView
+        recyclerView?.clearItemDecoration()
+        recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
+
+    open fun onSearchBarTextChanged(text: String) { searchCategory(text) }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(RechargeHomepageComponent::class.java).inject(this)
@@ -104,6 +102,10 @@ class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCateg
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        observeSearchCategoryList()
+    }
+
+    private fun observeSearchCategoryList() {
         viewModel.searchCategoryList.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
@@ -147,10 +149,6 @@ class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCateg
         }
     }
 
-    private fun searchCategory(searchQuery: String) {
-        viewModel.searchCategoryList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category), searchQuery)
-    }
-
     override fun onSearchCategoryClicked(category: DigitalHomePageSearchCategoryModel, position: Int) {
         rechargeHomepageAnalytics.eventSearchResultPageClick(category, position, userSession.userId)
         RouteManager.route(context, category.applink)
@@ -158,6 +156,10 @@ class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearchCateg
 
     private fun trackSearchResultCategories(list: List<DigitalHomePageSearchCategoryModel>) {
         rechargeHomepageAnalytics.eventSearchResultPageImpression(list, userSession.userId)
+    }
+
+    open fun searchCategory(searchQuery: String) {
+        viewModel.searchCategoryList(DigitalHomepageGqlQuery.digitalHomeCategory, searchQuery)
     }
 
     companion object {

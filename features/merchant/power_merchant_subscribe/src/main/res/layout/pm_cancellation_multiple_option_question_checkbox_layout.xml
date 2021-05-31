@@ -10,5 +10,5 @@
     android:minHeight="0dp"
     android:paddingStart="@dimen/dp_5"
     android:paddingLeft="@dimen/dp_5"
-    android:textColor="@color/clr_f531353b"
+    android:textColor="@color/Unify_N700_96"
     android:theme="@style/checkBoxStyle" />

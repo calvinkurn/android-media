@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_ALTERNATE
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_DISABLED
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_INVERTED
@@ -234,7 +234,8 @@ class DynamicChannelMixTopViewHolder(
             gradient.cornerRadius = 0f
             view.background = gradient
         } else {
-            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: "#ffffff"))
+            val defaultColorString = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_N0))}"
+            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: defaultColorString))
         }
     }
 }

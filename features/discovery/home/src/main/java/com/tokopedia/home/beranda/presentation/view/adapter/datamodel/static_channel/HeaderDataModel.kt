@@ -5,6 +5,7 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
@@ -21,7 +22,8 @@ data class HeaderDataModel(
       var isPendingTokocashChecked: Boolean = false,
       val isWalletDataError: Boolean = false,
       val isTokoPointDataError: Boolean = false,
-      var isUserLogin: Boolean = false
+      var isUserLogin: Boolean = false,
+      var homeBalanceModel: HomeBalanceModel = HomeBalanceModel()
 ) : HomeVisitable {
 
     fun setCache(cache: Boolean) {
@@ -88,6 +90,7 @@ data class HeaderDataModel(
         if (isWalletDataError != other.isWalletDataError) return false
         if (isTokoPointDataError != other.isTokoPointDataError) return false
         if (isUserLogin != other.isUserLogin) return false
+        if (homeBalanceModel != other.homeBalanceModel) return false
 
         return true
     }
@@ -102,6 +105,7 @@ data class HeaderDataModel(
         result = HASH_CODE * result + isWalletDataError.hashCode()
         result = HASH_CODE * result + isTokoPointDataError.hashCode()
         result = HASH_CODE * result + isUserLogin.hashCode()
+        result = HASH_CODE * result + homeBalanceModel.hashCode()
         return result
     }
 

@@ -4,13 +4,13 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
 import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
-import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
-import com.tokopedia.discovery2.TRANSPARENT_BLACK
 import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
 import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
+import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
+import com.tokopedia.discovery2.TRANSPARENT_BLACK
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -185,8 +185,8 @@ class DiscoveryDataMapper {
                 || componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName
                 || componentName == ComponentNames.ProductCardSprintSale.componentName) {
             productName = dataItem.title ?: ""
-            slashedPrice = dataItem.price ?: ""
-            formattedPrice = dataItem.discountedPrice ?: ""
+            slashedPrice = setSlashPrice(dataItem)
+            formattedPrice = setFormattedPrice(dataItem)
             isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
             if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         } else {
@@ -212,7 +212,12 @@ class DiscoveryDataMapper {
                         ?: "", isActive = dataItem.freeOngkir?.isActive ?: false),
                 pdpViewCount = getPDPViewCount(dataItem.pdpView),
                 labelGroupList = labelGroupList.apply {
-                    dataItem.labelsGroupList?.forEach { add(ProductCardModel.LabelGroup(it.position, it.title, it.type)) }
+                    dataItem.labelsGroupList?.forEach {
+                        add(ProductCardModel.LabelGroup(it.position,
+                                it.title,
+                                it.type,
+                                it.url))
+                    }
                 },
                 shopLocation = getShopLocation(dataItem),
                 shopBadgeList = getShopBadgeList(dataItem),
@@ -220,9 +225,25 @@ class DiscoveryDataMapper {
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
-                hasNotifyMeButton =  dataItem.hasNotifyMe,
+                hasNotifyMeButton = dataItem.hasNotifyMe,
                 hasThreeDots = dataItem.hasThreeDots
         )
+    }
+
+    private fun setSlashPrice(dataItem: DataItem): String {
+        if(dataItem.discountedPrice.isNullOrEmpty()){
+            return ""
+        }else if(dataItem.discountedPrice == dataItem.price){
+            return ""
+        }
+        return dataItem.price ?: ""
+    }
+
+    private fun setFormattedPrice(dataItem: DataItem): String {
+        if (dataItem.discountedPrice.isNullOrEmpty()) {
+            return dataItem.price ?: ""
+        }
+        return dataItem.discountedPrice ?: ""
     }
 
     private fun getPDPViewCount(pdpView: String): String {

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/collapseMainView"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_45"
+    android:tag="base">
+
+    <LinearLayout
+        android:id="@+id/notification_main_column"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:minHeight="@dimen/dp_40"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_collapse_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:singleLine="true"
+            android:textColor="@color/Unify_N700_96"
+            android:textSize="@dimen/sp_15" />
+
+        <TextView
+            android:id="@+id/tv_collapsed_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:singleLine="true"
+            android:textColor="@color/Unify_N700_68"
+            android:textSize="@dimen/mw_sp_13" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_icon_collapsed"
+        android:layout_width="@dimen/mw_dp_38"
+        android:layout_height="@dimen/mw_dp_38"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_big_notif_customerapp"
+        android:contentDescription="@null" />
+
+</FrameLayout>

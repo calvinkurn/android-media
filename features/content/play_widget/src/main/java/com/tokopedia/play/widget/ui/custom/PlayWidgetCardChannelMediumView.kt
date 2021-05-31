@@ -9,8 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -19,8 +19,12 @@ import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
+import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.LoaderUnify
 
 
@@ -36,19 +40,20 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
     private val thumbnail: AppCompatImageView
     private val pvVideo: PlayerView
-    private val reminderBadge: AppCompatImageView
+    private val reminderBadge: View
+    private val ivReminder: IconUnify
     private val ivAction: AppCompatImageView
     private val liveBadge: View
     private val totalViewBadge: View
     private val promoBadge: View
+    private val promoAdditionalContextView: View
+    private val tvPromoDetail: TextView
     private val tvStartTime: TextView
     private val tvTitle: TextView
     private val tvAuthor: TextView
     private val tvTotalView: TextView
     private val llLoadingContainer: LinearLayout
     private val loaderLoading: LoaderUnify
-
-    private var originalReminderState = false
 
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
@@ -61,11 +66,14 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         val view = View.inflate(context, R.layout.view_play_widget_card_channel_medium, this)
         thumbnail = view.findViewById(R.id.play_widget_thumbnail)
         pvVideo = view.findViewById(R.id.play_widget_player_view)
-        reminderBadge = view.findViewById(R.id.play_widget_iv_reminder)
+        reminderBadge = view.findViewById(R.id.view_reminder)
+        ivReminder = view.findViewById(R.id.play_widget_iv_reminder)
         ivAction = view.findViewById(R.id.play_widget_iv_action)
         liveBadge = view.findViewById(R.id.play_widget_badge_live)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
         promoBadge = view.findViewById(R.id.play_widget_badge_promo)
+        promoAdditionalContextView = view.findViewById(R.id.iv_promo_additional_context)
+        tvPromoDetail = view.findViewById(R.id.tv_promo_detail)
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
@@ -89,14 +97,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         mListener = listener
     }
 
-    fun revertToOriginalReminderState() {
-        setIconToggleReminder(originalReminderState)
-    }
-
-    fun setTotalView(totalView: String) {
-        tvTotalView.text = totalView
-    }
-
     fun setModel(model: PlayWidgetMediumChannelUiModel) {
         this.mModel = model
 
@@ -108,6 +108,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
             else -> setActiveModel(model)
         }
 
+        setPromoType(model.promoType)
+
         tvTitle.visibility = if (model.title.isNotEmpty()) View.VISIBLE else View.GONE
         tvAuthor.visibility = if (model.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
         tvStartTime.visibility = if (model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming) View.VISIBLE else View.GONE
@@ -117,13 +119,9 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvStartTime.text = model.startTime
         tvTotalView.text = model.totalView
 
-        originalReminderState = model.activeReminder
-
-        setIconToggleReminder(model.activeReminder)
+        setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
-            model.activeReminder = !model.activeReminder
-            mListener?.onToggleReminderChannelClicked(model, model.activeReminder)
-            setIconToggleReminder(model.activeReminder)
+            mListener?.onToggleReminderChannelClicked(model, model.reminderType.switch())
         }
 
         setOnClickListener {
@@ -140,7 +138,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
         totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
-        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
     }
 
@@ -149,7 +146,6 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         liveBadge.visibility = View.GONE
         reminderBadge.visibility = View.VISIBLE
         totalViewBadge.visibility = View.GONE
-        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
     }
 
@@ -158,15 +154,39 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
         totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
-        promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.VISIBLE
     }
 
-    private fun setIconToggleReminder(active: Boolean) {
-        val drawableIconReminder = if (active) R.drawable.ic_play_reminder else R.drawable.ic_play_reminder_non_active
-        reminderBadge.setImageDrawable(
-                ContextCompat.getDrawable(context, drawableIconReminder)
-        )
+    private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
+        val iconId = when (reminderType) {
+            PlayWidgetReminderType.Reminded -> IconUnify.BELL_FILLED
+            PlayWidgetReminderType.NotReminded -> IconUnify.BELL
+        }
+        ivReminder.setImage(newIconId = iconId)
+    }
+
+    private fun setPromoType(promoType: PlayWidgetPromoType) {
+        when (promoType) {
+            PlayWidgetPromoType.NoPromo, PlayWidgetPromoType.Unknown -> {
+                promoBadge.visibility = View.GONE
+            }
+            is PlayWidgetPromoType.Default -> {
+                promoAdditionalContextView.visibility = View.GONE
+
+                tvPromoDetail.text = promoType.promoText
+                tvPromoDetail.visibility = View.VISIBLE
+
+                promoBadge.visibility = View.VISIBLE
+            }
+            is PlayWidgetPromoType.LiveOnly -> {
+                promoAdditionalContextView.visibility = View.VISIBLE
+
+                tvPromoDetail.text = promoType.promoText
+                tvPromoDetail.visibility = View.VISIBLE
+
+                promoBadge.visibility = View.VISIBLE
+            }
+        }.exhaustive
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -222,7 +242,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         fun onToggleReminderChannelClicked(
                 item: PlayWidgetMediumChannelUiModel,
-                remind: Boolean
+                reminderType: PlayWidgetReminderType
         )
 
         fun onMenuActionButtonClicked(

@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="play_dms_broadcaster_background">#AD31353B</color>
+    <color name="play_dms_broadcaster_error_background">#26292E</color>
+    <color name="play_dms_broadcaster_camera_background">#F531353B</color>
 
-    <color name="play_bg_dark_transparent">#CC000000</color>
-    <color name="play_granted_permission">#979797</color>
-    <color name="play_permit_stroke">#4DFFFFFF</color>
+    <color name="play_dms_bg_dark_transparent">#CC000000</color>
+    <color name="play_dms_granted_permission">#979797</color>
+    <color name="play_dms_permit_stroke">#4DFFFFFF</color>
 
-    <color name="play_bg_shadow">#1F31353B</color>
+    <color name="play_dms_bg_shadow">#1F31353B</color>
 
-    <color name="play_cover_crop_overlay">#80C4C4C4</color>
-    <color name="play_bg_choose_cover">#4D40454C</color>
-    <color name="play_white_68">#ADFFFFFF</color>
-    <color name="play_white_96">#F5FFFFFF</color>
+    <color name="play_dms_cover_crop_overlay">#80C4C4C4</color>
+    <color name="play_dms_bg_cover_image_setup">#26292E</color>
+    <color name="play_dms_bg_choose_cover">#4D40454C</color>
+    <color name="play_dms_white_68">#ADFFFFFF</color>
+    <color name="play_dms_white_96">#F5FFFFFF</color>
+
+    <color name="play_dms_gradient_start">#7F31353B</color>
+    <color name="play_dms_gradient_end">#0031353B</color>
+
+    <color name="play_dms_summary_background">#7031353B</color>
 
     <!--Schedule-->
-    <color name="play_broadcast_schedule_info">#FFFFFF</color>
-    <color name="play_broadcast_schedule_divider">#66FFFFFF</color>
+    <color name="play_dms_broadcast_schedule_info">#FFFFFF</color>
+    <color name="play_dms_broadcast_schedule_divider">#66FFFFFF</color>
+
+    <color name="play_dms_N700_68">#AD31353B</color>
+    <color name="play_dms_N700_96">#F531353B</color>
+    <color name="play_dms_N150">#B5BBC5</color>
 </resources>

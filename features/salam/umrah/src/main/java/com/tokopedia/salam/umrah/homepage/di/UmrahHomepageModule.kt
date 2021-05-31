@@ -12,7 +12,6 @@ import dagger.Provides
  * @author by furqan on 14/10/2019
  */
 @Module
-@UmrahHomepageScope
 class UmrahHomepageModule {
     @UmrahHomepageScope
     @Provides

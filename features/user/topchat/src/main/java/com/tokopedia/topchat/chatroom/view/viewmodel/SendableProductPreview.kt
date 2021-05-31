@@ -5,7 +5,6 @@ import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
-import com.tokopedia.websocket.RxWebSocket
 import okhttp3.Interceptor
 
 class SendableProductPreview(
@@ -37,7 +36,7 @@ class SendableProductPreview(
 
     private fun generateResultProduct(): ResultProduct {
         return ResultProduct(
-                productPreview.id.toInt(),
+                productPreview.id,
                 productPreview.url,
                 productPreview.imageUrl,
                 productPreview.price,
@@ -45,12 +44,16 @@ class SendableProductPreview(
         )
     }
 
-    override fun sendTo(messageId: String, opponentId: String, message: String, interceptors: List<Interceptor>) {
+    override fun generateMsgObj(
+            messageId: String,
+            opponentId: String,
+            message: String,
+            listInterceptor: List<Interceptor>
+    ): Any {
         val startTime = SendableViewModel.generateStartTime()
-        val productPreviewParam = SendWebsocketParam.generateParamSendProductAttachment(
+        return SendWebsocketParam.generateParamSendProductAttachment(
                 messageId, generateResultProduct(), startTime, opponentId, productPreview, message
         )
-        RxWebSocket.send(productPreviewParam, interceptors)
     }
 
 }

@@ -38,6 +38,12 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when no images should return false`() {
+        viewModel.clearImageData()
+        assertFalse(viewModel.isImageNotEmpty())
+    }
+
+    @Test
     fun `when removeImage should return expected list ofUrl`() {
         val images = viewModel.getImageList(images)
 
@@ -51,14 +57,15 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when removeImage in editMode should return expected list ofUrl`() {
-        val images = viewModel.getImageList(images)
+        fillInImages()
+        viewModel.getImageList(images)
 
-        viewModel.removeImage(images.first(), true)
+        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
 
         val actualData = viewModel.getSelectedImagesUrl()
         val expectedData = arrayListOf("ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
 
-        Assert.assertEquals(actualData, expectedData)
+        Assert.assertEquals(expectedData, actualData)
     }
 
     @Test
@@ -66,13 +73,13 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         mockkObject(GetProductReputationForm)
 
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyInt(), anyInt()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
         } returns ProductRevGetForm()
 
-        viewModel.getProductReputation(anyInt(), anyInt())
+        viewModel.getProductReputation(anyLong(), anyLong())
 
         coVerify {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyInt(), anyInt()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
         }
 
         assertTrue(viewModel.getReputationDataForm.observeAwaitValue() is Success)
@@ -83,13 +90,13 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         mockkObject(GetProductReputationForm)
 
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyInt(), anyInt()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
         } throws Throwable()
 
-        viewModel.getProductReputation(anyInt(), anyInt())
+        viewModel.getProductReputation(anyLong(), anyLong())
 
         coVerify {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyInt(), anyInt()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
         }
 
         assertTrue(viewModel.getReputationDataForm.observeAwaitValue() is Fail)
@@ -129,7 +136,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getReviewDetails should execute expected use case and get expected data`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedResponse = ProductrevGetReviewDetailResponseWrapper()
 
         onGetReviewDetails_thenReturn(expectedResponse)
@@ -143,7 +150,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getReviewDetails should execute expected use case and fail with expected exception`() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedResponse = Throwable()
 
         onGetReviewDetailsFails_thenReturn(expectedResponse)
@@ -220,6 +227,21 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when submitReview with images results in upload error should return failure`() {
+        val expectedResponse = Throwable()
+        val expectedUploadResponse = UploadResult.Error("Network error")
+
+        onUploadImage_thenReturn(expectedUploadResponse)
+        onSubmitReviewError_thenReturn(expectedResponse)
+
+        viewModel.clearImageData()
+        viewModel.getImageList(images)
+        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
+
+        verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
+    }
+
+    @Test
     fun `when submitReview with no images should execute expected usecases`() {
         val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = true, feedbackID = "feedbackId"))
 
@@ -265,7 +287,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         onEditReview_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -279,7 +301,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         onEditReview_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -293,7 +315,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         onEditReviewError_thenReturn(expectedResponse)
 
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
@@ -301,30 +323,28 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when getAfterEditImageList should add all images when 5 images`() {
-        val imagePickerResult = arrayListOf("picture1", "picture2", "picture3", "picture4", "picture5edited")
-        val originalImageUrl = arrayListOf("picture1", "picture2", "picture3", "picture4", "picture5")
-        val edited = arrayListOf(false, false, false, false, true)
+        val imagePickerResult = mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
+        val originalImageUrl = mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
 
         val expectedData = mutableListOf<BaseImageReviewUiModel>(ImageReviewUiModel("picture1"),
                 ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
-                ImageReviewUiModel("picture4"), ImageReviewUiModel("picture5edited"))
+                ImageReviewUiModel("picture4"), ImageReviewUiModel("picture5"))
 
-        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl, edited)
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
 
         Assert.assertEquals(expectedData, actualData)
     }
 
     @Test
     fun `when getAfterEditImageList should add images and add when DefaultImageReviewUiModel less than 5 images`() {
-        val imagePickerResult = arrayListOf("picture1", "picture2", "picture3", "picture4")
-        val originalImageUrl = arrayListOf("picture1", "picture2", "picture3", "picture4edited")
-        val edited = arrayListOf(false, false, false, true)
+        val imagePickerResult = mutableListOf("picture1", "picture2", "picture3", "picture4")
+        val originalImageUrl = mutableListOf("picture1", "picture2", "picture3", "picture4")
 
-        val expectedData = mutableListOf<BaseImageReviewUiModel>(ImageReviewUiModel("picture1"),
+        val expectedData = mutableListOf(ImageReviewUiModel("picture1"),
                 ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
                 ImageReviewUiModel("picture4"), DefaultImageReviewUiModel())
 
-        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl, edited)
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
 
         Assert.assertEquals(expectedData, actualData)
     }
@@ -332,11 +352,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when editReview with images should execute expected usecases`() {
         val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
+        val expectedUploadResponse = UploadResult.Success("success")
 
+        onUploadImage_thenReturn(expectedUploadResponse)
         onEditReview_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -347,11 +370,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when editReview with images results in back end error should return failure`() {
         val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = false))
+        val expectedUploadResponse = UploadResult.Success("success")
 
+        onUploadImage_thenReturn(expectedUploadResponse)
         onEditReview_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.removeImage(ImageReviewUiModel(images.first().thumbnail, images.first().fullSize), true)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -366,14 +392,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onEditReviewError_thenReturn(expectedResponse)
 
         fillInImages()
-        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating)
+        viewModel.editReview(feedbackID, reputationId, productId, shopId, reputationScore, rating, review, isAnonymous)
 
         verifyEditreviewUseCaseCalled()
         verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
     }
 
     private fun fillInImages() {
-        val feedbackId = anyInt()
+        val feedbackId = anyLong()
         val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
                 ProductrevGetReviewDetail(
                         review = ProductrevGetReviewDetailReview(

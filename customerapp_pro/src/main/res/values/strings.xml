@@ -2,8 +2,6 @@
     <string name="app_name">Tokopedia Pro</string>
     <string name="lihat_smua_promo">Lihat Semua Promo</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
-
     <!-- Push Notif -->
     <string name="purchase_finish">Pesanan Selesai</string>
     <string name="purchase_confirm">Konfirmasi Pesanan</string>
@@ -184,6 +182,8 @@
 
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
+    <string name="title_shop_performance">Performa Toko</string>
+    <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
 
     <!-- Review   -->
     <string name="review_text">Ulasan</string>

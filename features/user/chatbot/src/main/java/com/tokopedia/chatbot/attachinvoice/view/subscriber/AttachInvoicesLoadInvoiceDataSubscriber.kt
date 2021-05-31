@@ -2,11 +2,12 @@ package com.tokopedia.chatbot.attachinvoice.view.subscriber
 
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.chatbot.attachinvoice.domain.usecase.GetInvoiceListUseCase
+import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.DEFAULT_LIMIT
 import com.tokopedia.chatbot.attachinvoice.view.AttachInvoiceContract
 import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 import com.tokopedia.chatbot.domain.pojo.invoicelist.api.GetInvoiceListPojo
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import rx.Subscriber
 
 /**
@@ -40,7 +41,7 @@ class AttachInvoicesLoadInvoiceDataSubscriber(private val view: AttachInvoiceCon
     private fun routingOnNext(graphqlResponse: GraphqlResponse) {
         val pojo = graphqlResponse.getData<GetInvoiceListPojo>(GetInvoiceListPojo::class.java)
         view.addInvoicesToList(mapToInvoiceList(pojo),
-                pojo.getInvoiceList.size >= GetInvoiceListUseCase.DEFAULT_LIMIT)
+                pojo.getInvoiceList.size >= DEFAULT_LIMIT)
     }
 
     private fun mapToInvoiceList(pojo: GetInvoiceListPojo?): List<InvoiceViewModel> {
@@ -48,7 +49,7 @@ class AttachInvoicesLoadInvoiceDataSubscriber(private val view: AttachInvoiceCon
         pojo?.run {
             for (pojoItem in getInvoiceList) {
                 list.add(InvoiceViewModel(
-                        pojoItem.attributes.id.toLong(),
+                        pojoItem.attributes.id.toLongOrZero(),
                         pojoItem.typeId,
                         pojoItem.attributes.statusId,
                         pojoItem.attributes.code,

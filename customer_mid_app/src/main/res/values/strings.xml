@@ -2,8 +2,6 @@
     <string name="app_name">Tokopedia</string>
     <string name="lihat_smua_promo">Lihat Semua Promo</string>
 
-    <string name="GOOGLE_API_KEY">AIzaSyAqJLm1orGnm6BYnTu0a9uIjwS4gd8ThRY</string>
-
     <!-- Push Notif -->
     <string name="purchase_finish">Pesanan Selesai</string>
     <string name="purchase_confirm">Konfirmasi Pesanan</string>
@@ -155,6 +153,7 @@
     <string name="title_activity_deals">Deals</string>
 
     <string name="title_emoney">emoney</string>
+    <string name="permission_emoney_not_granted">Aplikasi ini membutuhkan izin untuk mengakses NFC</string>
 
     <!-- Content -->
     <string name="title_profile">Profile</string>
@@ -174,6 +173,7 @@
     <string name="title_reading_page">Diskusi</string>
     <string name="title_reply_page">Balas Pertanyaan</string>
     <string name="title_write_page">Kirim Pertanyaan</string>
+    <string name="title_seller_settings_page">Pengaturan Diskusi</string>
 
     <!-- Dynamic feature Product Add Edit -->
     <string name="action_pick_photo">Pilih Foto</string>
@@ -181,6 +181,39 @@
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_category_picker">Pilih Kategori</string>
 
+    <!-- Product Detail -->
+    <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="product_detail_courier">Pengiriman</string>
+    <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
+    <string name="label_product_installment">Cicilan</string>
+    <string name="label_product_wholesale">Harga Grosir</string>
+    <string name="label_product_desc">Deskripsi Produk</string>
+    <string name="label_image_preview_pdp">Gambar produk</string>
+
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
+    <string name="title_shop_performance">Performa Toko</string>
+    <string name="title_penalty_shop_score">Penalti</string>
+    <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
+
+    <string name="title_notif_purchase_confirmed">Pembayaran sudah terverifikasi</string>
+    <string name="title_notif_purchase_accepted">Pesanan kamu sedang diproses </string>
+    <string name="title_notif_purchase_partial_accepted">Pesanan kamu diproses sebagian</string>
+    <string name="title_notif_purchase_rejected">Pesanan kamu tidak dapat diproses </string>
+    <string name="title_notif_purchase_delivered">Pesanan kamu telah tiba</string>
+    <string name="title_gold_merchant_redirect">Akses maupun pembelian fitur %1$s hanya
+        dapat dilakukan di aplikasi TopSeller</string>
+    <string name="title_activity_deep_link">Tokopedia</string>
+    <string name="title_activity_manage_product">Daftar Produk</string>
+    <string name="shop_shipping_setting">Pengaturan Pengiriman</string>
+    <string name="gold_merchant_redirect_text">Gunakan aplikasi TopSeller untuk mengelola toko
+        online, terima order dan upload produk, kapan pun dan di mana pun.</string>
+    <string name="title_add_product">TAMBAH PRODUK</string>
+    <string name="action_reset">Reset</string>
+    <string name="navigate_browser">Lanjut ke Aplikasi TopSeller</string>
+    <string name="navigate_back">Kembali</string>
+
+    <!-- Order Management History   -->
+    <string name="transaction_title_activity_order_history">Detail Status</string>
+    <string name="title_seller_info">Info Penjual</string>
 </resources>

@@ -2,12 +2,12 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -18,7 +18,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
@@ -53,9 +53,6 @@ class ShipmentPresenterValidateUseFinalTest {
     private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
     @MockK
-    private lateinit var codCheckoutUseCase: CodCheckoutUseCase
-
-    @MockK
     private lateinit var getRatesUseCase: GetRatesUseCase
 
     @MockK
@@ -79,14 +76,8 @@ class ShipmentPresenterValidateUseFinalTest {
     @MockK(relaxed = true)
     private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
-    @MockK
-    private lateinit var codAnalytics: CodAnalytics
-
     @MockK(relaxed = true)
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK
-    private lateinit var getInsuranceCartUseCase: GetInsuranceCartUseCase
 
     @MockK(relaxed = true)
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
@@ -109,15 +100,13 @@ class ShipmentPresenterValidateUseFinalTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(compositeSubscription,
-                checkoutUseCase, getShipmentAddressFormGqlUseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase,
-                saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
-                ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
-                getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
+        presenter = ShipmentPresenter(
+                compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
+                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
@@ -142,7 +131,7 @@ class ShipmentPresenterValidateUseFinalTest {
 
         // Then
         verify {
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -173,7 +162,7 @@ class ShipmentPresenterValidateUseFinalTest {
         // Then
         verifyOrder {
             view.showToastError(message)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -210,7 +199,7 @@ class ShipmentPresenterValidateUseFinalTest {
         // Then
         verifyOrder {
             view.showToastError(message)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -247,7 +236,7 @@ class ShipmentPresenterValidateUseFinalTest {
         verifyOrder {
             view.showToastError(message)
             view.resetCourier(shipmentCartItemModel)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -276,7 +265,7 @@ class ShipmentPresenterValidateUseFinalTest {
         verify {
             view.updateTickerAnnouncementMessage();
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerStatusCode);
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -306,7 +295,7 @@ class ShipmentPresenterValidateUseFinalTest {
         verify {
             view.updateTickerAnnouncementMessage();
             shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerStatusCode);
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -342,7 +331,7 @@ class ShipmentPresenterValidateUseFinalTest {
         // Then
         verify {
             view.prepareReloadRates(lastSelectedCourierOrderIndex, false)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
         }
     }
 
@@ -381,7 +370,7 @@ class ShipmentPresenterValidateUseFinalTest {
 
         // Then
         verifySequence {
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
             view.showLoading();
             view.setHasRunningApiCall(true);
             view.hideLoading()
@@ -426,6 +415,35 @@ class ShipmentPresenterValidateUseFinalTest {
         verifySequence {
             view.activityContext
             view.renderErrorCheckPromoShipmentData(any())
+        }
+    }
+
+    @Test
+    fun `WHEN validate use status get akamai exception THEN should show error and reset courier and clear promo`() {
+        // Given
+        val validateUsePromoRequest = ValidateUsePromoRequest().apply {
+            codes = mutableListOf("a", "b")
+            orders = mutableListOf(
+                    OrdersItem().apply {
+                        codes = mutableListOf("c")
+                    }
+            )
+        }
+        presenter.setLatValidateUseRequest(validateUsePromoRequest)
+        val message = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(message))
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(validateUsePromoRequest, 0, "")
+
+        // Then
+        verifySequence {
+            view.showToastError(message)
+            view.resetAllCourier()
+            view.cancelAllCourierPromo()
+            view.doResetButtonPromoCheckout()
         }
     }
 

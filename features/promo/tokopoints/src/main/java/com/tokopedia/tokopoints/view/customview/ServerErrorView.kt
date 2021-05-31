@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.widget.ImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
@@ -14,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
 
 class ServerErrorView : NestedScrollView {
     private var imageError: AppCompatImageView? = null
@@ -22,7 +25,7 @@ class ServerErrorView : NestedScrollView {
     private var btnError: RoundButton? = null
     private var errorTitle: CharSequence? = null
     private var errorSubTitle: CharSequence? = null
-    private var errorBackArrow: ImageUnify? = null
+    private var errorBackArrow: UnifyImageButton? = null
     private var buttonFontSize: Int? = null
     private var buttonColor: Int? = null
     private var buttonFontColor: Int? = null
@@ -64,8 +67,8 @@ class ServerErrorView : NestedScrollView {
             errorSubTitle = resources.getText(R.string.tp_label_try_again)
         }
         buttonFontSize = resources.getInteger(R.integer.tp_error_btn_large)
-        buttonColor = MethodChecker.getColor(context, com.tokopedia.design.R.color.bg_button_green_border_outline)
-        buttonFontColor = MethodChecker.getColor(context, com.tokopedia.design.R.color.white)
+        buttonColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        buttonFontColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
     private fun inflateLayout() {

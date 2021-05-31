@@ -25,7 +25,6 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
-import com.tokopedia.play.widget.analytic.impression.ImpressionValidator
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
@@ -177,7 +176,7 @@ class FeedPlusModule {
     @FeedPlusScope
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
     @FeedPlusScope
@@ -191,12 +190,6 @@ class FeedPlusModule {
     @FeedPlusScope
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
-    }
-
-    @Provides
-    @FeedPlusScope
-    fun provideFeedDispatcherProvider(): FeedDispatcherProvider {
-        return FeedProductionDispatcherProvider()
     }
 
     @FeedPlusScope

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.view.fragment.AddPinFragment
@@ -25,7 +26,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
  * ade.hadian@tokopedia.com
  */
 
-class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     var enableBackBtn = true
 
@@ -38,9 +39,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.extras?.run {
-            if(getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA)){
-                enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
-            }
+            enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
         }
         super.onCreate(savedInstanceState)
         KeyboardHandler.hideSoftKeyboard(this)
@@ -55,8 +54,10 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
     }
 
     override fun onBackPressed() {
-        if (fragment != null && fragment is AddPinFragment) {
-            if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) super.onBackPressed()
+        if (fragment != null) {
+            if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) {
+                super.onBackPressed()
+            }
         } else {
             super.onBackPressed()
         }
@@ -67,13 +68,13 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
         toolbar = findViewById(toolbarResourceID)
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            if(enableBackBtn) {
+            if (enableBackBtn) {
                 setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
             }
             setDisplayHomeAsUpEnabled(enableBackBtn)
             setDisplayShowTitleEnabled(false)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@AddPinActivity, com.tokopedia.unifyprinciples.R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this@AddPinActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
         }
     }
 
@@ -83,13 +84,11 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
             setWindowFlag(true)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

@@ -101,7 +101,9 @@
 
     <string name="thankyou_virtual_account_copied">Nomor virtual account berhasil disalin</string>
 
-    <string name="thank_exact_transfer_upto_3_digits">Penting! Transfer tepat hingga 3 digit terakhir</string>
+    <string name="thank_pending">Penting!</string>
+    <string name="thank_exact_transfer_upto_3_digits"><![CDATA[<ul> <li>Transfer tepat hingga <b>3 digit terakhir</b></li> <li>Tidak disarankan transfer melalui LLG/Kliring/SKBNI</li> </ul>]]></string>
+
     <string name="thankyou_bank_account_copied">Nomor Rekening berhasil disalin</string>
     <string name="thankyou_retail_account_copied">Kode Bayar sudah berhasil disalin</string>
     <string name="thank_cod_payment_successful">Pesananmu akan segera diproses</string>
@@ -116,5 +118,10 @@
 
     <string name="thank_special_feature_for_you">Fitur spesial buat kamu</string>
     <string name="thank_lets_try_feature">Cobain fitur ini yuk</string>
+
+
+    <string name="thanks_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="thanks_msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="thank_you_amount_copy_success">Total pembayaran berhasil disalin</string>
 
 </resources>

@@ -2,6 +2,16 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
 android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -22,16 +32,6 @@ android {
     }
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
-    }
-}
-
 dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
@@ -42,10 +42,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.websocket)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.mediauploader)
+    implementation project(rootProject.ext.features.mediauploader)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -55,7 +55,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
@@ -98,14 +97,15 @@ dependencies {
 
     implementation files('libs/alivc-core-pusher.jar')
     implementation files('libs/AlivcReporter-1.2.aar')
-    implementation files('libs/live-pusher-3.6.0.aar')
+    implementation files('libs/live-pusher-3.6.1.aar')
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation project(rootProject.ext.libraries.unitTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

@@ -28,12 +28,19 @@ data class PlayWidgetItem(
         @SerializedName("video") val video: PlayWidgetItemVideo = PlayWidgetItemVideo(),
         @SerializedName("stats") val stats: PlayWidgetItemStat = PlayWidgetItemStat(),
         @SerializedName("share") val share: PlayWidgetItemShare = PlayWidgetItemShare(),
-        @SerializedName("backgroundURL") val backgroundUrl : String = ""
+        @SerializedName("backgroundURL") val backgroundUrl : String = "",
+        @SerializedName("performanceSummaryPageLink") val performanceSummaryPageLink : String = ""
 )
 
 data class PlayWidgetItemConfig(
         @SerializedName("hasPromo") val hasPromo: Boolean = false,
-        @SerializedName("isReminderSet") val isReminderSet: Boolean = false
+        @SerializedName("isReminderSet") val isReminderSet: Boolean = false,
+        @SerializedName("promo_labels") val promoLabels: List<PlayWidgetPromoLabel> = emptyList(),
+)
+
+data class PlayWidgetPromoLabel(
+        @SerializedName("text") val text: String = "",
+        @SerializedName("type") val type: String = "",
 )
 
 data class PlayWidgetItemPartner(

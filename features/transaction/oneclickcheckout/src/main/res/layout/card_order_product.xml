@@ -63,19 +63,56 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_header" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_image_fulfill"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/dp_12"
+        android:scaleType="fitCenter" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_location"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/Unify_N700_44"
-        app:layout_constraintEnd_toEndOf="@+id/tv_shop_name"
-        app:layout_constraintStart_toStartOf="@+id/tv_shop"
-        app:layout_constraintTop_toBottomOf="@+id/tv_shop"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="small"
         app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/separator_free_shipping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="@string/label_separator_line"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="small"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iu_free_shipping"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_8"
+        android:scaleType="fitCenter"
+        tools:ignore="ContentDescription" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow_shop_location_and_free_shipping"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:constraint_referenced_ids="iu_image_fulfill,tv_shop_location,separator_free_shipping,iu_free_shipping"
+        app:flow_horizontalBias="0"
+        app:flow_horizontalGap="@dimen/spacing_lvl2"
+        app:flow_horizontalStyle="packed"
+        app:flow_verticalAlign="center"
+        app:flow_verticalGap="@dimen/spacing_lvl2"
+        app:flow_wrapMode="chain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_shop"
+        app:layout_constraintTop_toBottomOf="@+id/tv_shop" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_image"
@@ -83,8 +120,8 @@
         android:layout_height="46dp"
         android:layout_marginTop="@dimen/dp_16"
         android:scaleType="fitCenter"
-        app:layout_constraintStart_toStartOf="@+id/tv_shop_location"
-        app:layout_constraintTop_toBottomOf="@+id/tv_shop_location" />
+        app:layout_constraintStart_toStartOf="@+id/flow_shop_location_and_free_shipping"
+        app:layout_constraintTop_toBottomOf="@+id/flow_shop_location_and_free_shipping" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name"
@@ -120,7 +157,7 @@
         app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
-        app:layout_constraintTop_toBottomOf="@+id/barrier_product_extra" />
+        app:layout_constraintTop_toBottomOf="@+id/lbl_cashback" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_slash_price"
@@ -152,23 +189,6 @@
         app:labelType="general_light_green"
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_free_shipping"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintStart_toEndOf="@id/lbl_cashback"
-        app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-        tools:ignore="ContentDescription" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_product_extra"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="lbl_cashback,iv_free_shipping" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_quantity_stock_available"

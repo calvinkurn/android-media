@@ -53,9 +53,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var minBid = 0
-    private var maxBid = 0
-    private var suggestBidPerClick = 0
+    private var minBid = "0"
+    private var maxBid = "0"
+    private var suggestBidPerClick = "0"
     private var validation1 = true
     private var validation2 = true
     private var validation3 = true
@@ -100,9 +100,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun getLatestBid() {
-        val dummyId: MutableList<Int> = mutableListOf()
+        val dummyId: MutableList<Long> = mutableListOf()
         productId.forEach {
-            dummyId.add(it.toInt())
+            dummyId.add(it.toLong())
         }
         val suggestionsDefault = ArrayList<DataSuggestions>()
         suggestionsDefault.add(DataSuggestions(PRODUCT, dummyId))
@@ -136,20 +136,20 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     private fun checkForbidValidity(result: Int) {
         when {
-            minBid == 0 || maxBid == 0 -> {
+            minBid == "0" || maxBid == "0" -> {
                 return
             }
-            result < minBid -> {
+            result < minBid.toDouble() -> {
                 setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
                 validation2 = false
                 actionEnable()
             }
-            result > maxBid -> {
+            result > maxBid.toDouble() -> {
                 validation2 = false
                 actionEnable()
                 setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
             }
-            result % MULTIPLY_CONST != 0 -> {
+            result % (MULTIPLY_CONST.toInt()) != 0 -> {
                 validation2 = false
                 actionEnable()
                 setMessageErrorField(getString(R.string.topads_common_50_multiply_error), MULTIPLY_CONST, true)
@@ -163,9 +163,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun onBidSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
-        suggestBidPerClick = data[0].suggestionBid
-        minBid = data[0].minBid
-        maxBid = data[0].maxBid
+        data.firstOrNull()?.let {
+            suggestBidPerClick = it.suggestionBid
+            minBid = it.minBid
+            maxBid = it.maxBid
+        }
         checkForbidValidity(getCurrentBid())
     }
 
@@ -278,7 +280,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         initialDailyBudget = getCurrentDailyBudget()
     }
 
-    private fun setMessageErrorField(error: String, bid: Int, bool: Boolean) {
+    private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
         budget?.setError(bool)
         budget?.setMessage(String.format(error, bid))
     }

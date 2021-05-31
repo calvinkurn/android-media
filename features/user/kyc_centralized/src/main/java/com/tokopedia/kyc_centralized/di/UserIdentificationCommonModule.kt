@@ -2,45 +2,22 @@ package com.tokopedia.kyc_centralized.di
 
 import android.content.Context
 import android.content.res.Resources
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.imageuploader.di.ImageUploaderModule
-import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
-import com.tokopedia.imageuploader.domain.GenerateHostRepository
-import com.tokopedia.imageuploader.domain.UploadImageRepository
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.imageuploader.utils.ImageUploaderUtils
-import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.util.AppDispatcherProvider
-import com.tokopedia.kyc_centralized.util.DispatcherProvider
-import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
-import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter
-import com.tokopedia.kyc_centralized.view.model.AttachmentImageModel
-import com.tokopedia.mediauploader.di.MediaUploaderModule
-import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
-import com.tokopedia.mediauploader.di.NetworkModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.util.AppSchedulerProvider
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import rx.subscriptions.CompositeSubscription
 
 /**
  * @author by nisie on 13/11/18.
  */
-@UserIdentificationCommonScope
-@Module(includes = [
-    ImageUploaderModule::class,
-    MediaUploaderModule::class,
-    MediaUploaderNetworkModule::class,
-    NetworkModule::class])
+@Module
 class UserIdentificationCommonModule {
 
     @UserIdentificationCommonScope
@@ -51,33 +28,6 @@ class UserIdentificationCommonModule {
     @Provides
     fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources
-    }
-
-    @UserIdentificationCommonScope
-    @Provides
-    fun provideAttachmentImageModelUploadImageUseCase(@ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
-                                                      @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
-                                                      @ImageUploaderQualifier gson: Gson,
-                                                      @ImageUploaderQualifier userSession: UserSessionInterface,
-                                                      @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<AttachmentImageModel> {
-        return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, AttachmentImageModel::class.java, imageUploaderUtils)
-    }
-
-    @UserIdentificationCommonScope
-    @Provides
-    fun provideCompositeSubscription(): CompositeSubscription {
-        return CompositeSubscription()
-    }
-
-    @UserIdentificationCommonScope
-    @Provides
-    fun provideUploadImagePresenter(uploadImageUseCase: UploadImageUseCase<AttachmentImageModel>,
-                                    userSession: UserSession,
-                                    compositeSubscription: CompositeSubscription): UserIdentificationUploadImage.Presenter {
-        return UserIdentificationUploadImagePresenter(uploadImageUseCase,
-                userSession,
-                compositeSubscription,
-                AppSchedulerProvider())
     }
 
     @UserIdentificationCommonScope
@@ -101,32 +51,5 @@ class UserIdentificationCommonModule {
     @IntoMap
     @StringKey(KYCConstant.QUERY_GET_KYC_PROJECT_INFO)
     fun provideRawQueryGetKycProjectInfo(@UserIdentificationCommonScope context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_kyc_project_info)
-
-    @UserIdentificationCommonScope
-    @Provides
-    @IntoMap
-    @StringKey(KYCConstant.QUERY_IS_KTP)
-    fun provideRawQueryIsKtp(@UserIdentificationCommonScope context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_is_ktp)
-
-    @UserIdentificationCommonScope
-    @Provides
-    @IntoMap
-    @StringKey(KYCConstant.QUERY_REGISTER_KYC)
-    fun provideRawQueryRegisterKyc(@UserIdentificationCommonScope context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_kyc)
-
-    @UserIdentificationCommonScope
-    @Provides
-    @IntoMap
-    @StringKey(KYCConstant.QUERY_UPLOAD_KYC)
-    fun provideRawQueryUploadKyc(@UserIdentificationCommonScope context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_upload_kyc)
-
-    @UserIdentificationCommonScope
-    @Provides
-    fun provideMainDispatcher(): DispatcherProvider {
-        return AppDispatcherProvider()
-    }
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.user_identification_common.R.raw.query_get_kyc_project_info)
 }

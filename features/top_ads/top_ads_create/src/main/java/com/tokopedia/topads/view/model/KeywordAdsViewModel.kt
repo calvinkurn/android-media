@@ -31,7 +31,7 @@ class KeywordAdsViewModel @Inject constructor(
     fun getSuggestionKeyword(productIds: String, groupId: Int, onSuccess: ((List<KeywordData>) -> Unit), onEmpty: (() -> Unit)) {
         launch {
             suggestionKeywordUseCase.setParams(groupId, productIds)
-            suggestionKeywordUseCase.execute(
+            suggestionKeywordUseCase.executeQuerySafeMode(
                     {
                         if (it.topAdsGetKeywordSuggestionV3.data.isEmpty()) {
                             onEmpty()

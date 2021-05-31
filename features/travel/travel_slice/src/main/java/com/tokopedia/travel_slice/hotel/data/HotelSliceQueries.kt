@@ -42,6 +42,9 @@ object HotelSliceQueries {
             id
             statusStr
             appLink
+            items {
+              imageUrl
+            }
           }
         }
     """.trimIndent()

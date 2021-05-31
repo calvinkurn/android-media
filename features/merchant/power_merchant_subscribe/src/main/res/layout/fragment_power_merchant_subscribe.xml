@@ -1,41 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@android:color/white"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
     android:gravity="center_vertical"
     android:orientation="vertical">
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
-        android:layout_weight="1"
         android:layout_height="0dp"
+        android:layout_weight="1"
         android:visibility="gone"
         tools:visibility="visible">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantRegistrationView
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/tickerPmCommunicationPeriod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="full"
+                app:tickerType="announcement"
+                tools:visibility="visible" />
+
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantRegistrationView
                 android:id="@+id/registrationLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantMembershipView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantMembershipView
                 android:id="@+id/membershipLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantFreeShippingView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantFreeShippingView
                 android:id="@+id/freeShippingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl5"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <com.tokopedia.unifycomponents.LocalLoad
                 android:id="@+id/freeShippingError"
@@ -43,27 +58,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl5"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginRight="@dimen/spacing_lvl4"
+                android:visibility="gone"
                 app:unify_local_load_description="@string/power_merchant_click_to_reload"
-                app:unify_local_load_title="@string/power_merchant_free_shipping_load_error"
-                android:layout_marginTop="@dimen/spacing_lvl5"
-                android:visibility="gone" />
+                app:unify_local_load_title="@string/power_merchant_free_shipping_load_error" />
 
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantFeatureView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantFeatureView
                 android:id="@+id/featureLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl6"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
-            <com.tokopedia.power_merchant.subscribe.view.ui.PowerMerchantBenefitView
+            <com.tokopedia.power_merchant.subscribe.view_old.ui.PowerMerchantBenefitView
                 android:id="@+id/benefitLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl5"
                 android:layout_marginBottom="@dimen/spacing_lvl7"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -71,7 +86,7 @@
         android:id="@+id/btnCallToAction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/Unify_N0"
         android:visibility="gone"
         app:cardElevation="@dimen/layout_lvl2"
         app:contentPaddingBottom="@dimen/spacing_lvl3"
@@ -90,22 +105,22 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textCancelMembership"
-            android:textColor="@color/light_N700"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:visibility="gone"
             android:gravity="center"
+            android:textColor="@color/Unify_N700"
+            android:visibility="gone"
             app:typographyType="body_3"
             tools:text="Berhenti jadi Power Merchant"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
     </androidx.cardview.widget.CardView>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_gravity="center"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 </LinearLayout>

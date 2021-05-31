@@ -29,6 +29,7 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -59,6 +60,7 @@ dependencies {
     
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

@@ -8,7 +8,6 @@ import dagger.Provides
 import rx.subscriptions.CompositeSubscription
 
 @Module
-@FeedbackPageScope
 class FeedbackPageModule {
 
     @Provides

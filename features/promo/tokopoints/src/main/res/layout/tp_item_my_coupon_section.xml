@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <com.tokopedia.promoui.common.CouponView
+        <com.tokopedia.promoui.common.PromoCouponView
             android:id="@+id/couponView"
             android:layout_width="wrap_content"
             android:layout_height="144dp"
@@ -55,7 +55,7 @@
                     android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text="@string/tp_label_valid_for"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="@dimen/tp_text_size_xxsmall"
                     app:layout_constraintBottom_toTopOf="@+id/text_time_value"
                     app:layout_constraintStart_toEndOf="@+id/img_time"
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/tp_margin_small"
                     android:layout_marginLeft="@dimen/tp_margin_small"
-                    android:textColor="@color/black_70"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/tp_text_size_small"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +109,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:maxLines="2"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="@dimen/tp_text_size_xxsmall"
                     app:layout_constraintBottom_toTopOf="@+id/tv_min_txn_value"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -126,7 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:textColor="@color/black_70"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/tp_text_size_small"
                     android:textStyle="bold"
                     android:visibility="visible"
@@ -137,7 +137,7 @@
                     tool:text="Rp 3000000" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </com.tokopedia.promoui.common.CouponView>
+        </com.tokopedia.promoui.common.PromoCouponView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -10,33 +10,34 @@ class AddToCartExternalAnalytics @Inject constructor() {
 
     companion object {
         // Enhanced Ecommerce constants
-        private const val EE_PARAM_ITEM_ID = "item_id"
-        private const val EE_PARAM_ITEM_NAME = "item_name"
-        private const val EE_PARAM_ITEM_BRAND = "item_brand"
-        private const val EE_PARAM_ITEM_CATEGORY = "item_category"
-        private const val EE_PARAM_ITEM_VARIANT = "item_variant"
-        private const val EE_PARAM_SHOP_ID = "shop_id"
-        private const val EE_PARAM_SHOP_NAME = "shop_name"
-        private const val EE_PARAM_SHOP_TYPE = "shop_type"
-        private const val EE_PARAM_CATEGORY_ID = "category_id"
-        private const val EE_PARAM_QUANTITY = "quantity"
-        private const val EE_PARAM_PRICE = "price"
-        private const val EE_PARAM_PICTURE = "picture"
-        private const val EE_PARAM_URL = "url"
-        private const val EE_PARAM_DIMENSION_38 = "dimension38"
-        private const val EE_PARAM_DIMENSION_45 = "dimension45"
-        private const val EE_PARAM_DIMENSION_54 = "dimension54"
-        private const val EE_PARAM_DIMENSION_83 = "dimension83"
+        const val EE_PARAM_ITEM_ID = "item_id"
+        const val EE_PARAM_ITEM_NAME = "item_name"
+        const val EE_PARAM_ITEM_BRAND = "item_brand"
+        const val EE_PARAM_ITEM_CATEGORY = "item_category"
+        const val EE_PARAM_ITEM_VARIANT = "item_variant"
+        const val EE_PARAM_SHOP_ID = "shop_id"
+        const val EE_PARAM_SHOP_NAME = "shop_name"
+        const val EE_PARAM_SHOP_TYPE = "shop_type"
+        const val EE_PARAM_CATEGORY_ID = "category_id"
+        const val EE_PARAM_QUANTITY = "quantity"
+        const val EE_PARAM_PRICE = "price"
+        const val EE_PARAM_PICTURE = "picture"
+        const val EE_PARAM_URL = "url"
+        const val EE_PARAM_DIMENSION_38 = "dimension38"
+        const val EE_PARAM_DIMENSION_45 = "dimension45"
+        const val EE_PARAM_DIMENSION_54 = "dimension54"
+        const val EE_PARAM_DIMENSION_83 = "dimension83"
 
-        private const val EE_VALUE_EVENT_NAME = "add_to_cart"
-        private const val EE_VALUE_EVENT_CATEGORY = "cart"
-        private const val EE_VALUE_EVENT_ACTION = "click add to cart"
+        const val EE_VALUE_EVENT_NAME = "add_to_cart"
+        const val EE_VALUE_EVENT_CATEGORY = "cart"
+        const val EE_VALUE_EVENT_ACTION = "click add to cart"
 
-        private const val EE_VALUE_ITEMS = "items"
-        private const val EE_VALUE_TOKOPEDIA = "tokopedia"
-        private const val EE_VALUE_REGULAR = "regular"
-        private const val EE_VALUE_BEBAS_ONGKIR = "bebas ongkir"
-        private const val EE_VALUE_NONE_OTHER = "none/other"
+        const val EE_VALUE_ITEMS = "items"
+        const val EE_VALUE_TOKOPEDIA = "tokopedia"
+        const val EE_VALUE_REGULAR = "regular"
+        const val EE_VALUE_BEBAS_ONGKIR = "bebas ongkir"
+        const val EE_VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir ekstra"
+        const val EE_VALUE_NONE_OTHER = "none/other"
     }
 
     fun sendEnhancedEcommerceTracking(data: AddToCartExternalDataModel) {
@@ -57,7 +58,11 @@ class AddToCartExternalAnalytics @Inject constructor() {
             putString(EE_PARAM_DIMENSION_38, setValueOrDefault(data.trackerAttribution))
             putString(EE_PARAM_DIMENSION_45, setValueOrDefault(data.cartId.toString()))
             putString(EE_PARAM_DIMENSION_54, if (data.isMultiOrigin) EE_VALUE_TOKOPEDIA else EE_VALUE_REGULAR)
-            putString(EE_PARAM_DIMENSION_83, if (data.isFreeOngkir) EE_VALUE_BEBAS_ONGKIR else EE_VALUE_NONE_OTHER)
+            putString(EE_PARAM_DIMENSION_83, when {
+                data.isFreeOngkirExtra -> EE_VALUE_BEBAS_ONGKIR_EXTRA
+                data.isFreeOngkir -> EE_VALUE_BEBAS_ONGKIR
+                else -> EE_VALUE_NONE_OTHER
+            })
         }
 
         val eventDataLayer = Bundle().apply {

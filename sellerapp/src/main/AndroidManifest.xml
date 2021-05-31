@@ -20,8 +20,8 @@
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
-        android:icon="@drawable/ic_sellerapp_launcher"
-        android:roundIcon="@drawable/ic_sellerapp_launcher"
+        android:icon="@mipmap/ic_launcher_sellerapp"
+        android:roundIcon="@mipmap/ic_launcher_sellerapp_round"
         android:label="@string/app_name"
         android:hasCode="true"
         android:supportsRtl="true"
@@ -50,10 +50,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.PlainGreen">
         </activity>
-
-        <activity
-            android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait"/>
 
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
@@ -88,33 +84,41 @@
             android:value="true"/>
         <meta-data
             android:name="GTM_ID"
-            android:value="@string/key_gtm" />
+            android:value="@string/gtm_id_sa" />
         <meta-data
             android:name="GA_ID"
-            android:value="@string/key_ga" />
+            android:value="@string/ga_id_sa" />
         <meta-data
             android:name="APPSFLYER_KEY"
-            android:value="@string/key_appsflyer" />
+            android:value="@string/appsflyer_key_sa" />
         <meta-data
             android:name="APP_ID"
-            android:value="@string/key_moengage" />
+            android:value="@string/moengage_key_sa"
+            tools:replace="android:value" />
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
             android:value="50d42520ce58b3168a5a721995812a72"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/GOOGLE_API_KEY_SA" />
+            android:value="@string/google_goe_api_key_sa" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_id_sa" />
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/actions" />
         <meta-data
             android:name="HANSEL_APP_ID"
-            android:value="GJPFWEGF6PLIR6Y7EIBONHPG4"
+            android:value="@string/hansel_app_id_sa"
             tools:replace="android:value" />
         <meta-data
             android:name="HANSEL_APP_KEY"
-            android:value="0II3AMNFRMI3N0G0EO8D1RJZKR40KCEYTW8Y31BBGZTBCHQDI0"
+            android:value="@string/hansel_app_key_sa"
             tools:replace="android:value" />
+        <meta-data
+            tools:replace="android:value"
+            android:name="io.branch.sdk.BranchKey"
+            android:value="@string/branch_sdk_key_sa" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -256,6 +260,16 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="sellerapp" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="tokopedia"
+                    android:sspPattern="//.*?.*redirect_to_sellerapp=true.*" />
             </intent-filter>
         </activity>
         <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"

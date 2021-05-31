@@ -59,7 +59,7 @@
             android:value="true"/>
         <meta-data
             android:name="APP_ID"
-            android:value="@string/key_moengage"
+            android:value="@string/moengage_key_pro"
             tools:replace="android:value"/>
         <meta-data
             android:name="SENDER_ID"
@@ -85,13 +85,20 @@
             tools:replace="android:value"/>
         <meta-data
             android:name="HANSEL_APP_ID"
-            android:value="A7NW7X3EX0IP9DH17ZBGLQKWP"/>
+            android:value="@string/hansel_app_id_pro"/>
         <meta-data
             android:name="HANSEL_APP_KEY"
-            android:value="AHCUW5DGPTSJMCT2K42H9KCBPC57CPJ9DEYCR23RVWZ9FRNU6L"/>
+            android:value="@string/hansel_app_key_pro"/>
+        <meta-data
+            tools:replace="android:value"
+            android:name="io.branch.sdk.BranchKey"
+            android:value="@string/branch_sdk_key_pro" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/GOOGLE_API_KEY" />
+            android:value="@string/google_goe_api_key_pro" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_id_pro" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -101,13 +108,13 @@
             android:resource="@raw/gtm_consumer"/>
         <meta-data
             android:name="GTM_ID"
-            android:value="@string/key_gtm"/>
+            android:value="@string/gtm_id_pro"/>
         <meta-data
             android:name="GA_ID"
-            android:value="@string/key_ga"/>
+            android:value="@string/ga_id_pro"/>
         <meta-data
             android:name="APPSFLYER_KEY"
-            android:value="@string/key_appsflyer"/>
+            android:value="@string/appsflyer_key_pro"/>
 
         <provider
             android:name="com.facebook.internal.FacebookInitProvider"

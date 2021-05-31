@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.factory
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
+import com.tokopedia.play.widget.PlayWidgetViewHolder
 
 
 enum class ComponentsList(val id: Int, val componentName: String) {
@@ -76,4 +77,11 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     //Banned View
     BannedView(R.layout.banned_view, ComponentNames.BannedView.componentName),
+
+    //Discovery Play Widget
+    DiscoPlayWidgetView(PlayWidgetViewHolder.layout, ComponentNames.DiscoPlayWidgetView.componentName),
+
+    //Category Best Seller
+    CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName)
+
 }

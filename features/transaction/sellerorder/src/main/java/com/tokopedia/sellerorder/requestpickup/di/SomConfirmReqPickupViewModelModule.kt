@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@SomConfirmReqPickupScope
 abstract class SomConfirmReqPickupViewModelModule {
     @SomConfirmReqPickupScope
     @Binds

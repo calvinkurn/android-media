@@ -12,7 +12,6 @@ import javax.inject.Named
  * ade.hadian@tokopedia.com
  */
 
-@ProfileCommonScope
 @Module
 class ProfileCommonUseCaseModule {
 

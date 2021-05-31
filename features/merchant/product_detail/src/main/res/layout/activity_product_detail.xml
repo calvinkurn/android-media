@@ -4,6 +4,5 @@
     android:id="@+id/product_detail_parent_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     tools:context=".view.activity.ProductDetailActivity"
     tools:ignore="MergeRootFrame" />

@@ -38,6 +38,7 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
         activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(pageTitle)
             it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            viewLifecycleOwner.lifecycle.addObserver(it)
         }
         return inflater.inflate(R.layout.fragment_nav_category, container, false)
     }
@@ -84,6 +85,11 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
 
     override fun getUserId(): String {
         return userSessionInterface.userId
+    }
+
+    override fun getReviewCounterAbIsUnify(): Boolean {
+        // default red notif unify
+        return true
     }
 
     private fun initRecyclerView(view: View) {

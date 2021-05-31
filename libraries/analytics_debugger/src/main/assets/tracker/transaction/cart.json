@@ -1,0 +1,85 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed" : ".*",
+      "clientId" : ".*",
+      "isLoggedInStatus" : "true|false",
+      "appsflyerId": ".*",
+      "shopId" : "\\d+",
+      "screenName" : "/cart",
+      "event": "openScreen",
+      "userId" : "\\d+",
+      "sessionIris" : ".*"
+    },
+    {
+      "eventCategory": "cart",
+      "checkout_step": "0",
+      "currentSite": "tokopediamarketplace",
+      "event": "checkout_progress",
+      "eventAction": "view cart page",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "quantity": "\\d*.\\d*|\\d.\\d+E\\d",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "dimension81": ".*",
+          "dimension80": ".*",
+          "item_brand": "none/other",
+          "item_category": ".*",
+          "dimension104": ".*",
+          "dimension54": ".*",
+          "dimension53": "true|false",
+          "dimension45": "\\d+",
+          "dimension56": "\\d+",
+          "dimension83": "bebas ongkir|none/other|bebas ongkir extra",
+          "dimension82": "\\d+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension79": "\\d+",
+          "item_variant": "none/other",
+          "dimension49": "",
+          "dimension48": "\\d+.\\d+",
+          "dimension59": ".*"
+        }
+      ],
+      "eventLabel": "",
+      "checkout_option": "view cart page"
+    },
+    {
+      "eventCategory": "cart",
+      "checkout_step": "1",
+      "currentSite": "tokopediamarketplace",
+      "event": "begin_checkout",
+      "eventAction": "click checkout",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "quantity": "\\d*.\\d*|\\d.\\d+E\\d",
+          "item_id": "\\d+",
+          "item_name": ".*",
+          "dimension81": ".*",
+          "dimension80": ".*",
+          "item_brand": "none/other",
+          "item_category": ".*",
+          "dimension104": ".*",
+          "dimension54": ".*",
+          "dimension53": "true|false",
+          "dimension45": "\\d+",
+          "dimension56": "\\d+",
+          "dimension83": "bebas ongkir|none/other|bebas ongkir extra",
+          "dimension82": "\\d+",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension79": "\\d+",
+          "item_variant": "none/other",
+          "dimension49": "",
+          "dimension48": "\\d+.\\d+",
+          "dimension59": ".*"
+        }
+      ],
+      "eventLabel": "success - (.*)",
+      "checkout_option": "cart page loaded"
+    }
+  ],
+  "readme": "Cart Page Tracking"
+}

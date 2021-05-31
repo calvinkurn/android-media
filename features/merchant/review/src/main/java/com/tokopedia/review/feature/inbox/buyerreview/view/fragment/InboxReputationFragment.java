@@ -29,8 +29,8 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.review.R;
+import com.tokopedia.review.common.util.ReviewErrorHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
@@ -245,8 +245,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFirstTimeInboxReputation(Throwable throwable) {
-        if (getActivity() != null & getView() != null) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), ErrorHandler.getErrorMessage(getContext(), throwable),
+        if (getActivity() != null & getView() != null & getContext() != null) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), ReviewErrorHandler.getErrorMessage(getContext(), throwable),
                     () -> presenter.getFirstTimeInboxReputation(getTab()));
         }
     }
@@ -272,9 +272,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetNextPage(Throwable throwable) {
         adapter.removeLoading();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                ErrorHandler.getErrorMessage(getContext(), throwable),
-                () -> presenter.getFirstTimeInboxReputation(getTab())).showRetrySnackbar();
+        if(getContext() != null) {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                    ReviewErrorHandler.getErrorMessage(getContext(), throwable),
+                    () -> presenter.getFirstTimeInboxReputation(getTab())).showRetrySnackbar();
+        }
     }
 
     @Override
@@ -286,8 +288,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorRefresh(Throwable throwable) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), ErrorHandler.getErrorMessage(getContext(), throwable),
-                () -> presenter.refreshPage(getQuery(), timeFilter, scoreFilter, getTab()));
+        if(getContext() != null) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), ReviewErrorHandler.getErrorMessage(getContext(), throwable),
+                    () -> presenter.refreshPage(getQuery(), timeFilter, scoreFilter, getTab()));
+        }
     }
 
     @Override
@@ -379,8 +383,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetFilteredInboxReputation(Throwable throwable) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable),
-                () -> presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab())).showRetrySnackbar();
+        if(getContext() != null) {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), ReviewErrorHandler.getErrorMessage(getContext(), throwable),
+                    () -> presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab())).showRetrySnackbar();
+        }
     }
 
     @Override

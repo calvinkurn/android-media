@@ -27,17 +27,13 @@ data class TopadsBidInfo(
     data class DataItem(
 
             @field:SerializedName("id")
-            var adId: Int = 0,
-
+            var adId: String = "0",
             @field:SerializedName("suggestion_bid")
-            var suggestionBid: Int = 0,
-
+            var suggestionBid: String = "0",
             @field:SerializedName("max_bid")
-            var maxBid: Int = 0,
-
+            var maxBid: String = "0",
             @field:SerializedName("min_bid")
-            var minBid: Int = 0,
-
+            var minBid: String = "0",
             @SerializedName("estimation")
             var estimation: Estimation = Estimation(),
             @SerializedName("max_bid_fmt")
@@ -64,11 +60,11 @@ data class TopadsBidInfo(
         @Parcelize
         data class Estimation(
                 @SerializedName("max_bid")
-                var maxBid: Int = 0,
+                var maxBid: String = "0",
                 @SerializedName("max_bid_fmt")
                 var maxBidFmt: String = "",
                 @SerializedName("min_bid")
-                var minBid: Int = 0,
+                var minBid: String = "0",
                 @SerializedName("min_bid_fmt")
                 var minBidFmt: String = ""
         ) : Parcelable

@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -22,6 +23,7 @@ import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
@@ -47,6 +49,8 @@ import javax.inject.Inject
 class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     companion object {
+        private const val MAIN_TAB_POSITION = 0
+
         @JvmStatic
         fun createInstance(): CampaignStockFragment = CampaignStockFragment()
     }
@@ -75,9 +79,9 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             override fun onTabUnselected(p0: TabLayout.Tab) {}
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                val isMainStockTab = tab.position == 0
+                val isMainStockTab = tab.position == MAIN_TAB_POSITION
                 if (!GlobalConfig.isSellerApp()) {
-                    toggleSaveButton(isMainStockTab)
+                    toggleSaveButton()
                 }
                 isVariant?.run {
                     if (isMainStockTab) {
@@ -159,6 +163,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                 putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
+                                putExtra(ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP, variantsMap)
                             }
                             activity?.run {
                                 setResult(Activity.RESULT_OK, resultIntent)
@@ -174,6 +179,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 }
             }
         })
+        observe(mViewModel.showSaveBtn) {
+            divider_campaign_stock?.showWithCondition(it)
+            btn_campaign_stock_save?.showWithCondition(it)
+        }
     }
 
     private fun setupView() {
@@ -192,7 +201,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             showButtonLoading()
             mViewModel.updateStockData()
             this@CampaignStockFragment.tabs_campaign_stock?.getUnifyTabLayout()?.selectedTabPosition?.let { tabPosition ->
-                val isMainStock = tabPosition == 0
+                val isMainStock = tabPosition == MAIN_TAB_POSITION
                 isVariant?.run {
                     ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock)
                 }
@@ -222,10 +231,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             setupFragmentTabs(getStockAllocationData)
             when(this) {
                 is VariantStockAllocationResult -> {
-                    setupVariantFragmentViewPager(getVariantResult, getStockAllocationData, otherCampaignStockData)
+                    setupVariantFragmentViewPager(getVariantResult, getStockAllocationData, otherCampaignStockData, productManageAccess)
                 }
                 is NonVariantStockAllocationResult -> {
-                    setupNonVariantFragmentViewPager(getStockAllocationData, otherCampaignStockData)
+                    setupNonVariantFragmentViewPager(getStockAllocationData, otherCampaignStockData, productManageAccess)
                 }
             }
         }
@@ -257,23 +266,35 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private fun setupVariantFragmentViewPager(getVariantResult: GetVariantResult,
                                               getStockAllocation: GetStockAllocationData,
-                                              otherCampaignStockData: OtherCampaignStockData) {
+                                              otherCampaignStockData: OtherCampaignStockData,
+                                              access: ProductManageAccess) {
         vp2_campaign_stock?.run {
             adapter = activity?.let {
+                val sellableProduct = CampaignStockMapper.mapToParcellableSellableProduct(getStockAllocation.detail.sellable, getVariantResult.variants)
+                    as ArrayList<SellableStockProductUIModel>
+
+                val reservedProduct = getStockAllocation.detail.reserve.map { reserved ->
+                    CampaignStockMapper.mapToParcellableReserved(reserved)
+                } as ArrayList<ReservedEventInfoUiModel>
+                val isCampaign = otherCampaignStockData.campaign?.isActive == true
+
                 CampaignStockAdapter(it, getFragmentList(
                         getStockAllocation.summary.isVariant,
                         otherCampaignStockData.getIsActive(),
                         getStockAllocation.summary.reserveStock.toIntOrZero(),
-                        CampaignStockMapper.mapToParcellableSellableProduct(getStockAllocation.detail.sellable, getVariantResult.variants) as ArrayList<SellableStockProductUIModel>,
-                        getStockAllocation.detail.reserve.map { reserved ->
-                            CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoUiModel>))
+                        isCampaign,
+                        sellableProduct,
+                        reservedProduct,
+                        access
+                    ))
             }
             isUserInputEnabled = false
         }
     }
 
     private fun setupNonVariantFragmentViewPager(getStockAllocation: GetStockAllocationData,
-                                                 otherCampaignStockData: OtherCampaignStockData) {
+                                                 otherCampaignStockData: OtherCampaignStockData,
+                                                 access: ProductManageAccess) {
         with(getStockAllocation) {
             val nonVariantStock = summary.sellableStock.toIntOrZero()
             val nonVariantReservedStock = summary.reserveStock.toIntOrZero()
@@ -283,13 +304,19 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
             vp2_campaign_stock?.run {
                 adapter = activity?.let {
+                    val reservedProduct = detail.reserve.map { reserved ->
+                        CampaignStockMapper.mapToParcellableReserved(reserved)
+                    } as ArrayList<ReservedEventInfoUiModel>
+                    val isCampaign = otherCampaignStockData.campaign?.isActive == true
                     CampaignStockAdapter(it, getFragmentList(
                             summary.isVariant,
                             otherCampaignStockData.getIsActive(),
                             nonVariantStock,
+                            isCampaign,
                             arrayListOf(),
-                            detail.reserve.map { reserved ->
-                                CampaignStockMapper.mapToParcellableReserved(reserved) } as ArrayList<ReservedEventInfoUiModel>))
+                            reservedProduct,
+                            access
+                    ))
                 }
                 isUserInputEnabled = false
             }
@@ -299,9 +326,16 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     private fun showResult() {
         layout_campaign_stock_product_info?.visible()
         vp2_campaign_stock?.visible()
-        divider_campaign_stock?.visible()
-        btn_campaign_stock_save?.visible()
         loader_campaign_stock?.gone()
+        toggleSaveButton()
+    }
+
+    private fun toggleSaveButton() {
+        tabs_campaign_stock?.run {
+            val selectedTabPosition = getUnifyTabLayout().selectedTabPosition
+            val isMainStockTab = selectedTabPosition == MAIN_TAB_POSITION
+            mViewModel.toggleSaveButton(isMainStockTab)
+        }
     }
 
     private fun sendOpenScreenTracking(isVariant: Boolean) {
@@ -316,17 +350,13 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         vp2_campaign_stock?.currentItem = position
     }
 
-    private fun toggleSaveButton(isMainStock: Boolean) {
-        divider_campaign_stock?.showWithCondition(isMainStock)
-        btn_campaign_stock_save?.showWithCondition(isMainStock)
-    }
-
     private fun cancelActivity(errorMessage: String? = null) {
         activity?.run {
             val intent = Intent().apply {
                 errorMessage?.run {
                     putExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE, this)
                 }
+                putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productIds?.firstOrNull().orEmpty())
             }
             setResult(Activity.RESULT_CANCELED, intent)
             finish()
@@ -341,21 +371,26 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     private fun getMainStockFragment(isVariant: Boolean,
                                      sellableProductUIList: ArrayList<SellableStockProductUIModel>,
                                      isActive: Boolean,
-                                     stock: Int) =
-            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList, isActive, stock, this)
+                                     stock: Int,
+                                     isCampaign: Boolean,
+                                     access: ProductManageAccess) =
+            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList, isActive, stock, isCampaign, access, this)
 
     private fun getReservedStockFragment(isVariant: Boolean,
-                                         reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>) =
-            CampaignReservedStockFragment.createInstance(isVariant, reservedEventInfoUiList)
+                                         reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>,
+                                         access: ProductManageAccess) =
+            CampaignReservedStockFragment.createInstance(isVariant, reservedEventInfoUiList, access)
 
     private fun getFragmentList(isVariant: Boolean,
                                 isMainStockActive: Boolean,
                                 stock: Int,
+                                isCampaign: Boolean,
                                 sellableProductUIList: ArrayList<SellableStockProductUIModel>,
-                                reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>): List<Fragment>{
+                                reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>,
+                                access: ProductManageAccess): List<Fragment>{
         return listOf(
-                getMainStockFragment(isVariant, sellableProductUIList, isMainStockActive, stock),
-                getReservedStockFragment(isVariant, reservedEventInfoUiList)
+                getMainStockFragment(isVariant, sellableProductUIList, isMainStockActive, stock, isCampaign, access),
+                getReservedStockFragment(isVariant, reservedEventInfoUiList, access)
         )
     }
 }

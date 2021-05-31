@@ -13,9 +13,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
@@ -36,7 +34,7 @@ object AddNewAddressUtils {
         val snackbar = view.let { Snackbar.make(it, msg, Snackbar.LENGTH_SHORT) }
         val snackbarTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
         val snackbarActionButton = snackbar.view.findViewById<Button>(com.google.android.material.R.id.snackbar_action)
-        snackbar.view.background = ContextCompat.getDrawable(activity, com.tokopedia.design.R.drawable.bg_snackbar_error)
+        snackbar.view.background = ContextCompat.getDrawable(activity, R.drawable.bg_snackbar_error)
         snackbarTextView?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         snackbarTextView?.maxLines = 5
@@ -63,14 +61,8 @@ object AddNewAddressUtils {
             val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val mSettingsClient = LocationServices.getSettingsClient(it)
 
-            val locationRequest = LocationRequest.create()
-            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.interval = 10 * 1000
-            locationRequest.fastestInterval = 2 * 1000
-            val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-            val mLocationSettingsRequest = builder.build()
-            builder.setAlwaysShow(true)
 
+            val mLocationSettingsRequest = requestLocationBuilder()?.build()
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 isGpsOn = true
             } else {
@@ -84,6 +76,21 @@ object AddNewAddressUtils {
             isGpsOn = isLocationEnabled(it) && isGpsOn
         }
         return isGpsOn
+    }
+
+    private fun requestLocationBuilder(): LocationSettingsRequest.Builder? {
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(getLocationRequest())
+        builder.setAlwaysShow(true)
+        return builder
+    }
+
+    @JvmStatic
+    fun getLocationRequest() : LocationRequest {
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10 * 1000
+        locationRequest.fastestInterval = 2 * 1000
+        return locationRequest
     }
 
     fun hideKeyboard(et: EditText, context: Context?) {

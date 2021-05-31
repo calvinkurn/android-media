@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_8"
+            android:contentDescription="@null"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_close_default" />
@@ -36,7 +37,7 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:lineSpacingExtra="6sp"
             android:text="@string/tradein_terms_and_conditions"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@id/close_button"
             app:layout_constraintLeft_toRightOf="@id/close_button"
             app:layout_constraintTop_toTopOf="@id/close_button"

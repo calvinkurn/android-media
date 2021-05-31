@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -9,23 +8,27 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.preview.data.model.responses.ProductAddEditV3Response
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TITLE_ERROR_SAVING_DRAFT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.tracking.ProductAddUploadTracking
-import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditUploadTracking
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.shop.common.data.model.ProductStock
+import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
+import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStockWarehouse
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 /**
@@ -101,8 +104,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return object : AddEditProductNotificationManager(urlImageCount, manager, applicationContext) {
+        return object : AddEditProductNotificationManager(urlImageCount, applicationContext) {
             override fun getSuccessIntent(): PendingIntent {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 return PendingIntent.getActivity(context, 0, intent, 0)
@@ -122,6 +124,10 @@ class AddEditProductEditService : AddEditProductBaseService() {
             variantInputModel: VariantInputModel
     ) {
         val shopId = userSession.shopId
+        // This value determine whether we should update stock in separate use case.
+        // If true we do not need use separate use case
+        val shouldEditStockDirectly =
+                !(userSession.isMultiLocationShop && (userSession.isShopOwner || userSession.isShopAdmin))
         val param = editProductInputMapper.mapInputToParam(
                 shopId,
                 productInputModel.productId.toString(),
@@ -129,10 +135,16 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 productInputModel.detailInputModel,
                 productInputModel.descriptionInputModel,
                 productInputModel.shipmentInputModel,
-                variantInputModel)
+                variantInputModel,
+                shouldEditStockDirectly)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
+                if (!shouldEditStockDirectly) {
+                    productInputModel.run {
+                        updateHqStockThroughIms(shopId, productId.toString(), detailInputModel.stock, variantInputModel)
+                    }
+                }
                 productEditUseCase.executeOnBackground()
             }
             // (4)
@@ -156,6 +168,31 @@ class AddEditProductEditService : AddEditProductBaseService() {
                         AddEditProductUploadErrorHandler.getErrorName(throwable))
             }
         })
+    }
+
+    private suspend fun getHeadquartersLocationId(shopId: String): String? {
+        getAdminInfoShopLocationUseCase.execute(shopId.toIntOrZero()).let { locationList ->
+            return locationList.find { it.isMainLocation() }?.locationId
+        }
+    }
+
+    private suspend fun updateHqStockThroughIms(shopId: String,
+                                                productId: String,
+                                                stock: Int,
+                                                variantInputModel: VariantInputModel) {
+        getHeadquartersLocationId(shopId)?.let { warehouseId ->
+            variantInputModel.products.map { variantProduct ->
+                ProductStock(variantProduct.id, variantProduct.stock.toString()) }.let { variants ->
+                    mutableListOf(ProductStock(productId, stock.toString())).apply {
+                        addAll(variants)
+                    }
+            }.let { productsParam ->
+                UpdateProductStockWarehouseUseCase
+                        .createRequestParams(shopId, warehouseId, productsParam).let { requestParam ->
+                            updateProductStockWarehouseUseCase.execute(requestParam)
+                        }
+            }
+        }
     }
 
     private suspend fun clearProductDraft() {

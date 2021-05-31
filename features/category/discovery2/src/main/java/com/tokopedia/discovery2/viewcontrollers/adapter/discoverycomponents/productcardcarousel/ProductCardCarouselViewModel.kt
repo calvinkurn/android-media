@@ -28,7 +28,7 @@ private const val PRODUCT_PER_PAGE = 10
 private const val RESET_HEIGHT = 0
 
 class ProductCardCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
-    private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
+    private val productCarouselHeaderData: MutableLiveData<ComponentsItem?> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
@@ -39,26 +39,33 @@ class ProductCardCarouselViewModel(val application: Application, val components:
 
     fun getProductCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> = productCarouselList
     fun getProductCardMaxHeight(): LiveData<Int> = maxHeightProductCard
-    fun getProductCardHeaderData(): LiveData<ComponentsItem> = productCarouselHeaderData
+    fun getProductCardHeaderData(): LiveData<ComponentsItem?> = productCarouselHeaderData
     fun getProductLoadState(): LiveData<Boolean> = productLoadError
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-
-    init {
-        components.lihatSemua?.run {
-            val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
-            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
-                    creativeName = components.creativeName)
-            productCarouselHeaderData.value = lihatSemuaComponentData
-        }
-    }
-
-
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        handleLihatSemuaHeader()
         fetchProductCarouselData()
+    }
+
+    private fun handleLihatSemuaHeader() {
+        var lihatSemuaComponentData: ComponentsItem? = null
+        components.lihatSemua?.let {
+//            we don't add header component in case after when query is hit but no list of products were found.
+            if (!(components.noOfPagesLoaded == 1 && components.getComponentsItem().isNullOrEmpty()))
+                it.run {
+                    val lihatSemuaDataItem = DataItem(title = header,
+                            subtitle = subheader, btnApplink = applink)
+                    lihatSemuaComponentData = ComponentsItem(
+                            name = ComponentsList.ProductCardCarousel.componentName,
+                            data = listOf(lihatSemuaDataItem),
+                            creativeName = components.creativeName)
+                }
+        }
+        productCarouselHeaderData.value = lihatSemuaComponentData
     }
 
     private fun fetchProductCarouselData() {
@@ -96,6 +103,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
         val productCardModelArray = ArrayList<ProductCardModel>()
         list.forEach {
             it.data?.firstOrNull()?.let { dataItem ->
+                dataItem.hasNotifyMe = (dataItem.notifyMe != null)
                 productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
             }
         }

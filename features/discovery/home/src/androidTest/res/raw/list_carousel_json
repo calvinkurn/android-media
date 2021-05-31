@@ -367,7 +367,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{

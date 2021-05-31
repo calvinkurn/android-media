@@ -11,23 +11,17 @@ import com.tokopedia.applink.startsWithPattern
  */
 object DeeplinkMapperContent {
 
-    fun getRegisteredNavigationContentFromHttp(deepLink: String): String {
-        return try {
-            if (deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP) ||
-                    deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS)) {
-                val path = Uri.parse(deepLink).path?.removePrefix("/").orEmpty()
-                "${ApplinkConstInternalContent.AFFILIATE_BYME_TRACKING}$path"
-            } else deepLink
-        } catch (e: Throwable) {
-            deepLink
+    fun getRegisteredNavigationContentFromHttp(uri: Uri, deepLink: String): String {
+        return when {
+            uri.host == ApplinkConstInternalContent.TOKOPEDIA_BYME -> handleNavigationByMe(deepLink)
+            uri.pathSegments.joinToString("/").startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false) -> handleNavigationPlay(deepLink)
+            else -> ""
         }
     }
 
     /**
-     * tokopedia://people/{user_id}
-     * tokopedia://people/{user_id}?after_post=true
-     * tokopedia://people/{user_id}?after_edit=true
-     * tokopedia://people/{user_id}?success_post=true
+     * Replace "tokopedia" scheme to "tokopedia-android-internal"
+     * This method keeps the query parameters intact on the deeplink
      */
     fun getRegisteredNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
@@ -40,6 +34,9 @@ object DeeplinkMapperContent {
 
     fun getKolDeepLink(deepLink: String): String {
         when {
+            deepLink.startsWith(ApplinkConst.CONTENT_CREATE_POST) -> {
+                return ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST
+            }
             deepLink.startsWithPattern(ApplinkConst.KOL_COMMENT) -> {
                 return deepLink.replace(ApplinkConst.KOL_COMMENT.substringBefore("{"), ApplinkConstInternalContent.COMMENT.substringBefore("{")).plus(ApplinkConstInternalContent.COMMENT_EXTRA_PARAM)
             }
@@ -60,5 +57,21 @@ object DeeplinkMapperContent {
             }
         }
         return deepLink
+    }
+
+    private fun handleNavigationPlay(deepLink: String): String {
+        return "${ApplinkConst.BROWSER}?url=$deepLink"
+    }
+
+    private fun handleNavigationByMe(deepLink: String): String {
+        return try {
+            if (deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP) ||
+                    deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS)) {
+                val path = Uri.parse(deepLink).path?.removePrefix("/").orEmpty()
+                "${ApplinkConstInternalContent.AFFILIATE_BYME_TRACKING}$path"
+            } else deepLink
+        } catch (e: Throwable) {
+            deepLink
+        }
     }
 }

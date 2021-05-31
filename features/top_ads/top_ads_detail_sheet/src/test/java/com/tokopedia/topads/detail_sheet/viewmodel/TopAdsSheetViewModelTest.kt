@@ -9,9 +9,9 @@ import com.tokopedia.topads.common.data.response.SingleAdInFo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import io.mockk.every
 import io.mockk.invoke
@@ -110,33 +110,18 @@ class TopAdsSheetViewModelTest {
 
     @Test
     fun testSetProductAction() {
-        val data = ProductActionResponse()
-        every {
-            topAdsProductActionUseCase.executeQuerySafeMode(captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(ProductActionResponse) -> Unit>()
-            onSuccess.invoke(data)
-        }
         viewModel.setProductAction({}, "123", adIds, resources, "filter")
-
         verify {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), any())
+            topAdsProductActionUseCase.execute(any(), any())
         }
     }
 
     @Test
     fun `test on error testSetProductAction`() {
-        val exception = Exception("my excep")
-        every {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), captureLambda())
-        } answers {
-            val onError = lambda<(Exception) -> Unit>()
-            onError.invoke(exception)
-        }
         viewModel.setProductAction({}, "123", adIds, resources, "filter")
 
         verify {
-            topAdsProductActionUseCase.executeQuerySafeMode(any(), any())
+            topAdsProductActionUseCase.execute(any(), any())
         }
     }
 
@@ -196,10 +181,10 @@ class TopAdsSheetViewModelTest {
     @Test
     fun testOnClear() {
         viewModel.onCleared()
-        verify { topAdsGetGroupProductDataUseCase.cancelJobs() }
+        verify { topAdsGetGroupProductDataUseCase.unsubscribe() }
         verify { topAdsGetProductStatisticsUseCase.cancelJobs() }
         verify { topAdsGetGroupIdUseCase.cancelJobs() }
-        verify { topAdsProductActionUseCase.cancelJobs() }
+        verify { topAdsProductActionUseCase.unsubscribe() }
         verify { topAdsGetAutoAdsStatusUseCase.cancelJobs() }
     }
 }

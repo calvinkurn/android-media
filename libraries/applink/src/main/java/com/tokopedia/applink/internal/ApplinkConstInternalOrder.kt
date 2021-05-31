@@ -17,6 +17,7 @@ object ApplinkConstInternalOrder {
     const val PARAM_SEMUA_TRANSAKSI = "semua_transaksi"
     const val PARAM_MARKETPLACE = "marketplace"
     const val PARAM_MARKETPLACE_DALAM_PROSES = "marketplace_dalam_proses"
+    const val PARAM_UOH_ONGOING = "uoh_ongoing"
     const val PARAM_UOH_WAITING_CONFIRMATION = "uoh_waiting_confirmation"
     const val PARAM_UOH_PROCESSED = "uoh_processed"
     const val PARAM_UOH_SENT = "uoh_sent"
@@ -54,192 +55,144 @@ object ApplinkConstInternalOrder {
     const val MENUNGGU_KONFIRMASI = "5"
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
+    const val PATH_CANCELLATION_REQUEST = "cancellationrequest"
 
-    @JvmField
-    val HOST_SELLER = "seller"
+    // snapshot
+    const val PARAM_ORDER_DETAIL_ID = "order_detail_id"
+    const val IS_SNAPSHOT_FROM_SOM = "is_snapshot_from_som"
 
-    @JvmField
-    val HOST_BUYER = "buyer"
+    const val HOST_SELLER = "seller"
 
-    @JvmField
-    val HOST_TRANSACTION = "transaction"
+    const val HOST_BUYER = "buyer"
 
-    @JvmField
-    val HOST_ORDER = "order"
+    const val HOST_TRANSACTION = "transaction"
 
-    @JvmField
-    val HOST_ORDERLIST = "orderlist"
+    const val HOST_ORDER = "order"
 
-    @JvmField
-    val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
+    const val HOST_ORDERLIST = "orderlist"
 
-    @JvmField
-    val INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
+    const val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
 
-    @JvmField
-    val INTERNAL_BUYER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER"
+    const val INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
 
-    @JvmField
-    val INTERNAL_TRANSACTION_ORDERLIST = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TRANSACTION/$PARAM_ORDER_LIST"
+    const val INTERNAL_BUYER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER"
 
-    @JvmField
-    val NEW_ORDER = "$INTERNAL_SELLER/new-order"
+    const val INTERNAL_TRANSACTION_ORDERLIST = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_TRANSACTION/$PARAM_ORDER_LIST"
 
-    @JvmField
-    val READY_TO_SHIP = "$INTERNAL_SELLER/ready-to-ship"
+    const val NEW_ORDER = "$INTERNAL_SELLER/new-order"
 
-    @JvmField
-    val SHIPPED = "$INTERNAL_SELLER/shipped"
+    const val READY_TO_SHIP = "$INTERNAL_SELLER/ready-to-ship"
 
-    @JvmField
-    val DELIVERED = "$INTERNAL_SELLER/delivered"
+    const val SHIPPED = "$INTERNAL_SELLER/shipped"
 
-    @JvmField
-    val HISTORY = "$INTERNAL_SELLER/$PARAM_HISTORY"
+    const val DELIVERED = "$INTERNAL_SELLER/delivered"
 
-    @JvmField
-    val TRACK = "$INTERNAL_ORDER/track"
+    const val HISTORY = "$INTERNAL_SELLER/$PARAM_HISTORY"
 
-    @JvmField
-    val CANCELLED = "$INTERNAL_SELLER/cancelled"
+    const val TRACK = "$INTERNAL_ORDER/track"
 
-    @JvmField
-    val CANCELLATION_REQUEST = "$INTERNAL_SELLER/cancellationrequest"
+    const val CANCELLED = "$INTERNAL_SELLER/cancelled"
 
-    @JvmField
-    val WAITING_PICKUP = "$INTERNAL_SELLER/waiting-pickup"
+    const val CANCELLATION_REQUEST = "$INTERNAL_SELLER/$PATH_CANCELLATION_REQUEST"
 
-    @JvmField
-    val WAITING_AWB = "$INTERNAL_SELLER/waiting-awb"
+    const val WAITING_PICKUP = "$INTERNAL_SELLER/waiting-pickup"
 
-    @JvmField
-    val AWB_INVALID = "$INTERNAL_SELLER/awb-invalid"
+    const val WAITING_AWB = "$INTERNAL_SELLER/waiting-awb"
 
-    @JvmField
-    val AWB_CHANGE = "$INTERNAL_SELLER/awb-change"
+    const val AWB_INVALID = "$INTERNAL_SELLER/awb-invalid"
 
-    @JvmField
-    val RETUR = "$INTERNAL_SELLER/retur"
+    const val AWB_CHANGE = "$INTERNAL_SELLER/awb-change"
 
-    @JvmField
-    val COMPLAINT = "$INTERNAL_SELLER/complaint"
+    const val RETUR = "$INTERNAL_SELLER/retur"
 
-    @JvmField
-    val FINISHED = "$INTERNAL_SELLER/finished"
+    const val COMPLAINT = "$INTERNAL_SELLER/complaint"
 
-    @JvmField
-    val ORDER_DETAIL = "$INTERNAL_SELLER/order?order_id={order_id}"
+    const val FINISHED = "$INTERNAL_SELLER/finished"
 
-    @JvmField
-    val INVOICE = "$INTERNAL_ORDER/invoice"
+    const val ORDER_DETAIL = "$INTERNAL_SELLER/order?order_id={order_id}"
 
-    @JvmField
-    val UNIFY_ORDER = "$INTERNAL_ORDER/$UNIFIED"
+    const val INVOICE = "$INTERNAL_ORDER/invoice"
 
-    @JvmField
-    val UNIFY_ORDER_MARKETPLACE = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE"
+    const val UNIFY_ORDER = "$INTERNAL_ORDER/$UNIFIED"
 
-    @JvmField
-    val UNIFY_ORDER_MARKETPLACE_IN_PROCESS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE_DALAM_PROSES"
+    const val UNIFY_ORDER_MARKETPLACE = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE"
 
-    @JvmField
-    val UNIFY_ORDER_WAITING_CONFIRMATION = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_WAITING_CONFIRMATION"
+    const val UNIFY_ORDER_MARKETPLACE_IN_PROCESS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MARKETPLACE_DALAM_PROSES"
 
-    @JvmField
-    val UNIFY_ORDER_PROCESSED = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_PROCESSED"
+    const val UNIFY_ORDER_ONGOING = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_ONGOING"
 
-    @JvmField
-    val UNIFY_ORDER_SENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_SENT"
+    const val UNIFY_ORDER_WAITING_CONFIRMATION = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_WAITING_CONFIRMATION"
 
-    @JvmField
-    val UNIFY_ORDER_DELIVERED = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_DELIVERED"
+    const val UNIFY_ORDER_PROCESSED = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_PROCESSED"
 
-    @JvmField
-    val UNIFY_ORDER_DIGITAL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_DIGITAL"
+    const val UNIFY_ORDER_SENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_SENT"
 
-    @JvmField
-    val UNIFY_ORDER_EVENTS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_EVENTS"
+    const val UNIFY_ORDER_DELIVERED = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_UOH_DELIVERED"
 
-    @JvmField
-    val UNIFY_ORDER_DEALS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_DEALS"
+    const val UNIFY_ORDER_DIGITAL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_DIGITAL"
 
-    @JvmField
-    val UNIFY_ORDER_PESAWAT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_PESAWAT"
+    const val UNIFY_ORDER_EVENTS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_EVENTS"
 
-    @JvmField
-    val UNIFY_ORDER_TRAIN = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAIN"
+    const val UNIFY_ORDER_DEALS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_DEALS"
 
-    @JvmField
-    val UNIFY_ORDER_GIFTCARDS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_GIFTCARDS"
+    const val UNIFY_ORDER_PESAWAT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_PESAWAT"
 
-    @JvmField
-    val UNIFY_ORDER_INSURANCE = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_INSURANCE"
+    const val UNIFY_ORDER_TRAIN = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAIN"
 
-    @JvmField
-    val UNIFY_ORDER_MODALTOKO = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MODALTOKO"
+    const val UNIFY_ORDER_GIFTCARDS = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_GIFTCARDS"
 
-    @JvmField
-    val UNIFY_ORDER_HOTEL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_HOTEL"
+    const val UNIFY_ORDER_INSURANCE = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_INSURANCE"
 
-    @JvmField
-    val UNIFY_ORDER_TRAVEL_ENTERTAINMENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAVEL_ENTERTAINMENT"
+    const val UNIFY_ORDER_MODALTOKO = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_MODALTOKO"
 
-    @JvmField
-    val MARKETPLACE_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
+    const val UNIFY_ORDER_HOTEL = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_HOTEL"
 
-    @JvmField
-    val DIGITAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
+    const val UNIFY_ORDER_TRAVEL_ENTERTAINMENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAVEL_ENTERTAINMENT"
 
-    @JvmField
-    val DIGITAL_ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDERLIST"
+    const val MARKETPLACE_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
 
-    @JvmField
-    val ORDERLIST_DIGITAL_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDERLIST/$PARAM_DIGITAL"
+    const val DIGITAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
 
-    @JvmField
-    val OMS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
+    const val DIGITAL_ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDERLIST"
 
-    @JvmField
-    val DEALS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DEALS/$HOST_ORDER"
+    const val ORDERLIST_DIGITAL_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDERLIST/$PARAM_DIGITAL"
 
-    @JvmField
-    val EVENTS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_EVENTS/$HOST_ORDER"
+    const val OMS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_ORDER"
 
-    @JvmField
-    val GIFTCARDS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_GIFTCARDS/$HOST_ORDER"
+    const val DEALS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DEALS/$HOST_ORDER"
 
-    @JvmField
-    val INSURANCE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_INSURANCE/$HOST_ORDER"
+    const val EVENTS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_EVENTS/$HOST_ORDER"
 
-    @JvmField
-    val MODALTOKO_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MODALTOKO/$HOST_ORDER"
+    const val GIFTCARDS_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_GIFTCARDS/$HOST_ORDER"
 
-    @JvmField
-    val HOTEL_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_HOTEL/$HOST_ORDER"
+    const val INSURANCE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_INSURANCE/$HOST_ORDER"
 
-    @JvmField
-    val PESAWAT_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_PESAWAT/$HOST_ORDER"
+    const val MODALTOKO_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MODALTOKO/$HOST_ORDER"
 
-    @JvmField
-    val BELANJA_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_BELANJA/$HOST_ORDER"
+    const val HOTEL_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_HOTEL/$HOST_ORDER"
 
-    @JvmField
-    val MARKETPLACE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
+    const val PESAWAT_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_PESAWAT/$HOST_ORDER"
 
-    @JvmField
-    val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
+    const val BELANJA_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_BELANJA/$HOST_ORDER"
 
-    @JvmField
-    val MP_INTERNAL_CONFIRMED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=5"
+    const val MARKETPLACE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
 
-    @JvmField
-    val MP_INTERNAL_PROCESSED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=12"
+    const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
 
-    @JvmField
-    val MP_INTERNAL_SHIPPED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=13"
+    const val MP_INTERNAL_CONFIRMED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=5"
 
-    @JvmField
-    val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
+    const val MP_INTERNAL_PROCESSED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=12"
 
+    const val MP_INTERNAL_SHIPPED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=13"
 
+    const val MP_INTERNAL_DELIVERED = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PARAM_HISTORY?$PARAM_FILTER_ID=14"
+
+
+    // order snapshot
+    const val PATH_SNAPSHOT = "snapshot"
+
+    const val INTERNAL_ORDER_SNAPSHOT = "${DeeplinkConstant.SCHEME_INTERNAL}://$PATH_SNAPSHOT/$HOST_ORDER"
+
+    // buyer request cancel
+    const val INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PATH_CANCELLATION_REQUEST"
 }

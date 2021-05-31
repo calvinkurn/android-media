@@ -29,9 +29,9 @@ class AutocompleteBottomSheetAdapter(private var actionListener: ActionListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val placeName: String = dataAutocomplete[position].mainText
-        val placeAddress: String = dataAutocomplete[position].secondaryText
-        val placeId: String = dataAutocomplete[position].placeId
+        val placeName: String = dataAutocomplete.getOrNull(position)?.mainText.orEmpty()
+        val placeAddress: String = dataAutocomplete.getOrNull(position)?.secondaryText.orEmpty()
+        val placeId: String = dataAutocomplete.getOrNull(position)?.placeId.orEmpty()
 
         TextAndContentDescriptionUtil.setTextAndContentDescription(holder.itemView.place_name, placeName, holder.itemView.place_name.context.getString(R.string.content_desc_place_name))
         holder.itemView.place_address.text = placeAddress

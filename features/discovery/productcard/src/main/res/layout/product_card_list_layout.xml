@@ -6,6 +6,7 @@
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/product_card_dms_card_background"
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -76,8 +77,9 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_label_campaign_height"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_8"
             android:visibility="gone"
+            android:contentDescription="null"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:background="@drawable/product_card_best_seller_background"
-            android:paddingTop="@dimen/dp_3"
+            android:paddingTop="@dimen/product_card_label_best_seller_paddingtop"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
@@ -118,6 +120,14 @@
             tools:text="# 1"
             tools:visibility="visible" />
 
+        <Space
+            android:id="@+id/spaceCampaignBestSeller"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_content_margin_top"
+            android:layout_marginStart="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/labelBestSeller"
+            app:layout_constraintStart_toEndOf="@id/imageProduct" />
+
         <include
             android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
@@ -126,10 +136,8 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginTop="@dimen/product_card_content_margin_top"
-            app:layout_goneMarginTop="@dimen/dp_0"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/labelBestSeller"
+            app:layout_constraintTop_toBottomOf="@id/spaceCampaignBestSeller"
             app:layout_constraintEnd_toEndOf="parent"
             layout="@layout/product_card_content_layout" />
 
@@ -150,6 +158,7 @@
             android:paddingRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
             android:visibility="gone"
+            android:contentDescription="null"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
@@ -212,23 +221,23 @@
             app:unifyButtonVariant="ghost"
             app:unifyButtonSize="small"
             tools:visibility="visible" />
-        <ProgressBar
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
             android:id="@+id/progressBarStock"
-            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/product_card_flashsale_progressbar_height"
-            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
             android:layout_marginLeft="@dimen/product_card_content_margin"
             android:layout_marginRight="@dimen/product_card_content_margin"
+            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
             android:layout_marginBottom="@dimen/product_card_flashsale_label_margintop"
-            android:max="100"
-            android:progressDrawable="@drawable/progressbar_flashsale"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/textViewStockLabel"
             app:layout_constraintVertical_bias="1.0"
-            app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop" />
+            app:layout_goneMarginTop="@dimen/product_card_flashsale_progressbar_gone_margintop"
+            android:gravity="bottom"/>
+
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewStockLabel"
@@ -286,7 +295,7 @@
             android:visibility="gone"
             android:clickable="true"
             android:focusable="true"
-            android:textColor="@color/light_G500"
+            android:textColor="@color/Unify_G500"
             app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
             app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,16 +1,18 @@
 package com.tokopedia.imagepicker.common.presenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.ExifInterface;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.ImageRatioType;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlin.Pair;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -43,7 +45,7 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
     }
 
     public void cropBitmapToExpectedRatio(final ArrayList<String> localImagePaths, final ArrayList<ImageRatioType> imageRatioList,
-                                          final boolean needCheckRotate, final @ImageUtils.DirectoryDef String targetDirectory) {
+                                          final boolean needCheckRotate, boolean convertToWebp) {
         Subscription subscription =
                 Observable.zip(
                         Observable.from(localImagePaths),
@@ -61,11 +63,11 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                 }
                                 // if the dimension is not expected dimension, crop it
                                 float expectedRatio = (float) ratioX / ratioY;
-                                int[] widthHeight = ImageUtils.getWidthAndHeight(imagePath);
+                                Pair<Integer, Integer> widthHeight = ImageProcessingUtil.getWidthAndHeight(imagePath);
                                 int defaultOrientation;
                                 if (needCheckRotate) {
                                     try {
-                                        defaultOrientation = ImageUtils.getOrientation(imagePath);
+                                        defaultOrientation = ImageProcessingUtil.getOrientation(imagePath);
                                     } catch (Throwable e) {
                                         defaultOrientation = ExifInterface.ORIENTATION_NORMAL;
                                     }
@@ -76,19 +78,22 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                 int height;
                                 if (defaultOrientation == ExifInterface.ORIENTATION_ROTATE_90 ||
                                         defaultOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                                    width = widthHeight[1];
-                                    height = widthHeight[0];
+                                    width = widthHeight.getSecond();
+                                    height = widthHeight.getFirst();
                                 } else {
-                                    width = widthHeight[0];
-                                    height = widthHeight[1];
+                                    width = widthHeight.getFirst();
+                                    height = widthHeight.getSecond();
                                 }
                                 float currentRatio = (float) width / height;
                                 if (expectedRatio == currentRatio) {
                                     return imagePath;
                                 } else {
                                     String outputPath;
-                                    outputPath = ImageUtils.trimBitmap(imagePath, expectedRatio, currentRatio, needCheckRotate,
-                                            targetDirectory);
+                                    if (convertToWebp)
+                                        outputPath = ImageProcessingUtil.trimBitmap(imagePath, expectedRatio, currentRatio, needCheckRotate, Bitmap.CompressFormat.WEBP);
+                                    else {
+                                        outputPath = ImageProcessingUtil.trimBitmap(imagePath, expectedRatio, currentRatio, needCheckRotate);
+                                    }
                                     return outputPath;
                                 }
                             }

@@ -8,6 +8,8 @@ import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -16,7 +18,8 @@ import javax.inject.Named
 
 class AddToCartOccExternalUseCase @Inject constructor(@Named(MUTATION_ATC_OCC_EXTERNAL) private val query: String,
                                                       private val graphqlUseCase: GraphqlUseCase,
-                                                      private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
+                                                      private val addToCartDataMapper: AddToCartDataMapper,
+                                                      private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_PRODUCT_ID = "REQUEST_PARAM_KEY_PRODUCT_ID"
@@ -50,6 +53,11 @@ class AddToCartOccExternalUseCase @Inject constructor(@Named(MUTATION_ATC_OCC_EX
     }
 
     private fun getParams(productId: String): Map<String, Any> {
-        return mapOf(PARAM to mapOf(PARAM_PRODUCT_ID to productId))
+        return mapOf(
+                PARAM to mapOf(
+                        PARAM_PRODUCT_ID to productId,
+                        KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+                )
+        )
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.atc_common.data.model.response.atcexternal
 import com.google.gson.annotations.SerializedName
 
 data class AddToCartExternalGqlResponse(
-        @SerializedName("add_to_cart_external")
+        @SerializedName("add_to_cart_external_v2")
         val response: AddToCartExternalResponse = AddToCartExternalResponse()
 )
 
@@ -35,7 +35,7 @@ data class AddToCartExternalDataResponse(
         @SerializedName("category")
         val category: String = "",
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: Long = 0,
         @SerializedName("shop_type")
         val shopType: String = "",
         @SerializedName("shop_name")
@@ -57,5 +57,7 @@ data class AddToCartExternalDataResponse(
         @SerializedName("is_multi_origin")
         val isMultiOrigin: Boolean = false,
         @SerializedName("is_free_ongkir")
-        val isFreeOngkir: Boolean = false
+        val isFreeOngkir: Boolean = false,
+        @SerializedName("is_free_ongkir_extra")
+        val isFreeOngkirExtra: Boolean = false
 )

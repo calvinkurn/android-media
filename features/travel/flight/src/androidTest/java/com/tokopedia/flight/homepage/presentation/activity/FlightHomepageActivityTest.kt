@@ -8,20 +8,26 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
+import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
+import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import kotlinx.android.synthetic.main.fragment_flight_homepage.*
 import org.hamcrest.Matchers
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,22 +41,54 @@ class FlightHomepageActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var activityRule: IntentsTestRule<FlightHomepageActivity> = object : IntentsTestRule<FlightHomepageActivity>(FlightHomepageActivity::class.java) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            setupGraphqlMockResponse(FlightHomepageMockResponse())
-        }
-
-        override fun getActivityIntent(): Intent =
-                Intent(context, FlightHomepageActivity::class.java)
-    }
+    var activityRule = ActivityTestRule<FlightHomepageActivity>(FlightHomepageActivity::class.java, false, false)
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
+        Intents.init()
+        graphqlCacheManager.deleteAll()
+        gtmLogDBSource.deleteAll().toBlocking().first()
+        setupGraphqlMockResponse {
+            addMockResponse(
+                    KEY_CONTAINS_HOMEPAGE_BANNER,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_homepage_banner),
+                    MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                    KEY_CONTAINS_HOMEPAGE_TRAVEL_VIDEO,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_homepage_travel_video),
+                    MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                    KEY_CONTAINS_FLIGHT_POPULAR_CITY,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_popular_city),
+                    MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                    KEY_CONTAINS_FLIGHT_FARE,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_calendar_fare),
+                    MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                    KEY_CONTAINS_CALENDAR_HOLIDAY,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_calendar_holiday),
+                    MockModelConfig.FIND_BY_CONTAINS
+            )
+        }
+
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(targetContext, FlightHomepageActivity::class.java)
+        activityRule.launchActivity(intent)
+
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    @After
+    fun cleanUp() {
+        Intents.release()
     }
 
     @Test
@@ -103,6 +141,8 @@ class FlightHomepageActivityTest {
 
     @Test
     fun validateFlightHomepageAnalyticsP2AndBelow() {
+        validateTravelVideoTracking()
+
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
 
         departureAirport()
@@ -178,8 +218,21 @@ class FlightHomepageActivityTest {
         Thread.sleep(1000)
     }
 
+    fun validateTravelVideoTracking(){
+        Thread.sleep(3000)
+        onView(withId(R.id.flightHomepageVideoBanner)).check(matches(isDisplayed()))
+
+        Thread.sleep(3000)
+        onView(withId(R.id.flightHomepageVideoBanner)).perform(click())
+    }
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_homepage_p1.json"
         private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_homepage_all.json"
+
+        private const val KEY_CONTAINS_HOMEPAGE_BANNER = "\"product\": \"FLIGHT\""
+        private const val KEY_CONTAINS_HOMEPAGE_TRAVEL_VIDEO = "\"product\": \"FLIGHTPROMOTIONAL\""
+        private const val KEY_CONTAINS_FLIGHT_POPULAR_CITY = "flightPopularCity"
+        private const val KEY_CONTAINS_FLIGHT_FARE = "flightFare"
+        private const val KEY_CONTAINS_CALENDAR_HOLIDAY = "TravelGetHoliday"
     }
 }

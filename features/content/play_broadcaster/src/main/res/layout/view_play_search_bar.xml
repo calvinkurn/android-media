@@ -44,7 +44,7 @@
             android:imeOptions="actionSearch"
             android:inputType="textNoSuggestions"
             android:lines="1"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_N700_68"
             android:textColorHint="@color/Unify_N700_32"
             android:textCursorDrawable="@drawable/ic_play_search_cursor"
             android:textSize="@dimen/fontSize_lvl3"

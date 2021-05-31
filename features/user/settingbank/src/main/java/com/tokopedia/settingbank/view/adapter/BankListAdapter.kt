@@ -3,7 +3,7 @@ package com.tokopedia.settingbank.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.settingbank.domain.Bank
+import com.tokopedia.settingbank.domain.model.Bank
 import com.tokopedia.settingbank.view.viewHolder.BankViewHolder
 
 class BankListAdapter(var bankList: ArrayList<Bank>) : RecyclerView.Adapter<BankViewHolder>() {

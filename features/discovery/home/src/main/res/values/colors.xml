@@ -37,4 +37,9 @@
 
     <color name="home_hpb_indicator_active">@color/Unify_N0</color>
     <color name="home_hpb_indicator_inactive">@color/Unify_N0</color>
+
+    <color name="home_dms_gradient_action_play">#00000000</color>
+    <color name="home_dms_color_pending_tokocash">#B3000000</color>
+    <color name="home_dms_color_pending_tokocash_disabled">#61000000</color>
+    <color name="home_dms_color_banner_label_type">#31353b</color>
 </resources>

@@ -36,7 +36,7 @@ import kotlin.coroutines.CoroutineContext
  * @author by steven on 14/08/19.
  * For navigate: use {@link ApplinkConstInternalMarketplace.CHAT_SEARCH}
  */
-class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponent>,
+open class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponent>,
         CoroutineScope, ChatSearchFragmentListener, ContactLoadMoreChatListener {
 
     private val textDebounce = 500L
@@ -56,7 +56,6 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
         setContentView(R.layout.activity_chat_search)
         bindView()
         initWindowBackground()
-        useLightNotificationBar()
         setupToolbar()
     }
 
@@ -99,13 +98,6 @@ class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponen
 
     private fun initWindowBackground() {
         window.decorView.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-    }
-
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        }
     }
 
     private fun setupToolbar() {

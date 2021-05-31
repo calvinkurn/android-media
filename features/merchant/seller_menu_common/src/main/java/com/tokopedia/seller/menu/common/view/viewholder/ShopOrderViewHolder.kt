@@ -6,9 +6,12 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import kotlinx.android.synthetic.main.item_seller_menu_order_section.view.*
 
@@ -27,7 +30,7 @@ class ShopOrderViewHolder(
     override fun bind(order: ShopOrderUiModel) {
         renderOrderImage()
         renderOrderCount(order)
-        setClickListeners()
+        setClickListeners(order.isShopOwner)
     }
 
     private fun renderOrderImage() {
@@ -46,14 +49,22 @@ class ShopOrderViewHolder(
         itemView.readyToShipCount.showWithCondition(order.readyToShip > 0)
     }
 
-    private fun setClickListeners() {
+    private fun setClickListeners(isShopOwner: Boolean) {
         itemView.cardNewOrder.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.SELLER_NEW_ORDER)
+            if (isShopOwner) {
+                RouteManager.route(context, ApplinkConst.SELLER_NEW_ORDER)
+            } else {
+                RouteManager.route(context, UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, AdminFeature.NEW_ORDER))
+            }
             sellerMenuTracker?.sendEventClickOrderNew()
         }
 
         itemView.cardReadyToShip.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
+            if (isShopOwner) {
+                RouteManager.route(context, ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
+            } else {
+                RouteManager.route(context, UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, AdminFeature.READY_TO_SHIP_ORDER))
+            }
             sellerMenuTracker?.sendEventClickOrderReadyToShip()
         }
     }

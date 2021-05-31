@@ -42,8 +42,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsHolder.arrowView.setOnClickListener {
             openCategoryBottomSheet()
         }
-        tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, Observer {
-            tabsHolder.hasRightArrow = true
+        tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, {
+            tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
             it.forEachIndexed { index, tabItem ->

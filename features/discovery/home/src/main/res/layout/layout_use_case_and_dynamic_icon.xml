@@ -43,6 +43,6 @@
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
-        tools:text="Ajukan" />
+        tools:text="Ajukan Ada deh" />
 
 </LinearLayout>

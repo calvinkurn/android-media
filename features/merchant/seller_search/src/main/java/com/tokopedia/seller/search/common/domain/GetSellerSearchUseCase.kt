@@ -28,7 +28,6 @@ class GetSellerSearchUseCase @Inject constructor(
                     id
                     has_more
                     action_title
-                    action_link
                     app_action_link
                     title
                     items {
@@ -36,11 +35,9 @@ class GetSellerSearchUseCase @Inject constructor(
                       title
                       description
                       label
-                      click_event
                       url
                       app_url
                       image_url
-                      ref_id
                     }
                   }
                   count

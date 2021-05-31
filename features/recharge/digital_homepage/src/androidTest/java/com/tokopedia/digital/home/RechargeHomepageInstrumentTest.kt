@@ -90,7 +90,7 @@ class RechargeHomepageInstrumentTest {
         onView(withId(R.id.digital_homepage_search_view)).check(matches(isDisplayed()))
                 .perform(click())
         Thread.sleep(1000)
-        onView(withId(R.id.edit_text_search)).check(matches(isDisplayed())).perform(typeText("pulsa"))
+        onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
         Thread.sleep(1000)
         pressBack()
         val viewInteraction = onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))

@@ -115,7 +115,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val parentView: View = inflater.inflate(R.layout.fragment_recent_view_detail, container, false)
-        recyclerView = parentView.findViewById<View>(R.id.list) as RecyclerView
+        recyclerView = parentView.findViewById<View>(R.id.rv_recent_view_page) as RecyclerView
         prepareView()
         return parentView
     }
@@ -125,7 +125,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         recyclerView?.setHasFixedSize(true)
         val dividerItemDecoration = DividerItemDecoration(recyclerView?.context, DividerItemDecoration.VERTICAL)
         context?.let { context ->
-            val drawable = ContextCompat.getDrawable(context, com.tokopedia.design.R.drawable.bg_line_separator)
+            val drawable = ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.bg_line_separator)
             drawable?.let { dividerItemDecoration.setDrawable(it) }
         }
         recyclerView?.addItemDecoration(dividerItemDecoration)

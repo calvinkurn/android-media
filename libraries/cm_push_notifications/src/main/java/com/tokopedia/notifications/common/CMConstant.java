@@ -11,6 +11,7 @@ public interface CMConstant {
         String KEY_IS_OFFLINE_PUSH_ENABLE = "app_cm_offline_push_enabled";
         String KEY_CM_PUSH_END_TIME_INTERVAL = "app_cm_push_end_time_interval";
         String KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED = "sellerapp_cm_add_token_enabled";
+        String NOTIFICATION_DELETION_INTERVAL_KEY = "cm_notification_deletion_interval";
     }
 
 
@@ -27,6 +28,7 @@ public interface CMConstant {
     String GADSID_CACHE_KEY = "gadsid_cache";
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
+    String NEXT_PUSH_DELETE_TIME_CACHE_KEY = "next_push_delete_time";
     String INAPP_DISPLAY_COUNTER = "inapp_display_counter";
     String MAX_INAPP_DISPLAY_COUNT = "max_inapp_display_count";
     String NEXT_INAPP_DISPLAY_TIME = "next_inapp_display_time";
@@ -91,6 +93,8 @@ public interface CMConstant {
 
         String VISUAL_COLLAPSED_IMAGE = "collapsedImg";
         String VISUAL_EXPANDED_IMAGE = "expandedImg";
+        String VISUAL_COLLAPSED_ELEMENT_ID = "ceid";
+        String VISUAL_EXPANDED_ELEMENT_ID = "eeid";
         String ACTION_BUTTON_ICON = "icon";
         String CAMPAIGN_ID = "campaignId";
         String PD_ACTION = "pdAction";
@@ -132,6 +136,10 @@ public interface CMConstant {
         String REVIEW_SCORE = "reviewScore";
         String REVIEW_NUMBER = "reviewNumber";
         String REVIEW_ICON = "reviewIcon";
+
+        String MAIN_APP_PRIORITY = "mainappPriority";
+        String SELLER_APP_PRIORITY = "sellerappPriority";
+        String ADVANCE_TARGET = "isAdvanceTarget";
     }
 
     interface NotificationProductType {
@@ -179,6 +187,8 @@ public interface CMConstant {
         String ACTION_CAROUSEL_NOTIFICATION_DISMISS = "com.tokopedia.notification.action_carousel_dismiss";
         String ACTION_GRID_CLICK = "com.tokopedia.notification.GRID_CLICK";
         String ACTION_GRID_MAIN_CLICK = "com.tokopedia.notification.action_grid_main_click";
+        String ACTION_VISUAL_COLLAPSED_CLICK = "com.tokopedia.notification.action_visual_collapsed_click";
+        String ACTION_VISUAL_EXPANDED_CLICK = "com.tokopedia.notification.action_visual_expanded_click";
 
         String ACTION_PRODUCT_NOTIFICATION_DISMISS = "com.tokopedia.notification.product_notification_dismiss ";
         String ACTION_PRODUCT_CLICK = "com.tokopedia.notification.product_click";
@@ -201,7 +211,6 @@ public interface CMConstant {
     }
 
     interface TimberTags {
-        String TAG = "P2#CM_VALIDATION#";
         int MAX_LIMIT = 1000;
     }
 

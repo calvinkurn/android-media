@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ReviewCard(
         @SerializedName("product_id")
-        val productId: Long = 0,
+        val productId: String = "0",
         @SerializedName("image_url")
         val imageUrl: String = "",
         @SerializedName("product_name")

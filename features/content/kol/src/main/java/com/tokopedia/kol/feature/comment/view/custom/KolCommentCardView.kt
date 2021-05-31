@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -29,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by jegul on 2019-09-25.
@@ -45,8 +45,8 @@ class KolCommentCardView : LinearLayout {
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val comment: TextView
-    private val time: TextView
+    private val comment: Typography
+    private val time: Typography
     private val avatar: ImageView
     private val badge: ImageView
     private val btnReply: UnifyButton
@@ -69,7 +69,7 @@ class KolCommentCardView : LinearLayout {
             btnReply = findViewById(R.id.btn_reply)
         }
         orientation = VERTICAL
-        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.white))
+        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     override fun getLayoutParams(): ViewGroup.LayoutParams {
@@ -179,7 +179,7 @@ class KolCommentCardView : LinearLayout {
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = true
-                ds.color = MethodChecker.getColor(context, com.tokopedia.design.R.color.tkpd_main_green)
+                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
             }
         }
     }

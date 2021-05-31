@@ -10,7 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core2.R;
+import com.tokopedia.customer_mid_app.R;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 

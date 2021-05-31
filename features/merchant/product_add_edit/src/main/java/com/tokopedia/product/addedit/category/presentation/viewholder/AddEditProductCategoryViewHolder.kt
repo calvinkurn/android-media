@@ -77,8 +77,9 @@ class AddEditProductCategoryViewHolder(
     private fun checkCategorySelected(category: CategoryUiModel) {
         itemView.run {
             if (!category.isSelected) {
-                tvCategoryNameParent.setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                tvCategoryNameParent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 rvLevelCategory.hide()
+                spacingLevelCategory.hide()
                 ivCategoryParent.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_down)
                 val resultSize = resultCategories.size - 1
                 for (level in resultSize downTo category.categoryLevel) {
@@ -89,6 +90,7 @@ class AddEditProductCategoryViewHolder(
             } else {
                 tvCategoryNameParent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 rvLevelCategory.show()
+                spacingLevelCategory.show()
                 ivCategoryParent.loadImageWithoutPlaceholder(R.drawable.product_add_edit_ic_chevron_up)
                 resultCategories.add(category)
             }

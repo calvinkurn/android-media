@@ -1,39 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:paddingLeft="@dimen/spacing_lvl4"
     android:paddingRight="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_insurance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_shipment_insurance"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintBottom_toBottomOf="@id/switch_insurance"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/switch_insurance"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
 
-    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
-        android:id="@+id/switch_insurance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:bold="true"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_description_insurance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:text="@string/label_shipment_insurance_description"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/switch_insurance"
-        app:layout_constraintTop_toBottomOf="@id/switch_insurance"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_insurance"
         app:typographyType="body_3" />
+
+    <RadioGroup
+        android:id="@+id/radios_insurance"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_description_insurance">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/radio_required_insurance"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:text="@string/label_shipment_required" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/radio_optional_insurance"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layoutDirection="rtl"
+            android:text="@string/label_shipment_optional" />
+
+    </RadioGroup>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_insurance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/radios_insurance"
+        app:tickerShapeType="loose"
+        app:tickerType="warning"
+        app:titleText="@string/title_shipment_ticker"
+        app:descriptionText="@string/label_shipment_ticker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

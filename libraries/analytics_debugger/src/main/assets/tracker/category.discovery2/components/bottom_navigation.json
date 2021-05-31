@@ -1,0 +1,17 @@
+{
+  "readme": "Discovery Bottom Navigation impression and click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "event" : "clickNavigationDrawer",
+      "eventCategory" : ".*",
+      "eventAction" : ".*",
+      "eventLabel" : ".*",
+      "currentSite" : "tokopediamarketplace",
+      "userId" : ".*",
+      "businessUnit" : "home & browse",
+      "pageType" : ".*",
+      "pagePath" : ".*"
+    }
+  ]
+}

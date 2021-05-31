@@ -1,7 +1,7 @@
 package com.tokopedia.hotel.destination
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -13,6 +13,7 @@ import com.tokopedia.hotel.destination.usecase.GetHotelRecentSearchUseCase
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import com.tokopedia.hotel.destination.view.viewmodel.Loaded
+import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,7 +39,7 @@ class HotelDestinationViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = TravelTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelDestinationViewModel: HotelDestinationViewModel
 
     private val userSessionInterface = mockk<UserSessionInterface>()
@@ -260,8 +261,31 @@ class HotelDestinationViewModelTest {
     }
 
     @Test
-    fun getCurrentLocation() {
+    fun onGetLocation_failedToGetLocation_LatLongShouldBeFail() {
+        // given
+        val deviceLocation = DeviceLocation(0.0, 0.0, 0)
 
+        // when
+        val onGetLocationFun = hotelDestinationViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Fail)
+    }
+
+    @Test
+    fun onGetLocation_successToGetLocation_LatLongShouldBeSuccessAndContainsLatLong() {
+        // given
+        val deviceLocation = DeviceLocation(1.12345, 2.54321, 0)
+
+        // when
+        val onGetLocationFun = hotelDestinationViewModel.onGetLocation()
+        onGetLocationFun(deviceLocation)
+
+        // then
+        assert(hotelDestinationViewModel.longLat.value is Success)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.first == deviceLocation.longitude)
+        assert((hotelDestinationViewModel.longLat.value as Success).data.second == deviceLocation.latitude)
     }
 
     @Test

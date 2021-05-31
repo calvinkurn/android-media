@@ -352,7 +352,7 @@
         "expiredTime": "",
         "backColor": "",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -567,7 +567,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -836,7 +836,7 @@
           "coupon_code": ""
         },
         "applink": "",
-        "text_color": "#000000",
+        "text_color": "",
         "image_url": "https://ecs7-p.tokopedia.net/img/attachment/2020/5/12/53561064/53561064_7ce01cda-746c-48cc-827c-58633f2b0793.png",
         "attribution": "",
         "gradient_color": ["#42f59e", "#8df542", "#f2f542"]
@@ -866,7 +866,7 @@
         "expiredTime": "2020-05-13T18:00:00+07:00",
         "backColor": "red",
         "backImage": "https://ecs7-p.tokopedia.net/img/attachment/2020/4/7/18958454/18958454_9af4d68e-d03b-4db2-abce-44fc07875245.jpeg",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -941,7 +941,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -1362,7 +1362,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -1624,7 +1624,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -1921,7 +1921,7 @@
           "coupon_code": ""
         },
         "applink": "tokopedia://discovery/bebas-ongkir",
-        "text_color": "#000000",
+        "text_color": "",
         "image_url": "",
         "attribution": "",
         "gradient_color": ["#9beb34", "#34eb9f"]
@@ -3313,7 +3313,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -3528,7 +3528,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -4135,7 +4135,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -4266,7 +4266,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -4481,7 +4481,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -5088,7 +5088,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -5247,7 +5247,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -5378,7 +5378,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -5509,7 +5509,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -5724,7 +5724,7 @@
         "expiredTime": "",
         "backColor": "green",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -5939,7 +5939,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -6154,7 +6154,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -6761,7 +6761,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -6976,7 +6976,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -7583,7 +7583,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{
@@ -7798,7 +7798,7 @@
         "expiredTime": "",
         "backColor": "red",
         "backImage": "",
-        "textColor": "#000000"
+        "textColor": ""
       },
       "hero": null,
       "grids": [{

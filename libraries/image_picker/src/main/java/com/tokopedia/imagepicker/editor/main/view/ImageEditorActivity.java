@@ -28,16 +28,17 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
+import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
-import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
+import com.tokopedia.utils.file.FileUtil;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -348,7 +349,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
         // check the size is must be higher than the minimum resolution
         // we need to recheck this even though the maxScale has been set (in case there is OOM)
-        int resultMinResolution = ImageUtils.getMinResolution(file);
+        int resultMinResolution = ImageProcessingUtil.getMinResolution(file);
         if (resultMinResolution < minResolution) {
             file.delete();
             NetworkErrorHelper.showRedCloseSnackbar(this, belowMinResolutionErrorMessage);
@@ -361,7 +362,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             for (int j = getMaxStepForCurrentImage() - 1; j > getCurrentStepForCurrentImage(); j--) {
                 //delete the file, so we can reserve space more
                 String pathToDelete = edittedImagePaths.get(currentImageIndex).get(j);
-                ImageUtils.deleteFile(pathToDelete);
+                FileUtil.deleteFile(pathToDelete);
                 edittedImagePaths.get(currentImageIndex).remove(j);
                 imageRatioTypeDefStepList.get(currentImageIndex).remove(j);
             }
@@ -388,7 +389,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         if (lastEmptyStep > MAX_HISTORY_PER_IMAGE) {
             //delete the file, so we can reserve space more
             String stepNo1Path = edittedImagePaths.get(currentImageIndex).get(1);
-            ImageUtils.deleteFile(stepNo1Path);
+            FileUtil.deleteFile(stepNo1Path);
 
             edittedImagePaths.get(currentImageIndex).remove(1);
             imageRatioTypeDefStepList.get(currentImageIndex).remove(1);
@@ -476,9 +477,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             editorControlView.setVisibility(View.VISIBLE);
             doneButton.setVisibility(View.GONE);
 
-            getSupportActionBar().setHomeButtonEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setTitle("");
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setHomeButtonEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setTitle("");
+            }
 
             switch (editActionType) {
                 case ACTION_CROP:
@@ -527,9 +530,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             editorMainView.setVisibility(View.VISIBLE);
             editorControlView.setVisibility(View.GONE);
             doneButton.setVisibility(View.VISIBLE);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(getTitle());
+
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setHomeButtonEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle(getTitle());
+            }
             tvActionTitle.setVisibility(View.GONE);
             if (fragment != null) {
                 fragment.setEditCropMode(false);
@@ -751,17 +757,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         showDoneLoading();
 
         initImageCropPresenter();
-        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true,
-                ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
+        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true, convertToWebp);
     }
 
     @Override
     public void onSuccessCropImageToRatio(ArrayList<String> cropppedImagePaths, ArrayList<Boolean> isEdittedList) {
         hideDoneLoading();
-        ArrayList<String> resultList;
         try {
-            resultList = ImageUtils.copyFiles(cropppedImagePaths, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
-            onFinishWithMultipleImageValidateFileSize(resultList);
+            onFinishWithMultipleImageValidateFileSize(cropppedImagePaths);
         } catch (Throwable e) {
             NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e));
         }
@@ -783,7 +786,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage(getString(R.string.title_loading));
+            progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         progressDialog.show();
         blockingView.setVisibility(View.VISIBLE);
@@ -831,13 +834,23 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
     @Override
     public void onSuccessResizeImage(ArrayList<String> resultPaths) {
+        initImagePickerPresenter();
+        imagePickerPresenter.convertFormatImage(resultPaths, convertToWebp);
+    }
+
+    @Override
+    public void onErrorConvertFormatImage(Throwable e) {
+        hideDoneLoading();
+        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+    }
+
+    @Override
+    public void onSuccessConvertFormatImage(ArrayList<String> resultPaths) {
         hideDoneLoading();
         onFinishEditingImage(resultPaths);
     }
 
     protected void onFinishEditingImage(ArrayList<String> imageUrlOrPathList) {
-        ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
-        ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
         Intent intent = getFinishIntent(imageUrlOrPathList);
         setResult(Activity.RESULT_OK, intent);
         trackContinue();
@@ -858,7 +871,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
      */
     private boolean isResolutionValid(ArrayList<String> localPaths) {
         for (String localPath : localPaths) {
-            if (ImageUtils.getMinResolution(localPath) < minResolution) {
+            if (ImageProcessingUtil.getMinResolution(localPath) < minResolution) {
                 return false;
             }
         }
@@ -868,33 +881,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     @Override
     protected void onResume() {
         super.onResume();
-        if (isPermissionGotDenied) {
-            finish();
-            return;
-        }
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
-        } else {
-            onResumeAfterCheckPermission();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        int result = grantResults[0];
-        if (result == PackageManager.PERMISSION_DENIED) {
-            isPermissionGotDenied = true;
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                //Never ask again selected, or device policy prohibits the app from having that permission.
-                Toast.makeText(getContext(), getString(R.string.permission_enabled_needed), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            isPermissionGotDenied = false;
-            onResumeAfterCheckPermission();
-        }
+        onResumeAfterCheckPermission();
     }
 
     private void onResumeAfterCheckPermission() {
@@ -1018,7 +1005,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                         .setPositiveButton(getString(R.string.label_return), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
                                 ImageEditorActivity.super.onBackPressed();
                                 trackBack();
                             }

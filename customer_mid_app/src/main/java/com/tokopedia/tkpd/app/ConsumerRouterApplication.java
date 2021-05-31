@@ -8,10 +8,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.facebook.react.ReactApplication;
-import com.facebook.react.ReactNativeHost;
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -27,26 +32,30 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.common_digital.common.constant.DigitalCache;
-import com.tokopedia.core.MaintenancePage;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
+import com.tokopedia.fcmcommon.FirebaseMessagingManager;
+import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
+import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
@@ -54,6 +63,8 @@ import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -69,7 +80,9 @@ import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
+import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.GraphqlHelper;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
@@ -77,15 +90,8 @@ import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
-import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
-import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
-import com.tokopedia.tkpdreactnative.react.ReactUtils;
-import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
-import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
-import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
@@ -99,10 +105,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.inject.Inject;
-
-import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -121,12 +125,10 @@ import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
-        ReactApplication,
         AbstractionRouter,
         ApplinkRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
-        ReactNativeRouter,
         NetworkRouter,
         OmsModuleRouter,
         TkpdAppsFlyerRouter,
@@ -135,24 +137,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+    private static final String ENABLE_ASYNC_GCM_LEGACY = "android_async_gcm_legacy";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
     protected CacheManager cacheManager;
-    @Inject
-    Lazy<ReactNativeHost> reactNativeHost;
-    @Inject
-    Lazy<ReactUtils> reactUtils;
-    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
+
     private OmsComponent omsComponent;
-    private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
     private TetraDebugger tetraDebugger;
     private Iris mIris;
+
+    private FirebaseMessagingManager fcmManager;
 
     @Override
     public void onCreate() {
         super.onCreate();
         initialiseHansel();
         initFirebase();
+        GraphqlClient.setContextData(getApplicationContext());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
@@ -228,10 +229,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
     }
 
-    private void initDaggerInjector() {
-        getReactNativeComponent().inject(this);
-    }
-
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(ConsumerRouterApplication.this);
         WeaveInterface irisInitializeWeave = new WeaveInterface() {
@@ -277,14 +274,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToHome(Context context) {
-        Intent intent = getHomeIntent(context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public Intent getSplashScreenIntent(Context context) {
-        return new Intent(context, ConsumerSplashScreen.class);
     }
 
     @Override
@@ -292,26 +284,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NFCSubscriber.onNewIntent(context, intent);
     }
 
-    /**
-     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#isSupportApplink(String)}
-     *
-     * @param appLinks
-     * @return
-     */
-    @Deprecated
-    public boolean isSupportedDelegateDeepLink(String appLinks) {
-        return isSupportApplink(appLinks);
-    }
-
-    public Intent getIntentDeepLinkHandlerActivity() {
-        return new Intent(this, DeeplinkHandlerActivity.class);
-    }
-
-    @Override
-    public boolean getEnableFingerprintPayment() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP);
-    }
 
     @Override
     public Interceptor getChuckerInterceptor() {
@@ -333,15 +305,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
-    @Override
-    public void onLogout(AppComponent appComponent) {
-
-        forceLogout();
-
-        PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
-        new CacheApiClearAllUseCase(this).executeSync();
-    }
-
     private void forceLogout() {
         PasswordGenerator.clearTokenStorage(context);
         TrackApp.getInstance().getMoEngage().logoutEvent();
@@ -359,31 +322,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendLoginEmitter(String userId) {
-        reactUtils.get().sendLoginEmitter(userId);
-    }
-
-    private ReactNativeComponent getReactNativeComponent() {
-        if (daggerReactNativeBuilder == null) {
-            daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
-                    .appComponent(getApplicationComponent())
-                    .reactNativeModule(new ReactNativeModule(ConsumerRouterApplication.this));
-        }
-        if (reactNativeComponent == null)
-            reactNativeComponent = daggerReactNativeBuilder.build();
-        return reactNativeComponent;
-    }
-
-    @Override
-    public ReactNativeHost getReactNativeHost() {
-        if (reactNativeHost == null) initDaggerInjector();
-        return reactNativeHost.get();
-    }
-
-    @Override
     public void onForceLogout(Activity activity) {
         forceLogout();
-        Intent intent = ((TkpdCoreRouter) getBaseContext().getApplicationContext()).getSplashScreenIntent(getBaseContext());
+        Intent intent = new Intent(context, ConsumerSplashScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -395,7 +336,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showMaintenancePage() {
-        ServerErrorHandler.showMaintenancePage();
+        CoreNetworkApplication.getAppContext().startActivity(MaintenancePage.createIntentFromNetwork(getAppContext()));
     }
 
     @Override
@@ -415,9 +356,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void sendAnalyticsAnomalyResponse(String title,
                                              String accessToken, String refreshToken,
                                              String response, String request) {
-        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
-                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
-                ";response=" + response + ";request=" + request);
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "USER_ANOMALY_REPONSE");
+        messageMap.put("title", title);
+        messageMap.put("accessToken", accessToken);
+        messageMap.put("refreshToken", refreshToken);
+        messageMap.put("response", refreshToken);
+        messageMap.put("request", request);
+        ServerLogger.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
     }
 
     @Override
@@ -428,8 +374,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void gcmUpdate() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
-        sessionRefresh.gcmUpdate();
+        String accessToken = accessTokenRefresh.refreshToken();
+        doRelogin(accessToken);
+    }
+
+    private Boolean isOldGcmUpdate() {
+        return getBooleanRemoteConfig(FirebaseMessagingManager.ENABLE_OLD_GCM_UPDATE, false);
     }
 
     @Override
@@ -524,10 +474,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return Observable.just(new VoucherViewModel());
     }
 
-    public UseCase<String> setCreditCardSingleAuthentication() {
-        return new CreditCardFingerPrintUseCase();
-    }
-
     @Override
     public FingerprintModel getFingerprintModel() {
         return FingerprintModelGenerator.generateFingerprintModel(this);
@@ -537,10 +483,42 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void doRelogin(String newAccessToken) {
         SessionRefresh sessionRefresh = new SessionRefresh(newAccessToken);
         try {
-            sessionRefresh.gcmUpdate();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            if(isOldGcmUpdate()) {
+                sessionRefresh.gcmUpdate();
+            } else {
+                if(fcmManager == null) {
+                    provideFcmManager();
+                }
+                newGcmUpdate(sessionRefresh);
+            }
+        } catch (IOException e) {}
+    }
+
+    private void newGcmUpdate(SessionRefresh sessionRefresh) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    gcmUpdateLegacy(sessionRefresh);
+                } else {
+                    fcmManager.onNewToken(task.getResult().getToken());
+                }
+            }
+        });
+    }
+
+    private void gcmUpdateLegacy(SessionRefresh sessionRefresh) {
+        WeaveInterface weave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                try {
+                    sessionRefresh.gcmUpdate();
+                } catch (Throwable ignored) {}
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
     }
 
     @Override
@@ -576,6 +554,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(ConsumerRouterApplication.this);
+        PushNotification.init(getApplicationContext());
+
         List<String> excludeScreenList = new ArrayList<>();
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.SPLASH);
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_ACTIVITY);
@@ -632,6 +612,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return null;
     }
 
+
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
         if(TextUtils.isEmpty(errorMessage)){
@@ -639,5 +620,45 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }else {
             SessionAnalytics.trackRefreshTokenFailed(errorMessage);
         }
+    }
+
+    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
+    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
+
+    @Override
+    public Class<?> getInboxMessageActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    @Override
+    public Class<?> getInboxResCenterActivityClassReal() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
+        return Class.forName(activityFullPath);
+    }
+
+    private void provideFcmManager() {
+        fcmManager = new FirebaseMessagingManagerImpl(
+                new UpdateFcmTokenUseCase(
+                        new GraphqlUseCase<>(GraphqlInteractor.getInstance().getGraphqlRepository()),
+                        GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.fcmcommon.R.raw.query_update_fcm_token)
+                ),
+                PreferenceManager.getDefaultSharedPreferences(context),
+                new UserSession(context)
+        );
     }
 }

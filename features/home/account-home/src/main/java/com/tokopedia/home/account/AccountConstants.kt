@@ -19,6 +19,7 @@ object AccountConstants {
     const val TITLE_UOH_DALAM_PROSES = "Dalam Proses"
     const val TITLE_UOH_SEMUA_TRANSAKSI = "Semua Transaksi"
     const val TITLE_UOH_ETICKET = "E-tiket & E-voucher Aktif"
+    const val TITLE_UOH_TRANSAKSI_BERLANGSUNG = "Transaksi Berlangsung"
 
     object Navigation {
         const val SEE_ALL = "lihat_semua"
@@ -194,20 +195,6 @@ object AccountConstants {
         const val TOPADS_AMT = "topads_amt"
         const val HAS_PURCHASED_MARKETPLACE = "has_purchased_marketplace"
         const val LAST_TRANSACT_DATE = "last_transaction_date"
-    }
-
-    interface VccStatus {
-        companion object {
-            const val ELIGIBLE = "eligible"
-            const val NOT_ELIGIBLE = "not_eligible"
-            const val HOLD = "hold"
-            const val ACTIVE = "active"
-            const val BLOCKED = "blocked"
-            const val KYC_PENDING = "kyc pending"
-            const val NOT_FOUND = "not_found"
-            const val REJECTED = "rejected"
-            const val DEACTIVATED = "deactivated"
-        }
     }
 
     interface ErrorCodes {

@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.util.util
 
 import android.app.Dialog
 import android.content.*
+import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -9,8 +10,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +22,8 @@ import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.videoplayer.utils.showToast
 
 /**
@@ -211,9 +212,9 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mProgressBar: ProgressBar
+    private lateinit var mProgressBar: ProgressBarUnify
     private lateinit var mLayoutError: LinearLayout
-    private lateinit var mTextViewError: TextView
+    private lateinit var mTextViewError: Typography
 
     override fun initView(view: View) {
         mRecyclerView = view.findViewById(R.id.recyclerview_bottomsheet)
@@ -276,8 +277,16 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun doActivityShare(type: ShareType.ActivityShare) {
-        startActivity(type.intent)
-        sendTracker(type.key)
+        try {
+            startActivity(type.intent)
+            sendTracker(type.key)
+        } catch (ex: PackageManager.NameNotFoundException) {
+            showToast(getString(R.string.error_apps_not_installed))
+            ex.printStackTrace()
+        } catch (ex: Exception) {
+            showToast(getString(R.string.error_occurred))
+            ex.printStackTrace()
+        }
     }
 
     private fun doActionShare(type: ShareType.ActionShare) {
@@ -285,22 +294,9 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     private fun actionMore() {
-        LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                        0, DataMapper().getLinkerShareData(data),
-                        object : ShareCallback {
-                            override fun urlCreated(linkerShareData: LinkerShareResult) {
-                                val intent = getIntent(data?.originalTextContent ?: "", TYPE_TEXT)
-                                startActivity(Intent.createChooser(intent, getString(R.string.other)))
-                                sendTracker(KEY_OTHER)
-                            }
-
-                            override fun onError(linkerError: LinkerError) {
-
-                            }
-                        }
-                )
-        )
+        val intent = getIntent(data?.uri ?: "", TYPE_TEXT)
+        startActivity(Intent.createChooser(intent, getString(R.string.other)))
+        sendTracker(KEY_OTHER)
     }
 
     private fun getIntent(textToShare: String, type: String): Intent {
@@ -412,7 +408,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
 
     private fun generateAvailableShareTypes(typeList: List<MimeType>): List<ShareType> {
         return mutableListOf<ShareType>().apply {
-            add(ShareType.ActivityShare(KEY_WHATSAPP, getString(R.string.share_whatsapp), MimeType.TEXT, getTextIntent(PACKAGE_NAME_WHATSAPP, CLASS_NAME_WHATSAPP)))
+            add(ShareType.ActivityShare(KEY_WHATSAPP, getString(R.string.share_whatsapp), MimeType.TEXT, getWhatsAppIntent(PACKAGE_NAME_WHATSAPP)))
             add(ShareType.ActivityShare(KEY_FACEBOOK, getString(R.string.share_facebook), MimeType.TEXT, getTextIntent(PACKAGE_NAME_FACEBOOK, CLASS_NAME_FACEBOOK)))
             add(ShareType.ActivityShare(KEY_LINE, getString(R.string.share_line).toUpperCase(), MimeType.TEXT, getTextIntent(PACKAGE_NAME_LINE, CLASS_NAME_LINE)))
             add(ShareType.ActivityShare(KEY_TWITTER, getString(R.string.share_twitter), MimeType.TEXT, getTextIntent(PACKAGE_NAME_TWITTER, CLASS_NAME_TWITTER)))
@@ -428,6 +424,15 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         }
                 .filterNot { shareType -> shareType is ShareType.ActivityShare && shareType.getResolveActivity(context as Context) == null }
                 .distinctBy(ShareType::key)
+    }
+
+    private fun getWhatsAppIntent(packageName: String): Intent {
+        return Intent(Intent.ACTION_SEND)
+                .setType(MimeType.TEXT.typeString)
+                .setPackage(packageName)
+                .putExtra(Intent.EXTRA_TITLE, data?.name ?: "")
+                .putExtra(Intent.EXTRA_SUBJECT, data?.name ?: "")
+                .putExtra(Intent.EXTRA_TEXT, arguments?.getString(EXTRA_SHARE_FORMAT).orEmpty())
     }
 
     /**

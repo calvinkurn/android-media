@@ -54,8 +54,6 @@ public interface DigitalDealCheckoutContract {
         boolean isAlreadyCollapsByUser();
 
         void showPromoOnlyForTopUpAndBillMessage();
-
-        boolean isAlreadyShowOnBoard();
     }
 
     interface Presenter extends DigitalBaseContract.Presenter<View>{

@@ -19,15 +19,9 @@ class SomRejectOrderUseCase @Inject constructor(private val useCase: GraphqlUseC
         useCase.setTypeClass(SomRejectOrderResponse.Data::class.java)
     }
 
-    suspend fun execute(rejectOrderRequestParam: SomRejectRequestParam): Result<SomRejectOrderResponse.Data> {
+    suspend fun execute(rejectOrderRequestParam: SomRejectRequestParam): SomRejectOrderResponse.Data {
         useCase.setRequestParams(generateParam(rejectOrderRequestParam))
-
-        return try {
-            val rejectOrder = useCase.executeOnBackground()
-            Success(rejectOrder)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
-        }
+        return useCase.executeOnBackground()
     }
 
     private fun generateParam(rejectOrderRequestParam: SomRejectRequestParam): Map<String, SomRejectRequestParam> {

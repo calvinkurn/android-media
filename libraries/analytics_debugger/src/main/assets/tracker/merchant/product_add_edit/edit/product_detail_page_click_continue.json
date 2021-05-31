@@ -1,0 +1,13 @@
+{
+  "readme": "click continue on product detail page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickEditProduct",
+      "eventCategory" : "edit product page",
+      "eventAction" : "click continue on main page",
+      "eventLabel" : ".*",
+      "shopId" : ".+"
+    }
+  ]
+}

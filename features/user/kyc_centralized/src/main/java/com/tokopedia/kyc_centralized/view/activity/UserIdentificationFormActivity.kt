@@ -82,9 +82,11 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             notFoundList.add(createInstance())
             notFoundList
         } else {
-            fragmentList.add(UserIdentificationFormKtpFragment.createInstance())
-            fragmentList.add(UserIdentificationFormFaceFragment.createInstance())
-            fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId))
+            if(fragmentList.isEmpty()) {
+                fragmentList.add(UserIdentificationFormKtpFragment.createInstance())
+                fragmentList.add(UserIdentificationFormFaceFragment.createInstance())
+                fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId))
+            }
             fragmentList
         }
     }
@@ -120,13 +122,13 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             val fragmentId = listFragment[currentPosition - 1].id
             val fragment = supportFragmentManager.findFragmentById(fragmentId) as UserIdentificationFormFinalFragment?
             fragment?.clickBackAction()
-            showDocumentAlertDialog()
+            showDocumentAlertDialog(fragment)
         } else {
             backToPreviousFragment()
         }
     }
 
-    private fun showDocumentAlertDialog() {
+    private fun showDocumentAlertDialog(fragment: UserIdentificationFormFinalFragment?) {
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.kyc_dialog_title))
         dialog.setDescription(getString(R.string.kyc_dialog_description))
@@ -138,6 +140,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         }
         dialog.setSecondaryCTAClickListener {
             analytics?.eventClickDialogExit()
+            fragment?.deleteTmpFile(deleteKtp = true, deleteFace = true)
             dialog.dismiss()
             setResult(KYCConstant.USER_EXIT)
             finish()

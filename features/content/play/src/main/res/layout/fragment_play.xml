@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_video_background"
     >
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -12,7 +11,6 @@
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginStart="@dimen/play_offset_12"
-        android:layout_marginLeft="@dimen/play_offset_12"
         android:layout_marginTop="@dimen/play_offset_12"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,44 +46,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-<!--    <com.tokopedia.unifycomponents.LoaderUnify-->
-<!--        android:id="@+id/loader_page"-->
-<!--        android:layout_width="@dimen/play_viewer_loading_size"-->
-<!--        android:layout_height="@dimen/play_viewer_loading_size"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        />-->
-
-    <com.tokopedia.play.view.custom.PlayUnifyLoader
-        android:id="@+id/loader_page"
-        android:layout_width="@dimen/play_viewer_loading_size"
-        android:layout_height="@dimen/play_viewer_loading_size"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
     <com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
         android:id="@+id/fl_youtube"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <FrameLayout
-        android:id="@+id/fl_global_error"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

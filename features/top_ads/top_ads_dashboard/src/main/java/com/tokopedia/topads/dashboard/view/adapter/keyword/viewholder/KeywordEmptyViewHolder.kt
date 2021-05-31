@@ -4,20 +4,20 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyModel
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 
 /**
  * Created by Pika on 7/6/20.
  */
-class KeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> Unit)) : KeywordViewHolder<KeywordEmptyViewModel>(view) {
+class KeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> Unit)) : KeywordViewHolder<KeywordEmptyModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_group_empty_state
     }
 
-    override fun bind(item: KeywordEmptyViewModel, selectMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: KeywordEmptyModel, selectMode: Boolean, fromSearch: Boolean) {
         item.let {
             view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.topads_empty_keyword))
 

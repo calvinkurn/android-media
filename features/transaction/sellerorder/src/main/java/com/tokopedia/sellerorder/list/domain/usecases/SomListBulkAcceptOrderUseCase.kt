@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.list.domain.usecases
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.list.domain.mapper.BulkAcceptOrderMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkAcceptOrderParam
@@ -10,18 +11,26 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class SomListBulkAcceptOrderUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<SomListBulkAcceptOrderResponse.Data>,
+        private val gqlRepository: GraphqlRepository,
         private val mapper: BulkAcceptOrderMapper
-) : BaseGraphqlUseCase() {
+) : BaseGraphqlUseCase<SomListBulkAcceptOrderUiModel>(gqlRepository) {
 
-    init {
-        useCase.setGraphqlQuery(QUERY)
-        useCase.setTypeClass(SomListBulkAcceptOrderResponse.Data::class.java)
+    override suspend fun executeOnBackground(): SomListBulkAcceptOrderUiModel {
+        return executeOnBackground(false)
     }
 
-    suspend fun execute(): SomListBulkAcceptOrderUiModel {
-        useCase.setRequestParams(params.parameters)
-        return mapper.mapResponseToUiModel(useCase.executeOnBackground())
+    override suspend fun executeOnBackground(useCache: Boolean): SomListBulkAcceptOrderUiModel {
+        val cacheStrategy = getCacheStrategy(useCache)
+        val gqlRequest = GraphqlRequest(QUERY, SomListBulkAcceptOrderResponse.Data::class.java, params.parameters)
+        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+
+        val errors = gqlResponse.getError(SomListBulkAcceptOrderResponse.Data::class.java)
+        if (errors.isNullOrEmpty()) {
+            val response = gqlResponse.getData<SomListBulkAcceptOrderResponse.Data>()
+            return mapper.mapResponseToUiModel(response)
+        } else {
+            throw RuntimeException(errors.joinToString(", ") { it.message })
+        }
     }
 
     fun setParams(orderIds: List<String>, userId: String) {

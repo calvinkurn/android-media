@@ -35,8 +35,13 @@ class ProductManageListAdapter(
         }
     }
 
-    fun updateStock(productId: String, stock: Int, status: ProductStatus) {
-        submitList(productId) { it.copy(stock = stock, status = status) }
+    fun updateStock(productId: String, stock: Int?, status: ProductStatus?) {
+        submitList(productId) {
+            var product = it
+            stock?.let { product = product.copy(stock = stock) }
+            status?.let { product = product.copy(status = status) }
+            product
+        }
     }
 
     fun updateCashBack(productId: String, cashback: Int) {

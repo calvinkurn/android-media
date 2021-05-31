@@ -1,22 +1,22 @@
 package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
@@ -25,11 +25,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.verify
-import io.mockk.verifySequence
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -56,9 +53,6 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     private lateinit var saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase
 
     @MockK
-    private lateinit var codCheckoutUseCase: CodCheckoutUseCase
-
-    @MockK
     private lateinit var getRatesUseCase: GetRatesUseCase
 
     @MockK
@@ -82,14 +76,8 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @MockK(relaxed = true)
     private lateinit var analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection
 
-    @MockK
-    private lateinit var codAnalytics: CodAnalytics
-
     @MockK(relaxed = true)
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
-
-    @MockK
-    private lateinit var getInsuranceCartUseCase: GetInsuranceCartUseCase
 
     @MockK(relaxed = true)
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
@@ -112,15 +100,13 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        presenter = ShipmentPresenter(compositeSubscription,
-                checkoutUseCase, getShipmentAddressFormGqlUseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase,
-                saveShipmentStateGqlUseCase,
-                getRatesUseCase, getRatesApiUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
-                ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
-                getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
+        presenter = ShipmentPresenter(
+                compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
+                editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
+                getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
+                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
@@ -141,11 +127,14 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         )
 
         // When
-        presenter.doValidateuseLogisticPromo(0, "", ValidateUsePromoRequest())
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
-        verify {
-            view.updateButtonPromoCheckout(promoUiModel)
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
 
@@ -173,13 +162,15 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
         verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
-            view.updateButtonPromoCheckout(promoUiModel)
+            view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
 
@@ -191,13 +182,65 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
         verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
         }
     }
+
+    @Test
+    fun validateUseErrorAkamai_ShouldShowErrorAndResetCourierAndClearPromo() {
+        // Given
+        val errorMessage = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(errorMessage))
+
+        // When
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
+            view.showToastError(errorMessage)
+            view.resetAllCourier()
+            view.cancelAllCourierPromo()
+            view.doResetButtonPromoCheckout()
+        }
+    }
+
+    @Test
+    fun `WHEN validate use failed with error message THEN should show error message and reset courier`() {
+        // Given
+        val cartPosition = 1
+        val errorMessage = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "ERROR",
+                        message = listOf(errorMessage)
+                )
+        )
+        every { checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(any()) } just Runs
+        mockkObject(PromoRevampAnalytics)
+        every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
+
+        // When
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+
+        // Then
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
+            view.showToastError(errorMessage)
+            view.resetCourier(cartPosition)
+        }
+    }
+
 }

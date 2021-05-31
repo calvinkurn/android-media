@@ -191,6 +191,12 @@ class ChatAppWidget : AppWidgetProvider() {
             }
         }
 
+        fun showNoLoginState(context: Context) {
+            val awm = AppWidgetManager.getInstance(context)
+            val widgetIds = AppWidgetHelper.getAppWidgetIds<ChatAppWidget>(context, awm)
+            ChatWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
+        }
+
         private fun getIsUserLoggedIn(context: Context, awm: AppWidgetManager, userSession: UserSessionInterface, widgetIds: IntArray): Boolean {
             if (!userSession.isLoggedIn) {
                 ChatWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)

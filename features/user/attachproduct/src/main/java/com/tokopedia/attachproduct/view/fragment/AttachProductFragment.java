@@ -379,7 +379,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
         }
     }
 
-    private void trackAction(String source, int productId) {
+    private void trackAction(String source, String productId) {
 
         if(source.equals(AttachProductActivity.SOURCE_TALK)){
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(

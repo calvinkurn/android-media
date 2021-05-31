@@ -34,7 +34,9 @@ data class ThanksPageData(
         @SerializedName("additional_info")
         val additionalInfo: AdditionalInfo,
         @SerializedName("how_to_pay")
-        val howToPay: String,
+        val howToPay: String?,
+        @SerializedName("how_to_pay_applink")
+        val howToPayAPP : String?,
         @SerializedName("whitelisted_rba")
         val whitelistedRBA: Boolean,
         @SerializedName("payment_type")
@@ -75,9 +77,32 @@ data class ThanksPageData(
         val thanksCustomization: ThanksCustomization?,
         @SerializedName("config_flag")
         val configFlag: String?,
+        @SerializedName("config_list")
+        val configList: String?,
+        @SerializedName("gateway_additional_data")
+        val gatewayAdditionalDataList: ArrayList<GatewayAdditionalData>?,
+        @SerializedName("fee_details")
+        val feeDetailList : ArrayList<FeeDetail>?,
         //created and used locally
         var paymentMethodCount: Int
 ) : Parcelable
+
+@Parcelize
+data class FeeDetail (
+        @SerializedName("name")
+        val name: String,
+        @SerializedName("amount")
+        val amount: Long,
+) : Parcelable
+
+@Parcelize
+data class GatewayAdditionalData(
+        @SerializedName("key")
+        val key : String?,
+        @SerializedName("value")
+        val value : String?
+) : Parcelable
+
 
 data class PaymentDetail(
         @SerializedName("gateway_code")
@@ -132,7 +157,7 @@ data class AdditionalInfo(
         @SerializedName("masked_number")
         val maskedNumber: String,
         @SerializedName("installment_info")
-        val installmentInfo: String,
+        val installmentInfo: String?,
         @SerializedName("interest")
         val interest: Float,
         @SerializedName("revenue")
@@ -375,4 +400,17 @@ data class ThanksCustomization(
 data class ConfigFlag(
         @SerializedName("enable_thanks_widget")
         val isThanksWidgetEnabled : Boolean
+)
+
+data class Tickers(
+        @SerializedName("tickers")
+        val tickerDataListStr : String?
+)
+data class ThankPageTopTickerData(
+        @SerializedName("ticker_title")
+        val tickerTitle : String?,
+        @SerializedName("ticker_text")
+        val tickerDescription : String?,
+        @SerializedName("ticker_type")
+        val ticketType : String?
 )

@@ -9,6 +9,7 @@ internal class GetRecommendationUseCaseRequest {
                       tID
                       source
                       title
+                      subtitle
                       foreignTitle
                       widgetUrl
                       pageName
@@ -53,6 +54,7 @@ internal class GetRecommendationUseCaseRequest {
                             position
                             title
                             type
+                            url
                         }
                         badges {
                           title
@@ -74,6 +76,10 @@ internal class GetRecommendationUseCaseRequest {
                         recommendationType
                         stock
                         isTopads
+                        specificationLabels {
+                            key
+                            value
+                        }
                       }
                     }
                   }
@@ -82,15 +88,8 @@ internal class GetRecommendationUseCaseRequest {
     """.trimIndent()
 
         val singleQuery = """
-            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!) {
-                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs){
-                    meta {
-                        recommendation
-                        size
-                        failSize
-                        processTime
-                        experimentVersion
-                    }
+            query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!) {
+                productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam){
                    data {
                        tID
                        source
@@ -100,6 +99,9 @@ internal class GetRecommendationUseCaseRequest {
                        seeMoreAppLink
                        seeMoreUrlLink
                        pageName
+                       pagination{
+                            hasNext
+                       }
                        recommendation {
                            id
                            name
@@ -114,6 +116,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name
@@ -123,6 +128,12 @@ internal class GetRecommendationUseCaseRequest {
                           labels {
                               title
                               color
+                          }
+                          labelgroup{
+                            position
+                            title
+                            type
+                            url
                           }
                           badges {
                               title
@@ -134,12 +145,20 @@ internal class GetRecommendationUseCaseRequest {
                               quantityMin
                               priceString
                           }
+                          freeOngkir{
+                            isActive
+                            imageUrl
+                          }
                           rating
                           ratingAverage
                           countReview
                           recommendationType
                           stock
                           isTopads
+                          specificationLabels {
+                            key
+                            value
+                        }
                        }
                    }
                  }

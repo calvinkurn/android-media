@@ -12,7 +12,6 @@ import dagger.Provides
 import rx.functions.Func1
 import javax.inject.Named
 
-@SearchScope
 @Module(includes = [SearchProductMapperModule::class])
 class GetLocalSearchRecommendationUseCaseModule {
 

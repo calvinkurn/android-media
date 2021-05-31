@@ -260,9 +260,9 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun createGlobalNavWidgetCardItemDecoration(): RecyclerView.ItemDecoration {
         return GlobalNavWidgetCardItemDecoration(
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12),
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
         )
     }
 

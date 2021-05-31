@@ -10,10 +10,12 @@
             android:label="@string/notifications"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_notification"
@@ -34,17 +36,25 @@
             android:name=".presentation.activity.NotificationSellerActivity"
             android:exported="true"
             android:label="@string/title_seller_info"
-            android:theme="@style/Theme.Green"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Green">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="@string/tokopedia_scheme"
-                    android:host="@string/path_sellerapp_notification"/>
+                    android:host="@string/path_sellerapp_notification"
+                    android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.MarkAsSeenService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
@@ -35,9 +37,11 @@ import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
 import com.tokopedia.topads.headline.view.adapter.HeadLineAdItemsAdapterTypeFactoryImpl
 import com.tokopedia.topads.headline.view.adapter.HeadLineAdItemsListAdapter
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyViewModel
-import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemViewModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsEmptyModel
+import com.tokopedia.topads.headline.view.adapter.viewmodel.HeadLineAdItemsItemModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_headline_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_headline_layout.*
@@ -57,12 +61,21 @@ import kotlin.math.abs
  * Created by Pika on 16/10/20.
  */
 
+private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan"
+private const val VIEW_MULAI_BERIKLAN = "view - mulai iklan toko"
+private const val CLICK_AKTIFKAN_LONG_PRESS = "click - aktifkan iklan on long press card"
+private const val CLICK_NONAKTIFKAN_LONG_PRESS = "click - nonaktifkan iklan on long press card"
+private const val CLICK_HAPUS_LONG_PRESS = "click - hapus iklan on long press card"
+private const val CLICK_YA_HAPUS_LONG_PRESS = "click - ya hapus iklan on long press card"
+private const val CLICK_GRUP_CARD = "click - group ads card"
 open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     private var dataStatistic: DataStatistic? = null
 
     @Inject
     lateinit var presenter: TopAdsDashboardPresenter
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private lateinit var recyclerView: RecyclerView
     private var totalCount = 0
     private var totalPage = 0
@@ -129,19 +142,22 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loader.visibility = View.VISIBLE
         loadStatisticsData()
         btnFilter.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {
             startSelectMode(false)
         }
         activate.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_AKTIFKAN_LONG_PRESS, "{${userSession.shopId}} - {${TextUtils.join(",", getAdIds())}}", userSession.userId)
             performAction(TopAdsDashboardConstant.ACTION_ACTIVATE)
         }
         deactivate.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_NONAKTIFKAN_LONG_PRESS, "{${userSession.shopId}} - {${TextUtils.join(",", getAdIds())}}", userSession.userId)
             performAction(TopAdsDashboardConstant.ACTION_DEACTIVATE)
         }
         delete.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_HAPUS_LONG_PRESS, "{${userSession.shopId}} - {${TextUtils.join(",", getAdIds())}}", userSession.userId)
             showConfirmationDialog()
         }
         btnAddItem.setOnClickListener {
@@ -206,6 +222,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         this.dataStatistic = dataStatistic
         if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
+            topAdsTabAdapter?.hideTabforHeadline()
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
         if (fragment != null && fragment is TopAdsDashStatisticFragment) {
@@ -214,6 +231,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun onGroupClicked(id: Int, priceSpent: String) {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_GRUP_CARD, "{${userSession.shopId}} - {$id}", userSession.userId)
         val intent = Intent(context, TopAdsHeadlineAdDetailViewActivity::class.java)
         intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
         intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
@@ -224,7 +242,9 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         app_bar_layout_2?.visibility = View.GONE
         headlinList?.visibility = View.GONE
         empty_view?.visibility = View.VISIBLE
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(VIEW_MULAI_BERIKLAN, "{${userSession.shopId}}", userSession.userId)
         mulai_beriklan?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_MULAI_BERIKLAN, "{${userSession.shopId}}", userSession.userId)
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
         }
         empty_view.image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
@@ -234,17 +254,17 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun singleItemDelete(pos: Int) {
-        singleDelGroupId = (adapter.items[pos] as HeadLineAdItemsItemViewModel).data.groupId.toString()
+        singleDelGroupId = (adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId.toString()
         performAction(TopAdsDashboardConstant.ACTION_DELETE)
     }
 
     private fun statusChange(pos: Int, status: Int) {
         if (status != CUREENTY_ACTIVATED)
             presenter.setGroupAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_ACTIVATE,
-                    listOf((adapter.items[pos] as HeadLineAdItemsItemViewModel).data.groupId.toString()), resources)
+                    listOf((adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId.toString()), resources)
         else
             presenter.setGroupAction(::onSuccessAction, TopAdsDashboardConstant.ACTION_DEACTIVATE,
-                    listOf((adapter.items[pos] as HeadLineAdItemsItemViewModel).data.groupId.toString()), resources)
+                    listOf((adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId.toString()), resources)
     }
 
     private fun performAction(actionActivate: String) {
@@ -298,6 +318,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 dialog.dismiss()
             }
             dialog.setSecondaryCTAClickListener {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_YA_HAPUS_LONG_PRESS, "{${userSession.shopId}} - {${TextUtils.join(",", getAdIds())}}", userSession.userId)
                 dialog.dismiss()
                 performAction(TopAdsDashboardConstant.ACTION_DELETE)
             }
@@ -356,7 +377,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loader.visibility = View.GONE
         response.data.forEach {
             groupIds.add(it.groupId.toString())
-            adapter.items.add(HeadLineAdItemsItemViewModel(it))
+            adapter.items.add(HeadLineAdItemsItemModel(it))
         }
         if (adapter.items.size.isZero()) {
             onEmptyResult()
@@ -386,7 +407,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     }
 
     private fun onEmptyResult() {
-        adapter.items.add(HeadLineAdItemsEmptyViewModel())
+        adapter.items.add(HeadLineAdItemsEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, groupFilterSheet.getSelectedText(context))
         } else {

@@ -2,5 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <corners android:radius="@dimen/play_selected_product_badge_radius"/>
-    <solid android:color="@color/dark_G500"/>
+    <solid android:color="@color/Unify_G500"/>
 </shape>

@@ -56,7 +56,7 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
     }
 
     fun addKeyword(name: String) {
-        items.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_NEGATIVE_PHRASE, KEYWORD_EXISTS, "0", 0, true, name, KEYWORD_SOURCE))
+        items.add(GetKeywordResponse.KeywordsItem(KEYWORD_TYPE_NEGATIVE_PHRASE, KEYWORD_EXISTS, "0", "0", true, name, KEYWORD_SOURCE))
         notifyItemInserted(items.size - 1)
     }
 }

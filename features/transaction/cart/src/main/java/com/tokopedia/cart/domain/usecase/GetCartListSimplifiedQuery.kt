@@ -2,13 +2,40 @@ package com.tokopedia.cart.domain.usecase
 
 fun getQueryCartRevamp(): String {
     return """
-        query cart_revamp(${'$'}lang: String, ${'$'}selected_cart_id: String) {
+        query cart_revamp(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
-          cart_revamp(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id) {
+          cart_revamp(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
             error_message
             status
             data {
               errors
+              pop_up_message
+              localization_choose_address {
+                address_id
+                address_name
+                address
+                postal_code
+                phone
+                receiver_name
+                status
+                country
+                province_id
+                province_name
+                city_id
+                city_name
+                district_id
+                district_name
+                address_2
+                latitude
+                longitude
+                corner_id
+                is_corner
+                is_primary
+                buyer_store_code
+                type
+                state
+                state_detail
+              }
               empty_cart {
                 title
                 image
@@ -44,6 +71,16 @@ fun getQueryCartRevamp(): String {
                 seller_cashback_wording
                 seller_cashback_value
               }
+              promo_summary {
+                title
+                detail {
+                    description
+                    type
+                    amount_str
+                    amount
+                    currency_details_str
+                }
+              }
               max_quantity
               max_char_note
               messages {
@@ -56,6 +93,10 @@ fun getQueryCartRevamp(): String {
                 ErrorProductMinQuantity
               }
               fulfillment_message
+              toko_cabang {
+                message
+                badge_url
+              }
               available_section {
                 action {
                   id
@@ -71,44 +112,34 @@ fun getQueryCartRevamp(): String {
                       eligible
                       badge_url
                     }
+                    free_shipping_extra {
+                      eligible
+                      badge_url
+                    }
                     preorder {
                       is_preorder
                       duration
                     }
                   }
                   shop {
+                    shop_ticker
+                    maximum_weight_wording
+                    maximum_shipping_weight
+                    is_tokonow
                     shop_alert_message
                     shop_id
-                    user_id
                     admin_ids
                     shop_name
                     shop_image
                     shop_url
                     shop_status
-                    is_gold
-                    is_official
-                    is_free_returns
-                    gold_merchant {
-                      is_gold
-                      is_gold_badge
-                      gold_merchant_logo_url
-                    }
-                    official_store {
-                      is_official
-                      os_logo_url
-                    }
-                    address_id
                     postal_code
                     latitude
                     longitude
-                    district_id
                     district_name
                     origin
                     address_street
-                    province_id
-                    city_id
                     city_name
-                    province_id
                     province_name
                     country_name
                     is_allow_manage
@@ -127,6 +158,15 @@ fun getQueryCartRevamp(): String {
                         additional_fee
                       }
                       is_dropship_enabled
+                    }
+                    is_gold
+                    is_official
+                    shop_type_info {
+                      shop_tier
+                      shop_grade
+                      badge
+                      badge_svg
+                      title
                     }
                   }
                   promo_codes
@@ -245,6 +285,10 @@ fun getQueryCartRevamp(): String {
                         eligible
                         badge_url
                       }
+                      free_shipping_extra {
+                        eligible
+                        badge_url
+                      }
                       booking_stock
                       is_product_volume_weight
                       initial_price
@@ -315,6 +359,10 @@ fun getQueryCartRevamp(): String {
                       eligible
                       badge_url
                     }
+                    free_shipping_extra {
+                      eligible
+                      badge_url
+                    }
                     preorder {
                       is_preorder
                       duration
@@ -323,34 +371,17 @@ fun getQueryCartRevamp(): String {
                   shop {
                     shop_alert_message
                     shop_id
-                    user_id
                     admin_ids
                     shop_name
                     shop_image
                     shop_url
                     shop_status
-                    is_gold
-                    is_official
-                    is_free_returns
-                    gold_merchant {
-                      is_gold
-                      is_gold_badge
-                      gold_merchant_logo_url
-                    }
-                    official_store {
-                      is_official
-                      os_logo_url
-                    }
-                    address_id
                     postal_code
                     latitude
                     longitude
-                    district_id
                     district_name
                     origin
                     address_street
-                    province_id
-                    city_id
                     city_name
                     province_id
                     province_name
@@ -371,6 +402,15 @@ fun getQueryCartRevamp(): String {
                         additional_fee
                       }
                       is_dropship_enabled
+                    }
+                    is_gold
+                    is_official
+                    shop_type_info {
+                      shop_tier
+                      shop_grade
+                      badge
+                      badge_svg
+                      title
                     }
                   }
                   promo_codes
@@ -487,6 +527,10 @@ fun getQueryCartRevamp(): String {
                       is_campaign_error
                       is_blacklisted
                       free_shipping {
+                        eligible
+                        badge_url
+                      }
+                      free_shipping_extra {
                         eligible
                         badge_url
                       }
@@ -672,11 +716,8 @@ fun getQueryCartRevamp(): String {
                   description
                 }
               }
-              ab_test_button {
-                enable
-              }
             }
           }
         }
-    """
+    """.trimIndent()
 }

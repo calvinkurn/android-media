@@ -34,9 +34,12 @@ public class RemoveWishListUseCase {
         graphqlUseCase.clearRequest();
 
         Map<String, Object> variables = new HashMap<>();
-
-        variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
-        variables.put(PARAM_USER_ID, Integer.parseInt(userId));
+        if (!productId.isEmpty()) {
+            variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
+        }
+        if (!userId.isEmpty()) {
+            variables.put(PARAM_USER_ID, Integer.parseInt(userId));
+        }
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(),

@@ -9,8 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -21,9 +19,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
@@ -41,6 +39,7 @@ import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopSettingsErrorHandler
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
 import com.tokopedia.shop.settings.common.util.setNavigationResult
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -58,7 +57,6 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     companion object {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
-        private const val MAX_FILE_SIZE_IN_KB = 10240
         private const val REQUEST_CODE_IMAGE = 846
         const val INPUT_DELAY = 500L
     }
@@ -69,10 +67,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var loader: LoaderUnify? = null
     private var shopDomainTextWatcher: TextWatcher? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var snackbar: Snackbar? = null
-    private var tvSave: TextView? = null
+    private var header: HeaderUnify? = null
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
 
@@ -81,7 +80,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         initGqlClient()
         super.onCreate(savedInstanceState)
         setupToolbar()
-
         savedLocalImageUrl = savedInstanceState?.getString(SAVED_IMAGE_PATH).orEmpty()
         arguments?.let {
             val cacheManagerId = ShopEditBasicInfoFragmentArgs.fromBundle(it).cacheManagerId
@@ -96,11 +94,11 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loader = view.findViewById(R.id.loader)
 
         setupTextField()
         setupDomainSuggestion()
         setupShopAvatar()
-        setupSaveBtn()
 
         observeLiveData()
         getAllowShopNameDomainChanges()
@@ -148,8 +146,17 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupToolbar() {
-        tvSave = activity?.findViewById(R.id.tvSave)
-        tvSave?.show()
+        header = activity?.findViewById<HeaderUnify>(R.id.header)?.apply {
+            actionTextView?.show()
+            actionTextView?.setOnClickListener {
+                val isDialogShown = !isNameStillSame() || !isDomainStillSame()
+                if (isDialogShown) {
+                    createSaveDialog()
+                } else {
+                    onSaveButtonClicked()
+                }
+            }
+        }
     }
 
     private fun setupTextField() {
@@ -161,24 +168,26 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupShopTagLineTextField() {
-        shopTagLineTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                shopTagLineTextField.setMessage("")
-                shopTagLineTextField.setError(false)
-                determineSubmitButton()
+        shopTagLineTextField.textFieldInput.afterTextChanged {
+            determineSubmitButton()
+        }
+        shopTagLineTextField.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                container.scrollTo(0, shopTagLineTextField.y.toInt());
             }
-        })
+        }
     }
 
     private fun setupShopDescriptionTextField() {
         shopDescriptionTextField.textFieldInput.isSingleLine = false
-        shopDescriptionTextField.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                shopDescriptionTextField.setMessage("")
-                shopDescriptionTextField.setError(false)
-                determineSubmitButton()
+        shopDescriptionTextField.textFieldInput.afterTextChanged {
+            determineSubmitButton()
+        }
+        shopDescriptionTextField.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                container.scrollTo(0, shopDescriptionTextField.y.toInt());
             }
-        })
+        }
     }
 
     private fun setupDomainSuggestion() {
@@ -199,17 +208,6 @@ class ShopEditBasicInfoFragment: Fragment() {
         textChangeAvatar.setOnClickListener {
             openImagePicker()
             ShopSettingsTracking.clickChangeShopLogo(userSession.shopId, getShopType())
-        }
-    }
-
-    private fun setupSaveBtn() {
-        tvSave?.setOnClickListener {
-            val isDialogShown = !isNameStillSame() || !isDomainStillSame()
-            if (isDialogShown) {
-                createSaveDialog()
-            } else {
-                onSaveButtonClicked()
-            }
         }
     }
 
@@ -301,13 +299,11 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun disableSaveBtn() {
-        tvSave?.isEnabled = false
-        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N300))
+        header?.actionTextView?.isEnabled = false
     }
 
     private fun enableSaveBtn() {
-        tvSave?.isEnabled = true
-        tvSave?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        header?.actionTextView?.isEnabled = true
     }
 
     private fun isShopNameTextFieldError(): Boolean {
@@ -552,16 +548,16 @@ class ShopEditBasicInfoFragment: Fragment() {
             viewModel.updateShopBasicData(name, domain, tagLine, desc)
         }
 
-        tvSave?.isEnabled = false
+        header?.actionTextView?.isEnabled = false
     }
 
     private fun showLoading() {
-        loader.show()
+        loader?.show()
         container.hide()
     }
 
     private fun hideLoading() {
-        loader.hide()
+        loader?.hide()
         container.show()
     }
 
@@ -592,14 +588,14 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun onErrorUpdateShopBasicData(throwable: Throwable) {
         showSnackBarErrorSubmitEdit(throwable)
-        tvSave?.isEnabled = true
+        header?.actionTextView?.isEnabled = true
         ShopSettingsErrorHandler.logMessage(throwable.message ?: "")
         ShopSettingsErrorHandler.logExceptionToCrashlytics(throwable)
     }
 
     private fun onErrorUpdateShopBasicData(message: String) {
         showSnackBarErrorSubmitEdit(message)
-        tvSave?.isEnabled = true
+        header?.actionTextView?.isEnabled = true
         ShopSettingsErrorHandler.logMessage(message)
         ShopSettingsErrorHandler.logExceptionToCrashlytics(message)
     }
@@ -616,7 +612,6 @@ class ShopEditBasicInfoFragment: Fragment() {
                 setUIShopBasicData(model)
                 setShopBasicData(model)
             }
-            tvSave?.visible()
         }
     }
 
@@ -644,17 +639,22 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun updatePhotoUI(shopBasicDataModel: ShopBasicDataModel?) {
         shopBasicDataModel?.let {
-            if (TextUtils.isEmpty(savedLocalImageUrl)) {
-                val logoUrl = it.logo
-                if (TextUtils.isEmpty(logoUrl)) {
-                    imageAvatar.setImageDrawable(
-                        MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
-                } else {
-                    ImageHandler.LoadImage(imageAvatar, logoUrl)
+            //avoid crash in ImageUnify when image url is returned as base64
+            try {
+                if (imageAvatar?.context?.isValidGlideContext() == true) {
+                    if (TextUtils.isEmpty(savedLocalImageUrl)) {
+                        val logoUrl = it.logo
+                        if (TextUtils.isEmpty(logoUrl)) {
+                            imageAvatar.setImageDrawable(
+                                    MethodChecker.getDrawable(imageAvatar.context, R.drawable.ic_shop_edit_avatar))
+                        } else {
+                            ImageHandler.LoadImage(imageAvatar, logoUrl)
+                        }
+                    } else {
+                        ImageHandler.LoadImage(imageAvatar, savedLocalImageUrl)
+                    }
                 }
-            } else {
-                ImageHandler.LoadImage(imageAvatar, savedLocalImageUrl)
-            }
+            } catch (e: Exception) { }
         }
     }
 

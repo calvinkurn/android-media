@@ -35,9 +35,10 @@
             app:cardCornerRadius="@dimen/smart_bills_icon_corner_size">
 
             <ImageView
+                android:contentDescription="@string/smart_bills_action_bar_title"
                 android:id="@+id/iv_smart_bills_item_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/spacing_lvl6"
+                android:layout_height="@dimen/spacing_lvl6"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/spacing_lvl2" />
 
@@ -58,13 +59,33 @@
                 app:typographyWeight="bold"
                 tools:text="Pascabayar" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_smart_bills_item_description"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                app:typographyType="body_3"
-                tools:text="081298587943 - Telkomsel" />
+                android:orientation="horizontal"
+                >
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_smart_bills_item_description_bill_name"
+                    android:maxLines="1"
+                    android:maxWidth="@dimen/layout_lvl8"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    app:typographyType="body_3"
+                    tools:text="Kos Bulanan" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_smart_bills_item_description_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    app:typographyType="body_3"
+                    tools:text="081298587943" />
+
+            </LinearLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_smart_bills_item_price"
@@ -75,6 +96,39 @@
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 tools:text="Rp 200.000.000" />
+
+            <LinearLayout
+                android:id="@+id/view_urgency_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:id="@+id/tv_due_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_3"
+                    tools:text="Bayar Sebelum"
+                    />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_urgency_icon"
+                    android:layout_marginRight="@dimen/spacing_lvl1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:src="@drawable/ic_countdown_black"
+                    android:layout_gravity="center"
+                    />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_due_date_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_3"
+                    tools:text="10 Februari"
+                    />
+            </LinearLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_smart_bills_item_detail"

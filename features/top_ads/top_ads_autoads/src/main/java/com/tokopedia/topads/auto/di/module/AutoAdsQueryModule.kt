@@ -3,10 +3,8 @@ package com.tokopedia.topads.auto.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
 import com.tokopedia.topads.common.di.ActivityContext
-
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -16,14 +14,7 @@ import dagger.multibindings.StringKey
  * Author errysuprayogi on 20,May,2019
  */
 @Module
-@AutoAdsScope
 class AutoAdsQueryModule(val context: Context) {
-
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyObject.QUERY_ADS_SHOP_INFO)
-    fun queryShopInfo(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_autoads_shop_info)
 
     @Provides
     @IntoMap

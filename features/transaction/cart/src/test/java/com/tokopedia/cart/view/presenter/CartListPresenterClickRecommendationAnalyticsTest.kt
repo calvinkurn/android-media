@@ -6,18 +6,15 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -53,9 +50,6 @@ object CartListPresenterClickRecommendationAnalyticsTest : Spek({
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
     val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
-    val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
-    val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
@@ -71,8 +65,7 @@ object CartListPresenterClickRecommendationAnalyticsTest : Spek({
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                    updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
                     updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
                     followShopUseCase, TestSchedulers
             )
@@ -100,6 +93,86 @@ object CartListPresenterClickRecommendationAnalyticsTest : Spek({
                 val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
                 val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
                 Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
+            }
+
+        }
+
+        Scenario("1 item selected and cart is not empty and item has category breadcrumb") {
+
+            lateinit var result: Map<String, Any>
+            val categoryBreadcrumb = "cat1/cat2/cat3"
+
+            When("generate recommendation data click analytics") {
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(RecommendationItem(categoryBreadcrumbs = categoryBreadcrumb), false, 0)
+            }
+
+            Then("key `category` should be $categoryBreadcrumb") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                val category = products[0][EnhancedECommerceRecomProductCartMapData.KEY_CAT]
+                Assert.assertTrue(category == categoryBreadcrumb)
+            }
+
+        }
+
+        Scenario("1 item selected and cart is not empty and eligible for BO") {
+
+            lateinit var result: Map<String, Any>
+
+            When("generate recommendation data click analytics") {
+                val recommendationItem = RecommendationItem(
+                        isFreeOngkirActive = true,
+                        labelGroupList = listOf(RecommendationLabel())
+                )
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
+            }
+
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR}") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
+                Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
+            }
+
+        }
+
+        Scenario("1 item selected and cart is not empty and eligible for BOE") {
+
+            lateinit var result: Map<String, Any>
+
+            When("generate recommendation data click analytics") {
+                val recommendationItem = RecommendationItem(
+                        isFreeOngkirActive = true,
+                        labelGroupList = listOf(RecommendationLabel(position = LABEL_FULFILLMENT))
+                )
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
+            }
+
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA}") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
+                Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA)
+            }
+
+        }
+
+        Scenario("1 item selected and cart is not empty and not eligible for BO & BOE") {
+
+            lateinit var result: Map<String, Any>
+
+            When("generate recommendation data click analytics") {
+                val recommendationItem = RecommendationItem(
+                        isFreeOngkirActive = false
+                )
+                result = cartListPresenter.generateRecommendationDataOnClickAnalytics(recommendationItem, false, 0)
+            }
+
+            Then("dimension 83 should be ${EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER}") {
+                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
+                val products = click[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
+                val dimension83 = products[0][EnhancedECommerceRecomProductCartMapData.KEY_DIMENSION_83]
+                Assert.assertTrue(dimension83 == EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             }
 
         }

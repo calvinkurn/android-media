@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="saw_app_widget_1_grid">56dp</dimen>
+    <dimen name="saw_app_widget_1_grid">68dp</dimen>
     <dimen name="saw_app_widget_3_grids">180dp</dimen>
     <dimen name="saw_app_widget_4_grids">250dp</dimen>
     <dimen name="saw_app_widget_5_grids">320dp</dimen>

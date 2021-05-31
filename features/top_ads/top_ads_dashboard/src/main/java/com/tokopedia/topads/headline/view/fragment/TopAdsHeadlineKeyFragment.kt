@@ -3,6 +3,7 @@ package com.tokopedia.topads.headline.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -24,8 +26,8 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemModel
 import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
@@ -45,6 +47,11 @@ import javax.inject.Inject
  * Created by Pika on 19/10/20.
  */
 
+private const val click_tambah_iklan = "click - tambah keyword on detail iklan toko"
+private const val CLICK_AKTIFKAN_LONG_PRESS = "click - aktifkan iklan on long press keyword"
+private const val CLICK_NONAKTIFKAN_LONG_PRESS = "click - nonaktifkan iklan on long press keyword"
+private const val CLICK_HAPUS_LONG_PRESS = "click - hapus iklan on long press keyword"
+private const val CLICK_YA_HAPUS_LONG_PRESS = "click - ya hapus iklan on long press keyword"
 class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
 
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
@@ -92,7 +99,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
             putExtra(ParamObject.GROUP_ID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
         }
-        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
+        startActivityForResult(intent, TopAdsDashboardConstant.EDIT_HEADLINE_REQUEST_CODE)
     }
 
 
@@ -103,7 +110,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         else
             TopAdsDashboardConstant.ACTION_DEACTIVATE
         viewModel.setKeywordAction(actionActivate,
-                listOf((adapter.items[pos] as KeywordItemViewModel).result.keywordId.toString()), resources, ::onSuccessAction)
+                listOf((adapter.items[pos] as KeywordItemModel).result.keywordId.toString()), resources, ::onSuccessAction)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,19 +118,27 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         fetchData()
         setSearchBar()
         close_butt?.setOnClickListener { setSelectMode(false) }
-        activate.setOnClickListener { performAction(TopAdsDashboardConstant.ACTION_ACTIVATE) }
-        deactivate.setOnClickListener { performAction(TopAdsDashboardConstant.ACTION_DEACTIVATE) }
+        activate.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_AKTIFKAN_LONG_PRESS, "{${userSession.shopId}} - {${TextUtils.join(",", getAdIds())}}", userSession.userId)
+            performAction(TopAdsDashboardConstant.ACTION_ACTIVATE)
+        }
+        deactivate.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_NONAKTIFKAN_LONG_PRESS, "{${userSession.shopId}} - {${TextUtils.join(",", getAdIds())}}", userSession.userId)
+            performAction(TopAdsDashboardConstant.ACTION_DEACTIVATE)
+        }
         delete.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_HAPUS_LONG_PRESS, "{${userSession.shopId}} - {${TextUtils.join(",", getAdIds())}}", userSession.userId)
             context?.let {
                 showConfirmationDialog(it)
             }
         }
         Utils.setSearchListener(context, view, ::fetchData)
         btnFilter?.setOnClickListener {
-            groupFilterSheet.show()
+            groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         btnAddItem?.setOnClickListener{
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_tambah_iklan, "{${userSession.shopId}} - {$arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()}", userSession.userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
                 putExtra(ParamObject.GROUP_ID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
@@ -158,6 +173,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_YA_HAPUS_LONG_PRESS, "{${userSession.shopId}} - {${TextUtils.join(",", getAdIds())}}", userSession.userId)
             dialog.dismiss()
             performAction(TopAdsDashboardConstant.ACTION_DELETE)
         }
@@ -231,7 +247,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         loader.visibility = View.GONE
         recyclerviewScrollListener.updateStateAfterGetData()
         response.data.forEach { result ->
-            adapter.items.add(KeywordItemViewModel(result))
+            adapter.items.add(KeywordItemModel(result))
         }
         adapter.notifyDataSetChanged()
         setFilterCount()
@@ -281,7 +297,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     }
 
     private fun onEmpty() {
-        adapter.items.add(KeywordEmptyViewModel())
+        adapter.items.add(KeywordEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, true)
             btn_submit?.isEnabled = false

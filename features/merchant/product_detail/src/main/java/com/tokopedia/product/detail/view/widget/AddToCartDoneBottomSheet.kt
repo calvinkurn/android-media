@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.widget
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
@@ -27,6 +28,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.BottomSheets.BottomSheetDismissListener
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -34,12 +39,14 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
-import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
+import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
+import com.tokopedia.product.detail.view.util.showToasterError
+import com.tokopedia.product.detail.view.util.showToasterSuccess
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -74,8 +81,6 @@ open class AddToCartDoneBottomSheet :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var productDetailTracking: ProductDetailTracking
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var addToCartDoneViewModel: AddToCartDoneViewModel
     private lateinit var atcDoneAdapter: AddToCartDoneAdapter
@@ -90,6 +95,7 @@ open class AddToCartDoneBottomSheet :
     private lateinit var shadow: View
     private lateinit var stateAtcView: View
     private lateinit var addToCartButton: UnifyButton
+    private var recomWishlistItem: RecommendationItem? = null
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
 
     private var inflatedView: View? = null
@@ -174,6 +180,16 @@ open class AddToCartDoneBottomSheet :
         }
 
         return dialog
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data,
+                object : ProductCardOptionsWishlistCallback {
+                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                        handleWishlistAction(productCardOptionsModel)
+                    }
+                })
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -339,7 +355,7 @@ open class AddToCartDoneBottomSheet :
     private fun goToCart() {
         activity?.let {
             startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
-            dismiss()
+            dismissAllowingStateLoss()
         }
     }
 
@@ -352,7 +368,7 @@ open class AddToCartDoneBottomSheet :
             putExtra(PDP_EXTRA_UPDATED_POSITION, position)
             startActivityForResult(this, REQUEST_FROM_PDP)
         }
-        dismiss()
+        dismissAllowingStateLoss()
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
@@ -398,7 +414,7 @@ open class AddToCartDoneBottomSheet :
             }
         }
         addedProductDataModel?.productId?.let {
-            productDetailTracking.eventAddToCartRecommendationImpression(
+            DynamicProductDetailTracking.Recommendation.eventAddToCartRecommendationImpression(
                     item.position,
                     item,
                     addToCartDoneViewModel.isLoggedIn(),
@@ -410,13 +426,20 @@ open class AddToCartDoneBottomSheet :
         }
     }
 
+    override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
+        recomWishlistItem = item
+        showProductCardOptions(
+                this,
+                item.createProductCardOptionsModel(position[0]))
+    }
+
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if (isAddWishlist) {
             addToCartDoneViewModel.addWishList(item.productId.toString(), callback)
         } else {
             addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
         }
-        productDetailTracking.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
+        DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
     }
 
     override fun onRecommendationItemSelected(dataModel: AddToCartDoneRecommendationItemDataModel, position: Int) {
@@ -439,7 +462,7 @@ open class AddToCartDoneBottomSheet :
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(dataModel)
                 addedProductDataModel?.productId?.let {
-                    productDetailTracking.eventAddToCartRecommendationATCClick(
+                    DynamicProductDetailTracking.Click.eventAddToCartRecommendationATCClick(
                             item,
                             item.position,
                             addToCartDoneViewModel.isLoggedIn(),
@@ -453,8 +476,37 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onButtonGoToCartClicked() {
-        productDetailTracking.eventAtcClickLihat(addedProductDataModel?.productId ?: "")
+        DynamicProductDetailTracking.Click.eventAtcClickLihat(addedProductDataModel?.productId ?: "")
         goToCart()
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
+        if (productCardOptionsModel == null) return
+
+        val wishlistResult = productCardOptionsModel.wishlistResult
+        if (wishlistResult.isUserLoggedIn) {
+            if (wishlistResult.isSuccess) {
+                recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
+                recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, addToCartDoneViewModel.isLoggedIn(), wishlistResult.isAddWishlist) }
+                view?.showToasterSuccess(
+                        message = if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                        ctaText = getString(R.string.recom_go_to_wishlist),
+                        ctaListener = {
+                            goToWishlist()
+                        }
+                )
+            } else {
+                view?.showToasterError(
+                        if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
+                )
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun goToWishlist(){
+        RouteManager.route(context, ApplinkConst.WISHLIST)
     }
 
     private fun getRemoteConfig(): RemoteConfig? {

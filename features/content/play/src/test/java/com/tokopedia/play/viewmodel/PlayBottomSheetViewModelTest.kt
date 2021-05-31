@@ -2,17 +2,17 @@ package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.PostAddToCartUseCase
-import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
+import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
@@ -21,7 +21,6 @@ import com.tokopedia.variant_common.util.VariantCommonMapper
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,9 +37,10 @@ class PlayBottomSheetViewModelTest {
     private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val mockPostAddToCartUseCase: PostAddToCartUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
+    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     private val modelBuilder = ModelBuilder()
+    private val productModelBuilder = PlayProductTagsModelBuilder()
     private val mockProductVariantResponse: ProductDetailVariantCommonResponse = modelBuilder.buildProductVariant()
 
     private lateinit var playBottomSheetViewModel: PlayBottomSheetViewModel
@@ -57,14 +57,9 @@ class PlayBottomSheetViewModelTest {
         coEvery { mockGetProductVariantUseCase.executeOnBackground() } returns mockProductVariantResponse
     }
 
-    @After
-    fun tearDown() {
-
-    }
-
     @Test
     fun `when get product variant is success, then it should show the un-clicked variant list`() {
-        val product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct())
+        val product = productModelBuilder.buildProductLine()
         val action = ProductAction.AddToCart
         val selectedVariants = VariantCommonMapper.mapVariantIdentifierToHashMap(mockProductVariantResponse.data)
         val categoryVariants = VariantCommonMapper.processVariant(mockProductVariantResponse.data,
@@ -93,7 +88,7 @@ class PlayBottomSheetViewModelTest {
 
         val expectedModel = modelBuilder.buildCartUiModel(
                 action = ProductAction.AddToCart,
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                product = productModelBuilder.buildProductLine(),
                 bottomInsetsType = BottomInsetsType.VariantSheet
         )
         val expectedResult = PlayResult.Success(
@@ -101,7 +96,7 @@ class PlayBottomSheetViewModelTest {
         )
 
         playBottomSheetViewModel.addToCart(
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                product = productModelBuilder.buildProductLine(),
                 action = ProductAction.AddToCart,
                 type = BottomInsetsType.VariantSheet
         )
@@ -113,8 +108,12 @@ class PlayBottomSheetViewModelTest {
                 .isInstanceOf(PlayResult.Success::class.java)
 
         Assertions
-                .assertThat((actualValue as PlayResult.Success).data)
-                .isEqualToComparingFieldByField(expectedResult.data)
+                .assertThat((actualValue as PlayResult.Success).data.peekContent())
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product")
+
+        Assertions
+                .assertThat(actualValue.data.peekContent().product)
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent().product, "impressHolder")
     }
 
     @Test
@@ -123,7 +122,7 @@ class PlayBottomSheetViewModelTest {
 
         val expectedModel = modelBuilder.buildCartUiModel(
                 action = ProductAction.AddToCart,
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                product = productModelBuilder.buildProductLine(),
                 bottomInsetsType = BottomInsetsType.VariantSheet,
                 isSuccess = false,
                 errorMessage = "error message ",
@@ -134,7 +133,7 @@ class PlayBottomSheetViewModelTest {
         )
 
         playBottomSheetViewModel.addToCart(
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                product = productModelBuilder.buildProductLine(),
                 action = ProductAction.AddToCart,
                 type = BottomInsetsType.VariantSheet
         )
@@ -146,8 +145,12 @@ class PlayBottomSheetViewModelTest {
                 .isInstanceOf(PlayResult.Success::class.java)
 
         Assertions
-                .assertThat((actualValue as PlayResult.Success).data)
-                .isEqualToComparingFieldByField(expectedResult.data)
+                .assertThat((actualValue as PlayResult.Success).data.peekContent())
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent(), "product")
+
+        Assertions
+                .assertThat(actualValue.data.peekContent().product)
+                .isEqualToIgnoringGivenFields(expectedResult.data.peekContent().product, "impressHolder")
     }
 
     @Test

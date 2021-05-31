@@ -50,7 +50,10 @@ data class ProductCardModel (
         val countSoldRating: String = "",
         val hasNotifyMeButton: Boolean = false,
         val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
-        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION
+        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+        val isWideContent: Boolean = false,
+        val variant: Variant? = null,
+        val nonVariant: NonVariant? = null,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -100,6 +103,32 @@ data class ProductCardModel (
         fun isCustom() = typeVariant == TYPE_VARIANT_CUSTOM
     }
 
+    data class Variant(
+            val quantity: Int = 0,
+    )
+
+    fun hasVariant(): Boolean {
+        return variant != null
+    }
+
+    fun hasVariantWithQuantity(): Boolean {
+        return variant?.quantity ?: 0 > 0
+    }
+
+    data class NonVariant(
+            val quantity: Int = 0,
+            val minQuantity: Int = 0,
+            val maxQuantity: Int = 0,
+    )
+
+    fun shouldShowAddToCartNonVariantQuantity(): Boolean {
+        return nonVariant?.quantity == 0
+    }
+
+    fun shouldShowQuantityEditor(): Boolean {
+        return nonVariant?.quantity ?: 0 > 0
+    }
+
     fun getLabelProductStatus(): LabelGroup? {
         return findLabelGroup(LABEL_PRODUCT_STATUS)
     }
@@ -130,6 +159,22 @@ data class ProductCardModel (
 
     fun getLabelBestSeller(): LabelGroup? {
         return findLabelGroup(LABEL_BEST_SELLER)
+    }
+
+    fun getLabelETA(): LabelGroup? {
+        return findLabelGroup(LABEL_ETA)
+    }
+
+    fun getLabelFulfillment(): LabelGroup? {
+        return findLabelGroup(LABEL_FULFILLMENT)
+    }
+
+    fun getLabelCategory(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY)
+    }
+
+    fun getLabelCostPerUnit(): LabelGroup? {
+        return findLabelGroup(LABEL_COST_PER_UNIT)
     }
 
     fun willShowRatingAndReviewCount(): Boolean {
@@ -170,6 +215,20 @@ data class ProductCardModel (
     fun willShowVariant(): Boolean {
         return labelGroupVariantList.isNotEmpty()
     }
+
+    fun willShowFulfillment(): Boolean{
+        val labelFulfillment = getLabelFulfillment()
+
+        return labelFulfillment != null
+                && labelFulfillment.title.isNotEmpty()
+                && labelFulfillment.imageUrl.isNotEmpty()
+    }
+
+    fun isShowLabelCategory() = getLabelCategory()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCostPerUnit() = getLabelCostPerUnit()?.title?.isNotEmpty() == true
+
+    fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()

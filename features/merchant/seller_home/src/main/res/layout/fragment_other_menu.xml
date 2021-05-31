@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_header_height_extra"
                 android:layout_marginTop="@dimen/setting_header_height"
-                android:background="@color/Neutral_N0"
+                android:background="@color/Unify_N0"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <include

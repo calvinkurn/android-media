@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.viewholder;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -21,23 +22,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
-import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
@@ -51,11 +48,16 @@ import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.unifycomponents.CardUnify;
+import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -101,7 +104,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Ticker tickerError;
     private LinearLayout layoutWarning;
     private Typography tvShopName;
-    private LinearLayout llShippingWarningContainer;
+    private LinearLayout layoutWarningAndError;
+
+    // Custom Error Ticker
+    private CardUnify customTickerError;
+    private Typography customTickerDescription;
+    private Typography customTickerAction;
+
+    private LinearLayout llFrameItemProductContainer;
     private ImageView ivProductImage;
     private TextView tvProductName;
     private TextView tvProductPrice;
@@ -136,10 +146,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvDropshipper;
     private ImageView imgDropshipperInfo;
     private LinearLayout llDropshipperInfo;
-    private AppCompatEditText etShipperName;
-    private AppCompatEditText etShipperPhone;
-    private TextInputLayout textInputLayoutShipperName;
-    private TextInputLayout textInputLayoutShipperPhone;
+    private TextFieldUnify textInputLayoutShipperName;
+    private TextFieldUnify textInputLayoutShipperPhone;
     private View vSeparatorMultipleProductSameStore;
     private View vSeparatorBelowProduct;
     private Typography tvAdditionalFee;
@@ -147,9 +155,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvLabelInsurance;
     private ImageView imgShopBadge;
     private LinearLayout llShippingOptionsContainer;
-    private LinearLayout layoutWarningAndError;
-    private TextView tvErrorShipmentItemTitle;
-    private TextView tvErrorShipmentItemDescription;
+    private Ticker tickerProductError;
     private FrameLayout flDisableContainer;
     private Ticker productTicker;
     private ConstraintLayout layoutTradeInShippingInfo;
@@ -165,27 +171,40 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
     private TextView tvFulfillName;
-    private Label labelFulfillment;
+    private ImageUnify imgFulfillmentBadge;
+    private Typography separatorFreeShipping;
     private ImageView imgFreeShipping;
     private Typography textOrderNumber;
+    private Typography separatorPreOrder;
     private Label labelPreOrder;
+    private Typography separatorIncidentShopLevel;
     private Label labelIncidentShopLevel;
 
     // order prioritas
     private CheckboxUnify checkBoxPriority;
-    private TextView tvPrioritasTicker;
+    private Typography tvPrioritasTicker;
     private LinearLayout llPrioritasTicker;
     private RelativeLayout llPrioritas;
     private Typography tvPrioritasFee;
     private Typography tvPrioritasFeePrice;
     private ImageView imgPriorityTnc;
-    private TextView tvPrioritasInfo;
+    private Typography tvPrioritasInfo;
     private boolean isPriorityChecked = false;
 
     // Shipping Experience
     private LinearLayout llShippingExperienceStateLoading;
     private FrameLayout containerShippingExperience;
     private ConstraintLayout layoutStateNoSelectedShipping;
+    private ConstraintLayout layoutStateFailedShipping;
+    private ConstraintLayout layoutStateHasErrorShipping;
+    private Typography labelErrorShippingTitle;
+    private Typography labelErrorShippingDescription;
+    private ConstraintLayout layoutStateHasSelectedSingleShipping;
+    private Typography labelSelectedSingleShippingTitle;
+    private Typography labelSelectedSingleShippingOriginalPrice;
+    private Typography labelSelectedSingleShippingDiscountedPrice;
+    private Typography labelSingleShippingEta;
+    private Typography labelSingleShippingMessage;
     private ConstraintLayout layoutStateHasSelectedNormalShipping;
     private Typography labelSelectedShippingDuration;
     private ImageView iconChevronChooseDuration;
@@ -223,8 +242,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tickerError = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.ticker_error);
         layoutWarning = itemView.findViewById(com.tokopedia.purchase_platform.common.R.id.layout_warning);
         layoutWarning.setVisibility(View.GONE);
+        layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
-        llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
+        customTickerError = itemView.findViewById(R.id.checkout_custom_ticker_error);
+        customTickerDescription = itemView.findViewById(R.id.checkout_custom_ticker_description);
+        customTickerAction = itemView.findViewById(R.id.checkout_custom_ticker_action);
+        llFrameItemProductContainer = itemView.findViewById(R.id.ll_frame_item_product_container);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         tvProductPrice = itemView.findViewById(R.id.tv_product_price);
@@ -261,8 +284,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvDropshipper = itemView.findViewById(R.id.label_dropshipper);
         imgDropshipperInfo = itemView.findViewById(R.id.img_dropshipper_info);
         llDropshipperInfo = itemView.findViewById(R.id.ll_dropshipper_info);
-        etShipperName = itemView.findViewById(R.id.et_shipper_name);
-        etShipperPhone = itemView.findViewById(R.id.et_shipper_phone);
         textInputLayoutShipperName = itemView.findViewById(R.id.text_input_layout_shipper_name);
         textInputLayoutShipperPhone = itemView.findViewById(R.id.text_input_layout_shipper_phone);
         vSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
@@ -272,18 +293,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvLabelInsurance = itemView.findViewById(R.id.tv_label_insurance);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         llShippingOptionsContainer = itemView.findViewById(R.id.ll_shipping_options_container);
-        layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
-        tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
-        tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
+        tickerProductError = itemView.findViewById(R.id.checkout_ticker_product_error);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
         imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
+        separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
         layoutTradeInShippingInfo = itemView.findViewById(R.id.layout_trade_in_shipping_info);
         tvTradeInShippingPriceTitle = itemView.findViewById(R.id.tv_trade_in_shipping_price_title);
         tvTradeInShippingPriceDetail = itemView.findViewById(R.id.tv_trade_in_shipping_price_detail);
         productTicker = itemView.findViewById(R.id.product_ticker);
         textOrderNumber = itemView.findViewById(R.id.text_order_number);
         labelPreOrder = itemView.findViewById(R.id.label_pre_order);
+        separatorPreOrder = itemView.findViewById(R.id.separator_pre_order);
         labelIncidentShopLevel = itemView.findViewById(R.id.label_incident_shop_level);
+        separatorIncidentShopLevel = itemView.findViewById(R.id.separator_incident_shop_level);
         textVariant = itemView.findViewById(R.id.text_variant);
         layoutProductInfo = itemView.findViewById(R.id.layout_product_info);
 
@@ -298,13 +320,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvPrioritasInfo = itemView.findViewById(R.id.tv_order_prioritas_info);
 
         tvFulfillName = itemView.findViewById(R.id.tv_fulfill_district);
-        labelFulfillment = itemView.findViewById(R.id.label_fulfillment);
+        imgFulfillmentBadge = itemView.findViewById(R.id.iu_image_fulfill);
         tvTradeInLabel = itemView.findViewById(R.id.tv_trade_in_label);
 
         // Shipping Experience
         llShippingExperienceStateLoading = itemView.findViewById(R.id.ll_shipping_experience_state_loading);
         containerShippingExperience = itemView.findViewById(R.id.container_shipping_experience);
         layoutStateNoSelectedShipping = itemView.findViewById(R.id.layout_state_no_selected_shipping);
+        layoutStateFailedShipping = itemView.findViewById(R.id.layout_state_failed_shipping);
+        layoutStateHasErrorShipping = itemView.findViewById(R.id.layout_state_has_error_shipping);
+        labelErrorShippingTitle = itemView.findViewById(R.id.label_error_shipping_title);
+        labelErrorShippingDescription = itemView.findViewById(R.id.label_error_shipping_description);
+        layoutStateHasSelectedSingleShipping = itemView.findViewById(R.id.layout_state_has_selected_single_shipping);
+        labelSelectedSingleShippingTitle = itemView.findViewById(R.id.label_selected_single_shipping_title);
+        labelSelectedSingleShippingOriginalPrice = itemView.findViewById(R.id.label_selected_single_shipping_original_price);
+        labelSelectedSingleShippingDiscountedPrice = itemView.findViewById(R.id.label_selected_single_shipping_discounted_price);
+        labelSingleShippingEta = itemView.findViewById(R.id.label_single_shipping_eta);
+        labelSingleShippingMessage = itemView.findViewById(R.id.label_single_shipping_message);
         layoutStateHasSelectedNormalShipping = itemView.findViewById(R.id.layout_state_has_selected_normal_shipping);
         labelSelectedShippingDuration = itemView.findViewById(R.id.label_selected_shipping_duration);
         iconChevronChooseDuration = itemView.findViewById(R.id.icon_chevron_choose_duration);
@@ -365,6 +397,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderCostDetail(shipmentCartItemModel);
         renderCartItem(shipmentCartItemModel);
         renderErrorAndWarning(shipmentCartItemModel);
+        renderCustomError(shipmentCartItemModel);
         renderShippingVibrationAnimation(shipmentCartItemModel);
     }
 
@@ -409,11 +442,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderFulfillment(ShipmentCartItemModel model) {
-        labelFulfillment.setVisibility(model.isFulfillment() ? View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(model.getShopLocation())) {
+            if (model.isFulfillment() && !TextUtils.isEmpty(model.getFulfillmentBadgeUrl())) {
+                ImageHandler.loadImageWithoutPlaceholderAndError(imgFulfillmentBadge, model.getFulfillmentBadgeUrl());
+                imgFulfillmentBadge.setVisibility(View.VISIBLE);
+            } else {
+                imgFulfillmentBadge.setVisibility(View.GONE);
+            }
             tvFulfillName.setVisibility(View.VISIBLE);
             tvFulfillName.setText(model.getShopLocation());
         } else {
+            imgFulfillmentBadge.setVisibility(View.GONE);
             tvFulfillName.setVisibility(View.GONE);
         }
     }
@@ -425,6 +464,44 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
+    }
+
+    private void renderCustomError(ShipmentCartItemModel shipmentCartItemModel) {
+        if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getProductErrorCount() > 0 && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
+            customTickerDescription.setText(itemView.getContext().getString(R.string.checkout_disabled_items_description, shipmentCartItemModel.getProductErrorCount()));
+            customTickerAction.setOnClickListener(v -> {
+                if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
+                    shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
+                    showAllProductListener(shipmentCartItemModel).onClick(tickerError);
+                    return;
+                }
+                scrollToErrorProduct(shipmentCartItemModel);
+            });
+            customTickerError.setVisibility(View.VISIBLE);
+            if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
+                scrollToErrorProduct(shipmentCartItemModel);
+            }
+        } else {
+            customTickerError.setVisibility(View.GONE);
+        }
+    }
+
+    private void scrollToErrorProduct(ShipmentCartItemModel shipmentCartItemModel) {
+        rvCartItem.post(() -> {
+            int firstProductErrorIndex = shipmentCartItemModel.getFirstProductErrorIndex() - 1;
+            View child = rvCartItem.getChildAt(firstProductErrorIndex);
+            float dy = 0;
+            if (child != null) {
+                dy = child.getY();
+                View parent = null;
+                while (rvCartItem != parent) {
+                    parent = ((View) child.getParent());
+                    dy += parent.getY();
+                }
+            }
+            shipmentCartItemModel.setTriggerScrollToErrorProduct(false);
+            mActionListener.scrollToPositionWithOffset(getAdapterPosition(), dy * -1);
+        });
     }
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
@@ -456,24 +533,35 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (!TextUtils.isEmpty(shipmentCartItemModel.getPreOrderInfo())) {
             labelPreOrder.setText(shipmentCartItemModel.getPreOrderInfo());
             labelPreOrder.setVisibility(View.VISIBLE);
+            separatorPreOrder.setVisibility(View.VISIBLE);
         } else {
             labelPreOrder.setVisibility(View.GONE);
+            separatorPreOrder.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(shipmentCartItemModel.getFreeShippingBadgeUrl())) {
             ImageHandler.loadImageWithoutPlaceholderAndError(
                     imgFreeShipping, shipmentCartItemModel.getFreeShippingBadgeUrl()
             );
+            if (shipmentCartItemModel.isFreeShippingExtra()) {
+                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe));
+            } else {
+                imgFreeShipping.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo));
+            }
             imgFreeShipping.setVisibility(View.VISIBLE);
+            separatorFreeShipping.setVisibility(View.VISIBLE);
         } else {
             imgFreeShipping.setVisibility(View.GONE);
+            separatorFreeShipping.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(shipmentCartItemModel.getShopAlertMessage())) {
             labelIncidentShopLevel.setText(shipmentCartItemModel.getShopAlertMessage());
             labelIncidentShopLevel.setVisibility(View.VISIBLE);
+            separatorIncidentShopLevel.setVisibility(View.VISIBLE);
         } else {
             labelIncidentShopLevel.setVisibility(View.GONE);
+            separatorIncidentShopLevel.setVisibility(View.GONE);
         }
 
         boolean hasTradeInItem = false;
@@ -488,11 +576,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             tvTradeInLabel.setVisibility(View.GONE);
         }
-        if (shipmentCartItemModel.isOfficialStore() || shipmentCartItemModel.isGoldMerchant()) {
-            if (!shipmentCartItemModel.getShopBadge().isEmpty()) {
-                ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopBadge());
-                imgShopBadge.setVisibility(View.VISIBLE);
-            }
+        if (!shipmentCartItemModel.getShopTypeInfoData().getShopBadge().isEmpty()) {
+            ImageHandler.loadImageWithoutPlaceholder(imgShopBadge, shipmentCartItemModel.getShopTypeInfoData().getShopBadge());
+            imgShopBadge.setVisibility(View.VISIBLE);
+            imgShopBadge.setContentDescription(itemView.getContext().getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shipmentCartItemModel.getShopTypeInfoData().getTitle().toLowerCase()));
         } else {
             imgShopBadge.setVisibility(View.GONE);
         }
@@ -502,8 +589,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvShopName.setText(shopName);
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void renderFirstCartItem(CartItemModel cartItemModel) {
-        if (cartItemModel.isError()) {
+        if (cartItemModel.isError() && !cartItemModel.isShopError()) {
             showShipmentWarning(cartItemModel);
         } else {
             hideShipmentWarning();
@@ -527,6 +615,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderProductProperties(cartItemModel);
     }
 
+    @SuppressLint("SetTextI18n")
     private void renderProductProperties(CartItemModel cartItemModel) {
         List<String> productInformationList = cartItemModel.getProductInformation();
         if (productInformationList != null && !productInformationList.isEmpty()) {
@@ -549,13 +638,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderProductPrice(CartItemModel cartItemModel) {
-        tvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+        tvProductPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                 (long) cartItemModel.getPrice(), false)));
         int dp4 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_4);
         int dp10 = tvProductPrice.getResources().getDimensionPixelOffset(R.dimen.dp_10);
         if (cartItemModel.getOriginalPrice() > 0) {
             tvProductPrice.setPadding(dp4, dp4, 0, 0);
-            tvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+            tvProductOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                     cartItemModel.getOriginalPrice(), false
             )));
             tvProductOriginalPrice.setPaintFlags(tvProductOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -576,19 +665,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderPurchaseProtection(CartItemModel cartItemModel) {
-        rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
-        if (cartItemModel.isProtectionAvailable()) {
+        rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() && !cartItemModel.isError() ? View.VISIBLE : View.GONE);
+        if (cartItemModel.isProtectionAvailable() && !cartItemModel.isError()) {
             mIconTooltip.setOnClickListener(view -> mActionListener.navigateToProtectionMore(cartItemModel.getProtectionLinkUrl()));
             tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
-            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cartItemModel.getProtectionPricePerProduct(), false)));
+            mPricePerProduct.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) cartItemModel.getProtectionPricePerProduct(), false)));
 
             if (cartItemModel.isProtectionCheckboxDisabled()) {
                 cbPPP.setEnabled(false);
                 cbPPP.setChecked(true);
+                cbPPP.skipAnimation();
             } else {
                 cbPPP.setEnabled(true);
                 cbPPP.setChecked(cartItemModel.isProtectionOptIn());
+                cbPPP.skipAnimation();
                 cbPPP.setOnCheckedChangeListener((compoundButton, checked) -> notifyOnPurchaseProtectionChecked(checked, 0));
             }
 
@@ -602,6 +693,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else productTicker.setVisibility(View.GONE);
     }
 
+    @SuppressLint("StringFormatInvalid")
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
         rlExpandOtherProduct.setOnClickListener(showAllProductListener(shipmentItem));
         initInnerRecyclerView(cartItemModels);
@@ -625,6 +717,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                                 RatesDataConverter ratesDataConverter) {
         layoutTradeInShippingInfo.setVisibility(View.GONE);
 
+        if (shipmentCartItemModel.isError()) {
+            renderErrorCourierState(shipmentCartItemModel);
+            return;
+        }
+
         CourierItemData selectedCourierItemData = null;
         boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
 
@@ -637,12 +734,34 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         if (selectedCourierItemData != null) {
+            if (shipmentCartItemModel.isStateLoadingCourierState()) {
+                // Has select shipping, but still loading
+                renderLoadingCourierState();
+                return;
+            }
             // Has select shipping
             renderSelectedCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
             // Has not select shipping
-            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, ratesDataConverter, isTradeInDropOff);
+            prepareLoadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, isTradeInDropOff);
         }
+    }
+
+    private void renderErrorCourierState(ShipmentCartItemModel shipmentCartItemModel) {
+        llShippingOptionsContainer.setVisibility(View.VISIBLE);
+        layoutStateNoSelectedShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+
+        labelErrorShippingTitle.setText(shipmentCartItemModel.getCourierSelectionErrorTitle());
+        labelErrorShippingDescription.setText(shipmentCartItemModel.getCourierSelectionErrorDescription());
+        layoutStateHasErrorShipping.setVisibility(View.VISIBLE);
+
+        llShippingExperienceStateLoading.setVisibility(View.GONE);
+        containerShippingExperience.setVisibility(View.VISIBLE);
+        containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey);
     }
 
     private void renderSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
@@ -652,7 +771,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llShippingExperienceStateLoading.setVisibility(View.GONE);
         containerShippingExperience.setVisibility(View.VISIBLE);
         containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey);
-        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+        if (shipmentCartItemModel.isDisableChangeCourier()) {
+            // Is single shipping only
+            renderSingleShippingCourier(shipmentCartItemModel, selectedCourierItemData);
+        } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             // Is free ongkir shipping
             renderFreeShippingCourier(shipmentCartItemModel, currentAddress, selectedCourierItemData);
         } else {
@@ -663,6 +785,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
         layoutStateHasSelectedNormalShipping.setVisibility(View.VISIBLE);
 
         TextViewExtKt.setTextAndContentDescription(labelSelectedShippingDuration, selectedCourierItemData.getEstimatedTimeDelivery(), R.string.content_desc_label_selected_shipping_duration);
@@ -674,7 +799,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         );
 
         String courierName = selectedCourierItemData.getName() + " (" +
-                Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShipperPrice(), false
                 )) + ")";
 
@@ -686,7 +811,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSelectedShippingPriceorDuration.setText(R.string.estimasi_tidak_tersedia);
         } else {
             TextViewExtKt.setTextAndContentDescription(labelSelectedShippingCourier, selectedCourierItemData.getName(), R.string.content_desc_label_selected_shipping_courier);
-            labelSelectedShippingPriceorDuration.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+            labelSelectedShippingPriceorDuration.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                     selectedCourierItemData.getShipperPrice(), false
             )));
         }
@@ -736,6 +861,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderFreeShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
         layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
         layoutStateHasSelectedFreeShipping.setOnClickListener(
                 getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
@@ -765,18 +893,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else if (selectedCourierItemData.getDiscountedRate() > 0) {
                 // Discounted Shipping Price
                 labelFreeShippingOriginalEtaPrice.setVisibility(View.VISIBLE);
-                String originalEtaPrice = "(" + Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                String originalEtaPrice = "(" + Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShippingRate(), false
                 ));
                 labelFreeShippingOriginalEtaPrice.setText(originalEtaPrice);
                 labelFreeShippingOriginalPrice.setVisibility(View.GONE);
                 labelFreeShippingOriginalEtaPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                String DiscountedEtaPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                String DiscountedEtaPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getDiscountedRate(), false
                 )) + ")";
                 labelFreeShippingDiscountedEtaPrice.setText(DiscountedEtaPrice);
                 labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
-
             }
             labelFreeShippingEtaText.setVisibility(View.VISIBLE);
             if (!selectedCourierItemData.getEtaText().isEmpty()) {
@@ -796,11 +923,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
             } else if (selectedCourierItemData.getDiscountedRate() > 0) {
                 // Discounted Shipping Price
-                labelFreeShippingOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                labelFreeShippingOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShippingRate(), false
                 )));
                 labelFreeShippingOriginalPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                labelFreeShippingDiscountedPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                labelFreeShippingDiscountedPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getDiscountedRate(), false
                 )));
                 labelFreeShippingOriginalPrice.setVisibility(View.VISIBLE);
@@ -810,32 +937,106 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
     }
 
-    private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
+    @SuppressLint("SetTextI18n")
+    private void renderSingleShippingCourier(ShipmentCartItemModel shipmentCartItemModel, CourierItemData selectedCourierItemData) {
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+
+        String discountedPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getDiscountedRate(), false));
+        if (selectedCourierItemData.getDiscountedRate() == 0 && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getEstimatedTimeDelivery() + " (" + discountedPrice + ")");
+            labelSelectedSingleShippingOriginalPrice.setVisibility(View.GONE);
+            labelSelectedSingleShippingDiscountedPrice.setVisibility(View.GONE);
+        } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+            String originalPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getShippingRate(), false));
+            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getEstimatedTimeDelivery() + " (");
+            labelSelectedSingleShippingOriginalPrice.setPaintFlags(labelSelectedSingleShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            labelSelectedSingleShippingOriginalPrice.setText(originalPrice);
+            labelSelectedSingleShippingDiscountedPrice.setText(" " + discountedPrice + ")");
+            labelSelectedSingleShippingOriginalPrice.setVisibility(View.VISIBLE);
+            labelSelectedSingleShippingDiscountedPrice.setVisibility(View.VISIBLE);
+        } else {
+            String price = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getShipperPrice(), false));
+            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getEstimatedTimeDelivery() + " (" + price + ")");
+            labelSelectedSingleShippingOriginalPrice.setVisibility(View.GONE);
+            labelSelectedSingleShippingDiscountedPrice.setVisibility(View.GONE);
+        }
+
+        if (selectedCourierItemData.getEtaErrorCode() == 0 && !selectedCourierItemData.getEtaText().isEmpty()) {
+            labelSingleShippingEta.setText(selectedCourierItemData.getEtaText());
+        } else {
+            labelSingleShippingEta.setText(R.string.estimasi_tidak_tersedia);
+        }
+
+        if (!selectedCourierItemData.getLogPromoDesc().isEmpty()) {
+            labelSingleShippingMessage.setText(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));
+            labelSingleShippingMessage.setVisibility(View.VISIBLE);
+        } else {
+            labelSingleShippingMessage.setVisibility(View.GONE);
+        }
+
+        layoutStateHasSelectedSingleShipping.setVisibility(View.VISIBLE);
+    }
+
+    private void prepareLoadCourierState(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
         llShippingOptionsContainer.setVisibility(View.GONE);
 
         if (isTradeInDropOff) {
-            boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
-            if (hasSelectTradeInLocation) {
-                layoutTradeInShippingInfo.setVisibility(View.GONE);
-                layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
-                layoutStateNoSelectedShipping.setOnClickListener(
-                        getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
-                );
-            } else {
-                layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
-                layoutStateNoSelectedShipping.setVisibility(View.GONE);
-            }
+            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
+            loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
+        } else {
+            renderNoSelectedCourier(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
+            loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
+        }
+    }
+
+    private void renderNoSelectedCourierNormalShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter) {
+        if (shipmentCartItemModel.isDisableChangeCourier()) {
+            renderFailShipmentState(shipmentCartItemModel, currentAddress, ratesDataConverter);
         } else {
             layoutTradeInShippingInfo.setVisibility(View.GONE);
             layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
             layoutStateNoSelectedShipping.setOnClickListener(
                     getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
             );
+            containerShippingExperience.setVisibility(View.VISIBLE);
         }
+    }
 
-        loadCourierState(shipmentCartItemModel, currentAddress, ratesDataConverter, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE);
+    private void renderNoSelectedCourierTradeInDropOff(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean hasSelectTradeInLocation) {
+        if (hasSelectTradeInLocation) {
+            renderNoSelectedCourierNormalShipping(shipmentCartItemModel, currentAddress, ratesDataConverter);
+        } else {
+            layoutTradeInShippingInfo.setVisibility(View.VISIBLE);
+            layoutStateNoSelectedShipping.setVisibility(View.GONE);
+            tvTradeInShippingPriceTitle.setVisibility(View.VISIBLE);
+            tvTradeInShippingPriceDetail.setVisibility(View.VISIBLE);
+            containerShippingExperience.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void renderFailShipmentState(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter) {
+        layoutTradeInShippingInfo.setVisibility(View.GONE);
+        layoutStateNoSelectedShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.VISIBLE);
+        containerShippingExperience.setVisibility(View.VISIBLE);
+
+        layoutStateFailedShipping.setOnClickListener(v -> {
+            ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
+                    shipmentCartItemModel, recipientAddressModel);
+
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                loadCourierStateData(shipmentCartItemModel, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE, tmpShipmentDetailData, position);
+            }
+        });
     }
 
     private View.OnClickListener getOnChangeCourierClickListener(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress) {
@@ -860,34 +1061,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                                   int saveStateType) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
         if (shipmentCartItemModel.isStateLoadingCourierState()) {
-            switch (saveStateType) {
-                case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                    tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                    tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                    break;
-                case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                    llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
-                    containerShippingExperience.setVisibility(View.GONE);
-                    break;
-            }
+            renderLoadingCourierState();
         } else {
             boolean hasLoadCourier = false;
+            llShippingExperienceStateLoading.setVisibility(View.GONE);
             switch (saveStateType) {
                 case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
                     hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourierTradeInDropOff() != null;
                     break;
                 case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
                     hasLoadCourier = shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null;
-                    llShippingExperienceStateLoading.setVisibility(View.GONE);
                     break;
             }
 
-            if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
+            if ((shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) || shipmentCartItemModel.isAutoCourierSelection()) {
                 if (!hasLoadCourier) {
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
                             shipmentCartItemModel, recipientAddressModel);
 
-                    boolean hasLoadCourierState = false;
+                    boolean hasLoadCourierState;
                     if (saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF) {
                         hasLoadCourierState = shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState();
                     } else {
@@ -897,50 +1089,55 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     if (!hasLoadCourierState) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
-                                    shipmentCartItemModel.getSpId(), position, tmpShipmentDetailData,
-                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(),
-                                    saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
-                            shipmentCartItemModel.setStateLoadingCourierState(true);
-                            switch (saveStateType) {
-                                case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                                    shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
-                                    tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                                    tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                                    break;
-                                case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                                    shipmentCartItemModel.setStateHasLoadCourierState(true);
-                                    llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
-                                    containerShippingExperience.setVisibility(View.GONE);
-                                    break;
-                            }
+                            loadCourierStateData(shipmentCartItemModel, saveStateType, tmpShipmentDetailData, position);
                         }
                     } else {
-                        switch (saveStateType) {
-                            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                                break;
-                            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                                llShippingExperienceStateLoading.setVisibility(View.GONE);
-                                containerShippingExperience.setVisibility(View.VISIBLE);
-                                break;
-                        }
+                        renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, saveStateType);
                     }
                 }
             } else {
-                switch (saveStateType) {
-                    case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
-                        tvTradeInShippingPriceTitle.setVisibility(View.GONE);
-                        tvTradeInShippingPriceDetail.setVisibility(View.GONE);
-                        break;
-                    case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
-                        llShippingExperienceStateLoading.setVisibility(View.GONE);
-                        containerShippingExperience.setVisibility(View.VISIBLE);
-                        break;
-                }
+                renderNoSelectedCourier(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, saveStateType);
             }
         }
+    }
+
+    private void renderNoSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, int saveStateType) {
+        switch (saveStateType) {
+            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                boolean hasSelectTradeInLocation = mActionListener.hasSelectTradeInLocation();
+                renderNoSelectedCourierTradeInDropOff(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, hasSelectTradeInLocation);
+                break;
+            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                renderNoSelectedCourierNormalShipping(shipmentCartItemModel, recipientAddressModel, ratesDataConverter);
+                break;
+        }
+    }
+
+    private void loadCourierStateData(ShipmentCartItemModel shipmentCartItemModel, int saveStateType, ShipmentDetailData tmpShipmentDetailData, int position) {
+        mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
+                shipmentCartItemModel.getSpId(), position, tmpShipmentDetailData,
+                shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(),
+                saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF);
+        shipmentCartItemModel.setStateLoadingCourierState(true);
+        llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
+        containerShippingExperience.setVisibility(View.GONE);
+        switch (saveStateType) {
+            case SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF:
+                shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+                tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+                tvTradeInShippingPriceDetail.setVisibility(View.GONE);
+                break;
+            case SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE:
+                shipmentCartItemModel.setStateHasLoadCourierState(true);
+                break;
+        }
+    }
+
+    private void renderLoadingCourierState() {
+        llShippingExperienceStateLoading.setVisibility(View.VISIBLE);
+        containerShippingExperience.setVisibility(View.GONE);
+        tvTradeInShippingPriceTitle.setVisibility(View.GONE);
+        tvTradeInShippingPriceDetail.setVisibility(View.GONE);
     }
 
     private void renderCostDetail(ShipmentCartItemModel shipmentCartItemModel) {
@@ -981,7 +1178,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
         }
         totalItemLabel = String.format(tvTotalItem.getContext().getString(R.string.label_item_count_with_format), totalItem);
-        String totalPPPItemLabel = String.format("Proteksi Produk (%d Barang)", totalPurchaseProtectionItem);
+        @SuppressLint("DefaultLocale") String totalPPPItemLabel = String.format("Proteksi Produk (%d Barang)", totalPurchaseProtectionItem);
 
         VoucherLogisticItemUiModel voucherLogisticItemUiModel = shipmentCartItemModel.getVoucherLogisticItemUiModel();
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
@@ -1019,7 +1216,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             subTotalPrice = totalItemPrice;
         }
-        TextViewExtKt.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false)), R.string.content_desc_tv_sub_total_price);
+        TextViewExtKt.setTextAndContentDescription(tvSubTotalPrice, subTotalPrice == 0 ? "-" : Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(subTotalPrice, false)), R.string.content_desc_tv_sub_total_price);
         TextViewExtKt.setTextAndContentDescription(tvTotalItemPrice, totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice), R.string.content_desc_tv_total_item_price_subtotal);
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
@@ -1060,8 +1257,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     llDropshipperInfo.setVisibility(View.GONE);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
-                    etShipperName.setText("");
-                    etShipperPhone.setText("");
+                    textInputLayoutShipperName.getTextFieldInput().setText("");
+                    textInputLayoutShipperPhone.getTextFieldInput().setText("");
                 } else {
                     llDropshipper.setVisibility(View.VISIBLE);
                 }
@@ -1080,15 +1277,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
                         data.getSelectedShipmentDetailData().setUseDropshipper(checked);
                         if (checked) {
-                            etShipperName.setText(data.getDropshiperName());
-                            etShipperPhone.setText(data.getDropshiperPhone());
+                            textInputLayoutShipperName.getTextFieldInput().setText(data.getDropshiperName());
+                            textInputLayoutShipperPhone.getTextFieldInput().setText(data.getDropshiperPhone());
                             data.getSelectedShipmentDetailData().setDropshipperName(data.getDropshiperName());
                             data.getSelectedShipmentDetailData().setDropshipperPhone(data.getDropshiperPhone());
                             llDropshipperInfo.setVisibility(View.VISIBLE);
                             mActionListener.onDropshipCheckedForTrackingAnalytics();
                         } else {
-                            etShipperName.setText("");
-                            etShipperPhone.setText("");
+                            textInputLayoutShipperName.getTextFieldInput().setText("");
+                            textInputLayoutShipperPhone.getTextFieldInput().setText("");
                             data.getSelectedShipmentDetailData().setDropshipperName("");
                             data.getSelectedShipmentDetailData().setDropshipperPhone("");
                             data.setDropshiperName("");
@@ -1132,7 +1329,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                             R.drawable.checkout_module_ic_dropshipper));
                 }
 
-                etShipperName.addTextChangedListener(new TextWatcher() {
+                textInputLayoutShipperName.getTextFieldInput().addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -1160,18 +1357,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 });
                 if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName()) ||
                         !TextUtils.isEmpty(shipmentCartItemModel.getDropshiperName())) {
-                    etShipperName.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
+                    textInputLayoutShipperName.getTextFieldInput().setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
                 } else {
-                    etShipperName.setText("");
+                    textInputLayoutShipperName.getTextFieldInput().setText("");
                 }
                 if (shipmentCartItemModel.isStateDropshipperHasError()) {
-                    validateDropshipperName(shipmentCartItemModel, etShipperName.getText(), true);
+                    validateDropshipperName(shipmentCartItemModel, textInputLayoutShipperName.getTextFieldInput().getText(), true);
                 } else {
-                    validateDropshipperName(shipmentCartItemModel, etShipperName.getText(), false);
+                    validateDropshipperName(shipmentCartItemModel, textInputLayoutShipperName.getTextFieldInput().getText(), false);
                 }
-                etShipperName.setSelection(etShipperName.length());
+                textInputLayoutShipperName.getTextFieldInput().setSelection(textInputLayoutShipperName.getTextFieldInput().length());
 
-                etShipperPhone.addTextChangedListener(new TextWatcher() {
+                textInputLayoutShipperPhone.getTextFieldInput().addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -1199,16 +1396,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 });
                 if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone()) ||
                         !TextUtils.isEmpty(shipmentCartItemModel.getDropshiperPhone())) {
-                    etShipperPhone.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
+                    textInputLayoutShipperPhone.getTextFieldInput().setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
                 } else {
-                    etShipperPhone.setText("");
+                    textInputLayoutShipperPhone.getTextFieldInput().setText("");
                 }
                 if (shipmentCartItemModel.isStateDropshipperHasError()) {
-                    validateDropshipperPhone(shipmentCartItemModel, etShipperPhone.getText(), true);
+                    validateDropshipperPhone(shipmentCartItemModel, textInputLayoutShipperPhone.getTextFieldInput().getText(), true);
                 } else {
-                    validateDropshipperPhone(shipmentCartItemModel, etShipperPhone.getText(), false);
+                    validateDropshipperPhone(shipmentCartItemModel, textInputLayoutShipperPhone.getTextFieldInput().getText(), false);
                 }
-                etShipperPhone.setSelection(etShipperPhone.length());
+                textInputLayoutShipperPhone.getTextFieldInput().setSelection(textInputLayoutShipperPhone.getTextFieldInput().length());
             }
         }
     }
@@ -1225,23 +1422,30 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void validateDropshipperPhone(ShipmentCartItemModel shipmentCartItemModel, CharSequence charSequence, boolean fromTextWatcher) {
         Matcher matcher = phoneNumberRegexPattern.matcher(charSequence);
         if (charSequence.length() == 0 && fromTextWatcher) {
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_empty));
+            textInputLayoutShipperPhone.setError(true);
+            textInputLayoutShipperPhone.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_empty));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperPhone.getText().length() != 0 && !matcher.matches()) {
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_invalid));
+        } else if (textInputLayoutShipperPhone.getTextFieldInput().getText().length() != 0 && !matcher.matches()) {
+            textInputLayoutShipperPhone.setError(true);
+            textInputLayoutShipperPhone.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_invalid));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperPhone.getText().length() != 0 && etShipperPhone.getText().length() < DROPSHIPPER_MIN_PHONE_LENGTH) {
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_min_length));
+        } else if (textInputLayoutShipperPhone.getTextFieldInput().getText().length() != 0 &&
+                textInputLayoutShipperPhone.getTextFieldInput().getText().length() < DROPSHIPPER_MIN_PHONE_LENGTH) {
+            textInputLayoutShipperPhone.setError(true);
+            textInputLayoutShipperPhone.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_min_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperPhone.getText().length() != 0 && etShipperPhone.getText().length() > DROPSHIPPER_MAX_PHONE_LENGTH) {
-            textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_max_length));
+        } else if (textInputLayoutShipperPhone.getTextFieldInput().getText().length() != 0 &&
+                textInputLayoutShipperPhone.getTextFieldInput().getText().length() > DROPSHIPPER_MAX_PHONE_LENGTH) {
+            textInputLayoutShipperPhone.setError(true);
+            textInputLayoutShipperPhone.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_max_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
             mActionListener.onDataDisableToCheckout(null);
         } else {
-            textInputLayoutShipperPhone.setErrorEnabled(false);
+            textInputLayoutShipperPhone.setError(false);
+            textInputLayoutShipperPhone.setMessage("");
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(true);
             mActionListener.onDataEnableToCheckout();
         }
@@ -1249,19 +1453,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void validateDropshipperName(ShipmentCartItemModel shipmentCartItemModel, CharSequence charSequence, boolean fromTextWatcher) {
         if (charSequence.length() == 0 && fromTextWatcher) {
-            textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_empty));
+            textInputLayoutShipperName.setError(true);
+            textInputLayoutShipperName.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_empty));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperName.getText().length() != 0 && etShipperName.getText().length() < DROPSHIPPER_MIN_NAME_LENGTH) {
-            textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_min_length));
+        } else if (textInputLayoutShipperName.getTextFieldInput().getText().length() != 0 &&
+                textInputLayoutShipperName.getTextFieldInput().getText().length() < DROPSHIPPER_MIN_NAME_LENGTH) {
+            textInputLayoutShipperName.setError(true);
+            textInputLayoutShipperName.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_min_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
             mActionListener.onDataDisableToCheckout(null);
-        } else if (etShipperName.getText().length() != 0 && etShipperName.getText().length() > DROPSHIPPER_MAX_NAME_LENGTH) {
-            textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_max_length));
+        } else if (textInputLayoutShipperName.getTextFieldInput().getText().length() != 0 &&
+                textInputLayoutShipperName.getTextFieldInput().getText().length() > DROPSHIPPER_MAX_NAME_LENGTH) {
+            textInputLayoutShipperName.setError(true);
+            textInputLayoutShipperName.setMessage(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_max_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
             mActionListener.onDataDisableToCheckout(null);
         } else {
-            textInputLayoutShipperName.setErrorEnabled(false);
+            textInputLayoutShipperName.setError(false);
+            textInputLayoutShipperName.setMessage("");
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(true);
             mActionListener.onDataEnableToCheckout();
         }
@@ -1305,7 +1515,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
             boolean isCourierSelected = shipmentDetailData != null && courierItemData != null;
 
-            if (isCourierSelected) {
+            if (isCourierSelected && !shipmentCartItemModel.isError()) {
                 if (isCourierInstantOrSameday(courierItemData.getShipperId())) {
                     if (!shipmentCartItemModel.isOrderPrioritasDisable() && (courierItemData.getNow() && !shipmentCartItemModel.isProductIsPreorder())) {
                         tvPrioritasInfo.setText(courierItemData.getPriorityCheckboxMessage());
@@ -1327,7 +1537,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             } else {
                 tvPrioritasTicker.setText(spanText);
             }
-
+        } else {
+            hideAllTicker();
         }
         imgPriorityTnc.setOnClickListener(v -> mActionListener.onPriorityTncClicker());
     }
@@ -1429,18 +1640,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isError()) {
+            String errorTitle = shipmentCartItemModel.getErrorTitle();
             String errorDescription = shipmentCartItemModel.getErrorDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
-                tickerError.setTickerTitle(shipmentCartItemModel.getErrorTitle());
-                tickerError.setTextDescription(errorDescription);
+            if (!TextUtils.isEmpty(errorTitle)) {
+                if (!TextUtils.isEmpty(errorDescription)) {
+                    tickerError.setTickerTitle(errorTitle);
+                    tickerError.setTextDescription(errorDescription);
+                } else {
+                    tickerError.setTextDescription(errorTitle);
+                }
+                tickerError.setTickerType(Ticker.TYPE_ERROR);
+                tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+                tickerError.setCloseButtonVisibility(View.GONE);
+                tickerError.setVisibility(View.VISIBLE);
+                layoutError.setVisibility(View.VISIBLE);
             } else {
-                tickerError.setTextDescription(shipmentCartItemModel.getErrorTitle());
+                tickerError.setVisibility(View.GONE);
+                layoutError.setVisibility(View.GONE);
+                layoutWarningAndError.setVisibility(View.GONE);
             }
-            tickerError.setTickerType(Ticker.TYPE_ERROR);
-            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
-            tickerError.setCloseButtonVisibility(View.GONE);
-            tickerError.setVisibility(View.VISIBLE);
-            layoutError.setVisibility(View.VISIBLE);
 
             flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext(), com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item));
             cbPPP.setEnabled(false);
@@ -1449,12 +1667,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             cbDropshipper.setEnabled(false);
             llDropshipper.setClickable(false);
             mIconTooltip.setClickable(false);
-            etShipperName.setClickable(false);
-            etShipperName.setFocusable(false);
-            etShipperName.setFocusableInTouchMode(false);
-            etShipperPhone.setClickable(false);
-            etShipperPhone.setFocusable(false);
-            etShipperPhone.setFocusableInTouchMode(false);
+            textInputLayoutShipperName.getTextFieldInput().setClickable(false);
+            textInputLayoutShipperName.getTextFieldInput().setFocusable(false);
+            textInputLayoutShipperName.getTextFieldInput().setFocusableInTouchMode(false);
+            textInputLayoutShipperPhone.getTextFieldInput().setClickable(false);
+            textInputLayoutShipperPhone.getTextFieldInput().setFocusable(false);
+            textInputLayoutShipperPhone.getTextFieldInput().setFocusableInTouchMode(false);
         } else {
             layoutError.setVisibility(View.GONE);
             tickerError.setVisibility(View.GONE);
@@ -1463,12 +1681,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llInsurance.setClickable(true);
             llDropshipper.setClickable(true);
             mIconTooltip.setClickable(true);
-            etShipperName.setClickable(true);
-            etShipperName.setFocusable(true);
-            etShipperName.setFocusableInTouchMode(true);
-            etShipperPhone.setClickable(true);
-            etShipperPhone.setFocusable(true);
-            etShipperPhone.setFocusableInTouchMode(true);
+            textInputLayoutShipperName.getTextFieldInput().setClickable(true);
+            textInputLayoutShipperName.getTextFieldInput().setFocusable(true);
+            textInputLayoutShipperName.getTextFieldInput().setFocusableInTouchMode(true);
+            textInputLayoutShipperPhone.getTextFieldInput().setClickable(true);
+            textInputLayoutShipperPhone.getTextFieldInput().setFocusable(true);
+            textInputLayoutShipperPhone.getTextFieldInput().setFocusableInTouchMode(true);
         }
     }
 
@@ -1505,13 +1723,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void showBottomSheet(Context context, String title, String message, int image) {
-        Tooltip tooltip = new Tooltip(context);
-        tooltip.setTitle(title);
-        tooltip.setDesc(message);
-        tooltip.setTextButton(context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
-        tooltip.setIcon(image);
-        tooltip.getBtnAction().setOnClickListener(v -> tooltip.dismiss());
-        tooltip.show();
+        GeneralBottomSheet generalBottomSheet = new GeneralBottomSheet();
+        generalBottomSheet.setTitle(title);
+        generalBottomSheet.setDesc(message);
+        generalBottomSheet.setButtonText(context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close));
+        generalBottomSheet.setIcon(image);
+        generalBottomSheet.setButtonOnClickListener(bottomSheetUnify -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+        generalBottomSheet.show(context, mActionListener.getCurrentFragmentManager());
     }
 
     private String getPriceFormat(TextView textViewLabel, TextView textViewPrice, long price) {
@@ -1522,7 +1743,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(price, false));
+            return Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(price, false));
         }
     }
 
@@ -1571,23 +1792,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void showShipmentWarning(CartItemModel cartItemModel) {
         if (!TextUtils.isEmpty(cartItemModel.getErrorMessage())) {
-            tvErrorShipmentItemTitle.setText(cartItemModel.getErrorMessage());
-            tvErrorShipmentItemTitle.setVisibility(View.VISIBLE);
-            llShippingWarningContainer.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(cartItemModel.getErrorMessageDescription())) {
-                tvErrorShipmentItemDescription.setText(cartItemModel.getErrorMessageDescription());
-                tvErrorShipmentItemDescription.setVisibility(View.VISIBLE);
+                tickerProductError.setTickerTitle(cartItemModel.getErrorMessage());
+                tickerProductError.setTextDescription(cartItemModel.getErrorMessageDescription());
             } else {
-                tvErrorShipmentItemDescription.setVisibility(View.GONE);
+                tickerProductError.setTextDescription(cartItemModel.getErrorMessage());
             }
+            tickerProductError.setVisibility(View.VISIBLE);
         } else {
-            llShippingWarningContainer.setVisibility(View.GONE);
+            tickerProductError.setVisibility(View.GONE);
         }
         disableItemView();
     }
 
     private void hideShipmentWarning() {
-        llShippingWarningContainer.setVisibility(View.GONE);
+        tickerProductError.setVisibility(View.GONE);
         enableItemView();
     }
 
@@ -1603,10 +1822,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void setImageFilterGrayScale() {
-        ColorMatrix matrix = new ColorMatrix();
-        matrix.setSaturation(0);
-        ColorMatrixColorFilter disabledColorFilter = new ColorMatrixColorFilter(matrix);
-        ivProductImage.setColorFilter(disabledColorFilter);
         ivProductImage.setImageAlpha(IMAGE_ALPHA_DISABLED);
     }
 
@@ -1621,7 +1836,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void setImageFilterNormal() {
-        ivProductImage.setColorFilter(null);
         ivProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
     }
 

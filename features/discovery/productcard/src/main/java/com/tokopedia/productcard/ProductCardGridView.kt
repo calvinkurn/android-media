@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
@@ -15,6 +14,9 @@ import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
+
+    private var addToCartClickListener: ((View) -> Unit)? = null
+    private var addToCartNonVariantClickListener: ATCNonVariantListener? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -35,9 +37,16 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+                isShowCampaign,
+                labelCampaignBackground,
+                textViewLabelCampaign,
+                productCardModel
+        )
 
-        renderLabelBestSeller(labelBestSeller, productCardModel)
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        renderLabelBestSeller(isShowBestSeller, labelBestSeller, productCardModel)
 
         renderOutOfStockView(productCardModel)
 
@@ -45,24 +54,27 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
-        renderStockPercentage(productCardModel)
-        renderStockLabel(productCardModel)
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
-        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+        renderButtonAddToCart(productCardModel)
+
+        renderQuantityEditorNonVariant(productCardModel)
+        setQuantityEditorNonVariantValueChangedListener()
+
+        renderVariant(productCardModel)
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             )
         }
     }
@@ -76,11 +88,19 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
-        buttonAddToCart?.setOnClickListener(addToCartClickListener)
+        this.addToCartClickListener = addToCartClickListener
+    }
+
+    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        this.addToCartNonVariantClickListener = addToCartNonVariantClickListener
     }
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
+    }
+
+    fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
+        buttonAddVariant?.setOnClickListener(addVariantClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -98,27 +118,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
-        labelCampaignBackground?.glideClear(context)
-    }
-
-    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            progressBarStock.progress = productCardModel.stockBarPercentage
-        }
-    }
-
-    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            textViewStockLabel.text = productCardModel.stockBarLabel
-            if (productCardModel.stockBarLabelColor.isNotEmpty()) {
-                textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
-            } else {
-                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            }
-        }
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
+        labelCampaignBackground?.glideClear()
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
@@ -131,7 +133,71 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         }
     }
 
+    private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
+        buttonAddToCart?.shouldShowWithAction(productCardModel.hasAddToCartButton || productCardModel.shouldShowAddToCartNonVariantQuantity()) {
+            buttonAddToCart?.setOnClickListener {
+                if (productCardModel.shouldShowAddToCartNonVariantQuantity()) {
+                    productCardModel.nonVariant?.let { nonVariant ->
+                        val newValue = nonVariant.minQuantity
+                        addToCartNonVariantClickListener?.onQuantityChanged(newValue)
+                        quantityEditorNonVariant?.setValue(newValue)
+                        quantityEditorNonVariant?.show()
+                        buttonAddToCart?.gone()
+                    }
+                }
+                else {
+                    addToCartClickListener?.invoke(it)
+                }
+            }
+        }
+
+        if (productCardModel.shouldShowAddToCartNonVariantQuantity()) buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
+        else buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+    }
+
+    private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
+        productCardModel.nonVariant?.let {
+            quantityEditorNonVariant?.setValue(it.quantity)
+            quantityEditorNonVariant?.maxValue = it.maxQuantity
+            quantityEditorNonVariant?.minValue = it.minQuantity
+        }
+        quantityEditorNonVariant?.showWithCondition(productCardModel.shouldShowQuantityEditor())
+    }
+
+    private fun setQuantityEditorNonVariantValueChangedListener() {
+        quantityEditorNonVariant?.setValueChangedListener { newValue, _, _ ->
+            addToCartNonVariantClickListener?.onQuantityChanged(quantity = newValue)
+        }
+    }
+
+    private fun renderVariant(productCardModel: ProductCardModel) {
+        buttonAddVariant?.shouldShowWithAction(productCardModel.hasVariant()) {
+            renderButtonAddVariant(productCardModel)
+        }
+
+        textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
+            productCardModel.variant?.let { renderTextVariantQuantity(it.quantity) }
+        }
+
+        dividerVariantQuantity?.showWithCondition(productCardModel.hasVariantWithQuantity())
+    }
+
+    private fun renderButtonAddVariant(productCardModel: ProductCardModel) {
+        if (productCardModel.hasVariantWithQuantity()) buttonAddVariant?.text = context.getString(R.string.product_card_text_add_other_variant_grid)
+        else buttonAddVariant?.text = context.getString(R.string.product_card_text_add_variant_grid)
+    }
+
+    private fun renderTextVariantQuantity(quantity: Int) {
+        if (quantity > 99) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
+        else textVariantQuantity?.text = "$quantity pcs"
+    }
+
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    interface ATCNonVariantListener {
+        fun onQuantityChanged(quantity: Int)
+    }
+
 }

@@ -1,0 +1,11 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/Unify_G500</item>
+        <item name="colorPrimaryDark">@color/Unify_G500</item>
+        <item name="colorAccent">@color/Unify_G500</item>
+    </style>
+
+</resources>

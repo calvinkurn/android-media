@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -32,11 +31,14 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
@@ -52,9 +54,8 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
 import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
@@ -65,7 +66,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.util.HashMap
+import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 class OfficialHomeFragment :
@@ -98,6 +100,8 @@ class OfficialHomeFragment :
     @Inject
     lateinit var officialHomeMapper: OfficialHomeMapper
 
+    lateinit var userSession: UserSessionInterface
+
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -120,8 +124,8 @@ class OfficialHomeFragment :
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    val CATEGORY_CONST: String = category?.slug.orEmpty()
-                    val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
+                    val categoryConst: String = category?.slug.orEmpty()
+                    val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, categoryConst)
                     val categories = category?.categories.toString()
                     val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
                     val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
@@ -166,6 +170,7 @@ class OfficialHomeFragment :
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
+                OSMixTopComponentCallback(this),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
@@ -209,7 +214,7 @@ class OfficialHomeFragment :
 
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
-                viewModel.loadFirstData(category)
+                viewModel.loadFirstData(category, getLocation())
                 isLoadedOnce = true
 
                 getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
@@ -222,7 +227,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeBannerData() {
-        viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, Observer {
+        viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     removeLoading()
@@ -239,7 +244,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeBenefit() {
-        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner, Observer {
+        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -255,7 +260,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeFeaturedShop() {
-        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, Observer {
+        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -272,7 +277,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeDynamicChannel() {
-        viewModel.officialStoreDynamicChannelResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.officialStoreDynamicChannelResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -292,7 +297,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeProductRecommendation() {
-        viewModel.productRecommendation.observe(viewLifecycleOwner, Observer {
+        viewModel.productRecommendation.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
@@ -312,23 +317,11 @@ class OfficialHomeFragment :
         })
     }
 
-    private fun observeTopAdsWishlist() {
-        viewModel.topAdsWishlistResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                }
-                is Fail -> {
-                    showErrorNetwork(it.throwable)
-                }
-            }
-        })
-    }
-
-    fun showErrorNetwork(t: Throwable) {
+    private fun showErrorNetwork(t: Throwable) {
         view?.let {
-            Toaster.showError(it,
+            Toaster.build(it,
                     ErrorHandler.getErrorMessage(context, t),
-                    Snackbar.LENGTH_LONG)
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -389,7 +382,6 @@ class OfficialHomeFragment :
     override fun onDestroy() {
         viewModel.officialStoreBannersResult.removeObservers(this)
         viewModel.officialStoreBenefitsResult.removeObservers(this)
-        viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.productRecommendation.removeObservers(this)
         viewModel.flush()
@@ -400,7 +392,6 @@ class OfficialHomeFragment :
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 updateWishlist(wishlistStatusFromPdp, position)
@@ -475,15 +466,18 @@ class OfficialHomeFragment :
     private fun showErrorWishlist() {
         activity?.let {
             val view = it.findViewById<View>(android.R.id.content) ?: return
-            Toaster.showError(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG)
+            Toaster.build(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
     private fun goToPDP(item: RecommendationItem, position: Int) {
         eventTrackerClickListener(item, position)
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
-            startActivityForResult(this, REQUEST_FROM_PDP)
+        try {
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }catch (e: Exception){
         }
     }
 
@@ -517,9 +511,13 @@ class OfficialHomeFragment :
         val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(getString(R.string.os_coupon_code_label), cta.couponCode)
         clipboard.setPrimaryClip(clipData)
-        Toaster.make(view.parent as ViewGroup,
+        Toaster.build(view.parent as ViewGroup,
                 getString(R.string.os_toaster_coupon_copied),
-                Snackbar.LENGTH_LONG)
+                Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun getLocation(): String {
+        return ChooseAddressUtils.getLocalizingAddressData(requireContext())?.convertToLocationParams() ?: ""
     }
 
     override fun onProductImpression(item: RecommendationItem) {
@@ -607,20 +605,19 @@ class OfficialHomeFragment :
 
     override fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener {
         return View.OnClickListener {
-            val gridData = channelData.grids?.get(position)
-            val applink = gridData?.applink ?: ""
+            channelData.grids.getOrNull(position)?.let { gridData ->
+                val applink = gridData.applink
 
-            gridData?.let {
                 tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it,
+                        gridData,
                         channelData
                 )
-            }
 
-            RouteManager.route(context, applink)
+                RouteManager.route(context, applink)
+            }
         }
     }
 
@@ -640,23 +637,21 @@ class OfficialHomeFragment :
 
     override fun onClickFlashSaleImage(channelData: Channel, position: Int): View.OnClickListener {
         return View.OnClickListener {
-            val gridData = channelData.grids?.get(position)
-            val applink = gridData?.applink ?: ""
-            val campaignId = channelData.campaignID
-            val campaignCode = channelData.campaignCode
-
-            gridData?.let {
+            channelData.grids.getOrNull(position)?.let { gridData ->
+                val applink = gridData.applink
+                val campaignId = channelData.campaignID
+                val campaignCode = channelData.campaignCode
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it,
+                        gridData,
                         campaignId,
                         campaignCode
                 )
+                RouteManager.route(context, applink)
             }
 
-            RouteManager.route(context, applink)
         }
     }
 
@@ -676,20 +671,20 @@ class OfficialHomeFragment :
 
     override fun onClickMixImage(channelData: Channel, position: Int): View.OnClickListener {
         return View.OnClickListener {
-            val gridData = channelData.grids?.get(position)
-            val applink = gridData?.applink ?: ""
-
-            gridData?.let {
+            channelData.grids.getOrNull(position)?.let { gridData ->
+                val applink = gridData.applink
                 tracking?.dynamicChannelMixCardClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it,
-                        channelData.campaignCode
+                        gridData,
+                        channelData.campaignCode,
+                        channelData.campaignID.toString()
                 )
+
+                RouteManager.route(context, applink)
             }
 
-            RouteManager.route(context, applink)
         }
     }
 
@@ -808,7 +803,8 @@ class OfficialHomeFragment :
                 channel,
                 grid,
                 position.toString(),
-                viewModel.isLoggedIn()
+                viewModel.isLoggedIn(),
+                viewModel.getUserId()
         )
     }
 
@@ -837,8 +833,9 @@ class OfficialHomeFragment :
                 viewModel.currentSlugDC,
                 channel,
                 grid,
-                position.toString(),
-                viewModel.isLoggedIn()
+                position,
+                viewModel.isLoggedIn(),
+                viewModel.getUserId()
         )
         RouteManager.route(context, applink)
     }

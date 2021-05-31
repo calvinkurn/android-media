@@ -2,8 +2,12 @@ package com.tokopedia.sellerappwidget.view.work
 
 import android.content.Context
 import androidx.work.*
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
+import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.executor.GetOrderExecutor
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
@@ -23,6 +27,16 @@ class GetOrderWorker(
         private var workRequest: OneTimeWorkRequest? = null
 
         fun runWorker(context: Context) {
+            val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+            val userSession: UserSessionInterface = UserSession(context)
+            val isOrderWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.ORDER_WIDGET_ENABLED, false)
+            val isUserLoggedIn = userSession.isLoggedIn
+            if (!(isOrderWidgetEnabled && isUserLoggedIn)) {
+                OrderAppWidget.showNoLoginState(context)
+                workRequest = null
+                return
+            }
+
             if (workRequest == null) {
                 val constraints = Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)

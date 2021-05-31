@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.promocheckoutmarketplace.R
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -24,7 +24,14 @@ class PromoCheckoutActivity : BaseSimpleActivity() {
         val validateUseRequest = intent.getParcelableExtra(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
         val bboPromoCodes = intent.getStringArrayListExtra(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
         val promoMvcLockCourierFlow = intent.getBooleanExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false)
-        fragment = PromoCheckoutFragment.createInstance(pageSource, promoRequest, validateUseRequest, bboPromoCodes ?: ArrayList(), promoMvcLockCourierFlow)
+        val chosenAddress: ChosenAddress? = intent.getParcelableExtra(ARGS_CHOSEN_ADDRESS)
+        fragment = PromoCheckoutFragment.createInstance(
+                pageSource,
+                promoRequest,
+                validateUseRequest,
+                bboPromoCodes ?: ArrayList(),
+                promoMvcLockCourierFlow,
+                chosenAddress)
         return fragment
     }
 

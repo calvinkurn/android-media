@@ -4,14 +4,11 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
@@ -22,8 +19,8 @@ import java.lang.ref.WeakReference
 
 internal class ShopPageFragmentPagerAdapter(
         ctx: Context?,
-        fragmentManager: FragmentManager
-) : FragmentStatePagerAdapter(fragmentManager) {
+        fragment: Fragment
+) : FragmentStateAdapter(fragment) {
     private val registeredFragments = SparseArrayCompat<Fragment>()
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
 
@@ -32,12 +29,6 @@ internal class ShopPageFragmentPagerAdapter(
     }
 
     private val ctxRef = WeakReference(ctx)
-
-    override fun getCount(): Int = listShopPageTabModel.size
-
-    override fun getItem(position: Int): Fragment {
-        return listShopPageTabModel[position].tabFragment
-    }
 
     fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
             .inflate(tabViewLayout, null)?.apply {
@@ -76,35 +67,37 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun getTabInactiveColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
-            R.color.color_gray_shop_tab_new
+            com.tokopedia.unifyprinciples.R.color.Unify_N500
         else
             com.tokopedia.unifyprinciples.R.color.Unify_N200
     }
 
     private fun getTabActivateColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
-            R.color.color_green_shop_tab_new
+            com.tokopedia.unifyprinciples.R.color.Unify_G600
         else
             com.tokopedia.unifyprinciples.R.color.Unify_G500
     }
 
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val o = super.instantiateItem(container, position)
-        registeredFragments.put(position, o as Fragment)
-        return o
+    override fun getItemId(position: Int): Long {
+        return listShopPageTabModel[position].hashCode().toLong()
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        registeredFragments.remove(position)
-        super.destroyItem(container, position, `object`)
+    override fun containsItem(itemId: Long): Boolean {
+        return listShopPageTabModel.any {
+            it.hashCode().toLong() == itemId
+        }
     }
 
-    override fun getItemPosition(`object`: Any): Int {
-        return PagerAdapter.POSITION_NONE
-    }
+    override fun getItemCount(): Int =  listShopPageTabModel.size
+
+    override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
     fun getRegisteredFragment(position: Int): Fragment? {
-        return registeredFragments.get(position)
+        return if (listShopPageTabModel.isNotEmpty())
+            listShopPageTabModel.getOrNull(position)?.tabFragment
+        else
+            null
     }
 
     fun setTabData(listShopPageTabModel: List<ShopPageTabModel>) {

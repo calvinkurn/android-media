@@ -21,12 +21,17 @@ import kotlinx.android.synthetic.main.shc_item_table_column_html.view.*
  * Created By @ilhamsuaib on 01/07/20
  */
 
-class TableColumnHtmlViewHolder(itemView: View?,
-                                private val listener: Listener) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
+class TableColumnHtmlViewHolder(
+        itemView: View?,
+        private val listener: Listener
+) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_item_table_column_html
+
+        private const val SCHEME_EXTERNAL = "tokopedia"
+        private const val SCHEME_SELLERAPP = "sellerapp"
     }
 
     private val deeplinkMatcher by lazy {
@@ -35,14 +40,7 @@ class TableColumnHtmlViewHolder(itemView: View?,
 
     override fun bind(element: TableRowsUiModel.RowColumnHtml) {
         with(itemView) {
-            tvTableColumnHtml?.setClickableUrlHtml(element.valueStr) { url ->
-                listener.onHyperlinkClicked(url)
-                Uri.parse(url).let { uri ->
-                    if (!checkUrlForNativePage(context, uri)) {
-                        goToDefaultIntent(context, uri)
-                    }
-                }
-            }
+            setOnHtmlTextClicked(element)
             if (element.isLeftAlign) {
                 tvTableColumnHtml.gravity = Gravity.START
             } else {
@@ -51,11 +49,32 @@ class TableColumnHtmlViewHolder(itemView: View?,
         }
     }
 
+    private fun setOnHtmlTextClicked(element: TableRowsUiModel.RowColumnHtml) {
+        with(itemView) {
+            tvTableColumnHtml?.setClickableUrlHtml(element.valueStr) { url ->
+                listener.onHyperlinkClicked(url)
+                Uri.parse(url).let { uri ->
+                    if (isAppLink(uri)) {
+                        RouteManager.route(context, url)
+                    } else {
+                        if (!checkUrlForNativePage(context, uri)) {
+                            goToDefaultIntent(context, uri)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isAppLink(uri: Uri): Boolean {
+        return uri.scheme == SCHEME_EXTERNAL || uri.scheme == SCHEME_SELLERAPP
+    }
+
     /**
      * Mimicks RouteManager.kt#moveToNativePageFromWebView
      */
     private fun checkUrlForNativePage(context: Context?, uri: Uri): Boolean {
-        return when(deeplinkMatcher.match(uri)) {
+        return when (deeplinkMatcher.match(uri)) {
             DeepLinkChecker.PRODUCT -> {
                 with(uri.pathSegments) {
                     getOrNull(0)?.let { shopDomain ->

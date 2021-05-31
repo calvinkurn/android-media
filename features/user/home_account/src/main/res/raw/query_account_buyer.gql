@@ -1,6 +1,6 @@
  query {
    status
-   profile {
+   profile(skipCache: true) {
      name
      full_name
      completion
@@ -28,24 +28,9 @@
        }
      }
    }
-   vcc_user_status {
-       status
-       redirection_url
-       message_header
-       message_body
-       message_button_name
-       message_url
-       icon
-       title
-       body
-   }
    openDebitSettings {
        data {
          redirectURL
        }
-    }
-    balance {
-            buyer_usable
-            seller_usable
     }
  }

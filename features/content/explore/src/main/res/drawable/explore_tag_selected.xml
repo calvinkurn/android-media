@@ -3,10 +3,10 @@
 
     <corners android:radius="@dimen/dp_20" />
 
-    <solid android:color="@color/light_green" />
+    <solid android:color="@color/Unify_G100" />
 
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/snackbar_border_normal" />
+        android:color="@color/Unify_G300" />
 
 </shape>

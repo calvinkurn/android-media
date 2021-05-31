@@ -66,8 +66,6 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     accountDataModel.setAffiliate(isAffiliate);
                     return accountDataModel;
                 })
-                .doOnNext(this::saveLocallyWallet)
-                .doOnNext(this::saveLocallyVccUserStatus)
                 .doOnNext(this::savePhoneVerified)
                 .doOnNext(this::saveIsAffiliateStatus)
                 .doOnNext(this::saveDebitInstantData)
@@ -111,19 +109,6 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
         } else {
             return checkAffiliateUseCase.createObservable(requestParams)
                     .subscribeOn(Schedulers.io());
-        }
-    }
-
-    private void saveLocallyWallet(AccountDataModel accountDataModel) {
-        walletPref.saveWallet(accountDataModel.getWallet());
-        if (accountDataModel.getVccUserStatus() != null) {
-            walletPref.setTokoSwipeUrl(accountDataModel.getVccUserStatus().getRedirectionUrl());
-        }
-    }
-
-    private void saveLocallyVccUserStatus(AccountDataModel accountDataModel) {
-        if (accountDataModel.getVccUserStatus() != null) {
-            walletPref.saveVccUserStatus(accountDataModel.getVccUserStatus());
         }
     }
 

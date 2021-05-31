@@ -23,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.keys)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.travelCountryCode)
     implementation project(rootProject.ext.features.travelPassenger)
@@ -52,7 +53,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

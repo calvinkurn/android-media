@@ -7,6 +7,7 @@ import com.tokopedia.seller.menu.di.module.ViewModelModule
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
 import com.tokopedia.seller.menu.presentation.activity.SellerMenuActivity
 import com.tokopedia.seller.menu.presentation.activity.SellerSettingsActivity
+import com.tokopedia.seller.menu.presentation.fragment.AdminRoleAuthorizeFragment
 import com.tokopedia.seller.menu.presentation.fragment.SellerMenuFragment
 import com.tokopedia.seller.menu.presentation.fragment.SellerSettingsFragment
 import dagger.Component
@@ -25,6 +26,8 @@ interface SellerMenuComponent {
     fun inject(fragment: SellerMenuFragment)
 
     fun inject(fragment: SellerSettingsFragment)
+
+    fun inject(fragment: AdminRoleAuthorizeFragment)
 
     fun inject(activity: SellerMenuActivity)
 

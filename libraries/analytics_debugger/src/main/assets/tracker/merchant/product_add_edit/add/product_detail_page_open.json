@@ -1,0 +1,9 @@
+{
+  "readme": "open product detail page",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/addproductpage - main"
+    }
+  ]
+}

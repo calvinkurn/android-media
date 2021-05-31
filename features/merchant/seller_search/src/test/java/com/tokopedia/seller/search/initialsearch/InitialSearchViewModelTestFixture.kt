@@ -6,6 +6,7 @@ import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSuggestionHistoryUseCase
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
+import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -24,12 +25,15 @@ abstract class InitialSearchViewModelTestFixture {
     @RelaxedMockK
     lateinit var deleteSuggestionHistoryUseCase: DeleteSuggestionHistoryUseCase
 
+    @RelaxedMockK
+    lateinit var insertSellerSearchUseCase: InsertSuccessSearchUseCase
+
     protected lateinit var viewModel: InitialSearchViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = InitialSearchViewModel(CoroutineTestDispatchersProvider, getSellerSearchUseCase, deleteSuggestionHistoryUseCase)
+        viewModel = InitialSearchViewModel(CoroutineTestDispatchersProvider, getSellerSearchUseCase, deleteSuggestionHistoryUseCase, insertSellerSearchUseCase)
     }
 
     protected fun LiveData<*>.verifyValueEquals(expected: Any) {

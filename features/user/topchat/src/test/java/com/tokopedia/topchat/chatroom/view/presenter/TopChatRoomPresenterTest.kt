@@ -3,31 +3,29 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -37,6 +35,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exImageUploadId
@@ -65,12 +64,16 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
+import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_EXCEED_SIZE_LIMIT
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_UNDERSIZE
 import com.tokopedia.topchat.common.util.ImageUtil.IMAGE_VALID
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -82,8 +85,10 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
 import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.flow.flow
 import okhttp3.Interceptor
 import okhttp3.WebSocket
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -165,15 +170,15 @@ class TopChatRoomPresenterTest {
     private lateinit var chatToggleBlockChat: ChatToggleBlockChatUseCase
 
     @RelaxedMockK
-    private lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    private lateinit var chatBackgroundUseCase: ChatBackgroundUseCase
 
     @RelaxedMockK
-    private lateinit var chatBackgroundUseCase: ChatBackgroundUseCase
+    private lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
 
     @RelaxedMockK
     private lateinit var sharedPref: SharedPreferences
 
-    private val dispatchers: TopchatCoroutineContextProvider = TopchatTestCoroutineContextDispatcher()
+    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     @RelaxedMockK
     private lateinit var webSocket: WebSocket
@@ -182,7 +187,16 @@ class TopChatRoomPresenterTest {
     private lateinit var view: TopChatContract.View
 
     @RelaxedMockK
+    private lateinit var uploadImageBroadcastListener : UploadImageBroadcastListener
+
+    @RelaxedMockK
     private lateinit var sendAbleProductPreview: SendablePreview
+
+    @RelaxedMockK
+    private lateinit var chatSrwUseCase: SmartReplyQuestionUseCase
+
+    @RelaxedMockK
+    private lateinit var remoteConfig: RemoteConfig
 
     @SpyK
     private var topChatRoomWebSocketMessageMapper = TopChatRoomWebSocketMessageMapper()
@@ -219,11 +233,21 @@ class TopChatRoomPresenterTest {
         val replyChatViewModelApiSuccess = generateReplyChatViewModelApi()
         val exSticker = generateSticker()
         val exResultProduct = generateResultProduct()
-        val wsResponseReplyString = FileUtil.readFileContent("/ws_response_reply_text_is_opposite.json")
-        val wsResponseTypingString = FileUtil.readFileContent("/ws_response_typing.json")
-        val wsResponseEndTypingString = FileUtil.readFileContent("/ws_response_end_typing.json")
-        val wsResponseReadMessageString = FileUtil.readFileContent("/ws_response_read_message.json")
-        val wsResponseImageAttachmentString = FileUtil.readFileContent("/ws_response_image_attachment.json")
+        val wsResponseReplyString = FileUtil.readFileContent(
+                "/ws_response_reply_text_is_opposite.json"
+        )
+        val wsResponseTypingString = FileUtil.readFileContent(
+                "/ws_response_typing.json"
+        )
+        val wsResponseEndTypingString = FileUtil.readFileContent(
+                "/ws_response_end_typing.json"
+        )
+        val wsResponseReadMessageString = FileUtil.readFileContent(
+                "/ws_response_read_message.json"
+        )
+        val wsResponseImageAttachmentString = FileUtil.readFileContent(
+                "/ws_response_image_attachment.json"
+        )
         val successGetOrderProgressResponse: OrderProgressResponse = FileUtil.parse(
                 "/success_get_order_progress.json",
                 OrderProgressResponse::class.java
@@ -263,7 +287,7 @@ class TopChatRoomPresenterTest {
 
         private fun generateResultProduct(): ResultProduct {
             return ResultProduct(
-                    exProductId.toInt(),
+                    exProductId,
                     "https://tokopedia.com/product/url",
                     exImageUrl,
                     "Rp12000",
@@ -301,10 +325,11 @@ class TopChatRoomPresenterTest {
                         groupStickerUseCase,
                         chatAttachmentUseCase,
                         chatToggleBlockChat,
-                        addToCartOccUseCase,
                         chatBackgroundUseCase,
+                        chatSrwUseCase,
                         sharedPref,
-                        dispatchers
+                        dispatchers,
+                        remoteConfig
                 )
         )
         presenter.attachView(view)
@@ -556,6 +581,9 @@ class TopChatRoomPresenterTest {
     fun `on success upload image and sent through websocket`() {
         // Given
         every {
+            remoteConfig.getBoolean(any())
+        } returns false
+        every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
         } returns Pair(true, IMAGE_VALID)
         every {
@@ -592,6 +620,9 @@ class TopChatRoomPresenterTest {
         // Given
         val slot = slot<Subscriber<ReplyChatViewModel>>()
         every {
+            remoteConfig.getBoolean(any())
+        } returns false
+        every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
         } returns Pair(true, IMAGE_VALID)
         every {
@@ -624,9 +655,47 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
+    fun `on success upload image with service`() {
+        val chatReply = mockk<ChatReplyPojo>()
+        every {
+            remoteConfig.getBoolean(any())
+        } returns true
+        every {
+            ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
+        } returns Pair(true, IMAGE_VALID)
+        every {
+            compressImageUseCase.compressImage(imageUploadViewModel.imageUrl!!)
+        } returns Observable.just(imageUploadViewModel.imageUrl)
+        every {
+            uploadImageUseCase.upload(imageUploadViewModel, captureLambda(), any())
+        } answers {
+            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            onSuccess.invoke(exImageUploadId, imageUploadViewModel)
+        }
+        coEvery {
+            replyChatGQLUseCase.replyMessage(any(), any(), any(), any())
+        } returns chatReply
+
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsOpen)
+        websocketServer.onCompleted()
+        presenter.startCompressImages(imageUploadViewModel)
+
+        // Then
+        verify(exactly = 1) { view.addDummyMessage(imageUploadViewModel) }
+    }
+
+    @Test
     fun `on error upload image`() {
         // Given
         val errorUploadImage = Throwable()
+        every {
+            remoteConfig.getBoolean(any())
+        } returns false
         every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
         } returns Pair(true, IMAGE_VALID)
@@ -723,7 +792,7 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) {
-            sendAbleProductPreview.sendTo(exMessageId, exOpponentId, exSendMessage, listInterceptor)
+            sendAbleProductPreview.generateMsgObj(exMessageId, exOpponentId, exSendMessage, listInterceptor)
         }
         verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
         verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
@@ -1115,7 +1184,8 @@ class TopChatRoomPresenterTest {
         }
         every {
             chatAttachmentUseCase.getAttachments(
-                    exMessageId.toLongOrZero(), roomModel.attachmentIds, captureLambda(), any()
+                    exMessageId.toLongOrZero(), roomModel.attachmentIds,
+                    any(), captureLambda(), any()
             )
         } answers {
             val onSuccess = lambda<(ArrayMap<String, Attachment>) -> Unit>()
@@ -1141,7 +1211,8 @@ class TopChatRoomPresenterTest {
         val throwable = Throwable()
         every {
             chatAttachmentUseCase.getAttachments(
-                    exMessageId.toLongOrZero(), roomModel.attachmentIds, any(), captureLambda()
+                    exMessageId.toLongOrZero(), roomModel.attachmentIds, any(),
+                    any(), captureLambda()
             )
         } answers {
             val onError = lambda<(Throwable, ArrayMap<String, Attachment>) -> Unit>()
@@ -1155,110 +1226,6 @@ class TopChatRoomPresenterTest {
         val attachments = presenter.attachments
         verify(exactly = 1) { view.updateAttachmentsView(attachments) }
         assertTrue(presenter.attachments.size == 1)
-    }
-
-    @Test
-    fun `on success addToCart OCC`() {
-        // Given
-        val successAtcModel = AddToCartDataModel().apply {
-            data.success = 1
-            status = "OK"
-        }
-        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val response = Observable.just(successAtcModel)
-        val result = response.toBlocking().single()
-        every {
-            addToCartOccUseCase.createObservable(any())
-        } returns response
-
-        // When
-        presenter.addToCart(
-                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
-                onSuccess,
-                onError
-        )
-
-        // Then
-        verify(exactly = 1) { onSuccess.invoke(result) }
-    }
-
-    @Test
-    fun `on error addToCart OCC`() {
-        // Given
-        val errorAtcModel = AddToCartDataModel().apply {
-            data.message = arrayListOf("Error")
-            errorMessage = arrayListOf("Error")
-        }
-        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val response = Observable.just(errorAtcModel)
-        val throwableSlot = slot<Throwable>()
-        var throwable: Throwable = Throwable()
-        every {
-            addToCartOccUseCase.createObservable(any())
-        } returns response
-        every {
-            onError.invoke(capture(throwableSlot))
-        } answers {
-            throwable = throwableSlot.captured
-        }
-
-        // When
-        presenter.addToCart(
-                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
-                onSuccess,
-                onError
-        )
-
-        // Then
-        verify(exactly = 1) { onError.invoke(throwable) }
-    }
-
-    @Test
-    fun `on throw exeception when addToCart OCC`() {
-        // Given
-        val onSuccess: (AddToCartDataModel) -> Unit = mockk(relaxed = true)
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        var throwable: Throwable = Throwable()
-        every {
-            addToCartOccUseCase.createObservable(any())
-        } throws throwable
-
-        // When
-        presenter.addToCart(
-                AddToCartOccRequestParams(exProductId, exShopId.toString(), "1"),
-                onSuccess,
-                onError
-        )
-
-        // Then
-        verify(exactly = 1) { onError.invoke(throwable) }
-    }
-
-    @Test
-    fun `check isStickerTooltipAlreadyShow`() {
-        // Given
-        every {
-            sharedPref.getBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, false)
-        } returns false
-
-        // When
-        presenter.isStickerTooltipAlreadyShow()
-
-        // Then
-        verify(exactly = 1) { sharedPref.getBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, false) }
-    }
-
-    @Test
-    fun `check toolTipOnBoardingShown`() {
-        // When
-        presenter.toolTipOnBoardingShown()
-
-        // Then
-        verify(exactly = 1) {
-            sharedPref.edit().putBoolean(TopChatRoomPresenter.STICKER_TOOLTIP_ONBOARDING, true).apply()
-        }
     }
 
     @Test
@@ -1390,6 +1357,135 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) {
             view.renderBackground(exUrl)
+        }
+    }
+
+    @Test
+    fun `when success addProductToCart`() {
+        // Given
+        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
+        val successAtc = getSuccessAtcModel()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(successAtc)
+
+        // When
+        presenter.addProductToCart(RequestParams(), onSuccess, {})
+
+        // Then
+        verify(exactly = 1) {
+            onSuccess.invoke(successAtc.data)
+        }
+    }
+
+    @Test
+    fun `when error addProductToCart`() {
+        // Given
+        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val errorAtc = getErrorAtcModel()
+        every {
+            addToCartUseCase.createObservable(any())
+        } returns Observable.just(errorAtc)
+
+        // When
+        presenter.addProductToCart(RequestParams(), {}, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke("Gagal menambahkan produk")
+        }
+    }
+
+    @Test
+    fun `when error throwable addProductToCart`() {
+        // Given
+        val onError: (msg: String) -> Unit = mockk(relaxed = true)
+        val errorMsg = "Gagal menambahkan produk"
+        every {
+            addToCartUseCase.createObservable(any())
+        } throws IllegalStateException(errorMsg)
+
+        // When
+        presenter.addProductToCart(RequestParams(), {}, onError)
+
+        // Then
+        verify(exactly = 1) {
+            onError.invoke(errorMsg)
+        }
+    }
+
+    @Test
+    fun `success load srw`() {
+        // Given
+        val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
+        val expectedValue: Resource<ChatSmartReplyQuestionResponse> = Resource.success(
+                ChatSmartReplyQuestionResponse()
+        )
+        val successFlow = flow { emit(expectedValue) }
+        every {
+            chatSrwUseCase.getSrwList(exMessageId)
+        } returns successFlow
+
+        // When
+        presenter.srw.observeForever(observer)
+        presenter.getSmartReplyWidget(exMessageId)
+
+        // Then
+        verify(exactly = 1) {
+            observer.onChanged(expectedValue)
+        }
+    }
+
+    @Test
+    fun `error load srw`() {
+        // Given
+        val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
+        val throwable = IllegalStateException()
+        val expectedValue: Resource<ChatSmartReplyQuestionResponse> = Resource.error(
+                throwable, null
+        )
+        every {
+            chatSrwUseCase.getSrwList(exMessageId)
+        } throws throwable
+
+        // When
+        presenter.srw.observeForever(observer)
+        presenter.getSmartReplyWidget(exMessageId)
+
+        // Then
+        verify(exactly = 1) {
+            observer.onChanged(expectedValue)
+        }
+    }
+
+    @Test
+    fun `onGoingStockUpdate added`() {
+        // Given
+        val productId = "123"
+        val product = ProductAttachmentViewModel(
+                "", productId, "",
+                "", "", "",
+                "", false, 1
+        )
+
+        // When
+        presenter.addOngoingUpdateProductStock(productId, product, 0, null)
+
+        // Then
+        assertThat(presenter.onGoingStockUpdate.containsKey(productId), `is`(true))
+        assertThat(presenter.onGoingStockUpdate.size, `is`(1))
+    }
+
+    private fun getErrorAtcModel(): AddToCartDataModel {
+        return AddToCartDataModel().apply {
+            data.success = 0
+            data.message.add("Gagal menambahkan produk")
+        }
+    }
+
+    private fun getSuccessAtcModel(): AddToCartDataModel {
+        return AddToCartDataModel().apply {
+            data.success = 1
         }
     }
 

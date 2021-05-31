@@ -16,4 +16,10 @@ class ChatActionPojo {
     @SerializedName("action")
     @Expose
     var action: String = ""
+    @SerializedName("hex_color")
+    @Expose
+    var hexColor: String = ""
+    @SerializedName("icon_url")
+    @Expose
+    var iconUrl: String = ""
 }

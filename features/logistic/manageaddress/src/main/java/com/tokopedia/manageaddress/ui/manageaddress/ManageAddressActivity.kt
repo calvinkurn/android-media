@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.di.manageaddress.DaggerManageAddressComponent
-import com.tokopedia.manageaddress.di.manageaddress.ManageAddressComponent
+import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
+import com.tokopedia.manageaddress.di.ManageAddressComponent
 import kotlinx.android.synthetic.main.activity_manage_address.*
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
@@ -28,11 +28,14 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_address)
         initViews()
-        component.inject(this)
     }
 
     private fun initViews() {
-        supportFragmentManager.beginTransaction().replace(R.id.container, ManageAddressFragment.newInstance()).commit()
+        val bundle = Bundle()
+        if (intent != null && intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.container, ManageAddressFragment.newInstance(bundle)).commit()
         btn_back.setOnClickListener {
             onBackPressed()
         }

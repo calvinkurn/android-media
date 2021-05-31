@@ -23,17 +23,21 @@ buildscript {
 }
 
 dependencies {
+	implementation rootProject.ext.unifyDependencies.principles
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }
 
 project.ext {

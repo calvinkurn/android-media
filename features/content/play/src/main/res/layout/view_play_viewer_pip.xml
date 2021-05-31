@@ -24,7 +24,7 @@
         android:id="@+id/fl_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/play_loading_overlay_background"
+        android:background="@color/play_dms_loading_overlay_background"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_gravity="center"
-            app:loader_type="circular"
+            app:loader_type="circular_white"
             />
 
     </FrameLayout>

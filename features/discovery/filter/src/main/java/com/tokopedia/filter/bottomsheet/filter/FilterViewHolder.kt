@@ -35,8 +35,8 @@ internal class FilterViewHolder(
             .build()
 
     private val spacingItemDecoration = ChipSpacingItemDecoration(
-            itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-            itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
     )
 
     init {
@@ -67,9 +67,9 @@ internal class FilterViewHolder(
         itemView.filterSeeAll?.post {
             itemView.filterSeeAll?.expandTouchArea(
                     0,
-                    itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_18),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_18),
                     0,
-                    itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_18)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_18)
             )
         }
         itemView.filterSeeAll?.setOnClickListener {
@@ -133,7 +133,7 @@ internal class FilterViewHolder(
 
         private fun ChipsUnify.showIconRating() {
             chip_image_icon.visibility = View.VISIBLE
-            chip_image_icon.setImageResource(com.tokopedia.design.R.drawable.ic_app_rating_filled)
+            chip_image_icon.setImageResource(R.drawable.ic_app_rating_filled)
         }
 
         private fun ChipsUnify.showIconFromUrl(optionViewModel: OptionViewModel) {

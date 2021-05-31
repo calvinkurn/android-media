@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.elyeproj.loaderviewlibrary.LoaderImageView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:layout_height="@dimen/dp_60"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
     android:id="@+id/merchantVoucherShimmering"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_60"
-        android:layout_marginEnd="@dimen/dp_16" />
-
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_60" />
-</LinearLayout>
+    xmlns:android="http://schemas.android.com/apk/res/android"/>

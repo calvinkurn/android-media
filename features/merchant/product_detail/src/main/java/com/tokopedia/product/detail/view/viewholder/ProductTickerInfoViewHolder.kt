@@ -12,11 +12,11 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -35,7 +35,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     }
 
     override fun bind(element: ProductTickerInfoDataModel) {
-        if (element.generalTickerInfo == null) {
+        if (element.statusInfo == null || element.isUpcomingType) {
             hideComponent()
         } else {
             componentTrackDataModel = element.getComponentTrackData(adapterPosition)
@@ -56,9 +56,9 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         } else if (element.isProductInactive()) {
             showComponent()
             renderOutOfStockTicker(getStringRes(R.string.ticker_product_inactive_description), getStringRes(R.string.ticker_product_inactive_title), element.impressHolder)
-        } else if (element.generalTickerInfo?.isNotEmpty() == true) {
+        } else if (element.generalTickerInfoDataModel?.isNotEmpty() == true) {
             showComponent()
-            setupGeneralTicker(element.generalTickerInfo ?: listOf())
+            setupGeneralTicker(element.generalTickerInfoDataModel ?: listOf())
         } else {
             hideComponent()
         }
@@ -135,11 +135,11 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         }
     }
 
-    private fun setupGeneralTicker(generalTickerData: List<StickyLoginTickerPojo.TickerDetail>) = with(view) {
+    private fun setupGeneralTicker(generalTickerDatumDataModels: List<GeneralTickerDataModel.TickerDetailDataModel>) = with(view) {
         shop_ticker_info.hide()
         general_ticker_info.show()
-        if (generalTickerData.isNotEmpty()) {
-            val tickerData = generalTickerData.map { TickerData(description = it.message, type = Ticker.TYPE_ANNOUNCEMENT, title = null, isFromHtml = true) }
+        if (generalTickerDatumDataModels.isNotEmpty()) {
+            val tickerData = generalTickerDatumDataModels.map { TickerData(description = it.message, type = Ticker.TYPE_ANNOUNCEMENT, title = null, isFromHtml = true) }
             val tickerViewPager = TickerPagerAdapter(view.context, tickerData)
 
             general_ticker_info.addPagerView(tickerViewPager, tickerData)

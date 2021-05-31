@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -37,18 +35,31 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
-        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+                isShowCampaign,
+                labelCampaignBackground,
+                textViewLabelCampaign,
+                productCardModel
+        )
 
-        renderLabelBestSeller(labelBestSeller, productCardModel)
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        renderLabelBestSeller(
+                isShowBestSeller,
+                labelBestSeller,
+                productCardModel
+        )
+
+        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
+        spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, isWideContent = true)
 
-        renderStockPercentage(productCardModel)
-        renderStockLabel(productCardModel)
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
@@ -65,10 +76,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
-                    getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                    getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                    getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                    getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             )
         }
     }
@@ -95,24 +106,6 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
-    }
-
-    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            progressBarStock.progress = productCardModel.stockBarPercentage
-        }
-    }
-
-    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            textViewStockLabel.text = productCardModel.stockBarLabel
-            if (productCardModel.stockBarLabelColor.isNotEmpty()) {
-                textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
-            } else {
-                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            }
-        }
     }
 
     private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
@@ -142,10 +135,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.layoutParams = layoutParams
     }
 
-
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots

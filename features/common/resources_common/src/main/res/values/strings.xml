@@ -1,4 +1,5 @@
 <resources>
     <string name="general_label_ok">OK</string>
     <string name="general_label_cancel">Batal</string>
+    <string name="reset">Reset</string>
 </resources>

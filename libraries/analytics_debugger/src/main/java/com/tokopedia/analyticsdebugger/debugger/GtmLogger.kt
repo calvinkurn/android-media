@@ -2,116 +2,76 @@ package com.tokopedia.analyticsdebugger.debugger
 
 import android.content.Context
 import android.text.TextUtils
-
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDBSource
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerActivity
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.AnalyticsSource
-import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
-import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
-
+import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
+import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
+import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
+import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
+import com.tokopedia.config.GlobalConfig
+import kotlinx.coroutines.*
+import timber.log.Timber
 import java.net.URLDecoder
+import kotlin.coroutines.CoroutineContext
 
-import rx.Subscriber
-import rx.schedulers.Schedulers
+@Suppress("BlockingMethodInNonBlockingContext")
+class GtmLogger private constructor(private val context: Context) : AnalyticsLogger, CoroutineScope {
 
-/**
- * @author okasurya on 5/16/18.
- */
-class GtmLogger private constructor(private val context: Context) : AnalyticsLogger {
-    private val dbSource: GtmLogDBSource
-    private val dbErrorSource: GtmErrorLogDBSource
-    private val cache: LocalCacheHandler
+    override val coroutineContext: CoroutineContext
+        get() = CoroutineName("gtm_logger") + CoroutineExceptionHandler { _, t ->
+            Timber.e(t, "gtm_logger")
+        }
+
+    private val gson: Gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
+    private val dbSource by lazy {
+        val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
+        GtmRepo(dao)
+    }
+    private val cache: LocalCacheHandler = LocalCacheHandler(context, ANALYTICS_DEBUGGER)
 
     override val isNotificationEnabled: Boolean
-        get() = cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)!!
+        get() = cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false) ?: false
 
-    init {
-        this.dbSource = GtmLogDBSource(context)
-        this.dbErrorSource = GtmErrorLogDBSource(context)
-        this.cache = LocalCacheHandler(context, ANALYTICS_DEBUGGER)
-    }
-
-    override fun save(name: String, mapData: Map<String, Any>, @AnalyticsSource source:String) {
-        try {
-            val gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
-
-            val data = AnalyticsLogData()
-            data.source = source
-            data.category = mapData["eventCategory"] as String?
-            data.name = name
-            data.data = URLDecoder.decode(gson.toJson(mapData)
-                    .replace("%(?![0-9a-fA-F]{2})".toRegex(), "%25")
-                    .replace("\\+".toRegex(), "%2B"), "UTF-8")
-
-            if (!TextUtils.isEmpty(data.name) && data.name != "null") {
-                dbSource.insertAll(data).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
+    override fun save(name: String, data: Map<String, Any>, @AnalyticsSource source: String) {
+        launch {
+            val logData = AnalyticsLogData(
+                    source = source,
+                    name = name,
+                    data = URLDecoder.decode(gson.toJson(data)
+                            .replace("%(?![0-9a-fA-F]{2})".toRegex(), "%25")
+                            .replace("\\+".toRegex(), "%2B"), "UTF-8")
+            )
+            if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
+                dbSource.insert(logData)
             }
 
-            if (cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)!!) {
-                NotificationHelper.show(context, data)
+            if (isNotificationEnabled) {
+                NotificationHelper.show(context, logData)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
 
     }
 
     override fun saveError(errorData: String) {
-        val gtmErrorLogDB = GtmErrorLogDB()
-        gtmErrorLogDB.data = errorData
-        gtmErrorLogDB.timestamp = System.currentTimeMillis()
-        if (cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)!!) {
-            val data = AnalyticsLogData()
-            data.category = ""
-            data.name = "error GTM v5"
-            data.data = errorData
-            NotificationHelper.show(context, data)
+        launch {
+            val logData = AnalyticsLogData(
+                    name = "ERROR GTM V5",
+                    data = errorData,
+                    source = AnalyticsSource.ERROR
+            )
+            dbSource.insert(logData)
+            if (cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)!!) {
+                NotificationHelper.show(context, logData)
+            }
         }
-        dbErrorSource.insertAll(gtmErrorLogDB).subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
     }
 
-    override fun wipe() {
-        dbSource.deleteAll().subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
-    }
-
-    override fun openActivity() {
-        context.startActivity(AnalyticsDebuggerActivity.newInstance(context))
-    }
-
-    override fun openErrorActivity() {
-        context.startActivity(AnalyticsGtmErrorDebuggerActivity.newInstance(context))
-    }
-
-    override fun navigateToValidator() {
-        context.startActivity(MainValidatorActivity.newInstance(context))
-    }
-
-    override fun enableNotification(isEnabled: Boolean) {
-        cache.putBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, isEnabled)
+    override fun enableNotification(status: Boolean) {
+        cache.putBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, status)
         cache.applyEditor()
-    }
-
-    private fun defaultSubscriber(): Subscriber<in Boolean> {
-        return object : Subscriber<Boolean>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-            }
-
-            override fun onNext(aBoolean: Boolean?) {
-                // no-op
-            }
-        }
     }
 
     companion object {
@@ -139,27 +99,11 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                 override val isNotificationEnabled: Boolean
                     get() = false
 
-                override fun save(name: String, data: Map<String, Any>, @AnalyticsSource source:String) {
+                override fun save(name: String, data: Map<String, Any>, @AnalyticsSource source: String) {
 
                 }
 
                 override fun saveError(errorData: String) {
-
-                }
-
-                override fun wipe() {
-
-                }
-
-                override fun openActivity() {
-
-                }
-
-                override fun openErrorActivity() {
-
-                }
-
-                override fun navigateToValidator() {
 
                 }
 

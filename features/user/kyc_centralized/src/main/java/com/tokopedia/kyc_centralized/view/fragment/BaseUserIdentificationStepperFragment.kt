@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
@@ -23,6 +22,7 @@ import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 
@@ -33,13 +33,14 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected var onboardingImage: LottieAnimationView? = null
     protected var title: TextView? = null
     protected var subtitle: TextView? = null
-    protected var button: TextView? = null
+    protected var button: UnifyButton? = null
     protected var correctImage: ImageView? = null
     protected var wrongImage: ImageView? = null
     protected var analytics: UserIdentificationCommonAnalytics? = null
     protected var projectId = 0
     protected var stepperModel: T? = null
     private var stepperListener: StepperListener? = null
+    private var allowedSelfie = false
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -55,6 +56,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         }
         if (activity != null) {
             projectId = activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, -1)?: -1
+            allowedSelfie = activity?.intent?.getBooleanExtra(UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA, false)?: false
             analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
         }
 
@@ -70,8 +72,13 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_user_identification_form, container, false)
         initView(view)
+        encryptImage()
         setContentView()
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     protected open fun initView(view: View) {
@@ -86,17 +93,9 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
-                if (isKycSelfie) {
-                    val faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
-                    stepperModel?.faceFile = faceFile.toEmptyStringIfNull()
-                    stepperListener?.goToNextPage(stepperModel)
-                } else {
-                    getLivenessResult(data)
-                }
+                handleFaceImage(data)
             } else if (requestCode == KYCConstant.REQUEST_CODE_CAMERA_KTP) {
-                val ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
-                stepperModel?.ktpFile = ktpFile.toEmptyStringIfNull()
-                stepperListener?.goToNextPage(stepperModel)
+                handleKtpImage(data)
             }
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_TOO_BIG) {
             sendAnalyticErrorImageTooLarge(requestCode)
@@ -114,20 +113,23 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun getLivenessResult(data: Intent) {
-        val isSuccessRegister = data.getBooleanExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, false)
-        if (isSuccessRegister) {
-            activity?.setResult(Activity.RESULT_OK)
-            stepperListener?.finishPage()
+    private fun handleFaceImage(data: Intent) {
+        var faceFile = ""
+        if(isKycSelfie) {
+            stepperModel?.isLiveness = false
+            faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)?: ""
         } else {
-            stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
-            stepperModel?.listRetake = data.getIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE)?: arrayListOf()
-            stepperModel?.listMessage = data.getStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE)?: arrayListOf()
-            stepperModel?.titleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_TITLE).toEmptyStringIfNull()
-            stepperModel?.subtitleText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE).toEmptyStringIfNull()
-            stepperModel?.buttonText = data.getStringExtra(ApplinkConst.Liveness.EXTRA_BUTTON).toEmptyStringIfNull()
-            stepperListener?.goToNextPage(stepperModel)
+            stepperModel?.isLiveness = true
+            faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH)?: ""
         }
+        stepperModel?.faceFile = faceFile.toEmptyStringIfNull()
+        stepperListener?.goToNextPage(stepperModel)
+    }
+
+    private fun handleKtpImage(data: Intent) {
+        val ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)
+        stepperModel?.ktpFile = ktpFile.toEmptyStringIfNull()
+        stepperListener?.goToNextPage(stepperModel)
     }
 
     private fun sendAnalyticErrorImageTooLarge(requestCode: Int) {
@@ -141,6 +143,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected val isKycSelfie: Boolean
         get() {
             try {
+                if(allowedSelfie) return allowedSelfie
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
                     return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }
@@ -152,6 +155,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
 
     abstract override fun initInjector()
     protected abstract fun setContentView()
+    protected abstract fun encryptImage()
 
     companion object {
         const val EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model"

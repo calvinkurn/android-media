@@ -7,8 +7,10 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.tokopedia.config.GlobalConfig;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -18,8 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private static final String CACHE_NAME = "RemoteConfigDebugCache";
-    private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
-    private static final long CONFIG_CACHE_EXPIRATION = THREE_HOURS;
+    private static final long THIRTY_MINUTES = TimeUnit.MINUTES.toSeconds(30);
+    private static final long CONFIG_CACHE_EXPIRATION = THIRTY_MINUTES;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
     private SharedPreferences sharedPrefs;
@@ -41,7 +43,17 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     @Override
     public Set<String> getKeysByPrefix(String prefix) {
         if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getKeysByPrefix(prefix);
+            Set<String> set = firebaseRemoteConfig.getKeysByPrefix(prefix);
+            if (isDebug()) {
+                Map<String, ?> map = sharedPrefs.getAll();
+                String key = "";
+                for (Map.Entry<String,?> entry : map.entrySet())
+                    key = entry.getKey();
+                    if (key.startsWith(prefix)){
+                        set.add(key);
+                    }
+            }
+            return set;
         }
 
         return null;
@@ -74,26 +86,20 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     }
 
     @Override
-    public byte[] getByteArray(String key) {
-        return getByteArray(key, new byte[0]);
-    }
-
-    @Override
-    public byte[] getByteArray(String key, byte[] defaultValue) {
-        if (firebaseRemoteConfig != null) {
-            return firebaseRemoteConfig.getByteArray(key);
-        }
-
-        return defaultValue;
-    }
-
-    @Override
     public double getDouble(String key) {
         return getDouble(key, 0.0D);
     }
 
     @Override
     public double getDouble(String key, double defaultValue) {
+        if (isDebug()) {
+            String cachedValue = sharedPrefs.getString(key, null);
+
+            if (cachedValue != null) {
+                return Double.parseDouble(cachedValue);
+            }
+        }
+
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getDouble(key);
         }
@@ -166,12 +172,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public void fetch(@Nullable final Listener listener) {
         try {
             if (firebaseRemoteConfig != null) {
-                firebaseRemoteConfig.setDefaults(R.xml.remote_config_default);
-                firebaseRemoteConfig.fetch(CONFIG_CACHE_EXPIRATION)
+                firebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_default);
+                FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                        .setMinimumFetchIntervalInSeconds(CONFIG_CACHE_EXPIRATION)
+                        .build();
+                firebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+                firebaseRemoteConfig.fetchAndActivate()
                         .addOnCompleteListener(new JobExecutor(), task -> {
-                            if (task.isSuccessful()) {
-                                firebaseRemoteConfig.activateFetched();
-                            }
                             if (listener != null) {
                                 listener.onComplete(FirebaseRemoteConfigImpl.this);
                             }

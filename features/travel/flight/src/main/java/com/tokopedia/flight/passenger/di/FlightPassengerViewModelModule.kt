@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@FlightPassengerScope
 abstract class FlightPassengerViewModelModule {
     @FlightPassengerScope
     @Binds

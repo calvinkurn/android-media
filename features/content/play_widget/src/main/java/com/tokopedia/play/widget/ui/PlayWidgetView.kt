@@ -7,12 +7,13 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LifecycleObserver
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumOverlayUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
@@ -43,6 +44,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         mWidgetInternalListener = listener
         when (val child = getFirstChild()) {
             is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
+            is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
         }
     }
 
@@ -92,7 +94,8 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     private fun addMediumView(model: PlayWidgetUiModel.Medium) {
         val widgetView = addWidgetView { PlayWidgetMediumView(context) }
 
-        val isWidgetEmpty = model.items.size <= 1 // because, for medium we have 'overlay' type card
+        val overlayItemSize = model.items.filterIsInstance<PlayWidgetMediumOverlayUiModel>().size
+        val isWidgetEmpty = model.items.size.isZero() || (model.items.size == overlayItemSize)
         if (isWidgetEmpty) {
             widgetView.hide()
         } else {

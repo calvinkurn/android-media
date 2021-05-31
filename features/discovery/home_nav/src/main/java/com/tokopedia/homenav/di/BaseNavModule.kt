@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +24,7 @@ internal class BaseNavModule {
     fun provideUserSession(@ApplicationContext context: Context?): UserSessionInterface = UserSession(context)
 
     @Provides
-    fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig = FirebaseRemoteConfigImpl(context)
+    fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
 
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)

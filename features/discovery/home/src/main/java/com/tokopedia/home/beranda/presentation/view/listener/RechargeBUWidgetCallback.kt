@@ -4,12 +4,11 @@ import android.content.Context
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.RechargeBUWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 
-class RechargeBUWidgetCallback (val context: Context?, val viewModel: HomeViewModel,
+class RechargeBUWidgetCallback (val context: Context?,
                                 val homeCategoryListener: HomeCategoryListener): RechargeBUWidgetListener {
 
     override fun onRechargeBUWidgetImpression(data: RechargeBUWidgetDataModel) {
@@ -62,7 +61,7 @@ class RechargeBUWidgetCallback (val context: Context?, val viewModel: HomeViewMo
     }
 
     override fun getRechargeBUWidget(source: WidgetSource) {
-        viewModel.getRechargeBUWidget(source)
+        homeCategoryListener.getRechargeBUWidget(source)
     }
 
     companion object {

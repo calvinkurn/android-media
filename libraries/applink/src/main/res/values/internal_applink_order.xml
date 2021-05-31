@@ -3,6 +3,7 @@
     <string name="host_seller" translatable="false">seller</string>
     <string name="host_buyer" translatable="false">buyer</string>
     <string name="host_order" translatable="false">order</string>
+    <string name="host_snapshot_order" translatable="false">snapshot</string>
     <string name="host_orderlist" translatable="false">orderlist</string>
     <string name="host_transaction_buyer" translatable="false">transaction</string>
     <string name="host_order_list" translatable="false">order_list</string>
@@ -47,5 +48,9 @@
     <string name="path_marketplace" translatable="false">/marketplace/filter/.*\\/</string>
     <string name="path_orderlist_digital" translatable="false">/digital</string>
     <string name="path_any" translatable="false">/.*\\/</string>
+
+    <string name="path_order_snapshot" translatable="false">/snapshot</string>
+    <string name="path_order_buyer_cancellation_request_page" translatable="false">/cancellationrequest</string>
+
 
 </resources>

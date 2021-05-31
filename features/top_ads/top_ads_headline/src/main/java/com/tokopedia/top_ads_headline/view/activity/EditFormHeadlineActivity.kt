@@ -222,7 +222,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         submitButton.isEnabled = isEnabled
     }
 
-    override fun onMinBidChange(minBid: Int) {
+    override fun onMinBidChange(minBid: Double) {
         ((view_pager.adapter as? TopAdsEditPagerAdapter)?.getItem(FRAGMENT_3) as? EditAdOthersFragment)?.setDailyBudget(minBid)
     }
 }
@@ -232,5 +232,5 @@ interface SaveButtonState {
 }
 
 interface OnMinBidChangeListener {
-    fun onMinBidChange(minBid: Int)
+    fun onMinBidChange(minBid: Double)
 }

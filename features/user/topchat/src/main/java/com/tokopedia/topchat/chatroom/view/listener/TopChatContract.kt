@@ -2,21 +2,25 @@ package com.tokopedia.topchat.chatroom.view.listener
 
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 
 /**
@@ -65,6 +69,12 @@ interface TopChatContract {
         fun onSendAndReceiveMessage()
 
         fun renderBackground(url: String)
+        fun updateSrwState()
+        fun shouldShowSrw(): Boolean
+        fun hasProductPreviewShown(): Boolean
+        fun hasNoSrw(): Boolean
+        fun collapseSrw()
+        fun expandSrw()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -132,6 +142,10 @@ interface TopChatContract {
                                       startTime: String, opponentId: String,
                                       onSendingMessage: () -> Unit)
 
+        fun sendAttachmentsAndSrw(messageId: String, question: QuestionUiModel,
+                                  startTime: String, opponentId: String,
+                                  onSendingMessage: () -> Unit)
+
         fun initAttachmentPreview()
 
         fun clearAttachmentPreview()
@@ -160,10 +174,6 @@ interface TopChatContract {
 
         fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel)
 
-        fun isStickerTooltipAlreadyShow(): Boolean
-
-        fun toolTipOnBoardingShown()
-
         fun setBeforeReplyTime(createTime: String)
 
         fun isInTheMiddleOfThePage(): Boolean
@@ -180,16 +190,26 @@ interface TopChatContract {
 
         fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
 
-        fun addToCart(
-                addToCartOccRequestParams: AddToCartOccRequestParams,
-                onSuccess: (AddToCartDataModel) -> Unit,
-                onError: (Throwable) -> Unit
-        )
-
         fun getBackground()
 
         fun addAttachmentPreview(sendablePreview: SendablePreview)
 
         fun hasEmptyAttachmentPreview(): Boolean
+
+        fun addProductToCart(
+                requestParams: RequestParams,
+                onSuccessAddToCart: (data: DataModel) -> Unit,
+                onError: (msg: String) -> Unit
+        )
+
+        fun addOngoingUpdateProductStock(
+                productId: String,
+                product: ProductAttachmentViewModel, adapterPosition: Int,
+                parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
+        )
+
+        fun getSmartReplyWidget(msgId: String)
+        fun initUserLocation(userLocation: LocalCacheModel?)
+        fun getProductIdPreview(): List<String>
     }
 }

@@ -12,7 +12,6 @@ import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
 import com.tokopedia.topads.edit.data.response.EditSingleAdResponse
-import com.tokopedia.topads.edit.data.response.FinalAdResponse
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
 import com.tokopedia.topads.edit.usecase.GetAdsUseCase
@@ -45,7 +44,7 @@ class EditFormDefaultViewModelTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val singleAdInfoUseCase: TopAdsGetPromoUseCase = mockk(relaxed = true)
     private lateinit var viewModel: EditFormDefaultViewModel
-    private val userSession:UserSession = mockk()
+    private val userSession: UserSession = mockk()
     private var groupId = 123
 
     @Before
@@ -56,7 +55,7 @@ class EditFormDefaultViewModelTest {
                 bidInfoUseCase,
                 getAdsUseCase,
                 getAdKeywordUseCase,
-                groupInfoUseCase, editSingleAdUseCase,singleAdInfoUseCase,userSession, topAdsCreateUseCase
+                groupInfoUseCase, editSingleAdUseCase, singleAdInfoUseCase, userSession, topAdsCreateUseCase
         )
     }
 
@@ -123,7 +122,7 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAds(1, groupId) { _:List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, _:Int, _:Int ->}
+        viewModel.getAds(1, groupId) { _: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, _: Int, _: Int -> }
 
         verify {
             getAdsUseCase.executeQuerySafeMode(any(), any())
@@ -158,7 +157,7 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAdKeyword(groupId,""){ list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
+        viewModel.getAdKeyword(groupId, "") { list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
 
 
         verify {
@@ -187,21 +186,12 @@ class EditFormDefaultViewModelTest {
 
     @Test
     fun topAdsCreated() {
-        val data = FinalAdResponse()
         val dataProduct: Bundle = mockk()
         val dataKeyword: HashMap<String, Any?> = mockk()
         val dataGroup: HashMap<String, Any?> = mockk()
-        every {
-            topAdsCreateUseCase.executeQuerySafeMode(captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(FinalAdResponse) -> Unit>()
-            onSuccess.invoke(data)
-        }
-
         viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup, {}, {})
-
         verify {
-            topAdsCreateUseCase.executeQuerySafeMode(any(), any())
+            topAdsCreateUseCase.execute(any(), any())
         }
     }
 
@@ -229,8 +219,8 @@ class EditFormDefaultViewModelTest {
         verify { getAdsUseCase.cancelJobs() }
         verify { getAdKeywordUseCase.cancelJobs() }
         verify { groupInfoUseCase.cancelJobs() }
-        verify { topAdsCreateUseCase.cancelJobs() }
+        verify { topAdsCreateUseCase.unsubscribe() }
         verify { editSingleAdUseCase.cancelJobs() }
-        verify {singleAdInfoUseCase.cancelJobs()}
+        verify { singleAdInfoUseCase.cancelJobs() }
     }
 }

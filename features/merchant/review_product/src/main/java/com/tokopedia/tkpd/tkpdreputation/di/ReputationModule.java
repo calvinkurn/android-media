@@ -4,28 +4,14 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
-import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepositoryImpl;
 import com.tokopedia.tkpd.tkpdreputation.network.ReputationService;
 import com.tokopedia.tkpd.tkpdreputation.network.product.ReviewProductService;
-import com.tokopedia.tkpd.tkpdreputation.network.shop.FaveShopActService;
-import com.tokopedia.tkpd.tkpdreputation.network.shop.ShopService;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -36,12 +22,8 @@ import dagger.Provides;
  * @author by nisie on 8/11/17.
  */
 
-@Module
+@Module(includes = {ReviewProductViewModelModule.class})
 public class ReputationModule {
-
-    @ReputationScope
-    @Provides
-    GraphqlRepository provideGraphqlRepository() { return GraphqlInteractor.getInstance().getGraphqlRepository(); }
 
     @ReputationScope
     @Provides
@@ -52,20 +34,16 @@ public class ReputationModule {
     @ReputationScope
     @Provides
     ReputationRepository provideReputationRepository(ReputationFactory reputationFactory) {
-        return new ReputationRepositoryImpl(reputationFactory);
+        return new ReputationRepository(reputationFactory);
     }
 
     @ReputationScope
     @Provides
     ReputationFactory provideReputationFactory(
             ReputationService reputationService,
-            DeleteReviewResponseMapper deleteReviewResponseMapper,
-            GetLikeDislikeMapper getLikeDislikeMapper,
-            LikeDislikeMapper likeDislikeMapper,
-            ReviewProductService reputationReviewApi,
+            ReviewProductService reviewProductService,
             UserSessionInterface userSession) {
-        return new ReputationFactory(reputationService, deleteReviewResponseMapper,
-                getLikeDislikeMapper, likeDislikeMapper, reputationReviewApi, userSession);
+        return new ReputationFactory(reputationService, reviewProductService, userSession);
     }
 
     @ReputationScope
@@ -99,60 +77,8 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ShopService provideShopService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
-        return new ShopService(
-                context,
-                networkRouter,
-                userSession
-        );
-    }
-
-    @ReputationScope
-    @Provides
-    FaveShopActService provideFaveShopActService(@ApplicationContext Context context, NetworkRouter networkRouter, UserSession userSession) {
-        return new FaveShopActService(
-                context,
-                networkRouter,
-                userSession
-        );
-    }
-
-    @ReputationScope
-    @Provides
     LikeDislikeReviewUseCase provideLikeDislikeReviewUseCase(ReputationRepository reputationRepository) {
         return new LikeDislikeReviewUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    GetLikeDislikeMapper provideGetLikeDislikeMapper() {
-        return new GetLikeDislikeMapper();
-    }
-
-    @ReputationScope
-    @Provides
-    GetLikeDislikeReviewUseCase provideGetLikeDislikeReviewUseCase(ReputationRepository reputationRepository) {
-        return new GetLikeDislikeReviewUseCase(reputationRepository);
-    }
-
-
-    @ReputationScope
-    @Provides
-    LikeDislikeMapper provideLikeDislikeMapper() {
-        return new LikeDislikeMapper();
-    }
-
-    @ReputationScope
-    @Provides
-    ReviewProductPresenter provideProductReviewPresenter(ReviewProductGetListUseCase productReviewGetListUseCase,
-                                                         ReviewProductGetHelpfulUseCase productReviewGetHelpfulUseCase,
-                                                         ReviewProductGetRatingUseCase productReviewGetRatingUseCase,
-                                                         LikeDislikeReviewUseCase likeDislikeReviewUseCase,
-                                                         DeleteReviewResponseUseCase deleteReviewResponseUseCase,
-                                                         ReviewProductListMapper productReviewListMapper,
-                                                         UserSessionInterface userSession){
-        return new ReviewProductPresenter(productReviewGetListUseCase, productReviewGetHelpfulUseCase, productReviewGetRatingUseCase,
-                likeDislikeReviewUseCase, deleteReviewResponseUseCase, productReviewListMapper, userSession);
     }
 
     @ReputationScope
@@ -163,14 +89,8 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    DeleteReviewResponseUseCase provideDeleteReviewResponseUseCase(ReputationRepository reputationRepository) {
+    DeleteReviewResponseUseCase provideDeleteReviewResponseUseCaseV2(ReputationRepository reputationRepository) {
         return new DeleteReviewResponseUseCase(reputationRepository);
-    }
-
-    @ReputationScope
-    @Provides
-    DeleteReviewResponseMapper provideDeleteReviewResponseMapper() {
-        return new DeleteReviewResponseMapper();
     }
 
     @ReputationScope
@@ -181,7 +101,7 @@ public class ReputationModule {
 
     @ReputationScope
     @Provides
-    ReputationTracking reputationTracking(){
+    ReputationTracking reputationTracking() {
         return new ReputationTracking();
     }
 }

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.tokomart">
+
+    <application>
+        <activity
+            android:name=".home.presentation.activity.TokoMartHomeActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/TokoNowHomeTheme">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokonow"
+                    android:path="@string/path_tokonow_home"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".categorylist.presentation.activity.TokoMartCategoryListActivity"
+            android:exported="true"
+            android:label="@string/title_tokonow"
+            android:screenOrientation="portrait"
+            android:theme="@style/CategoryListTheme">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_tokonow"
+                    android:pathPattern="@string/path_tokonow_category_list"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".search.presentation.view.SearchActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_tokonow"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_tokonow"
+                    android:path="@string/path_tokomart_search"/>
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".category.presentation.view.CategoryActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_tokonow"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_tokonow"
+                    android:pathPattern="@string/path_tokomart_category"/>
+            </intent-filter>
+
+        </activity>
+    </application>
+</manifest>

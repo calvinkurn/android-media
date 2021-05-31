@@ -268,13 +268,13 @@ open class PublishCompositeTask : DefaultTask() {
         var gitCommandAssembleString = ""
         var gitCommandAssembleResultString = ""
         try {
-            gitCommandAssembleString = "gradle $command  -p $module --stacktrace"
+            gitCommandAssembleString = "gradle $command  -p $module -PhanselEnableDebug --stacktrace"
             print("$gitCommandAssembleString\n")
             gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
                     ?: ""
         } catch (e: Exception) {
             try {
-                gitCommandAssembleString = "../.././gradlew $command  -p $module --stacktrace"
+                gitCommandAssembleString = "../.././gradlew $command  -p $module  -PhanselEnableDebug --stacktrace"
                 print("$gitCommandAssembleString\n")
                 gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial()
                         ?: ""

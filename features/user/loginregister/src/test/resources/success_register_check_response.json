@@ -1,0 +1,11 @@
+{
+  "registerCheck": {
+    "isExist": true,
+    "isPending": false,
+    "status": 1,
+    "registerType": "",
+    "userID": "",
+    "view": "",
+    "errors": []
+  }
+}

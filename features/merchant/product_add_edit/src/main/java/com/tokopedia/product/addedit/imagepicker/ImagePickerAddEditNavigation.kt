@@ -78,17 +78,17 @@ object ImagePickerAddEditNavigation {
         ImagePickerGlobalSettings.onImageEditorBack = ImagePickerCallback(ctx) { ct, bnd ->
             val userSession = UserSession(ct)
             if (bnd?.getBoolean(AddEditProductPreviewConstants.EXTRA_IS_ADDING_PRODUCT, true) == true) {
-                ProductAddEditImageTracking.trackEditBack(userSession.shopId);
+                ProductAddEditImageTracking.trackEditBack(userSession.shopId)
             } else {
-                ProductEditEditImageTracking.trackBack(userSession.shopId);
+                ProductEditEditImageTracking.trackBack(userSession.shopId)
             }
         }
-        ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { ct, bnd ->
+        ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx, bundle) { ct, bnd ->
             val userSession = UserSession(ct)
             if (bnd?.getBoolean(AddEditProductPreviewConstants.EXTRA_IS_ADDING_PRODUCT, true) == true) {
-                ProductAddEditImageTracking.trackEditContinue(userSession.shopId);
+                ProductAddEditImageTracking.trackEditContinue(userSession.shopId)
             } else {
-                ProductEditEditImageTracking.trackContinue(userSession.shopId);
+                ProductEditEditImageTracking.trackContinue(userSession.shopId)
             }
         }
     }

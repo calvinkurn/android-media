@@ -540,7 +540,7 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
                 "error state on report page",
-                "- $errorMessage - $channelId - $titleChannel"
+                "- $channelId - $titleChannel - $errorMessage"
         )
     }
 

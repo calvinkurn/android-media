@@ -2,8 +2,10 @@ package com.tokopedia.seller.menu.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
@@ -14,9 +16,23 @@ class SellerMenuAdapter(
     factory: OtherMenuAdapterTypeFactory
 ) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(factory) {
 
-    fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int) {
+    fun showShopScoreTicker(tickerShopScoreUiModel: TickerShopScoreUiModel) {
+        if (visitables.getOrNull(firstIndex) !is TickerShopScoreUiModel) {
+            visitables.add(0, tickerShopScoreUiModel)
+            notifyItemInserted(0)
+        }
+    }
+
+    fun hideShopScoreTicker() {
+        if (visitables.getOrNull(firstIndex) is TickerShopScoreUiModel) {
+            visitables.removeAt(0)
+            notifyItemRemoved(0)
+        }
+    }
+
+    fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int, shopAge: Int) {
         findShopInfoIndex()?.let { index ->
-            val shopInfoUiModel = ShopInfoUiModel(shopInfo, shopScore)
+            val shopInfoUiModel = ShopInfoUiModel(shopInfo, shopScore, shopAge)
             updateItemAt(index, shopInfoUiModel)
         }
     }
@@ -45,12 +61,27 @@ class SellerMenuAdapter(
         }
     }
 
+    fun showNotificationCounter(matcher: (SettingUiModel) -> Boolean, notificationCount: Int) {
+        findItem(matcher)?.let { item ->
+            updateNotificationCounter(item, notificationCount)
+        }
+    }
+
     private fun updateItemAt(index: Int, item: SettingUiModel) {
         visitables.removeAt(index)
         notifyItemRemoved(index)
 
         addElement(index, item)
         notifyItemChanged(index)
+    }
+
+    private fun updateNotificationCounter(item: SettingUiModel, notificationCount: Int) {
+        visitables.indexOf(item).takeIf { it != -1 }?.let { index ->
+            if (item is SellerMenuItemUiModel) {
+                item.notificationCount = notificationCount
+                notifyItemChanged(index)
+            }
+        }
     }
 
     private fun findShopInfoIndex(): Int? {
@@ -64,5 +95,9 @@ class SellerMenuAdapter(
     private fun findIndex(predicate: (SettingUiModel) -> Boolean): Int? {
         val item = data.firstOrNull { predicate.invoke(it) }
         return item?.let { data.indexOf(it) }
+    }
+
+    private fun findItem(predicate: (SettingUiModel) -> Boolean): SettingUiModel? {
+        return data.firstOrNull { predicate(it) }
     }
 }

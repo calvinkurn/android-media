@@ -11,16 +11,24 @@ class TickerMapper @Inject constructor() {
         return orderTickers.tickers.map {
             TickerData(
                     title = "",
-                    description = it.body,
+                    description = it.body.removeParagraphTag().removeExtraLines(),
                     type = Ticker.TYPE_INFORMATION,
                     isFromHtml = true,
                     itemData = SomListTickerUiModel(
                             id = it.id,
-                            body = it.body,
-                            shortDesc = it.shortDesc,
+                            body = it.body.removeParagraphTag().removeExtraLines(),
+                            shortDesc = it.shortDesc.removeParagraphTag().removeExtraLines(),
                             isActive = it.isActive
                     )
             )
         }
+    }
+
+    private fun String.removeParagraphTag(): String {
+        return replace("<p>", "").replace("</p>", "")
+    }
+
+    private fun String.removeExtraLines(): String {
+        return replace(Regex("(<br>)+$"), "")
     }
 }

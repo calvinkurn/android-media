@@ -9,7 +9,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@HeadlineAdsScope
 @Module
 abstract class ViewModelModule {
 

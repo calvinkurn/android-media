@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="chip_home_play_live">#FD412B</color>
-    <color name="chip_home_play_viewers">#F3F4F5</color>
+    <color name="dynamicbanner_dms_chip_home_play_live">#FD412B</color>
+    <color name="dynamicbanner_dms_chip_home_play_viewers">#F3F4F5</color>
+    <color name="dynamicbanner_dms_image_banner">#f1f1f1</color>
+    <color name="dynamicbanner_dms_text_total_viewers">#f531353b</color>
 </resources>

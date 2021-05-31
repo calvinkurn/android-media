@@ -1,106 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.digital_deals"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.tokopedia.digital_deals">
 
     <application>
         <activity
-            android:name=".view.activity.DealsHomeActivity"
-            android:label="@string/title_activity_deals"
+            android:name=".view.activity.DealDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
-        <intent-filter android:autoVerify="true">
-            <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="/deals-slug/.*\\/"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
 
-            <data
-                android:host="@string/host_global"
-                android:path="/deals"
-                android:scheme="@string/internal_scheme"/>
-        </intent-filter>
-    </activity>
-    <activity
-        android:name=".view.activity.DealsSearchActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.White">
-    </activity>
-    <activity
-        android:name=".view.activity.DealDetailsActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.White">
-        <intent-filter>
-        <action android:name="com.tokopedia.internal.VIEW" />
+        <activity
+            android:name=".view.activity.BrandDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-        <data
-            android:host="@string/host_global"
-            android:pathPattern="/deals-slug/.*\\/"
-            android:scheme="@string/internal_scheme" />
-        </intent-filter>
-    </activity>
-    <activity
-        android:name=".view.activity.CategoryDetailActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.White">
+                <data
+                    android:host="@string/host_global"
+                    android:pathPattern="/deals-brand/.*\\/"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
 
-        <intent-filter>
-            <action android:name="com.tokopedia.internal.VIEW" />
+        <activity
+            android:name=".view.activity.CheckoutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
+    </application>
 
-            <data
-                android:host="@string/host_global"
-                android:pathPattern="/deals/category/page"
-                android:scheme="@string/internal_scheme" />
-        </intent-filter>
-    </activity>
-    <activity
-        android:name=".view.activity.AllBrandsActivity"
-        android:label="@string/title_activity_all_brands"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.White"
-        android:windowSoftInputMode="stateHidden">
-        <intent-filter>
-            <action android:name="com.tokopedia.internal.VIEW" />
-
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-
-            <data
-                android:host="@string/host_global"
-                android:pathPattern="/deals-allbrands/.*\\/"
-                android:scheme="@string/internal_scheme" />
-        </intent-filter>
-    </activity>
-
-    <activity
-        android:name=".view.activity.BrandDetailsActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.White">
-        <intent-filter>
-            <action android:name="com.tokopedia.internal.VIEW" />
-
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-
-            <data
-                android:host="@string/host_global"
-                android:pathPattern="/deals-brand/.*\\/"
-                android:scheme="@string/internal_scheme" />
-        </intent-filter>
-    </activity>
-
-    <activity
-        android:name=".view.activity.CheckoutActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.White" />
-
-</application>
-
-    </manifest>
+</manifest>

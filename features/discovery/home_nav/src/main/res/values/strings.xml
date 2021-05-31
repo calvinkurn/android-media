@@ -27,23 +27,25 @@
     <string name="menu_home_back_to_home">Kembali ke Home</string>
 
     <string name="menu_user_menu_wishlist">Wishlist</string>
-    <string name="menu_user_menu_favorite_shop">Toko Favorit</string>
+    <string name="menu_user_menu_favorite_shop">Toko yang Di-follow</string>
     <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>
     <string name="menu_user_menu_subscription">Langganan</string>
     <string name="menu_user_menu_complain">Pesanan Dikomplain</string>
-    <string name="menu_user_menu_tokopedia_care">Tokopedia Care</string>
-    <string name="menu_user_menu_qr_code">QR Code</string>
+    <string name="menu_user_menu_tokopedia_care">Bantuan Tokopedia Care</string>
+    <string name="menu_user_menu_qr_code">Scan Kode QR</string>
 
     <string name="menu_user_menu_wishlist_tracker_name">Wishlist</string>
     <string name="menu_user_menu_favorite_shop_tracker_name">Favorite Shop</string>
     <string name="menu_user_menu_recent_view_tracker_name">Recent View</string>
     <string name="menu_user_menu_subscription_tracker_name">Subscription</string>
     <string name="menu_user_menu_complain_tracker_name">Complain</string>
-    <string name="menu_user_menu_tokopedia_care_tracker_name">Tokopedia Care</string>
+    <string name="menu_user_menu_tokopedia_care_tracker_name">Bantuan Tokopedia Care</string>
     <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
 
-    <string name="title_transaction_section">Transaksi berlangsung</string>
-    <string name="menu_transaction_menu_all_transaction">Semua Transaksi</string>
+    <string name="title_transaction_section">Aktivitas saya</string>
+    <string name="title_category_section">Semua Kategori</string>
+    <string name="title_helpcenter_section">Pusat bantuan</string>
+    <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
 
@@ -58,7 +60,7 @@
     <string name="category_back_menu">Kembali</string>
 
     <string name="onboarding_login_p1_s1_title">Halo, sekarang Akunmu di sini~</string>
-    <string name="onboarding_login_p1_s1_description">Kamu bisa atur Akun seperti biasa &#38; cek saldo OVO! Buat kamu yang punya toko bisa akses di sini.</string>
+    <string name="onboarding_login_p1_s1_description">Kamu bisa atur Akun, atau cek TokoPoints &#38; saldo lainnya. Buat kamu yang punya toko bisa akses di sini.</string>
 
     <string name="onboarding_login_p1_s2_title">Bayar tagihan &#38; cek transaksi bisa di sini!</string>
     <string name="onboarding_login_p1_s2_description">Kamu juga bisa top up &#38; beli tiket. Kalau transaksi sudah selesai, jangan lupa tulis ulasan, ya.</string>
@@ -67,7 +69,7 @@
     <string name="onboarding_login_p1_s3_description">Hubungi Tokopedia Care saja kalau kamu butuh bantuan atau curhat lagi ada kendala!</string>
 
     <string name="onboarding_login_p2_s1_title">Halo, sekarang Akunmu di sini~</string>
-    <string name="onboarding_login_p2_s1_description">Kamu bisa atur Akun seperti biasa &#38; cek saldo OVO! Buat kamu yang punya toko bisa akses di sini.</string>
+    <string name="onboarding_login_p2_s1_description">Kamu bisa atur Akun, atau cek TokoPoints &#38; saldo lainnya. Buat kamu yang punya toko bisa akses di sini.</string>
 
     <string name="onboarding_nonlogin_p1_s1_title">Bayar tagihan &#38; cek transaksi bisa di sini!</string>
     <string name="onboarding_nonlogin_p1_s1_description">Kamu juga bisa top up &#38; beli tiket. Kalau transaksi sudah selesai, jangan lupa tulis ulasan, ya.</string>
@@ -85,4 +87,7 @@
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>
+    <string name="account_header_store_empty_shop">Mau mulai berbisnis?</string>
+    <string name="account_header_store_title">Toko saya:</string>
+    <string name="account_header_store_title_role">Peran saya:</string>
 </resources>

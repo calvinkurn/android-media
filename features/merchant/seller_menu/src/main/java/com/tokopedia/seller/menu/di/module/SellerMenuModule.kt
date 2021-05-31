@@ -14,8 +14,6 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
@@ -26,14 +24,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 @Module
-@SellerMenuScope
 class SellerMenuModule {
-
-    @SellerMenuScope
-    @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
-    }
 
     @SellerMenuScope
     @Provides

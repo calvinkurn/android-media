@@ -29,6 +29,7 @@
             android:layout_width="@dimen/dp_55"
             android:layout_height="@dimen/dp_55"
             android:scaleType="centerCrop"
+            android:contentDescription="@null"
             app:layout_constraintEnd_toStartOf="@+id/iv_badge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +40,6 @@
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/shop_name"
             app:layout_constraintLeft_toRightOf="@+id/shop_ava"
@@ -142,18 +142,18 @@
             app:layout_constraintTop_toBottomOf="@+id/shop_ava"
             tools:visibility="visible">
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/shop_info_ic_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
                 android:gravity="center"
-                tools:src="@drawable/ic_review_gray" />
+                tools:icon_name="STAR"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shop_info_title_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_8"
                 android:gravity="center"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
@@ -193,18 +193,18 @@
             app:layout_goneMarginTop="@dimen/dp_16"
             tools:visibility="visible">
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/shop_info_ic_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
                 android:gravity="center"
-                tools:src="@drawable/ic_review_gray" />
+                tools:icon_name="CHAT"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shop_info_title_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_8"
                 android:gravity="center"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"

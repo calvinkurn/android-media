@@ -19,8 +19,8 @@ class RechargeSetFailUseCase @Inject constructor(private val gqlRepository: Grap
             val request = GraphqlRequest(QUERY, RechargeSetFailData.Data::class.java, generateParam(orderId))
             val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<RechargeSetFailData.Data>()
             Success(response)
-        } catch (throwable: Throwable) {
-            Fail(throwable)
+        } catch (e: Exception) {
+            Fail(e)
         }
     }
 

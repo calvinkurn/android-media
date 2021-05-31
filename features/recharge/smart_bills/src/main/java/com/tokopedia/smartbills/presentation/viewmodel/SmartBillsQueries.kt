@@ -37,6 +37,7 @@ object SmartBillsQueries {
                   percentage:Percentage
                 }
                 bills: Bills{
+                  Flag
                   index: Index
                   productID: ProductID
                   productName: ProductName
@@ -58,6 +59,15 @@ object SmartBillsQueries {
                   }
                   billName: BillName
                   isChecked: IsChecked
+                  DueDate
+                  DueMessage{
+                     Type
+                     Text
+                  }
+                  DueDateLabel{
+                     Type
+                     Text
+                  }
                 }
               }
             }

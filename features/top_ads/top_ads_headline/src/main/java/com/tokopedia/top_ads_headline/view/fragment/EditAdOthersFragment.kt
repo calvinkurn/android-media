@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -120,7 +121,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         })
     }
 
-    fun setDailyBudget(minBid: Int) {
+    fun setDailyBudget(minBid: Double) {
         val budget: Long = (minBid * MULTIPLIER).toLong()
         stepperModel?.dailyBudget = budget.toFloat()
         budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
@@ -134,11 +135,11 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                     budget = stepperModel.dailyBudget.toLong()
                     limitBudgetSwitch.isChecked = true
                 }
-                stepperModel.adBidPrice != 0 -> {
-                    budget = stepperModel.adBidPrice * MULTIPLIER.toLong()
+                stepperModel.adBidPrice != 0.0 -> {
+                    budget = stepperModel.adBidPrice.toLong() * MULTIPLIER.toLong()
                 }
                 else -> {
-                    budget = (stepperModel.minBid * MULTIPLIER).toLong()
+                    budget = (stepperModel.minBid.toLong() * MULTIPLIER)
                 }
             }
             budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget))
@@ -152,12 +153,15 @@ class EditAdOthersFragment : BaseDaggerFragment() {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, Utils.convertToCurrency(number.toLong()))
-                val minBid = stepperModel?.minBid ?: 0
+                val minBid: String = stepperModel?.minBid ?: "0"
+                var minBudget = (stepperModel?.currentBid ?: 0.0) * MULTIPLIER
+                if (minBid.toDouble() > stepperModel?.currentBid ?: 0.0) {
+                    minBudget = minBid.toDouble() * MULTIPLIER
+                }
                 val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
-                if (number < minBid * MULTIPLIER && budgetCost.isVisible) {
+                if (number < minBudget && budgetCost.isVisible) {
                     budgetCost.setError(true)
-                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(stepperModel?.dailyBudget?.toLong()
-                            ?: 0)))
+                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), Utils.convertToCurrency(minBudget.toLong())))
                     saveButtonState?.setButtonState(false)
                 } else if (number > maxDailyBudget) {
                     budgetCost.setError(true)
@@ -190,14 +194,12 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpScheduleView() {
-        if (stepperModel?.startDate?.isNotBlank() == true) {
+        if (stepperModel?.startDate?.isNotBlank() == true && stepperModel?.endDate?.isNotBlank() == true) {
+            adScheduleSwitch.isChecked = true
             stepperModel?.startDate?.convertToDate(HEADLINE_DATETIME_FORMAT2, localeID)?.let {
                 selectedStartDate = Calendar.getInstance()
                 selectedStartDate?.time = it
-                adScheduleSwitch.isChecked = true
             }
-        }
-        if (stepperModel?.endDate?.isNotBlank() == true) {
             stepperModel?.endDate?.convertToDate(HEADLINE_DATETIME_FORMAT2, localeID)?.let {
                 selectedEndDate = Calendar.getInstance()
                 selectedEndDate?.time = it
@@ -211,7 +213,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         context?.run {
             setDate()
             startDate.textFieldInput.setOnClickListener {
-                (selectedEndDate as? GregorianCalendar)?.let {selectedEndDate ->
+                (selectedEndDate as? GregorianCalendar)?.let { selectedEndDate ->
                     openSetDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(), selectedStartDate as GregorianCalendar,
                             selectedEndDate, this@EditAdOthersFragment::onStartDateChanged)
                 }
@@ -328,7 +330,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpAdNameEditText() {
-        headlineAdNameInput?.textFieldInput?.setText(stepperModel?.groupName)
+        headlineAdNameInput?.textFieldInput?.setText(MethodChecker.fromHtml(stepperModel?.groupName))
         headlineAdNameInput?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -360,7 +362,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
 
     private fun validateGroup(s: String?) {
         s?.let {
-            editAdOthersViewModel.validateGroup(it, userSession.shopId.toIntOrZero(), this::onSuccess, this::onError)
+            editAdOthersViewModel.validateGroup(it, this::onSuccess, this::onError)
         }
     }
 
@@ -383,7 +385,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         stepperModel?.startDate = if (adScheduleSwitch.isChecked) {
             selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         } else {
-            context?.getToday()?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
+            ""
         }
         stepperModel?.endDate = if (adScheduleSwitch.isChecked) {
             selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""

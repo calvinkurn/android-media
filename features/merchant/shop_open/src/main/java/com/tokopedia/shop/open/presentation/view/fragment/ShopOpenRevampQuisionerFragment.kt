@@ -9,9 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,14 +22,19 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
+import com.tokopedia.shop.open.common.ErrorConstant.ERROR_GET_SURVEY_QUESTIONS
+import com.tokopedia.shop.open.common.ErrorConstant.ERROR_SAVE_LOCATION_SHIPPING
+import com.tokopedia.shop.open.common.ErrorConstant.ERROR_SEND_SURVEY
 import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.common.ExitDialog
 import com.tokopedia.shop.open.common.PageNameConstant.FINISH_SPLASH_SCREEN_PAGE
 import com.tokopedia.shop.open.common.ScreenNameTracker
+import com.tokopedia.shop.open.common.ShopOpenRevampErrorHandler
 import com.tokopedia.shop.open.di.DaggerShopOpenRevampComponent
 import com.tokopedia.shop.open.di.ShopOpenRevampComponent
 import com.tokopedia.shop.open.di.ShopOpenRevampModule
@@ -47,6 +49,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 class ShopOpenRevampQuisionerFragment :
@@ -57,8 +60,6 @@ class ShopOpenRevampQuisionerFragment :
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
     private lateinit var btnNext: UnifyButton
-    private lateinit var btnBack: ImageView
-    private lateinit var btnSkip: TextView
     private val questionsAndAnswersId = mutableMapOf<Int, MutableList<Int>>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
     private var recyclerView: RecyclerView? = null
@@ -67,8 +68,8 @@ class ShopOpenRevampQuisionerFragment :
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
     private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private var isNeedLocation = false
+    private var header: HeaderUnify? = null
     private lateinit var loading: LoaderUnify
-    private lateinit var toolbar: Toolbar
 
     private var shopId = 0
     private var postCode = ""
@@ -98,11 +99,8 @@ class ShopOpenRevampQuisionerFragment :
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_open_revamp_quisioner, container, false)
-        toolbar = view.findViewById(R.id.toolbar)
         loading = view.findViewById(R.id.loading)
         btnNext = view.findViewById(R.id.next_button_quisioner_page)
-        btnBack = view.findViewById(R.id.btn_back_quisioner_page)
-        btnSkip = view.findViewById(R.id.btn_skip_quisioner_page)
         recyclerView = view.findViewById(R.id.recycler_view_questions_list)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = ShopOpenRevampQuisionerAdapter(this)
@@ -115,6 +113,7 @@ class ShopOpenRevampQuisionerFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupToolbarActions(view)
         shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_SHOP_SURVEY)
         setupPreconditions()
         showLoader()
@@ -122,16 +121,6 @@ class ShopOpenRevampQuisionerFragment :
         observeSurveyData()
         observeSendSurveyResult()
         observeSaveShipmentLocationData()
-
-        btnBack.setOnClickListener {
-            shopOpenRevampTracking?.clickBackButtonFromSurveyPage()
-            fragmentNavigationInterface?.showExitDialog()
-        }
-
-        btnSkip.setOnClickListener {
-            shopOpenRevampTracking?.clickTextSkipFromSurveyPage()
-            gotoPickLocation()
-        }
 
         btnNext.setOnClickListener {
             shopOpenRevampTracking?.clickButtonNextFromSurveyPage()
@@ -196,8 +185,24 @@ class ShopOpenRevampQuisionerFragment :
         closeKeyboard()
     }
 
+    private fun setupToolbarActions(view: View?) {
+        header = view?.findViewById<HeaderUnify>(R.id.toolbar_questioner)?.apply {
+            actionText = getString(R.string.button_label_skip)
+            transparentMode = context.isDarkMode()
+            isShowShadow = false
+            setNavigationOnClickListener {
+                shopOpenRevampTracking?.clickBackButtonFromSurveyPage()
+                fragmentNavigationInterface?.showExitDialog()
+            }
+            actionTextView?.setOnClickListener {
+                shopOpenRevampTracking?.clickTextSkipFromSurveyPage()
+                gotoPickLocation()
+            }
+        }
+    }
+
     private fun observeSurveyData() {
-        viewModel.getSurveyDataResponse.observe(this, Observer {
+        viewModel.getSurveyDataResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -208,16 +213,22 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
                         loadDataSurvey()
                     }
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ERROR_GET_SURVEY_QUESTIONS,
+                            userId = userSession.userId,
+                            message = it.throwable.message ?: ""
+                    )
                 }
             }
         })
     }
 
     private fun observeSendSurveyResult() {
-        viewModel.sendSurveyDataResponse.observe(this, Observer {
+        viewModel.sendSurveyDataResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -231,17 +242,23 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
                         val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
                         viewModel.sendSurveyData(dataSurveyInput)
                     }
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ERROR_SEND_SURVEY,
+                            userId = userSession.userId,
+                            message = errorMessage
+                    )
                 }
             }
         })
     }
 
     private fun observeSaveShipmentLocationData() {
-        viewModel.saveShopShipmentLocationResponse.observe(this, Observer {
+        viewModel.saveShopShipmentLocationResponse.observe(viewLifecycleOwner, Observer {
             EspressoIdlingResource.decrement()
             when (it) {
                 is Success -> {
@@ -256,12 +273,19 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
                         if (shopId != 0 && postCode != "" && courierOrigin != 0
                                 && addrStreet != "" && latitude != "" && longitude != "") {
                             saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
                         }
                     }
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ERROR_SAVE_LOCATION_SHIPPING,
+                            userId = userSession.userId,
+                            message = errorMessage
+                    )
+                    ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
@@ -280,11 +304,11 @@ class ShopOpenRevampQuisionerFragment :
         }
     }
 
-    private fun showErrorNetwork(t: Throwable, retry: () -> Unit) {
+    private fun showErrorNetwork(errorMessage: String, retry: () -> Unit) {
         view?.let {
             Toaster.showErrorWithAction(
                     it,
-                    ErrorHandler.getErrorMessage(context, t),
+                    errorMessage,
                     Snackbar.LENGTH_LONG,
                     getString(R.string.open_shop_revamp_retry),
                     View.OnClickListener {
@@ -314,14 +338,14 @@ class ShopOpenRevampQuisionerFragment :
     }
 
     private fun showLoader() {
-        toolbar.visibility =  View.INVISIBLE
+        header?.visibility =  View.INVISIBLE
         recyclerView?.visibility = View.INVISIBLE
         btnNext.visibility = View.INVISIBLE
         loading.visibility = View.VISIBLE
     }
 
     private fun hideLoader() {
-        toolbar.visibility =  View.VISIBLE
+        header?.visibility =  View.VISIBLE
         recyclerView?.visibility = View.VISIBLE
         btnNext.visibility = View.VISIBLE
         loading.visibility = View.INVISIBLE

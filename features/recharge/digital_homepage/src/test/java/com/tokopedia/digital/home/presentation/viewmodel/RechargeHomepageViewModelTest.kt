@@ -1,15 +1,16 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.digital.home.RechargeHomepageTestDispatchersProvider
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -49,14 +50,19 @@ class RechargeHomepageViewModelTest {
 
         rechargeHomepageViewModel = RechargeHomepageViewModel(
                 graphqlRepository,
-                RechargeHomepageTestDispatchersProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 
     @Test
     fun getRechargeHomepageSectionSkeleton_Success() {
-        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item(1, "TOP_BANNER"))
-        val skeletonResponse = RechargeHomepageSectionSkeleton(sectionSkeletonItem)
+        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item("1", "TOP_BANNER"),
+                RechargeHomepageSectionSkeleton.Item("2", "DYNAMIC_ICONS"),
+                RechargeHomepageSectionSkeleton.Item("3", "DYNAMIC_ICONS"))
+        val searchBarPlaceholder = "Placeholder"
+        val searchBarApplink = "tokopedia://recharge/home"
+        val skeletonResponse = RechargeHomepageSectionSkeleton(searchBarPlaceholder, searchBarApplink,
+                "", sectionSkeletonItem)
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val objectType = RechargeHomepageSectionSkeleton.Response::class.java
@@ -72,6 +78,52 @@ class RechargeHomepageViewModelTest {
         actualData?.run {
             assertEquals(actualData, expectedData)
         }
+
+        val skeletonData = rechargeHomepageViewModel.rechargeHomepageSectionSkeleton.value
+        val placeHolderData = rechargeHomepageViewModel.getSearchBarPlaceholder()
+        val sectionIcons = rechargeHomepageViewModel.getDynamicIconsSectionIds()
+
+        assertNotNull(skeletonData is Success)
+        assertNotNull((skeletonData as Success).data.searchBarPlaceholder == searchBarPlaceholder)
+        assertEquals(placeHolderData, searchBarPlaceholder)
+        assertEquals(sectionIcons, listOf("2","3"))
+        assertNotNull(skeletonData.data.searchBarAppLink == searchBarApplink)
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 0)
+    }
+
+    @Test
+    fun getRechargeHomepageSectionSkeleton_Icon_SectionNUll_Success() {
+        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item("1", "TOP_BANNER"))
+        val searchBarPlaceholder = "Placeholder"
+        val searchBarApplink = "tokopedia://recharge/home"
+        val skeletonResponse = RechargeHomepageSectionSkeleton(searchBarPlaceholder, searchBarApplink,
+                "", sectionSkeletonItem)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeHomepageSectionSkeleton.Response::class.java
+        result[objectType] = RechargeHomepageSectionSkeleton.Response(skeletonResponse)
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        rechargeHomepageViewModel.getRechargeHomepageSectionSkeleton(mapParams)
+        val expectedData = RechargeHomepageSectionMapper.mapInitialHomepageSections(sectionSkeletonItem)
+        val actualData = rechargeHomepageViewModel.rechargeHomepageSections.value
+        assertNotNull(actualData)
+        actualData?.run {
+            assertEquals(actualData, expectedData)
+        }
+
+        val skeletonData = rechargeHomepageViewModel.rechargeHomepageSectionSkeleton.value
+        val placeHolderData = rechargeHomepageViewModel.getSearchBarPlaceholder()
+        val sectionIcons = rechargeHomepageViewModel.getDynamicIconsSectionIds()
+
+        assertNotNull(skeletonData is Success)
+        assertNotNull((skeletonData as Success).data.searchBarPlaceholder == searchBarPlaceholder)
+        assertEquals(placeHolderData, searchBarPlaceholder)
+        assertEquals(sectionIcons, listOf<String>())
+        assertNotNull(skeletonData.data.searchBarAppLink == searchBarApplink)
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 0)
     }
 
     @Test
@@ -80,7 +132,12 @@ class RechargeHomepageViewModelTest {
 
         rechargeHomepageViewModel.getRechargeHomepageSectionSkeleton(mapParams)
         val actualData = rechargeHomepageViewModel.rechargeHomepageSectionSkeleton.value
+        val placeHolderData = rechargeHomepageViewModel.getSearchBarPlaceholder()
+        val sectionIcons = rechargeHomepageViewModel.getDynamicIconsSectionIds()
         assert(actualData is Fail)
+        assertEquals(placeHolderData, "")
+        assertEquals(sectionIcons, arrayListOf<String>())
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 0)
     }
 
     @Test
@@ -88,8 +145,11 @@ class RechargeHomepageViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
 
         // Sections Skeleton
-        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item(1, "TOP_ICONS"))
-        val skeletonResponse = RechargeHomepageSectionSkeleton(sectionSkeletonItem)
+        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item("1", "TOP_ICONS"))
+        val searchBarPlaceholder = "Placeholder"
+        val searchBarApplink = "tokopedia://recharge/home"
+        val skeletonResponse = RechargeHomepageSectionSkeleton(searchBarPlaceholder, searchBarApplink,
+                "", sectionSkeletonItem)
         val sectionSkeletonResult = HashMap<Type, Any>()
         val skeletonObjectType = RechargeHomepageSectionSkeleton.Response::class.java
         sectionSkeletonResult[skeletonObjectType] = RechargeHomepageSectionSkeleton.Response(skeletonResponse)
@@ -107,8 +167,8 @@ class RechargeHomepageViewModelTest {
 
         // Sections
         val sectionsResponse = RechargeHomepageSections(listOf(
-                RechargeHomepageSections.Section(1, "1", "Test", "test", "TOP_ICONS", listOf(), "", "",
-                        "", listOf(RechargeHomepageSections.Item(1, "1", "Test1", "test1")
+                RechargeHomepageSections.Section("1", "1", "Test", "test", "TOP_ICONS", listOf(), "", "Lihat semua",
+                        "", "", listOf(RechargeHomepageSections.Item("1", "1", "Test1", "test1")
                 ))))
         val sectionResult = HashMap<Type, Any>()
         val sectionObjectType = RechargeHomepageSections.Response::class.java
@@ -128,11 +188,73 @@ class RechargeHomepageViewModelTest {
             assertEquals(section.title, "Test")
             assertEquals(section.subtitle, "test")
             assertEquals(section.template, "TOP_ICONS")
+            assertEquals(section.textLink, "Lihat semua")
             assert(section.items.isNotEmpty())
             val item = section.items[0]
             assertEquals(item.title, "Test1")
             assertEquals(item.subtitle, "test1")
         }
+
+        val skeletonData = rechargeHomepageViewModel.rechargeHomepageSectionSkeleton.value
+        assertNotNull(skeletonData is Success)
+        assertNotNull((skeletonData as Success).data.searchBarPlaceholder == searchBarPlaceholder)
+        assertNotNull(skeletonData.data.searchBarAppLink == searchBarApplink)
+
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 1)
+    }
+
+    @Test
+    fun getRechargeHomepageSectionsFilled_Success() {
+        val errors = HashMap<Type, List<GraphqlError>>()
+
+        // Sections Skeleton
+        val sectionSkeletonItem = listOf(RechargeHomepageSectionSkeleton.Item("1", "TOP_ICONS"))
+        val searchBarPlaceholder = "Placeholder"
+        val searchBarApplink = "tokopedia://recharge/home"
+        val skeletonResponse = RechargeHomepageSectionSkeleton(searchBarPlaceholder, searchBarApplink,
+                "", sectionSkeletonItem)
+        val sectionSkeletonResult = HashMap<Type, Any>()
+        val skeletonObjectType = RechargeHomepageSectionSkeleton.Response::class.java
+        sectionSkeletonResult[skeletonObjectType] = RechargeHomepageSectionSkeleton.Response(skeletonResponse)
+        val gqlsectionSkeletonResponseSuccess = GraphqlResponse(sectionSkeletonResult, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlsectionSkeletonResponseSuccess
+
+        rechargeHomepageViewModel.getRechargeHomepageSectionSkeleton(mapParams)
+        val expectedData = RechargeHomepageSectionMapper.mapInitialHomepageSections(sectionSkeletonItem)
+        val actualData = rechargeHomepageViewModel.rechargeHomepageSections.value
+        assertNotNull(actualData)
+        actualData?.run {
+            assertEquals(actualData, expectedData)
+        }
+
+        // Sections
+        val sectionsResponse = RechargeHomepageSections(listOf(
+                RechargeHomepageSections.Section("1", "1", "Test", "test", "TOP_ICONS", listOf(), "", "Lihat semua",
+                        "", "", listOf(RechargeHomepageSections.Item("1", "1", "Test1", "test1")
+                ))))
+        val sectionResult = HashMap<Type, Any>()
+        val sectionObjectType = RechargeHomepageSections.Response::class.java
+        sectionResult[sectionObjectType] = RechargeHomepageSections.Response(sectionsResponse)
+        val gqlSectionResponseSuccess = GraphqlResponse(sectionResult, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlSectionResponseSuccess
+        rechargeHomepageViewModel.calledSectionIds.add(1)
+        rechargeHomepageViewModel.getRechargeHomepageSections(
+                rechargeHomepageViewModel.createRechargeHomepageSectionsParams(31, listOf(1))
+        )
+        val sections = rechargeHomepageViewModel.rechargeHomepageSections.value
+        assert(!sections.isNullOrEmpty())
+        val section = sections?.get(0)
+        assertNotNull(section)
+        assertEquals(section?.id, "1")
+
+        val skeletonData = rechargeHomepageViewModel.rechargeHomepageSectionSkeleton.value
+        assertNotNull(skeletonData is Success)
+        assertNotNull((skeletonData as Success).data.searchBarPlaceholder == searchBarPlaceholder)
+        assertNotNull(skeletonData.data.searchBarAppLink == searchBarApplink)
+
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 1)
     }
 
     @Test
@@ -145,6 +267,8 @@ class RechargeHomepageViewModelTest {
         sections?.run {
             assert(isEmpty())
         }
+
+        assertEquals(rechargeHomepageViewModel.calledSectionIds.size, 1)
     }
 
     @Test
@@ -169,6 +293,31 @@ class RechargeHomepageViewModelTest {
 
         rechargeHomepageViewModel.triggerRechargeSectionAction(mapParams)
         val actualData = rechargeHomepageViewModel.rechargeHomepageSectionAction.value
+        assert(actualData is Fail)
+    }
+
+    @Test
+    fun getTickerHomepageSection_Success() {
+        val rechargeResponse = RechargeTickerHomepageModel()
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeTickerHomepageModel::class.java
+        result[objectType] = rechargeResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        rechargeHomepageViewModel.getTickerHomepageSection(mapParams)
+        val actualData = rechargeHomepageViewModel.rechargeTickerHomepageModel.value
+        assert(actualData is Success)
+    }
+
+    @Test
+    fun getTickerHomepageSection_Fail() {
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+
+        rechargeHomepageViewModel.getTickerHomepageSection(mapParams)
+        val actualData = rechargeHomepageViewModel.rechargeTickerHomepageModel.value
         assert(actualData is Fail)
     }
 
@@ -228,6 +377,18 @@ class RechargeHomepageViewModelTest {
             assertEquals(actual, mapOf(
                     PARAM_RECHARGE_HOMEPAGE_SECTION_ID to sectionId,
                     PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION to "action:2:3"
+            ))
+        }
+    }
+
+    @Test
+    fun createRechargeHomepageTickerParams() {
+        with (RechargeHomepageViewModel.Companion) {
+            val enablePersonalize = true
+            val actual = rechargeHomepageViewModel.createRechargeHomepageTickerParams( listOf(1), 31)
+            assertEquals(actual, mapOf(
+                    PARAM_RECHARGE_HOMEPAGE_SECTION_CATEGORY_ID to listOf(1),
+                    PARAM_RECHARGE_HOMEPAGE_SECTION_DEVICE_ID to 31
             ))
         }
     }

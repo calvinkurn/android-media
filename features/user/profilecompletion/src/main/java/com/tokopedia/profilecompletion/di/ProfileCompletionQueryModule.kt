@@ -24,7 +24,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
 
-@ProfileCompletionSettingScope
 @Module
 class ProfileCompletionQueryModule {
 

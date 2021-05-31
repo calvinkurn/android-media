@@ -11,7 +11,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
@@ -19,8 +19,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.topads.view.activity.CreationOnboardingActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
@@ -151,7 +151,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isExcludedHostUrl(Uri uriData) {
-        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(CoreNetworkApplication.getAppContext());
         String excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST);
         if (!TextUtils.isEmpty(excludedHost)) {
             List<String> listExcludedString = Arrays.asList(excludedHost.split(","));
@@ -165,7 +165,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isExcludedUrl(Uri uriData) {
-        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(CoreNetworkApplication.getAppContext());
         String excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL);
         if (!TextUtils.isEmpty(excludedUrl)) {
             List<String> listExcludedString = Arrays.asList(excludedUrl.split(","));

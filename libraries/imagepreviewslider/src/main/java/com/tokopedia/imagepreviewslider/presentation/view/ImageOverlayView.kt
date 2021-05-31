@@ -20,7 +20,7 @@ class ImageOverlayView(
     init {
         inflate(context, R.layout.view_image_overlay, this)
         context?.let {
-            tv_title_overlay.setShadowLayer(1.6f, 1.5f, 1.3f, androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+            tv_title_overlay.setShadowLayer(1.6f, 1.5f, 1.3f, androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96))
         }
     }
 

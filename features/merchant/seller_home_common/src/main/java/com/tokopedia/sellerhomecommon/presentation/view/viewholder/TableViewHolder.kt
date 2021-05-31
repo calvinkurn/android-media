@@ -43,7 +43,7 @@ class TableViewHolder(
             data == null -> showLoadingState()
             data.error.isNotBlank() -> {
                 showErrorState()
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
@@ -139,7 +139,7 @@ class TableViewHolder(
         tvShcTableEmptyDescription.gone()
         btnShcTableEmpty.gone()
 
-        ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
+        ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
     }
 
     private fun setupCta(element: TableWidgetUiModel) {

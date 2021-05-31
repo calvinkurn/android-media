@@ -61,4 +61,7 @@
     <string name="discovery_msg_error_add_wishlist">Error menambah wishlist</string>
     <string name="discovery_msg_error_remove_wishlist">Error menghapus wishlist</string>
     <string name="discovery_top_to_bottom">Top to bottom</string>
+    <string name="discovery_top_chat_button_description">Top Chat</string>
+    <string name="choose_address_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="choose_address_description">Biar pengalaman belanjamu lebih asyik dan mudah.</string>
 </resources>

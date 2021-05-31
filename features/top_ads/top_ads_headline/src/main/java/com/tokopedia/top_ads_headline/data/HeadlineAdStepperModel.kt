@@ -11,18 +11,19 @@ open class HeadlineAdStepperModel(
         var groupName: String = "",
         var selectedTopAdsProductMap: HashMap<Category, ArrayList<TopAdsProductModel>> = HashMap(),
         var selectedTopAdsProducts: ArrayList<TopAdsProductModel> = ArrayList(),
-        var selectedProductIds: MutableList<Int> = mutableListOf(),
+        var selectedProductIds: MutableList<String> = mutableListOf(),
         var selectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
         var manualSelectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
         var stateRestoreKeyword: Boolean = false,
         var slogan: String = "",
         var cpmModel: CpmModel = CpmModel(),
-        var minBid: Int = 0,
-        var maxBid: Int = 0,
+        var minBid: String = "0",
+        var maxBid: String = "0",
         var dailyBudget: Float = 0F,
         var adOperations: MutableList<TopAdsManageHeadlineInput.Operation.Group.AdOperation> = ArrayList(),
         var keywordOperations: MutableList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> = ArrayList(),
         var startDate: String = "",
         var endDate: String = "",
-        var adBidPrice: Int = 0
+        var adBidPrice: Double = 0.0,
+        var currentBid:Double = 0.0
 ) : StepperModel

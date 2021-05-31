@@ -101,6 +101,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
         revenue
     }
     how_to_pay
+    how_to_pay_applink
     event
     event_category
     event_action
@@ -121,6 +122,15 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        custom_title_home_button
     }
     config_flag
+    config_list
+    gateway_additional_data{
+       key
+       value
+    }
+    fee_details{
+        name
+        amount
+    }
   }
 }
 

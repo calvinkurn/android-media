@@ -17,18 +17,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
-import com.tokopedia.notifcenter.data.consts.Resources.Green_G100
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G200
-import com.tokopedia.notifcenter.data.consts.Resources.Green_G500
+import com.tokopedia.notifcenter.data.consts.Resources.Green_G600
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N200
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N50
+import com.tokopedia.notifcenter.data.consts.Resources.Unify_N0
 import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.BUYER_TYPE
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.SELLER_TYPE
-
 
 /**
  * @author : Steven 10/04/19
@@ -69,9 +67,9 @@ abstract class BaseNotificationItemViewHolder(
 
     protected open fun bindNotificationBackgroundColor(element: NotificationItemViewBean) {
         val color: Int = if (element.isRead) {
-            MethodChecker.getColor(container.context, R.color.white)
+            MethodChecker.getColor(container.context, Unify_N0)
         } else {
-            MethodChecker.getColor(container.context, Green_G100)
+            MethodChecker.getColor(container.context, R.color.notifcenter_dms_unread_notification)
         }
         container.setBackgroundColor(color)
     }
@@ -91,7 +89,7 @@ abstract class BaseNotificationItemViewHolder(
             shorten = "$shorten... $inFull"
             val spannable = SpannableString(shorten)
 
-            val color = getColorResource(Green_G500)
+            val color = getColorResource(Green_G600)
             spannable.setSpan(
                     ForegroundColorSpan(color),
                     shorten.indexOf(inFull),
@@ -149,7 +147,7 @@ abstract class BaseNotificationItemViewHolder(
         } else if (labelIndex == SELLER_TYPE) {
             getStringResource(R.string.seller_label).apply {
                 label.text = this
-                label.setTextColor(getColorResource(Green_G500))
+                label.setTextColor(getColorResource(Green_G600))
                 label.visibility = View.VISIBLE
             }
 

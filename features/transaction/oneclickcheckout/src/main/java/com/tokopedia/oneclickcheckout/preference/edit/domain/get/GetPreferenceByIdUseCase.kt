@@ -24,14 +24,15 @@ class GetPreferenceByIdUseCase @Inject constructor(private val graphqlUseCase: G
         throw MessageErrorException(result.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE)
     }
 
-    fun generateRequestParams(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String): RequestParams {
+    fun generateRequestParams(profileId: Int, addressId: Long, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String, fromFlow: String): RequestParams {
         return RequestParams.create().apply {
             putInt(PARAM_PROFILE_ID, profileId)
-            putInt(PARAM_ADDRESS_ID, addressId)
+            putLong(PARAM_ADDRESS_ID, addressId)
             putInt(PARAM_SERVICE_ID, serviceId)
             putString(PARAM_GATEWAY_CODE, gatewayCode)
             putString(PARAM_METADATA, metadata)
             putString(PARAM_PAYMENT_PROFILE, paymentProfile)
+            putString(PARAM_FROM_FLOW, fromFlow)
         }
     }
 
@@ -42,9 +43,10 @@ class GetPreferenceByIdUseCase @Inject constructor(private val graphqlUseCase: G
         private const val PARAM_GATEWAY_CODE = "gatewayCode"
         private const val PARAM_METADATA = "metadata"
         private const val PARAM_PAYMENT_PROFILE = "paymentProfile"
+        private const val PARAM_FROM_FLOW = "fromFlow"
         private val QUERY = """
-        query get_profile_by_id_occ(${"$"}profileId: Int, ${"$"}addressId: Int, ${"$"}serviceId: Int, ${"$"}gatewayCode: String, ${"$"}metadata: String, ${"$"}paymentProfile: String) {
-          get_profile_by_id_occ(profile_id: ${"$"}profileId, address_id: ${"$"}addressId, service_id: ${"$"}serviceId, gateway_code: ${"$"}gatewayCode, metadata: ${"$"}metadata, payment_profile: ${"$"}paymentProfile){
+        query get_profile_by_id_occ(${"$"}profileId: Int, ${"$"}addressId: Int, ${"$"}serviceId: Int, ${"$"}gatewayCode: String, ${"$"}metadata: String, ${"$"}paymentProfile: String, ${"$"}fromFlow: String) {
+          get_profile_by_id_occ(profile_id: ${"$"}profileId, address_id: ${"$"}addressId, service_id: ${"$"}serviceId, gateway_code: ${"$"}gatewayCode, metadata: ${"$"}metadata, payment_profile: ${"$"}paymentProfile, from_flow:  ${"$"}fromFlow){
                 error_message
                 status
                 data {
@@ -91,6 +93,7 @@ class GetPreferenceByIdUseCase @Inject constructor(private val graphqlUseCase: G
                                 service_id
                                 service_duration
                                 service_name
+                                estimation
                         }
                     }
                 }

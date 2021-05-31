@@ -125,7 +125,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
     }
 
     private val nextButtonUiModel by lazy {
-        NextButtonUiModel(::validateValues)
+        NextButtonUiModel(::validateValues, true)
     }
 
     private val promotionExpenseEstimationUiModel =

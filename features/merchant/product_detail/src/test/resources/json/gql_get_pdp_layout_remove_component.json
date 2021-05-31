@@ -284,11 +284,6 @@
         "type": "social_proof_mini"
       },
       {
-        "data": [],
-        "name": "shop_info_mini",
-        "type": "shop_info_mini"
-      },
-      {
         "data": [
           {
             "children": [
@@ -709,11 +704,6 @@
       },
       {
         "data": [],
-        "name": "most_helpful_review",
-        "type": "most_helpful_review"
-      },
-      {
-        "data": [],
         "name": "discussion",
         "type": "discussion"
       },
@@ -735,6 +725,14 @@
         "data": [],
         "name": "byme",
         "type": "info"
+      },{
+        "data": [],
+        "name": "report",
+        "type": "report"
+      },{
+        "data": [],
+        "name": "shipment",
+        "type": "shipment"
       }
     ],
     "name": "Default Layout",

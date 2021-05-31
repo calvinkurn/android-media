@@ -30,6 +30,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_DEFAULT
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
@@ -244,6 +245,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun refreshData() {
         showLoadingSwipeToRefresh(true)
+        showLoading(true)
         loadData()
     }
 
@@ -324,7 +326,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun sendClickShowcase(dataShowcase: ShopEtalaseModel, position: Int) {
         tracking?.clickEtalase(shopId, shopType, dataShowcase.name)
-        val showcaseId = if (dataShowcase.type == ShowcaseType.GENERATED) dataShowcase.alias else dataShowcase.id
+        val showcaseId = if (dataShowcase.type == ETALASE_DEFAULT) dataShowcase.alias else dataShowcase.id
         activity?.run{
             val intent = Intent()
             intent.putExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, showcaseId)
@@ -391,7 +393,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                                         useAce = showcaseItem.useAce,
                                         aceDefaultSort = showcaseItem.aceDefaultSort,
                                         uri = showcaseItem.uri,
-                                        badge = showcaseItem.badge
+                                        badge = showcaseItem.badge,
+                                        imageUrl = showcaseItem.imageUrl
                                 ))
                             }
 

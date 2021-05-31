@@ -1,0 +1,256 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1599606493176",
+    "maxReplyTime": "1601630985520",
+    "block": {
+      "blockedUntil": "",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "attachmentIDs": "544202118,544205296,579910159",
+    "contacts": [
+      {
+        "role": "Shop Owner",
+        "userId": 17235411,
+        "shopId": 6115659,
+        "interlocutor": true,
+        "name": "Seller Testing",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/6115659/shop_xs_thumbnail/desktop",
+        "domain": "list-vip",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 1602826246,
+          "timestampStr": "1602826246",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "User",
+        "userId": 19016250,
+        "shopId": 6115659,
+        "interlocutor": false,
+        "name": "Buyer Testing",
+        "tag": "Pengguna",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/19016250/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "9 Sep 2020",
+        "chats": [
+          {
+            "time": "06:08",
+            "replies": [
+              {
+                "msgId": 1190718912,
+                "replyId": "9962550447",
+                "senderId": 19016250,
+                "senderName": "ennoseller",
+                "role": "Shop Owner",
+                "msg": "\u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/vip-list/piyama-baju-tidur\"\u003ehttps://www.tokopedia.com/vip-list/piyama-baju-tidur\u003c/a\u003e",
+                "replyTime": "1599606493176125000",
+                "status": 1,
+                "attachmentID": 544202118,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "inbox",
+                "attachment": {
+                  "id": 544202118,
+                  "type": 3,
+                  "attributes": "{\"product_id\":1160412120,\"product_profile\":{\"name\":\"Piyama baju tidur\",\"price\":\"Rp20.000\",\"price_int\":0,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/9/9/87186259-a9cc-4073-be7f-2cc636885ff3.jpg\",\"url\":\"https://www.tokopedia.com/vip-list/piyama-baju-tidur\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":0,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":null,\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "Piyama baju tidur\u003cbr\u003e\u003cbr\u003e\u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/vip-list/piyama-baju-tidur\"\u003ehttps://www.tokopedia.com/vip-list/piyama-baju-tidur\u003c/a\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 1190718912,
+                "replyId": "9962550471",
+                "senderId": 19016250,
+                "senderName": "ennoseller",
+                "role": "Shop Owner",
+                "msg": "ready?",
+                "replyTime": "1599606493303754000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "inbox",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              },
+              {
+                "msgId": 1190718912,
+                "replyId": "9962550539",
+                "senderId": 17235411,
+                "senderName": "Gary",
+                "role": "Shop Owner",
+                "msg": "Selamat datang di VIP List! Terima kasih telah menghubungi kami, sebentar lagi pesan kamu akan kami balas. 😀",
+                "replyTime": "1599606494355660000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "auto_reply",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "time": "06:15",
+            "replies": [
+              {
+                "msgId": 1190718912,
+                "replyId": "9962594893",
+                "senderId": 19016250,
+                "senderName": "ennoseller",
+                "role": "User",
+                "msg": "\u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\"\u003ehttps://www.tokopedia.com/vip-list/piyama-baju-tidur-2\u003c/a\u003e",
+                "replyTime": "1599606921458596000",
+                "status": 1,
+                "attachmentID": 544205296,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "inbox",
+                "attachment": {
+                  "id": 544205296,
+                  "type": 3,
+                  "attributes": "{\"product_id\":1160424090,\"product_profile\":{\"name\":\"Piyama baju tidur 2\",\"price\":\"Rp20.000\",\"price_int\":0,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/9/9/5e4f9c00-410c-4bcb-96ca-54b6b431b365.jpg\",\"url\":\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":0,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":null,\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "Piyama baju tidur 2\u003cbr\u003e\u003cbr\u003e\u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\"\u003ehttps://www.tokopedia.com/vip-list/piyama-baju-tidur-2\u003c/a\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 1190718912,
+                "replyId": "9962594902",
+                "senderId": 19016250,
+                "senderName": "ennoseller",
+                "role": "User",
+                "msg": "test",
+                "replyTime": "1599606921517577000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "inbox",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "date": "2 Oct 2020",
+        "chats": [
+          {
+            "time": "16:29",
+            "replies": [
+              {
+                "msgId": 1190718912,
+                "replyId": "10500376590",
+                "senderId": 17235411,
+                "senderName": "Gary",
+                "role": "Shop Owner",
+                "msg": "\u003ca rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2?whid=0\"\u003ehttps://www.tokopedia.com/vip-list/piyama-baju-tidur-2?whid=0\u003c/a\u003e",
+                "replyTime": "1601630985514726000",
+                "status": 1,
+                "attachmentID": 579910159,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "",
+                "attachment": {
+                  "id": 579910159,
+                  "type": 3,
+                  "attributes": "{\"product_id\":1160424090,\"product_profile\":{\"name\":\"Piyama baju tidur 2\",\"price\":\"Rp20.000\",\"price_int\":20000,\"image_url\":\"https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/9/9/5e4f9c00-410c-4bcb-96ca-54b6b431b365.jpg\",\"url\":\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2?whid=0\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":0,\"min_order\":0,\"category_id\":1758,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{}}}",
+                  "fallback": {
+                    "message": "",
+                    "html": "Halo, barang ini ready. Silakan diorder ya"
+                  }
+                }
+              },
+              {
+                "msgId": 1190718912,
+                "replyId": "10500376589",
+                "senderId": 17235411,
+                "senderName": "Gary",
+                "role": "Shop Owner",
+                "msg": "Halo, barang ini ready. Silakan diorder ya",
+                "replyTime": "1601630985520887000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

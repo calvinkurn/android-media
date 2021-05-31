@@ -154,6 +154,15 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
+    fun trackClickBackRegisterEmailOtp() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_ACTIVATION,
+                Category.CATEGORY_ACTIVATION_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_BACK,
+                Label.LABEL_EMPTY
+        ))
+    }
+
     fun trackSuccessClickResendRegisterEmailOtpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_ACTIVATION,
@@ -420,6 +429,17 @@ class TrackingOtpUtil @Inject constructor() {
                 Category.CATEGORY_PUSH_NOTIF_SETTING_PAGE,
                 Action.ACTION_CLICK_ON_BUTTON_AKTIFKAN_MASUK_LEWAT_NOTIF,
                 status
+        ))
+    }
+
+    /* INACTIVE PHONE */
+
+    fun trackClickInactivePhoneLink() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_CHOOSE_OTP_PAGE,
+                Action.ACTION_CLICK_ON_INACTIVE_PHONE,
+                Label.LABEL_EMPTY
         ))
     }
 }

@@ -26,6 +26,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
+import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
@@ -50,7 +51,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
+class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -156,7 +157,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         })
 
         viewModel.tradeInHomeStateLiveData.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is GoToCheckout -> {
                     goToCheckout(it.deviceId, it.price)
                 }
@@ -167,7 +168,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         })
     }
 
-    private fun setNotElligible(message: String){
+    private fun setNotElligible(message: String) {
         isEligibleForTradein = false
         maxPrice = "-"
         notEligibleMessage = message
@@ -224,7 +225,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                                 .commit()
                     }
                     else -> {
-                        if(currentFragment is TradeInInitialPriceFragment){
+                        if (currentFragment is TradeInInitialPriceFragment) {
                             (currentFragment as TradeInInitialPriceFragment).handleEligibility(maxPrice, isEligibleForTradein, notEligibleMessage)
                         } else {
                             currentFragment = TradeInInitialPriceFragment
@@ -289,7 +290,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
         if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
-                TradeinConstants.APPID, TradeinConstants.APIKEY, TokopediaUrl.getInstance().TYPE == Env.STAGING, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
+                TradeinConstants.APPID, Keys.AUTH_TRADE_IN_API_KEY_MA, TokopediaUrl.getInstance().TYPE == Env.STAGING, BaseTradeInActivity.TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
         intent.data?.lastPathSegment?.let {
             if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
                 askPermissions()
@@ -299,6 +300,9 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
             if (it == TRADEIN_SELLER_CHECK)
                 tradeInAnalytics.clickEducationalTradeIn()
         }
+
+        //init sessionid
+        viewModel.initSessionId(laku6TradeIn)
     }
 
     private fun getTradeInParams() {
@@ -428,7 +432,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
-            if(currentFragment is TradeInInitialPriceFragment)
+            if (currentFragment is TradeInInitialPriceFragment)
                 tradeInAnalytics.initialPricePageBackButtonClick(viewModel.tradeInParams.productId.toString())
             else if (currentFragment is TradeInFinalPriceFragment)
                 tradeInAnalytics.clickFinalPriceBack()

@@ -38,7 +38,6 @@
     <string name="contact_us_text">Butuh bantuan? Hubungi Tokopedia Care</string>
     <string name="label_shop_title">Toko: </string>
     <string name="contact_us_applink">https://www.tokopedia.com/help</string>
-    <string name="help_text">disini</string>
     <string name="text_redeem_voucher">Redeem Voucher</string>
     <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
     <string name="event_voucher_code_copied">Detail pembelian sudah dikirim ulang ke e-mail yang terdaftar di akun ini.</string>
@@ -65,7 +64,6 @@
     <string name="item_count">(+ %1$d Produk Lainnya)</string>
     <string name="tokopedia_care">Tokopedia Care</string>
     <string name="lihat_order_detail">Lihat Order Detail</string>
-    <string name="title_activity_people_reason">Ajukan Pembatalan</string>
     <string name="title_order_detail">Detail Pesanan</string>
     <string name="bom_survey_description">Seberapa mengerti Anda terhadap tampilan baru laman Daftar Transaksi ini?</string>
     <string name="survey_suggestion_text">Apa yang bisa ditingkatkan pada laman ini?</string>
@@ -94,261 +92,21 @@ Anda di sini.</string>
     <string name="top_btn_text">langannan</string>
     <string name="bottom_btn_text">Beli Lagi</string>
     <string name="insurance_policy">Polis Asuransi</string>
-    <string name="app_name">tkpdtransaction</string>
-    <string name="title_change_payment">Ubah Pembayaran</string>
-    <string name="title_confirm_shipment">Konfirmasi Pengiriman</string>
-    <string name="title_scan_awb">Scan Barcode</string>
-    <string name="label_insert_awb">Isi Nomor Resi</string>
-    <string name="title_reference_number_alternative">No. Resi</string>
-    <string name="message_failed_pick_image">Gambar gagal diambil</string>
-    <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
-    <string name="default_success_message_reject_order">Berhasil membatalkan pesanan</string>
-    <string name="label_title_dialog_request_cancel_order">Pengajuan Pembatalan Pesanan</string>
-    <string name="label_sub_title_dialog_request_cancel_order">Apakah Anda yakin akan meminta penjual untuk membatalkan pesanan ini?</string>
-    <string name="title_btn_alert_dialog_adjust">Ajukan</string>
-    <string name="title_btn_alert_dialog_cancel">Batal</string>
-    <string name="hint_dialog_alert_request_cancel_order_et_reason">Alasan</string>
-    <string name="label_error_request_cancel_order_reason_empty">Alasan pembatalan harus diisi</string>
-    <string name="label_error_request_cancel_order_reason_to_short">Alasan pembatalan terlalu pendek, minimum 10 karakter</string>
-    <string name="title_look">Lihat</string>
-    <string name="title_download">Unduh</string>
-    <string name="title_choose">Pilih</string>
-    <string name="title_courier">Kurir</string>
-    <string name="title_save">Simpan</string>
-    <string name="title_status">Status</string>
-    <string name="toko_cash_info">TokoCash</string>
-    <string name="weight_place_holder">(WEIGHT)</string>
-    <string name="item_place_holder"># item</string>
 
-    <string name="tkpdtransaction_label_payment_setting">Kartu Kredit</string>
-    <string name="label_error_reason_must_fill">Alasan harus diisi</string>
-    <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
-    <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
-    <string name="label_order_shipping_address">Alamat Pengiriman :</string>
-    <string name="label_response_limit">Batas Respon :</string>
-    <string name="label_response_auto_finish">Selesai Otomatis :</string>
-    <string name="label_accept_partial_order">Terima Sebagian :</string>
-    <string name="shipment_data_not_complete">Data tidak lengkap.</string>
-    <string name="label_title_empty_cart">Keranjang belanja Anda Kosong.</string>
-    <string name="label_order_detail_shipping_courier">Kurir Pengiriman : </string>
-    <string name="label_title_error_default_initial_cart_data">Terjadi Kesalahan</string>
-    <string name="label_title_error_timeout_initial_cart_data">Koneksi Timeout</string>
-    <string name="label_title_button_no">Tidak</string>
-    <string name="label_title_button_yes">Ya</string>
-    <string name="label_sub_title_empty_cart">Yuk belanja di situs resmi jual beli online, aman dan nyaman.</string>
-    <string name="label_btn_action_empty_cart">CARI SEKARANG</string>
-    <string name="label_message_success_cancel_cart">Berhasil menghapus item keranjang</string>
-    <string name="label_message_error_cannot_checkout">Keranjang tidak dapat diproses, mohon periksa kembali keranjang Anda.</string>
-    <string name="label_message_default_voucher_desc_result">"Anda mendapatkan promo "</string>
-    <string name="label_error_form_dropshipper_name_empty">Nama pengirim harus diisi</string>
-    <string name="label_error_form_dropshipper_phone_empty">Telepon pengirim harus diisi</string>
-    <string name="label_error_form_voucher_code_empty">Masukan kode promo terlebih dahulu</string>
-    <string name="label_message_success_update_item_cart_data">Berhasil mengubah keranjang</string>
-    <string name="label_message_success_update_cart_insurance">Berhasil mengubah asuransi</string>
-    <string name="label_insurance_price">Biaya Asuransi</string>
-    <string name="label_additional_cost">Biaya Tambahan Penjual</string>
-    <string name="label_error_default_top_pay">Proses pembayaran gagal, mohon ulangi lagi</string>
-    <string name="label_tag_product_item_cart_preorder">Preorder :</string>
-    <string name="label_dropshipper">Dropshipper :</string>
-    <string name="label_dropshipper_name">Nama Dropshipper :</string>
-    <string name="label_dropshipper_number">Nomor Dropshipper :</string>
-    <string name="title_tab_purchase_summary">Pembelian</string>
-    <string name="title_tab_purchase_status_payment">Status Pembayaran</string>
-    <string name="title_tab_purchase_status_order">Status Pemesanan</string>
-    <string name="title_tab_purchase_confirm_deliver">Konfirmasi Penerimaan</string>
-    <string name="title_tab_purchase_transactions">Transaksi</string>
-    <string name="label_title_prefix_preorder_period_time_info">"Lama waktu proses produk : "</string>
-    <string name="label_history_transaction_actor_tokopedia">Tokopedia</string>
-    <string name="label_history_transaction_actor_system_tracker">System-Tracker</string>
-    <string name="label_history_transaction_actor_buyer">Buyer</string>
-    <string name="label_history_transaction_actor_seller">Seller</string>
-    <string name="label_error_upload_image">Gagal Mengupload gambar, silahkan coba lagi</string>
-    <string name="label_error_message_1_count_notif">Anda memiliki XX_XX pesanan yang tidak dapat diproses</string>
-    <string name="label_error_message_2_count_notif">Harap hapus produk dari keranjang belanja Anda</string>
-    <string name="label_button_purchase_edit_payment">Ubah Pembayaran</string>
-    <string name="label_button_purchase_upload_proof">Unggah Bukti Pembayaran</string>
-    <string name="label_transaction_bank_account_destination">Rekening Tujuan</string>
-    <string name="label_transaction_bank_account_source">Rekening Anda</string>
-    <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
     <string name="label_event_date">Tanggal Event</string>
-    <string name="label_transaction_date_purchase">Tanggal Pembelian :</string>
-    <string name="label_purchase_of">Pembelian Oleh : </string>
-    <string name="label_seller_shop">Penjual: </string>
-    <string name="label_item_quantity">Jumlah Barang</string>
-    <string name="label_transaction_total_payment">Total Pembayaran</string>
-    <string name="label_transaction_total_cart">Total Belanja</string>
-    <string name="label_transaction_info_deposit_tokopedia">Saldo Tokopedia Anda saat ini</string>
     <string name="label_transaction_hint_form_voucher_code">Kode Promo</string>
-    <string name="label_transaction_potential_cashback">Cashback dari Penjual</string>
-    <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
-    <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
-    <string name="cancel_replacement">Batalkan Pencarian</string>
-    <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
-    <string name="alert_payment_canceled_transaction_module">Pembayaran dibatalkan</string>
-    <string name="title_driver_detail">Detail Driver</string>
-
-    <string name="error_cannot_send_to_destination">Tidak dapat mengirim ke tujuan</string>
-    <string name="error_check_cart">Mohon periksa keranjang belanjaan anda</string>
-    <string name="empty_chart_text">Bingung mau belanja apa?\nCek produk rekomendasi tokopedia</string>
-    <string name="mulai_belanja">Mulai belanja</string>
-    <string name="holder_desc_atc">Pesanan akan sampai dalam waktu maksimal 8 jam sejak penjual melakukan pengiriman
-(berlaku untuk pengiriman sebelum pukul 16:00).</string>
-    <string name="quick_payment">Pembayaran Cepat</string>
-    <string name="payment_method">Metode Pembayaran</string>
-    <string name="title_credit_card">Kartu Kredit</string>
-    <string name="bca_one_click">BCA OneKlik</string>
-    <string name="title_register">Daftar</string>
-    <string name="title_delete">Hapus</string>
-    <string name="title_change">Ubah</string>
-    <string name="title_cancel">Batal</string>
-    <string name="parameter_klik">Klik</string>
-    <string name="parameter_kartu">Kartu</string>
-    <string name="parameter_kredit">Kredit</string>
-    <string name="parameter_bca">BCA</string>
-    <string name="title_daily_limit">Limit Harian</string>
-    <string name="title_delete_bca_one_click">Hapus BCA OneKlik?</string>
-    <string name="title_payment_account_owner">Nama Pemilik Rekening</string>
-    <string name="title_card_type">Tipe Kartu</string>
-    <string name="title_credit_card_number">Nomor Kartu Kredit</string>
-    <string name="title_expiry_date">Masa Berlaku</string>
-    <string name="message_no_credit_card">Belum Ada Kartu Kredit Tersimpan</string>
-    <string name="success_cancel_replacement">Pesanan berhasil dibatalkan</string>
-    <string name="title_cancel_transaction">Batalkan Transaksi</string>
-    <string name="title_confirm_cancel_transaction">Konfirmasi Pembatalan Transaksi</string>
-    <string name="question_cancel_transaction">Batalkan Transaksi?</string>
-    <string name="string_splitter">|</string>
-
-    <string name="label_call_ondemand_driver_logistic">Hubungi</string>
-    <string name="label_call_ondemand_driver_logistic_action_1">Telepon Driver</string>
-    <string name="label_call_ondemand_driver_logistic_action_2">SMS Driver</string>
-    <string name="error_message_phone_dialer_app_not_found">Maaf, aplikasi telepon tidak ditemukan</string>
-    <string name="error_message_sms_app_not_found">Maaf, aplikasi SMS tidak ditemukan</string>
-    <string name="authentication_title_1">Autentikasi Tunggal</string>
-    <string name="authentication_title_2">Autentikasi Ganda</string>
-    <string name="authentication_description_1">Anda hanya akan diminta memasukkan CVV untuk setiap transaksi. Verifikasi via SMS akan diperlukan untuk transaksi kasus tertentu.</string>
-    <string name="authentication_description_2">Anda akan diminta memasukkan CVV dan verifikasi via SMS untuk setiap transaksi.</string>
-    <string name="menu_credit_card_authentication">Autentikasi Kartu Kredit</string>
-    <string name="title_preorder_proccess_time">Waktu Proses: </string>
-    <string name="title_use_promo_code">Gunakan Kode Promo</string>
-    <string name="title_use_promo_code_and_voucher">Gunakan Kode Promo atau Kupon</string>
-    <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
-    <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
-
     <string name="button_order_detail_download_invoice">Unduh</string>
-    <string name="button_order_detail_accept_order">Terima Pesanan</string>
     <string name="button_order_detail_accept_order_partially">Terima Sebagian</string>
     <string name="button_order_detail_change_courier">Ganti Kurir</string>
     <string name="button_order_detail_request_pickup">Request Pickup</string>
     <string name="button_order_detail_confirm">Konfirmasi</string>
-    <string name="button_order_detail_confirm_request_pickup">Konfirmasi Request Pickup</string>
-    <string name="button_order_detail_finish">Selesai</string>
-    <string name="button_order_detail_change_awb">Ganti Resi</string>
-    <string name="button_order_detail_view_complaint">Lihat Komplain</string>
-    <string name="button_order_detail_confirm_shipping">Konfirmasi</string>
-    <string name="button_order_detail_confirm_shipping_alternative">Konfirmasi/Ganti Kurir</string>
-    <string name="button_order_detail_track">Lacak</string>
-    <string name="button_order_detail_ask_seller">Tanya Penjual</string>
-    <string name="button_order_detail_ask_buyer">Tanya Pembeli</string>
-    <string name="button_order_detail_reject_order">Tolak Pesanan</string>
-    <string name="button_order_detail_reject_shipment">Tolak Pengiriman</string>
     <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
-    <string name="button_order_detail_complaint">Komplain</string>
-    <string name="button_order_detail_cancel_chance">Batalkan Pencarian</string>
-    <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
-    <string name="title_cancel_shipment_notes">Tulis alasan pembatalan</string>
-    <string name="sub_title_cancel_shipment_notes">Per 10 Mei 2018, diterapkan sistem penalti reputasi toko baru bagi penjual yang membatalkan pesanan saat pengiriman, sebesar: \n\n
-        -1 poin untuk penjual tanpa Badge \n
-        -3 poin untuk Badge Bronze \n
-        -8 poin untuk Badge Silver \n
-        -10 poin untuk Badge Gold \n
-        -15 poin untuk Badge Diamond</string>
-    <string name="label_cancel_shipment_notes">Alasan Pembatalan</string>
-    <string name="label_explanation">Keterangan</string>
-    <string name="label_awb_number">Nomor Resi</string>
-    <string name="notification_awb_copied">Nomor Resi sudah tersalin</string>
-    <string name="title_reject_order_weight_price_fragment">Perbarui Harga atau Berat Produk</string>
-    <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
-    <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>
-    <string name="title_replacement_reason_2">Pencarian toko pengganti memakan waktu yang lama</string>
-    <string name="title_replacement_reason_3">Saya sudah menemukan barang dari toko lain</string>
-    <string name="title_replacement_other_reason">Lainnya</string>
-    <string name="error_replacement_reason">Mohon Pilih Alasan Pembatalan</string>
-    <string name="error_no_courier_chosen">Mohon Pilih Kurir</string>
-    <string name="error_no_change_price_weight">Mohon Ubah Harga dan Berat Produk</string>
-    <string name="success_request_cancel_order">Sukses mengajukan pembatalan</string>
-    <string name="success_finish_order_message">Pesanan Anda sudah selesai. Beri Rating dan Review di halaman ulasan.</string>
-    <string name="title_dialog_finish_order">Selesaikan Pesanan</string>
-    <string name="body_dialog_finish_order">Pilih selesai apabila barang sudah diterima dan tidak bermasalah</string>
-    <string name="cancel_search_replacement">Batalkan Pencarian</string>
-    <string name="title_detail_transaction">Detil Transaksi</string>
-    <string name="title_change_awb_instruction">Mohon ubah nomor resi hanya jika resi Anda Invalid</string>
-    <string name="sub_title_change_awb_instruction">Karena kami tidak akan memproses resi invalid</string>
-    <string name="label_empty_stock">Stock Kosong</string>
-    <string name="title_term_and_condition">Syarat dan Ketentuan</string>
-    <string name="title_confirm_courier_page">Anda dapat mengganti pengiriman menjadi kurir reguler</string>
-    <string name="subtitle_confirm_courier_page">Dengan persetujuan dari Pembeli</string>
-    <string name="error_no_courier_available">Produk in tidak dapat dikirim menggunakan kurir reguler</string>
-
-    <string name="request_pickup_step_1">Pastikan pesanan sudah siap untuk di pick up</string>
-    <string name="request_pickup_step_2"><![CDATA[Mohon untuk <b>tidak</b> memberikan ongkos kirim pada driver]]></string>
-    <string name="request_pickup_step_3">Perkiraan driver akan datang untuk mengambil barang:\n - Same day maksimal 4 jam \n - Instan maksimal 2 jam</string>
-    <string name="request_pickup_info"><![CDATA[Pelajari informasi lebih lengkap mengenai kurir yang menggunakan layanan pickup <font color = \'#42b549\'>disini</font>]]></string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="delete_credit_card">Hapus kartu kredit?</string>
-    <string name="forever_delete_credit_card">Kartu kredit akan terhapus selamanya</string>
-    <string name="label_month_year">month/year</string>
-    <string name="label_button_delete_cc">Hapus Kartu</string>
-    <string name="header_title_pembayaran_kartu_kredit">Pembayaran Kartu Kredit</string>
-    <string name="sub_header_title_kartu_kredit_tersimpan">Kartu Kredit Tersimpan (0/4)</string>
-    <string name="text_cc_authentication">Autentikasi Pembayaran Kartu Kredit</string>
-    <string name="label_detail_credit_card">Kartu Kredit</string>
-    <string name="tag_delete_credit_card_dialog">delete_credit_card_dialog</string>
-    <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
-    <string name="label_select_service">Tipe Pesanan</string>
-    <string name="label_select_courier">Kurir Pengiriman</string>
-    <string name="label_change_varian_description">Ubah Keterangan</string>
-    <string name="label_change_weight_price">Ubah harga/berat</string>
     <string name="title_buyer_cancelled_order">Pembeli mengajukan pembatalan pesanan</string>
-    <string name="sub_title_buyer_cancelled_order">dengan alasan: #</string>
-    <string name="apply">Terapkan</string>
-    <string name="single_spacing">\u0020</string>
-    <string name="title_send_to_pick_up_booth">Gerai Pengambilan di %s</string>
-    <string name="label_pickup_booth">Gerai Pengambilan</string>
-    <string name="label_no_pickup_booth_found">Oops, Gerai tidak ditemukan</string>
-    <string name="label_pickup_booth_check_keyword">Periksa kembali kata kunci Anda</string>
-    <string name="label_button_pick_pickup_booth">Pilih Gerai ini</string>
-    <string name="label_show_map">Lihat Peta</string>
-    <string name="label_info_pickup_booth">Pesanan akan dikirim ke gerai pilihan Anda. \nTunjukkan pin code saat pengambilan</string>
-    <string name="label_pin_code">Kode Pin</string>
-    <string name="label_colon">:</string>
-    <string name="title_bottomsheet_pin_code_pickup_booth">Kode Pin</string>
-    <string name="message_bottomsheet_pin_code_pickup_booth">Tunjukkan Kode Pin untuk verifikasi pada saat pengambilan barang</string>
-    <string name="label_hint_cart_item_dropshipper_name">Nama Pengirim</string>
-    <string name="label_hint_cart_item_dropshipper_phone">No. Telp pengirim</string>
-    <string name="label_delivery_price">Ongkos Kirim</string>
-    <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
-    <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
-    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
-    <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
-    <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
 
-    <string-array name="pickup_point">
-        <item>Alfamart</item>
-    </string-array>
     <string name="title_payment_procedure">Cara Pembayaran</string>
-    <string name="order_all">ALL</string>
-    <string name="order_gold">GOLD</string>
-    <string name="order_digital">DIGITAL</string>
-    <string name="order_marketplace">MARKETPLACE</string>
-    <string name="order_flight">FLIGHT</string>
-    <string name="search_input_hint">Cari produk atau invoice</string>
     <string name="flight_order_waiting_for_payment_title">Menunggu Pemayaran</string>
     <string name="total">Total</string>
     <string name="unggah_bukti">Unggah Bukti</string>
-    <string name="search_sort_label">Urutkan</string>
-    <string name="search_filter_label">Filter</string>
     <string name="detail_label_digital">Detail Pembelian</string>
     <string name="lihat_detail">Lihat Detail</string>
 
@@ -364,24 +122,10 @@ Anda di sini.</string>
 
     <string name="status">Status</string>
     <string name="date">date</string>
-    <string name="label_oder_detail_btn_unggah_awb">Unggah</string>
     <string name="type_of_ticket_events">Nama Event</string>
     <string name="address">Alamat</string>
     <string name="category_ticket">Kategori Tiket</string>
     <string name="number_of_bookings">Jumlah Tiket</string>
-    <string name="tkpdtransaction_label_tx_confirmed">Menunggu Konfirmasi</string>
-    <string name="tkpdtransaction_label_tx_processed">Pesanan Diproses</string>
-    <string name="tkpdtransaction_label_tx_shipped">Sedang Dikirim</string>
-    <string name="tkpdtransaction_label_tx_delivered">Sampai Tujuan</string>
-    <string name="kode_booking_label">Kode booking pengiriman</string>
-
-    <string name="barcode_helper">Tunjukkan barcode atau kode booking kepada petugas di gerai kurir saat mengirim barang.</string>
-    <string name="message_label">Informasi tambahan mengenai sistem kode booking</string>
-    <string name="title_booking_code_detail">Detail Kode Booking</string>
-    <string name="booking_code_copied_notif">Kode booking berhasil disalin</string>
-    <string name="barcode_label_one">Kode booking pengiriman</string>
-    <string name="barcode_label_two">(tap untuk perbesar)</string>
-    <string name="barcode_image_content_description">Barcode Image</string>
     <string name="protection_count_label">Biaya Proteksi Produk (%d barang)</string>
     <string name="button_order_detail_buy_again">Beli Lagi</string>
     <string name="filter">Filter</string>
@@ -390,27 +134,13 @@ Anda di sini.</string>
     <string name="start_date">Tanggal Awal</string>
     <string name="end_date">Tanggal Akhir</string>
     <string name="save_date">Terapkan</string>
-    <string name="tooltip_fulfillment_title">Tak Perlu Repot Lagi</string>
-    <string name="tooltip_fulfillment_desc">Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang</string>
-
-    <string name="transaction_title_activity_order_history">Detail Status</string>
     <string name="tiket_kategori">Kategori Tiket: </string>
     <string name="location_events">Lokasi </string>
     <string name="user_label">Data Pemegang E-tiket</string>
-    <string name="booking_code_title">Kode Booking:</string>
     <string name="btn_redeem_ticket">Tutup</string>
     <string name="redeem_deals_btn">Redeem</string>
-    <string name="tkpdtransaction_cancellation_with_time">Pembatalan tidak bisa dilakukan saat ini. Kamu bisa batalkan pesanan pada %s</string>
-    <string name="tkpdtransaction_90_days_found_nothing">Tidak ada transaksi dalam 90 hari terakhir</string>
-
-    <string name="ajukan">Ajukan</string>
-    <string name="please_chose_one">Mohon Pilih Salah Satu</string>
-    <string name="tkpdtransaction_common_cancellation_heading">Pilih satu alasan pengajuan pembatalan:</string>
     <string name="tkpdtransaction_title_replacement_reason_1">Produk tidak sesuai atau kosong</string>
-    <string name="tkpdtransaction_title_replacement_reason_2">Ingin merubah pesanan</string>
-    <string name="tkpdtransaction_title_replacement_reason_3">Kendala pengiriman</string>
-    <string name="tkpdtransaction_title_replacement_reason_4">Penjual tidak merespon</string>
-    <string name="tkpdtransaction_common_enter_reason">Masukan alasan anda</string>
+    <string name="cancel_replacement">Batalkan Pencarian</string>
 
     <string name="month_1">Jan</string>
     <string name="month_2">Feb</string>
@@ -425,13 +155,7 @@ Anda di sini.</string>
     <string name="month_11">Nov</string>
     <string name="month_12">Des</string>
 
-    <string name="popup_selesai_title">Selesaikan Pesanan</string>
-    <string name="popup_selesai_desc">Dengan klik selesai, dana akan diteruskan ke penjual dan Anda tidak dapat mengajukan komplain</string>
-    <string name="popup_selesai_ok_btn">Selesai</string>
     <string name="popup_selesai_cancel_btn">Kembali</string>
-    <string name="title_other_reason">Lainnya</string>
-    <string name="error_note_empty">Catatan harus diisi</string>
-
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="store_name_placeholder">Store Name 24 Character</string>
     <string name="invoice_placeholder">INV/20161025/XVI/X/55069657</string>
@@ -445,7 +169,6 @@ Anda di sini.</string>
     <string name="chat_penjual">Chat Penjual</string>
     <string name="reason_cancel">Ingin mengubah pesanan</string>
     <string name="show_bottomsheet">Show Bottomsheet</string>
-    <string name="bottomsheet_title">Pilih alasan pembatalan</string>
     <string name="fail_cancellation">Terjadi kesalahan, mohon dicoba kembali</string>
     <string name="tulis_alasan">Tulis alasan...</string>
     <string name="ask_2_lainnya">Tulis detail pembatalan pesanan.</string>
@@ -492,29 +215,19 @@ Anda di sini.</string>
     <string name="uoh_reset_filter_msg">Seluruh transaksi dari #date_limit telah ditampilkan.</string>
     <string name="uoh_recommendation_title">Rekomendasi untuk Kamu</string>
     <string name="uoh_finish_order_desc">Dengan klik "Selesai", dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.</string>
-    <string name="uoh_finish_order_1">1. Pastikan kamu sudah menerima pesananmu.</string>
-    <string name="uoh_finish_order_2">2. Pastikan barang yang kamu terima sesuai pesanan.</string>
+    <string name="uoh_finish_order_1">Pastikan kamu sudah menerima barang yang sesuai dengan pesananmu.</string>
+    <string name="uoh_finish_order_2">Jika memenuhi syarat &amp; Ketentuan, cashback dari transaksi yang pakai promo akan dikirim maks. 24 jam ke depan.</string>
     <string name="btn_ajukan_komplain">Ajukan Komplain</string>
     <string name="btn_finish_order">Selesai</string>
-    <string name="ls_finish_order_desc">Dengan klik selesai, kamu sudah menerima barang sesuai pesanan dan transaksi telah berakhir. kamu tidak bisa mengajukan komplain.</string>
     <string name="placeholder_email">Alamat E-mail</string>
     <string name="btn_send_email_label">Kirim</string>
     <string name="toaster_succeed_send_email">Hore! E-mail berhasil dikirim.</string>
     <string name="toaster_failed_send_email">E-mail gagal dikirim, coba kirim ulang ya</string>
     <string name="img_content_desc">img_content_desc</string>
 
-    <string name="ticker_info_selengkapnya">
-        <![CDATA[
-        <html>
-        <body>
-        <a href="#url"><strong style="color: green;">#label</strong></a>
-        </body>
-        </html>
-        ]]>
-    </string>
-
     <string name="banner_deals_main_title">Hai %s,</string>
     <string name="banner_deals_coachmark_sub_title">Setelah redeem, jangan lupa klik ini. Ada promo spesial menantimu!</string>
     <string name="banner_deals_coachmark_title">Wow, ada yang seru nih!</string>
     <string name="contact_us_clickable_text">Hubungi Tokopedia Care</string>
+    <string name="error_message_minimum_search_keyword">Masukkan min. 3 karakter di kolom pencarian.</string>
 </resources>

@@ -44,9 +44,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.features.notifTroubleshooter)
+
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.affiliateCommon)
-    implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.explore)
@@ -61,7 +62,6 @@ dependencies {
     implementation project(rootProject.ext.features.travelPassenger)
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.sellerActiveCommon)
-    implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation project(rootProject.ext.features.variantCommon)
     implementation project(rootProject.ext.features.payment)
@@ -75,6 +75,7 @@ dependencies {
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.productManageCommon)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.atc_common)
@@ -82,6 +83,8 @@ dependencies {
     implementation project(rootProject.ext.features.discovery2)
     implementation project(rootProject.ext.features.logisticcart)
     implementation project(rootProject.ext.features.logisticCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.qrscanner)
@@ -92,7 +95,11 @@ dependencies {
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.tokoMart)
     implementation project(rootProject.ext.libraries.workManagerUtil)
+    implementation project(rootProject.ext.libraries.deviceFingerprint)
+    implementation project(rootProject.ext.libraries.logger)
+
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.basemvvm)
@@ -113,18 +120,16 @@ dependencies {
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
-    implementation project(rootProject.ext.libraries.mediauploader)
+    implementation project(rootProject.ext.features.mediauploader)
+    implementation project(rootProject.ext.features.moengageWrapper)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imagePickerCommon)
-    implementation project(rootProject.ext.libraries.videoRecorder)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -142,6 +147,7 @@ dependencies {
     implementation project(rootProject.ext.features.youtubeCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.attachcommon)
+    implementation project(rootProject.ext.features.mediaCommon)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -162,6 +168,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.websocket)
     implementation project(rootProject.ext.libraries.baseAdapter)
+    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.agerestriction)
@@ -175,6 +182,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.akamaiBotLib)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.keys)
+    implementation project(rootProject.ext.libraries.encryption)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.features.developerOptions)
     } else {
@@ -186,6 +195,9 @@ dependencies {
     } else {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+
+    implementation project(rootProject.ext.libraries.pageInfoPusher)
+
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.preReleaseInspector)
     } else {
@@ -194,14 +206,12 @@ dependencies {
 
     // in~house dependencies
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
     implementation rootProject.ext.playServicesDependencies.measurementApi
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
@@ -236,7 +246,6 @@ dependencies {
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
-    implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
@@ -266,7 +275,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -274,6 +282,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
+    }
+    // Warning: removing imageCropper lib might cause youtube library crash
+    // when load recommendation at the end of video
+    // Need to recheck
+    implementation(rootProject.ext.miscDependencies.imagecropper) {
+        exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
@@ -291,17 +305,12 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.miscDependencies.codePushReactNative
-    implementation rootProject.ext.miscDependencies.reactNative
-    implementation 'com.facebook.fresco:fresco:1.10.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
@@ -315,7 +324,6 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-    implementation 'com.facebook.soloader:soloader:0.8.0'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'

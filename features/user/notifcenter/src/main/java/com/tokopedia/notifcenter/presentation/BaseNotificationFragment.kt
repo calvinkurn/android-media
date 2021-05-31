@@ -9,7 +9,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -18,31 +17,28 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTracker
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
-import com.tokopedia.notifcenter.presentation.fragment.NotificationLongerTextDialog
 import com.tokopedia.notifcenter.presentation.fragment.ProductCardListDialog
 import com.tokopedia.notifcenter.presentation.fragment.ProductStockHandlerDialog
 import com.tokopedia.notifcenter.util.endLess
-import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.notifcenter.presentation.fragment.NotificationLongerTextDialog.Companion.createInstance as LongerTextDialog
 
 abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         NotificationItemListener,
         NotificationFilterListener {
 
-    private lateinit var longerTextDialog: BottomSheetDialogFragment
+    private var longerTextDialog: BottomSheetDialogFragment? = null
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
+    @Inject lateinit var userSession: UserSessionInterface
 
     abstract fun bottomFilterView(): FloatingButtonUnify?
     abstract fun analytics(): NotificationTracker
@@ -66,9 +62,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         super.onViewCreated(view, savedInstanceState)
 
         //enable transition of filter type on kitkat above
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            bottomFilterView()?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-        }
+        bottomFilterView()?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
     }
 
     protected open fun onSuccessMarkAllRead() {
@@ -85,7 +79,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
     }
 
     protected fun onListLastScroll(view: View) {
-        super.getRecyclerView(view).endLess({
+        super.getRecyclerView(view)?.endLess({
             if (it < 0) { // going up
                 notifyBottomActionView()
             } else if (it > 0) { // going down
@@ -109,35 +103,12 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         return NotificationUpdateAnalytics()
     }
 
-    override fun addProductToCheckout(userInfo: UserInfo, element: NotificationItemViewBean) {
-        try {
-            val atcAndBuyAction = ATC_AND_BUY
-            val needToRefresh = true
-            val minimumOrder = "1"
-            startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.getAtcProduct()?.shop?.id.toString())
-                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, element.getAtcProduct()?.shop?.name)
-                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.getAtcProduct()?.productId)
-                putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, minimumOrder)
-                putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.getAtcProduct()?.productId)
-                putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
-                putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needToRefresh)
-                putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.NOTIFICATION)
-                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, element.getAtcProduct()?.name)
-                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, element.getAtcProduct()?.price?.toFloat())
-                putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-                putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, element.getAtcEventLabel())
-                putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, element.getBuyEventAction())
-            })
-        } catch (e: Exception) {
-        }
-    }
-
     override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {
         when (bottomSheet) {
             is BottomSheetType.LongerContent -> showLongerContent(element)
-            is BottomSheetType.ProductCheckout -> showProductCheckout(element)
+//            is BottomSheetType.ProductCheckout -> showProductCheckout(element) (Disabled)
             is BottomSheetType.StockHandler -> showStockHandlerDialog(element)
+            else -> {}
         }
     }
 
@@ -162,25 +133,27 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun showLongerContent(element: NotificationItemViewBean) {
-        val bundle = Bundle()
+        if (longerTextDialog?.isAdded == true) return
 
-        bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
-        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
-        bundle.putString(PARAM_CTA_APPLINK, element.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, element.bodyHtml)
-        bundle.putString(PARAM_CONTENT_TITLE, element.title)
-        bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
-        bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
-        bundle.putString(PARAM_NOTIF_ID, element.notificationId)
-
-        if (!::longerTextDialog.isInitialized) {
-            longerTextDialog = NotificationLongerTextDialog.createInstance(bundle)
-        } else {
-            longerTextDialog.arguments = bundle
+        val bundle = Bundle().apply {
+            putString(PARAM_CONTENT_IMAGE, element.contentUrl)
+            putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
+            putString(PARAM_CTA_APPLINK, element.appLink)
+            putString(PARAM_CONTENT_TEXT, element.bodyHtml)
+            putString(PARAM_CONTENT_TITLE, element.title)
+            putString(PARAM_BUTTON_TEXT, element.btnText)
+            putString(PARAM_TEMPLATE_KEY, element.templateKey)
+            putString(PARAM_NOTIF_ID, element.notificationId)
         }
 
-        if (!longerTextDialog.isAdded) {
-            longerTextDialog.show(childFragmentManager, TAG_LONGER_TEXT)
+        if (longerTextDialog == null) {
+            longerTextDialog = LongerTextDialog(bundle)
+        } else {
+            longerTextDialog?.arguments = bundle
+        }
+
+        if (childFragmentManager.findFragmentByTag(TAG_LONGER_TEXT) == null) {
+            longerTextDialog?.show(childFragmentManager, TAG_LONGER_TEXT)
         }
     }
 
@@ -251,6 +224,8 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
                 .notificationComponent
                 .inject(this)
     }
+
+    override fun onItemMultipleStockHandlerClick(notification: NotificationItemViewBean) {}
 
     companion object {
         private const val TAG_PRODUCT_STOCK = "Product Stock Handler"

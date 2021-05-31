@@ -1,16 +1,15 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
 import android.os.Bundle
+import android.os.MemoryFile
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.tokopoints.view.model.ApplyCouponBaseEntity
-import com.tokopedia.tokopoints.view.model.CouponDetailOuter
-import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
-import com.tokopedia.tokopoints.view.model.CouponValueEntity
+import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
@@ -66,6 +65,90 @@ class CouponDetailViewModelTest {
             assert(viewModel.pinPageData.value is PinPageData)
             assert(viewModel.pinPageData.value!!.code == code && viewModel.pinPageData.value!!.pinText == texts)
 
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `onSwipeComplete pin not require success`() {
+        runBlockingTest {
+            val uniqueCode = "realCode"
+            val texts = "text"
+            viewModel.data = mockk {
+                every { swipe } returns mockk {
+                    every { isNeedSwipe } returns true
+                    every { pin } returns mockk {
+                        every { isPinRequire } returns false
+                        every { text } returns texts
+                    }
+                    every { realCode } returns uniqueCode
+                }
+            }
+
+            val observer = mockk<Observer<Resources<CouponSwipeUpdate>>>()
+            val response = mockk<CouponSwipeUpdate> {
+                every {
+                    resultStatus
+                } returns mockk {
+                    every { code } returns 200
+                }
+            }
+            coEvery { repository.swipeMyCoupon(any(), "") } returns mockk {
+                every { getData<CouponSwipeUpdateOuter>(CouponSwipeUpdateOuter::class.java) } returns mockk(relaxed = true) {
+                    every { swipeCoupon } returns response
+                }
+                every { getError(CouponSwipeUpdateOuter::class.java) } returns null
+            }
+            viewModel.onCouponSwipe.observeForever(observer)
+            val method = viewModel::class.java.getDeclaredMethod("swipeMyCoupon", CouponValueEntity::class.java)
+            method.isAccessible = true
+            val parameters = arrayOfNulls<Any>(1)
+            parameters[0] = viewModel.data
+            method.invoke(viewModel, *parameters)
+            verify { observer.onChanged(any<Success<CouponSwipeUpdate>>()) }
+        }
+    }
+
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `onSwipeComplete pin not require error`() {
+        runBlockingTest {
+            val uniqueCode = "realCode"
+            val texts = "text"
+            viewModel.data = mockk {
+                every { swipe } returns mockk {
+                    every { isNeedSwipe } returns true
+                    every { pin } returns mockk {
+                        every { isPinRequire } returns false
+                        every { text } returns texts
+                    }
+                    every { realCode } returns uniqueCode
+                }
+            }
+
+            val observer = mockk<Observer<Resources<CouponSwipeUpdate>>>()
+            val response = mockk<CouponSwipeUpdate> {
+                every {
+                    resultStatus
+                } returns mockk {
+                    every { messages } returns listOf("nvjnv","nvjdsnvj")
+                    every { code } returns  403
+                }
+            }
+            coEvery { repository.swipeMyCoupon(any(), "") } returns mockk {
+                every { getData<CouponSwipeUpdateOuter>(CouponSwipeUpdateOuter::class.java) } returns mockk(relaxed = true) {
+                    every { swipeCoupon } returns response
+                }
+                every { getError(CouponSwipeUpdateOuter::class.java) } returns null
+            }
+            viewModel.onCouponSwipe.observeForever(observer)
+            val method = viewModel::class.java.getDeclaredMethod("swipeMyCoupon", CouponValueEntity::class.java)
+            method.isAccessible = true
+            val parameters = arrayOfNulls<Any>(1)
+            parameters[0] = viewModel.data
+            method.invoke(viewModel, *parameters)
+            verify { observer.onChanged(any<ErrorMessage<CouponSwipeUpdate>>()) }
         }
     }
 
@@ -250,6 +333,41 @@ class CouponDetailViewModelTest {
         }
 
 
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `redeem fail`(){
+        runBlockingTest {
+            val redeemCouponObserver = mockk<Observer<Resources<String>>>()
+            viewModel.onRedeemCoupon.observeForever(redeemCouponObserver)
+            viewModel.redeemCoupon("code", "cta")
+            verify { redeemCouponObserver.onChanged(any<ErrorMessage<String>>()) }
+            coEvery { repository.redeemCoupon(any()) } returns mockk() {
+                every { getError(ApplyCouponBaseEntity::class.java) } returns null
+                every { getData<ApplyCouponBaseEntity>(ApplyCouponBaseEntity::class.java) } returns null
+            }
+            viewModel.redeemCoupon("code", "cta")
+            verify { redeemCouponObserver.onChanged(any<ErrorMessage<String>>()) }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `phone verification before coupon redeem`() {
+        runBlockingTest {
+            val userInfoObserver = mockk<Observer<PhoneVerificationResponse>>()
+            val data = mockk<PhoneVerificationResponse>()
+            coEvery { repository.getUserPhoneVerificationInfo() } returns mockk {
+                every {
+                    getData<PhoneVerificationResponse>(PhoneVerificationResponse::class.java)
+                } returns mockk()
+                every { getError(PhoneVerificationResponse::class.java) } returns null
+            }
+            viewModel.userInfo.observeForever(userInfoObserver)
+            viewModel.isPhonerVerfied()
+            verify { userInfoObserver.onChanged(any()) }
+        }
     }
 
     @Test

@@ -8,21 +8,8 @@ import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataIt
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
-import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemModel
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.card_view
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.check_box
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.img_menu
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.item_card
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.klik_count
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.label
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.pendapatan_count
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.pengeluaran_count
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.persentase_klik_count
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.produk_terjual_count
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.progress_layout
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.tampil_count
-import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
 
 /**
  * Created by Pika on 7/6/20.
@@ -31,14 +18,14 @@ import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
 
 class ProductItemViewHolder(val view: View,
                             var onSwitchAction: ((pos: Int, isChecked: Boolean) -> Unit),
-                            var onSelectMode: ((select: Boolean) -> Unit)) : ProductViewHolder<ProductItemViewModel>(view) {
+                            var onSelectMode: ((select: Boolean) -> Unit)) : ProductViewHolder<ProductItemModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_non_group_card
     }
 
-    override fun bind(item: ProductItemViewModel, selectMode: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
+    override fun bind(item: ProductItemModel, selectMode: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
         item.let {
             view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
             if (selectMode) {

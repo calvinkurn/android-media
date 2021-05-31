@@ -2,7 +2,12 @@ package com.tokopedia.sellerappwidget.view.work
 
 import android.content.Context
 import androidx.work.*
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
+import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget
 import com.tokopedia.sellerappwidget.view.executor.GetChatExecutor
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
@@ -23,6 +28,16 @@ class GetChatWorker(
 
         @JvmStatic
         fun runWorkerPeriodically(context: Context) {
+            val cacheHandler = AppWidgetHelper.getCacheHandler(context)
+            val userSession: UserSessionInterface = UserSession(context)
+            val isChatWidgetEnabled = cacheHandler.getBoolean(Const.SharedPrefKey.CHAT_WIDGET_ENABLED, false)
+            val isUserLoggedIn = userSession.isLoggedIn
+            if (!(isChatWidgetEnabled && isUserLoggedIn)) {
+                ChatAppWidget.showNoLoginState(context)
+                workRequest = null
+                return
+            }
+
             if (workRequest == null) {
                 val constraints = Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)

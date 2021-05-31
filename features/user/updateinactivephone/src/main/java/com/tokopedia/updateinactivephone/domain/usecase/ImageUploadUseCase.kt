@@ -1,6 +1,5 @@
 package com.tokopedia.updateinactivephone.domain.usecase
 
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.ERROR_FAILED_UPLOAD_IMAGE
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.PARAM_EMAIL
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.PARAM_FILE_TO_UPLOAD
@@ -10,6 +9,7 @@ import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApi
 import com.tokopedia.updateinactivephone.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.domain.data.ImageUploadDataModel
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.utils.image.ImageProcessingUtil
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -45,7 +45,7 @@ class ImageUploadUseCase @Inject constructor(
     private fun generateParamFile(): RequestBody {
         val file: File
         try {
-            file = ImageUtils.compressImageFile(useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
+            file = ImageProcessingUtil.compressImageFile(useCaseRequestParams.getString(PARAM_FILE_TO_UPLOAD, ""), 100)
         } catch (e: Exception) {
             throw RuntimeException(ERROR_FAILED_UPLOAD_IMAGE)
         }

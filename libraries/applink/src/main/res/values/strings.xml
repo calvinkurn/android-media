@@ -57,7 +57,7 @@
     <string name="talk_title">Diskusi Produk</string>
 
     <string name="title_topchat">Chat</string>
-
+    <string name="title_inbox">Inbox</string>
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
     <string name="title_otp">Verifikasi</string>
@@ -69,6 +69,9 @@
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_buyerorder">Daftar Transaksi</string>
+
+    <!--Snapshot-->
+    <string name="title_snapshot">Riwayat Detail Produk</string>
 
     <!--Official Store -->
     <string name="title_brandlist">Brand List</string>
@@ -84,10 +87,6 @@
 
     <!-- Seller Search -->
     <string name="title_global_search_seller">Seller Search</string>
-
-    <!-- ATC Variant -->
-    <string name="title_normal_checkout">Detail Produk</string>
-
 
     <!-- Seller Onboarding -->
     <string name="title_seller_onboarding">Seller Onboarding</string>
@@ -118,10 +117,17 @@
     <string name="title_review_inbox">Review Inbox</string>
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
+    <string name="title_review_reminder">Review Reminder</string>
   
     <!-- Inactive Phone -->
     <string name="title_update_inactive_phone">Inactive Phone</string>
 
     <!-- Product Detail -->
     <string name="title_product_detail">Product Detail</string>
+
+    <!--Order Management History-->
+    <string name="title_order_management_history">Detail Status</string>
+
+    <string name="title_image_picker">Image Picker</string>
+
 </resources>

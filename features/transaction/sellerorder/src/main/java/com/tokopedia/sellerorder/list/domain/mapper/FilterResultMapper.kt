@@ -2,10 +2,11 @@ package com.tokopedia.sellerorder.list.domain.mapper
 
 import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import javax.inject.Inject
 
-object FilterResultMapper {
-    fun mapResponseToUiModel(resultFilterList: SomListFilterResponse.Data.OrderFilterSom): SomListFilterUiModel {
-        return SomListFilterUiModel(statusList = mapStatusList(resultFilterList.statusList))
+class FilterResultMapper @Inject constructor() {
+    fun mapResponseToUiModel(resultFilterList: SomListFilterResponse.Data.OrderFilterSom, fromCache: Boolean): SomListFilterUiModel {
+        return SomListFilterUiModel(statusList = mapStatusList(resultFilterList.statusList), fromCache = fromCache)
     }
 
     private fun mapStatusList(statusList: List<SomListFilterResponse.Data.OrderFilterSom.Status>): List<SomListFilterUiModel.Status> {

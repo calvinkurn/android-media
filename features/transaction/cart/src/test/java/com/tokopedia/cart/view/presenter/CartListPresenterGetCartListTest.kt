@@ -11,9 +11,6 @@ import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
-import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -56,9 +53,6 @@ object CartListPresenterGetCartListTest : Spek({
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
     val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
-    val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
-    val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
-    val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
@@ -74,8 +68,7 @@ object CartListPresenterGetCartListTest : Spek({
                     addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                    updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    addToCartExternalUseCase, seamlessLoginUsecase, updateCartCounterUseCase,
                     updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
                     followShopUseCase, TestSchedulers
             )
@@ -91,6 +84,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
             }
 
             Given("update cart counter") {
@@ -121,6 +115,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("empty response") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
             }
 
             Given("update cart counter") {
@@ -164,6 +159,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
                 every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
             }
 
@@ -200,6 +196,7 @@ object CartListPresenterGetCartListTest : Spek({
             }
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
+                every { getCartListSimplifiedUseCase.buildParams(any()) } returns emptyMap()
                 every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(response) }
             }
 

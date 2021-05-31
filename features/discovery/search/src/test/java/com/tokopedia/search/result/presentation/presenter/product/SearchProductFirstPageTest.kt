@@ -116,8 +116,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
     private fun `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog: CapturingSlot<String>, exception: Exception) {
         verifyOrder {
             productListView.isAnyFilterActive
-
-            productListView.isAnyFilterActive
             productListView.isAnySortActive
 
             productListView.stopPreparePagePerformanceMonitoring()
@@ -140,7 +138,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
     private fun `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog: CapturingSlot<String>, searchParameter: Map<String, Any>) {
         val message = slotSearchParameterErrorLog.captured
 
-        message shouldBe UrlParamUtils.generateUrlParamString(searchParameter)
+        @Suppress("UNCHECKED_CAST")
+        message shouldBe UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any?>)
     }
 
     @Test

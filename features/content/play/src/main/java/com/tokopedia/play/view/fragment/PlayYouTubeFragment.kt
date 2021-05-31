@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -12,16 +13,17 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.PiPMode
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
-import com.tokopedia.play.view.uimodel.YouTube
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.YouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
@@ -34,11 +36,12 @@ import javax.inject.Inject
  * Created by jegul on 28/04/20
  */
 class PlayYouTubeFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory
-): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener {
+        private val viewModelFactory: ViewModelProvider.Factory,
+        private val analytic: PlayAnalytic
+): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener, YouTubeViewComponent.DataSource {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
-    private val youtubeView by viewComponent { YouTubeViewComponent(it, R.id.fl_youtube_player, childFragmentManager, this) }
+    private val youtubeView by viewComponent { YouTubeViewComponent(it, R.id.fl_youtube_player, childFragmentManager, this, this) }
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -50,7 +53,7 @@ class PlayYouTubeFragment @Inject constructor(
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private val orientationListener: PlayOrientationListener
-        get() = requireParentFragment() as PlayOrientationListener
+        get() = requireActivity() as PlayOrientationListener
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -93,7 +96,7 @@ class PlayYouTubeFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
+        if (isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(channelId)
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -107,11 +110,19 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     /**
+     * YouTube View Component Data Source
+     */
+    override fun isEligibleToPlay(view: YouTubeViewComponent): Boolean {
+        return lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
+    }
+
+    /**
      * YouTube View Component Listener
      */
     override fun onInitFailure(view: YouTubeViewComponent, result: YouTubeInitializationResult) { }
 
     override fun onEnterFullscreen(view: YouTubeViewComponent) {
+        analytic.clickCtaFullScreenFromPortraitToLandscape()
         enterFullscreen()
     }
 
@@ -127,7 +138,7 @@ class PlayYouTubeFragment @Inject constructor(
      * Private methods
      */
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
     }
 
     private fun initView(view: View) {
@@ -147,7 +158,7 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun handleYouTubeVideoState(state: PlayViewerVideoState) {
-        if (isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, state)
+        if (isYouTube) videoAnalyticHelper.onNewVideoState(state)
     }
 
     private fun setupObserve() {
@@ -177,14 +188,14 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
-            youtubeViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
+        playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
+            youtubeViewOnStateChanged(isFreezeOrBanned = it.statusType.isFreeze || it.statusType.isBanned)
         })
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiP.observe(viewLifecycleOwner, Observer {
-            if (it.peekContent() == PiPMode.StopPip) removePiP()
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+            if (it.peekContent() == PiPState.Stop) removePiP()
         })
     }
 
@@ -195,15 +206,15 @@ class PlayYouTubeFragment @Inject constructor(
 
     //region OnStateChanged
     private fun youtubeViewOnStateChanged(
-            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         when {
             isFreezeOrBanned -> {
-                youtubeView.release()
+                youtubeView.safeRelease()
                 youtubeView.hide()
             }
-            videoPlayer is YouTube -> {
+            videoPlayer is PlayVideoPlayerUiModel.YouTube -> {
                 youtubeView.setYouTubeId(videoPlayer.youtubeId)
                 youtubeView.show()
             }

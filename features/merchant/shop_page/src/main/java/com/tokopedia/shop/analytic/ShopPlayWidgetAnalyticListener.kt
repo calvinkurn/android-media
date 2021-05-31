@@ -333,6 +333,22 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
+    fun onClickMoreActionPerformaChannel(channelId: String) {
+        if (!isPlayWidgetSellerApp) return
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                mapOf(
+                        EVENT to CLICK_SHOP_PAGE,
+                        EVENT_CATEGORY to SHOP_PAGE_SELLER,
+                        EVENT_ACTION to "click lihat performa - widget play",
+                        EVENT_LABEL to "$shopId - $channelId",
+                        BUSINESS_UNIT to "play",
+                        CURRENT_SITE to "tokopediaseller",
+                        USER_ID to userId,
+                        SHOP_ID to shopId
+                )
+        )
+    }
+
     fun onClickMoreActionDeleteChannel(channelId: String) {
         if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(

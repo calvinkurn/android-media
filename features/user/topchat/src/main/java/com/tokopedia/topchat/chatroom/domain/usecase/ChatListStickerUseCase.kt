@@ -4,16 +4,16 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ChatListStickerUseCase @Inject constructor(
+open class ChatListStickerUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<StickerResponse>,
         private val cacheManager: TopchatCacheManager,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     private val cacheKey = ChatListStickerUseCase::class.java.simpleName
@@ -21,7 +21,7 @@ class ChatListStickerUseCase @Inject constructor(
     private val paramLimit = "limit"
     private val defaultParamLimit = 16
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun loadSticker(
             stickerUID: String,
@@ -30,12 +30,12 @@ class ChatListStickerUseCase @Inject constructor(
             onSuccess: (List<Sticker>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     val params = generateParams(stickerUID)
                     val isPreviousRequestSuccess = getPreviousRequestState(stickerUID)
                     val cache = getCacheStickerGroup(stickerUID)?.also {
-                        withContext(dispatchers.Main) {
+                        withContext(dispatchers.main) {
                             if (!needUpdate && isPreviousRequestSuccess) {
                                 onSuccess(it.chatBundleSticker.list)
                             } else {
@@ -51,12 +51,12 @@ class ChatListStickerUseCase @Inject constructor(
                     }.executeOnBackground()
                     saveToCache(stickerUID, response)
                     saveSuccessRequestState(stickerUID)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(response.chatBundleSticker.list)
                     }
                 },
                 { exception ->
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         saveFailRequestState(stickerUID)
                         onError(exception)
                     }
