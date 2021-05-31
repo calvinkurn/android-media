@@ -7,22 +7,23 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by Yehezkiel on 24/05/21
  */
 class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: CoroutineDispatchers,
                                                           private val aggregatorUseCase: GetProductVariantAggregatorUseCase,
-                                                          private val miniCartUseCase: GetMiniCartListSimplifiedUseCase) : UseCase<AggregatorMiniCartUiModel>() {
+                                                          private val miniCartUseCase: GetMiniCartListSimplifiedUseCase) : UseCase<AggregatorMiniCartUiModel>(), CoroutineScope {
 
     private var requestParamsAggregator: Map<String, Any?> = mapOf()
     private var shopIds: List<String> = listOf()
     private var isTokoNow: Boolean = false
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatcher.main + SupervisorJob()
 
     suspend fun executeOnBackground(requestParamsAggregator: Map<String, Any?>, shopId: String,
                                     isTokoNow: Boolean): AggregatorMiniCartUiModel {
@@ -39,6 +40,7 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
         }
 
         val result = request.awaitAll()
+
         val aggregatorData = result.firstOrNull() as? ProductVariantAggregatorUiData
                 ?: ProductVariantAggregatorUiData()
         val miniCartData = (result.getOrNull(1) as? MiniCartSimplifiedData)?.miniCartItems?.associateBy({
@@ -50,14 +52,14 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
         return AggregatorMiniCartUiModel(aggregatorData, miniCartData)
     }
 
-    private suspend fun executeAggregator(): Deferred<ProductVariantAggregatorUiData> = withContext(dispatcher.io) {
-        async {
+    private fun executeAggregator(): Deferred<ProductVariantAggregatorUiData> {
+        return async(dispatcher.io) {
             aggregatorUseCase.executeOnBackground(requestParamsAggregator)
         }
     }
 
-    private suspend fun executeMiniCart(): Deferred<MiniCartSimplifiedData?> = withContext(dispatcher.io) {
-        asyncCatchError(block = {
+    private fun executeMiniCart(): Deferred<MiniCartSimplifiedData?> {
+        return asyncCatchError(dispatcher.io, block = {
             miniCartUseCase.setParams(shopIds)
             miniCartUseCase.executeOnBackground()
         }, onError = {

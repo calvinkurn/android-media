@@ -390,10 +390,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     sharedData?.shopId?.toIntOrZero() ?: 0,
                     sharedData?.categoryName ?: "",
                     userSessionInterface.userId,
-                    sharedData?.isTradein ?: false,
                     sharedData?.minimumShippingPrice ?: 0,
                     sharedData?.trackerAttribution ?: "",
-                    sharedData?.trackerListNamePdp ?: ""
+                    sharedData?.trackerListNamePdp ?: "",
+                    sharedViewModel.aggregatorParams.value?.isTokoNow ?: false
             )
         }
     }

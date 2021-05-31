@@ -1,7 +1,6 @@
 package com.tkpd.atc_variant
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tkpd.atc_variant.data.uidata.PartialButtonDataModel
 import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tkpd.atc_variant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atc_variant.data.uidata.VariantQuantityDataModel
@@ -13,7 +12,10 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -61,12 +63,13 @@ abstract class BaseAtcVariantViewModelTest {
     }
 
     //region assert helper
-    fun assertButton(data: PartialButtonDataModel,
-                             expectedAlternateCopy: String = "",
-                             expectedIsBuyable: Boolean = true,
-                             expectedCartType: String = "normal",
-                             expectedCartColor: String = "primary_green",
-                             expectedCartText: String = "+ Keranjang") {
+    fun assertButton(expectedAlternateCopy: String = "",
+                     expectedIsBuyable: Boolean = true,
+                     expectedCartType: String = "normal",
+                     expectedCartColor: String = "primary_green",
+                     expectedCartText: String = "+ Keranjang") {
+        val data = (viewModel.buttonData.value as Success).data
+
         //Todo alternate copy
         Assert.assertEquals(data.alternateText, expectedAlternateCopy)
         Assert.assertEquals(data.isProductSelectedBuyable, expectedIsBuyable)
@@ -77,7 +80,22 @@ abstract class BaseAtcVariantViewModelTest {
         Assert.assertEquals(cartType?.text, expectedCartText)
     }
 
-    fun decideInitialValueHitGql(productId: String, isTokoNow: Boolean) {
+    fun decideFailValueHitGqlAggregator() {
+        coEvery {
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), false)
+        } throws Throwable()
+
+        viewModel.decideInitialValue(ProductVariantBottomSheetParams())
+
+        coVerify {
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), false)
+        }
+
+        Assert.assertTrue(viewModel.initialData.value is Fail)
+        Assert.assertTrue(viewModel.buttonData.value is Fail)
+    }
+
+    fun decideSuccessValueHitGqlAggregator(productId: String, isTokoNow: Boolean) {
         val mockData = AtcVariantJsonHelper.generateAggregatorData(isTokoNow)
         val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow)
 
@@ -93,15 +111,15 @@ abstract class BaseAtcVariantViewModelTest {
     }
 
     fun assertVisitables(visitables: List<AtcVariantVisitable>,
-                                 showQuantityEditor: Boolean,
-                                 expectedSelectedOptionIds: List<String>,
-                                 expectedSelectedProductId: String,
-                                 expectedSelectedMainPrice: String,
-                                 expectedSelectedStockWording: String,
-                                 expectedSelectedOptionIdsLevelOne: String,
-                                 expectedSelectedOptionIdsLevelTwo: String,
-                                 expectedQuantity: Int,
-                                 expectedMinOrder: Int) {
+                         showQuantityEditor: Boolean,
+                         expectedSelectedOptionIds: List<String>,
+                         expectedSelectedProductId: String,
+                         expectedSelectedMainPrice: String,
+                         expectedSelectedStockWording: String,
+                         expectedSelectedOptionIdsLevelOne: String,
+                         expectedSelectedOptionIdsLevelTwo: String,
+                         expectedQuantity: Int,
+                         expectedMinOrder: Int) {
 
         visitables.forEach {
             when (it) {

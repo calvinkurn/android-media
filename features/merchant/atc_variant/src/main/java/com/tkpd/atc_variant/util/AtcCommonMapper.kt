@@ -2,13 +2,20 @@ package com.tkpd.atc_variant.util
 
 import com.tkpd.atc_variant.data.uidata.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
@@ -16,6 +23,69 @@ import com.tokopedia.usecase.coroutines.Success
  * Created by Yehezkiel on 11/05/21
  */
 object AtcCommonMapper {
+
+    fun generateAtcData(actionButtonCart: Int,
+                        selectedChild: VariantChild?,
+                        selectedWarehouse: WarehouseInfo?,
+                        shopIdInt: Int,
+                        trackerAttributionPdp: String,
+                        trackerListNamePdp: String,
+                        categoryName: String,
+                        shippingMinPrice: Int,
+                        userId: String
+    ): Any {
+        return when (actionButtonCart) {
+            ProductDetailCommonConstant.OCS_BUTTON -> {
+                AddToCartOcsRequestParams().apply {
+                    productId = selectedChild?.productId?.toLongOrZero() ?: 0L
+                    shopId = shopIdInt
+                    quantity = selectedChild?.getFinalMinOrder() ?: 0
+                    notes = ""
+                    customerId = userId.toIntOrZero()
+                    warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
+                    trackerAttribution = trackerAttributionPdp
+                    trackerListName = trackerListNamePdp
+                    isTradeIn = false
+                    shippingPrice = shippingMinPrice
+                    productName = selectedChild?.name ?: ""
+                    category = categoryName
+                    price = selectedChild?.finalPrice?.toString() ?: ""
+                    this.userId = userId
+                }
+            }
+            ProductDetailCommonConstant.OCC_BUTTON -> {
+                AddToCartOccRequestParams(
+                        productId = selectedChild?.productId ?: "",
+                        shopId = shopIdInt.toString(),
+                        quantity = selectedChild?.getFinalMinOrder().toString()
+                ).apply {
+                    warehouseId = selectedWarehouse?.id ?: ""
+                    attribution = trackerAttributionPdp
+                    listTracker = trackerListNamePdp
+                    productName = selectedChild?.name ?: ""
+                    category = categoryName
+                    price = selectedChild?.finalPrice?.toString() ?: ""
+                    this.userId = userId
+                }
+            }
+            else -> {
+                AddToCartRequestParams().apply {
+                    productId = selectedChild?.productId?.toLongOrZero() ?: 0L
+                    shopId = shopIdInt
+                    quantity = selectedChild?.getFinalMinOrder() ?: 0
+                    notes = ""
+                    attribution = trackerAttributionPdp
+                    listTracker = trackerListNamePdp
+                    warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
+                    atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
+                    productName = selectedChild?.name ?: ""
+                    category = categoryName
+                    price = selectedChild?.finalPrice?.toString() ?: ""
+                    this.userId = userId
+                }
+            }
+        }
+    }
 
     /**
      * Generate selected option ids for initial variant selection state
@@ -52,7 +122,8 @@ object AtcCommonMapper {
                                  shouldUseAlternateTokoNow: Boolean = false): PartialButtonDataModel {
         val alternateText = if (shouldUseAlternateTokoNow) "Perbarui Keranjang" else ""
         return PartialButtonDataModel(selectedChild?.isBuyable
-                ?: false, isShopOwner, cartTypeData?.get(selectedChild?.productId ?: ""), alternateText)
+                ?: false, isShopOwner, cartTypeData?.get(selectedChild?.productId
+                ?: ""), alternateText)
     }
 
     fun mapToVisitable(selectedChild: VariantChild?,

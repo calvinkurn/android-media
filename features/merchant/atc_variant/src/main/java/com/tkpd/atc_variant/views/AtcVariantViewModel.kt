@@ -22,8 +22,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -110,7 +108,7 @@ class AtcVariantViewModel @Inject constructor(
             val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds?.values?.toList()
                     ?: listOf())
             val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
-            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData?.cardRedirection, isShopOwner,selectedMiniCart != null)
+            val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData?.cardRedirection, isShopOwner, selectedMiniCart != null)
 
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
@@ -156,7 +154,7 @@ class AtcVariantViewModel @Inject constructor(
      * if user only choose 1 level of 2, the result will be like (warna,merah), (ukuran,0)
      */
     fun getSelectedOptionIds(): MutableMap<String, String>? {
-        val variantDataModel = (_initialData.value as Success).data.firstOrNull {
+        val variantDataModel = (_initialData.value as? Success)?.data?.firstOrNull {
             it is VariantComponentDataModel
         } as? VariantComponentDataModel
         return variantDataModel?.mapOfSelectedVariant
@@ -294,8 +292,8 @@ class AtcVariantViewModel @Inject constructor(
         _buttonData.postValue(generateCartRedir.asSuccess())
     }
 
-    private fun updateMiniCartAndButtonData(productId: String, quantity: Int, cartId: String = "", notes: String = "") {
-        if (minicartData == null) return
+    private fun updateMiniCartAndButtonData(productId: String, quantity: Int, isTokoNow: Boolean, cartId: String = "", notes: String = "") {
+        if (!isTokoNow) return
         val selectedMiniCartData = minicartData?.get(productId)
 
         if (selectedMiniCartData == null) {
@@ -331,91 +329,33 @@ class AtcVariantViewModel @Inject constructor(
                shopIdInt: Int,
                categoryName: String,
                userId: String,
-               tradein: Boolean = false,
                shippingMinPrice: Int = 0,
                trackerAttributionPdp: String = "",
-               trackerListNamePdp: String = "") {
+               trackerListNamePdp: String = "",
+               isTokoNow: Boolean) {
         val selectedChild = getVariantData()?.getChildByOptionId(getSelectedOptionIds()?.values?.toList()
                 ?: listOf())
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
         val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
-        var actionButtonCart = actionButton
-        val updatedQuantity = if (selectedMiniCart != null) {
-            actionButtonCart = ProductDetailCommonConstant.ATC_UPDATE_BUTTON
-            localQuantityData[selectedChild?.productId ?: ""]
-                    ?: selectedChild?.getFinalMinOrder() ?: 1
-        } else {
-            1
-        }
 
-        when (actionButtonCart) {
-            ProductDetailCommonConstant.ATC_UPDATE_BUTTON -> {
-                if (selectedMiniCart == null) return
-                getUpdateCartUseCase(selectedMiniCart, updatedQuantity)
-            }
-            ProductDetailCommonConstant.OCS_BUTTON -> {
-                val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
-                    productId = selectedChild?.productId?.toLongOrZero() ?: 0L
-                    shopId = shopIdInt
-                    quantity = selectedChild?.getFinalMinOrder() ?: 0
-                    notes = ""
-                    customerId = userId.toIntOrZero()
-                    warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
-                    trackerAttribution = trackerAttributionPdp
-                    trackerListName = trackerListNamePdp
-                    isTradeIn = tradein
-                    shippingPrice = shippingMinPrice
-                    productName = selectedChild?.name ?: ""
-                    category = categoryName
-                    price = selectedChild?.finalPrice?.toString() ?: ""
-                    this.userId = userId
-                }
-                addToCart(addToCartOcsRequestParams)
-            }
-            ProductDetailCommonConstant.OCC_BUTTON -> {
-                val addToCartOccRequestParams = AddToCartOccRequestParams(
-                        productId = selectedChild?.productId ?: "",
-                        shopId = shopIdInt.toString(),
-                        quantity = selectedChild?.getFinalMinOrder().toString()
-                ).apply {
-                    warehouseId = selectedWarehouse?.id ?: ""
-                    attribution = trackerAttributionPdp
-                    listTracker = trackerListNamePdp
-                    productName = selectedChild?.name ?: ""
-                    category = categoryName
-                    price = selectedChild?.finalPrice?.toString() ?: ""
-                    this.userId = userId
-                }
-                addToCart(addToCartOccRequestParams)
-            }
-            else -> {
-                val addToCartRequestParams = AddToCartRequestParams().apply {
-                    productId = selectedChild?.productId?.toLongOrZero() ?: 0L
-                    shopId = shopIdInt
-                    quantity = selectedChild?.getFinalMinOrder() ?: 0
-                    notes = ""
-                    attribution = trackerAttributionPdp
-                    listTracker = trackerListNamePdp
-                    warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
-                    atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
-                    productName = selectedChild?.name ?: ""
-                    category = categoryName
-                    price = selectedChild?.finalPrice?.toString() ?: ""
-                    this.userId = userId
-                }
-                addToCart(addToCartRequestParams)
-            }
+        if (selectedMiniCart != null && isTokoNow) {
+            val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
+                    ?: selectedChild?.getFinalMinOrder() ?: 1
+            getUpdateCartUseCase(selectedMiniCart, updatedQuantity, isTokoNow)
+        } else {
+            val atcRequestParam = AtcCommonMapper.generateAtcData(actionButton, selectedChild, selectedWarehouse, shopIdInt, trackerAttributionPdp, trackerListNamePdp, categoryName, shippingMinPrice, userId)
+            addToCart(atcRequestParam, isTokoNow)
         }
     }
 
-    private fun addToCart(atcParams: Any) {
+    private fun addToCart(atcParams: Any, isTokoNow: Boolean) {
         viewModelScope.launchCatchError(block = {
             val requestParams = RequestParams.create()
             requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
 
             when (atcParams) {
                 is AddToCartRequestParams -> {
-                    getAddToCartUseCase(requestParams)
+                    getAddToCartUseCase(requestParams, isTokoNow)
                 }
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
@@ -429,60 +369,62 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int) {
+    private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int, isTokoNow: Boolean) {
         viewModelScope.launchCatchError(block = {
-            withContext(dispatcher.io) {
-                val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
-                updateCartUseCase.setParams(listOf(copyOfMiniCartItem))
-                val result = updateCartUseCase.executeOnBackground()
-
-                if (result.error.isEmpty()) {
-                    updateMiniCartAndButtonData(copyOfMiniCartItem.productId, copyOfMiniCartItem.quantity, copyOfMiniCartItem.notes)
-                    _updateCartLiveData.postValue(true.asSuccess())
-                } else {
-                    _updateCartLiveData.postValue(false.asSuccess())
-                }
+            val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
+            updateCartUseCase.setParams(listOf(copyOfMiniCartItem))
+            val result = withContext(dispatcher.io) {
+                updateCartUseCase.executeOnBackground()
             }
-        }) {
+
+            if (result.error.isEmpty()) {
+                updateMiniCartAndButtonData(productId = copyOfMiniCartItem.productId, isTokoNow = isTokoNow, quantity = copyOfMiniCartItem.quantity, notes = copyOfMiniCartItem.notes)
+                _updateCartLiveData.postValue(true.asSuccess())
+            } else {
+                _updateCartLiveData.postValue(Throwable(result.error.firstOrNull() ?: "").asFail())
+            }
+        })
+        {
             _updateCartLiveData.postValue(it.asFail())
         }
     }
 
-    private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
-        withContext(dispatcher.io) {
-            val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
-            if (result.isDataError()) {
-                val errorMessage = result.errorMessage.firstOrNull() ?: ""
-                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
-            } else {
-                updateMiniCartAndButtonData(result.data.productId.toString(), result.data.quantity, result.data.cartId, result.data.notes)
-                _addToCartLiveData.postValue(result.asSuccess())
-            }
+    private suspend fun getAddToCartUseCase(requestParams: RequestParams, isTokoNow: Boolean) {
+        val result = withContext(dispatcher.io) {
+            addToCartUseCase.createObservable(requestParams).toBlocking().single()
+        }
+        if (result.isDataError()) {
+            val errorMessage = result.errorMessage.firstOrNull() ?: ""
+            _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
+        } else {
+            updateMiniCartAndButtonData(result.data.productId.toString(), result.data.quantity, isTokoNow, result.data.cartId, result.data.notes)
+            _addToCartLiveData.postValue(result.asSuccess())
         }
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
-        withContext(dispatcher.io) {
-            val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
-            if (result.isDataError()) {
-                val errorMessage = result.errorMessage.firstOrNull() ?: ""
+        val result = withContext(dispatcher.io) {
+            addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
+        }
+        if (result.isDataError()) {
+            val errorMessage = result.errorMessage.firstOrNull() ?: ""
 
-                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
-            } else {
-                _addToCartLiveData.postValue(result.asSuccess())
-            }
+            _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
+        } else {
+            _addToCartLiveData.postValue(result.asSuccess())
         }
     }
 
+
     private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
-        withContext(dispatcher.io) {
-            val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
-            if (result.isDataError()) {
-                val errorMessage = result.getAtcErrorMessage() ?: ""
-                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
-            } else {
-                _addToCartLiveData.postValue(result.asSuccess())
-            }
+        val result = withContext(dispatcher.io) {
+            addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
+        }
+        if (result.isDataError()) {
+            val errorMessage = result.getAtcErrorMessage() ?: ""
+            _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
+        } else {
+            _addToCartLiveData.postValue(result.asSuccess())
         }
     }
 
