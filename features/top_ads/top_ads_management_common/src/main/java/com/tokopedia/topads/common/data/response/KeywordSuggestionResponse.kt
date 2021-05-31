@@ -45,7 +45,7 @@ data class KeywordDataItem(
         var bidSuggest: String = "0",
 
         @field:SerializedName("total_search")
-        var totalSearch: String = "",
+        var totalSearch: String = "-",
 
         @field:SerializedName("keyword")
         var keyword: String = "",

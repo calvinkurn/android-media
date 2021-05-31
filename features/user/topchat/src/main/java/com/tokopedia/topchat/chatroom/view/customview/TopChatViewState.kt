@@ -39,4 +39,5 @@ interface TopChatViewState : BaseChatViewState {
     fun hasProductPreviewShown(): Boolean
     fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean)
     fun attachFragmentView(fragmentView: TopChatContract.View)
+    fun hideKeyboard()
 }

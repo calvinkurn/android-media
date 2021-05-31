@@ -58,8 +58,6 @@ class GetPMCurrentAndNextShopGradeUseCase @Inject constructor(
                 next_monthly_refresh_date
                 next_quarterly_calibration_refresh_date
                 current_pm_grade {
-                  shop_level
-                  shop_score
                   grade_name
                   image_badge_url
                   image_badge_background_mobile_url

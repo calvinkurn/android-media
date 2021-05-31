@@ -227,7 +227,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
                 findViewById(android.R.id.content),
                 getString(R.string.pm_cancellation_questionnaire_some_question_not_answered_label),
                 Snackbar.LENGTH_LONG,
-                getString(com.tokopedia.design.R.string.close),
+                getString(R.string.pm_try_again),
                 View.OnClickListener {}
         )
     }
@@ -237,7 +237,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
                 findViewById(android.R.id.content),
                 getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                 Snackbar.LENGTH_LONG,
-                getString(com.tokopedia.design.R.string.close),
+                getString(R.string.pm_try_again),
                 View.OnClickListener {}
         )
     }

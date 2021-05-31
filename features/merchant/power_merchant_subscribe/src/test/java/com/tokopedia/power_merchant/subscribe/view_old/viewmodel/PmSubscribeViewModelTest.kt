@@ -23,7 +23,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
         val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
                 shopInfo = PMShopInfoUiModel(),
                 pmSetting = PowerMerchantSettingInfoUiModel(
-                        shopId = anyString(),
+                        tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
                         periodeEndDate = anyString()
                 )
@@ -56,7 +56,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
         val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
                 shopInfo = PMShopInfoUiModel(),
                 pmSetting = PowerMerchantSettingInfoUiModel(
-                        shopId = anyString(),
+                        tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.TRANSITION_PERIOD,
                         periodeEndDate = anyString()
                 )
@@ -99,7 +99,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
         val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
                 shopInfo = PMShopInfoUiModel(),
                 pmSetting = PowerMerchantSettingInfoUiModel(
-                        shopId = anyString(),
+                        tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
                         periodeEndDate = anyString()
                 )
@@ -126,7 +126,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
         val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
                 shopInfo = PMShopInfoUiModel(),
                 pmSetting = PowerMerchantSettingInfoUiModel(
-                        shopId = anyString(),
+                        tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
                         periodeEndDate = anyString()
                 )
