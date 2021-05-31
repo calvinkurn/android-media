@@ -36,7 +36,8 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
 
         `When view created`()
 
-        val quickFilterVisitable = searchViewModel.visitableListLiveData.value.getCategoryFilterDataView()
+        val visitableList = searchViewModel.visitableListLiveData.value
+        val quickFilterVisitable = visitableList.getCategoryFilterDataView()
         `Then assert category filter isSelected`(selectedFilterOption, quickFilterVisitable)
     }
 
@@ -64,7 +65,8 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val categoryFilterVisitable = searchViewModel.visitableListLiveData.value.getCategoryFilterDataView()
+        val visitableList = searchViewModel.visitableListLiveData.value
+        val categoryFilterVisitable = visitableList.getCategoryFilterDataView()
         val selectedCategoryFilter = categoryFilterVisitable.categoryFilterItemList[1]
 
         `When category filter selected`(selectedCategoryFilter, true)
@@ -95,7 +97,8 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
             selectedCategoryFilter: CategoryFilterItemDataView
     ) {
         val selectedCategoryFilterKey = OptionHelper.getKeyRemoveExclude(selectedCategoryFilter.option)
-        val actualParamsValue = getTokonowQueryParam(requestParams)[selectedCategoryFilterKey].toString()
+        val tokonowQueryParam = getTokonowQueryParam(requestParams)
+        val actualParamsValue = tokonowQueryParam[selectedCategoryFilterKey].toString()
 
         assertThat(actualParamsValue, shouldBe(selectedCategoryFilter.option.value))
     }
@@ -115,8 +118,10 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val categoryFilterVisitable = searchViewModel.visitableListLiveData.value.getCategoryFilterDataView()
-        val selectedQuickFilter = categoryFilterVisitable.categoryFilterItemList[selectedCategoryFilterIndex]
+        val visitableList = searchViewModel.visitableListLiveData.value
+        val categoryFilterVisitable = visitableList.getCategoryFilterDataView()
+        val categoryFilterItemList = categoryFilterVisitable.categoryFilterItemList
+        val selectedQuickFilter = categoryFilterItemList[selectedCategoryFilterIndex]
 
         `When category filter selected`(selectedQuickFilter, false)
 
@@ -143,13 +148,15 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
         val queryParamWithCategoryFilter = mapOf(
                 SearchApiConst.Q to defaultKeyword,
                 SearchApiConst.SC to "1324",
+                OptionHelper.EXCLUDE_PREFIX + SearchApiConst.SC to "1333",
         )
 
         `Given search view model`(queryParamWithCategoryFilter)
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val categoryFilterVisitable = searchViewModel.visitableListLiveData.value.getCategoryFilterDataView()
+        val visitableList = searchViewModel.visitableListLiveData.value
+        val categoryFilterVisitable = visitableList.getCategoryFilterDataView()
         val selectedCategoryFilter = categoryFilterVisitable.categoryFilterItemList[1]
 
         `When category filter selected`(selectedCategoryFilter, true)

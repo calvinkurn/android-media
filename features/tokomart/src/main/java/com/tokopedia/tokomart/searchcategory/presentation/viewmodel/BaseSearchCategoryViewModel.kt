@@ -411,6 +411,7 @@ abstract class BaseSearchCategoryViewModel(
 
     fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
         queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(option))
+        queryParamMutable.remove(option.key)
         filterController.refreshMapParameter(queryParam)
 
         onFilterChipSelected(option, isSelected)
