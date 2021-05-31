@@ -12,7 +12,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartPar
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -33,47 +32,11 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import com.tokopedia.search.result.presentation.model.BannerDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchProduct
-import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.CpmDataView
-import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
-import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.presentation.model.GlobalNavDataView
-import com.tokopedia.search.result.presentation.model.InspirationCardDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.presentation.model.ProductDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.presentation.model.RelatedDataView
-import com.tokopedia.search.result.presentation.model.SearchInTokopediaDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
-import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.utils.SchedulersProvider
-import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.search.utils.createSearchProductDefaultFilter
-import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
-import com.tokopedia.search.utils.getValueString
-import com.tokopedia.search.utils.toSearchParams
+import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.utils.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.TopAdsParams
-import com.tokopedia.topads.sdk.domain.model.Badge
-import com.tokopedia.topads.sdk.domain.model.Cpm
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.FreeOngkir
-import com.tokopedia.topads.sdk.domain.model.LabelGroup
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -288,6 +251,7 @@ class ProductListPresenter @Inject constructor(
 
         putRequestParamsOtherParameters(requestParams, searchParameter)
         putRequestParamsChooseAddress(requestParams)
+        putRequestParamWarehouseId(requestParams)
         requestParams.putAll(searchParameter)
 
         return requestParams
@@ -298,6 +262,10 @@ class ProductListPresenter @Inject constructor(
 
         val chooseAddressData = chooseAddressData ?: return
         requestParams.putAllString(chooseAddressData.toSearchParams())
+    }
+
+    private fun putRequestParamWarehouseId(requestParams: RequestParams) {
+        requestParams.putString(SearchApiConst.USER_WAREHOUSE_ID, view.warehouseId)
     }
 
     private fun putRequestParamsOtherParameters(requestParams: RequestParams, searchParameter: Map<String, Any>) {
@@ -1865,6 +1833,7 @@ class ProductListPresenter @Inject constructor(
         val requestParams = createInitializeSearchParam(mapParameter)
 
         enrichWithRelatedSearchParam(requestParams)
+        putRequestParamWarehouseId(requestParams)
 
         requestParams.putString(SearchApiConst.ROWS, "0")
 
@@ -1912,6 +1881,7 @@ class ProductListPresenter @Inject constructor(
         val requestParams = RequestParams.create()
 
         putRequestParamsChooseAddress(requestParams)
+        putRequestParamWarehouseId(requestParams)
         requestParams.putAll(searchParameter)
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT)
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)

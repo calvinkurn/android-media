@@ -27,9 +27,10 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
     fun `Open filter page for the first time with get dynamic filter API success`() {
         val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
         val getDynamicFilterRequestParamSlot = slot<RequestParams>()
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true, SearchApiConst.USER_WAREHOUSE_ID to warehouseId)
 
         `Given get dynamic filter model API will success`(getDynamicFilterRequestParamSlot, dynamicFilterModel)
+        `Given ChooseAddressUtils will return warehouseId`()
 
         `When open filter page`(mapParameter)
 

@@ -101,6 +101,7 @@ interface ProductListSectionContract {
         fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int)
         val isChooseAddressWidgetEnabled: Boolean
         val chooseAddressData: LocalCacheModel?
+        val warehouseId: String
         fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)

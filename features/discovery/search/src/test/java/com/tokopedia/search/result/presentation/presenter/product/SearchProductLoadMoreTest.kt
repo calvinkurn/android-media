@@ -30,6 +30,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
         `Given Mechanism to save and get product position from cache`()
         `Given Product List Presenter already Load Data`()
+        `Given ChooseAddressUtils will return warehouseId`()
 
         val loadMoreSearchParameter = createLoadMoreSearchParameter()
         `When Product List Presenter Load More Data`(loadMoreSearchParameter)
@@ -92,6 +93,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
         val params = requestParams.getSearchProductParams()
         params[SearchApiConst.START] shouldBe expectedStart
+        params[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
 
         verifyRequestContainsAdditionalParams(params, additionalParams)
 
@@ -188,6 +190,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
         val searchProductModelThirdPage = searchProductThirdPageJSON.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
+        `Given ChooseAddressUtils will return warehouseId`()
 
         every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModelSecondPage)
