@@ -1,5 +1,6 @@
 package com.tokopedia.mvcwidget.views
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.text.Html
@@ -77,7 +78,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
         iconListRunnable = object : Runnable {
             var currentIndex = 0
-            var updateInterval = 1700L
+            var updateInterval = 2000L
 
             override fun run() {
                 val title = iconList[currentIndex].title ?: ""
@@ -112,10 +113,12 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         }
         tvSubTitle.text = subTitle
 
-        Glide.with(imageCoupon.context.applicationContext)
-            .load(imageUrl)
-            .dontAnimate()
-            .into(imageCoupon)
+        if (!(context as Activity).isFinishing) {
+            Glide.with(imageCoupon.context)
+                .load(imageUrl)
+                .dontAnimate()
+                .into(imageCoupon)
+        }
     }
 
     override fun onDetachedFromWindow() {
