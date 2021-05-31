@@ -1406,6 +1406,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 )
             }
         } catch (e: Exception) {
+            e.printStackTrace()
 
         }
 
@@ -1419,6 +1420,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 )
             }
         } catch (e: Exception) {
+            e.printStackTrace()
 
         }
         return spannableString
