@@ -10,10 +10,7 @@ import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggeste
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
-import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -78,6 +75,9 @@ class AddEditProductDetailViewModelTest {
     lateinit var productPriceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase
 
     @RelaxedMockK
+    lateinit var priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase
+
+    @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
 
     @RelaxedMockK
@@ -140,7 +140,8 @@ class AddEditProductDetailViewModelTest {
     private val viewModel: AddEditProductDetailViewModel by lazy {
         AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase,
                 getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase,
-                annotationCategoryUseCase, productPriceSuggestionSuggestedPriceGetUseCase, userSession)
+                annotationCategoryUseCase, productPriceSuggestionSuggestedPriceGetUseCase,
+                priceSuggestionSuggestedPriceGetByKeywordUseCase, userSession)
     }
 
     @Test

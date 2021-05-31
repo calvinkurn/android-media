@@ -193,6 +193,9 @@
 
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
+    <string name="title_shop_performance">Performa Toko</string>
+    <string name="title_penalty_shop_score">Penalti</string>
+    <string name="title_penalty_detail_shop_score">Detail Pelanggaran</string>
 
     <string name="title_notif_purchase_confirmed">Pembayaran sudah terverifikasi</string>
     <string name="title_notif_purchase_accepted">Pesanan kamu sedang diproses </string>

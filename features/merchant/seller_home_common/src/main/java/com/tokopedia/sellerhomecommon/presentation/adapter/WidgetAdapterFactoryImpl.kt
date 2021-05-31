@@ -44,7 +44,9 @@ class WidgetAdapterFactoryImpl(
 
     override fun type(announcementWidgetUiModel: AnnouncementWidgetUiModel): Int = AnnouncementViewHolder.RES_LAYOUT
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun type(recommendationWidget: RecommendationWidgetUiModel): Int = RecommendationViewHolder.RES_LAYOUT
+
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
             CardViewHolder.RES_LAYOUT -> CardViewHolder(parent, listener)
@@ -60,6 +62,7 @@ class WidgetAdapterFactoryImpl(
             TickerViewHolder.RES_LAYOUT -> TickerViewHolder(parent, listener)
             MultiLineGraphViewHolder.RES_LAYOUT -> MultiLineGraphViewHolder(parent, listener)
             AnnouncementViewHolder.RES_LAYOUT -> AnnouncementViewHolder(parent, listener)
+            RecommendationViewHolder.RES_LAYOUT -> RecommendationViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
