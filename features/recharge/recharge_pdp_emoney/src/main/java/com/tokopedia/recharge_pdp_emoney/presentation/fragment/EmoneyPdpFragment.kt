@@ -354,7 +354,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                         renderClientNumber(it)
 
                         //to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
-                        detailPassData = DigitalCategoryDetailPassData.Builder().build()
+                        detailPassData.clientNumber = it.clientNumber
+                        detailPassData.additionalETollBalance = ""
                     }
                 }
 
@@ -363,10 +364,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
                     clientNumber?.let {
                         showToastMessage(getString(R.string.recharge_pdp_success_message_scan_ocr))
-                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = clientNumber))
+                        renderClientNumber(TopupBillsFavNumberItem(clientNumber = it))
 
                         //to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
-                        detailPassData = DigitalCategoryDetailPassData.Builder().build()
+                        detailPassData.clientNumber = it
+                        detailPassData.additionalETollBalance = ""
                     }
                 }
 
