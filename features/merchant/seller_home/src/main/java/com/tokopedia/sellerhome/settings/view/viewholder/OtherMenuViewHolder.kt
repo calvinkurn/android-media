@@ -492,7 +492,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 .toBuilder()
                 .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
                 .build()
-        powerMerchantProIcon.loadImage(goldOS?.badge)
+        powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
     }
 

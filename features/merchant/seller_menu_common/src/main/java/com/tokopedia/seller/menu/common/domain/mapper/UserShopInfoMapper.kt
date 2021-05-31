@@ -1,9 +1,7 @@
 package com.tokopedia.seller.menu.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.gm.common.constant.PMProTier
-import com.tokopedia.gm.common.constant.PMStatus
-import com.tokopedia.gm.common.constant.ShopTier
+import com.tokopedia.gm.common.constant.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
@@ -36,38 +34,40 @@ class UserShopInfoMapper @Inject constructor() {
     }
 
     private fun getShopType(userShopInfoResponse: UserShopInfoResponse): ShopType? {
-        val statusPM = userShopInfoResponse.userShopInfo.owner.pmStatus
-
-        return when (userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS?.shopTier) {
-            ShopTier.RM -> {
-                RegularMerchant.NeedUpgrade
-            }
-            ShopTier.PM -> {
-                if (getPowerMerchantNotActive(statusPM))
-                    PowerMerchantStatus.NotActive
-                else
-                    PowerMerchantStatus.Active
-            }
-            ShopTier.OS -> {
+        val goldPMStatus = userShopInfoResponse.goldGetPMOSStatus.data
+        val statusPM = goldPMStatus.powerMerchant.status
+        return when {
+            goldPMStatus.officialStore.status == OSStatus.ACTIVE -> {
                 ShopType.OfficialStore
             }
-            ShopTier.PM_PRO -> {
-                when (userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS?.shopGrade) {
-                    PMProTier.ADVANCE -> {
-                        PowerMerchantProStatus.Advanced
+            goldPMStatus.powerMerchant.pmTier == PMTier.PRO -> {
+                if (getPowerMerchantNotActive(statusPM)) {
+                    PowerMerchantProStatus.InActive
+                } else {
+                    when (userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS?.shopGrade) {
+                        PMProTier.ADVANCE -> {
+                            PowerMerchantProStatus.Advanced
+                        }
+                        PMProTier.EXPERT -> {
+                            PowerMerchantProStatus.Expert
+                        }
+                        PMProTier.ULTIMATE -> {
+                            PowerMerchantProStatus.Ultimate
+                        }
+                        else -> null
                     }
-                    PMProTier.EXPERT -> {
-                        PowerMerchantProStatus.Expert
+                }
+            }
+            goldPMStatus.powerMerchant.pmTier == PMTier.REGULAR -> {
+                when {
+                    statusPM == PMStatusConst.ACTIVE -> {
+                        PowerMerchantStatus.Active
                     }
-                    PMProTier.ULTIMATE -> {
-                        PowerMerchantProStatus.Ultimate
+                    getPowerMerchantNotActive(statusPM) -> {
+                        PowerMerchantStatus.NotActive
                     }
                     else -> {
-                        if (statusPM == PMStatus.IDLE) {
-                            PowerMerchantProStatus.InActive
-                        } else {
-                            null
-                        }
+                        RegularMerchant.NeedUpgrade
                     }
                 }
             }
@@ -76,7 +76,7 @@ class UserShopInfoMapper @Inject constructor() {
     }
 
     private fun getPowerMerchantNotActive(statusPM: String): Boolean {
-        return statusPM == PMStatus.INACTIVE || statusPM == PMStatus.IDLE || statusPM == PMStatus.PENDING
+        return statusPM == PMStatusConst.IDLE
     }
 
     private fun isBeforeOnDate(createdDate: String, targetDateText: String): Boolean {
