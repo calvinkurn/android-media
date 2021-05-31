@@ -32,7 +32,7 @@
     <string name="emoney_nfc_inactive_link">https://images.tokopedia.net/img/emoney_revamp_nfc_inactive_fourx.png</string>
     <string name="emoney_nfc_not_found">https://images.tokopedia.net/img/emoney_revamp_device_not_nfc.png</string>
     <string name="emoney_nfc_card_is_not_supported">https://images.tokopedia.net/img/emoney_revamp_card_is_not_supported.png</string>
-    <string name="emoney_nfc_failed_read_card">https://images.tokopedia.net/img/emoney_revamp_failed_read_card.png</string>
+    <string name="emoney_nfc_failed_read_card_link">https://images.tokopedia.net/img/emoney_revamp_failed_read_card.png</string>
     <string name="emoney_nfc_connection_issue">https://images.tokopedia.net/img/emoney_revamp_connection_issue.png</string>
     <string name="emoney_nfc_socket_time_out">https://images.tokopedia.net/img/emoney_revamp_socket_time_out.png</string>
 </resources>
