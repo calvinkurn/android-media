@@ -125,6 +125,15 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         }
     }
 
+    fun hidePmProCoachmark() {
+        homeFeedsViewPager?.let {
+            val fragment = homeFeedPagerAdapter?.getRegisteredFragment(
+                it.currentItem
+            )
+            fragment?.hidePmProCoachmark()
+        }
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_recommendation_feed_viewholder

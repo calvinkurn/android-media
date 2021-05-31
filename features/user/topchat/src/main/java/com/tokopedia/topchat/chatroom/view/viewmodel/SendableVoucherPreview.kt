@@ -6,6 +6,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_ATTA
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
 import okhttp3.Interceptor
@@ -33,10 +34,11 @@ class SendableVoucherPreview(
     }
 
     override fun generateMsgObj(
-            messageId: String,
-            opponentId: String,
-            message: String,
-            listInterceptor: List<Interceptor>
+        messageId: String,
+        opponentId: String,
+        message: String,
+        listInterceptor: List<Interceptor>,
+        userLocationInfo: LocalCacheModel
     ): Any {
         val voucherPayload = generatePayload(messageId, opponentId)
         return CommonUtil.toJson(voucherPayload)
