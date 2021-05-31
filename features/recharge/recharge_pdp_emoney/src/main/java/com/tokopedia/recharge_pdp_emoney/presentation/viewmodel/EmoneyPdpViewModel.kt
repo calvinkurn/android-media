@@ -28,10 +28,6 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                              private val rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase)
     : BaseViewModel(dispatcher) {
 
-    private val _errorMessage = MutableLiveData<Throwable>()
-    val errorMessage: LiveData<Throwable>
-        get() = _errorMessage
-
     private val _inputViewError = MutableLiveData<String>()
     val inputViewError: LiveData<String>
         get() = _inputViewError
@@ -83,7 +79,7 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                 _selectedOperator.value = operatorSelected
             } else {
                 if (catalogPrefixSelect.value is Fail) {
-                    _errorMessage.value = (catalogPrefixSelect.value as Fail).throwable
+                    _catalogPrefixSelect.value = catalogPrefixSelect.value as Fail
                 }
             }
         } catch (e: Throwable) {

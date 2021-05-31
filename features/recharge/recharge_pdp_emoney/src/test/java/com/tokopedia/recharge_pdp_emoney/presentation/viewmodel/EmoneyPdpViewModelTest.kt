@@ -95,7 +95,7 @@ class EmoneyPdpViewModelTest {
     @Test
     fun getSelectedOperator_onInputNumberEmpty_shouldDoNothing() {
         //when
-        emoneyPdpViewModel.getSelectedOperator("")
+        emoneyPdpViewModel.getSelectedOperator("", "")
 
         //then
         assert(emoneyPdpViewModel.selectedOperator.value == null)
@@ -107,7 +107,7 @@ class EmoneyPdpViewModelTest {
         getPrefixOperator_onSuccess_shouldUpdateOperatorPrefix()
 
         //when
-        emoneyPdpViewModel.getSelectedOperator("102")
+        emoneyPdpViewModel.getSelectedOperator("102", "")
 
         //then
         assert(emoneyPdpViewModel.selectedOperator.value?.key ?: "0" == "2")
@@ -117,12 +117,14 @@ class EmoneyPdpViewModelTest {
     fun getSelectedOperator_onInputNumberInvalid_shouldUpdateSelectedOperator() {
         //given
         getPrefixOperator_onSuccess_shouldUpdateOperatorPrefix()
+        val errorMessage = "nomor tidak valid"
 
         //when
-        emoneyPdpViewModel.getSelectedOperator("110")
+        emoneyPdpViewModel.getSelectedOperator("110", errorMessage)
 
         //then
         //error
+        assert(emoneyPdpViewModel.inputViewError.value == errorMessage)
     }
 
     @Test
@@ -131,10 +133,13 @@ class EmoneyPdpViewModelTest {
         getPrefixOperator_onFail_shouldShowErrorMessage()
 
         //when
-        emoneyPdpViewModel.getSelectedOperator("110")
+        emoneyPdpViewModel.getSelectedOperator("105", "")
 
         //then
         //error
+        assert(emoneyPdpViewModel.catalogPrefixSelect.value is Fail)
+        assert(emoneyPdpViewModel.selectedOperator.value == null)
+        assert(emoneyPdpViewModel.inputViewError.value == "")
     }
 
     @Test

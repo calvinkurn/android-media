@@ -14,14 +14,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
-import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpPromoListSpaceID
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_emoney_promo_list.*
 import javax.inject.Inject
 
@@ -32,8 +30,6 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
-    private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
 
     override fun getScreenName(): String = ""
 
@@ -51,7 +47,8 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
     }
 
     private fun renderView() {
-        val promoData = (topUpBillsViewModel.menuDetailData.value as Success).data.promos
+        val promoData = arguments?.getParcelableArrayList<TopupBillsPromo>(EXTRA_PROMOS)
+                ?: arrayListOf()
         emoneyPdpPromoListWidget.setPromoList(promoData)
 
         val showTitle = arguments?.getBoolean(EXTRA_SHOW_TITLE) ?: false
@@ -92,10 +89,12 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
     companion object {
         const val CLIP_DATA_VOUCHER_CODE_DIGITAL = "digital_telco_clip_data_promo"
         const val EXTRA_SHOW_TITLE = "EXTRA_SHOW_TITLE"
+        const val EXTRA_PROMOS = "EXTRA_PROMOS"
 
-        fun newInstance(showTitle: Boolean = false): Fragment = EmoneyPdpPromoListFragment().also {
+        fun newInstance(showTitle: Boolean = false, promoList: ArrayList<TopupBillsPromo>): Fragment = EmoneyPdpPromoListFragment().also {
             it.arguments = Bundle().apply {
                 putBoolean(EXTRA_SHOW_TITLE, showTitle)
+                putParcelableArrayList(EXTRA_PROMOS, promoList)
             }
         }
     }

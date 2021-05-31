@@ -49,6 +49,7 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
         emoneyPdpCardInputNumber.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                emoneyPdpCardInputNumber.getFirstIcon().hide()
                 listener?.onInputNumberChanged(getNumber())
             }
 
@@ -59,6 +60,9 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun renderError(errorMsg: String) {
         emoneyPdpCardInputNumber.setError(errorMsg.isNotEmpty())
+        emoneyPdpCardInputNumber.setPadding(0, 0, 0,
+                if (errorMsg.isNotEmpty()) resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                else 0)
         emoneyPdpCardInputNumber.setMessage(errorMsg)
     }
 

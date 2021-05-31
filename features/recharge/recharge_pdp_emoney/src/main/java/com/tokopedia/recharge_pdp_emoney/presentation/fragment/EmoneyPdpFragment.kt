@@ -89,6 +89,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var emoneyCardNumber = ""
     lateinit var detailPassData: DigitalCategoryDetailPassData
 
     override fun getScreenName(): String = ""
@@ -111,6 +112,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null) {
+            emoneyCardNumber = savedInstanceState.getString(EXTRA_USER_INPUT_EMONEY_NUMBER) ?: ""
+            detailPassData = savedInstanceState.getParcelable(EXTRA_EMONEY_DETAIL_PASS_DATA)
+                    ?: DigitalCategoryDetailPassData.Builder().build()
+        }
 
         loadData()
 
@@ -157,9 +164,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     if (detailPassData.clientNumber != null && detailPassData.clientNumber.isNotEmpty()) {
                         renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber))
                     } else {
-                        topUpBillsViewModel.favNumberData.value?.let { favNumber ->
-                            if (favNumber is Success) {
-                                favNumber.data.favNumberList.firstOrNull()?.let { num -> renderClientNumber(num) }
+                        if (emoneyCardNumber.isNotEmpty()) renderClientNumber(TopupBillsFavNumberItem(emoneyCardNumber))
+                        else {
+                            topUpBillsViewModel.favNumberData.value?.let { favNumber ->
+                                if (favNumber is Success) {
+                                    favNumber.data.favNumberList.firstOrNull()?.let { num -> renderClientNumber(num) }
+                                }
                             }
                         }
                     }
@@ -204,6 +214,13 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             emoneyFullPageLoadingLayout.hide()
             emoneyBuyWidget.onBuyButtonLoading(false)
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        //save userInputView value for don't keep activities
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_USER_INPUT_EMONEY_NUMBER, emoneyCardNumber)
+        outState.putParcelable(EXTRA_EMONEY_DETAIL_PASS_DATA, detailPassData)
     }
 
     private fun loadData() {
@@ -262,6 +279,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
         val adapter = EmoneyPdpFragmentPagerAdapter(this, recommendations, promoList)
         emoneyPdpViewPager.adapter = adapter
+        adapter.notifyDataSetChanged()
 
         emoneyPdpTab.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -355,6 +373,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
                         renderClientNumber(clientNumberData)
                         //renderProduct
+                        detailPassData = this
                         renderCardState(this)
                     }
                 }
@@ -371,9 +390,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderClientNumber(item: TopupBillsFavNumberItem) {
-        var cardNumber = item.clientNumber
-        if (item.clientNumber.length > MAX_CHAR_EMONEY_CARD_NUMBER) cardNumber = item.clientNumber.substring(0, MAX_CHAR_EMONEY_CARD_NUMBER)
-        emoneyPdpInputCardWidget.setNumber(cardNumber)
+        emoneyCardNumber = item.clientNumber
+        if (item.clientNumber.length > MAX_CHAR_EMONEY_CARD_NUMBER) emoneyCardNumber = item.clientNumber.substring(0, MAX_CHAR_EMONEY_CARD_NUMBER)
+        emoneyPdpInputCardWidget.setNumber(emoneyCardNumber)
     }
 
     private fun renderErrorMessage(error: Throwable) {
@@ -544,6 +563,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         private const val MAX_CHAR_EMONEY_CARD_NUMBER = 16
 
         private const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
+        private const val EXTRA_USER_INPUT_EMONEY_NUMBER = "EXTRA_USER_INPUT_EMONEY_NUMBER"
+        private const val EXTRA_EMONEY_DETAIL_PASS_DATA = "EXTRA_EMONEY_DETAIL_PASS_DATA"
 
         fun newInstance(digitalCategoryDetailPassData: DigitalCategoryDetailPassData)
                 : EmoneyPdpFragment {
