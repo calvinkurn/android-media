@@ -15,7 +15,7 @@ object Const {
     const val DAYS_91 = 91
     const val DAYS_365 = 365
 
-    const val WHITE_LIST_KEY_BUYER_INSIGHT = "buyer-insight-apps"
+    const val WHITE_LIST_KEY_STATISTIC_PRODUCTS = "statistic-products"
 
     const val SHOW_PRODUCT_INSIGHT_COACHMARK_KEY = "show_product_insight_coachmark"
 

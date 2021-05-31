@@ -122,16 +122,16 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun getStatisticPages(isWhiteListed: Boolean): List<StatisticPageUiModel> {
         adjustHeaderConfig(isWhiteListed)
+        supportActionBar?.title = getString(R.string.stc_statistic)
         return if (isWhiteListed) {
-            supportActionBar?.title = getString(R.string.stc_statistic)
             tabStatistic.visible()
             listOf(StatisticPageHelper.getShopStatistic(this, userSession),
                     StatisticPageHelper.getProductStatistic(this, userSession),
                     StatisticPageHelper.getBuyerStatistic(this, userSession))
         } else {
-            supportActionBar?.title = getString(R.string.stc_shop_statistic)
             tabStatistic.gone()
-            listOf(StatisticPageHelper.getShopStatistic(this, userSession))
+            listOf(StatisticPageHelper.getShopStatistic(this, userSession),
+                    StatisticPageHelper.getProductStatistic(this, userSession))
         }
     }
 
