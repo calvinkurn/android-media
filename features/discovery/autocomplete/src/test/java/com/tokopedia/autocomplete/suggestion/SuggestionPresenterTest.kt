@@ -14,6 +14,7 @@ import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineData
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.verify
@@ -28,6 +29,27 @@ private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/loc
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
     @Test
+    fun `Test suggestion presenter has set parameter`() {
+        val searchParameter : Map<String, String> = mutableMapOf()
+        val warehouseId = "19926"
+
+        `When suggestion presenter set search parameter and warehouseId`(searchParameter, warehouseId)
+
+        `Then verify search parameter has warehouseId`(warehouseId)
+    }
+
+    private fun `When suggestion presenter set search parameter and warehouseId`(searchParameter: Map<String, String>, warehouseId: String) {
+        suggestionPresenter.setSearchParameter(searchParameter as HashMap<String, String>)
+        suggestionPresenter.setWarehouseId(warehouseId)
+    }
+
+    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
+        val searchParameter = suggestionPresenter.getSearchParameter()
+
+        searchParameter[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+    }
+
+    @Test
     fun `test get suggestion data`() {
         val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
         `given suggestion use case capture request params`(suggestionUniverse)
@@ -35,7 +57,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list`(suggestionUniverse)
     }
 
@@ -54,7 +76,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         verify { getSuggestionUseCase.execute(any(), any()) }
     }
 
-    private fun `then verify suggestion view will call showInitialStateResult behavior`() {
+    private fun `then verify suggestion view will call showSuggestionResult behavior`() {
         verify {
             suggestionView.showSuggestionResult(capture(slotVisitableList))
         }
@@ -173,7 +195,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list with top shop`(suggestionUniverse)
     }
 
@@ -210,7 +232,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list should have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
 
@@ -241,7 +263,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list should only have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
 

@@ -14,6 +14,8 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.shouldBe
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import io.mockk.every
 import io.mockk.verify
 import org.junit.Assert
@@ -23,6 +25,29 @@ import rx.Subscriber
 private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
+
+    @Test
+    fun `Test initial state presenter has set parameter`() {
+        val searchParameter : Map<String, String> = mutableMapOf<String,String>().also {
+            it[SearchApiConst.Q] = "samsung"
+        }
+        val warehouseId = "19926"
+
+        `When initial state presenter set search parameter and warehouseId`(searchParameter, warehouseId)
+
+        `Then verify search parameter has warehouseId`(warehouseId)
+    }
+
+    private fun `When initial state presenter set search parameter and warehouseId`(searchParameter: Map<String, String>, warehouseId: String) {
+        initialStatePresenter.setSearchParameter(searchParameter as HashMap<String, String>)
+        initialStatePresenter.setWarehouseId(warehouseId)
+    }
+
+    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
+        val searchParameter = initialStatePresenter.getSearchParameter()
+
+        searchParameter[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+    }
 
     private fun `Test Initial State Data`(list: List<InitialStateData>) {
         `Given initial state use case capture request params`(list)

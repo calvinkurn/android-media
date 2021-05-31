@@ -45,6 +45,10 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         this.searchParameter = searchParameter
     }
 
+    fun setWarehouseId(warehouseId: String) {
+        searchParameter[SearchApiConst.USER_WAREHOUSE_ID] = warehouseId
+    }
+
     fun getSearchParameter(): Map<String, String> {
         return searchParameter
     }
