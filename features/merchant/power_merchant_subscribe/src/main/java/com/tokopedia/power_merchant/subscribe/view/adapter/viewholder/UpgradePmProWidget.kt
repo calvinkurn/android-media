@@ -42,7 +42,7 @@ class UpgradePmProWidget(
 
     private fun setupUpgradeCta() = with(itemView) {
         ctaPmUpgradeLearnMore.setOnClickListener {
-            RouteManager.route(context, Constant.Url.POWER_MERCHANT_EDU)
+            RouteManager.route(context, Constant.Url.POWER_MERCHANT_PRO_EDU)
         }
     }
 

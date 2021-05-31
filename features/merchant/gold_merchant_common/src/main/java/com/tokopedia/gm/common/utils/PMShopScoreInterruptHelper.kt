@@ -27,7 +27,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.Toaster
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -242,8 +241,9 @@ class PMShopScoreInterruptHelper @Inject constructor(
                 PARAM_HAS_CLICKED to hasConsentChecked
         )
         val url = UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
-        val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-        val backPressedMessage = URLEncoder.encode(context.getString(R.string.pm_on_back_pressed_disabled_message), StandardCharsets.UTF_8.toString())
+        val chartSetUtf8 = "UTF-8"
+        val encodedUrl = URLEncoder.encode(url, chartSetUtf8)
+        val backPressedMessage = URLEncoder.encode(context.getString(R.string.pm_on_back_pressed_disabled_message), chartSetUtf8)
         val backPressedEnabled = (getPeriodType() != PeriodType.COMMUNICATION_PERIOD).toString()
         val showTitleBar = (getPeriodType() != PeriodType.COMMUNICATION_PERIOD).toString()
 

@@ -2,11 +2,18 @@ package com.tokopedia.otp.common.analytics
 
 import android.os.Build
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Action
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.BusinessUnit.USER_PLATFORM_UNIT
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Category
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.CurrentSite.TOKOPEDIA_MARKETPLACE_SITE
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_BUSINESS_UNIT
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_CURRENT_SITE
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -15,7 +22,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class TrackingOtpUtil @Inject constructor() {
+class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface) {
 
     fun trackScreen(screenName: String) {
         Timber.w("""P2screenName = $screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}""")
@@ -432,8 +439,6 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
-    /* INACTIVE PHONE */
-
     fun trackClickInactivePhoneLink() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
@@ -441,5 +446,145 @@ class TrackingOtpUtil @Inject constructor() {
                 Action.ACTION_CLICK_ON_INACTIVE_PHONE,
                 Label.LABEL_EMPTY
         ))
+    }
+
+    fun trackViewApprovalPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_LOGIN_IRIS,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_SUCCESSFULLY_SCANNING_QR_CODE,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickApprovedApprovalPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_CLICK_ON_BUTTON_APPROVED,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickRejectedApprovalPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_CLICK_ON_BUTTON_REJECTED,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickBackApprovalPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_CLICK_ON_BUTTON_BACK,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackViewApprovalApprovedPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_LOGIN_IRIS,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_APPROVED,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickTutupApprovalApprovedPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_SUCCESS_CLICK_ON_BUTTON_TUTUP,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickCloseApprovalApprovedPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_SUCCESS_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackViewApprovalExpiredPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_VIEW_LOGIN_IRIS,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_APPROVAL_EXPIRED,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickScanApprovalExpiredPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_EXPIRED_CLICK_ON_BUTTON_SCAN_KEMBALI,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackClickCloseApprovalExpiredPage() {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_LOGIN,
+                Category.CATEGORY_LOGIN_WITH_QR_CODE,
+                Action.ACTION_EXPIRED_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        map[EVENT_USER_ID] = userSession.userId
+        analytics.sendGeneralEvent(map)
     }
 }

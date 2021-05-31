@@ -15,6 +15,7 @@ import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
+import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
 import com.tokopedia.applink.DeepLinkChecker.NATIVE_THANK_YOU
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
@@ -39,6 +40,7 @@ class DeeplinkMatcher {
     private val GT = false
 
     var matcherList: List<Pair<Pattern, Int>> = mutableListOf<Pair<Pattern, Int>>().apply {
+        add(Pattern(GT, 0, mapOf(0 to "qrcode-login")) to LOGIN_BY_QR)
         add(Pattern(GT, 0, mapOf(0 to "play")) to PLAY)
         add(Pattern(GT, 0, mapOf(0 to "flight")) to FLIGHT)
         add(Pattern(EQ, 2, mapOf(0 to "promo")) to PROMO_DETAIL)

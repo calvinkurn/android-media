@@ -412,7 +412,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val widgets = listOf(
                 headerWidget,
                 WidgetDividerUiModel,
-                getPmGradeBenefitWidget()
+                getPmGradeBenefitWidget(Constant.Url.POWER_MERCHANT_PRO_EDU)
         )
         recyclerView?.visible()
         adapter.clearAllElements()
@@ -425,18 +425,19 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 WidgetDividerUiModel,
                 WidgetPotentialUiModel,
                 WidgetDividerUiModel,
-                getPmGradeBenefitWidget()
+                getPmGradeBenefitWidget(Constant.Url.POWER_MERCHANT_EDU)
         )
         recyclerView?.visible()
         adapter.clearAllElements()
         renderList(widgets, false)
     }
 
-    private fun getPmGradeBenefitWidget(): WidgetGradeBenefitUiModel {
+    private fun getPmGradeBenefitWidget(ctaApplink: String): WidgetGradeBenefitUiModel {
         val gradeBenefitList = pmGradeBenefitList.orEmpty()
         return WidgetGradeBenefitUiModel(
                 selectedPmTireType = currentPmRegistrationTireType,
-                benefitPages = gradeBenefitList.filter { it.pmTier == currentPmRegistrationTireType }
+                benefitPages = gradeBenefitList.filter { it.pmTier == currentPmRegistrationTireType },
+                ctaApplink = ctaApplink
         )
     }
 
@@ -691,7 +692,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
-        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()
+        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue() && isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
             getUpgradePmProWidget()?.let {
