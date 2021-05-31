@@ -633,7 +633,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {
+    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
     }

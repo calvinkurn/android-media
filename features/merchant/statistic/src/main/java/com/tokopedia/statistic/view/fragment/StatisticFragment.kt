@@ -28,6 +28,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
+import com.tokopedia.statistic.analytics.TrackingHelper
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -299,9 +300,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionDescriptionEvent(descriptionTitle)
     }
 
-    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {
+    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {
         val position = adapter.data.indexOf(model)
         StatisticTracker.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
+        getCategoryPage()?.let { categoryPage ->
+            StatisticTracker.sendTableSlideEvent(categoryPage, slideNumber + 1, maxSlidePosition)
+        }
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -321,7 +325,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
 
     override fun sendTableFilterClick(element: TableWidgetUiModel) {
-        // TODO: Send tracker
+        element.tableFilters.find { it.isSelected }?.let { filterOption ->
+            getCategoryPage()?.let { categoryPage ->
+                StatisticTracker.sendTableFilterClickEvent(categoryPage, filterOption.name)
+            }
+        }
+    }
+
+    override fun sendTableFilterImpression(element: TableWidgetUiModel) {
+        getCategoryPage()?.let { categoryPage ->
+            StatisticTracker.sendTableFilterImpressionEvent(categoryPage)
+        }
     }
 
     override fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {
@@ -888,6 +902,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             WidgetType.TABLE -> performanceMonitoringTableWidget?.stopTrace()
             WidgetType.PIE_CHART -> performanceMonitoringPieChartWidget?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
+        }
+    }
+
+    private fun getCategoryPage(): String? {
+        return context?.let {
+            TrackingHelper.getCategoryPage(it, statisticPage?.pageTitle.orEmpty())
         }
     }
 }

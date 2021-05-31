@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.shc_table_view.view.*
 
 class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
-    private var slideImpressionListener: ((position: Int, isEmpty: Boolean) -> Unit)? = null
+    private var slideImpressionListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? = null
     private var htmlClickListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
     private var alreadyAttachToSnapHelper = false
@@ -64,7 +64,7 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         }
     }
 
-    fun addOnSlideImpressionListener(onView: (position: Int, isEmpty: Boolean) -> Unit) {
+    fun addOnSlideImpressionListener(onView: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
          this.slideImpressionListener = onView
     }
 
