@@ -197,9 +197,16 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                     .into(icon)
         }
         btnFirst.setOnClickListener {
-
             if (context is AppCompatActivity) {
                 showTokomemberBottomSheet(followWidget, context as AppCompatActivity, shopId, mvcSource)
+            }
+            when(followWidget.type){
+                FollowWidgetType.MEMBERSHIP_OPEN->{
+                    Tracker.clickCekInfoButton(shopId, UserSession(context).userId, mvcSource)
+                }
+                FollowWidgetType.MEMBERSHIP_CLOSE->{
+                    Tracker.clickCekInfoButtonClose(shopId, UserSession(context).userId, mvcSource)
+                }
             }
         }
     }
@@ -208,7 +215,6 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         if (followWidget.membershipHowTo.isNullOrEmpty()) {
             return
         }
-        Tracker.clickCekInfoButton(shopId, UserSession(context).userId, mvcSource)
         val bottomsheet = BottomSheetUnify()
         bottomsheet.setTitle(context.getString(R.string.mvc_tentang_toko_member))
         bottomsheet.isSkipCollapseState = true

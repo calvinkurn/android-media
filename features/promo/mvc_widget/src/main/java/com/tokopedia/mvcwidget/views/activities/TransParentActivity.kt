@@ -2,7 +2,6 @@ package com.tokopedia.mvcwidget.views.activities
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -17,7 +16,6 @@ import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 
@@ -94,7 +92,7 @@ class TransParentActivity : BaseActivity() {
             childView?.findViewById<LinearLayout>(R.id.btn_layout)?.visibility = View.VISIBLE
             childView?.findViewById<UnifyButton>(R.id.btn_continue)?.setOnClickListener {
                 bottomSheet.dismiss()
-                shopName?.let { it1 -> Tracker.userClickBottomSheetCTA(it1) }
+                shopName?.let { it1 -> Tracker.userClickBottomSheetCTA(it1, userSession.userId) }
                 RouteManager.route(this,appLink)
             }
         }
@@ -110,7 +108,7 @@ class TransParentActivity : BaseActivity() {
         bottomSheet.setOnDismissListener {
             if (isOnResume) {
                 finish()
-                Tracker.closeMainBottomSheet(shopId, UserSession(this).userId, mvcSource)
+                Tracker.closeMainBottomSheet(shopId, userSession.userId, mvcSource)
             }
         }
 

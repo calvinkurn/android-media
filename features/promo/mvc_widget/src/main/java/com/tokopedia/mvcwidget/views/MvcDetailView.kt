@@ -33,6 +33,7 @@ class MvcDetailView @JvmOverloads constructor(
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
     var addBottomMarginOnToast = false
+    var userSession: UserSession? = null
 
     private val widgetImpression = WidgetImpression()
 
@@ -40,7 +41,7 @@ class MvcDetailView @JvmOverloads constructor(
         return widgetImpression
     }
 
-    private val adapter = MvcDetailAdapter(arrayListOf(), this)
+    val adapter by lazy { MvcDetailAdapter(arrayListOf(), this, UserSession(context)) }
 
     private val CONTAINER_CONTENT = 0
     private val CONTAINER_SHIMMER = 1
@@ -63,11 +64,13 @@ class MvcDetailView @JvmOverloads constructor(
 
 
     init {
+        userSession = UserSession(context)
         View.inflate(context, R.layout.mvc_detail_view, this)
         rv = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
         globalError = findViewById(R.id.mvcDetailGlobalError)
         rv.layoutManager = LinearLayoutManager(context)
+        adapter.userSession = userSession as UserSession
         rv.adapter = adapter
 
         DaggerMvcComponent.builder()
@@ -153,7 +156,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
-            Tracker.viewJadiMemberToast(shopId, UserSession(context).userId, mvcSource, true)
+            Tracker.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, true)
         }
     }
 
@@ -164,7 +167,7 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleJadiMemberButtonClick()
             }).show()
-            Tracker.viewJadiMemberToast(shopId, UserSession(context).userId, mvcSource, false)
+            Tracker.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, false)
         }
     }
 
@@ -172,7 +175,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
-            Tracker.viewFollowButtonToast(shopId, UserSession(context).userId, mvcSource, true)
+            Tracker.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, true)
         }
     }
 
@@ -183,7 +186,7 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleFollowButtonClick()
             }).show()
-            Tracker.viewFollowButtonToast(shopId, UserSession(context).userId, mvcSource, false)
+            Tracker.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, false)
         }
     }
 
@@ -243,9 +246,9 @@ class MvcDetailView @JvmOverloads constructor(
         adapter.updateList(tempList)
         if(!tempList.isNullOrEmpty()){
             if (response.data?.followWidget?.isShown == true && !response.data?.followWidget.type.isNullOrEmpty()) {
-                Tracker.viewCoupons(response.data.followWidget.type,this.shopId, UserSession(context).userId, this.mvcSource)
+                Tracker.viewCoupons(response.data.followWidget.type,this.shopId, userSession?.userId, this.mvcSource)
             }else{
-                Tracker.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, UserSession(context).userId, this.mvcSource)
+                Tracker.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, userSession?.userId, this.mvcSource)
             }
         }
     }
