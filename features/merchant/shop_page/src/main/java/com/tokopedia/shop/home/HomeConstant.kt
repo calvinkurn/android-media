@@ -28,6 +28,7 @@ object WidgetName {
     const val PRODUCT = "product"
     const val RECENT_ACTIVITY = "recent_activity"
     const val BUY_AGAIN = "buy_again"
+    const val REMINDER = "reminder"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
     const val VOUCHER_STATIC = "voucher_static"
 }
