@@ -1,0 +1,713 @@
+{
+  "category_detail": {
+    "header": {
+      "process_time": 0.288540449,
+      "messages": [],
+      "reason": "",
+      "error_code": ""
+    },
+    "data":{
+      "id": "113",
+      "name": "Daging, ikan, makanan laut & protein lainnya",
+      "url": "https://www.tokopedia.com/daging-ikan-makanan-laut-&-protein-lainnya/",
+      "applinks": "tokopedia://tokonow/daging-ikan-makanan-laut-&-protein-lainnya/",
+      "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/16/8d6c7fe1-b005-4609-b066-b91c788605c5.png",
+      "navigation":{
+        "prev":{
+          "id": "275",
+          "name": "Telur & olahan susu",
+          "url": "https://www.tokopedia.com/telur-&-olahan-susu",
+          "applinks": "tokopedia://tokonow/telur-&-olahan-susu",
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/18/203d11b9-1aad-4473-a572-6b3b5fc5f14f.png"
+        },
+        "next":{
+          "id": "275",
+          "name": "Bahan makanan kering",
+          "url": "https://www.tokopedia.com/bahan-makanan-kering",
+          "applinks": "tokopedia://tokonow/bahan-makanan-kering",
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/64-square/iEWsxH/2021/2/18/203d11b9-1aad-4473-a572-6b3b5fc5f14f.png"
+        }
+      }
+    }
+  },
+
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 0,
+      "keywordProcess": "2",
+      "totalData": 24,
+      "totalDataText": "24",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "",
+        "query": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 574261655,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": true,
+            "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            },
+            {
+              "title": "TokoCabang",
+              "position": "fulfillment",
+              "type": "textDarkGrey",
+              "url": "https://images.tokopedia.net/img/jbZAUJ/2021/2/18/6d2cc121-91b9-49bc-99c3-d57437ad64b7.png"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574261652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 576261652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574211652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262352,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 574262659,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        },
+        {
+          "id": 674262652,
+          "warehouseIdDefault": 0,
+          "name": "Samsung Galaxy A50S 6/128 Ram 6gb Rom 128 Garansi Resmi",
+          "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "imageUrl700": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/9/30/3102419/3102419_98001153-0a84-4281-b450-fa3d5ebe5505_1800_1800.jpg",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "price": "Rp 4.155.000",
+          "priceRange": "",
+          "wishlist": false,
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "labels": [
+            {
+              "title": "Tukar Tambah",
+              "color": "#42b549"
+            }
+          ],
+          "labelGroups": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "rating": 5,
+          "countReview": 259,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "shop": {
+            "id": 3102419,
+            "name": "Maxi phone cell",
+            "url": "https://www.tokopedia.com/maxiphonecell",
+            "city": "Jakarta Pusat",
+            "isOfficial": true,
+            "isPowerBadge": false
+          }
+        }
+      ]
+    }
+  },
+
+  "category_filter": {
+    "filter": [
+      {
+        "title": "Olahan susu dan telur",
+        "options": [
+          {
+            "name": "Susu",
+            "key": "sc",
+            "icon": "",
+            "value": "1333",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Telur",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/attachment/2019/5/28/3944/3944_e637b7e4-ed47-4570-bbec-0358d2ba02ee.png",
+            "value": "1232",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Telur dari susu",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/attachment/2019/12/26/77305583/77305583_0fef3b63-055a-4513-badd-d91cf636f72d.png",
+            "value": "1432",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      }
+    ]
+  },
+
+  "quick_filter": {
+    "filter": [
+      {
+        "title": "Semua Susu",
+        "options": [
+          {
+            "name": "Susu segar",
+            "key": "sc",
+            "icon": "",
+            "value": "1324",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Susu biasa",
+            "key": "sc",
+            "icon": "",
+            "value": "1234",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Susu kental manis",
+            "key": "sc",
+            "icon": "",
+            "value": "1112",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Gratis Ongkir",
+        "options": [
+          {
+            "name": "Gratis Ongkir",
+            "key": "free_shipping",
+            "icon": "",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Official Store",
+        "options": [
+          {
+            "name": "Official Store",
+            "key": "official",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Tukar Tambah",
+        "options": [
+          {
+            "name": "Tukar Tambah",
+            "key": "trade_in",
+            "icon": "",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Kurir Instan",
+        "options": [
+          {
+            "name": "Kurir Instan",
+            "key": "shipping",
+            "icon": "",
+            "value": "10,13",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Power Merchant",
+        "options": [
+          {
+            "name": "Power Merchant",
+            "key": "goldmerchant",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -17,6 +17,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       open_prerequisite_site
       eligible_new_shipping_experience
       pop_up_message
+      #error_ticker
       group_address {
         errors
         user_address {
@@ -68,6 +69,19 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             preorder {
               is_preorder
               duration
+            }
+          }
+          is_disable_change_courier
+          auto_courier_selection
+          courier_selection_error {
+            title
+            description
+          }
+          bo_metadata {
+            bo_type
+            bo_eligibilities {
+              key
+              value
             }
           }
           save_state_flag

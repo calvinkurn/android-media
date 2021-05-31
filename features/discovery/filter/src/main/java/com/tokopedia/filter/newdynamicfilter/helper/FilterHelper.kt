@@ -8,8 +8,6 @@ import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Option.Companion.METRIC_INTERNATIONAL
 
-import java.util.ArrayList
-
 object FilterHelper {
 
     @JvmStatic
@@ -165,6 +163,39 @@ object FilterHelper {
                     option.value = ""
                 }
             }
+        }
+    }
+
+    fun createParamsWithoutExcludes(mapParameter: Map<String, String>): Map<String, String> {
+        val returnValue = mutableMapOf<String, String>()
+        val paramWithExcludeKey = mutableMapOf<String, String>()
+
+        mapParameter.forEach { (key, value) ->
+            if (key.startsWith(OptionHelper.EXCLUDE_PREFIX))
+                paramWithExcludeKey[key] = value
+            else
+                returnValue[key] = value
+        }
+
+        paramWithExcludeKey.forEach { (key, value) ->
+            val actualKey = key.removePrefix(OptionHelper.EXCLUDE_PREFIX)
+            if (!returnValue.containsKey(actualKey))
+                returnValue[actualKey] = value
+        }
+
+        return returnValue
+    }
+
+    fun copyFilterWithOptionAsExclude(filters: List<Filter>): List<Filter> {
+        return filters.map { filter ->
+            Filter(
+                    title = filter.title,
+                    templateName = filter.templateName,
+                    search = filter.search,
+                    options = filter.options.map { option ->
+                        OptionHelper.copyOptionAsExclude(option)
+                    },
+            )
         }
     }
 }

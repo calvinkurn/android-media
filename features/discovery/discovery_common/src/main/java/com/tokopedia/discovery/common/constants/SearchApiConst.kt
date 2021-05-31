@@ -71,6 +71,7 @@ class SearchApiConst {
         const val USER_WAREHOUSE_ID = "user_warehouseId"
         const val IDENTIFIER = "identifier"
         const val BASE_SRP_APPLINK = "baseSRPApplink"
+        const val USE_PAGE = "use_page"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"

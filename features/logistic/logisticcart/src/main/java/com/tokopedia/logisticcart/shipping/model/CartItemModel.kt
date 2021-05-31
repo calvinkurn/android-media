@@ -28,6 +28,7 @@ data class CartItemModel(
         var fInsurance: Boolean = false,
         var fCancelPartial: Boolean = false,
         var isError: Boolean = false,
+        var isShopError: Boolean = false,
         var errorMessage: String = "",
         var errorMessageDescription: String = "",
         var isProtectionAvailable: Boolean = false,

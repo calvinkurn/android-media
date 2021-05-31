@@ -27,7 +27,7 @@ class DisabledShopViewHolder(private val binding: ItemCartDisabledShopBinding, v
 
     private fun renderShopName(data: DisabledShopHolderData) {
         binding.textShopName.text = data.shopName
-        binding.textShopName.setOnClickListener { actionListener?.onCartShopNameClicked(data.shopId, data.shopName) }
+        binding.textShopName.setOnClickListener { actionListener?.onCartShopNameClicked(data.shopId, data.shopName, data.isTokoNow) }
     }
 
     private fun renderShopBadge(data: DisabledShopHolderData) {

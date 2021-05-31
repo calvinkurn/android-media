@@ -42,6 +42,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -1569,18 +1570,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
+    override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
-            routeToShopPage(shopId)
+            if (isTokoNow) {
+                routeToApplink(ApplinkConstInternalTokoMart.HOME)
+            } else {
+                routeToShopPage(shopId)
+            }
         }
     }
 
     override fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean) {
         dPresenter.setHasPerformChecklistChange(true)
         cartAdapter.setShopSelected(itemPosition, checked)
-        onNeedToUpdateViewItem(itemPosition)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+        onNeedToUpdateViewItem(itemPosition)
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
 

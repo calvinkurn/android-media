@@ -58,6 +58,7 @@ include "features:logistic:editshipping"
 include "features:logistic:activation"
 include "features:logistic:manageaddress"
 include "features:logistic:localizationchooseaddress"
+include "features:logistic:localizationchooseaddress_common"
 
 include "features:media:mediauploader"
 include "features:media:media-common"

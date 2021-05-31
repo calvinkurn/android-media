@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemShopBinding
+import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
@@ -20,6 +21,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.text.NumberFormat
 import java.util.*
 
 class CartShopViewHolder(private val binding: ItemShopBinding,
@@ -40,6 +42,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderIncidentLabel(cartShopHolderData)
         renderFreeShipping(cartShopHolderData)
         renderEstimatedTimeArrival(cartShopHolderData)
+        renderMaximumWeight(cartShopHolderData)
     }
 
     private fun renderWarningAndError(cartShopHolderData: CartShopHolderData) {
@@ -53,10 +56,11 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun renderShopName(cartShopHolderData: CartShopHolderData) {
         val shopName = cartShopHolderData.shopGroupAvailableData?.shopName
         binding.tvShopName.text = shopName
-        binding.tvShopName.setOnClickListener { v: View? ->
+        binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
                     cartShopHolderData.shopGroupAvailableData?.shopId,
-                    cartShopHolderData.shopGroupAvailableData?.shopName)
+                    cartShopHolderData.shopGroupAvailableData?.shopName,
+                    cartShopHolderData.shopGroupAvailableData?.isTokoNow ?: false)
         }
     }
 
@@ -170,7 +174,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             } else {
                 cbSelectShop.isEnabled = true
                 flShopItemContainer.foreground = ContextCompat.getDrawable(flShopItemContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
-                llShopContainer.setBackgroundColor(llShopContainer.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                llShopContainer.setBackgroundColor(ContextCompat.getColor(llShopContainer.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 llWarningAndError.layoutError.gone()
             }
         }
@@ -178,29 +182,48 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderWarningItemHeader(data: CartShopHolderData) {
         with(binding.llWarningAndError) {
-            if (data.shopGroupAvailableData?.isWarning == true) {
-                val warningDescription = data.shopGroupAvailableData?.warningDescription
-                if (warningDescription?.isNotBlank() == true) {
-                    tickerWarning.tickerTitle = data.shopGroupAvailableData?.warningTitle
-                    tickerWarning.setTextDescription(warningDescription)
-                } else {
+            when {
+                data.shopGroupAvailableData?.isWarning == true -> {
+                    val warningDescription = data.shopGroupAvailableData?.warningDescription
+                    if (warningDescription?.isNotBlank() == true) {
+                        tickerWarning.tickerTitle = data.shopGroupAvailableData?.warningTitle
+                        tickerWarning.setTextDescription(warningDescription)
+                    } else {
+                        tickerWarning.tickerTitle = null
+                        tickerWarning.setTextDescription(data.shopGroupAvailableData?.warningTitle
+                                ?: "")
+                    }
+                    tickerWarning.tickerType = TYPE_WARNING
+                    tickerWarning.tickerShape = SHAPE_LOOSE
+                    tickerWarning.closeButtonVisibility = View.GONE
+                    tickerWarning.show()
+                    tickerWarning.post {
+                        binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.llWarningAndError.tickerWarning.requestLayout()
+                    }
+                    layoutWarning.show()
+                }
+                data.shopGroupAvailableData?.shopTicker?.isNotEmpty() == true -> {
                     tickerWarning.tickerTitle = null
-                    tickerWarning.setTextDescription(data.shopGroupAvailableData?.warningTitle
-                            ?: "")
+                    tickerWarning.setTextDescription(data.shopGroupAvailableData?.shopTicker ?: "")
+                    tickerWarning.tickerType = TYPE_WARNING
+                    tickerWarning.tickerShape = SHAPE_LOOSE
+                    tickerWarning.closeButtonVisibility = View.GONE
+                    tickerWarning.show()
+                    tickerWarning.post {
+                        binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.llWarningAndError.tickerWarning.requestLayout()
+                    }
+                    layoutError.gone()
+                    layoutWarning.show()
+                    root.show()
                 }
-                tickerWarning.tickerType = TYPE_WARNING
-                tickerWarning.tickerShape = SHAPE_LOOSE
-                tickerWarning.closeButtonVisibility = View.GONE
-                tickerWarning.show()
-                tickerWarning.post {
-                    binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-                    binding.llWarningAndError.tickerWarning.requestLayout()
+                else -> {
+                    tickerWarning.gone()
+                    layoutWarning.gone()
                 }
-                layoutWarning.show()
-            } else {
-                tickerWarning.gone()
-                layoutWarning.gone()
             }
         }
     }
@@ -272,6 +295,41 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()
+            }
+        }
+    }
+
+    private fun renderMaximumWeight(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.shopGroupAvailableData?.shouldValidateWeight == true) {
+            val currentWeight = cartShopHolderData.shopGroupAvailableData?.totalWeight ?: return
+            val maximumWeight = cartShopHolderData.shopGroupAvailableData?.maximumShippingWeight
+                    ?: return
+            val extraWeight = (currentWeight - maximumWeight)
+            val descriptionText = cartShopHolderData.shopGroupAvailableData?.maximumWeightWording
+                    ?: ""
+            if (extraWeight > 0 && descriptionText.isNotEmpty()) {
+                with(binding.llWarningAndError) {
+                    tickerWarning.tickerTitle = null
+                    tickerWarning.setTextDescription(descriptionText.replace(ShopGroupAvailableData.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, NumberFormat.getNumberInstance(Locale("in", "id")).format(extraWeight)))
+                    tickerWarning.tickerType = TYPE_WARNING
+                    tickerWarning.tickerShape = SHAPE_LOOSE
+                    tickerWarning.closeButtonVisibility = View.GONE
+                    tickerWarning.show()
+                    tickerWarning.post {
+                        binding.llWarningAndError.tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+                        binding.llWarningAndError.tickerWarning.requestLayout()
+                    }
+                    layoutError.gone()
+                    layoutWarning.show()
+                    root.show()
+                }
+            } else {
+                with(binding.llWarningAndError) {
+                    tickerWarning.gone()
+                    layoutWarning.gone()
+                    root.gone()
+                }
             }
         }
     }

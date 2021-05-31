@@ -51,5 +51,7 @@ data class ShipmentAddressFormDataResponse(
         @SerializedName("eligible_new_shipping_experience")
         val isEligibleNewShippingExperience: Boolean = false,
         @SerializedName("pop_up_message")
-        val popUpMessage: String = ""
+        val popUpMessage: String = "",
+        @SerializedName("error_ticker")
+        val errorTicker: String = ""
 )

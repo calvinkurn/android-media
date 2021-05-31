@@ -42,6 +42,7 @@ class TokoMartHomeAdapterTypeFactory(
     override fun type(uiModel: HomeCategoryGridUiModel): Int = HomeCategoryGridViewHolder.LAYOUT
     override fun type(uiModel: HomeCategoryItemUiModel): Int = HomeCategoryItemViewHolder.LAYOUT
     override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -65,6 +66,7 @@ class TokoMartHomeAdapterTypeFactory(
             HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, listener)
+            HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view)
             // endregion
 
             // region Global Home Component

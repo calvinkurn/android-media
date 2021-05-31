@@ -122,6 +122,10 @@ fun getQueryCartRevamp(): String {
                     }
                   }
                   shop {
+                    shop_ticker
+                    maximum_weight_wording
+                    maximum_shipping_weight
+                    is_tokonow
                     shop_alert_message
                     shop_id
                     admin_ids

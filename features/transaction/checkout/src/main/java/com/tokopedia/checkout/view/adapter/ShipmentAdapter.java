@@ -18,6 +18,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
@@ -27,6 +28,9 @@ import com.tokopedia.checkout.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
+import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -45,7 +49,6 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder;
 import com.tokopedia.purchase_platform.common.utils.Utils;
-import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
 import java.util.ArrayList;
@@ -64,6 +67,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public static final int DEFAULT_ERROR_POSITION = -1;
     public static final int HEADER_POSITION = 0;
+    public static final int SECOND_HEADER_POSITION = 1;
     private static final long LAST_THREE_DIGIT_MODULUS = 1000;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -132,6 +136,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return TickerAnnouncementViewHolder.Companion.getLAYOUT();
         } else if (item instanceof ShippingCompletionTickerModel) {
             return ShippingCompletionTickerViewHolder.Companion.getITEM_VIEW_TICKER_SHIPPING_COMPLETION();
+        } else if (item instanceof ShipmentTickerErrorModel) {
+            return ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR();
         }
 
         return super.getItemViewType(position);
@@ -163,9 +169,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener, compositeSubscription);
         } else if (viewType == TickerAnnouncementViewHolder.Companion.getLAYOUT()) {
-            return new TickerAnnouncementViewHolder(view, null);
+            return new ShipmentTickerAnnouncementViewHolder(view, null);
         } else if (viewType == ShippingCompletionTickerViewHolder.Companion.getITEM_VIEW_TICKER_SHIPPING_COMPLETION()) {
             return new ShippingCompletionTickerViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR()) {
+            return new ShipmentTickerErrorViewHolder(view);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -197,6 +205,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((TickerAnnouncementViewHolder) holder).bind((TickerAnnouncementHolderData) data);
         } else if (viewType == ShippingCompletionTickerViewHolder.Companion.getITEM_VIEW_TICKER_SHIPPING_COMPLETION()) {
             ((ShippingCompletionTickerViewHolder) holder).bindViewHolder((ShippingCompletionTickerModel) data);
+        } else if (viewType == ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR()) {
+            ((ShipmentTickerErrorViewHolder) holder).bind((ShipmentTickerErrorModel) data);
         }
     }
 
@@ -238,9 +248,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
-    public void addTickerAnnouncementdata(TickerAnnouncementHolderData tickerAnnouncementHolderData) {
+    public void addTickerErrorData(ShipmentTickerErrorModel shipmentTickerErrorModel) {
+        shipmentDataList.add(HEADER_POSITION, shipmentTickerErrorModel);
+    }
+
+    public void addTickerAnnouncementData(TickerAnnouncementHolderData tickerAnnouncementHolderData) {
         if (tickerAnnouncementHolderData != null) {
-            shipmentDataList.add(HEADER_POSITION, tickerAnnouncementHolderData);
+            shipmentDataList.add(SECOND_HEADER_POSITION, tickerAnnouncementHolderData);
             this.tickerAnnouncementHolderData = tickerAnnouncementHolderData;
         }
     }
@@ -307,7 +321,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             }
-            if (cartItemCounter == shipmentCartItemModelList.size()) {
+            if (cartItemCounter > 0 && cartItemCounter == shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
                 String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) priceTotal, false));
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted);
@@ -964,7 +978,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public boolean hasSetAllCourier() {
         for (Object itemData : shipmentDataList) {
             if (itemData instanceof ShipmentCartItemModel) {
-                if (((ShipmentCartItemModel) itemData).getSelectedShipmentDetailData() == null) {
+                if (((ShipmentCartItemModel) itemData).getSelectedShipmentDetailData() == null && !((ShipmentCartItemModel) itemData).isError()) {
                     return false;
                 }
             }

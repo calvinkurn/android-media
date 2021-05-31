@@ -4,4 +4,5 @@
     <dimen name="tokomart_category_divider_height">1dp</dimen>
     <dimen name="default_toolbar_status_height">96dp</dimen>
     <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>
+    <dimen name="banner_component_margin_default">16dp</dimen>
 </resources>

@@ -9,17 +9,19 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
-import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
+import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
+import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokomart.home.domain.model.Ticker
 import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.domain.usecase.GetKeywordSearchUseCase
+import com.tokopedia.tokomart.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -31,7 +33,8 @@ class TokoMartHomeViewModel @Inject constructor(
     private val getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
-    dispatchers: CoroutineDispatchers
+    private val getTickerUseCase: GetTickerUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -42,7 +45,8 @@ class TokoMartHomeViewModel @Inject constructor(
          * need to call query to fetch data for it.
          */
         private val STATIC_LAYOUT_ID = listOf(
-            HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID
+            HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
+            HomeStaticLayoutId.TICKER_WIDGET_ID
         )
 
         // Temp hardcoded wh_id
@@ -57,14 +61,37 @@ class TokoMartHomeViewModel @Inject constructor(
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _searchHint = MutableLiveData<SearchPlaceholder>()
-    private val _notificationCounter = MutableLiveData<TopNavNotificationModel>()
 
     private var layoutList = listOf<Visitable<*>>()
 
     fun getHomeLayout() {
         launchCatchError(block = {
-            val response = getHomeLayoutListUseCase.execute()
-            layoutList = HomeLayoutMapper.mapHomeLayoutList(response)
+            val getTickerAsync = asyncCatchError(
+                    context = dispatchers.io,
+                    block = {
+                        getTicker()
+                    },
+                    onError = {
+                        _homeLayoutList.postValue(Fail(it))
+                        null
+                    })
+
+            val getResponseAsync = asyncCatchError(
+                    context = dispatchers.io,
+                    block = {
+                        getHomeLayoutListUseCase.execute()
+                    },
+                    onError = {
+                        _homeLayoutList.postValue(Fail(it))
+                        null
+                    })
+
+            getResponseAsync.await()?.let { homeLayoutResponse ->
+                layoutList = mapHomeLayoutList(
+                        homeLayoutResponse,
+                        mapTickerData(getTickerAsync.await().orEmpty())
+                )
+            }
             val data = HomeLayoutListUiModel(layoutList, isInitialLoad = true)
             _homeLayoutList.postValue(Success(data))
         }) {
@@ -98,6 +125,12 @@ class TokoMartHomeViewModel @Inject constructor(
             val data = getKeywordSearchUseCase.executeOnBackground()
             _searchHint.postValue(data.searchData)
         }) {}
+    }
+
+    private suspend fun getTicker(): List<Ticker> {
+        return getTickerUseCase.execute()
+                .ticker
+                .tickerList
     }
 
     private suspend fun getHomeComponentData(item: Visitable<*>): List<Visitable<*>> {
