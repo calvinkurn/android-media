@@ -91,7 +91,7 @@ class CategoryViewModel @Inject constructor (
         )
 
         val contentDataView = ContentDataView(
-                productList = categoryModel.searchProduct.data.productList,
+                aceSearchProductData = categoryModel.searchProduct.data,
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView)
@@ -126,7 +126,8 @@ class CategoryViewModel @Inject constructor (
     }
 
     private fun onGetCategoryLoadMorePageSuccess(categoryModel: CategoryModel) {
-        val contentDataView = ContentDataView(productList = categoryModel.searchProduct.data.productList)
+        val aceSearchProductData = categoryModel.searchProduct.data
+        val contentDataView = ContentDataView(aceSearchProductData = aceSearchProductData)
         onGetLoadMorePageSuccess(contentDataView)
     }
 

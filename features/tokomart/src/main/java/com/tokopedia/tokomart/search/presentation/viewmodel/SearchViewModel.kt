@@ -68,7 +68,7 @@ class SearchViewModel @Inject constructor (
         )
 
         val contentDataView = ContentDataView(
-                productList = searchModel.searchProduct.data.productList,
+                aceSearchProductData = searchModel.searchProduct.data,
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView)
@@ -88,7 +88,7 @@ class SearchViewModel @Inject constructor (
     }
 
     private fun onGetSearchLoadMorePageSuccess(searchModel: SearchModel) {
-        val contentDataView = ContentDataView(productList = searchModel.searchProduct.data.productList)
+        val contentDataView = ContentDataView(aceSearchProductData = searchModel.searchProduct.data)
         onGetLoadMorePageSuccess(contentDataView)
     }
 

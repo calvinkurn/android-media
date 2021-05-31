@@ -2,12 +2,14 @@ package com.tokopedia.tokomart.search.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.search.di.SearchComponent
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import javax.inject.Inject
 
 class SearchFragment: BaseSearchCategoryFragment() {
@@ -38,16 +40,17 @@ class SearchFragment: BaseSearchCategoryFragment() {
         }
     }
 
-    override fun configureNavToolbar() {
-        super.configureNavToolbar()
-        navToolbar?.setupSearchbar(
-                listOf(HintData(searchViewModel.query, searchViewModel.query))
-        )
-    }
-
     override fun createNavToolbarIconBuilder() = IconBuilder()
             .addCart()
             .addGlobalNav()
+
+    override fun getNavToolbarHint() =
+            listOf(HintData(searchViewModel.query, searchViewModel.query))
+
+    override fun getBaseAutoCompleteApplink() =
+            super.getBaseAutoCompleteApplink() + "?" +
+                    "${SearchApiConst.Q}=${searchViewModel.query}" + "&" +
+                    "${SearchApiConst.NAVSOURCE}=$TOKONOW"
 
     override fun getScreenName() = ""
 

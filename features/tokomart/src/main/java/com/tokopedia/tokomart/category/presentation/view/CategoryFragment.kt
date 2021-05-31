@@ -2,11 +2,13 @@ package com.tokopedia.tokomart.category.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokomart.category.presentation.viewmodel.CategoryViewModel
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
 class CategoryFragment: BaseSearchCategoryFragment() {
@@ -41,6 +43,10 @@ class CategoryFragment: BaseSearchCategoryFragment() {
             .addShare()
             .addCart()
             .addGlobalNav()
+
+    override fun getBaseAutoCompleteApplink() =
+            super.getBaseAutoCompleteApplink() + "?" +
+                    "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
 
     override fun getScreenName() = ""
 

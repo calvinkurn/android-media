@@ -11,7 +11,9 @@ import com.tokopedia.tokomart.searchcategory.assertTitleDataView
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
+import org.junit.Assert.assertThat
 import org.junit.Test
+import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
@@ -28,9 +30,13 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert first page visitables`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
+        `Then assert auto complete applink from API`(searchModel)
     }
 
-    private fun `Then assert first page visitables`(visitableList: List<Visitable<*>>, searchModel: SearchModel) {
+    private fun `Then assert first page visitables`(
+            visitableList: List<Visitable<*>>,
+            searchModel: SearchModel
+    ) {
         `Then assert visitable list header`(visitableList, searchModel)
         `Then assert visitable list contents`(visitableList, searchModel)
     }
@@ -57,6 +63,12 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
     }
 
+    private fun `Then assert auto complete applink from API`(searchModel: SearchModel) {
+        val expectedApplink = searchModel.searchProduct.data.autocompleteApplink
+
+        assertThat(searchViewModel.autoCompleteApplink, shouldBe(expectedApplink))
+    }
+
     @Test
     fun `test first page has next page`() {
         val searchModel = "search/first-page-16-products.json".jsonToObject<SearchModel>()
@@ -70,5 +82,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert first page visitables`(visitableList, searchModel)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
+        `Then assert auto complete applink from API`(searchModel)
     }
 }
