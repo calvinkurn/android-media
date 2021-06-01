@@ -387,7 +387,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         new Handler().postDelayed(() -> {
             Subscription preRenderBitmap = Observable.just(inputUri)
                     .flatMap((Func1<Uri, Observable<Uri>>) uri -> Observable.just(outputUri))
-                    .flatMap((Func1<Uri, Observable<WatermarkKt>>) uri -> Observable.just(WatermarkBuilderKt
+                    .flatMap((Func1<Uri, Observable<Watermark>>) uri -> Observable.just(WatermarkBuilder
                             .create(requireContext(), gestureCropImageView)
                             .loadWatermarkText("Tokopedia")
                             .getWatermark()))
