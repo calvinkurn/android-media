@@ -27,7 +27,7 @@
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
-        android:text="Batalakan Transaksi" />
+        android:text="@string/payment_label_cancel_transaction" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/itemDivider"
