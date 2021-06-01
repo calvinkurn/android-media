@@ -18,7 +18,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : HashMap<String, ComparisionModel>,
-                                 val comparisionCatalog : HashMap<String, ComparisionModel>, private val catalogDetailListener: CatalogDetailListener)
+                                 private val comparisionCatalog : HashMap<String, ComparisionModel>, private val catalogDetailListener: CatalogDetailListener)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object ViewType {
@@ -49,7 +49,7 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
         }
     }
 
-    inner class ComparisionDetailViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    class ComparisionDetailViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(baseCatalog: ComparisionModel?,comparisionCatalog: ComparisionModel?, catalogDetailListener: CatalogDetailListener) {
             baseCatalog?.run {
                 itemView.findViewById<Typography>(R.id.first_catalog_product_brand).displayTextOrHide(brand ?: "")
@@ -78,7 +78,7 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
         }
     }
 
-    inner class ComparisionFeatureViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    class ComparisionFeatureViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         fun bind(position : Int , baseCatalog: ComparisionModel?, comparisionCatalog: ComparisionModel?, catalogDetailListener: CatalogDetailListener) {
             setKeyOrHyphen(itemView.context,itemView.findViewById<Typography>(R.id.first_key),baseCatalog)
             setValueOrHyphen(itemView.context,itemView.findViewById<Typography>(R.id.first_value),baseCatalog)
@@ -94,26 +94,26 @@ class CatalogComparisionAdapter (val list : List<String>, val baseCatalog : Hash
                 itemView.findViewById<Typography>(R.id.catalog_feature_bg_image).hide()
             }
         }
-    }
 
-    private fun isColoredTile(position: Int) : Boolean{
-        if(position % 2 == 0){ return false }
-        return true
-    }
-
-    private fun setKeyOrHyphen(context : Context, typography: Typography, model : ComparisionModel?){
-        if(model != null && !model.key.isNullOrEmpty()){
-            typography.text = model.key
-        }else {
-            typography.text = context.getString(R.string.catalog_feature_not_available)
+        private fun isColoredTile(position: Int) : Boolean{
+            if(position % 2 == 0){ return false }
+            return true
         }
-    }
 
-    private fun setValueOrHyphen(context : Context, typography: Typography , model : ComparisionModel?){
-        if(model != null && !model.value.isNullOrEmpty()){
-            typography.text = model.value
-        }else {
-            typography.text = context.getString(R.string.catalog_feature_not_available)
+        private fun setKeyOrHyphen(context : Context, typography: Typography, model : ComparisionModel?){
+            if(model != null && !model.key.isNullOrEmpty()){
+                typography.text = model.key
+            }else {
+                typography.text = context.getString(R.string.catalog_feature_not_available)
+            }
+        }
+
+        private fun setValueOrHyphen(context : Context, typography: Typography , model : ComparisionModel?){
+            if(model != null && !model.value.isNullOrEmpty()){
+                typography.text = model.value
+            }else {
+                typography.text = context.getString(R.string.catalog_feature_not_available)
+            }
         }
     }
 }
