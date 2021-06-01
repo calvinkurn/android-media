@@ -81,5 +81,7 @@
     <string name="pms_title_bottomsheet_dest_bank">Pilih Bank Tujuan</string>
     <string name="pms_payment_cancel">Batalkan</string>
     <string name="pms_payment_detail">Detail</string>
+    <string name="pms_payment_item_heading">Transaksi %1$d - %2$s</string>
+
 
 </resources>

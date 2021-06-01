@@ -108,7 +108,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         } else showToast(data.message, Toaster.TYPE_ERROR)
     }
 
-    // showDialog cancel detail dialog
+    // show cancel detail dialog
     private fun showCancelDetailMessage(data: CancelDetailWrapper) {
         val description = if (data.cancelDetailData.combineMessage.isNullOrBlank()) {
             data.cancelDetailData.refundMessage ?: ""

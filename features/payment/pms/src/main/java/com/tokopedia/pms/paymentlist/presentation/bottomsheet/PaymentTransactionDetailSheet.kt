@@ -9,7 +9,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pms.R
-import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.VaTransactionItem
 import com.tokopedia.pms.paymentlist.presentation.adapter.PaymentTransactionDetailAdapter
 import com.tokopedia.pms.paymentlist.presentation.listeners.PaymentListActionListener
@@ -59,12 +58,13 @@ class PaymentTransactionDetailSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        baseRecyclerView.adapter = PaymentTransactionDetailAdapter(vaTransactionList) { action, trxName, model ->
-            when(action) {
-                OPEN_DETAIL -> showInvoiceDetail(model)
-                CANCEL_TRANSACTION -> cancelTransaction(model, trxName)
+        baseRecyclerView.adapter =
+            PaymentTransactionDetailAdapter(vaTransactionList) { action, trxName, model ->
+                when (action) {
+                    OPEN_DETAIL -> showInvoiceDetail(model)
+                    CANCEL_TRANSACTION -> cancelTransaction(model, trxName)
+                }
             }
-        }
         baseRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
@@ -74,7 +74,11 @@ class PaymentTransactionDetailSheet : BottomSheetUnify() {
     }
 
     private fun cancelTransaction(model: VaTransactionItem, transactionName: String?) {
-        (activity as PaymentListActionListener).cancelSingleTransaction(model.transactionId, model.merchantCode, transactionName)
+        (activity as PaymentListActionListener).cancelSingleTransaction(
+            model.transactionId,
+            model.merchantCode,
+            transactionName
+        )
         dismiss()
     }
 
