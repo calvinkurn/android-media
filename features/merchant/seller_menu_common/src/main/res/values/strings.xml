@@ -39,6 +39,8 @@
     <string name="dot_string">&#160;\u2022&#160;</string>
     <string name="official_store">Official Store</string>
     <string name="power_merchant_status">Power Merchant:&#160;</string>
+    <string name="power_merchant_upgrade">Power Merchant</string>
+    <string name="power_merchant_pro_status">Power Merchant PRO:&#160;</string>
 
     <string name="setting_toaster_error_message">Oops, informasi gagal ditampilkan</string>
     <string name="setting_toaster_error_retry">Muat Ulang</string>
@@ -63,4 +65,10 @@
 
     <string name="seller_menu_ticker_title_shop_score">Mulai %s, ada skema Performa Toko baru!</string>
     <string name="seller_menu_ticker_desc_shop_score">Ada 3 perubahan besar yang penting untuk tokomu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="transaction_since_joining">Transaksi sejak bergabung</string>
+    <string name="transaction_on_date">Transaksi sejak 14 Juni 2021</string>
+    <string name="transaction_passed">Kamu telah melewati <![CDATA[<b>100</b>]]> transaksi</string>
+
+    <string name="total_transaction">%s/100</string>
+
 </resources>

@@ -17,12 +17,25 @@
         tools:text="• AnterAja" />
 
     <com.tokopedia.unifycomponents.Label
+        android:id="@+id/pdp_service_detail_dynamic_pricing"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:labelType="general_light_green"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/pdp_service_detail_name"
+        app:layout_constraintTop_toTopOf="@+id/pdp_service_detail_name"
+        app:layout_constraintBottom_toBottomOf="@+id/pdp_service_detail_name"
+        tools:text="Ongkir spesial PM Pro"/>
+
+    <com.tokopedia.unifycomponents.Label
         android:id="@+id/pdp_service_detail_cod"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:labelType="general_light_grey"
-        app:layout_constraintStart_toEndOf="@+id/pdp_service_detail_name"
+        app:layout_constraintStart_toEndOf="@+id/pdp_service_detail_dynamic_pricing"
         app:layout_constraintTop_toTopOf="@+id/pdp_service_detail_name"
         app:layout_constraintBottom_toBottomOf="@+id/pdp_service_detail_name"
         app:labelTitle="@string/pdp_shipping_available_cod_label"/>

@@ -29,7 +29,8 @@ data class SomListOrderUiModel(
         val tickerInfo: TickerInfo = TickerInfo(),
         val buttons: List<Button> = emptyList(),
         var isChecked: Boolean = false,
-        var searchParam: String
+        var searchParam: String,
+        var isOpen: Boolean = false
 ) : Visitable<SomListAdapterTypeFactory> {
     override fun type(typeFactory: SomListAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()

@@ -29,7 +29,7 @@ data class HomeDataModel(
         evaluateChooseAddressData()
     }
 
-    fun addWidgetModel(visitable: Visitable<*>, position: Int? = null, onListUpdated: () -> Unit) {
+    fun addWidgetModel(visitable: Visitable<*>, position: Int? = null, onListUpdated: () -> Unit = {}) {
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
         //prevent duplicate home recommendation feed data model
         if (_list.find { it is HomeRecommendationFeedDataModel } != null &&
@@ -173,11 +173,14 @@ data class HomeDataModel(
     }
 
     fun copyStaticWidgetDataFrom(homeDataModel: HomeDataModel) {
-        copyWidget(homeDataModel) { it is PlayCardDataModel }
-        copyWidget(homeDataModel) { it is NewBusinessUnitWidgetDataModel }
-        copyWidget(homeDataModel) { it is HomeLoadingMoreModel }
-        copyWidget(homeDataModel) { it is HomeHeaderOvoDataModel }
+        copyWidget(homeDataModel = homeDataModel, validation = { it is PlayCardDataModel })
+        copyWidget(homeDataModel = homeDataModel, validation = { it is NewBusinessUnitWidgetDataModel })
+        copyWidget(homeDataModel = homeDataModel, validation = { it is HomeRecommendationFeedDataModel })
+        copyWidget(homeDataModel = homeDataModel, validation = { it is HomeLoadingMoreModel })
+        copyWidget(homeDataModel = homeDataModel, validation = { it is HomeHeaderOvoDataModel })
+
         setAndEvaluateHomeChooseAddressData(homeDataModel.homeChooseAddressData)
+        this.list = _list.toList()
     }
 
     fun evaluateRecommendationSection(onNeedTabLoad: () -> Unit) {
@@ -190,23 +193,28 @@ data class HomeDataModel(
             val isAddressChanged =
                     (detectHomeRecom as? HomeRecommendationFeedDataModel)?.homeChooseAddressData != homeChooseAddressData
             if (isAddressChanged) {
-                _list.remove(detectHomeRecom)
                 initRecom(onNeedTabLoad)
-            } else {
-                _list.add(detectHomeRecom)
             }
         } else {
             initRecom(onNeedTabLoad)
         }
     }
 
-    private fun copyWidget(homeDataModel: HomeDataModel, validation: (Visitable<*>) -> Boolean) {
+    private fun copyWidget(
+        homeDataModel: HomeDataModel,
+        validation: (Visitable<*>) -> Boolean,
+        modification: (Visitable<*>?) -> Visitable<*>? = { null }
+    ) {
         val listToCopy = homeDataModel.list
         val widget = listToCopy.find { visitable -> validation.invoke(visitable) }
-        if(widget != null) {
+        val processedWidget =
+            if (modification.invoke(widget) == null) widget else modification.invoke(widget)
+        if(processedWidget != null) {
             val widgetIndex = _list.indexOfFirst { visitable -> validation.invoke(visitable) }
             if(widgetIndex != -1){
-                _list[widgetIndex] = widget
+                _list[widgetIndex] = processedWidget
+            } else {
+                addWidgetModel(processedWidget)
             }
         }
     }

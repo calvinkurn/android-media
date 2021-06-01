@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
+import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
 
 const val ADD_FILTERS_COUNT = true
 
@@ -15,7 +16,7 @@ open class QuickFilterGQLRepository : BaseRepository(), IQuickFilterGqlRepositor
                                                         userId: String?): DiscoveryResponse {
         return (getGQLData(GQL_COMPONENT,
                 DataResponse::class.java, Utils.getQueryMap(componentId, pageEndPoint,
-                selectedFilterMapParameter, userId, ADD_FILTERS_COUNT), "componentInfo")
+                selectedFilterMapParameter, userId, ADD_FILTERS_COUNT), GQL_COMPONENT_QUERY_NAME)
                 as DataResponse).data
     }
 }

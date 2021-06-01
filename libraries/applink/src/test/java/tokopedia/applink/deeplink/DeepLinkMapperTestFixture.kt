@@ -9,6 +9,7 @@ import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.penalty.DeepLinkMapperPenalty
+import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
@@ -34,6 +35,7 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapper)
         mockkObject(DeepLinkMapperShopScore)
         mockkObject(DeepLinkMapperPenalty)
+        mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
     }
 

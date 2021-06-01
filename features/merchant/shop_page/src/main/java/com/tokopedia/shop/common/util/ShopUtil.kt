@@ -22,6 +22,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.REASON_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_ID_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import java.net.SocketTimeoutException
@@ -36,7 +37,7 @@ object ShopUtil {
         ServerLogger.log(priority, tag, extraMessage)
     }
 
-    fun logShopPageP1BuyerFlowAlerting(
+    fun logShopPageP2BuyerFlowAlerting(
             tag: String,
             functionName: String,
             liveDataName: String = "",
@@ -44,9 +45,11 @@ object ShopUtil {
             shopId: String,
             shopName: String = "",
             errorMessage: String,
-            stackTrace: String
+            stackTrace: String,
+            errType: String
     ) {
         val extraParam = mapOf(
+                TYPE to errType,
                 FUNCTION_NAME_KEY to functionName,
                 LIVE_DATA_NAME_KEY to liveDataName,
                 SHOP_ID_KEY to shopId,
@@ -55,7 +58,7 @@ object ShopUtil {
                 REASON_KEY to errorMessage,
                 DATA_KEY to stackTrace
         )
-        logTimberWarning(Priority.P1, tag, extraParam)
+        logTimberWarning(Priority.P2, tag, extraParam)
     }
 
     fun isExceptionIgnored(throwable: Throwable) = throwable is UnknownHostException || throwable is SocketTimeoutException
