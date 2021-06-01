@@ -256,6 +256,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_flight_cancellation_navigation</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_customer_hotel_show_promo</key>
         <value>true</value>
     </entry>
@@ -560,6 +564,10 @@
     <entry>
         <key>app_notif_tray_clear_v2</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>app_push_amplification_enabled_v2</key>
+        <value>true</value>
     </entry>
     <entry>
         <key>app_enable_branch_utm_only_branch_link</key>

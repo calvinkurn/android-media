@@ -1,10 +1,10 @@
 package com.tokopedia.shop.common.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -58,6 +58,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         const val FIELD_CLOSED_INFO = "closed_info"
         const val FIELD_CREATE_INFO = "create_info"
         const val FIELD_SHOP_SNIPPET = "shop-snippet"
+        const val FIELD_OTHER_GOLD_OS = "other-goldos"
         const val FIELD_OS = "os"
         const val FIELD_GOLD = "gold"
         const val FIELD_TOP_CONTENT = "topContent"

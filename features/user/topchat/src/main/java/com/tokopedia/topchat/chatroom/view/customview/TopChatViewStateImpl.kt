@@ -634,6 +634,10 @@ open class TopChatViewStateImpl constructor(
         this.fragmentView = fragmentView
     }
 
+    override fun hideKeyboard() {
+        chatMenu?.hideKeyboard()
+    }
+
     fun setTemplate(
             listTemplate: List<Visitable<Any>>?,
             isLastMessageBroadcast: Boolean = false,

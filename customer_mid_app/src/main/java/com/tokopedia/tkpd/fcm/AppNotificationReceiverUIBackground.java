@@ -78,24 +78,34 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         messageMap.put("isDedicated", String.valueOf(isDedicatedNotification(bundle)));
         messageMap.put("bundle", bundle.toString());
         ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
-        if (isAllowedNotification(bundle)) {
-            mFCMCacheManager.setCache();
-            if (isApplinkNotification(bundle)) {
-                PushNotification.notify(mContext, bundle);
-            } else {
-                //TODO this function for divide the new and old flow(that still supported)
-                // next if complete new plz to delete
-                if (isSupportedApplinkNotification(bundle)) {
-                    handleApplinkNotification(bundle);
+        handlingNotification(bundle);
+    }
+
+    private void handlingNotification(Bundle bundle) {
+        if(revertOldHandling()) {
+            if (isAllowedNotification(bundle)) {
+                mFCMCacheManager.setCache();
+                if (isApplinkNotification(bundle)) {
+                    PushNotification.notify(mContext, bundle);
                 } else {
-                    if (isDedicatedNotification(bundle)) {
-                        handleDedicatedNotification(bundle);
+                    //TODO this function for divide the new and old flow(that still supported)
+                    // next if complete new plz to delete
+                    if (isSupportedApplinkNotification(bundle)) {
+                        handleApplinkNotification(bundle);
                     } else {
-                        prepareAndExecutePromoNotification(bundle);
+                        if (isDedicatedNotification(bundle)) {
+                            handleDedicatedNotification(bundle);
+                        } else {
+                            prepareAndExecutePromoNotification(bundle);
+                        }
                     }
                 }
             }
         }
+    }
+
+    private boolean revertOldHandling() {
+        return false;
     }
 
     private boolean isApplinkNotification(Bundle data) {
