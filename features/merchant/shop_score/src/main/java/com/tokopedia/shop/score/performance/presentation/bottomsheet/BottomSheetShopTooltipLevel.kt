@@ -112,13 +112,17 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     private fun setShopLevelData(data: ShopInfoLevelUiModel) {
         tvPeriodInformationLevel?.text = data.periodDate
         tvValueIncomeTooltip?.text =
-                if (data.shopIncome.toIntOrZero().isLessThanZero()) {
+                if (data.shopIncome.toDoubleOrZero() < 0.0) {
                     "-"
                 } else {
                     StringBuilder("Rp${data.shopIncome.toIntOrZero().getNumberFormatted()}")
                 }
         tvValueProductSoldTooltip?.text =
-                if (data.productSold.toIntOrZero().isLessThanZero()) "-" else data.productSold
+                if (data.productSold.toDoubleOrZero() < 0.0) {
+                    "-"
+                } else {
+                    data.productSold
+                }
         tvValueNextUpdate?.text = getString(R.string.title_update_date, data.nextUpdate)
         cardTooltipLevelAdapter.setCardToolTipLevelList(data.cardTooltipLevelList)
     }

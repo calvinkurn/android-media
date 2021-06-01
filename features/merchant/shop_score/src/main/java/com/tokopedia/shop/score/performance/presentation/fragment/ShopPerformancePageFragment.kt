@@ -148,7 +148,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 shopIncome = shopLevelData?.niv?.toString().orEmpty(),
                 productSold = shopLevelData?.itemSold.toString(),
                 period = shopLevelData?.period.orEmpty(),
-                nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-" else shopLevelData?.nextUpdate ?: "-")
+                nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-" else shopLevelData?.nextUpdate
+                        ?: "-")
         bottomSheetShopTooltipLevel.show(childFragmentManager)
     }
 
@@ -441,7 +442,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun scrollToLastItemCoachMark() {
         getPositionLastItemCoachMark()?.let {
-            if (it != RecyclerView.NO_POSITION) {
+            context?.let { context ->
                 val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
                     override fun getVerticalSnapPreference(): Int {
                         return SNAP_TO_END
@@ -455,40 +456,46 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun scrollToItemHeaderCoachMark() {
         val positionItemHeader = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
-        if (positionItemHeader != RecyclerView.NO_POSITION) {
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_START
+        context?.let {
+            if (positionItemHeader != RecyclerView.NO_POSITION) {
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
                 }
+                smoothScroller.targetPosition = positionItemHeader
+                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
-            smoothScroller.targetPosition = positionItemHeader
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
     private fun scrollToItemDetailCoachMark() {
         val positionItemDetail = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
-        if (positionItemDetail != RecyclerView.NO_POSITION) {
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
+        context?.let {
+            if (positionItemDetail != RecyclerView.NO_POSITION) {
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_END
+                    }
                 }
+                smoothScroller.targetPosition = positionItemDetail
+                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
-            smoothScroller.targetPosition = positionItemDetail
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
     private fun scrollToItemParameterDetailCoachMark() {
         val positionItemDetail = shopPerformanceAdapter.list.indexOfLast { it is ItemDetailPerformanceUiModel }
-        if (positionItemDetail != RecyclerView.NO_POSITION) {
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
+        context?.let {
+            if (positionItemDetail != RecyclerView.NO_POSITION) {
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_END
+                    }
                 }
+                smoothScroller.targetPosition = positionItemDetail
+                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
-            smoothScroller.targetPosition = positionItemDetail
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
