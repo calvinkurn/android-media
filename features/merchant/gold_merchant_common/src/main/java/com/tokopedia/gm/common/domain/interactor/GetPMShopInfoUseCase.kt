@@ -36,29 +36,38 @@ class GetPMShopInfoUseCase @Inject constructor(
     companion object {
         private const val KEY_SHOP_ID = "shop_id"
         private const val KEY_SOURCE = "source"
+        private const val KEY_FILTER = "filter"
+        private const val KEY_INCLUDING_PM_PRO_ELIGIBILITY = "including_pm_pro_eligibility"
 
         private val QUERY = """
-          query goldGetPMShopInfo(${'$'}shop_id: Int!, ${'$'}source: String!) {
-            goldGetPMShopInfo(shop_id: ${'$'}shop_id, source: ${'$'}source) {
-              shop_id
+          query goldGetPMShopInfo(${'$'}shop_id: Int!, ${'$'}source: String!, ${'$'}filter: GetPMShopInfoFilter) {
+            goldGetPMShopInfo(shop_id: ${'$'}shop_id, source: ${'$'}source, filter: ${'$'}filter) {
               is_new_seller
-              shop_age
               is_kyc
               kyc_status_id
               shop_score_sum
               shop_score_threshold
+              shop_score_pm_pro_threshold
               is_has_active_product
-              shop_level
               is_eligible_shop_score
               is_eligible_pm
+              is_eligible_pm_pro
+              item_sold_one_month
+              item_sold_pm_pro_threshold
+              niv_one_month
+              niv_pm_pro_threshold
             }
           }
         """.trimIndent()
 
         fun createParams(shopId: String, source: String): RequestParams {
+            val filter: Map<String, Boolean> = mapOf(
+                    KEY_INCLUDING_PM_PRO_ELIGIBILITY to true
+            )
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
                 putString(KEY_SOURCE, source)
+                putObject(KEY_FILTER, filter)
             }
         }
     }

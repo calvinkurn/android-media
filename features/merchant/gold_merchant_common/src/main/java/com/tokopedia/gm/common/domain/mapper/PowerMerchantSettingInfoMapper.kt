@@ -21,7 +21,6 @@ class PowerMerchantSettingInfoMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(response: PMSettingInfoModel?): PowerMerchantSettingInfoUiModel {
         return PowerMerchantSettingInfoUiModel(
-                shopId = response?.shopId.orZero().toString(),
                 periodeType = response?.periodeType ?: PeriodType.TRANSITION_PERIOD,
                 periodeEndDate = getPeriodEndDateTime(response?.periodEndDateMillis),
                 tickers = response?.tickers?.map {

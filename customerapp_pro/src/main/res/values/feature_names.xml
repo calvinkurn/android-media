@@ -191,6 +191,8 @@
 
     <string name="title_shipping_editor">Pengiriman</string>
 
+    <string name="label_image_preview">Gambar Bukti</string>
+
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 

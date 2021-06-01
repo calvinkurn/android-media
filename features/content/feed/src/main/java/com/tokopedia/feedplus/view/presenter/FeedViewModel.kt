@@ -107,7 +107,6 @@ class FeedViewModel @Inject constructor(
     private val pagingHandler: PagingHandler = PagingHandler()
 
     fun getOnboardingData(source: String) {
-        if(userId != NON_LOGIN_USER_ID) {
             getInterestPickUseCase.apply {
                 clearRequest()
                 addRequestWithParam(source)
@@ -116,7 +115,6 @@ class FeedViewModel @Inject constructor(
             }, {
                 onboardingResp.value = Fail(it)
             })
-        }
     }
 
     fun sendReport(

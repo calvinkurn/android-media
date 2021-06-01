@@ -1,6 +1,5 @@
 package com.tokopedia.topads.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
@@ -9,17 +8,21 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.topads.common.activity.NoCreditActivity
-import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
 import com.tokopedia.topads.common.data.model.AdsItem
 import com.tokopedia.topads.common.data.model.Group
 import com.tokopedia.topads.common.data.model.InputCreateGroup
@@ -28,9 +31,8 @@ import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
-import com.tokopedia.topads.common.getSellerMigrationFeatureName
-import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
-import com.tokopedia.topads.common.isFromPdpSellerMigration
+import com.tokopedia.topads.common.view.sheet.TopAdsOutofCreditSheet
+import com.tokopedia.topads.common.view.sheet.TopAdsSuccessSheet
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
@@ -55,6 +57,7 @@ private const val PRODUCT_INFO = "product_id: %s; keyword_name: %s; keyword_id: 
 
 const val DEBOUNCE_CONST: Long = 200
 const val DAILYBUDGET_FACTOR = 1000
+private const val AUTOBID_DEFUALT_BUDGET = 16000
 
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
@@ -66,6 +69,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private var input = InputCreateGroup()
     var keyword = KeywordsItem()
     var group = Group()
+    private var strategies: MutableList<String> = mutableListOf()
     private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
     private var adsItemsList: MutableList<AdsItem> = mutableListOf()
     private var selectedProductIds: MutableList<String> = mutableListOf()
@@ -76,6 +80,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private var suggestion = 0
     private var validation1 = true
     private var validation2 = true
+    var minBudget: Int = 0
 
 
     companion object {
@@ -128,23 +133,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private fun onSuccess(data: DepositAmount) {
         isEnoughDeposit = data.amount > 0
-        val intent: Intent = if (isEnoughDeposit) {
-            Intent(context, SuccessActivity::class.java).apply {
-                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-                }
-            }
+        if(isEnoughDeposit) {
+            val sheet = TopAdsSuccessSheet()
+            sheet.overlayClickDismiss = false
+            sheet.show(childFragmentManager)
         } else {
-            Intent(context, NoCreditActivity::class.java).apply {
-                if (isFromPdpSellerMigration(activity?.intent?.extras)) {
-                    putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
-                    putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
-                }
-            }
+            val sheet = TopAdsOutofCreditSheet()
+            sheet.overlayClickDismiss = false
+            sheet.show(childFragmentManager)
         }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
     }
 
     private fun errorResponse(throwable: Throwable) {
@@ -156,6 +153,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setAutoBidState()
         btn_submit.setOnClickListener {
             if (groupInput?.textFieldInput?.text?.isNotEmpty() == true) {
                 loading?.visibility = View.VISIBLE
@@ -167,11 +165,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
             }
         }
-        setGroupName()
-        suggestion = (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
-        stepperModel?.dailyBudget = suggestion
-        dailyBudget = (stepperModel?.finalBidPerClick ?: 0) * 40
-        daily_budget.textFieldInput.setText(dailyBudget.toString())
+        setUpInitialValues()
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 daily_budget.visibility = View.VISIBLE
@@ -179,10 +173,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 try {
                     budget = Integer.parseInt(daily_budget.textFieldInput.text.toString().removeCommaRawString())
                 } catch (e: NumberFormatException) {
-
                 }
                 if (budget < suggestion && daily_budget.isVisible) {
-                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                    daily_budget.setMessage(String.format(getString(R.string.topads_common_minimum_daily_budget), minBudget))
                     daily_budget.setError(true)
                     validation2 = false
                     actionEnable()
@@ -197,6 +190,56 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         daily_budget.textFieldInput.addTextChangedListener(watcher())
         setLink()
+    }
+
+    private fun setAutoBidState() {
+        if (stepperModel?.autoBidState?.isEmpty() == true) {
+            group_non_auto?.visible()
+            group_auto?.gone()
+            divider2.gone()
+            divider3.visible()
+            divider4.visible()
+        } else {
+            group_non_auto?.gone()
+            group_auto?.visible()
+            divider3.gone()
+            divider4.gone()
+        }
+    }
+
+    private fun setUpInitialValues() {
+        suggestion = (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
+        minBudget = if (stepperModel?.autoBidState?.isEmpty() != true)
+            AUTOBID_DEFUALT_BUDGET
+        else
+            suggestion
+        stepperModel?.dailyBudget = suggestion
+        dailyBudget = if (stepperModel?.autoBidState?.isEmpty() == true)
+            (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
+        else
+            AUTOBID_DEFUALT_BUDGET
+        daily_budget.textFieldInput.setText(dailyBudget.toString())
+        groupInput?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
+        groupInput?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
+            //   val imm: InputMethodManager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                Utils.dismissKeyboard(context, view)
+                //     imm.hideSoftInputFromWindow(v.windowToken, 0)
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
+        groupInput?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                setGroupName()
+            } else {
+                groupInput.textFieldInput.setText(stepperModel?.groupName)
+                groupInput?.setError(false)
+                validation1 = true
+                actionEnable()
+                groupInput?.setMessage(getString(R.string.topads_create_group_name_message))
+            }
+        }
     }
 
     private fun setGroupName() {
@@ -245,18 +288,23 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         bidRange?.text = String.format(resources.getString(R.string.bid_range), stepperModel?.minBid.toString(), stepperModel?.maxBid.toString())
         productCount?.text = stepperModel?.selectedProductIds?.count().toString()
         keywordCount?.text = stepperModel?.selectedKeywordStage?.count().toString()
+
         goToProduct?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(1, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_1, stepperModel)
         }
 
         goToKeyword?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(2, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_3, stepperModel)
         }
         goToBudget?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
-            stepperListener?.getToFragment(2, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_3, stepperModel)
+        }
+        goToAutobid.setOnClickListener {
+            stepperModel?.redirectionToSummary = true
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_2, stepperModel)
         }
     }
 
@@ -286,15 +334,20 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         info_text?.append(spannableText)
     }
 
+    private fun isMinValidation(input: Int): Boolean {
+        return (input < (stepperModel?.finalBidPerClick
+                ?: 0) * MULTIPLIER && stepperModel?.autoBidState?.isEmpty() == true) ||
+                (input < minBudget && stepperModel?.autoBidState?.isEmpty() != true) && daily_budget.isVisible
+    }
+
     private fun watcher(): NumberTextWatcher? {
         return object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
-                if (input < (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
-                        && daily_budget.isVisible) {
+                if (isMinValidation(input)) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                    daily_budget.setMessage(String.format(getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error), Utils.convertToCurrency(minBudget.toLong())))
                     validation2 = false
                     actionEnable()
                 } else if (input % DAILYBUDGET_FACTOR != 0) {
@@ -302,9 +355,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                     daily_budget.setMessage(String.format(getString(R.string.topads_common_error_multiple_50), DAILYBUDGET_FACTOR))
                     validation2 = false
                     actionEnable()
-                } else if (input > MAXIMUM_LIMIT && daily_budget.isVisible) {
+                } else if (input > MAXIMUM_LIMIT.toDouble() && daily_budget.isVisible) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(R.string.topads_common_maximum_daily_budget), MAXIMUM_LIMIT))
+                    daily_budget.setMessage(String.format(getString(com.tokopedia.topads.common.R.string.angarran_harrian_max_bid_error), Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())))
                     validation2 = false
                     actionEnable()
                 } else {
@@ -336,7 +389,11 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         input.shopID = userSession.shopId
         input.group.groupName = stepperModel?.groupName ?: ""
-        input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
+        if(stepperModel?.autoBidState?.isEmpty() == true) {
+            input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
+        } else {
+            input.group.priceBid = stepperModel?.minBid?.toDouble() ?: 0.0
+        }
         input.group.suggestedBidValue = stepperModel?.suggestedBidPerClick?.toDouble() ?: 0.0
         keywordsList.clear()
         adsItemsList.clear()
@@ -355,6 +412,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             input.group.ads = adsItemsList
         }
 
+        if(stepperModel?.autoBidState?.isNotEmpty() == true) {
+            strategies.clear()
+            strategies.add(stepperModel?.autoBidState!!)
+        }
+        input.group.strategies = strategies
+
         map[INPUT] = input
         return map
     }
@@ -370,10 +433,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun addKeywords(index: Int) {
         val key = KeywordsItem()
         val type = stepperModel?.selectedKeywordStage?.get(index)?.keywordType
-        val typeInt = if (type == BudgetingAdsFragment.BROAD_TYPE)
-            BudgetingAdsFragment.BROAD_POSITIVE
+        val typeInt = if (type == BROAD_TYPE)
+            BROAD_POSITIVE
         else
-            BudgetingAdsFragment.EXACT_POSITIVE
+            EXACT_POSITIVE
 
         key.keywordTypeID = typeInt.toString()
         key.keywordTag = stepperModel?.selectedKeywordStage?.get(index)?.keyword ?: ""
@@ -390,7 +453,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             groupInput?.setError(false)
             validation1 = true
             actionEnable()
-            groupInput?.setMessage("")
+            groupInput?.setMessage(getString(R.string.topads_create_group_name_message))
         } else {
             onErrorGroupName(data.errors[0].detail)
         }
