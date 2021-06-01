@@ -12,8 +12,6 @@ data class PMGradeBenefitInfoResponse(
 )
 
 data class PMGradeBenefitInfoModel(
-        @SerializedName("shop_id")
-        val shopId: Long? = 0,
         @SerializedName("next_monthly_refresh_date")
         val nextMonthlyRefreshDate: String? = "",
         @SerializedName("next_quarterly_calibration_refresh_date")
@@ -26,10 +24,6 @@ data class PMGradeBenefitInfoModel(
         val nextPMGrade: NextPMGradeModel? = null,
         @SerializedName("next_benefit_list")
         val nextPMBenefits: List<PMGradeBenefitModel>? = null,
-        @SerializedName("potential_pm_grade")
-        val potentialPmGrade: PotentialPmGradeModel? = null,
-        @SerializedName("potential_benefit_list")
-        val potentialBenefits: List<PMGradeBenefitModel>? = null,
         @SerializedName("pm_grade_benefit_list")
         val pmGradeBenefitList: List<PmGradeWithBenefitsModel>? = null
 )
@@ -37,6 +31,8 @@ data class PMGradeBenefitInfoModel(
 data class PmGradeWithBenefitsModel(
         @SerializedName("pm_grade_name")
         val gradeName: String? = "",
+        @SerializedName("pm_tier")
+        val pmTier: Int? = 0,
         @SerializedName("is_active")
         val isActive: Boolean? = false,
         @SerializedName("benefit_list")
@@ -72,10 +68,6 @@ data class NextPMGradeModel(
 )
 
 data class CurrentPmGradeModel(
-        @SerializedName("shop_level")
-        val shopLevel: Int? = 0,
-        @SerializedName("shop_score")
-        val shopScore: Int? = 0,
         @SerializedName("grade_name")
         val gradeName: String? = "",
         @SerializedName("image_badge_url")

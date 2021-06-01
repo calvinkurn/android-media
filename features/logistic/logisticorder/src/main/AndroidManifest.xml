@@ -55,6 +55,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".view.imagepreview.ImagePreviewLogisticActivity"
+            android:label="@string/label_image_preview"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
 
     </application>
 
