@@ -102,6 +102,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val updatedVisitableIndicesMutableLiveData = MutableLiveData<Event<List<Int>>>(null)
     val updatedVisitableIndicesLiveData: LiveData<Event<List<Int>>> = updatedVisitableIndicesMutableLiveData
 
+    protected val isRefreshStickyChipMutableLiveData = MutableLiveData(false)
+    val isRefreshStickyChipLiveData: LiveData<Boolean> = isRefreshStickyChipMutableLiveData
+
     protected var totalData = 0
     protected var totalFetchedData = 0
     protected var nextPage = 1
@@ -200,6 +203,7 @@ abstract class BaseSearchCategoryViewModel(
 
         headerList.add(QuickFilterDataView(createQuickFilterItemList(headerDataView)))
         headerList.add(ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText))
+        isRefreshStickyChipMutableLiveData.value = true
 
         return headerList
     }
@@ -237,6 +241,7 @@ abstract class BaseSearchCategoryViewModel(
             sortFilterItem.listener = {
                 onFilterChipSelected(option, !isSelected)
             }
+
         }
         else {
             val listener = {
