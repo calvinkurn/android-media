@@ -13,9 +13,9 @@ class SaveAccountDetailUseCase @Inject constructor(
 ) : GraphqlUseCase<DataEditTransfer>(graphqlRepository) {
 
     fun saveDetailAccount(
+        onSuccess: (EditTransfer) -> Unit, onError: (Throwable) -> Unit,
         transactionId: String, merchantCode: String,
-        accountName: String, accountNumber: String, notes: String, destinationBankId: String,
-        onSuccess: (EditTransfer) -> Unit, onError: (Throwable) -> Unit
+        accountName: String, accountNumber: String, notes: String, destinationBankId: String
     ) {
         this.setRequestParams(
             getRequestParams(

@@ -26,8 +26,9 @@ class ChangeBankAccountViewModel @Inject constructor(
     ) {
         saveAccountDetailUseCase.cancelJobs()
         saveAccountDetailUseCase.saveDetailAccount(
+            ::onSaveDetailSuccess, ::onSaveDetailError,
             transactionId, merchantCode, accountName, accountNumber, notes, destinationBankId,
-         ::onSaveDetailSuccess, ::onSaveDetailError)
+         )
     }
 
     private fun onSaveDetailError(throwable: Throwable) {

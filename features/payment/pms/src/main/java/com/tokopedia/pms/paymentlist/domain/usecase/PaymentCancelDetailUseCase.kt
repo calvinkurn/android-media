@@ -12,7 +12,7 @@ class PaymentCancelDetailUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<DataCancelDetail>(graphqlRepository) {
 
-    fun gerCancelDetail(
+    fun getCancelDetail(
         onSuccess: (CancelDetailWrapper) -> Unit,
         onError: (Throwable) -> Unit,
         transactionId: String,

@@ -32,6 +32,7 @@ class PaymentListViewModel @Inject constructor(
 
 
     fun getPaymentListCount() {
+        getPaymentListCountUseCase.cancelJobs()
         _paymentListResultLiveData.postValue(LoadingState)
         getPaymentListCountUseCase.getPaymentCount(
             ::onCountReceived,
@@ -61,7 +62,7 @@ class PaymentListViewModel @Inject constructor(
 
     fun getCancelPaymentDetail(transactionId: String, merchantCode: String, productName: String?) {
         cancelPaymentDetailUseCase.cancelJobs()
-        cancelPaymentDetailUseCase.gerCancelDetail(
+        cancelPaymentDetailUseCase.getCancelDetail(
             ::onCancelPaymentDetailSuccess,
             ::onCancelDetailError,
             transactionId,
@@ -88,6 +89,8 @@ class PaymentListViewModel @Inject constructor(
             if (it.isHasNextPage) getPaymentList(it.lastCursor)
             else combinePendingTransactions()
 
+        } ?: run {
+            _paymentListResultLiveData.postValue(EmptyState)
         }
     }
 
@@ -126,6 +129,7 @@ class PaymentListViewModel @Inject constructor(
     }
 
     override fun onCleared() {
+        getPaymentListCountUseCase.cancelJobs()
         paymentListUseCase.cancelJobs()
         cancelPaymentUseCase.cancelJobs()
         cancelPaymentDetailUseCase.cancelJobs()

@@ -1,10 +1,7 @@
 package com.tokopedia.pms.paymentlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
-import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
-import com.tokopedia.pms.paymentlist.domain.data.Fail
-import com.tokopedia.pms.paymentlist.domain.data.PaymentList
+import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.pms.paymentlist.domain.usecase.*
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -34,7 +31,6 @@ class PaymentListViewModelTest {
 
 
     private val fetchFailedErrorMessage = "Fetch Failed"
-    private val nullDataErrorMessage = "NULL DATA"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
     @Before
@@ -51,6 +47,9 @@ class PaymentListViewModelTest {
 
     @Test
     fun `Execute getPaymentList Fail(Invoke Failed)`() {
+        coEvery { getPaymentListCountUseCase.getPaymentCount(any(), any()) } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
         coEvery {
             paymentListUseCase.getPaymentList(any(), any(), "")
         } coAnswers {
@@ -64,38 +63,70 @@ class PaymentListViewModelTest {
     }
 
     @Test
-    fun `Execute getPaymentList Empty`() {
-        val emptyData = "EMPTY"
-        val paymentData = mockk<PaymentList>(relaxed = true)
+    fun `Execute getPaymentList Null Response`() {
+        val mockGatewayName = "Test Gateway"
+
+        val baseModel = mockk<BasePaymentModel>(relaxed = true) {
+            every { gatewayName } returns mockGatewayName
+        }
+        coEvery { getPaymentListCountUseCase.getPaymentCount(any(), any()) } coAnswers {
+            firstArg<(Int) -> Unit>().invoke(0)
+        }
         coEvery {
             paymentListUseCase.getPaymentList(any(), any(), "")
         } coAnswers {
-            firstArg<(PaymentList) -> Unit>().invoke(paymentData)
+            firstArg<(PaymentList?) -> Unit>().invoke(null)
         }
         viewModel.getPaymentListCount()
-        assert(viewModel.paymentListResultLiveData.value is Fail)
+        assert(viewModel.paymentListResultLiveData.value is EmptyState)
         coVerify(exactly = 0) { mapper.mapResponseToRenderPaymentList(any(), any(), any()) }
-        Assertions.assertThat((viewModel.paymentListResultLiveData.value as Fail).throwable.message)
-            .isEqualTo(emptyData)
+    }
+
+
+    @Test
+    fun `Execute getPaymentList Empty`() {
+        val mockGatewayName = "Test Gateway"
+        val responseData = PaymentListInside().also { it.gatewayName = mockGatewayName }
+        val paymentData = PaymentList().also {
+            it.lastCursor = ""
+            it.isHasNextPage = false
+            it.paymentList = arrayListOf()
+        }
+        val baseModel = mockk<BasePaymentModel>(relaxed = true) {
+            every { gatewayName } returns mockGatewayName
+        }
+        coEvery { getPaymentListCountUseCase.getPaymentCount(any(), any()) } coAnswers {
+            firstArg<(Int) -> Unit>().invoke(0)
+        }
+        coEvery {
+            paymentListUseCase.getPaymentList(any(), any(), "")
+        } coAnswers {
+            firstArg<(PaymentList?) -> Unit>().invoke(paymentData)
+        }
+        viewModel.getPaymentListCount()
+        assert(viewModel.paymentListResultLiveData.value is EmptyState)
+        coVerify(exactly = 0) { mapper.mapResponseToRenderPaymentList(any(), any(), any()) }
     }
 
     @Test
     fun `Execute getPaymentList Success`() {
         val mockGatewayName = "Test Gateway"
-        val paymentData = mockk<PaymentList>(relaxed = true) {
-            every { lastCursor } returns ""
-            every { isHasNextPage } returns true
-            every { paymentList } returns arrayListOf(mockk {
-                every { gatewayName } returns mockGatewayName
-            })
+        val responseData = PaymentListInside().also { it.gatewayName = mockGatewayName }
+        val paymentData = PaymentList().also {
+            it.lastCursor = ""
+            it.isHasNextPage = false
+            it.paymentList = arrayListOf(responseData)
         }
         val baseModel = mockk<BasePaymentModel>(relaxed = true) {
             every { gatewayName } returns mockGatewayName
         }
+        coEvery { getPaymentListCountUseCase.getPaymentCount(any(), any()) } coAnswers {
+            firstArg<(Int) -> Unit>().invoke(1)
+        }
         coEvery {
             paymentListUseCase.getPaymentList(any(), any(), "")
         } coAnswers {
-            firstArg<(PaymentList) -> Unit>().invoke(paymentData)
+            firstArg<(PaymentList?) -> Unit>().invoke(paymentData)
         }
         coEvery {
             mapper.mapResponseToRenderPaymentList(paymentData.paymentList, any(), any())
@@ -103,16 +134,16 @@ class PaymentListViewModelTest {
             secondArg<(ArrayList<BasePaymentModel>) -> Unit>().invoke(arrayListOf(baseModel))
         }
         viewModel.getPaymentListCount()
-        //assert(viewModel.paymentListResultLiveData.value is Success)
-        //coVerify(exactly = 1) { mapper.mapResponseToRenderPaymentList(any(), any(), any()) }
-        //Assertions.assertThat((viewModel.paymentListResultLiveData.value as Success).data[0].gatewayName)
-        //    .isEqualTo(mockGatewayName)
+        assert(viewModel.paymentListResultLiveData.value is Success)
+        coVerify(exactly = 1) { mapper.mapResponseToRenderPaymentList(any(), any(), any()) }
+        Assertions.assertThat((viewModel.paymentListResultLiveData.value as Success).data[0].gatewayName)
+            .isEqualTo(mockGatewayName)
     }
 
     @Test
     fun `getCancelPaymentDetail invoke Failed`() {
         coEvery {
-            cancelPaymentDetailUseCase.gerCancelDetail(any(), any(), "", "", "")
+            cancelPaymentDetailUseCase.getCancelDetail(any(), any(), "", "", "")
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
@@ -124,19 +155,47 @@ class PaymentListViewModelTest {
 
     @Test
     fun `getCancelPaymentDetail Success`() {
-        val mockData = mockk<CancelDetailWrapper>()
+        val mockData = CancelDetailWrapper("", "", "",
+            CancelDetail().also
+            { it.isSuccess = true })
+
         coEvery {
-            cancelPaymentDetailUseCase.gerCancelDetail(any(), any(), "", "", "")
+            cancelPaymentDetailUseCase.getCancelDetail(any(), any(), "", "", "")
         } coAnswers {
-            firstArg<(Throwable) -> Unit>().invoke(mockThrowable)
+            firstArg<(CancelDetailWrapper) -> Unit>().invoke(mockData)
         }
-        viewModel.getPaymentListCount()
-        assert(viewModel.cancelPaymentDetailLiveData.value is Fail)
-        Assertions.assertThat((viewModel.cancelPaymentDetailLiveData.value as Fail).throwable.message)
+        viewModel.getCancelPaymentDetail("", "", "")
+        assert(viewModel.cancelPaymentDetailLiveData.value is Success)
+        Assertions.assertThat((viewModel.cancelPaymentDetailLiveData.value as Success).data.cancelDetailData.isSuccess)
+            .isEqualTo(true)
+    }
+
+    @Test
+    fun `cancelPayment invoke Failed`() {
+        coEvery {
+            cancelPaymentUseCase.invokePaymentCancel(any(), any(), "t1234", "m1234")
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.cancelPayment("t1234", "m1234")
+        assert(viewModel.cancelPaymentLiveData.value is Fail)
+        Assertions.assertThat((viewModel.cancelPaymentLiveData.value as Fail).throwable.message)
             .isEqualTo(fetchFailedErrorMessage)
     }
 
     @Test
-    fun cancelPayment() {
+    fun `cancelPayment successful`() {
+        val data = CancelPayment()
+        data.isSuccess = true
+        data.message = "Cancel Success"
+        coEvery {
+            cancelPaymentUseCase.invokePaymentCancel(any(), any(), "t1234", "m1234")
+        } coAnswers {
+            firstArg<(CancelPayment) -> Unit>().invoke(data)
+        }
+        viewModel.cancelPayment("t1234", "m1234")
+        assert(viewModel.cancelPaymentLiveData.value is Success)
+        Assertions.assertThat((viewModel.cancelPaymentLiveData.value as Success).data.isSuccess)
+            .isEqualTo(true)
     }
 }

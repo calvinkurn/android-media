@@ -42,7 +42,7 @@ class CommonPaymentTransferViewHolder(
     private fun bindVATransactionAmountData(item: VirtualAccountPaymentModel) {
         bindTransactionAmountData(item.totalAmount)
         val totalAmountHeader =
-            if (item.transactionList.size > 1) "Total dari ${item.transactionList.size} transkasi"
+            if (item.transactionList.size > 1) "Total dari ${item.transactionList.size} transaksi"
             else defaultAmountHeading
         bindTotalAmountHeading(totalAmountHeader)
     }
