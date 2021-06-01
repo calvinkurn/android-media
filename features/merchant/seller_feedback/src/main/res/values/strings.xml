@@ -9,7 +9,7 @@
     <string name="feedback_form_score_good">Puas</string>
     <string name="feedback_form_question_1">Bagaimana pendapatmu tentang halaman ini?</string>
     <string name="feedback_form_question_2">Feedback apa yang ingin kamu kasih?</string>
-    <string name="feedback_form_question_3">Feedback apa yang ingin kamu kasih?</string>
+    <string name="feedback_form_question_3">Halaman apa yang menurutmu perlu diperbaiki?</string>
     <string name="feedback_form_question_4">Ceritakan detailnya di sini, ya</string>
     <string name="feedback_form_question_5">Ada lampirannya, nggak?</string>
     <string name="feedback_form_page_hint">Pilih Halaman</string>
@@ -17,6 +17,8 @@
     <string name="feedback_form_attachment_hint">Lampirkan bukti pendukung di sini supaya kami bisa paham masalahmu, ya.</string>
     <string name="feedback_form_button_send">Kirim</string>
     <string name="feedback_form_gallery_picker_title">Foto</string>
+    <string name="feedback_form_page_not_found_title">Oops, halaman tidak ditemukan</string>
+    <string name="feedback_form_page_not_found_subtitle">Coba kata kunci lain</string>
 
     <string name="feedback_form_detail_error_empty">Wajib diisi</string>
 
@@ -40,6 +42,7 @@
         <item>Pesanan Dikomplain</item>
         <item>Pengaturan Toko</item>
         <item>Pengaturan Admin</item>
+        <item>Lainnya</item>
     </string-array>
 
 </resources>

@@ -36,6 +36,7 @@ import com.tokopedia.sellerfeedback.presentation.adapter.ImageFeedbackAdapter
 import com.tokopedia.sellerfeedback.presentation.bottomsheet.SellerFeedbackPageChooserBottomSheet
 import com.tokopedia.sellerfeedback.presentation.uimodel.BaseImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
+import com.tokopedia.sellerfeedback.presentation.uimodel.Score
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
 import com.tokopedia.sellerfeedback.presentation.view.SellerFeedbackToolbar
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
@@ -166,7 +167,6 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
             }
         }
 
-
         textFieldFeedbackPage?.setOnClickListener {
             val currentValue = textFieldFeedbackPage?.text.toString()
             val bottomSheet = SellerFeedbackPageChooserBottomSheet.createInstance(currentValue)
@@ -248,8 +248,6 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     private fun getFeedbackDetailWatcher(): TextWatcher {
         return object : TextWatcher {
 
-            private val MAX_CHAR = textAreaFeedbackDetail?.textAreaCounter
-
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -258,9 +256,6 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
                 val text = p0?.toString() ?: ""
                 if (text.isBlank()) {
                     textAreaFeedbackDetail?.textAreaMessage = getString(R.string.feedback_form_detail_error_empty)
-                    textAreaFeedbackDetail?.isError = true
-                } else if (text.length == MAX_CHAR) {
-                    textAreaFeedbackDetail?.textAreaMessage = ""
                     textAreaFeedbackDetail?.isError = true
                 } else {
                     textAreaFeedbackDetail?.textAreaMessage = ""
@@ -371,6 +366,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     override fun onClickRemoveImage(item: BaseImageFeedbackUiModel) {
         SellerFeedbackTracking.Click.eventClickRemoveAttachment()
         imageFeedbackAdapter.removeImage(item)
+        checkButtonSend()
     }
 
     override fun onClickAddImage() {
@@ -406,34 +402,5 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         return imageFeedbackDataList.filterIsInstance(ImageFeedbackUiModel::class.java)
                 .map { it.imageUrl } as ArrayList<String>
     }
-
-    sealed class Score {
-        abstract val value: Int
-        abstract val colorId: Int
-        abstract val drawableActiveId: Int
-        abstract val drawableInactiveId: Int
-
-        data class Bad(
-                override val value: Int = R.string.feedback_form_score_bad,
-                override val colorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_Y500,
-                override val drawableActiveId: Int = R.drawable.ic_emoji_bad_active,
-                override val drawableInactiveId: Int = R.drawable.ic_emoji_bad_inactive
-        ) : Score()
-
-        data class Neutral(
-                override val value: Int = R.string.feedback_form_score_neutral,
-                override val colorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_Y400,
-                override val drawableActiveId: Int = R.drawable.ic_emoji_neutral_active,
-                override val drawableInactiveId: Int = R.drawable.ic_emoji_neutral_inactive
-        ) : Score()
-
-        data class Good(
-                override val value: Int = R.string.feedback_form_score_good,
-                override val colorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                override val drawableActiveId: Int = R.drawable.ic_emoji_good_active,
-                override val drawableInactiveId: Int = R.drawable.ic_emoji_good_inactive
-        ) : Score()
-    }
-
 
 }

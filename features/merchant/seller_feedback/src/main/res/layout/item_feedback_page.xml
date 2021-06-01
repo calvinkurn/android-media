@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/list_page"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/dp_56"
     android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingRight="@dimen/dp_16">
 
-    <com.tokopedia.unifycomponents.SearchBarUnify
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Penjualan"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:search_bar_placeholder="Cari halaman seller dashboard"
-        app:search_bar_show_icon="false" />
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.list.ListUnify
-        android:id="@+id/list_page"
-        android:layout_width="match_parent"
+    <RadioButton
+        android:id="@+id/radio_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/search_bar" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
