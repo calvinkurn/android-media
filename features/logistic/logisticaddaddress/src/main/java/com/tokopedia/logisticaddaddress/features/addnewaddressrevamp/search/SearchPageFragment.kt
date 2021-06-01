@@ -5,6 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -26,6 +30,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
+import kotlinx.android.synthetic.main.fragment_google_map.*
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -40,7 +45,7 @@ class SearchPageFragment: BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory).get(SearchPageViewModel::class.java)
     }
 
-    private var autoCompleteAdapter = AutoCompleteListAdapter()
+    private lateinit var autoCompleteAdapter: AutoCompleteListAdapter
 
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
 
@@ -65,6 +70,7 @@ class SearchPageFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         showInitialLoadMessage()
         setSearchView()
         setViewListener()
@@ -76,6 +82,12 @@ class SearchPageFragment: BaseDaggerFragment() {
         compositeSubs.clear()
     }
 
+    private fun initView() {
+        autoCompleteAdapter = AutoCompleteListAdapter()
+        binding.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.rvAddressList.adapter = autoCompleteAdapter
+    }
+
     private fun showInitialLoadMessage() {
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
@@ -85,7 +97,26 @@ class SearchPageFragment: BaseDaggerFragment() {
 
     private fun setSearchView() {
         binding.searchPageInput.searchBarPlaceholder = getString(R.string.txt_hint_search)
-        binding.searchPageInput.searchBarTextField.run {
+        binding.searchPageInput.searchBarTextField.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                //no-op
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //no-op
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (TextUtils.isEmpty(binding.searchPageInput.searchBarTextField.text.toString())) {
+                    hideListLocation()
+                } else {
+                    loadAutoComplete(binding.searchPageInput.searchBarTextField.text.toString())
+                }
+            }
+
+        })
+
+ /*       binding.searchPageInput.searchBarTextField.run {
             setOnClickListener {
                 binding.searchPageInput.searchBarTextField.isCursorVisible = true
                 openSoftKeyboard()
@@ -108,7 +139,7 @@ class SearchPageFragment: BaseDaggerFragment() {
                 }
 
             }).toCompositeSubs(compositeSubs)
-        }
+        }*/
 
     }
 
@@ -158,7 +189,7 @@ class SearchPageFragment: BaseDaggerFragment() {
     }
 
     private fun hideListLocation() {
-        //hide list here
+        binding.rvAddressList.visibility = View.GONE
     }
 
     private fun requestPermissionLocation() {

@@ -44,8 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iv_search_current_location"
             android:text="@string/tv_current_location_text"
-            android:textSize="@dimen/sp_14"
-            app:typographyWeight="reguler"/>
+            app:typographyType="body_2"/>
 
     </RelativeLayout>
 
@@ -64,9 +63,8 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="Mau cara lain? isi alamat secara manual"
-        android:textSize="@dimen/unify_font_14"
-        android:visibility="visible"
-        app:typographyWeight="reguler"/>
+        app:typographyType="body_2"
+        android:visibility="visible"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_address_list"

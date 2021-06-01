@@ -10,8 +10,7 @@
         android:id="@+id/ic_location"
         android:layout_width="@dimen/unify_space_16"
         android:layout_height="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_18"
-        android:layout_marginRight="@dimen/dp_18"
+        android:layout_marginStart="@dimen/unify_space_16"
         app:icon_name="LOCATION"
         android:layout_alignParentTop="true"
         android:layout_marginTop="@dimen/dp_8"/>
@@ -22,8 +21,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_18"
         android:layout_marginEnd="@dimen/dp_18"
+        android:layout_marginStart="@dimen/unify_space_16"
         android:layout_toRightOf="@id/ic_location"
         android:layout_toEndOf="@id/ic_location"
         android:orientation="vertical">
@@ -32,8 +31,7 @@
             android:id="@+id/search_place_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"
+            app:typographyType="body_2"
             android:layout_marginBottom="@dimen/dp_2"
             android:text="Tokopedia Towet"/>
 
@@ -41,7 +39,7 @@
             android:id="@+id/search_place_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_11"
+            app:typographyType="body_2"
             android:text="adadadad ada"/>
 
     </LinearLayout>

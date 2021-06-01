@@ -34,13 +34,12 @@ class AutoCompleteListAdapter: RecyclerView.Adapter<AutoCompleteListAdapter.Auto
     }
 
     inner class AutoCompleteListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val placeName = itemView.findViewById<Typography>(R.id.place_name)
-        private val placeAddress = itemView.findViewById<Typography>(R.id.place_address)
+        private val placeName = itemView.findViewById<Typography>(R.id.search_place_name)
+        private val placeAddress = itemView.findViewById<Typography>(R.id.search_place_address)
 
         fun bindData(data: SuggestedPlace) {
             TextAndContentDescriptionUtil.setTextAndContentDescription(placeName, data.mainText, placeName.context.getString(R.string.content_desc_place_name))
             placeAddress.text = data.secondaryText
-
         }
     }
 

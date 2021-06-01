@@ -8,8 +8,8 @@
         android:id="@+id/rl_map_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/map_view"
@@ -33,21 +33,50 @@
             android:contentDescription="@string/pointer"
             app:srcCompat="@drawable/ic_green_pointer" />
 
+        <LinearLayout
+            android:id="@+id/btn_horizonal_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:orientation="horizontal"
+            android:layout_above="@id/layout_botoomsheet_loc"
+            android:visibility="visible">
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/filterBugs"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="Gunakan Lokasi Sat Ini"
+                app:chipType="normal" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/filterFeedback"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="Cari Ulang Alamat"
+                app:chipType="normal" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/layout_botoomsheet_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <include
+                android:id="@+id/bottomsheet_location"
+                layout="@layout/bottomsheet_choose_location"/>
+
+        </FrameLayout>
+
     </RelativeLayout>
-
-
-
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <include layout="@layout/bottomsheet_choose_location"/>
-
-    </FrameLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
