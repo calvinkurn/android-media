@@ -189,6 +189,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
     val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
 
+    private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
+    val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
+
     /**
      * Variable list
      */
@@ -723,28 +726,39 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getFeedTabData() {
         if (getTabRecommendationJob?.isActive == true) return
-        addWidget(HomeLoadingMoreModel())
+        if (!widgetIsAvailable<HomeRecommendationFeedDataModel>()) {
+            addWidget(HomeLoadingMoreModel())
+        }
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
             getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
             val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
             }
-            val findRecommendationModel = homeDataModel.list.find {
-                data -> data is HomeRecommendationFeedDataModel
-            }
+
             val findLoadingModel = homeDataModel.list.withIndex().find {
                 data -> data.value is HomeLoadingMoreModel
             }
 
-            if (findRecommendationModel != null) return@launchCatchError
+            findWidget<HomeRecommendationFeedDataModel> { model, index ->
+                val newModel = model.copy(
+                    recommendationTabDataModel = homeRecommendationTabs,
+                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                )
+                if (findLoadingModel == null) {
+                    updateWidget(visitable = newModel, position = index)
+                } else {
+                    updateWidget(visitable = newModel, visitableToChange = findLoadingModel.value, position = index)
+                }
+                _resetNestedScrolling.postValue(Event(true))
+                return@launchCatchError
+            }
 
             val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel(homeDataModel.homeChooseAddressData)
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
             findLoadingModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel.index?:-1, it) }
-            findRetryModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel?.index?:-1, it) }
-
+            findRetryModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findRetryModel?.index?:-1, it) }
         }){
             val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
             }
@@ -921,7 +935,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
-        refresh(isFirstInstall = false, forceRefresh = true)
     }
 
     fun getAddressData(): HomeChooseAddressData {
@@ -997,6 +1010,7 @@ open class HomeRevampViewModel @Inject constructor(
             )
         }
         _homeLiveData.postValue(homeDataModel)
+        _resetNestedScrolling.postValue(Event(true))
     }
 
     private fun logChannelUpdate(message: String){
