@@ -19,8 +19,7 @@ import com.tokopedia.pms.R
 import com.tokopedia.pms.bankaccount.data.model.BankListModel
 import com.tokopedia.pms.bankaccount.domain.BankListDataUseCase
 import com.tokopedia.pms.bankaccount.view.activity.ChangeBankAccountActivity.Companion.PAYMENT_LIST_MODEL_EXTRA
-import com.tokopedia.pms.bankaccount.view.bottomsheet.BankDestinationFragment
-import com.tokopedia.pms.bankaccount.view.bottomsheet.OnBankSelectedListener
+import com.tokopedia.pms.bankaccount.view.activity.ChangeBankListener
 import com.tokopedia.pms.bankaccount.viewmodel.ChangeBankAccountViewModel
 import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.BankTransferPaymentModel
@@ -34,7 +33,7 @@ import javax.inject.Inject
 /**
  * Created by zulfikarrahman on 6/25/18.
  */
-class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
+class ChangeBankAccountFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -104,16 +103,16 @@ class ChangeBankAccountFragment : BaseDaggerFragment(), OnBankSelectedListener {
         input_account_number.textFieldInput.setText(paymentListModel!!.senderBankInfo.accountNumber)
         input_account_name.textFieldInput.setText(paymentListModel!!.senderBankInfo.accountName)
 
-        val bankName = bankListDataUseCase.getBankNameFromBankId(paymentListModel!!.senderBankInfo.bankId)
+        val bankName =
+            bankListDataUseCase.getBankNameFromBankId(paymentListModel!!.senderBankInfo.bankId)
         input_dest_bank_account.textAreaInput.setText(bankName)
     }
 
     private fun openBankListForSelection() {
-        BankDestinationFragment.show(this, childFragmentManager)
+        (activity as ChangeBankListener).openDestinationBankBottomSheet()
     }
 
-
-    override fun onBankSelected(bankListModel: BankListModel) {
+    fun onBankSelected(bankListModel: BankListModel) {
         input_dest_bank_account?.textAreaInput?.setText(bankListModel.bankName)
     }
 

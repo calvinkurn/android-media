@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pms.R
 import com.tokopedia.pms.bankaccount.data.model.BankListModel
 import com.tokopedia.pms.bankaccount.domain.BankListDataUseCase
+import com.tokopedia.pms.bankaccount.view.activity.ChangeBankListener
 import com.tokopedia.pms.bankaccount.view.adapter.BankListAdapter
 import com.tokopedia.pms.paymentlist.di.DaggerPmsComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -20,12 +21,11 @@ import javax.inject.Inject
 /**
  * Created by zulfikarrahman on 7/5/18.
  */
-class BankDestinationFragment : BottomSheetUnify() {
+class BankDestinationBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var bankListDataUseCase: BankListDataUseCase
     private val childLayoutRes = R.layout.pms_base_recycler_bottom_sheet
-    private var bankListCallback: OnBankSelectedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,12 +52,16 @@ class BankDestinationFragment : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         if (::bankListDataUseCase.isInitialized) {
             baseRecyclerView.adapter = BankListAdapter(bankListDataUseCase.bankList) {
-                bankListCallback?.onBankSelected(it)
+                onDestinationBankSelected(it)
                 dismiss()
             }
             baseRecyclerView.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         } else dismiss()
+    }
+
+    private fun onDestinationBankSelected(bankListModel: BankListModel) {
+        (activity as ChangeBankListener).onBankSelected(bankListModel)
     }
 
     private fun setDefaultParams() {
@@ -71,18 +75,10 @@ class BankDestinationFragment : BottomSheetUnify() {
 
     companion object {
         private const val TAG = "BankDestinationFragment"
-        fun show(
-            bankListCallback: OnBankSelectedListener,
-            childFragmentManager: FragmentManager
-        ): BankDestinationFragment {
-            val fragment = BankDestinationFragment()
-            fragment.bankListCallback = bankListCallback
+        fun show(childFragmentManager: FragmentManager): BankDestinationBottomSheet {
+            val fragment = BankDestinationBottomSheet()
             fragment.show(childFragmentManager, TAG)
             return fragment
         }
     }
-}
-
-interface OnBankSelectedListener {
-    fun onBankSelected(bank: BankListModel)
 }

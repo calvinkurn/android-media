@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.pms.bankaccount.data.model.BankListModel
+import com.tokopedia.pms.bankaccount.view.bottomsheet.BankDestinationBottomSheet
 import com.tokopedia.pms.bankaccount.view.fragment.ChangeBankAccountFragment
 import com.tokopedia.pms.paymentlist.di.DaggerPmsComponent
 import com.tokopedia.pms.paymentlist.di.PmsComponent
@@ -17,7 +19,8 @@ import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 /**
  * Created by zulfikarrahman on 6/25/18.
  */
-class ChangeBankAccountActivity : BaseSimpleActivity(), HasComponent<PmsComponent> {
+class ChangeBankAccountActivity : BaseSimpleActivity(), HasComponent<PmsComponent>,
+    ChangeBankListener {
 
     private lateinit var component: PmsComponent
 
@@ -35,7 +38,7 @@ class ChangeBankAccountActivity : BaseSimpleActivity(), HasComponent<PmsComponen
         }
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val paymentListModel: BasePaymentModel =
             intent.getParcelableExtra(PAYMENT_LIST_MODEL_EXTRA)
         return ChangeBankAccountFragment.createInstance(paymentListModel)
@@ -51,6 +54,14 @@ class ChangeBankAccountActivity : BaseSimpleActivity(), HasComponent<PmsComponen
         return component
     }
 
+    override fun onBankSelected(bank: BankListModel) {
+        (fragment as ChangeBankAccountFragment).onBankSelected(bank)
+    }
+
+    override fun openDestinationBankBottomSheet() {
+        BankDestinationBottomSheet.show(supportFragmentManager)
+    }
+
     companion object {
         const val PAYMENT_LIST_MODEL_EXTRA = "payment_list_model_extra"
 
@@ -60,4 +71,9 @@ class ChangeBankAccountActivity : BaseSimpleActivity(), HasComponent<PmsComponen
             return intent
         }
     }
+}
+
+interface ChangeBankListener {
+    fun openDestinationBankBottomSheet()
+    fun onBankSelected(bank: BankListModel)
 }
