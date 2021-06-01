@@ -13,6 +13,7 @@ interface KYCConstant {
         const val UNHANDLED_RESPONSE = "1005"
         const val KYC_PROJECT_ID = 1
         const val MERCHANT_KYC_PROJECT_ID = 10
+        const val PM_PRO_KYC_PROJECT_ID = 17
         const val EXTRA_STRING_IMAGE_RESULT = "image_result"
         const val REQUEST_CODE_CAMERA_KTP = 1010
         const val REQUEST_CODE_CAMERA_FACE = 2020

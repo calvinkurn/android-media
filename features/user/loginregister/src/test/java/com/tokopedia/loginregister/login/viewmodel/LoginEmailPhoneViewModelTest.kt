@@ -396,23 +396,6 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
-    fun `on Login Email smart lock`() {
-        /* When */
-        val responseToken = mockk<LoginTokenPojo>(relaxed = true)
-
-        every { loginTokenUseCase.executeLoginEmailWithPassword(any(), any()) } answers {
-            (secondArg() as LoginTokenSubscriber).onSuccessLoginToken(responseToken)
-        }
-
-        viewModel.loginEmail(email, password, true)
-
-        /* Then */
-        verify {
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
-        }
-    }
-
-    @Test
     fun `on Login Email Failed`() {
 
         /* When */

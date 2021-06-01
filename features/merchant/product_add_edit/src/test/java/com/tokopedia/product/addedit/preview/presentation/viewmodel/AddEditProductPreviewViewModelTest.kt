@@ -373,7 +373,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         val response = ValidateProductNameResponse().apply {
             productValidateV3.isSuccess = true
-            productValidateV3.data.validationResults = listOf("test", "test", "hello")
+            productValidateV3.data.validationResults = listOf()
         }
 
         onValidateProductName_thenReturn(response)
@@ -399,7 +399,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         val response = ValidateProductNameResponse().apply {
             productValidateV3.isSuccess = true
-            productValidateV3.data.validationResults = listOf("test", "test", "hello")
+            productValidateV3.data.validationResults = listOf()
         }
 
         viewModel.productInputModel.value = ProductInputModel(
