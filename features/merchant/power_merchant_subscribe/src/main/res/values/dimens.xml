@@ -1,27 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="pm_spacing_6dp">6dp</dimen>
-    <dimen name="pm_spacing_10dp">10dp</dimen>
-    <dimen name="pm_spacing_18dp">18dp</dimen>
     <dimen name="pm_spacing_28dp">28dp</dimen>
-    <dimen name="pm_spacing_36dp">36dp</dimen>
-    <dimen name="pm_spacing_88dp">88dp</dimen>
     <dimen name="pm_spacing_100dp">100dp</dimen>
-    <dimen name="pm_spacing_128dp">128dp</dimen>
-    <dimen name="pm_spacing_140dp">140dp</dimen>
     <dimen name="pm_spacing_180dp">180dp</dimen>
-    <dimen name="power_merchant_horizontal_spacing">14dp</dimen>
-    <dimen name="power_merchant_image_icon_small">20dp</dimen>
-    <dimen name="power_merchant_image_icon_medium">24dp</dimen>
     <dimen name="power_merchant_feature_card_width">265dp</dimen>
-    <dimen name="power_merchant_image_icon_large">26dp</dimen>
-    <dimen name="power_merchant_feature_description_height">58dp</dimen>
     <dimen name="power_merchant_horizontal_spacing_small">12dp</dimen>
-    <dimen name="power_merchant_divider_height">1dp</dimen>
-    <dimen name="power_merchant_label_height">20dp</dimen>
     <dimen name="power_merchant_back_btn_margin">10dp</dimen>
-    <dimen name="power_merchant_notification_image_size">160dp</dimen>
-    <dimen name="power_merchant_chevron_right_size">10dp</dimen>
-    <dimen name="power_merchant_ic_free_shipping_size">40dp</dimen>
-    <dimen name="power_merchant_tips_btn_size">250dp</dimen>
 </resources>

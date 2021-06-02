@@ -130,10 +130,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         mViewModel.cancelPmDeactivationSubmission(shopTier)
     }
 
-    override fun setOnReloadClickListener() {
-        reloadPageContent()
-    }
-
     override fun setOnTickerWidgetRemoved(position: Int) {
         adapter.data.removeAt(position)
         recyclerView?.post {

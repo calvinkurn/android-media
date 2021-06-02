@@ -33,15 +33,12 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imagePowerMerchant"
-            android:layout_width="@dimen/power_merchant_image_icon_medium"
-            android:layout_height="@dimen/power_merchant_image_icon_medium"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/gmc_dimen_18dp"
             app:icon_name="BADGE_PM_FILLED"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textDescription"
-            app:srcCompat="@drawable/ic_power_merchant"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_power_merchant" />
+            app:layout_constraintTop_toBottomOf="@id/textDescription" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textPowerMerchant"
@@ -58,14 +55,13 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageTopAds"
-            android:layout_width="@dimen/power_merchant_image_icon_medium"
-            android:layout_height="@dimen/power_merchant_image_icon_medium"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/gmc_dimen_20dp"
             app:icon_color_light_enable="@color/Unify_GN500"
             app:icon_name="SHOP_FAVORITE"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imagePowerMerchant"
-            tools:ignore="ContentDescription"/>
+            app:layout_constraintTop_toBottomOf="@id/imagePowerMerchant" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textTopAds"
@@ -82,16 +78,13 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageCost"
-            android:layout_width="@dimen/power_merchant_image_icon_medium"
-            android:layout_height="@dimen/power_merchant_image_icon_medium"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/gmc_dimen_20dp"
             app:icon_color_light_enable="@color/Unify_GN500"
             app:icon_name="PROMO_ADS"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageTopAds"
-            app:srcCompat="@drawable/ic_cost_management"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_cost_management" />
+            app:layout_constraintTop_toBottomOf="@id/imageTopAds" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textCost"
@@ -108,16 +101,13 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/imageBroadcastChat"
-            android:layout_width="@dimen/power_merchant_image_icon_medium"
-            android:layout_height="@dimen/power_merchant_image_icon_medium"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/gmc_dimen_20dp"
             app:icon_color_light_enable="@color/Unify_GN500"
             app:icon_name="COURIER_FAST"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageCost"
-            app:srcCompat="@drawable/ic_pm_broadcast_chat"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_pm_broadcast_chat" />
+            app:layout_constraintTop_toBottomOf="@id/imageCost" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textBroadcastChat"
@@ -132,10 +122,10 @@
             app:layout_constraintTop_toTopOf="@id/imageBroadcastChat"
             app:typographyType="body_2" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageFreeShipping"
-            android:layout_width="@dimen/power_merchant_image_icon_medium"
-            android:layout_height="@dimen/power_merchant_image_icon_medium"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
