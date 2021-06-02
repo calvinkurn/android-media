@@ -134,7 +134,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     protected fun onProcessTopupNow(passData: DigitalCategoryDetailPassData) {
         activity?.let {
-            if (it.intent != null && it.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
+            if (it.intent != null && !it.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD).isNullOrEmpty()) {
+                //todo check
                 if (it.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) == DigitalExtraParam.EXTRA_NFC) {
                     navigatePageToDigitalProduct(passData)
                 } else {
