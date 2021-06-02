@@ -180,15 +180,15 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> {
                 onRequestCancelActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_CANCEL_ORDER
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_CANCEL_ORDER
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> {
                 onTrackShipmentActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_TRACK_ORDER
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_TRACK_ORDER
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> {
                 onComplaintActionButtonClicked(button.url)
-                BuyerOrderDetailTrackerConstant.BUTTON_COMPLAINT_ORDER
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_VIEW_COMPLAINT -> {
                 onViewComplaintActionButtonClicked(button.url)
@@ -196,7 +196,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER, BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> {
                 onReceiveConfirmationActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_FINISH_ORDER
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> {
                 onHelpActionButtonClicked(button)
@@ -208,7 +208,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_GIVE_REVIEW -> {
                 onGiveReviewActionButtonClicked(button.url)
-                BuyerOrderDetailTrackerConstant.BUTTON_REVIEW_ORDER
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_REVIEW_ORDER
             }
             else -> ""
         }
@@ -267,7 +267,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
                 navigator.goToCreateResolution(this, complaintUrl)
-                trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_COMPLAINT_ORDER)
+                trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER)
             }
         }
         bottomSheetReceiveConfirmation?.finishLoading()
@@ -291,7 +291,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onDoReceiveConfirmationActionButtonClicked() {
         viewModel.finishOrder()
-        trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_FINISH_ORDER)
+        trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER)
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {

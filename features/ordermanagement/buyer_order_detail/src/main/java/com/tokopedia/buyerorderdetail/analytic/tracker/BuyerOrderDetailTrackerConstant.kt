@@ -12,7 +12,6 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"
 
     // event actions
-    const val EVENT_ACTION_PARTIAL_CLICK = "click"
     const val EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON = "click on main button"
     const val EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON = "click on secondary button"
     const val EVENT_ACTION_PARTIAL_CLICK_ON_FINISH_ORDER_CONFIRMATION_DIALOG = "on finished order confirmation"
@@ -41,9 +40,9 @@ object BuyerOrderDetailTrackerConstant {
     // button name
     const val BUTTON_NAME_CHAT_SELLER = "chat seller"
     const val BUTTON_NAME_HELP = "bantuan"
-    const val BUTTON_CANCEL_ORDER = "cancel order"
-    const val BUTTON_TRACK_ORDER = "lacak"
-    const val BUTTON_COMPLAINT_ORDER = "ajukan complain"
-    const val BUTTON_FINISH_ORDER = "selesaikan pesanan"
-    const val BUTTON_REVIEW_ORDER = "beri ulasan"
+    const val BUTTON_NAME_CANCEL_ORDER = "cancel order"
+    const val BUTTON_NAME_TRACK_ORDER = "lacak"
+    const val BUTTON_NAME_COMPLAINT_ORDER = "ajukan complain"
+    const val BUTTON_NAME_FINISH_ORDER = "selesaikan pesanan"
+    const val BUTTON_NAME_REVIEW_ORDER = "beri ulasan"
 }
