@@ -1263,6 +1263,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
         resultProducts?.let {
             presenter.initProductPreviewFromAttachProduct(it)
+            removeSrwBubble()
         }
     }
 
