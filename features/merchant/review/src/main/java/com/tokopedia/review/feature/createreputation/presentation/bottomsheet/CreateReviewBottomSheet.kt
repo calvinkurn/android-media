@@ -126,7 +126,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews()
-        setOnTouchOutsideListener()
         setRatingClickListener()
         setAddPhotoOnClickListener()
         setSubmitButtonOnClickListener()
@@ -136,6 +135,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setPaddings()
         setRatingInitialState()
         setOnTouchListenerToHideKeyboard()
+        setOnTouchOutsideListener()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -189,8 +189,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
-        if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
-        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, isUserEligible(), (createReviewViewModel.reviewTemplates.value as? Success)?.data ?: listOf())
+        if(isUserEligible()) {
+            if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
+        }
+        textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, isUserEligible(), getTemplatesForTextArea())
         (textAreaBottomSheet as BottomSheetUnify).setTitle(textAreaTitle?.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
     }
@@ -309,6 +311,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         }
         updateTitleBasedOnSelectedRating(rating)
         updateButtonState(isGoodRating(), textArea?.isEmpty()?.not() ?: false)
+        createReviewViewModel.updateProgressBarFromRating(isGoodRating())
     }
 
     private fun getForm() {
@@ -833,5 +836,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             clearFocusAndHideSoftInput(view)
             return@setOnTouchListener false
         }
+    }
+
+    private fun getTemplatesForTextArea(): List<String> {
+        if(isGoodRating()) {
+            return (createReviewViewModel.reviewTemplates.value as? Success)?.data ?: listOf()
+        }
+        return listOf()
     }
 }

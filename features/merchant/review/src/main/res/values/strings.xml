@@ -123,7 +123,7 @@
     <string name="review_form_dismiss_form_dialog_title">Ulasanmu nanti hilang, lho! 😢</string>
     <string name="review_form_dismiss_form_dialog_body">Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini. Yakin tetap mau keluar?</string>
     <string name="review_form_dismiss_form_dialog_stay">Tetap di Sini</string>
-    <string name="review_form_templates_formatting">%s, </string>
+    <string name="review_form_templates_formatting">%s,&#160;</string>
     <string name="review_form_neutral_title">Apa yang bikin kamu kurang puas?</string>
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>
     <string name="review_form_good_helper">Yuk, ceritain kepuasanmu tentang kualitas barang &amp; pelayanan penjual.</string>
@@ -286,9 +286,9 @@
     <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap, kamu bisa dapat hadiah TokoPoints, lho!</string>
     <string name="review_create_incomplete_cancel">Lengkapi Ulasan Dulu</string>
     <string name="review_create_incomplete_send_anyways">Kirim Sekarang Aja</string>
-    <string name="review_create_text_area_empty">Tulis pengalamanmu di sini, min. 40 karakter, ya! &#128521;</string>
-    <string name="review_create_text_area_partial">Ayo, tinggal dikit lagi kamu bisa dapat TokoPoints. &#128588;&#127995;</string>
-    <string name="review_create_text_area_eligible">Oke, sudah siap kirim! Pastikan udah lengkap, ya. &#127881;</string>
+    <string name="review_create_text_area_empty">Tulis min. 40 karakter buat dapetin TokoPoints ✍️</string>
+    <string name="review_create_text_area_partial">Lengkapi sedikit lagi biar dapet TokoPoints 🙌</string>
+    <string name="review_create_text_area_eligible">Tulisanmu sudah lengkap? Sertain foto juga, ya  📸</string>
     <string name="review_create_rating_condition">Kasih ratingnya</string>
     <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
     <string name="review_create_review_condition">Tulis ulasan min. 40 karakter</string>

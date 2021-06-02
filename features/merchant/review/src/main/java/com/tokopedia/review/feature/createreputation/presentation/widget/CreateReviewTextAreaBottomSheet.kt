@@ -55,6 +55,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
             val view = View.inflate(context, R.layout.widget_create_review_text_area_bottom_sheet, null)
             editText = view.findViewById(R.id.createReviewBottomSheetEditText)
             incentiveHelperText = view.findViewById(R.id.incentiveHelperTypography)
+            templatesRecyclerView = view.findViewById(R.id.review_text_area_bottomsheet_templates_rv)
             editText?.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     activity?.run {
@@ -99,9 +100,11 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
 
                 })
             }
-            incentiveHelperText?.apply {
-                text = incentiveHelper
-                show()
+            if (isUserEligible) {
+                incentiveHelperText?.apply {
+                    text = incentiveHelper
+                    show()
+                }
             }
             setChild(view)
             showCloseIcon = false
@@ -141,7 +144,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     }
 
     private fun setTemplates() {
-        if(templates.isEmpty() || !isUserEligible) return
+        if (templates.isEmpty() || isUserEligible) return
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
             layoutManager = StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL)

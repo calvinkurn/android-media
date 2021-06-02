@@ -22,9 +22,10 @@
         android:paddingStart="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_12"
         android:visibility="gone"
+        android:paddingBottom="@dimen/dp_12"
+        android:layout_alignParentBottom="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/createReviewBottomSheetEditText" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/incentiveHelperTypography"

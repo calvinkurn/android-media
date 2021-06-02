@@ -1851,6 +1851,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onSuccessCreateReview() {
         view?.let { Toaster.build(it, getString(R.string.uoh_review_create_success_toaster, userSession.name), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.uoh_review_oke)).show() }
+        refreshHandler?.startRefresh()
     }
 
     private fun onFailCreateReview(errorMessage: String) {

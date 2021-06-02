@@ -231,7 +231,7 @@ Anda di sini.</string>
     <string name="contact_us_clickable_text">Hubungi Tokopedia Care</string>
     <string name="error_message_minimum_search_keyword">Masukkan min. 3 karakter di kolom pencarian.</string>
 
-    <string name="uoh_review_create_success_toaster">Terima kasih %s sudah bantu pembeli lain lewat ulasanmu</string>
+    <string name="uoh_review_create_success_toaster">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
     <string name="uoh_review_oke">Oke</string>
     <string name="uoh_review_create_invalid_to_review">Oops, kamu tidak bisa ulas barang ini karena sudah melebihi batas waktu.</string>
 
