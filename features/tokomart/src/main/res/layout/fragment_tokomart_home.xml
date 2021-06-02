@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/home_header_background_content_description"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_header_background" />
+            app:srcCompat="@drawable/tokomart_ic_header_background" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvHome"

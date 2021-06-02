@@ -64,7 +64,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
             it.clipToPadding = false
             it.clipChildren = false
             it.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            it.background = MethodChecker.getDrawable(context, R.drawable.bg_toolbar_shadow_bottom)
+            it.background = MethodChecker.getDrawable(context, R.drawable.tokomart_bg_shadow_bottom)
             it.setPadding(
                     0,
                     0,
