@@ -78,10 +78,11 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     }
 
     fun updateProductQty(productId: String, newQty: Int) {
-        miniCartListListUiModel.value?.visitables?.forEach { visitable ->
+        val visitables = miniCartListListUiModel.value?.visitables ?: emptyList()
+        loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
                 visitable.productQty = newQty
-                return@forEach
+                break@loop
             }
         }
     }
@@ -188,11 +189,11 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         if (totalWeight > maxWeight) {
             var tickerWarning: MiniCartTickerWarningUiModel? = null
             var tickerWarningIndex = -1
-            visitables.forEachIndexed { index, visitable ->
+            loop@ for ((index, visitable) in visitables.withIndex()) {
                 if (visitable is MiniCartTickerWarningUiModel) {
                     tickerWarning = visitable
                     tickerWarningIndex = index
-                    return@forEachIndexed
+                    break@loop
                 }
             }
 
@@ -201,7 +202,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
             val overWeight = (totalWeight - maxWeight) / 1000.0f
             if (tickerWarning == null) {
                 tickerWarning = miniCartListViewHolderMapper.mapTickerWarningUiModel(overWeight, warningWording)
-                tickerWarning?.let {
+                tickerWarning.let {
                     val firstItem = visitables.firstOrNull()
                     if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
                         visitables.add(1, it)
@@ -221,10 +222,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
 
     private fun removeTickerWarning(visitables: MutableList<Visitable<*>>) {
         var tmpIndex = -1
-        visitables.forEachIndexed { index, visitable ->
+        loop@ for ((index, visitable) in visitables.withIndex()) {
             if (visitable is MiniCartTickerWarningUiModel) {
                 tmpIndex = index
-                return@forEachIndexed
+                break@loop
             }
         }
 
@@ -238,11 +239,11 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 ?: mutableListOf()
         var accordionUiModel: MiniCartAccordionUiModel? = null
         var indexAccordionUiModel: Int = -1
-        visitables.forEachIndexed { index, visitable ->
+        loop@ for ((index, visitable) in visitables.withIndex()) {
             if (visitable is MiniCartAccordionUiModel) {
                 accordionUiModel = visitable
                 indexAccordionUiModel = index
-                return@forEachIndexed
+                break@loop
             }
         }
 
