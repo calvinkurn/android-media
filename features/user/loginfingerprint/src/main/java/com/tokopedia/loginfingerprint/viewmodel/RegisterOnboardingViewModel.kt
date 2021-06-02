@@ -3,12 +3,11 @@ package com.tokopedia.loginfingerprint.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,27 +35,37 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: CoroutineDispa
     fun registerFingerprint(){
         val signature = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
         signature?.run {
-            registerFingerprintUseCase.setRequestParams(registerFingerprintUseCase.createRequestParam(this, cryptographyUtils?.getPublicKey() ?: ""))
-            registerFingerprintUseCase.executeUseCase(onSuccessRegisterFP(), onErrorRegisterFP())
+            if(cryptographyUtils?.getPublicKey()?.isNotEmpty() == true){
+                registerFingerprintUseCase.registerFingerprint(
+                    this,
+                    cryptographyUtils.getPublicKey(),
+                    onSuccessRegisterFP(),
+                    onErrorRegisterFP()
+                )
+            }else {
+                onErrorRegisterFP().invoke(com.tokopedia.network.exception.MessageErrorException())
+            }
         }
     }
 
     private fun onSuccessRegisterFP(): (RegisterFingerprintPojo) -> Unit {
         return {
-            val errorMessage = it.data.errorMessage
-            val isSuccess = it.data.success
-
-            if (errorMessage.isBlank() && isSuccess) {
+            val response = it.data
+            if (response.errorMessage.isBlank() && response.success) {
                 mutableRegisterFingerprintResult.value = Success(it.data)
-                fingerprintSetting.registerFingerprint()
-                fingerprintSetting.saveUserId(userSession.userId)
-            } else if (!errorMessage.isBlank()) {
-                mutableRegisterFingerprintResult.value = Fail(MessageErrorException(errorMessage,
+                cacheFingerprint()
+            } else if (response.errorMessage.isNotBlank()) {
+                mutableRegisterFingerprintResult.value = Fail(com.tokopedia.network.exception.MessageErrorException(response.errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
             } else {
                 mutableRegisterFingerprintResult.value = Fail(RuntimeException())
             }
         }
+    }
+
+    private fun cacheFingerprint() {
+        fingerprintSetting.registerFingerprint()
+        fingerprintSetting.saveUserId(userSession.userId)
     }
 
     private fun onErrorRegisterFP(): (Throwable) -> Unit {
