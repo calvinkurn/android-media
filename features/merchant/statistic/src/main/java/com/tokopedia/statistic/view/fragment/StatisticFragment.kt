@@ -344,9 +344,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 ?: WidgetFilterBottomSheet.newInstance()
         tableFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data, element.tableFilters) {
             recyclerView?.post {
-                val copiedWidget = element.copy().apply { data = null }
-                notifyWidgetChanged(copiedWidget)
-                fetchTableData(listOf(element))
+                val copiedWidget = adapter.data
+                        ?.find { it.dataKey == element.dataKey }
+                        ?.apply { data = null } as? TableWidgetUiModel
+                copiedWidget?.let {
+                    notifyWidgetChanged(it)
+                    fetchTableData(listOf(copiedWidget))
+                }
             }
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
     }
