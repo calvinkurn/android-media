@@ -256,7 +256,8 @@ open class TopChatRoomPresenter @Inject constructor(
 
     private fun handleSrwBubbleState(pojo: ChatSocketPojo) {
         when (pojo.attachment?.type) {
-            AttachmentType.Companion.TYPE_INVOICE_SEND -> view?.removeSrwBubble()
+            AttachmentType.Companion.TYPE_INVOICE_SEND,
+            AttachmentType.Companion.TYPE_IMAGE_UPLOAD -> view?.removeSrwBubble()
         }
     }
 

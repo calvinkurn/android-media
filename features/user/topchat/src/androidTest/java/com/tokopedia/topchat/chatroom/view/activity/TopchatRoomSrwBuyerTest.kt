@@ -7,6 +7,7 @@ class TopchatRoomSrwBuyerTest {
     // TODO: SRW bubble always stays at the bottom when receive response msg from ws from different day
     // TODO: SRW bubble should be removed when user sent invoice
     // TODO: SRW bubble should be removed when user receive invoice event from himself.
+    // TODO: SRW bubble should be removed when user receive attach product event from ws/seller.
     // TODO: SRW preview should not be sent when user attach image.
     // TODO: SRW preview should not be sent when user receive attach image event from himself.
     // TODO: What if user receive event invoice & image from seller and SRW bubble still visible?.
