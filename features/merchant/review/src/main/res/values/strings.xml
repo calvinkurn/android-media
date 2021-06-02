@@ -281,13 +281,13 @@
     <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
     <!-- incentive -->
-    <string name="incentive_review_pending">Dapatkan Hadiah Points</string>
+    <string name="incentive_review_pending">Dapatkan TokoPoints</string>
     <string name="review_create_incomplete_title">Ulasanmu belum lengkap, nih</string>
-    <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap kamu bisa bantu calon pembeli lain &amp; dapat hadiah Points.</string>
+    <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap, kamu bisa dapat hadiah TokoPoints, lho!</string>
     <string name="review_create_incomplete_cancel">Lengkapi Ulasan Dulu</string>
     <string name="review_create_incomplete_send_anyways">Kirim Sekarang Aja</string>
     <string name="review_create_text_area_empty">Tulis pengalamanmu di sini, min. 40 karakter, ya! &#128521;</string>
-    <string name="review_create_text_area_partial">Ayo, tinggal dikit lagi kamu bisa dapat hadiah Points. &#128588;&#127995;</string>
+    <string name="review_create_text_area_partial">Ayo, tinggal dikit lagi kamu bisa dapat TokoPoints. &#128588;&#127995;</string>
     <string name="review_create_text_area_eligible">Oke, sudah siap kirim! Pastikan udah lengkap, ya. &#127881;</string>
     <string name="review_create_rating_condition">Kasih ratingnya</string>
     <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
@@ -295,7 +295,6 @@
     <string name="review_create_send_another">Kasih Ulasan Lagi</string>
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
-    <string name="review_create_thank_you_subtitle">Ulasan lengkap akan mendapatkan %d Points yang akan masuk dalam waktu maks. 24 jam.</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
     <string name="review_create_incentives_label">Dapatkan TokoPoints</string>
     <string name="review_create_rating_prompt">Seberapa puas dengan belanjaanmu?</string>

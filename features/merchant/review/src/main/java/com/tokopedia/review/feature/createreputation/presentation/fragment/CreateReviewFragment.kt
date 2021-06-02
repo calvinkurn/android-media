@@ -133,8 +133,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var isEditMode: Boolean = false
     private var feedbackId: Long = 0
     private var utmSource: String = ""
-    private var shouldShowThankYouBottomSheet = false
-    private var ovoIncentiveAmount = 0
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -598,13 +596,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
-        if (shouldShowThankYouBottomSheet) {
-            showThankYouBottomSheet(data)
-        }
         data?.productrevIncentiveOvo?.let {
-            if (ovoIncentiveAmount == 0) {
-                ovoIncentiveAmount = it.amount
-            }
             it.ticker.let {
                 ovoPointsTicker.apply {
                     visibility = View.VISIBLE
@@ -638,7 +630,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
-            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment, ovoIncentiveAmount) }
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment) }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
@@ -790,8 +782,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopLoading()
         showLayout()
         if (isUserEligible() && !isReviewIncomplete) {
-            getIncentiveOvoData()
-            shouldShowThankYouBottomSheet = true && !isReviewIncomplete
+            showThankYouBottomSheet((createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data)
             return
         }
         finishIfRoot(success = true, feedbackId = feedbackId)
