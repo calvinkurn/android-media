@@ -22,7 +22,7 @@ class DiscussionSetSmartReplySettingsUseCase @Inject constructor(graphqlReposito
         """
     }
 
-    private val requestParams = RequestParams.EMPTY
+    private val requestParams = RequestParams.create()
 
     init {
         setupUseCase()

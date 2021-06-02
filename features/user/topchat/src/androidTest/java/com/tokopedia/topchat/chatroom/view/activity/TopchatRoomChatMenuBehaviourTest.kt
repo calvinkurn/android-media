@@ -9,11 +9,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.matchers.isKeyboardShown
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers.`is`
 import org.junit.Test
 
 class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
@@ -78,7 +76,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickComposeArea()
 
         // Then
-        assertThat(isKeyboardShown(), `is`(true))
+        assertKeyboardIsVisible()
         onView(withId(R.id.fl_chat_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -103,7 +101,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickComposeArea()
 
         // Then
-        assertThat(isKeyboardShown(), `is`(true))
+        assertKeyboardIsVisible()
         onView(withId(R.id.fl_chat_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -155,7 +153,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickStickerIconMenu()
 
         // Then
-        assertThat(isKeyboardShown(), `is`(true))
+        assertKeyboardIsVisible()
         onView(withId(R.id.fl_chat_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -265,7 +263,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         //When
         val count = activityTestRule.activity
                 .findViewById<RecyclerView>(R.id.recycler_view)
-                .adapter?.itemCount?: 0
+                .adapter?.itemCount ?: 0
 
         onView(withId(R.id.new_comment)).perform(typeText("Test"))
         clickSendBtn()
@@ -276,7 +274,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                         0, R.id.tvMessage
                 ))
                 .check(matches(withText("Test")))
-        onView(withId(R.id.recycler_view)).check(matches(withTotalItem(count+1)))
+        onView(withId(R.id.recycler_view)).check(matches(withTotalItem(count + 1)))
         onView(withId(R.id.new_comment)).check(matches(withText("")))
     }
 

@@ -58,35 +58,34 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintBottom_toTopOf="@id/tv_see_all_benefit_pm_pro"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_shop_pm_pro_potential"
-            app:layout_constraintBottom_toTopOf="@id/tv_see_all_benefit_pm_pro"
             app:layout_constraintTop_toBottomOf="@id/tv_shop_pm_pro_potential"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_pm_pro_benefit" />
+            tools:itemCount="3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_see_all_benefit_pm_pro"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
             android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/text_see_all_benefit_pm_pro"
+            android:textColor="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="@id/rv_shop_pm_pro_potential_benefit"
             app:layout_constraintTop_toBottomOf="@id/rv_shop_pm_pro_potential_benefit"
-            android:text="@string/text_see_all_benefit_pm_pro"
-            android:textColor="@color/Unify_G500"/>
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_chevron_right_benefit_pm_pro"
             android:layout_width="@dimen/spacing_lvl5"
             android:layout_height="@dimen/spacing_lvl5"
-            app:icon_name="CHEVRON_RIGHT"
-            app:icon_color_light_enable="@color/Unify_G500"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:layout_constraintTop_toTopOf="@id/tv_see_all_benefit_pm_pro"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintBottom_toBottomOf="@id/tv_see_all_benefit_pm_pro"
-            app:layout_constraintStart_toEndOf="@id/tv_see_all_benefit_pm_pro"/>
+            app:layout_constraintStart_toEndOf="@id/tv_see_all_benefit_pm_pro"
+            app:layout_constraintTop_toTopOf="@id/tv_see_all_benefit_pm_pro" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -239,6 +239,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
+    override fun getShopBadgeView(): View? = imageShopBadge
+
     private interface QuantityEditorDebounce {
         fun onQuantityChanged(quantity: Int)
     }

@@ -18,9 +18,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -43,6 +47,7 @@ import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRS
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokomart.common.view.TokoMartHomeView
+import com.tokopedia.tokomart.home.constant.TokoNowConstant.SHOP_ID
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.domain.model.Data
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
@@ -51,6 +56,7 @@ import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeF
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -58,7 +64,7 @@ import kotlinx.android.synthetic.main.fragment_tokomart_home.*
 import java.util.*
 import javax.inject.Inject
 
-class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
+class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.HomeTickerListener, MiniCartWidgetListener {
 
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
@@ -74,7 +80,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
     @Inject
     lateinit var viewModel: TokoMartHomeViewModel
 
-    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this), TokoMartHomeListDiffer()) }
+    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this, this), TokoMartHomeListDiffer()) }
 
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
@@ -115,6 +121,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
         updateCurrentPageLocalCacheModelData()
 
         getHomeLayout()
+        getMiniCart()
     }
 
     override fun onAttach(context: Context) {
@@ -128,6 +135,13 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
     }
 
     override fun getFragment(): Fragment = this
+
+    override fun onTickerDismiss() {
+        adapter.removeTickerWidget()
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    }
 
     private fun initInjector() {
         DaggerTokoMartHomeComponent.builder()
@@ -266,6 +280,22 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
                 loadHomeLayout(it.data)
             }
         }
+
+        observe(viewModel.miniCart) {
+            if(it is Success) {
+                setupMiniCart(it.data)
+            }
+        }
+    }
+
+    private fun setupMiniCart(data: MiniCartSimplifiedData) {
+        if(data.isShowMiniCartWidget) {
+            val shopIds = listOf(SHOP_ID)
+            miniCartWidget.initialize(shopIds, this, this)
+            miniCartWidget.show()
+        } else {
+            miniCartWidget.hide()
+        }
     }
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
@@ -286,6 +316,10 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView {
 
     private fun getHomeLayout() {
         viewModel.getHomeLayout()
+    }
+
+    private fun getMiniCart()  {
+        viewModel.getMiniCart()
     }
 
     //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
