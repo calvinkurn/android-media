@@ -144,23 +144,25 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         miniCartProductList.forEach { visitable ->
             val updatedProduct = visitable.deepCopy()
             var isUpdatedWholeSalePrice = false // flag to update ui
-            visitable.wholesalePriceGroup.forEach wholesaleLoop@{ wholesalePrice ->
+            var isEligibleForWholesalePrice = false
+            loop@ for (wholesalePrice in visitable.wholesalePriceGroup) {
                 val qty = productParentQtyMap[visitable.parentId] ?: 0
-                var isEligibleForWholeSalePrice = false
 
                 // Set wholesale price if eligible
                 if (qty >= wholesalePrice.qtyMin) {
-                    updatedProduct.productWholeSalePrice = wholesalePrice.prdPrc
-                    isUpdatedWholeSalePrice = true
-                    isEligibleForWholeSalePrice = true
-                    return@wholesaleLoop
+                    if (updatedProduct.productWholeSalePrice != wholesalePrice.prdPrc) {
+                        updatedProduct.productWholeSalePrice = wholesalePrice.prdPrc
+                        isUpdatedWholeSalePrice = true
+                    }
+                    isEligibleForWholesalePrice = true
+                    break@loop
                 }
+            }
 
-                // Reset wholesale price not eligible and previously has wholesale price
-                if (!isEligibleForWholeSalePrice && visitable.productWholeSalePrice > 0L) {
-                    updatedProduct.productWholeSalePrice = 0
-                    isUpdatedWholeSalePrice = true
-                }
+            // Reset wholesale price not eligible and previously has wholesale price
+            if (!isEligibleForWholesalePrice && visitable.productWholeSalePrice > 0L) {
+                updatedProduct.productWholeSalePrice = 0
+                isUpdatedWholeSalePrice = true
             }
 
             if (isUpdatedWholeSalePrice) {
