@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerPmOption"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/layout_lvl1"
+    tools:background="@drawable/bg_pm_white_bordered_green">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmOptionLabel"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@+id/icPmOptionCheck"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="@string/pm_stop_pm" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmOptionName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmOptionLabel"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="@string/pm_regular_merchant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmOptionDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmOptionName"
+        app:typographyType="small"
+        tools:text="@string/pm_option_become_regular_merchant_description" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icPmOptionCheck"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_name="CHECK_CIRCLE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -173,6 +173,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         })
 
         bookingViewModel.promoData.observe(viewLifecycleOwner, Observer {
+            promoCode = it.promoCode
             setupPayNowPromoTicker(it)
         })
     }

@@ -104,6 +104,12 @@ interface ProductListSectionContract {
         fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
+        fun trackDynamicProductCarouselImpression(dynamicProductCarousel: BroadMatchItemDataView, type: String)
+        fun trackDynamicProductCarouselClick(dynamicProductCarousel: BroadMatchItemDataView, type: String)
+        fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
+        fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
+        fun modifyApplinkToSearchResult(applink: String): String
+        fun showPowerMerchantProPopUp()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -129,6 +135,7 @@ interface ProductListSectionContract {
         fun onBottomSheetFilterDismissed()
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
+        fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun handleAddToCartAction(productCardOptionModel: ProductCardOptionsModel)
         fun handleVisitShopAction()

@@ -78,7 +78,7 @@ class EnhancedECommerceProductCartMapData {
     }
 
     fun setShopType(shopType: String?) {
-        Product[KEY_SHOP_TYPE] = if (!shopType.isNullOrBlank()) shopType else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_SHOP_TYPE] = if (!shopType.isNullOrBlank()) shopType else VALUE_REGULER
     }
 
     fun setShopName(shopName: String?) {
@@ -226,5 +226,6 @@ class EnhancedECommerceProductCartMapData {
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         const val RECOMMENDATION_ATTRIBUTION = "recommendation"
+        const val VALUE_REGULER = "reguler"
     }
 }

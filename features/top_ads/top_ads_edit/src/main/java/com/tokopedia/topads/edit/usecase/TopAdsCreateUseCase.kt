@@ -10,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.edit.data.KeySharedModel
 import com.tokopedia.topads.edit.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.utils.Constants
@@ -36,10 +37,12 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.PUBLISHED
+import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by Pika on 24/5/20.
@@ -59,9 +62,9 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     }
 
     private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManageGroupAdsInput {
-//
+        val strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
         val groupName = dataGroup[GROUP_NAME] as? String
-        val priceBidGroup = dataGroup[Constants.PRICE_BID] as? Int
+        val priceBidGroup = dataKeyword[Constants.PRICE_BID] as? Int
         val dailyBudgetGroup = dataGroup[Constants.DAILY_BUDGET] as? Int
         val groupId = dataGroup[Constants.GROUP_ID] as? Int
         val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
@@ -70,11 +73,11 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         val dataDeleteProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("deletedProducts")
 
 
-        val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<GetKeywordResponse.KeywordsItem>
-        val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<GetKeywordResponse.KeywordsItem>
+        val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<KeySharedModel>
+        val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<KeySharedModel>
         val keywordsNegCreate = dataKeyword[NEGATIVE_KEYWORDS_ADDED] as? MutableList<GetKeywordResponse.KeywordsItem>
         val keywordsNegDelete = dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<GetKeywordResponse.KeywordsItem>
-        val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<GetKeywordResponse.KeywordsItem>
+        val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<KeySharedModel>
 
         //always
         val input = TopadsManageGroupAdsInput()
@@ -95,7 +98,8 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         group?.status = PUBLISHED
         group?.scheduleStart = ""
         group?.scheduleEnd = ""
-        if (isBudgetLimited == true) {
+        group?.strategies = strategy
+        if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
         } else
             group?.dailyBudget = dailyBudgetGroup?.toDouble()
@@ -123,7 +127,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.price_bid = posKey.priceBid.toDouble()
-            keyword.id = posKey.keywordId
+            keyword.id = posKey.id
             keyword.status = null
             keyword.tag = null
             keyword.type = null
@@ -137,7 +141,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.price_bid = null
-            keyword.id = posKey.keywordId
+            keyword.id = posKey.id
             keyword.tag = null
             keyword.status = null
             keyword.type = null
@@ -150,11 +154,11 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.source = keyPos.source
-            keyword.id = keyPos.keywordId
+            keyword.id = keyPos.id
             keyword.price_bid = keyPos.priceBid.toDouble()
             keyword.status = ACTIVE
-            keyword.tag = keyPos.tag
-            if (keyPos.type == KEYWORD_TYPE_PHRASE) {
+            keyword.tag = keyPos.name
+            if (keyPos.typeInt == KEYWORD_TYPE_PHRASE) {
                 keyword.type = POSITIVE_PHRASE
             } else {
                 keyword.type = POSITIVE_SPECIFIC

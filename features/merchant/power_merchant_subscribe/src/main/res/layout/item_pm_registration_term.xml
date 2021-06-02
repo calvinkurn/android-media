@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_12">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icPmHeaderTermItem"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmTermItemTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Neutral_N700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icPmHeaderTermItem"
+        app:layout_constraintTop_toTopOf="@+id/icPmHeaderTermItem"
+        app:typographyType="heading_5"
+        tools:text="Skor Toko : 85" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmTermItemDesc"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icPmHeaderTermItem"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmTermItemTitle"
+        app:typographyType="body_3"
+        tools:text="Skormu sudah mencapai batas min. skor 60 untuk daftar Power Merchant. Skor akan di-update setiap Senin, ya." />
+</androidx.constraintlayout.widget.ConstraintLayout>
