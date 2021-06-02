@@ -171,6 +171,7 @@ abstract class BaseSearchCategoryViewModel(
                 headerDataView.categoryFilterDataValue.filter
 
         filterController.initFilterController(queryParamMutable, filterList)
+        isRefreshStickyChipMutableLiveData.value = true
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         clearVisitableListLiveData()
@@ -203,7 +204,6 @@ abstract class BaseSearchCategoryViewModel(
 
         headerList.add(QuickFilterDataView(createQuickFilterItemList(headerDataView)))
         headerList.add(ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText))
-        isRefreshStickyChipMutableLiveData.value = true
 
         return headerList
     }
