@@ -6,6 +6,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
+/*For TokoNow use only*/
 class GetStateChosenAddressUseCase @Inject constructor(private val chooseAddressRepository: ChooseAddressRepository) : UseCase<GetStateChosenAddressQglResponse>() {
 
     private var source = ""
@@ -21,7 +22,7 @@ class GetStateChosenAddressUseCase @Inject constructor(private val chooseAddress
     }
 
     override suspend fun executeOnBackground(): GetStateChosenAddressQglResponse {
-        return chooseAddressRepository.getStateChosenAddress(source, null)
+        return chooseAddressRepository.getStateChosenAddress(source, true)
     }
 
 }
