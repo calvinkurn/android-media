@@ -35,7 +35,6 @@ abstract class BaseRechargeGeneralScreenShotTest {
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
-        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         setupDarkModeTest(forceDarkMode())
         setupGraphqlMockResponse(getMockConfig())
 
@@ -52,6 +51,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
     @After
     fun cleanUp() {
         Intents.release()
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
 
     @Test
