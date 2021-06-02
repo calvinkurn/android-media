@@ -81,6 +81,11 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 GlobalEvent.STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM -> {
                     hideProgressLoading()
                     updateTotalAmount(MiniCartWidgetData())
+                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
+                            ?: ""
+                    showToaster(message, "Batalkan") {
+                        viewModel.getCartList()
+                    }
                 }
             }
         })
