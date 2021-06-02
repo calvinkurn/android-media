@@ -17,6 +17,8 @@ android {
 
 dependencies {
     api project(rootProject.ext.libraries.analyticsDebugger)
+    implementation project(rootProject.ext.libraries.keys)
+
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
