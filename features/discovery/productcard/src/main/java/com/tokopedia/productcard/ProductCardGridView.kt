@@ -63,7 +63,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         renderButtonAddToCart(productCardModel)
 
         renderQuantityEditorNonVariant(productCardModel)
-        setQuantityEditorNonVariantValueChangedListener()
 
         renderVariant(productCardModel)
 
@@ -134,39 +133,48 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
-        buttonAddToCart?.shouldShowWithAction(productCardModel.hasAddToCartButton || productCardModel.shouldShowAddToCartNonVariantQuantity()) {
+        val shouldShowAddToCartButton =
+                productCardModel.hasAddToCartButton
+                        || productCardModel.shouldShowAddToCartNonVariantQuantity()
+
+        buttonAddToCart?.shouldShowWithAction(shouldShowAddToCartButton) {
             buttonAddToCart?.setOnClickListener {
-                if (productCardModel.shouldShowAddToCartNonVariantQuantity()) {
-                    productCardModel.nonVariant?.let { nonVariant ->
-                        val newValue = nonVariant.minQuantity
-                        addToCartNonVariantClickListener?.onQuantityChanged(newValue)
-                        quantityEditorNonVariant?.setValue(newValue)
-                        quantityEditorNonVariant?.show()
-                        buttonAddToCart?.gone()
-                    }
-                }
-                else {
+                if (productCardModel.shouldShowAddToCartNonVariantQuantity())
+                    addToCartNonVariantClick(productCardModel)
+                else
                     addToCartClickListener?.invoke(it)
-                }
             }
         }
 
-        if (productCardModel.shouldShowAddToCartNonVariantQuantity()) buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
-        else buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+        if (productCardModel.shouldShowAddToCartNonVariantQuantity())
+            buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
+        else
+            buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+    }
+
+    private fun addToCartNonVariantClick(productCardModel: ProductCardModel) {
+        val nonVariant = productCardModel.nonVariant ?: return
+        val newValue = nonVariant.minQuantity
+
+        addToCartNonVariantClickListener?.onQuantityChanged(newValue)
+        quantityEditorNonVariant?.setValue(newValue)
+        quantityEditorNonVariant?.show()
+        buttonAddToCart?.gone()
     }
 
     private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
-        productCardModel.nonVariant?.let {
-            quantityEditorNonVariant?.setValue(it.quantity)
-            quantityEditorNonVariant?.maxValue = it.maxQuantity
-            quantityEditorNonVariant?.minValue = it.minQuantity
-        }
-        quantityEditorNonVariant?.showWithCondition(productCardModel.shouldShowQuantityEditor())
-    }
+        val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
 
-    private fun setQuantityEditorNonVariantValueChangedListener() {
-        quantityEditorNonVariant?.setValueChangedListener { newValue, _, _ ->
-            addToCartNonVariantClickListener?.onQuantityChanged(quantity = newValue)
+        quantityEditorNonVariant?.shouldShowWithAction(shouldShowQuantityEditor) {
+            productCardModel.nonVariant?.let {
+                quantityEditorNonVariant?.setValue(it.quantity)
+                quantityEditorNonVariant?.maxValue = it.maxQuantity
+                quantityEditorNonVariant?.minValue = it.minQuantity
+            }
+
+            quantityEditorNonVariant?.setValueChangedListener { newValue, _, _ ->
+                addToCartNonVariantClickListener?.onQuantityChanged(newValue)
+            }
         }
     }
 
@@ -178,8 +186,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
             productCardModel.variant?.let { renderTextVariantQuantity(it.quantity) }
         }
-
-        dividerVariantQuantity?.showWithCondition(productCardModel.hasVariantWithQuantity())
     }
 
     private fun renderButtonAddVariant(productCardModel: ProductCardModel) {

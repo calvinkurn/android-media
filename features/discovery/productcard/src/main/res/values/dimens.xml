@@ -125,7 +125,7 @@
     <dimen name="product_card_quantity_editor_margin_top">8dp</dimen>
     <dimen name="product_card_quantity_editor_height">30dp</dimen>
 
-    <dimen name="product_card_button_add_variant_with_quantity_margin_start">4dp</dimen>
+    <dimen name="product_card_button_add_variant_with_quantity_margin_start">8dp</dimen>
     <dimen name="product_card_button_add_variant_margin_start">8dp</dimen>
     <dimen name="product_card_button_add_variant_with_quantity_margin_top">4dp</dimen>
     <dimen name="product_card_button_add_variant_margin_top">8dp</dimen>
