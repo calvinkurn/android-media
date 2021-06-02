@@ -190,7 +190,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.refreshPopularSearch(featureId)
     }
 
-    fun setSearchParameter(searchParameter: HashMap<String, String> ) {
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
         presenter.setSearchParameter(searchParameter)
     }
 

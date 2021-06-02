@@ -105,6 +105,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val updatedVisitableIndicesMutableLiveData = MutableLiveData<Event<List<Int>>>(null)
     val updatedVisitableIndicesLiveData: LiveData<Event<List<Int>>> = updatedVisitableIndicesMutableLiveData
 
+    protected val isRefreshPageMutableLiveData = MutableLiveData(false)
+    val isRefreshPageLiveData: LiveData<Boolean> = isRefreshPageMutableLiveData
+
     protected val addToCartErrorMessageMutableLiveData = MutableLiveData<String>(null)
     val addToCartErrorMessageLiveData: LiveData<String> = addToCartErrorMessageMutableLiveData
 
@@ -174,6 +177,7 @@ abstract class BaseSearchCategoryViewModel(
                 headerDataView.categoryFilterDataValue.filter
 
         filterController.initFilterController(queryParamMutable, filterList)
+        isRefreshPageMutableLiveData.value = true
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         clearVisitableListLiveData()
@@ -243,6 +247,7 @@ abstract class BaseSearchCategoryViewModel(
             sortFilterItem.listener = {
                 onFilterChipSelected(option, !isSelected)
             }
+
         }
         else {
             val listener = {

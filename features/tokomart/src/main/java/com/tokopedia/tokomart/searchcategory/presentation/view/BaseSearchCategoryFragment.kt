@@ -43,6 +43,7 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
+import com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
@@ -78,6 +79,7 @@ abstract class BaseSearchCategoryFragment:
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
     protected var miniCartWidget: MiniCartWidget? = null
+    protected var stickyView: StickySingleHeaderView? = null
 
     protected abstract val toolbarPageName: String
 
@@ -106,6 +108,7 @@ abstract class BaseSearchCategoryFragment:
         navToolbar = view.findViewById(R.id.tokonowSearchCategoryNavToolbar)
         recyclerView = view.findViewById(R.id.tokonowSearchCategoryRecyclerView)
         miniCartWidget = view.findViewById(R.id.tokonowSearchCategoryMiniCart)
+        stickyView = view.findViewById(R.id.tokonowSearchCategoryStickyView)
     }
 
     protected open fun configureNavToolbar() {
@@ -234,6 +237,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isL3FilterPageOpenLiveData.observe(this::configureL3BottomSheet)
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
+        getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
         getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
         getViewModel().addToCartErrorMessageLiveData.observe(this::showAddToCartMessage)
     }
@@ -259,6 +263,10 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun onLoadMore() {
         getViewModel().onLoadMore()
+    }
+
+    protected open fun scrollToTop(isRefresh: Boolean) {
+        stickyView?.scrollToTop()
     }
 
     override fun onLocalizingAddressSelected() {

@@ -1902,7 +1902,6 @@ class ProductListFragment: BaseDaggerFragment(),
             }
         } ?: emptyAddress
 
-
     override fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean {
         return context?.let {
             try {

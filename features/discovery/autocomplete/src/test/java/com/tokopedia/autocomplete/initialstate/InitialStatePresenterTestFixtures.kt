@@ -6,6 +6,8 @@ import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
