@@ -40,6 +40,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
 
     private val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
+    private var lastDeletedProductItem = mutableMapOf<Int, MiniCartProductUiModel>()
 
     fun getLatestWidgetState(shopIds: List<String>) {
         _currentShopIds.value = shopIds
@@ -297,12 +298,12 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         deleteCartUseCase.execute(
                 onSuccess = {
                     var visitables = miniCartListListUiModel.value?.visitables ?: mutableListOf()
-                    val deletedIndexes = mutableListOf<Int>()
+                    var deletedIndex: Int = -1
 
                     // Delete item
                     loop@ for ((index, visitable) in visitables.withIndex()) {
                         if (visitable is MiniCartProductUiModel && visitable.cartId == product.cartId) {
-                            deletedIndexes.add(index)
+                            deletedIndex = index
                             break@loop
                         }
                     }
@@ -310,7 +311,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     // Validate to delete other for available items
                     var hasAvailableItem = false
                     loop@ for ((index, visitable) in visitables.withIndex()) {
-                        if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled && !deletedIndexes.contains(index)) {
+                        if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled && deletedIndex != index) {
                             hasAvailableItem = true
                             break@loop
                         }
@@ -325,15 +326,17 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                         _miniCartListUiModel.value = miniCartListListUiModel.value
 
                         _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM)
+                        calculateProduct()
                     } else {
-                        if (deletedIndexes.isNotEmpty()) {
-                            deletedIndexes.forEach {
-                                visitables.removeAt(it)
-                            }
+                        if (deletedIndex != -1) {
+                            lastDeletedProductItem.clear()
+                            lastDeletedProductItem[deletedIndex] = visitables[deletedIndex] as MiniCartProductUiModel
+                            visitables.removeAt(deletedIndex)
                             miniCartListListUiModel.value?.visitables = visitables
                             _miniCartListUiModel.value = miniCartListListUiModel.value
 
                             _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM)
+                            calculateProduct()
                         }
                     }
                 },
@@ -354,6 +357,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         deleteCartUseCase.execute(
                 onSuccess = {
                     _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_BULK_DELETE_UNAVAILABLE_ITEMS)
+                    calculateProduct()
                 },
                 onError = {
                     _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_BULK_DELETE_UNAVAILABLE_ITEMS)
@@ -361,16 +365,26 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         )
     }
 
-    fun undoDeleteCartItems(products: List<MiniCartProductUiModel>) {
-        undoDeleteCartUseCase.setParams(products)
-        undoDeleteCartUseCase.execute(
-                onSuccess = {
+    fun undoDeleteCartItems() {
+        if (lastDeletedProductItem.isNotEmpty()) {
+            for ((index, value) in lastDeletedProductItem) {
+                undoDeleteCartUseCase.setParams(value.cartId)
+                undoDeleteCartUseCase.execute(
+                        onSuccess = {
+                            val visitables = miniCartListListUiModel.value?.visitables ?: mutableListOf()
+                            visitables.add(index, value)
 
-                },
-                onError = {
+                            miniCartListListUiModel.value?.visitables = visitables
+                            _miniCartListUiModel.value = miniCartListListUiModel.value
 
-                }
-        )
+                            calculateProduct()
+                        },
+                        onError = {
+
+                        }
+                )
+            }
+        }
     }
 
     fun updateCart(isForCheckout: Boolean = false) {

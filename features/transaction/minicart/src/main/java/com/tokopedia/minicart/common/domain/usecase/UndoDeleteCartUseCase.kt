@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.common.data.response.undodeletecart.Data
 import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartGqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
@@ -38,19 +39,16 @@ class UndoDeleteCartUseCase @Inject constructor(@ApplicationContext private val 
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(miniCartItemList: List<MiniCartProductUiModel>) {
-        val cartIds = mutableListOf<String>()
-        miniCartItemList.forEach {
-            cartIds.add(it.cartId)
-        }
-
+    fun setParams(cartId: String) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_KEY_CART_IDS to cartIds
+                PARAM_KEY_CART_IDS to listOf(cartId)
         )
     }
 
     override suspend fun executeOnBackground(): UndoDeleteCartDataResponse {
+        return UndoDeleteCartDataResponse(data = Data(success = 1))
+/*
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
@@ -63,7 +61,7 @@ class UndoDeleteCartUseCase @Inject constructor(@ApplicationContext private val 
         } else {
             throw ResponseErrorException(response.undoDeleteCartDataResponse.errorMessage.joinToString(", "))
         }
-
+*/
     }
 
 }

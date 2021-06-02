@@ -3,4 +3,5 @@
     <string name="mini_cart_widget_label_buy">Beli (%d)</string>
     <string name="mini_cart_widget_label_buy_empty">Beli</string>
     <string name="mini_cart_label_product_notes">Tulis catatan untuk barang ini</string>
+    <string name="mini_cart_message_product_already_deleted">1 barang telah dihapus</string>
 </resources>

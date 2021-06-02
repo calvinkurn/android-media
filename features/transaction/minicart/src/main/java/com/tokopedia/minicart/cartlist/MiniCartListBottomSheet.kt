@@ -3,6 +3,9 @@ package com.tokopedia.minicart.cartlist
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -25,13 +28,14 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import io.hansel.pebbletracesdk.presets.UIPresets.findViewById
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration) : MiniCartWidgetListener, MiniCartListActionListener {
 
-    lateinit var view: View
     lateinit var viewModel: MiniCartWidgetViewModel
+    private var bottomsheetContainer: CoordinatorLayout? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var totalAmount: TotalAmount? = null
     private var rvMiniCartList: RecyclerView? = null
@@ -68,9 +72,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         viewModel.globalEvent.observe(lifecycleOwner, {
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
-                    calculateProduct()
-                    bottomSheet?.view?.let {
-                        Toaster.build(it, "Berhasil delete", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
+                            ?: ""
+                    showToaster(message, "Batalkan") {
+                        viewModel.undoDeleteCartItems()
                     }
                 }
                 GlobalEvent.STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM -> {
@@ -101,7 +106,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 }
             }
 
-            view = View.inflate(it, R.layout.layout_bottomsheet_mini_cart_list, null)
+            val view = View.inflate(it, R.layout.layout_bottomsheet_mini_cart_list, null)
+            bottomsheetContainer = view.findViewById(R.id.bottomsheet_container)
             bottomSheet?.setChild(view)
             bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
 
@@ -166,6 +172,22 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             }
         }
         totalAmount?.isTotalAmountLoading = false
+    }
+
+    private fun showToaster(message: String, ctaText: String = "", onClickListener: View.OnClickListener? = null) {
+        bottomsheetContainer?.let {
+            Toaster.toasterCustomBottomHeight = bottomSheet?.resources?.getDimensionPixelSize(R.dimen.dp_100)
+                    ?: 0
+            if (ctaText.isNotBlank()) {
+                var tmpCtaClickListener = View.OnClickListener { }
+                if (onClickListener != null) {
+                    tmpCtaClickListener = onClickListener
+                }
+                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, tmpCtaClickListener).show()
+            } else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+            }
+        }
     }
 
     private fun showLoading() {
