@@ -3,6 +3,7 @@ package com.tokopedia.minicart.cartlist
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -38,6 +39,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private var rvMiniCartList: RecyclerView? = null
     private var adapter: MiniCartListAdapter? = null
     private var measureRecyclerViewPaddingJob: Job? = null
+    private var progressDialog: AlertDialog? = null
 
     fun show(context: Context?,
              fragmentManager: FragmentManager,
@@ -69,6 +71,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         viewModel.globalEvent.observe(lifecycleOwner, {
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
+                    hideProgressLoading()
                     val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
                             ?: ""
                     showToaster(message, "Batalkan") {
@@ -76,6 +79,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     }
                 }
                 GlobalEvent.STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM -> {
+                    hideProgressLoading()
                     updateTotalAmount(MiniCartWidgetData())
                 }
             }
@@ -108,9 +112,17 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             bottomSheet?.setChild(view)
             bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
 
+            initializeProgressDialog(it)
             initializeTotalAmount(view)
             initializeRecyclerView(view)
         }
+    }
+
+    private fun initializeProgressDialog(context: Context) {
+        progressDialog = AlertDialog.Builder(context)
+                .setView(R.layout.mini_cart_progress_dialog_view)
+                .setCancelable(false)
+                .create()
     }
 
     private fun initializeRecyclerView(view: View) {
@@ -177,7 +189,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
         bottomSheet?.context?.let {
             bottomsheetContainer?.let {
-                Toaster.toasterCustomBottomHeight = bottomSheet?.resources?.getDimensionPixelSize(R.dimen.dp_100)
+                Toaster.toasterCustomBottomHeight = bottomSheet?.resources?.getDimensionPixelSize(R.dimen.dp_72)
                         ?: 0
                 if (ctaText.isNotBlank()) {
                     var tmpCtaClickListener = View.OnClickListener { }
@@ -204,6 +216,18 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         adapter?.hideLoading()
     }
 
+    private fun showProgressLoading() {
+        if (progressDialog?.isShowing == false) {
+            progressDialog?.show()
+        }
+    }
+
+    fun hideProgressLoading() {
+        if (progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
+        }
+    }
+
     private fun calculateProduct() {
         viewModel.calculateProduct()
     }
@@ -213,10 +237,12 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
+        showProgressLoading()
         viewModel.singleDeleteCartItems(element)
     }
 
     override fun onBulkDeleteUnavailableItems() {
+        showProgressLoading()
         viewModel.bulkDeleteUnavailableCartItems()
     }
 
