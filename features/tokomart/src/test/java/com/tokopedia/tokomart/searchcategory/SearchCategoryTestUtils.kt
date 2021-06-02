@@ -115,6 +115,7 @@ fun verifyProductItemDataViewList(
         assertThat(actualProductDataView.discountPercentage, shouldBe(expectedProduct.discountPercentage))
         assertThat(actualProductDataView.originalPrice, shouldBe(expectedProduct.originalPrice))
         assertThat(actualProductDataView.parentId, shouldBe(expectedProduct.parentId))
+        assertThat(actualProductDataView.shop.id, shouldBe(expectedProduct.shop.id))
         assertLabelGroupDataView(actualProductDataView.labelGroupDataViewList, expectedProduct.labelGroupList)
         assertLabelGroupVariantDataView(
                 actualProductDataView.labelGroupVariantDataViewList,

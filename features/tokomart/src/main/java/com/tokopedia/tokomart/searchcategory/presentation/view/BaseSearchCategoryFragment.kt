@@ -52,7 +52,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import java.util.HashMap
+import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -235,6 +235,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
+        getViewModel().addToCartErrorMessageLiveData.observe(this::showAddToCartMessage)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -396,7 +397,19 @@ abstract class BaseSearchCategoryFragment:
             productItemDataView: ProductItemDataView,
             quantity: Int,
     ) {
+        getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
+    }
 
+    private fun showAddToCartMessage(message: String?) {
+        val view = view ?: return
+        message ?: return
+
+        if (message.isEmpty()) {
+            val successMessage = getString(R.string.tokomart_add_to_cart_success)
+            Toaster.build(view, successMessage, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        } else {
+            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun onResume() {

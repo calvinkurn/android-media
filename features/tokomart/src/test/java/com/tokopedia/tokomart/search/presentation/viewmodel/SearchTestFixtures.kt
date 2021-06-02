@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -31,6 +32,7 @@ open class SearchTestFixtures {
     protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
+    protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     protected val chooseAdddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
     protected lateinit var searchViewModel: SearchViewModel
@@ -49,6 +51,7 @@ open class SearchTestFixtures {
                 getFilterUseCase,
                 getProductCountUseCase,
                 getMiniCartListSimplifiedUseCase,
+                addToCartUseCase,
                 chooseAdddressWrapper,
                 abTestPlatformWrapper,
         )

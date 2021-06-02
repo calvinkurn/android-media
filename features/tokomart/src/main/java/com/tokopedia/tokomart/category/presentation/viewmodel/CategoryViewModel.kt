@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -38,6 +39,7 @@ class CategoryViewModel @Inject constructor (
         getFilterUseCase: UseCase<DynamicFilterModel>,
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+        addToCartUseCase: AddToCartUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseSearchCategoryViewModel(
@@ -46,6 +48,7 @@ class CategoryViewModel @Inject constructor (
         getFilterUseCase,
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
+        addToCartUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
 ) {

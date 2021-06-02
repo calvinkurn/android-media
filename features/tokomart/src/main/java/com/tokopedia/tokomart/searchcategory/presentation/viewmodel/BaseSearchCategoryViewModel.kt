@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
@@ -61,6 +63,7 @@ abstract class BaseSearchCategoryViewModel(
         protected val getFilterUseCase: UseCase<DynamicFilterModel>,
         protected val getProductCountUseCase: UseCase<String>,
         protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+        protected val addToCartUseCase: AddToCartUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseViewModel(baseDispatcher.io) {
@@ -101,6 +104,9 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val updatedVisitableIndicesMutableLiveData = MutableLiveData<Event<List<Int>>>(null)
     val updatedVisitableIndicesLiveData: LiveData<Event<List<Int>>> = updatedVisitableIndicesMutableLiveData
+
+    protected val addToCartErrorMessageMutableLiveData = MutableLiveData<String>(null)
+    val addToCartErrorMessageLiveData: LiveData<String> = addToCartErrorMessageMutableLiveData
 
     protected var totalData = 0
     protected var totalFetchedData = 0
@@ -296,6 +302,9 @@ abstract class BaseSearchCategoryViewModel(
                 discountPercentage = product.discountPercentage,
                 originalPrice = product.originalPrice,
                 parentId = product.parentId,
+                shop = ProductItemDataView.Shop(
+                        id = product.shop.id,
+                ),
                 variantATC = createVariantATCDataView(product),
                 nonVariantATC = createNonVariantATCDataView(product),
                 labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
@@ -566,6 +575,25 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun onGetMiniCartDataFailed(throwable: Throwable) {
 
+    }
+
+    open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+                productId = productItem.id,
+                shopId = productItem.shop.id,
+                quantity = quantity,
+        )
+
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute(::onAddToCartSuccess, ::onAddToCartFailed)
+    }
+
+    private fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel) {
+        addToCartErrorMessageMutableLiveData.value = ""
+    }
+
+    private fun onAddToCartFailed(throwable: Throwable) {
+        addToCartErrorMessageMutableLiveData.value = throwable.message
     }
 
     protected class HeaderDataView(

@@ -19,4 +19,6 @@
     <string name="tokomart_search_category_product_count_template">%s Produk</string>
     <string name="tokomart_category_aisle_header">Lihat kategori lainnya</string>
 
+    <string name="tokomart_add_to_cart_success">Sukses menambah ke keranjang</string>
+
 </resources>
