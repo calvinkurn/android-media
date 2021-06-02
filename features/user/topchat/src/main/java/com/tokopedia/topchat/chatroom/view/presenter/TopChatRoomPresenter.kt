@@ -246,10 +246,17 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun onReplyMessage(pojo: ChatSocketPojo) {
         val temp = mapToVisitable(pojo)
         view?.onReceiveMessageEvent(temp)
+        handleSrwBubbleState(pojo)
         if (!pojo.isOpposite) {
             checkDummyAndRemove(temp)
         } else {
             readMessage()
+        }
+    }
+
+    private fun handleSrwBubbleState(pojo: ChatSocketPojo) {
+        when (pojo.attachment?.type) {
+            AttachmentType.Companion.TYPE_INVOICE_SEND -> view?.removeSrwBubble()
         }
     }
 

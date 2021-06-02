@@ -298,6 +298,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         rvSrw?.isExpanded = true
     }
 
+    override fun removeSrwBubble() {
+        adapter.removeSrwBubble()
+    }
+
     override fun shouldShowSrw(): Boolean {
         return !isSeller() && hasProductPreviewShown() &&
                 rvSrw?.isAllowToShow() == true ||

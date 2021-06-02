@@ -41,10 +41,10 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
  * @author : Steven 02/01/19
  */
 class TopChatRoomAdapter constructor(
-        private val context: Context?,
-        private val adapterTypeFactory: TopChatTypeFactoryImpl
+    private val context: Context?,
+    private val adapterTypeFactory: TopChatTypeFactoryImpl
 ) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener,
-        AdapterListener {
+    AdapterListener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private var bottomMostHeaderDate: HeaderDateUiModel? = null
@@ -53,6 +53,8 @@ class TopChatRoomAdapter constructor(
     private val carouselViewPool = RecyclerView.RecycledViewPool()
     private val handler = Handler(Looper.getMainLooper())
     private var offset = 0
+    private var offsetUiModelMap = ArrayMap<Visitable<*>, Int>()
+    private var srwUiModel: SrwBubbleUiModel? = null
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -62,7 +64,10 @@ class TopChatRoomAdapter constructor(
         return adapterTypeFactory.getItemViewType(visitables, position, default)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<out Visitable<*>> {
         return adapterTypeFactory.createViewHolder(parent, viewType, this, this)
     }
 
@@ -165,7 +170,11 @@ class TopChatRoomAdapter constructor(
         }
     }
 
-    fun updateAttachmentView(firstVisible: Int, lastVisible: Int, attachments: ArrayMap<String, Attachment>) {
+    fun updateAttachmentView(
+        firstVisible: Int,
+        lastVisible: Int,
+        attachments: ArrayMap<String, Attachment>
+    ) {
         if (firstVisible > lastVisible) return
         if (firstVisible < 0 || lastVisible >= visitables.size) return
         for (itemPosition in firstVisible..lastVisible) {
@@ -310,10 +319,10 @@ class TopChatRoomAdapter constructor(
 
 
     fun updateReviewState(
-            review: ReviewUiModel,
-            lastKnownPosition: Int,
-            reviewClickAt: Int,
-            state: Int
+        review: ReviewUiModel,
+        lastKnownPosition: Int,
+        reviewClickAt: Int,
+        state: Int
     ) {
         handler.post {
             postUpdateReviewState(lastKnownPosition, review, state, reviewClickAt)
@@ -321,14 +330,14 @@ class TopChatRoomAdapter constructor(
     }
 
     fun updateProductStock(
-            updateProductResult: UpdateProductStockResult, stockCount: Int, status: String
+        updateProductResult: UpdateProductStockResult, stockCount: Int, status: String
     ) {
         val itemPair = getUpToDateUiModelPosition(
-                updateProductResult.lastKnownPosition, updateProductResult.product
+            updateProductResult.lastKnownPosition, updateProductResult.product
         )
         val parentPair: Pair<Int, Visitable<*>?>? = updateProductResult.parentMetaData?.let {
             getUpToDateUiModelPosition(
-                    it.lastKnownPosition, it.uiModel
+                it.lastKnownPosition, it.uiModel
             )
         }
         val position = if (parentPair != null && parentPair.first != RecyclerView.NO_POSITION) {
@@ -353,8 +362,8 @@ class TopChatRoomAdapter constructor(
     }
 
     private fun postUpdateReviewState(
-            lastKnownPosition: Int, review: ReviewUiModel,
-            state: Int, reviewClickAt: Int
+        lastKnownPosition: Int, review: ReviewUiModel,
+        state: Int, reviewClickAt: Int
     ) {
         val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
         val position = itemPair.first
@@ -382,21 +391,36 @@ class TopChatRoomAdapter constructor(
     }
 
     fun addSrwBubbleUiModel(
-            srwState: SrwFrameLayout.SrwState?,
-            products: List<SendablePreview>
+        srwState: SrwFrameLayout.SrwState?,
+        products: List<SendablePreview>
     ) {
         srwState ?: return
-        val uiModel = SrwBubbleUiModel(srwState, products)
+        srwUiModel = SrwBubbleUiModel(srwState, products)
         val indexToAdd = getOffsetSafely()
-        visitables.add(indexToAdd, uiModel)
+        visitables.add(indexToAdd, srwUiModel)
         notifyItemInserted(indexToAdd)
         offset++
+        offsetUiModelMap[srwUiModel] = indexToAdd
     }
 
     override fun addElement(item: Visitable<*>) {
         val indexToAdd = getOffsetSafely()
         visitables.add(indexToAdd, item)
         notifyItemInserted(indexToAdd)
+    }
+
+    fun removeSrwBubble() {
+        val srwModel = srwUiModel ?: return
+        var lastKnownPosition = offsetUiModelMap[srwModel] ?: return
+        val upToDateUiModelData = getUpToDateUiModelPosition(lastKnownPosition, srwModel)
+        if (lastKnownPosition != upToDateUiModelData.first) {
+            lastKnownPosition = upToDateUiModelData.first
+        }
+        visitables.removeAt(lastKnownPosition)
+        notifyItemRemoved(lastKnownPosition)
+        offset--
+        offsetUiModelMap.remove(srwModel)
+        srwUiModel = null
     }
 
     private fun getOffsetSafely(): Int {
@@ -445,8 +469,13 @@ class TopChatRoomAdapter constructor(
         return visitables.isNotEmpty() && visitables.size >= 2
     }
 
+    /**
+     * return Pair<Int, T?>.
+     * the first Int is the latest / up-to-date ui model position
+     * the second T? is the ui model at the up-to-date position
+     */
     private inline fun <reified T : Visitable<*>> getUpToDateUiModelPosition(
-            lastKnownPosition: Int, element: T
+        lastKnownPosition: Int, element: T
     ): Pair<Int, T?> {
         val item = visitables.getOrNull(lastKnownPosition)
         if (item == element) {

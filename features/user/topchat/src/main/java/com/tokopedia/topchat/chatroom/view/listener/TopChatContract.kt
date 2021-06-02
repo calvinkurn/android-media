@@ -75,6 +75,7 @@ interface TopChatContract {
         fun hasNoSrw(): Boolean
         fun collapseSrw()
         fun expandSrw()
+        fun removeSrwBubble()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
