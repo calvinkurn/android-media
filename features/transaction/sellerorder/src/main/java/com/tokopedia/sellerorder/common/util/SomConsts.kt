@@ -13,6 +13,7 @@ object SomConsts {
     const val PARAM_BARCODE_TYPE = "barcodeType"
     const val PARAM_ORDER_CODE = "order_code"
     const val PARAM_INVOICE = "invoice"
+    const val PARAM_PASS_INVOICE = "pass_invoice"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"
@@ -148,4 +149,6 @@ object SomConsts {
     const val PRINT_AWB_ORDER_ID_QUERY_PARAM = "order_id"
     const val PRINT_AWB_MARK_AS_PRINTED_QUERY_PARAM = "mark_as_printed"
     const val PRINT_AWB_WEBVIEW_TITLE = "Pengaturan Label Pengiriman"
+
+    const val PREFIX_HTTP = "http"
 }

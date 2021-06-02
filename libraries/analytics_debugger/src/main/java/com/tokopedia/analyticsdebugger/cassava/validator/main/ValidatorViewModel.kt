@@ -1,19 +1,15 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.main
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
-import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaUrl
-import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultData
-import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequest
 import com.tokopedia.analyticsdebugger.cassava.domain.JourneyListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
-import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
-import com.tokopedia.analyticsdebugger.cassava.validator.core.*
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
+import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
+import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
+import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.helper.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,10 +18,9 @@ import javax.inject.Inject
 
 class ValidatorViewModel @Inject constructor(
         private val queryListUseCase: QueryListUseCase,
-        private val validationResultUseCase: ValidationResultUseCase,
         private val journeyListUseCase: JourneyListUseCase,
         private val engine: ValidatorEngine,
-        private val repo: GtmRepo,
+        private val repo: GtmRepo
 ) : ViewModel() {
 
     private var journeyId: String = ""
@@ -65,9 +60,6 @@ class ValidatorViewModel @Inject constructor(
                 val testResult = engine.computeCo(v, mode)
                 _testCases.value = testResult
                 val endTime = System.currentTimeMillis()
-                if (_cassavaSource.value == CassavaSource.NETWORK) {
-                    sendValidationResult(testResult)
-                }
                 Timber.i("Retrieved in: ${endTime - startTime} Got ${testResult.size} results")
             } catch (e: Exception) {
                 _snackBarMessage.setValue(e.message ?: "")
@@ -96,24 +88,6 @@ class ValidatorViewModel @Inject constructor(
                 t.printStackTrace()
                 _snackBarMessage.postValue(t.message)
             }
-        }
-    }
-
-    private fun sendValidationResult(testResult: List<Validator>) {
-        viewModelScope.launch(CoroutineDispatchersProvider.io) {
-            validationResultUseCase.execute(
-                    journeyId = journeyId,
-                    validationResult = ValidationResultRequest(
-                            version = "",
-                            token = CassavaUrl.TOKEN,
-                            data = testResult.map {
-                                ValidationResultData(
-                                        dataLayerId = it.id,
-                                        result = it.status == Status.SUCCESS,
-                                        errorMessage = ""
-                                )
-                            }.toList()
-                    ))
         }
     }
 

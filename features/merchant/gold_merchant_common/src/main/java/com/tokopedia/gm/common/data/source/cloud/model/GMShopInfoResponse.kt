@@ -12,8 +12,6 @@ data class GMShopInfoResponse(
 )
 
 data class GoldGetPMShopInfoDataModel(
-        @SerializedName("shop_id")
-        val shopId: Long? = 0,
         @SerializedName("is_new_seller")
         val isNewSeller: Boolean? = true,
         @SerializedName("shop_age")
@@ -21,17 +19,27 @@ data class GoldGetPMShopInfoDataModel(
         @SerializedName("is_kyc")
         val isKyc: Boolean? = false,
         @SerializedName("kyc_status_id")
-        val kycStatusId: Int? = 0,
+        val kycStatusId: String? = "0",
         @SerializedName("shop_score_sum")
         val shopScore: Int? = 0,
         @SerializedName("shop_score_threshold")
         val shopScoreThreshold: Int? = 0,
-        @SerializedName("is_eligible_shop_score")
-        val isEligibleShopScore: Boolean? = false,
+        @SerializedName("shop_score_pm_pro_threshold")
+        val shopScorePmProThreshold: Int? = 0,
         @SerializedName("is_has_active_product")
         val hasActiveProduct: Boolean? = false,
         @SerializedName("is_eligible_pm")
         val isEligiblePm: Boolean? = false,
+        @SerializedName("is_eligible_pm_pro")
+        val isEligiblePmPro: Boolean? = false,
         @SerializedName("shop_level")
-        val shopLevel: Int? = 0
+        val shopLevel: Int? = 0,
+        @SerializedName("item_sold_one_month")
+        val itemSoldOneMonth: Long? = 0,
+        @SerializedName("item_sold_pm_pro_threshold")
+        val itemSoldPmProThreshold: Long? = 0,
+        @SerializedName("niv_one_month")
+        val nivOneMonth: Long? = 0,
+        @SerializedName("niv_pm_pro_threshold")
+        val nivPmProThreshold: Long? = 0
 )
