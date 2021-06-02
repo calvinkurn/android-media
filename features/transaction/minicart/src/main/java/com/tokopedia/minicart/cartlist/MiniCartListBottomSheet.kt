@@ -120,6 +120,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         rvMiniCartList?.adapter = adapter
         rvMiniCartList?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvMiniCartList?.addItemDecoration(miniCartListDecoration)
+        rvMiniCartList?.itemAnimator = null
     }
 
     private fun adjustRecyclerViewPaddingBottom() {
@@ -172,17 +173,21 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun showToaster(message: String, ctaText: String = "", onClickListener: View.OnClickListener? = null) {
-        bottomsheetContainer?.let {
-            Toaster.toasterCustomBottomHeight = bottomSheet?.resources?.getDimensionPixelSize(R.dimen.dp_100)
-                    ?: 0
-            if (ctaText.isNotBlank()) {
-                var tmpCtaClickListener = View.OnClickListener { }
-                if (onClickListener != null) {
-                    tmpCtaClickListener = onClickListener
+        if (message.isBlank()) return
+
+        bottomSheet?.context?.let {
+            bottomsheetContainer?.let {
+                Toaster.toasterCustomBottomHeight = bottomSheet?.resources?.getDimensionPixelSize(R.dimen.dp_100)
+                        ?: 0
+                if (ctaText.isNotBlank()) {
+                    var tmpCtaClickListener = View.OnClickListener { }
+                    if (onClickListener != null) {
+                        tmpCtaClickListener = onClickListener
+                    }
+                    Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, tmpCtaClickListener).show()
+                } else {
+                    Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
                 }
-                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, tmpCtaClickListener).show()
-            } else {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
             }
         }
     }
