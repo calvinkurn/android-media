@@ -135,8 +135,4 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun List<BaseItemInitialStateSearch>.findByType(type: String = ""): BaseItemInitialStateSearch {
         return this.find { it.type == type } as BaseItemInitialStateSearch
     }
-
-    @Suppress("UNCHECKED_CAST")
-    internal fun RequestParams.getSearchProductParams(): Map<String, Any>
-            = parameters[SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS] as Map<String, Any>
 }
