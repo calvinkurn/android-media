@@ -3,7 +3,6 @@ package com.tokopedia.power_merchant.subscribe.view_old.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeCom
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantFreeShippingTracker
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.ContentSliderBottomSheet
-import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMNotificationBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.model.ContentSliderUiModel
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view_old.activity.PowerMerchantTermsActivity
@@ -191,7 +189,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     private fun observeActivatePowerMerchant() {
         observe(viewModel.onActivatePmSuccess) {
             if (it is Success) {
-                showRegistrationSuccessBottomSheet()
                 refreshData()
             }
         }
@@ -354,7 +351,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
     }
 
     private fun showPmRevamp(pmSettingAndShopInfo: PMSettingAndShopInfoUiModel) {
-        (activity as? SubscriptionActivityInterface)?.switchToPmRevampPage(pmSettingAndShopInfo.pmSetting)
+
     }
 
     private fun showMembershipView(powerMerchantStatus: PowerMerchantStatus) {
@@ -532,30 +529,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun showRegistrationSuccessBottomSheet() {
-        val notifTitle = getString(R.string.pm_registration_success_title)
-        val notifDescription = getString(R.string.pm_registration_success_description_end_game)
-        val notifImage = PMConstant.Images.PM_REGISTRATION_SUCCESS
-        showNotificationBottomSheet(notifTitle, notifDescription, notifImage) {
-            openInterruptPage()
-        }
-    }
-
     private fun openInterruptPage() {
         RouteManager.route(context, PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE)
-    }
-
-    private fun showNotificationBottomSheet(title: String, description: String, imgUrl: String,
-                                            callback: (() -> Unit)? = null) {
-        val notifBottomSheet = PMNotificationBottomSheet.createInstance(title, description, imgUrl)
-        if (!notifBottomSheet.isAdded) {
-            val ctaText = getString(R.string.pm_learn_new_pm)
-            notifBottomSheet.setPrimaryButtonClickListener(ctaText) {
-                callback?.invoke()
-            }
-            Handler().post {
-                notifBottomSheet.show(childFragmentManager)
-            }
-        }
     }
 }

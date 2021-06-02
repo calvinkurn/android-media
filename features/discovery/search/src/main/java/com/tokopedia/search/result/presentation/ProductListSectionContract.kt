@@ -109,6 +109,7 @@ interface ProductListSectionContract {
         fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
         fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
         fun modifyApplinkToSearchResult(applink: String): String
+        fun showPowerMerchantProPopUp()
     }
 
     interface Presenter : CustomerPresenter<View> {

@@ -12,9 +12,12 @@ import com.tokopedia.usecase.coroutines.UseCase
 
 abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
-    var params: RequestParams = RequestParams.EMPTY
+    var params: RequestParams = RequestParams.create()
+
     protected var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
         private set
+
+    protected inline fun<reified T> T.getClassName() = T::class.java.name
 
     inline fun <reified T> GraphqlResponse.getData(): T {
         return this.getData(T::class.java)
