@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="cardview_background_color">@color/Unify_NN50</color>
+    <color name="cardview_dms_background_color">@color/Unify_NN50</color>
 </resources>

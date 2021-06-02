@@ -19,5 +19,5 @@
 
     <color name="share_ig_story_top_bg">#E1E7E5</color>
     <color name="share_ig_story_bottom_bg">#88D7CF</color>
-    <color name="cardview_background_color">@color/Unify_N0</color>
+    <color name="cardview_dms_background_color">@color/Unify_N0</color>
 </resources>
