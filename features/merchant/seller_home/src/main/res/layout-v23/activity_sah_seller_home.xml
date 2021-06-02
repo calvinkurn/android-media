@@ -11,12 +11,14 @@
         android:layout_height="@dimen/sah_status_bar_height"
         android:elevation="@dimen/sah_status_bar_elevation" />
 
-    <com.tokopedia.sellerhome.view.widget.toolbar.SellerHomeToolbar
+    <com.tokopedia.header.HeaderUnify
         android:id="@+id/sahToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/statusBarBackground"
-        android:minHeight="?attr/actionBarSize" />
+        android:minHeight="?attr/actionBarSize"
+        app:unify_header_is_show_shadow="true"
+        app:unify_header_is_show_back_button="false" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/sahContainer"
@@ -27,11 +29,11 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <View
-        android:id="@+id/toolbarShadow"
+        android:id="@+id/statusBarShadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:background="@drawable/sah_shadow"
-        android:layout_below="@id/sahToolbar"/>
+        android:layout_below="@id/statusBarBackground"/>
 
     <View
         android:id="@+id/navBarShadow"

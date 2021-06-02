@@ -86,6 +86,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        analytics.openHomeEvent()
         requestData()
         renderToolbar()
     }
@@ -128,7 +129,6 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem>) {
-        analytics.openHomeEvent()
         renderList(data)
         performanceMonitoring.stopTrace()
         swipe_refresh_layout_home?.isRefreshing = false
@@ -204,11 +204,7 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun onMenuTransactionListClick() {
-        if (userSession.isLoggedIn) {
-            RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
-        } else {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN_TRANSACTION)
-        }
+        RouteManager.route(context, ApplinkConst.EVENTS_ORDER)
     }
 
     override fun getAdapterTypeFactory(): HomeTypeFactoryImpl =
@@ -224,11 +220,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun clickBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
-        analytics.clickBanner(item, position)
+        analytics.clickBanner(item, position, userSession.userId)
     }
 
     override fun impressionBanner(item: EventHomeDataResponse.Data.EventHome.Layout.Item, position: Int) {
-        analytics.impressionBanner(item, position)
+        analytics.impressionBanner(item, position, userSession.userId)
     }
 
     override fun clickCategoryIcon(item: CategoryEventViewHolder.CategoryItemModel, position: Int) {
@@ -236,11 +232,11 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun clickLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
-        analytics.clickLocationEvent(item, listItems, position)
+        analytics.clickLocationEvent(item, listItems, position, userSession.userId)
     }
 
     override fun clickSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
-        analytics.clickSectionEventProduct(item, listItems, title, position)
+        analytics.clickSectionEventProduct(item, listItems, title, position, userSession.userId)
     }
 
     override fun clickSeeAllCuratedEventProduct(title: String, position: Int) {
@@ -252,19 +248,19 @@ class NavEventHomeFragment: BaseListFragment<HomeEventItem, HomeTypeFactoryImpl>
     }
 
     override fun clickTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
-        analytics.clickTopEventProduct(item, listItems, position)
+        analytics.clickTopEventProduct(item, listItems, position, userSession.userId)
     }
 
     override fun impressionLocationEvent(item: EventItemLocationModel, listItems: List<EventItemLocationModel>, position: Int) {
-        analytics.impressionLocationEvent(item, listItems, position)
+        analytics.impressionLocationEvent(item, listItems, position, userSession.userId)
     }
 
     override fun impressionSectionEventProduct(item: EventItemModel, listItems: List<EventItemModel>, title: String, position: Int) {
-        analytics.impressionSectionEventProduct(item, listItems, title, position)
+        analytics.impressionSectionEventProduct(item, listItems, title, position, userSession.userId)
     }
 
     override fun impressionTopEventProduct(item: EventItemModel, listItems: List<String>, position: Int) {
-        analytics.impressionTopEventProduct(item, listItems, position)
+        analytics.impressionTopEventProduct(item, listItems, position, userSession.userId)
     }
 
     override fun redirectToPDPEvent(applink: String) {

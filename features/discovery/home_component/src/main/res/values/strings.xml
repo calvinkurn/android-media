@@ -14,4 +14,10 @@
     <string name="content_desc_reminder">reminder image</string>
 
     <string name="content_desc_mix_left">Image</string>
+
+    <string name="content_desc_shop_product_image">Shop product image</string>
+    <string name="content_desc_shop_logo_image">Shop logo</string>
+    <string name="content_desc_shop_badge_image">Shop badge</string>
+    <string name="content_desc_shop_rating">Shop rating star</string>
+    <string name="content_desc_shop_location_icon">Shop location icon</string>
 </resources>

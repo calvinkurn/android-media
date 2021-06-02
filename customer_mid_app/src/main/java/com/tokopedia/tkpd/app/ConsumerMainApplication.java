@@ -73,7 +73,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
@@ -128,6 +127,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String REMOTE_CONFIG_NEW_RELIC_KEY_LOG = "android_customerapp_log_config_new_relic";
     private static final String PARSER_SCALYR_MA = "android-main-app-p%s";
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -227,9 +229,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             }
             return signatureValid;
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Exception e) {
             Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "PackageManager.NameNotFoundException");
+            if (e instanceof PackageManager.NameNotFoundException) {
+                messageMap.put("type", "PackageManager.NameNotFoundException");
+            } else {
+                messageMap.put("type", e.getClass().getName());
+            }
             ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             return false;
         }
@@ -312,7 +318,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }));
 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -423,11 +428,15 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
         devMonitoring.initBlockCanary();
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
-        getAmplificationPushData();
         return true;
+    }
+
+    private boolean getLeakCanaryToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
     }
 
     private void initLogManager() {
@@ -513,31 +522,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
         });
-    }
-
-    private void getAmplificationPushData() {
-        /*
-         * Amplification of push notification.
-         * fetch all of cm_push_notification's
-         * push notification data that aren't rendered yet.
-         * then, put all of push_data into local storage.
-         * */
-        if (getAmplificationRemoteConfig()) {
-            try {
-                AmplificationDataSource.invoke(ConsumerMainApplication.this);
-            } catch (Exception e) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", "");
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            }
-        }
-    }
-
-    private Boolean getAmplificationRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_AMPLIFICATION, true);
     }
 
     private void openShakeDetectCampaignPage(boolean isLongShake) {

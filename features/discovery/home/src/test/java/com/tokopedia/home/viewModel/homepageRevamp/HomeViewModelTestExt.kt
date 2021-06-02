@@ -18,7 +18,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.play.widget.data.PlayWidget
@@ -70,8 +69,7 @@ fun createHomeViewModel(
         getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
         bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
-        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
-        homeProcessor: HomeCommandProcessor = HomeCommandProcessor(Dispatchers.Unconfined)
+        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 ): HomeRevampViewModel{
     val context: Activity = mockk(relaxed = true)
     return HomeRevampViewModel(
@@ -103,7 +101,6 @@ fun createHomeViewModel(
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            homeProcessor = Lazy{ homeProcessor },
             getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase }
     )
 }
@@ -208,4 +205,20 @@ fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean
         if(it.value != second[it.key]) return false
     }
     return true
+}
+
+inline fun <reified T> HomeDataModel.findWidget(predicate: (T?) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
+    this.list.withIndex().find { it.value is T && predicate.invoke(it.value as? T) }.let {
+        it?.let {
+            if (it.value is T) {
+                actionOnFound.invoke(it.value as T, it. index)
+            }
+        }
+    }
+}
+
+inline fun <reified T> HomeDataModel.findWidgetList(actionOnFound: (List<T>) -> Unit) {
+    this.list.filterIsInstance<T>().let {
+        actionOnFound.invoke(it)
+    }
 }

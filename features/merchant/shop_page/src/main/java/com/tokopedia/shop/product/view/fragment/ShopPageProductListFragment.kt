@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.annotation.DimenRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -24,6 +25,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -60,6 +62,7 @@ import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopPageConstant.START_PAGE
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_PREPARE
@@ -255,7 +258,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onSuccessAddWishlist(productId: String) {
-        showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+        showToastSuccess(
+                message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
+                ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label),
+                ctaAction = {
+                    goToWishlist()
+                }
+        )
         shopProductAdapter.updateWishListStatus(productId, true)
     }
 
@@ -272,6 +281,29 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.run {
             Toaster.make(findViewById(android.R.id.content), message)
         }
+    }
+
+    private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
+        activity?.run {
+            ctaAction?.let { ctaClickListener ->
+                Toaster.build(findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        ctaText,
+                        ctaClickListener
+                ).show()
+            } ?: Toaster.build(findViewById(android.R.id.content),
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    ctaText
+            ).show()
+        }
+    }
+
+    private fun goToWishlist() {
+        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
     }
 
     private fun loadNewProductData() {
@@ -641,7 +673,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun loadMerchantVoucher() {
-        viewModel.getNewMerchantVoucher(shopId)
+        viewModel.getNewMerchantVoucher(shopId, context)
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1161,15 +1193,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG,
-                                this::observeViewModelLiveData.name,
-                                ShopPageProductListViewModel::productListData.name,
-                                userId,
-                                shopId,
-                                shopName,
-                                ErrorHandler.getErrorMessage(context, throwable),
-                                Log.getStackTraceString(throwable)
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeViewModelLiveData.name,
+                                liveDataName = ShopPageProductListViewModel::productListData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG
                         )
                     }
                     showErrorToasterWithRetry(throwable)
@@ -1353,7 +1386,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopId,
                     data,
                     isShowNewShopHomeTab(),
-                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+                    context
             )
         }
         if (initialProductListData == null){

@@ -54,10 +54,12 @@ import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewB
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.recommendation.SectionRecomViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
 
@@ -70,6 +72,7 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
+    private var persistentAdsData: PersistentAdsData? = null
 
     @Inject
     lateinit var viewFactory: ViewModelFactory
@@ -90,10 +93,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private val sectionList: ArrayList<Any> = ArrayList()
     lateinit var sectionListViewBinder: SectionHorizontalViewBinder
     var listener: RewardsRecomListener? = null
-
+    lateinit var mUsersession: UserSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
+        mUsersession = UserSession(context)
+        persistentAdsData = context?.let { PersistentAdsData(it) }
         super.onCreate(savedInstanceState)
     }
 
@@ -367,6 +372,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
                     }
 
+                    if (sectionContent.layoutMerchantCouponAttr != null && !sectionContent.layoutMerchantCouponAttr.catalogMVCWithProductsList.isNullOrEmpty()) {
+
+                        val merchantVoucherViewBinder = MerchantVoucherViewBinder()
+                        @Suppress("UNCHECKED_CAST")
+                        viewBinders.put(
+                                sectionContent.layoutType,
+                                merchantVoucherViewBinder as SectionItemBinder)
+                        sectionList.add(sectionContent)
+                    }
+
                     when (sectionContent.layoutBannerAttr.bannerType) {
                         CommonConstant.BannerType.BANNER_2_1 -> {
                             val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
@@ -442,6 +457,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 mPagerPromos?.adapter = adapter
             }
         }
+
+        AnalyticsTrackerUtil.sendEvent(mUsersession.userId,
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_HOMEPAGE,
+                "", AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE)
     }
 
     override fun onResume() {
@@ -526,6 +548,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mPagerPromos?.adapter = null
         mPagerPromos?.layoutManager = null
         adapter = null
+        persistentAdsData?.deletePreference()
+        persistentAdsData = null
     }
 
     override fun showLoading() {

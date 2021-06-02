@@ -15,7 +15,7 @@ import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupIte
 class GroupItemsAdapterTypeFactoryImpl(var selectMode: ((select: Boolean) -> Unit),
                                        var actionDelete: ((pos: Int) -> Unit),
                                        var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                                       var editDone: ((groupId: Int) -> Unit),
+                                       var editDone: ((groupId: Int, strategy: String) -> Unit),
                                        var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsAdapterTypeFactory {
 
     override fun type(model: GroupItemsEmptyModel): Int = GroupItemsEmptyViewHolder.LAYOUT
