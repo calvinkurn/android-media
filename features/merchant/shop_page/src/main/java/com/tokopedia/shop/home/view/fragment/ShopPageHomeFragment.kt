@@ -1438,15 +1438,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         },
                         {
                             if (!ShopUtil.isExceptionIgnored(it)) {
-                                ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                        SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
-                                        ShopHomeViewModel::addProductToCart.name,
-                                        "",
-                                        userId,
-                                        shopId,
-                                        shopName,
-                                        ErrorHandler.getErrorMessage(context, it),
-                                        Log.getStackTraceString(it)
+                                ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                        tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                        functionName = ShopHomeViewModel::addProductToCart.name,
+                                        liveDataName = "",
+                                        userId = userId,
+                                        shopId = shopId,
+                                        shopName = shopName,
+                                        errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                        stackTrace = Log.getStackTraceString(it),
+                                        errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                                 )
                             }
                             onErrorAddToCart(it)
