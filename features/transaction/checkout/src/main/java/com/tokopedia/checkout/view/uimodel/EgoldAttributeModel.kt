@@ -16,5 +16,4 @@ class EgoldAttributeModel(
         var isChecked: Boolean = false,
         var buyEgoldValue: Long = 0,
         var egoldTieringModelArrayList: List<EgoldTieringModel> = emptyList()
-
 ) : Parcelable

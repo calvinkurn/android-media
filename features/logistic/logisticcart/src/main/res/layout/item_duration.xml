@@ -72,8 +72,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/tv_duration_or_price"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_toRightOf="@+id/tv_duration_or_price"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_toEndOf="@+id/tv_duration_or_price"
             android:background="@drawable/bg_promo_potency"
             android:paddingLeft="@dimen/dp_8"
             android:paddingTop="@dimen/dp_2"
@@ -93,9 +93,7 @@
             android:layout_alignTop="@id/tv_duration_or_price"
             android:layout_alignBottom="@id/tv_duration_or_price"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_toEndOf="@+id/tv_duration_or_price"
-            android:layout_toRightOf="@+id/tv_duration_or_price"
             android:text="@string/tersedia_bayar_di_tempat"
             android:visibility="gone"
             app:labelType="general_light_green" />
@@ -188,14 +186,27 @@
             app:typographyWeight="reguler"
             tools:text="@string/tv_error" />
 
-        <ImageView
-            android:id="@+id/img_check"
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_dynamic_pricing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_error"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/txt_label_dynamic_pricing"
+            android:visibility="gone"
+            app:labelType="general_light_green" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/img_check"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_alignBaseline="@+id/tv_duration_or_price"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:contentDescription="@string/content_img_check"
-            app:srcCompat="@drawable/ic_check" />
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_night_enable="@color/Unify_G500"
+            app:icon_enable_state="true"
+            app:icon_name="CHECK_BIG" />
 
     </RelativeLayout>
 

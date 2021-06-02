@@ -17,6 +17,7 @@ class AddEditProductPreviewConstants {
         const val EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL"
         const val EXTRA_IS_LOGISTIC_LABEL = "EXTRA_IS_LOGISTIC_LABEL"
         const val TIMBER_PREFIX_LOCATION_VALIDATION = "SHOP_LOCATION_VALIDATOR"
+        const val TIMBER_PREFIX_PRODUCT_NAME_VALIDATION = "PRODUCT_NAME_VALIDATOR"
         const val NO_DATA = 0
         const val DETAIL_DATA = 1
         const val DESCRIPTION_DATA = 2
@@ -36,6 +37,5 @@ class AddEditProductPreviewConstants {
         const val ADDRESS_STREET = "addr_street"
         const val LATITUDE = "latitude"
         const val LONGITUDE = "longitude"
-        const val PRODUCT_LIMITATION_START_DATE = "30 April 2021"
     }
 }

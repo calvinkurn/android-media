@@ -6,34 +6,34 @@
       "event": "clickSearch",
       "eventAction": "click search flight",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{flight - .*-.* - .* - \\d*-\\d*-\\d* - .* - .*}}",
-      "sessionIris": "{{.*}}",
-      "screenName" : "/flight/homepage",
-      "currentSite" : "tokopediadigitalflight",
-      "clientId" : "{{.*}}",
-      "userId" : "{{.*}}",
-      "businessUnit" : "travel & entertainment",
-      "category" : "flight"
+      "eventLabel": "flight - .*-.* - .* - \\d*-\\d*-\\d* - .* - .*",
+      "sessionIris": ".*",
+      "screenName": "/flight/homepage",
+      "currentSite": "tokopediadigitalflight",
+      "clientId": ".*",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "category": "flight"
     },
     {
       "event": "view_item",
       "eventAction": "banner impression",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{flight - \\d* - .*}}",
-      "sessionIris": "{{.*}}",
-      "screenName" : "/flight/homepage",
-      "currentSite" : "tokopediadigitalflight",
-      "clientId" : "{{.*}}",
-      "userId" : "{{.*}}",
-      "businessUnit" : "travel & entertainment",
-      "category" : "flight",
+      "eventLabel": "flight - \\d* - .*",
+      "sessionIris": ".*",
+      "screenName": "/flight/homepage",
+      "currentSite": "tokopediadigitalflight",
+      "clientId": ".*",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "category": "flight",
       "promotions": [
         {
-          "item_id": "{{.*}}",
-          "item_name": "{{.* - slider banner}}",
-          "creative_slot": "{{\\d*}}",
-          "creative_name": "{{.*}}",
-          "creative_url": "{{.*}}"
+          "item_id": ".*",
+          "item_name": ".* - slider banner",
+          "creative_slot": "\\d*",
+          "creative_name": ".*",
+          "creative_url": ".*"
         }
       ]
     },
@@ -41,21 +41,21 @@
       "event": "select_content",
       "eventAction": "click banner",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{flight - \\d* - .*}}",
-      "sessionIris": "{{.*}}",
-      "screenName" : "/flight/homepage",
-      "currentSite" : "tokopediadigitalflight",
-      "clientId" : "{{.*}}",
-      "userId" : "{{.*}}",
-      "businessUnit" : "travel & entertainment",
-      "category" : "flight",
+      "eventLabel": "flight - \\d* - .*",
+      "sessionIris": ".*",
+      "screenName": "/flight/homepage",
+      "currentSite": "tokopediadigitalflight",
+      "clientId": ".*",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "category": "flight",
       "promotions": [
         {
-          "item_id": "{{.*}}",
-          "item_name": "{{.* - slider banner}}",
-          "creative_slot": "{{\\d*}}",
-          "creative_name": "{{.*}}",
-          "creative_url": "{{.*}}"
+          "item_id": ".*",
+          "item_name": ".* - slider banner",
+          "creative_slot": "\\d*",
+          "creative_name": ".*",
+          "creative_url": ".*"
         }
       ]
     }

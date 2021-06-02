@@ -271,7 +271,10 @@ public class GTMAnalytics extends ContextAnalytics {
             }
             GtmLogger.getInstance(context).saveError(stacktrace.toString());
             if (!TextUtils.isEmpty(e.getMessage())) {
-                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
+                Map<String, String> map = new HashMap<>();
+                map.put("msg", e.getMessage());
+                map.put("err", e.toString());
+                ServerLogger.log(Priority.P2, "GTM_ANALYTIC_ERROR", map);
             }
         }
         return true;

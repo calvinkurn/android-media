@@ -3,18 +3,18 @@
   "mode": "exact",
   "query": [
     {
-      "af_revenue": "{{.*}}",
-      "af_content_id": "{{.*}}",
-      "af_quantity": "{{.*}}",
-      "af_receipt_id": "{{.*}}",
-      "af_order_id": "{{.*}}",
-      "af_shipping_price": "{{.*}}",
-      "af_purchase_site": "{{.*}}",
-      "af_currency": "{{.*}}",
-      "product": "{{.*}}",
-      "category": "{{.*}}",
-      "af_content_type": "{{.*}}",
-      "af_content": "{{.*}}"
+      "af_revenue": ".*",
+      "af_content_id": ".*",
+      "af_quantity": ".*",
+      "af_receipt_id": ".*",
+      "af_order_id": ".*",
+      "af_shipping_price": ".*",
+      "af_purchase_site": ".*",
+      "af_currency": ".*",
+      "product": ".*",
+      "category": ".*",
+      "af_content_type": ".*",
+      "af_content": ".*"
     }
   ]
 }

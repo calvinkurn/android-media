@@ -1,7 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.view.View
-import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
