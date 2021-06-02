@@ -238,9 +238,9 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             summaryextView = itemView.findViewById(R.id.account_user_item_common_body);
             aSwitch = itemView.findViewById(R.id.account_user_item_common_switch);
             aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-                if (switchSettingListener != null) {
-                    switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
-                }});
+            if (switchSettingListener != null) {
+                switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
+            }});
             itemView.setOnClickListener(view -> aSwitch.toggle());
         }
 

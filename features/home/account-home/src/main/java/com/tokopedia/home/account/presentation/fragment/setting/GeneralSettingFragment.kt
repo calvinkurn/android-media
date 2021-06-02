@@ -162,6 +162,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         }
     }
 
+    //Request to hide Dark Mode regardless RemoteConfig
+    private fun showDarkModeSetting(): Boolean {
+        return false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadingView = view.findViewById(R.id.logout_status)
@@ -215,7 +220,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
         val isShowDarkMode = remoteConfig.getBoolean(
                 RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-        if(true) {
+        if(isShowDarkMode && showDarkModeSetting()) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false))
         }
