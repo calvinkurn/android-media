@@ -28,6 +28,7 @@ import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotation
 import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
@@ -1217,6 +1218,21 @@ class AddEditProductDetailViewModelTest {
 
     @Test
     fun `when changing view model property should change as expected value`() {
+        viewModel.isWholeSalePriceActivated.value = null
+        viewModel.isPreOrderActivated.value = null
+        assert(viewModel.isWholeSalePriceActivated.value == null)
+        assert(viewModel.isPreOrderActivated.value == null)
+
+        viewModel.isAdding = true
+        viewModel.isFirstMoved = true
+        var isValid = viewModel.callPrivateFunc("isInputValid") as Boolean
+        Assert.assertFalse(isValid)
+
+        viewModel.isAdding = true
+        viewModel.isFirstMoved = false
+        isValid = viewModel.callPrivateFunc("isInputValid") as Boolean
+        Assert.assertTrue(isValid)
+
         viewModel.shouldUpdateVariant = true
         viewModel.isDrafting = true
         viewModel.isReloadingShowCase = true
