@@ -29,7 +29,6 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
-import java.util.*
 
 
 class MiniCartProductViewHolder(private val view: View,
@@ -101,6 +100,7 @@ class MiniCartProductViewHolder(private val view: View,
     }
 
     override fun bind(element: MiniCartProductUiModel) {
+        renderDefaultState()
         renderProductImage(element)
         renderProductName(element)
         renderProductVariant(element)
@@ -110,6 +110,11 @@ class MiniCartProductViewHolder(private val view: View,
         renderProductQty(element)
         renderProductAction(element)
         renderProductAlpha(element)
+    }
+
+    private fun renderDefaultState() {
+        textNotes?.gone()
+        textProductUnavailableAction?.gone()
     }
 
     private fun renderProductVariant(element: MiniCartProductUiModel) {
@@ -372,7 +377,6 @@ class MiniCartProductViewHolder(private val view: View,
             return
         }
 
-        textProductUnavailableAction?.gone()
         qtyEditorProduct?.show()
         if (qtyTextWatcher != null) {
             // reset listener
