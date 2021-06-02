@@ -72,7 +72,7 @@ abstract class BaseHotelSearchMapScreenshotTesting {
             CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "top")
         }
 
-        activityRule.activity.runOnUiThread {
+        activityRule.runOnUiThread {
             bottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED)
         }
 
@@ -86,7 +86,7 @@ abstract class BaseHotelSearchMapScreenshotTesting {
 
         Thread.sleep(1000)
 
-        activityRule.activity.runOnUiThread {
+        activityRule.runOnUiThread {
             bottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED)
         }
 
