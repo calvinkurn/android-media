@@ -12,11 +12,17 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private var addToCartClickListener: ((View) -> Unit)? = null
     private var addToCartNonVariantClickListener: ATCNonVariantListener? = null
+    private var quantityEditorDebounce: QuantityEditorDebounce? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -166,6 +172,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
 
         quantityEditorNonVariant?.shouldShowWithAction(shouldShowQuantityEditor) {
+            configureQuantityEditorDebounce()
+
             productCardModel.nonVariant?.let {
                 quantityEditorNonVariant?.setValue(it.quantity)
                 quantityEditorNonVariant?.maxValue = it.maxQuantity
@@ -173,9 +181,38 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
             }
 
             quantityEditorNonVariant?.setValueChangedListener { newValue, _, _ ->
-                addToCartNonVariantClickListener?.onQuantityChanged(newValue)
+                quantityEditorDebounce?.onQuantityChanged(newValue)
             }
         }
+    }
+
+    private fun configureQuantityEditorDebounce() {
+        val onSubscribe = Observable.OnSubscribe<Int> {
+            quantityEditorDebounce = object : QuantityEditorDebounce {
+                override fun onQuantityChanged(quantity: Int) {
+                    it.onNext(quantity)
+                }
+            }
+        }
+
+        val quantityEditorSubscriber = object : Subscriber<Int>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {}
+
+            override fun onNext(quantity: Int?) {
+                if (quantity != null) {
+                    addToCartNonVariantClickListener?.onQuantityChanged(quantity)
+                }
+            }
+        }
+
+        Observable.unsafeCreate(onSubscribe)
+                .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(quantityEditorSubscriber)
     }
 
     private fun renderVariant(productCardModel: ProductCardModel) {
@@ -201,6 +238,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    private interface QuantityEditorDebounce {
+        fun onQuantityChanged(quantity: Int)
+    }
 
     interface ATCNonVariantListener {
         fun onQuantityChanged(quantity: Int)
