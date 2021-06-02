@@ -1,31 +1,23 @@
 package com.tokopedia.loginfingerprint.view.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.loginfingerprint.R
+import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginphone.chooseaccount.view.fragment.ChooseAccountFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
 class ChooseAccountFingerprintFragment: ChooseAccountFragment() {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initObserverFingerprint()
-    }
-
-    private fun initObserverFingerprint() {
-        chooseAccountViewModel.getAccountListFingerprintResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessGetFingerprintAccounts()
-                is Fail -> onErrorGetFingerprintAccounts()
-            }
-        })
-    }
 
     override fun getAccountList() {
-        chooseAccountViewModel.getAccountListFingerprint()
+//        chooseAccountViewModel.getAccountListFingerprint()
     }
 
     fun onSuccessGetFingerprintAccounts() {

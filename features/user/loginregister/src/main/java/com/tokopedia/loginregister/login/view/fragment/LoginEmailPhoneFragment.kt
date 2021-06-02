@@ -22,6 +22,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -47,6 +49,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_FACEBOOK
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
@@ -64,9 +67,11 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
+import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
-import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
+import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
+import com.tokopedia.loginfingerprint.view.dialog.ScanFingerprintDialog
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
@@ -100,7 +105,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -601,19 +605,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         }
 
-        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity) && fingerprintPreferenceHelper.isFingerprintRegistered()) {
-            activity?.let {
-                val icon = VectorDrawableCompat.create(it.resources, R.drawable.ic_fingerprint_thumb, it.theme)
-                fingerprint_btn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
-            }
-
-            fingerprint_btn.visibility = View.VISIBLE
-            fingerprint_btn.setOnClickListener {
-                activity?.let { act ->
-                    ScanFingerprintDialog(act, this@LoginEmailPhoneFragment).showWithMode(ScanFingerprintDialog.MODE_LOGIN)
-                }
-            }
-        }
+        enableFingerprint()
+//        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity) && fingerprintPreferenceHelper.isFingerprintRegistered()) {
+//            enableFingerprint()
+//        }
 
         partialActionButton?.text = getString(R.string.next)
         partialActionButton?.contentDescription = getString(R.string.content_desc_register_btn)
@@ -665,6 +660,62 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         context?.run {
             viewModel.discoverLogin()
         }
+    }
+
+    fun enableFingerprint() {
+        fingerprint_btn.show()
+        fingerprint_btn.setOnClickListener {
+            activity?.let { act ->
+                showBiometricPrompt()
+//                ScanFingerprintDialog(act, this@LoginEmailPhoneFragment).showWithMode(
+//                    ScanFingerprintDialog.MODE_VERIFY)
+            }
+        }
+    }
+
+    private fun showBiometricPrompt() {
+        var counter = 0
+        val executor = ContextCompat.getMainExecutor(context)
+        var biometricPrompt: BiometricPrompt ? = null
+
+        val callback = object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationError(errorCode: Int,
+                                               errString: CharSequence) {
+                super.onAuthenticationError(errorCode, errString)
+                Toast.makeText(activity,
+                    "Authentication error: $errString ($errorCode)", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            override fun onAuthenticationSucceeded(
+                result: BiometricPrompt.AuthenticationResult) {
+                super.onAuthenticationSucceeded(result)
+                Toast.makeText(activity,
+                    "Authentication succeeded!", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            override fun onAuthenticationFailed() {
+                super.onAuthenticationFailed()
+                Toast.makeText(activity, "Authentication failed",
+                    Toast.LENGTH_SHORT)
+                    .show()
+                counter++
+
+                if(counter == 3){
+                    biometricPrompt?.cancelAuthentication()
+                    FingerprintDialogHelper.showInvalidFingerprintDialog(activity)
+                }
+            }
+        }
+
+        biometricPrompt = BiometricPrompt(this, executor, callback)
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Masuk dengan Sidik Jari")
+            .setNegativeButtonText("Gunakan metode lain")
+            .build()
+
+        biometricPrompt.authenticate(promptInfo)
     }
 
     private fun setupSpannableText(){
@@ -1042,8 +1093,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun setFCM() {
-        CMPushNotificationManager.instance
-                .refreshFCMTokenFromForeground(userSession.deviceId, true)
+//        CMPushNotificationManager.instance
+//                .refreshFCMTokenFromForeground(userSession.deviceId, true)
     }
 
     private fun setTrackingUserId(userId: String) {
@@ -1461,6 +1512,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
 
+            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+        }
+    }
+
+    override fun goToChooseAccountPageFingerprint() {
+        activity?.let {
+            val intent = RouteManager.getIntent(it,
+                ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_FINGERPRINT)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, ApplinkConstInternalUserPlatform.METHOD_LOGIN_FINGERPRINT)
             startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
         }
     }
@@ -1907,13 +1967,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         )
     }
 
-    override fun onFingerprintValid() {}
+    override fun onFingerprintValid() {
+//        FingerprintDialogHelper.showInvalidFingerprintDialog(activity)
+    }
 
     override fun onFingerprintError(msg: String, errCode: Int) {
         if (errCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT) {
-            view?.run {
-                Toaster.showError(this, msg, Snackbar.LENGTH_LONG)
-            }
+            FingerprintDialogHelper.showInvalidFingerprintDialog(activity)
         }
     }
 

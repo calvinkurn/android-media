@@ -18,7 +18,7 @@ class RegisterFingerprintOnboardingActivity : BaseSimpleActivity(), HasComponent
                 .build()
     }
 
-    override fun getNewFragment(): Fragment? =
+    override fun getNewFragment(): Fragment =
             RegisterFingerprintOnboardingFragment.newInstance()
 
 }

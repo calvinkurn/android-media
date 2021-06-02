@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.loginfingerprint.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.loginfingerprint.viewmodel.RegisterOnboardingViewModel
 import com.tokopedia.loginfingerprint.viewmodel.ScanFingerprintViewModel
 import dagger.Binds
@@ -25,4 +26,10 @@ abstract class LoginFingerprintViewModelsModule {
     @IntoMap
     @ViewModelKey(RegisterOnboardingViewModel::class)
     internal abstract fun registerFingerprintViewModel(viewModel: RegisterOnboardingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChooseAccountFingerprintViewModel::class)
+    internal abstract fun chooseAccountFingerprintViewModel(viewModel: ChooseAccountFingerprintViewModel): ViewModel
+
 }
