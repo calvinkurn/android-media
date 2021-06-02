@@ -293,7 +293,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         _miniCartListUiModel.value = miniCartListListUiModel.value
     }
 
-    fun deleteCartItems(product: MiniCartProductUiModel) {
+    fun singleDeleteCartItems(product: MiniCartProductUiModel) {
         deleteCartUseCase.setParams(listOf(product))
         deleteCartUseCase.execute(
                 onSuccess = {
@@ -371,7 +371,8 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 undoDeleteCartUseCase.setParams(value.cartId)
                 undoDeleteCartUseCase.execute(
                         onSuccess = {
-                            val visitables = miniCartListListUiModel.value?.visitables ?: mutableListOf()
+                            val visitables = miniCartListListUiModel.value?.visitables
+                                    ?: mutableListOf()
                             visitables.add(index, value)
 
                             miniCartListListUiModel.value?.visitables = visitables

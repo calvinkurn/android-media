@@ -3,8 +3,6 @@ package com.tokopedia.minicart.cartlist
 import android.content.Context
 import android.content.res.Resources
 import android.view.View
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -28,7 +26,6 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import io.hansel.pebbletracesdk.presets.UIPresets.findViewById
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -211,7 +208,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
-        viewModel.deleteCartItems(element)
+        viewModel.singleDeleteCartItems(element)
     }
 
     override fun onBulkDeleteUnavailableItems() {
