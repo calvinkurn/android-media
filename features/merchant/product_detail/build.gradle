@@ -154,9 +154,6 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation project(rootProject.ext.libraries.unitTest)
 
-    //todo remove
-    implementation project(rootProject.ext.features.atcVariant)
-
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
