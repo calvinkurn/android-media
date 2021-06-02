@@ -4,10 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -447,11 +444,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
             layoutManager = StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL)
-            viewTreeObserver.addOnGlobalLayoutListener {
-                if(templates.isNotEmpty()) {
-                    CreateReviewTracking.eventViewReviewTemplate(templates.size, productId.toString(), getUserId())
+            viewTreeObserver.addOnGlobalLayoutListener (object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if(templates.isNotEmpty()) {
+                        CreateReviewTracking.eventViewReviewTemplate(templates.size, productId.toString(), getUserId())
+                    }
+                    templatesRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener (this)
                 }
-            }
+            })
         }
         templatesAdapter.setData(templates)
     }
