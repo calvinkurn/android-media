@@ -98,28 +98,30 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun initializeView(context: Context, fragmentManager: FragmentManager, onDismiss: () -> Unit) {
         context.let {
-            bottomSheet = BottomSheetUnify().apply {
-                showCloseIcon = false
-                showHeader = true
-                isDragable = true
-                showKnob = true
-                isHideable = true
-                clearContentPadding = true
-                customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-                setOnDismissListener {
-                    measureRecyclerViewPaddingJob?.cancel()
-                    onDismiss.invoke()
-                }
-            }
-
             val view = View.inflate(it, R.layout.layout_bottomsheet_mini_cart_list, null)
-            bottomsheetContainer = view.findViewById(R.id.bottomsheet_container)
-            bottomSheet?.setChild(view)
-            bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
-
+            initializeBottomSheet(view, fragmentManager, onDismiss)
             initializeProgressDialog(it)
             initializeTotalAmount(view)
             initializeRecyclerView(view)
+        }
+    }
+
+    private fun initializeBottomSheet(view: View, fragmentManager: FragmentManager, onDismiss: () -> Unit) {
+        bottomsheetContainer = view.findViewById(R.id.bottomsheet_container)
+        bottomSheet = BottomSheetUnify().apply {
+            showCloseIcon = false
+            showHeader = true
+            isDragable = true
+            showKnob = true
+            isHideable = true
+            clearContentPadding = true
+            customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+            setOnDismissListener {
+                measureRecyclerViewPaddingJob?.cancel()
+                onDismiss.invoke()
+            }
+            setChild(view)
+            show(fragmentManager, this.javaClass.simpleName)
         }
     }
 
@@ -137,7 +139,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         rvMiniCartList?.adapter = adapter
         rvMiniCartList?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvMiniCartList?.addItemDecoration(miniCartListDecoration)
-        rvMiniCartList?.itemAnimator = null
+//        rvMiniCartList?.itemAnimator = null
     }
 
     private fun adjustRecyclerViewPaddingBottom() {
@@ -266,10 +268,11 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onShowUnavailableItemsCLicked() {
-        adapter?.data?.forEachIndexed { index, visitable ->
-            if (visitable is MiniCartUnavailableHeaderUiModel) {
+        val data = adapter?.data ?: emptyList()
+        loop@ for ((index, visitable) in data.withIndex()) {
+            if (visitable is MiniCartProductUiModel && visitable.isProductDisabled) {
                 rvMiniCartList?.smoothScrollToPosition(index)
-                return@forEachIndexed
+                break@loop
             }
         }
     }
