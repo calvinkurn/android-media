@@ -51,7 +51,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
-            android:layout_marginEnd="@dimen/unify_space_8"
             android:text="@string/pms_deferred_payment_expire_title"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toTopOf="@+id/tvTransactionExpireTime"
@@ -90,9 +89,10 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/cardMenu"
-            android:layout_width="@dimen/unify_space_24"
-            android:layout_height="@dimen/unify_space_24"
-            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:padding="@dimen/unify_space_4"
             app:icon_name="MENU_KEBAB_VERTICAL"
             app:layout_constraintBottom_toBottomOf="@+id/headerDivider"
             app:layout_constraintEnd_toEndOf="parent"

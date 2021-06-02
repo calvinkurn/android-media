@@ -162,6 +162,7 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
     override fun showLoadingDialog() {
         context?.let {
             progressDialog = LoaderDialog(it)
+            progressDialog?.dialog?.setOverlayClose(false)
             progressDialog?.show()
         }
     }

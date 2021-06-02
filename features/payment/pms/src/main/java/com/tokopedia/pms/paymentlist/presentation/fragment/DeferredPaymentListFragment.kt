@@ -42,7 +42,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         viewModelProvider.get(PaymentListViewModel::class.java)
     }
 
-    private var loader: LoaderDialog?= null
+    private var loader: LoaderDialog? = null
 
     override fun getScreenName() = ""
 
@@ -70,7 +70,10 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun loadInitialDeferredTransactions() {
-        context?.let { loader = LoaderDialog(it) }
+        context?.let {
+            loader = LoaderDialog(it)
+            loader?.dialog?.setOverlayClose(false)
+        }
         (recycler_view.adapter as DeferredPaymentListAdapter).clearAllElements()
         viewModel.getPaymentListCount()
     }

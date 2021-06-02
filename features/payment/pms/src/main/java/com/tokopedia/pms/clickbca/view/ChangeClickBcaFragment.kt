@@ -118,12 +118,13 @@ class ChangeClickBcaFragment : BaseDaggerFragment() {
         }
     }
 
-    fun showLoadingDialog() {
+    private fun showLoadingDialog() {
         loaderDialog = context?.let { LoaderDialog(it) }
+        loaderDialog?.dialog?.setOverlayClose(false)
         loaderDialog?.show()
     }
 
-    fun hideLoadingDialog() {
+    private fun hideLoadingDialog() {
         loaderDialog?.dialog?.dismiss()
         loaderDialog = null
     }

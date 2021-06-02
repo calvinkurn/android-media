@@ -161,6 +161,7 @@ class ChangeBankAccountFragment : BaseDaggerFragment() {
     private fun showLoadingDialog() {
         context?.let {
             loaderDialog = LoaderDialog(it)
+            loaderDialog?.dialog?.setOverlayClose(false)
             loaderDialog?.show()
         }
     }
