@@ -12,6 +12,7 @@ data class RatesParam(
         val origin: String,
         val destination: String,
         val weight: String,
+        val actualWeight: String?,
         var token: String = "",
         var ut: String = "",
         val type: String = VALUE_ANDROID,
@@ -49,6 +50,7 @@ data class RatesParam(
             origin = builder.origin,
             destination = builder.destination,
             weight = builder.weight,
+            actualWeight = builder.weightActual,
             trade_in = builder.trade_in,
             is_corner = builder.is_corner,
             shop_id = builder.shop_id,
@@ -71,12 +73,13 @@ data class RatesParam(
             mvc = builder.mvc,
             bo_metadata = builder.bo_metadata)
 
-    fun toMap(): Map<String, Any> = mapOf(
+    fun toMap(): Map<String, Any?> = mapOf(
             "spids" to spids,
             "shop_id" to shop_id,
             "origin" to origin,
             "destination" to destination,
             "weight" to weight,
+            "actual_weight" to actualWeight,
             "token" to token,
             "ut" to ut,
             "type" to type,
@@ -112,6 +115,8 @@ data class RatesParam(
         var destination: String = RatesParamHelper.generateDestination(shipping)
             private set
         var weight: String = shipping.weightInKilograms.toString()
+            private set
+        var weightActual: String? = if (shipping.weightActualInKilograms > 0) shipping.weightActualInKilograms.toString() else null
             private set
         var trade_in: Int = RatesParamHelper.determineTradeIn(shipping)
             private set

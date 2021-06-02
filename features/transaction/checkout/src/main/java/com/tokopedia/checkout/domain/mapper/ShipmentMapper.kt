@@ -184,6 +184,7 @@ class ShipmentMapper @Inject constructor() {
                 productWholesalePriceFmt = it.productWholesalePriceFmt
                 productWeightFmt = it.productWeightFmt
                 productWeight = it.productWeight
+                productWeightActual = it.productWeightActual
                 productCondition = it.productCondition
                 productUrl = it.productUrl
                 isProductReturnable = it.productReturnable == 1

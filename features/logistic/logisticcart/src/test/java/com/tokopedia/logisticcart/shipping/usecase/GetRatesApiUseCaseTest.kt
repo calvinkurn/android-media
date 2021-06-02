@@ -31,7 +31,7 @@ object GetRatesApiUseCaseTest : Spek({
     Feature("Basic gql") {
 
         val useCase by memoized { GetRatesApiUseCase(context, converter, gql, scheduler) }
-        val param by memoized { RatesParam("", "", "", "", "") }
+        val param by memoized { RatesParam("", "", "", "", "", "") }
 
         Scenario("execute") {
 
@@ -65,7 +65,7 @@ object GetRatesApiUseCaseTest : Spek({
 
     Feature("Get Rates Api") {
         val useCase by memoized { GetRatesApiUseCase(context, converter, gql, scheduler) }
-        val param by memoized { RatesParam("", "", "", "", "") }
+        val param by memoized { RatesParam("", "", "", "", "", "") }
         val tSubscriber by memoized { TestSubscriber<ShippingRecommendationData>() }
 
         Scenario("success response") {

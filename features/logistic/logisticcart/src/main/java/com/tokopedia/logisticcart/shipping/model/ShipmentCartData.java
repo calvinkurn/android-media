@@ -26,6 +26,7 @@ public class ShipmentCartData implements Parcelable {
     private String destinationLongitude;
     private String destinationAddress;
     private double weight;
+    private double weightActual;
     private String token;
     private String ut;
     private int insurance;
@@ -200,6 +201,14 @@ public class ShipmentCartData implements Parcelable {
         this.categoryIds = categoryIds;
     }
 
+    public double getWeightActual() {
+        return weightActual;
+    }
+
+    public void setWeightActual(double weightActual) {
+        this.weightActual = weightActual;
+    }
+
     public int getPreOrderDuration() {
         return preOrderDuration;
     }
@@ -253,6 +262,7 @@ public class ShipmentCartData implements Parcelable {
         dest.writeString(this.destinationLongitude);
         dest.writeString(this.destinationAddress);
         dest.writeDouble(this.weight);
+        dest.writeDouble(this.weightActual);
         dest.writeString(this.token);
         dest.writeString(this.ut);
         dest.writeInt(this.insurance);
@@ -280,6 +290,7 @@ public class ShipmentCartData implements Parcelable {
         this.destinationLongitude = in.readString();
         this.destinationAddress = in.readString();
         this.weight = in.readDouble();
+        this.weightActual = in.readDouble();
         this.token = in.readString();
         this.ut = in.readString();
         this.insurance = in.readInt();

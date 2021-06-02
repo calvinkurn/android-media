@@ -59,16 +59,19 @@ public class RatesDataConverter {
         initializeShipmentCartData(userAddress, groupShop, shipmentCartData, keroToken, keroUnixTime);
         long orderValue = 0;
         int totalWeight = 0;
+        int totalWeightActual = 0;
         int preOrderDuration = 0;
         if (shipmentCartItemModel.getCartItemModels() != null) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
                 totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
+                totalWeightActual += (cartItemModel.getQuantity() * cartItemModel.getWeightActual());
                 preOrderDuration = cartItemModel.getPreOrderDurationDay();
             }
         }
         shipmentCartData.setOrderValue(orderValue);
         shipmentCartData.setWeight(totalWeight);
+        shipmentCartData.setWeightActual(totalWeightActual);
         shipmentCartData.setPreOrderDuration(preOrderDuration);
         shipmentCartData.setFulfillment(shipmentCartItemModel.isFulfillment());
         shipmentCartData.setShopTier(shipmentCartItemModel.getShopTypeInfoData().getShopTier());
