@@ -436,12 +436,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
 
-            val sectionRecomViewBinder = recommList?.let { SectionRecomViewBinder(it,listener!!) }
-            @Suppress("UNCHECKED_CAST")
-            viewBinders.put(
+            if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
+                val sectionRecomViewBinder =
+                    recommList?.let { SectionRecomViewBinder(it, listener!!) }
+                @Suppress("UNCHECKED_CAST")
+                viewBinders.put(
                     CommonConstant.SectionLayoutType.RECOMM,
-                    sectionRecomViewBinder as SectionItemBinder)
-            recommList?.let { sectionList.add(it) }
+                    sectionRecomViewBinder as SectionItemBinder
+                )
+                recommList?.let { sectionList.add(it) }
+            }
 
             adapter = SectionAdapter(viewBinders)
             adapter?.addItem(sectionList)
