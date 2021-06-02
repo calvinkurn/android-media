@@ -3,141 +3,88 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressbar"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="visible"
-        app:loader_type="circular"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:text_field_input_type="text"
         app:text_field_label="@string/topads_edit_nama_grup_iklan"
         app:text_field_label_static="true"
+        app:text_field_message="@string/top_ads_edit_group_name_message"
         app:text_field_placeholder="@string/topads_edit_ketik_nama_group_iklan"
         tools:layout_height="40dp" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/atur_biaya"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/topads_edit_atur_biaya"
-        app:layout_constraintBottom_toTopOf="@+id/card1"
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/group_name"
-        app:typographyType="heading_6" />
+        app:layout_constraintTop_toBottomOf="@+id/group_name" />
 
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/card1"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/budgetLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:orientation="vertical"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardUseCompatPadding="true"
-        android:padding="@dimen/dp_16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/atur_biaya"
-        tools:layout_height="@dimen/dp_100">
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/divider">
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/budget"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/topads_edit_anggaran_harian"
+            app:typographyType="heading_5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+            android:id="@+id/toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/top_ads_edit_daily_budget_message"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/daily_budget"
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/summary"
+            app:text_field_append_text="per hari"
             app:text_field_input_type="number"
-            app:text_field_label="Biaya per klik"
-            app:text_field_label_static="true"
-            app:text_field_prepend_text="Rp" />
-    </com.tokopedia.unifycomponents.CardUnify>
+            app:text_field_prepend_text="Rp"
+            tools:layout_height="@dimen/dp_100" />
 
-    <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/card2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:orientation="vertical"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardUseCompatPadding="true"
-        android:padding="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/card1">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/select_budget"
-                style="@style/TextView.Small.Bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/topads_common_anggaran_harian"
-                app:layout_constraintBottom_toTopOf="@+id/radio_group"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_5" />
-
-            <RadioGroup
-                android:id="@+id/radio_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/select_budget">
-
-                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-                    android:id="@+id/btnUnlimitedBudget"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="@dimen/dp_13"
-                    android:checked="true"
-                    android:text="@string/topads_edit_tidak_dibatasi"
-                    android:textColor="@color/grey_560"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/select_budget" />
-
-
-                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-                    android:id="@+id/btnFixedBudget"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_14"
-                    android:text="@string/topads_edit_dibatasi"
-                    android:textColor="@color/grey_560"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/radio_group" />
-            </RadioGroup>
-
-            <com.tokopedia.unifycomponents.TextFieldUnify
-                android:id="@+id/daily_budget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/radio_group"
-                app:text_field_input_type="number"
-                app:text_field_prepend_text="Rp"
-                tools:layout_height="@dimen/dp_40" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.tokopedia.unifycomponents.CardUnify>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

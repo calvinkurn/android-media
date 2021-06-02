@@ -25,6 +25,9 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -102,9 +105,9 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         private const val IS_MVC_FIRST_TIME = "is_mvc_first_time"
         private const val VOUCHER_CREATION = "voucher_creation"
 
-        private const val ERROR_CREATE = "Error create voucher"
-        private const val ERROR_UPDATE = "Error update voucher"
-        private const val ERROR_DRAW = "Error drawing voucher"
+        private const val CREATE_VOUCHER_ERROR = "Create voucher error"
+        private const val UPDATE_VOUCHER_ERROR = "Update voucher error"
+        private const val LOAD_IMAGE_ERROR = "Load image  error"
     }
 
     private var getVoucherReviewUiModel: () -> VoucherReviewUiModel = { VoucherReviewUiModel() }
@@ -447,7 +450,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             } else {
                                 failedCreateVoucherDialog?.show()
                             }
-                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_CREATE)
+                            // send crash report to firebase crashlytics
+                            MvcErrorHandler.logToCrashlytics(result.throwable, CREATE_VOUCHER_ERROR)
+                            // log error type to scalyr
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            ServerLogger.log(Priority.P2, "MVC_CREATE_VOUCHER_ERROR", mapOf("type" to errorMessage))
                         }
                     }
                     refreshFooterButton()
@@ -481,7 +488,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             } else {
                                 failedCreateVoucherDialog?.show()
                             }
-                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_UPDATE)
+                            // send crash report to firebase crashlytics
+                            MvcErrorHandler.logToCrashlytics(result.throwable, UPDATE_VOUCHER_ERROR)
+                            // log error type to scalyr
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            ServerLogger.log(Priority.P2, "MVC_UPDATE_VOUCHER_ERROR", mapOf("type" to errorMessage))
                         }
                     }
                     refreshFooterButton()
@@ -705,7 +716,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                             loadingDialog?.dismiss()
                             failedCreateVoucherDialog?.show()
                             e?.run {
-                                MvcErrorHandler.logToCrashlytics(this, ERROR_DRAW)
+                                MvcErrorHandler.logToCrashlytics(this, LOAD_IMAGE_ERROR)
                             }
                             return false
                         }
@@ -734,7 +745,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         }
         refreshFooterButton()
         error?.run {
-            MvcErrorHandler.logToCrashlytics(this, ERROR_DRAW)
+            MvcErrorHandler.logToCrashlytics(this, LOAD_IMAGE_ERROR)
         }
     }
 

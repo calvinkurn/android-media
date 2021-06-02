@@ -75,6 +75,7 @@ class ShopCardView: BaseCustomView {
             imageViewShopBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
                     shopCardModel.isOfficial -> imageViewShopBadge.loadImage(R.drawable.shopwidget_ic_official_store)
+                    shopCardModel.isPMPro -> imageViewShopBadge.loadImage(R.drawable.shopwidget_ic_pm_pro)
                     shopCardModel.isGoldShop -> imageViewShopBadge.loadImage(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
                 }
             }
@@ -83,6 +84,7 @@ class ShopCardView: BaseCustomView {
 
     private fun getIsImageShopBadgeVisible(shopCardModel: ShopCardModel): Boolean {
         return shopCardModel.isOfficial
+                || shopCardModel.isPMPro
                 || shopCardModel.isGoldShop
     }
 
