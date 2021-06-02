@@ -56,7 +56,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
 
     @Test
     fun screenshot() {
-        Thread.sleep(3000)
+        Thread.sleep(5000)
 
         // ss visible screen
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
