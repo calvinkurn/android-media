@@ -1,6 +1,8 @@
 package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.autocomplete.complete
+import com.tokopedia.autocomplete.initialstate.InitialStateData
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
@@ -15,8 +17,10 @@ import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.usecase.RequestParams
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
@@ -28,25 +32,29 @@ private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/loc
 
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
+    private val requestParamsSlot = slot<RequestParams>()
+
     @Test
     fun `Test suggestion presenter has set parameter`() {
-        val searchParameter : Map<String, String> = mutableMapOf()
         val warehouseId = "19926"
 
-        `When suggestion presenter set search parameter and warehouseId`(searchParameter, warehouseId)
+        `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
+
+        `when presenter get suggestion data (search)`()
 
         `Then verify search parameter has warehouseId`(warehouseId)
     }
 
-    private fun `When suggestion presenter set search parameter and warehouseId`(searchParameter: Map<String, String>, warehouseId: String) {
-        suggestionPresenter.setSearchParameter(searchParameter as HashMap<String, String>)
-        suggestionPresenter.setWarehouseId(warehouseId)
+    private fun `Given getSuggestionUseCase will be successful`(suggestionUniverse: SuggestionUniverse) {
+        every { getSuggestionUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<SuggestionUniverse>>().complete(suggestionUniverse)
+        }
     }
 
     private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
-        val searchParameter = suggestionPresenter.getSearchParameter()
+        val requestParams = requestParamsSlot.captured
 
-        searchParameter[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
     }
 
     @Test

@@ -30,7 +30,6 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
         val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true, SearchApiConst.USER_WAREHOUSE_ID to warehouseId)
 
         `Given get dynamic filter model API will success`(getDynamicFilterRequestParamSlot, dynamicFilterModel)
-        `Given ChooseAddressUtils will return warehouseId`()
 
         `When open filter page`(mapParameter)
 

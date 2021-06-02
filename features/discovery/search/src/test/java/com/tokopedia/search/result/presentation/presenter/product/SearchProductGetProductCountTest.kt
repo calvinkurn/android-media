@@ -36,7 +36,6 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
     fun `Get product count with parameter should call get product count use case with parameters and size = 0`() {
         val successfulProductCountText = "10rb Produk"
         `Given Get Product Count Use Case will be successful`(successfulProductCountText)
-        `Given ChooseAddressUtils will return warehouseId`()
 
         val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true.toString(), SearchApiConst.USER_WAREHOUSE_ID to warehouseId)
         `When get product count`(mapParameter)

@@ -160,10 +160,6 @@ internal open class ProductListPresenterTestFixtures {
     internal fun RequestParams.getSearchProductParams(): Map<String, Any>
             = parameters[SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS] as Map<String, Any>
 
-    protected fun `Given ChooseAddressUtils will return warehouseId`() {
-        every { productListView.warehouseId } returns warehouseId
-    }
-
     @After
     open fun tearDown() {
         productListPresenter.detachView()

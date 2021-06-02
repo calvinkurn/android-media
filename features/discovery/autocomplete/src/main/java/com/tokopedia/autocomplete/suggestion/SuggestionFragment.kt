@@ -163,15 +163,6 @@ class SuggestionFragment :
         presenter.setSearchParameter(searchParameter)
     }
 
-    fun setWarehouseId(warehouseId: String) {
-        presenter.setWarehouseId(warehouseId)
-    }
-
-    private fun attachWarehouseId(searchParameter: SearchParameter) {
-        //need to get user_warehouseId from chooseAddress later
-        searchParameter.set(SearchApiConst.USER_WAREHOUSE_ID, "19926")
-    }
-
     fun setSuggestionViewUpdateListener(suggestionViewUpdateListener: SuggestionViewUpdateListener) {
         this.suggestionViewUpdateListener = suggestionViewUpdateListener
     }

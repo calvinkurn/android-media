@@ -33,7 +33,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View getQueryKey will return the keyword`(searchParameter[SearchApiConst.Q].toString())
-        `Given ChooseAddressUtils will return warehouseId`()
 
         `When Load Data`(searchParameter)
 
@@ -117,7 +116,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
     private fun `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog: CapturingSlot<String>, exception: Exception) {
         verifyOrder {
-            productListView.warehouseId
             productListView.isAnyFilterActive
             productListView.isAnySortActive
 
@@ -152,7 +150,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
         `Given View is first active tab`()
         `Given View reload data immediately calls load data`()
         `Given View getQueryKey will return the keyword`("samsung")
-        `Given ChooseAddressUtils will return warehouseId`()
 
         `When View is created`()
 

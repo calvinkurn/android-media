@@ -5,6 +5,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionResponse
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocomplete.util.UrlParamHelper
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -91,6 +92,9 @@ class SuggestionUseCase(
             params.putString(KEY_UNIQUE_ID, uniqueId)
             params.putString(DEVICE_ID, registrationId)
             params.putBoolean(IS_TYPING, isTyping)
+
+            //need to get user_warehouseId from chooseAddress later
+            params.putString(SearchApiConst.USER_WAREHOUSE_ID, "19926")
 
             return params
         }

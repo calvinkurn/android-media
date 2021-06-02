@@ -6,6 +6,8 @@ import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -133,4 +135,8 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun List<BaseItemInitialStateSearch>.findByType(type: String = ""): BaseItemInitialStateSearch {
         return this.find { it.type == type } as BaseItemInitialStateSearch
     }
+
+    @Suppress("UNCHECKED_CAST")
+    internal fun RequestParams.getSearchProductParams(): Map<String, Any>
+            = parameters[SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS] as Map<String, Any>
 }

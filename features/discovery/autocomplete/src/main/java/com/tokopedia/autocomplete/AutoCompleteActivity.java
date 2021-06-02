@@ -27,7 +27,6 @@ import com.tokopedia.autocomplete.util.UrlParamHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 
@@ -135,19 +134,14 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
-        //need to get user_warehouseId from chooseAddress later
-        String warehouseId = "19926";
-
         searchBarView.showSearch(searchParameter);
 
         if (suggestionFragment != null) {
             suggestionFragment.setSearchParameter(searchParameter.getSearchParameterHashMap());
-            suggestionFragment.setWarehouseId(warehouseId);
             suggestionFragment.setSuggestionViewUpdateListener(this);
         }
         if (initialStateFragment != null) {
             initialStateFragment.setSearchParameter(searchParameter.getSearchParameterHashMap());
-            initialStateFragment.setWarehouseId(warehouseId);
             initialStateFragment.setInitialStateViewUpdateListener(this);
         }
     }

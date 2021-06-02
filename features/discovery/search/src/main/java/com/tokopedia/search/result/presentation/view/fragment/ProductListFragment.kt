@@ -1889,9 +1889,6 @@ class ProductListFragment: BaseDaggerFragment(),
             }
         } ?: emptyAddress
 
-    //need to get user_warehouseId from chooseAddress later
-    override val warehouseId: String = "19926"
-
     override fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean {
         return context?.let {
             try {

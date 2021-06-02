@@ -194,10 +194,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.setSearchParameter(searchParameter)
     }
 
-    fun setWarehouseId(warehouseId: String) {
-        presenter.setWarehouseId(warehouseId)
-    }
-
     fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener) {
         this.initialStateViewUpdateListener = initialStateViewUpdateListener
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.complete
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
@@ -16,7 +17,9 @@ import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.usecase.RequestParams
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
@@ -26,27 +29,29 @@ private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialsta
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
+    private val requestParamsSlot = slot<RequestParams>()
+
     @Test
     fun `Test initial state presenter has set parameter`() {
-        val searchParameter : Map<String, String> = mutableMapOf<String,String>().also {
-            it[SearchApiConst.Q] = "samsung"
-        }
         val warehouseId = "19926"
 
-        `When initial state presenter set search parameter and warehouseId`(searchParameter, warehouseId)
+        `Given getInitialStateUseCase will be successful`(initialStateCommonData)
+
+        `When presenter get initial state data`()
 
         `Then verify search parameter has warehouseId`(warehouseId)
     }
 
-    private fun `When initial state presenter set search parameter and warehouseId`(searchParameter: Map<String, String>, warehouseId: String) {
-        initialStatePresenter.setSearchParameter(searchParameter as HashMap<String, String>)
-        initialStatePresenter.setWarehouseId(warehouseId)
+    private fun `Given getInitialStateUseCase will be successful`(list: List<InitialStateData>) {
+        every { getInitialStateUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<List<InitialStateData>>>().complete(list)
+        }
     }
 
     private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
-        val searchParameter = initialStatePresenter.getSearchParameter()
+        val requestParams = requestParamsSlot.captured
 
-        searchParameter[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
     }
 
     private fun `Test Initial State Data`(list: List<InitialStateData>) {
