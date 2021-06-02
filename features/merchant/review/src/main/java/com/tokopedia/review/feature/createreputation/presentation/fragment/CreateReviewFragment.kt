@@ -518,8 +518,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun submitNewReview() {
         val reviewMessage = createReviewExpandableTextArea.getText()
-        createReviewViewModel.submitReview(reputationId, productId, shopId.toLongOrZero(),
-                createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked, utmSource)
+        createReviewViewModel.submitReview(animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewScore.getScore(), createReviewAnonymousCheckbox.isChecked, utmSource)
     }
 
     private fun isReviewComplete(): Boolean {

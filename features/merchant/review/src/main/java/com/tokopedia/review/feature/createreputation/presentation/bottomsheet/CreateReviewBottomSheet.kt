@@ -545,7 +545,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun submitNewReview() {
         val reviewMessage = textArea?.getText() ?: ""
-        createReviewViewModel.submitReview(getRating(), reviewMessage, isAnonymous(), utmSource)
+        createReviewViewModel.submitReview(getRating(), reviewMessage, 0, isAnonymous(), utmSource)
     }
 
     private fun isGoodRating(): Boolean {
@@ -686,7 +686,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             showSendRatingOnlyDialog()
             return
         }
-        if(!isGoodRating() && (textArea?.isEmpty() == false || createReviewViewModel.isImageNotEmpty())) {
+        if(textArea?.isEmpty() == false || createReviewViewModel.isImageNotEmpty()) {
             showReviewUnsavedWarningDialog()
             return
         }

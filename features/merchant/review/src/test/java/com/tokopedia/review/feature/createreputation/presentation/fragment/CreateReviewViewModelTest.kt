@@ -21,6 +21,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockkObject
 import org.junit.Assert
 import org.junit.Assert.assertFalse
@@ -203,12 +204,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = false))
         val expectedUploadResponse = UploadResult.Success("success")
 
+        onGetForm_thenReturn()
         onUploadImage_thenReturn(expectedUploadResponse)
         onSubmitReview_thenReturn(expectedResponse)
 
         viewModel.clearImageData()
         viewModel.getImageList(images)
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
+        viewModel.getProductReputation(productId, reputationId)
+        viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -221,12 +224,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val expectedResponse = Throwable()
         val expectedUploadResponse = UploadResult.Success("success")
 
+        onGetForm_thenReturn()
         onUploadImage_thenReturn(expectedUploadResponse)
         onSubmitReviewError_thenReturn(expectedResponse)
 
         viewModel.clearImageData()
         viewModel.getImageList(images)
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
+        viewModel.getProductReputation(productId, reputationId)
+        viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
@@ -237,12 +242,14 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val expectedResponse = Throwable()
         val expectedUploadResponse = UploadResult.Error("Network error")
 
+        onGetForm_thenReturn()
         onUploadImage_thenReturn(expectedUploadResponse)
         onSubmitReviewError_thenReturn(expectedResponse)
 
         viewModel.clearImageData()
         viewModel.getImageList(images)
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
+        viewModel.getProductReputation(productId, reputationId)
+        viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
         verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
     }
@@ -251,9 +258,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     fun `when submitReview with no images should execute expected usecases`() {
         val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = true, feedbackID = "feedbackId"))
 
+        onGetForm_thenReturn()
         onSubmitReview_thenReturn(expectedResponse)
 
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
+        viewModel.getProductReputation(productId, reputationId)
+        viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -265,9 +274,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     fun `when submitReview with no images results in back end error should return failure`() {
         val expectedResponse = ProductrevSubmitReviewResponseWrapper(ProductRevSuccessSubmitReview(success = false))
 
+        onGetForm_thenReturn()
         onSubmitReview_thenReturn(expectedResponse)
 
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
+        viewModel.getProductReputation(productId, reputationId)
+        viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         expectedResponse.productrevSuccessIndicator?.let {
@@ -279,9 +290,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     fun `when submitReview with no images results in network error should return failure`() {
         val expectedResponse = Throwable()
 
+        onGetForm_thenReturn()
         onSubmitReviewError_thenReturn(expectedResponse)
 
-        viewModel.submitReview(reputationId, productId, shopId, reputationScore, rating, review, isAnonymous, utmSource)
+        viewModel.getProductReputation(productId, reputationId)
+        viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
         verifySubmitReviewUseCaseCalled()
         verifySubmitReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
@@ -414,6 +427,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         verifyGetReviewTemplateUseCaseCalled()
         verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
+        assertFalse(viewModel.isTemplateAvailable())
     }
 
     @Test
@@ -469,6 +483,23 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.submitButtonState.verifyValueEquals(isEnabled)
     }
 
+    @Test
+    fun `when getUserId should get expected userId`() {
+        val expectedUserId = "123124"
+        every { userSession.userId } returns expectedUserId
+        Assert.assertEquals(expectedUserId, viewModel.getUserId())
+    }
+
+    @Test
+    fun `when getImageCount should get expected imageCount`() {
+        val expectedImageCount = 5
+
+        viewModel.clearImageData()
+        viewModel.getImageList(images)
+
+        Assert.assertEquals(expectedImageCount, viewModel.getImageCount())
+    }
+
     private fun fillInImages() {
         val feedbackId = anyLong()
         val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
@@ -521,6 +552,12 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun onGetReviewTemplateError_thenReturn(throwable: Throwable) {
         coEvery { getReviewTemplatesUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onGetForm_thenReturn() {
+        coEvery {
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
+        } returns ProductRevGetForm()
     }
 
     private fun verifySubmitReviewSuccess(viewState: com.tokopedia.review.common.data.Success<String>) {

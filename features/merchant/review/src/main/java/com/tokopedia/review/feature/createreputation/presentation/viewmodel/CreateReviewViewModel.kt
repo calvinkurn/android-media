@@ -81,23 +81,13 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val progressBarState: LiveData<CreateReviewProgressBarState>
         get() = _progressBarState
 
-    fun submitReview(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
-                     reviewText: String, isAnonymous: Boolean, utmSource: String) {
-        _submitReviewResult.postValue(LoadingView())
-        if (imageData.isEmpty()) {
-            sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, utmSource)
-        } else {
-            sendReviewWithImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl(), utmSource)
-        }
-    }
-
-    fun submitReview(rating: Int, reviewText: String, isAnonymous: Boolean, utmSource: String) {
+    fun submitReview(rating: Int, reviewText: String, reputationScore: Int, isAnonymous: Boolean, utmSource: String) {
         (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
             _submitReviewResult.postValue(LoadingView())
             if (imageData.isEmpty()) {
-                sendReviewWithoutImage(reputationId = it.reputationID, productId = it.productData.productID, shopId = it.shopData.shopID, rating = rating, reviewText = reviewText, isAnonymous = isAnonymous, utmSource = utmSource)
+                sendReviewWithoutImage(it.reputationID, it.productData.productID, it.shopData.shopID, rating, reputationScore, reviewText, isAnonymous, utmSource)
             } else {
-                sendReviewWithImage(reputationId = it.reputationID, productId = it.productData.productID, shopId = it.shopData.shopID, rating = rating, reviewText = reviewText, isAnonymous = isAnonymous, listOfImages = getSelectedImagesUrl(), utmSource = utmSource)
+                sendReviewWithImage(it.reputationID, it.productData.productID, it.shopData.shopID, rating, reputationScore, reviewText, isAnonymous, getSelectedImagesUrl(), utmSource)
             }
         }
     }
@@ -269,11 +259,11 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                 ?: false
     }
 
-    fun getImageCount(): Int  {
+    fun getImageCount(): Int {
         return imageData.count { it is ImageReviewUiModel }
     }
 
-    private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int = 0, rating: Int,
+    private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                        reviewText: String, isAnonymous: Boolean, utmSource: String) {
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -293,13 +283,13 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun sendReviewWithImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int = 0, rating: Int,
+    private fun sendReviewWithImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
                                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>, utmSource: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
                 repeat(listOfImages.size) {
-                    when(val uploadImageResult = uploadImage(listOfImages[it])) {
+                    when (val uploadImageResult = uploadImage(listOfImages[it])) {
                         is UploadResult.Success -> {
                             uploadIdList.add(uploadImageResult.uploadId)
                         }
