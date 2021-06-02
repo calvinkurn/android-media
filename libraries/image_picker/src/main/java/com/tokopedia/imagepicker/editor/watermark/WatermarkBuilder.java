@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.tokopedia.imagepicker.editor.watermark.bean.WatermarkImage;
 import com.tokopedia.imagepicker.editor.watermark.bean.WatermarkPosition;
 import com.tokopedia.imagepicker.editor.watermark.bean.WatermarkText;
+import com.yalantis.ucrop.util.FastBitmapDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -271,7 +272,7 @@ public final class WatermarkBuilder {
     private void backgroundFromImageView(ImageView imageView) {
         imageView.invalidate();
         if (imageView.getDrawable() != null) {
-            BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+            FastBitmapDrawable drawable = (FastBitmapDrawable) imageView.getDrawable();
             if (resizeBackgroundImg) {
                 backgroundImg = resizeBitmap(drawable.getBitmap(), MAX_IMAGE_SIZE);
             } else {
