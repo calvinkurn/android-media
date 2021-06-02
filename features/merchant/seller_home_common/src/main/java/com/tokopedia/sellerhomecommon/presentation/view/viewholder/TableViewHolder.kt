@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -37,6 +38,7 @@ class TableViewHolder(
     private val tableFilter: Typography? = itemView?.findViewById(R.id.filterShcTable)
 
     override fun bind(element: TableWidgetUiModel) {
+        itemView.visible()
         itemView.tvTableWidgetTitle.text = element.title
         itemView.tvTableWidgetTitle.visible()
         itemView.commonWidgetErrorState.gone()
@@ -83,6 +85,7 @@ class TableViewHolder(
                 if (element.isShowEmpty) {
                     setOnTableEmpty(element)
                 } else {
+                    hide()
                     listener.removeWidget(adapterPosition, element)
                 }
             }

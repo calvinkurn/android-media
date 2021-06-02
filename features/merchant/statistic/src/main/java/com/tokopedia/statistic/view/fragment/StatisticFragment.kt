@@ -232,10 +232,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        recyclerView?.post {
-            adapter.data.remove(widget)
-            adapter.notifyItemRemoved(position)
-        }
+        // No-Op
+        // We are not removing any widget in this page as we want the functionality to
+        // show/hide widget only according to filter result
     }
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
