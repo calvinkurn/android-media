@@ -33,13 +33,11 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
     @Test
     fun `Test initial state presenter has set parameter`() {
-        val warehouseId = "19926"
-
         `Given getInitialStateUseCase will be successful`(initialStateCommonData)
 
         `When presenter get initial state data`()
 
-        `Then verify search parameter has warehouseId`(warehouseId)
+        `Then verify search parameter has warehouseId`(SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
     }
 
     private fun `Given getInitialStateUseCase will be successful`(list: List<InitialStateData>) {

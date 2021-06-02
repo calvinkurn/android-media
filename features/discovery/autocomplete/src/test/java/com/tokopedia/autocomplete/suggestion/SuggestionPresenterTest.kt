@@ -36,13 +36,11 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
     @Test
     fun `Test suggestion presenter has set parameter`() {
-        val warehouseId = "19926"
-
         `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
 
         `when presenter get suggestion data (search)`()
 
-        `Then verify search parameter has warehouseId`(warehouseId)
+        `Then verify search parameter has warehouseId`(SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
     }
 
     private fun `Given getSuggestionUseCase will be successful`(suggestionUniverse: SuggestionUniverse) {

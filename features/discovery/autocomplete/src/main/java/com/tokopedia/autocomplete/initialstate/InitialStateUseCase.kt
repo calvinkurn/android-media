@@ -75,7 +75,7 @@ class InitialStateUseCase(
             params.putString(DEVICE_ID, registrationId)
 
             //need to get user_warehouseId from chooseAddress later
-            params.putString(SearchApiConst.USER_WAREHOUSE_ID, "19926")
+            params.putString(SearchApiConst.USER_WAREHOUSE_ID, SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
 
             return params
         }

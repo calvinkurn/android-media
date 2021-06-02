@@ -266,7 +266,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun putRequestParamWarehouseId(requestParams: RequestParams) {
         //need to get user_warehouseId from chooseAddress later
-        requestParams.putString(SearchApiConst.USER_WAREHOUSE_ID, "19926")
+        requestParams.putString(SearchApiConst.USER_WAREHOUSE_ID, SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
     }
 
     private fun putRequestParamsOtherParameters(requestParams: RequestParams, searchParameter: Map<String, Any>) {
