@@ -65,9 +65,9 @@ abstract class BaseAtcVariantViewModelTest {
     //region assert helper
     fun assertButton(expectedAlternateCopy: String = "",
                      expectedIsBuyable: Boolean = true,
-                     expectedCartType: String = "normal",
-                     expectedCartColor: String = "primary_green",
-                     expectedCartText: String = "+ Keranjang") {
+                     expectedCartType: String? = "normal",
+                     expectedCartColor: String? = "primary_green",
+                     expectedCartText: String? = "+ Keranjang") {
         val data = (viewModel.buttonData.value as Success).data
 
         //Todo alternate copy

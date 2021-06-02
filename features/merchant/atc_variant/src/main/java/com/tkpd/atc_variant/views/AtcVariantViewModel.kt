@@ -329,9 +329,9 @@ class AtcVariantViewModel @Inject constructor(
                shopIdInt: Int,
                categoryName: String,
                userId: String,
-               shippingMinPrice: Int = 0,
-               trackerAttributionPdp: String = "",
-               trackerListNamePdp: String = "",
+               shippingMinPrice: Int,
+               trackerAttributionPdp: String,
+               trackerListNamePdp: String,
                isTokoNow: Boolean) {
         val selectedChild = getVariantData()?.getChildByOptionId(getSelectedOptionIds()?.values?.toList()
                 ?: listOf())
