@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
@@ -133,13 +135,16 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         header_toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-        header_toolbar.addRightIcon(com.tokopedia.topads.common.R.drawable.topads_edit_pen_icon).setOnClickListener {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
-                putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
-                putExtra(ParamObject.GROUP_ID, groupId.toString())
+        header_toolbar.addRightIcon(0).apply {
+            setImageDrawable(getIconUnifyDrawable(context, IconUnify.EDIT))
+            setOnClickListener {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
+                    putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
+                    putExtra(ParamObject.GROUP_ID, groupId.toString())
+                }
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_edit_icon, "{${userSession.shopId}} - {$groupId}", userSession.userId)
+                startActivityForResult(intent, EDIT_HEADLINE_REQUEST_CODE)
             }
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_edit_icon, "{${userSession.shopId}} - {$groupId}", userSession.userId)
-            startActivityForResult(intent, EDIT_HEADLINE_REQUEST_CODE)
         }
         app_bar_layout_2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {

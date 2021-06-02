@@ -13,7 +13,6 @@ import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment;
-import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +21,10 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
 
     private final RecyclerView.RecycledViewPool parentPool;
     private final HomeCategoryListener homeCategoryListener;
-    private SparseArrayCompat<HomeRecommendationFragment> registeredFragments = new SparseArrayCompat<>();
+    private final SparseArrayCompat<HomeRecommendationFragment> registeredFragments = new SparseArrayCompat<>();
     private final HomeEggListener homeEggListener;
     private final HomeTabFeedListener homeTabFeedListener;
-    private List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
+    private final List<RecommendationTabDataModel> recommendationTabDataModelList = new ArrayList<>();
 
     public HomeFeedPagerAdapter(HomeCategoryListener homeCategoryListener,
                                 HomeEggListener homeEggListener,

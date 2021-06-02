@@ -555,12 +555,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                val opacity = (slideOffset - 1f).unaryMinus() - 0.5f
+                val opacity = 1f - (slideOffset * 3f)
                 rvHorizontalPropertiesHotelSearchMap.alpha = opacity
-
-                if (slideOffset == 0.0f) {
-                    rvHorizontalPropertiesHotelSearchMap.alpha = 1f
-                }
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -1378,16 +1374,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 SEARCH_SCREEN_NAME)
 
         containerEmptyResultState.visible()
-        val viewTree = containerEmptyResultState.viewTreeObserver
-        viewTree.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                viewTree.removeOnGlobalLayoutListener(this)
-                bottomSheetBehavior.peekHeight = containerEmptyResultState.measuredHeight +
-                        resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-
-                collapseBottomSheet()
-            }
-        })
+        containerEmptyResultState.postDelayed({
+            bottomSheetBehavior.setPeekHeight(containerEmptyResultState.measuredHeight +
+                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6), true)
+        }, DELAY_EMPTY_STATE)
     }
 
     private fun hideErrorNoResult() {
@@ -1454,6 +1444,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
         const val SELECTED_POSITION_INIT = 0
         const val DELAY_BUTTON_RADIUS: Long = 1000L
+        const val DELAY_EMPTY_STATE: Long = 100L
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
 

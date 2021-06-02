@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview
 
+import android.content.res.Resources
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -20,6 +21,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private lateinit var youTubeViewViewModel: YouTubeViewViewModel
     private var videoId: String = ""
     private var videoName: String = ""
+    private val widthOfPlayer:Int = ((Resources.getSystem().displayMetrics.widthPixels- (2*itemView.context.resources.getDimensionPixelSize(R.dimen.disco_youtube_view_padding)))/ Resources.getSystem().displayMetrics.density).toInt()
 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -43,7 +45,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     private fun showVideoInWebView() {
         youtubeWebView.setUpEventListeners(youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this)
-        youtubeWebView.loadVideo(videoId)
+        youtubeWebView.loadVideo(videoId,widthOfPlayer)
         shimmerView.hide()
     }
 
