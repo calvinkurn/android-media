@@ -118,6 +118,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             showPmProDeactivationBottomSheet()
         } else {
             showRegularPmDeactivationBottomSheet()
+
+            powerMerchantTracking.sendEventClickStopPmBecomeRm()
         }
 
         powerMerchantTracking.sendEventClickStopPowerMerchant()
@@ -128,6 +130,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
         val shopTier = getShopTireByPmTire(currentPmTireType)
         mViewModel.cancelPmDeactivationSubmission(shopTier)
+
+        powerMerchantTracking.sendEventClickCancelOptOutPowerMerchant()
     }
 
     override fun setOnReloadClickListener() {
@@ -149,6 +153,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     override fun onUpgradePmProClickListener(adapterPosition: Int) {
         submitPmRegistration(PMConstant.ShopTierType.POWER_MERCHANT_PRO)
+
+        powerMerchantTracking.sendEventClickUpgradePowerMerchantPro()
     }
 
     override fun onUpgradePmProTnCClickListener() {
@@ -533,6 +539,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 }
         )
 
+        powerMerchantTracking.sendEventClickLearnPopUpImproveNumberOfOrder()
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
@@ -550,6 +557,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 }
         )
 
+        powerMerchantTracking.sendEventClickLearnPopUpImproveNiv()
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
@@ -633,7 +641,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             return
         }
 
-        powerMerchantTracking.sendEventClickUpgradePowerMerchant()
         submitPmRegistration(nextShopTireType)
     }
 

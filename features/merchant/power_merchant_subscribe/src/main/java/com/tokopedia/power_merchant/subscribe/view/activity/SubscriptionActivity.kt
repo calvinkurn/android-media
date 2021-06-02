@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
@@ -262,9 +261,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private fun sendTrackerOnPMTabClicked(tabIndex: Int) {
-        val pmTabIndex = 0
-        if (tabIndex == pmTabIndex) {
-            powerMerchantTracking.sendEventClickTabPowerMerchant()
+        val pmProTabIndex = 1
+        if (tabIndex == pmProTabIndex) {
+            powerMerchantTracking.sendEventClickTabPowerMerchantPro()
         }
     }
 
@@ -374,14 +373,14 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun switchPMToWebView() {
         val remoteConfig = FirebaseRemoteConfigImpl(this)
-        val isSwitchPMToWebView =  remoteConfig.getBoolean(RemoteConfigKey.PM_SWITCH_TO_WEB_VIEW, false)
+        val isSwitchPMToWebView = remoteConfig.getBoolean(RemoteConfigKey.PM_SWITCH_TO_WEB_VIEW, false)
 
         if (isSwitchPMToWebView) {
             RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, PowerMerchantDeepLinkMapper.PM_WEBVIEW_URL)
             finish()
         }
     }
-    
+
     private fun logToCrashlytics(throwable: Throwable, message: String) {
         PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
     }

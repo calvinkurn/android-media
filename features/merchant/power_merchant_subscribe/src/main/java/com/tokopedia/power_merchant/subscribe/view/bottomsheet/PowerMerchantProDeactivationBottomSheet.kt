@@ -2,14 +2,17 @@ package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 
 import android.text.method.LinkMovementMethod
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import kotlinx.android.synthetic.main.bottom_sheet_pm_pro_deactivation.view.*
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 12/05/21
@@ -27,6 +30,9 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
     private var onNextClickCallback: ((selectedShopTire: Int) -> Unit)? = null
     private var selectedShopTire = PMConstant.ShopTierType.NA
 
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
+
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_pro_deactivation
 
     override fun setupView() = childView?.run {
@@ -35,6 +41,16 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
         setOnNextClickListener()
 
         tvPmDeactivationPmProDesc.text = getString(R.string.pm_pm_pro_deactivation_description, Constant.POWER_MERCHANT_CHARGING).parseAsHtml()
+    }
+
+    override fun initInjector() {
+        activity?.let {
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+            DaggerPowerMerchantSubscribeComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .build()
+                    .inject(this)
+        }
     }
 
     fun setOnNextClickListener(callback: (selectedShopTire: Int) -> Unit) {
@@ -109,6 +125,8 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
                     childView?.optionPmPowerMerchant?.setSelectedStatus(!selectedStatus)
                     childView?.btnPmOptionsNext?.isEnabled = true
                     selectedShopTire = PMConstant.ShopTierType.POWER_MERCHANT
+
+                    powerMerchantTracking.sendEventClickStopPmBecomePm()
                 }
             }
         }
