@@ -33,4 +33,6 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_SUBMIT = "click - kirim ulasan produk"
     const val EVENT_LABEL_CLICK_SUBMIT = "order_id : %s - product_id : %s - star : %d - ulasan : %s - review_char : %d - gambar : %d - anonim : %s - feedback_is_incentive_eligible : %s - is_template_available : %s - count_template_used : %d"
     const val EVENT_ACTION_DISMISS_FORM = "click - dismiss create review form"
+    const val EVENT_LABEL_VIEW_INCENTIVES_TICKER = "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_ACTION_CLICK_INCENTIVES_TICKER = "click - pelajari on ovo incentives ticker"
 }

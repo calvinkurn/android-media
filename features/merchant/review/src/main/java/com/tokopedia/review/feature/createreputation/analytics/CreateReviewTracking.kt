@@ -240,6 +240,32 @@ object CreateReviewTracking {
         tracker.sendScreenAuthenticated(screenName)
     }
 
+    fun openScreenWithCustomDimens(screenName: String, productId: String) {
+        tracker.sendScreenAuthenticated(screenName, getOpenScreenEventMap(productId))
+    }
+
+    fun eventViewIncentivesTicker(message: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                ReviewTrackingConstant.VIEW_OVO_INCENTIVES_TICKER,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_INCENTIVES_TICKER, message, reputationId, orderId, productId),
+                productId,
+                userId)
+        )
+    }
+
+    fun eventClickIncentivesTicker(message: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_INCENTIVES_TICKER,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_INCENTIVES_TICKER, message, reputationId, orderId, productId),
+                productId,
+                userId)
+        )
+    }
+
     fun eventViewDialog(dialogType: CreateReviewDialogType, title: String, reputationId: String, orderId: String, productId: String, userId: String) {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.VIEW_REVIEW,
@@ -333,5 +359,13 @@ object CreateReviewTracking {
             CreateReviewDialogType.CreateReviewSendRatingOnlyDialog -> CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_RATING_OPTION
             CreateReviewDialogType.CreateReviewUnsavedDialog -> CreateReviewTrackingConstants.EVENT_ACTION_CLICK_STAY_OPTION
         }
+    }
+
+    private fun getOpenScreenEventMap(productId: String): Map<String, String> {
+        return mapOf(
+                CreateReviewTrackingConstants.KEY_BUSINESS_UNIT to CreateReviewTrackingConstants.BUSINESS_UNIT,
+                CreateReviewTrackingConstants.KEY_CURRENT_SITE to CreateReviewTrackingConstants.CURRENT_SITE,
+                CreateReviewTrackingConstants.KEY_PRODUCT_ID to productId
+        )
     }
 }

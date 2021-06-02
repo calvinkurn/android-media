@@ -28,7 +28,6 @@ import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
-import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
@@ -93,6 +92,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var submitButton: UnifyButton? = null
     private var loadingView: View? = null
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var thankYouBottomSheet: BottomSheetUnify? = null
 
     private var rating: Int = 0
     private var productId: Long = 0L
@@ -406,13 +406,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this, "") }
             }
             hideTemplates()
-            ReviewTracking.onSuccessGetIncentiveOvoTracker(it.subtitle, "")
+            CreateReviewTracking.eventViewIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
             incentivesTicker?.apply {
                 setHtmlDescription(it.subtitle)
                 setOnClickListener { _ ->
                     ovoIncentiveBottomSheet?.let { bottomSheet ->
                         activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
-                        ReviewTracking.onClickReadSkIncentiveOvoTracker(it.subtitle, "")
+                        CreateReviewTracking.eventClickIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
                     }
                 }
                 show()
@@ -429,6 +429,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onSuccessSubmitReview() {
         stopButtonLoading()
+        if (isUserEligible() && !isReviewIncomplete) {
+            showThankYouBottomSheet((createReviewViewModel.incentiveOvo.value as? Success)?.data)
+            return
+        }
         activity?.setResult(Activity.RESULT_OK)
         dismiss()
     }
@@ -637,20 +641,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         }
     }
 
-    private fun trackSubmitReview() {
-        CreateReviewTracking.reviewOnSubmitTracker(
-                getOrderId(),
-                productId.toString(10),
-                ratingStars?.clickAt.toString(),
-                textArea?.isEmpty() ?: false,
-                createReviewViewModel.getSelectedImagesUrl().size.toString(10),
-                anonymousOption?.isChecked() ?: false,
-                isEditMode,
-                feedbackId.toString(),
-                isUserEligible() && isReviewComplete()
-        )
-    }
-
     private fun trackRatingChanged(position: Int) {
         CreateReviewTracking.reviewOnRatingChangedTracker(
                 getOrderId(),
@@ -672,7 +662,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setOnTouchOutsideListener() {
         setShowListener {
-            CreateReviewTracking.openScreen(CreateReviewTrackingConstants.SCREEN_NAME)
+            CreateReviewTracking.openScreenWithCustomDimens(CreateReviewTrackingConstants.SCREEN_NAME, productId.toString())
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
             isCancelable = false
             dialog?.setCanceledOnTouchOutside(false)
@@ -843,5 +833,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             return (createReviewViewModel.reviewTemplates.value as? Success)?.data ?: listOf()
         }
         return listOf()
+    }
+
+    private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
+        if (thankYouBottomSheet == null) {
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this) }
+        }
+        thankYouBottomSheet?.let { bottomSheet ->
+            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
+        }
     }
 }
