@@ -381,8 +381,8 @@ class MiniCartProductViewHolder(private val view: View,
         if (qtyTextWatcher != null) {
             // reset listener
             qtyEditorProduct?.editText?.removeTextChangedListener(qtyTextWatcher)
-            qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
         }
+        qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
         qtyEditorProduct?.autoHideKeyboard = true
         qtyEditorProduct?.minValue = element.productMinOrder
         qtyEditorProduct?.maxValue = element.productMaxOrder
