@@ -7,7 +7,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,6 @@ import android.webkit.SslErrorHandler
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
@@ -32,12 +30,10 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
-import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,10 +46,6 @@ import javax.inject.Named
 class PaymentMethodFragment : BaseDaggerFragment() {
 
     companion object {
-
-        private const val ARG_IS_EDIT = "is_edit"
-        private const val ARG_ADDRESS_STATE = "address_state"
-
         private const val MERCHANT_CODE = "tokopedia"
         private const val PROFILE_CODE = "EXPRESS_SAVE"
 
@@ -62,18 +54,10 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         private const val QUERY_PARAM_SUCCESS = "success"
         private const val QUERY_PARAM_GATEWAY_CODE = "gateway_code"
 
-        fun newInstance(isEdit: Boolean = false, addressState: Int): PaymentMethodFragment {
-            val paymentMethodFragment = PaymentMethodFragment()
-            val bundle = Bundle()
-            bundle.putBoolean(ARG_IS_EDIT, isEdit)
-            bundle.putInt(ARG_ADDRESS_STATE, addressState)
-            paymentMethodFragment.arguments = bundle
-            return paymentMethodFragment
+        fun newInstance(): PaymentMethodFragment {
+            return PaymentMethodFragment()
         }
     }
-
-    @Inject
-    lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -123,13 +107,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             val parentContext: Context = parent
             SplitCompat.installActivity(parentContext)
             parent.setHeaderTitle(parentContext.getString(R.string.lbl_choose_payment_method))
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
-                parent.hideStepper()
-            } else {
-                parent.setHeaderSubtitle(parentContext.getString(R.string.step_choose_payment))
-                parent.showStepper()
-                parent.setStepperValue(75)
-            }
+            parent.hideStepper()
             paymentAmount = parent.getPaymentAmount()
             shouldFormatMetadata = parent.isDirectPaymentStep()
         }
@@ -147,13 +125,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             setAppCacheEnabled(true)
         }
         webView?.webViewClient = PaymentMethodWebViewClient()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webSettings?.mediaPlaybackRequiresUserGesture = false
-        }
+        webSettings?.mediaPlaybackRequiresUserGesture = false
     }
 
     private fun loadPaymentParams() {
-        viewModel.paymentListingPayload.observe(viewLifecycleOwner, Observer {
+        viewModel.paymentListingPayload.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     loadWebView(it.data)
@@ -243,33 +219,14 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         getComponent(PreferenceEditComponent::class.java).inject(this)
     }
 
-    override fun onStart() {
-        super.onStart()
-        val parent = activity
-        if (parent is PreferenceEditParent) {
-            parent.setStepperValue(75)
-        }
-    }
-
     private fun goToNextStep(gatewayCode: String, metadata: String) {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            parent.setGatewayCode(gatewayCode)
-            parent.setPaymentQuery(metadata)
-            if (parent.isDirectPaymentStep()) {
-                parent.setResult(Activity.RESULT_OK, Intent().apply {
-                    putExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY, gatewayCode)
-                    putExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA, metadata)
-                })
-                parent.finish()
-            } else if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
-                preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
-                parent.goBack()
-            } else {
-                preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
-                val addressState = arguments?.getInt(ARG_ADDRESS_STATE) ?: 0
-                parent.addFragment(PreferenceSummaryFragment.newInstance(addressState = addressState))
-            }
+            parent.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY, gatewayCode)
+                putExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA, metadata)
+            })
+            parent.finish()
         }
     }
 

@@ -94,9 +94,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_message) }
     private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_action) }
 
-    fun setPreference(preference: OrderPreference, revampData: OccRevampData) {
+    fun setPreference(preference: OrderPreference) {
         this.preference = preference
-        showPreference(revampData)
+        showPreference()
     }
 
     fun setShipment(shipment: OrderShipment?) {
@@ -113,8 +113,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    private fun showPreference(revampData: OccRevampData) {
-        showHeader(revampData)
+    private fun showPreference() {
+        showHeader()
 
         showAddress()
 
@@ -123,7 +123,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         showPayment()
     }
 
-    private fun showHeader(revampData: OccRevampData) {
+    private fun showHeader() {
         tvHeader?.visible()
         tvCardHeader?.gone()
         lblDefaultPreference?.gone()
@@ -658,10 +658,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     interface OrderPreferenceCardListener {
 
-        fun onChangePreferenceClicked()
-
-        fun onAddPreferenceClicked(preference: OrderPreference)
-
         fun onAddAddress(token: Token?)
 
         fun onAddressChange(addressModel: RecipientAddressModel)
@@ -681,8 +677,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         fun chooseDuration(isDurationError: Boolean, currentSpId: String)
 
         fun choosePayment(preference: OrderPreference)
-
-        fun onPreferenceEditClicked(preference: OrderPreference)
 
         fun onInstallmentDetailClicked()
 

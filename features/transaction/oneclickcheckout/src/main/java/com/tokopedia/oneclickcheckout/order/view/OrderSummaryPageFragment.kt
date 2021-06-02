@@ -36,6 +36,8 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_FULL_FLOW
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_LOGISTIC_LABEL
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -50,11 +52,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
-import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
-import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -72,7 +72,6 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
-import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopUpWebViewActivity
@@ -116,9 +115,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     @Inject
     @field:Named(OVO_ACTIVATION_URL)
     lateinit var ovoActivationUrl: Lazy<String>
-
-    @Inject
-    lateinit var getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>
 
     @Inject
     lateinit var getAddressCornerUseCase: Lazy<GetAddressCornerUseCase>
@@ -176,34 +172,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        source = SOURCE_OTHERS
         when (requestCode) {
-            REQUEST_CREATE_PREFERENCE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    source = SOURCE_ADD_PROFILE
-                }
-                onResultFromPreference(data)
-            }
-            REQUEST_EDIT_PREFERENCE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    source = SOURCE_OTHERS
-                }
-                onResultFromPreference(data)
-            }
-            else -> {
-                source = SOURCE_OTHERS
-                when (requestCode) {
-                    REQUEST_CODE_COURIER_PINPOINT -> onResultFromCourierPinpoint(resultCode, data)
-                    REQUEST_CODE_PROMO -> onResultFromPromo(resultCode, data)
-                    PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
-                    REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(data)
-                    REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
-                    REQUEST_CODE_OVO_TOP_UP -> refresh()
-                    REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(data)
-                    REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
-                    REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
-                }
-            }
+            REQUEST_CODE_COURIER_PINPOINT -> onResultFromCourierPinpoint(resultCode, data)
+            REQUEST_CODE_PROMO -> onResultFromPromo(resultCode, data)
+            PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
+            REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(data)
+            REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
+            REQUEST_CODE_OVO_TOP_UP -> refresh()
+            REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(data)
+            REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
+            REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
         }
     }
 
@@ -268,17 +247,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun onResultFromPreference(data: Intent?) {
-        val message = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE)
-        if (message != null && message.isNotBlank()) {
-            view?.let {
-                Toaster.build(it, message).show()
-            }
-        }
-        viewModel.clearBboIfExist()
-        refresh()
-    }
-
     private fun onResultFromCreditCardPicker(data: Intent?) {
         val metadata = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_METADATA)
         val gatewayCode = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_GATEWAY_CODE)
@@ -337,7 +305,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         if (it.data.preference.address.addressId > 0 &&
                                 it.data.preference.payment.gatewayCode.isNotEmpty()) {
                             showPreferenceCard()
-                            newOrderPreferenceCard.setPreference(it.data, viewModel.revampData)
+                            newOrderPreferenceCard.setPreference(it.data)
                             layoutNoAddress?.animateGone()
                             mainContent?.animateShow()
                         } else {
@@ -358,7 +326,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             if (it.data.preference.address.addressId > 0 &&
                                     it.data.preference.payment.gatewayCode.isNotEmpty()) {
                                 showPreferenceCard()
-                                newOrderPreferenceCard.setPreference(it.data, viewModel.revampData)
+                                newOrderPreferenceCard.setPreference(it.data)
                                 layoutNoAddress?.animateGone()
                                 mainContent?.animateShow()
                             } else {
@@ -599,8 +567,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         descNoAddress?.text = getString(R.string.occ_lbl_desc_no_address)
         btnAddNewAddress?.setOnClickListener {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+                putExtra(EXTRA_IS_FULL_FLOW, true)
+                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
             }, REQUEST_CODE_ADD_NEW_ADDRESS)
         }
     }
@@ -930,34 +898,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun getNewOrderPreferenceCardListener() = object : NewOrderPreferenceCard.OrderPreferenceCardListener {
 
-        override fun onChangePreferenceClicked() {
-            orderSummaryAnalytics.eventClickPilihTemplateLain(userSession.get().userId)
-            showPreferenceListBottomSheet()
-        }
-
-        override fun onAddPreferenceClicked(preference: OrderPreference) {
-            orderSummaryAnalytics.eventClickTambahTemplate(userSession.get().userId)
-            val preferenceIndex = "${getString(R.string.preference_number_summary)} 2"
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
-                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, true)
-                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
-                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
-                val orderCost = viewModel.orderTotal.value.orderCost
-                val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
-                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
-                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
-                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                val addressState = viewModel.addressState.value.state
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
-            }
-            startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
-        }
-
         override fun onAddAddress(token: Token?) {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+                putExtra(EXTRA_IS_FULL_FLOW, true)
+                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
                 putExtra(CheckoutConstant.KERO_TOKEN, token)
             }, REQUEST_CODE_ADD_ADDRESS)
         }
@@ -1015,43 +959,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val currentGatewayCode = preference.preference.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
-                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
-                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
-                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
-                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
                 putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, currentGatewayCode)
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
                 val orderCost = viewModel.orderTotal.value.orderCost
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_DIRECT_PAYMENT_STEP, true)
-                val addressState = viewModel.addressState.value.state
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
-        }
-
-        override fun onPreferenceEditClicked(preference: OrderPreference) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
-                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
-                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
-                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
-                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
-                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.preference.payment.gatewayCode)
-                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
-                val orderCost = viewModel.orderTotal.value.orderCost
-                val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
-                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
-                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
-                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                val addressState = viewModel.addressState.value.state
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
-            }
-            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
         }
 
         override fun onInstallmentDetailClicked() {
@@ -1092,70 +1007,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             context?.let {
                 startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
             }
-        }
-    }
-
-    fun showPreferenceListBottomSheet() {
-        viewModel.updateCart()
-        val profileId = viewModel.getCurrentProfileId()
-        val updateCartParam = viewModel.generateUpdateCartParam()
-        if (profileId > 0 && updateCartParam != null) {
-            PreferenceListBottomSheet(
-                    paymentProfile = viewModel.getPaymentProfile(),
-                    getPreferenceListUseCase = getPreferenceListUseCase.get(),
-                    listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
-                        override fun onChangePreference(preference: ProfilesItemModel) {
-                            orderSummaryAnalytics.eventClickProfileOptionOnProfileList(preference.profileId.toString(), userSession.get().userId)
-                            viewModel.updatePreference(preference)
-                        }
-
-                        override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {
-                            orderSummaryAnalytics.eventClickEditProfileOnProfileList(preference.profileId.toString(), userSession.get().userId)
-                            val preferenceIndex = "${getString(R.string.lbl_summary_preference_option)} $position"
-                            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
-                                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, profileSize > 1)
-                                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
-                                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
-                                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel.addressId)
-                                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel.serviceId)
-                                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel.gatewayCode)
-                                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
-                                val orderCost = viewModel.orderTotal.value.orderCost
-                                val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
-                                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
-                                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
-                                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                                val addressState = viewModel.addressState.value.state
-                                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
-                                putExtra(PreferenceEditActivity.EXTRA_SELECTED_PREFERENCE, preference.enable && preference.profileId == profileId)
-                            }
-                            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
-                        }
-
-                        override fun onAddPreference(itemCount: Int) {
-                            orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnProfileList(userSession.get().userId)
-                            val preferenceIndex = "${getString(R.string.preference_number_summary)} ${itemCount + 1}"
-                            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
-                                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
-                                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, itemCount >= 1)
-                                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
-                                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
-                                val orderCost = viewModel.orderTotal.value.orderCost
-                                val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
-                                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
-                                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
-                                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                                val addressState = viewModel.addressState.value.state
-                                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
-                            }
-                            startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
-                        }
-
-                        override fun onShowNewLayout() {
-                            orderSummaryAnalytics.eventViewProfileList(userSession.get().userId)
-                        }
-                    }).show(this@OrderSummaryPageFragment, profileId)
         }
     }
 
@@ -1457,9 +1308,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     companion object {
-        const val REQUEST_EDIT_PREFERENCE = 11
-        const val REQUEST_CREATE_PREFERENCE = 12
-
         const val REQUEST_CODE_COURIER_PINPOINT = 13
 
         const val REQUEST_CODE_PROMO = 14
@@ -1481,7 +1329,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         private const val NO_ADDRESS_IMAGE = "https://images.tokopedia.net/img/android/cart/ic_occ_no_address.png"
 
-        private const val SOURCE_ADD_PROFILE = "add_profile"
         private const val SOURCE_PDP = "pdp"
         private const val SOURCE_OTHERS = "others"
 
