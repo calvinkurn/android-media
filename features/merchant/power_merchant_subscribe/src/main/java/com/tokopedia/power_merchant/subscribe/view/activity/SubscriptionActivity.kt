@@ -51,6 +51,11 @@ import javax.inject.Inject
 
 class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribeComponent>, SubscriptionActivityInterface {
 
+    companion object {
+        private const val PM_TAB_INDEX = 0
+        private const val PM_PRO_TAB_INDEX = 1
+    }
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -257,7 +262,11 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         tabPmSubscription.setupWithViewPager(viewPagerPmSubscription)
 
         val isChargingPeriodPmPro = data.periodTypePmPro == PeriodType.CHARGING_PERIOD_PM_PRO
-        val defaultTabIndex = if (data.shopInfo.isEligiblePmPro && isChargingPeriodPmPro) 1 else 0
+        val defaultTabIndex = if (data.shopInfo.isEligiblePmPro && isChargingPeriodPmPro) {
+            PM_PRO_TAB_INDEX
+        } else {
+            PM_TAB_INDEX
+        }
         setOnTabIndexSelected(data, defaultTabIndex)
         tabPmSubscription.tabLayout.getTabAt(defaultTabIndex)?.select()
 
@@ -266,8 +275,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private fun sendTrackerOnPMTabClicked(tabIndex: Int) {
-        val pmTabIndex = 0
-        if (tabIndex == pmTabIndex) {
+        if (tabIndex == PM_TAB_INDEX) {
             powerMerchantTracking.sendEventClickTabPowerMerchant()
         }
     }
