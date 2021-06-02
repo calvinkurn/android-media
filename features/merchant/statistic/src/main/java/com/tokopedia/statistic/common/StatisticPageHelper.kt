@@ -107,8 +107,8 @@ object StatisticPageHelper {
             listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
         } else {
             listOf(
-                    getDateRangeItemToday(context, true),
-                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, false),
+                    getDateRangeItemToday(context, false),
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
                     getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
                     DateFilterItem.Divider,
                     getDateFilterPerDay(context, Const.DAYS_365),

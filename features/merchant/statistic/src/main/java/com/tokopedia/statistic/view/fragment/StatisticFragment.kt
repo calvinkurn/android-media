@@ -104,7 +104,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
         val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
-                statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                statisticPage?.pageTitle != getString(R.string.stc_shop)) {
             Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_REGULAR_MERCHANT))
         } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate
@@ -112,7 +112,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
     private val defaultEndDate by lazy {
         val defaultEndDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
-                statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                statisticPage?.pageTitle != getString(R.string.stc_shop)) {
             Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_REGULAR_MERCHANT))
         } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate
@@ -396,7 +396,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             val headerSubtitle = if (it != null) {
                 it.getHeaderSubTitle(requireContext())
             } else if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
-                    statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                    statisticPage?.pageTitle != getString(R.string.stc_shop)) {
                 val headerSubTitle: String = getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
                 val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
                 "$headerSubTitle ($startEndDateFmt)"
@@ -406,7 +406,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
                 getString(R.string.stc_today_fmt, dateStr, hourStr)
             }
-            setHeaderSubTitle(headerSubtitle)
+            this@StatisticFragment.headerSubTitle = headerSubtitle
         }
     }
 
