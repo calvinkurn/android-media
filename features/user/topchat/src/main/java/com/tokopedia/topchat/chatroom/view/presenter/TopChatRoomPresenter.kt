@@ -551,7 +551,8 @@ open class TopChatRoomPresenter @Inject constructor(
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
         sendMessageWebSocket(
                 TopChatWebSocketParam.generateParamSendMessage(
-                        messageId, sendMessage, startTime, attachmentsPreview, intention
+                        messageId, sendMessage, startTime,
+                        attachmentsPreview, intention, userLocationInfo
                 )
         )
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
@@ -634,7 +635,7 @@ open class TopChatRoomPresenter @Inject constructor(
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
             val wsMsgPayload = attachment.generateMsgObj(
-                    messageId, opponentId, message, listInterceptor
+                    messageId, opponentId, message, listInterceptor, userLocationInfo
             )
             sendWebSocketAttachmentPayload(wsMsgPayload)
             view?.sendAnalyticAttachmentSent(attachment)

@@ -30,7 +30,7 @@ class NonGroupItemsEmptyViewHolder(val view: View) : NonGroupItemsViewHolder<Non
                 view.text_title.text = view.context.getString(R.string.topads_dash_non_group_no_search_result_title)
                 view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
             }
-            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
+            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
         }
     }
 

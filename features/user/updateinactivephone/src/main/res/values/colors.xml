@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="overlay_color">#AE000000</color>
+  <color name="updateinactivephone_dms_overlay_color">#AE000000</color>
+  <color name="updateinactivephone_dms_dark_n0">#1D1F22</color>
+  <color name="updateinactivephone_dms_dark_n500">#C7CBD2</color>
+  <color name="updateinactivephone_dms_g500">#03AC0E</color>
+  <color name="updateinactivephone_dms_n600">#40454C</color>
+  <color name="updateinactivephone_dms_n700">#31353B</color>
 </resources>
