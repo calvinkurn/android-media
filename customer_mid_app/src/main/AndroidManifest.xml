@@ -59,6 +59,11 @@
                     android:pathPattern=".*"
                     android:scheme="https"/>
 
+                <data
+                    android:host="staging.tokopedia.com"
+                    android:pathPattern="qrcode-login"
+                    android:scheme="https"/>
+
             </intent-filter>
 
             <intent-filter>
@@ -149,15 +154,6 @@
                     android:path="@string/path_redirect_create_shop"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.tkpd.home.ReactNativeSubPromoPageActivity"
-            android:screenOrientation="portrait" />
 
         <service
             android:name="com.tokopedia.tkpd.thankyou.view.ThanksTrackerService"

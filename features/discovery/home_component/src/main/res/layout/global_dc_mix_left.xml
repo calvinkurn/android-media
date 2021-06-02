@@ -26,6 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:animateLayoutChanges="true"
         android:id="@+id/container_mixleft"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +35,6 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <View
-            tools:background="@color/Unify_N700"
             android:id="@+id/parallax_background"
             android:paddingTop="@dimen/dp_14"
             android:paddingBottom="@dimen/dp_14"
@@ -48,7 +48,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHeight_max="@dimen/home_banner_mix_carousel_max_height"
             tools:src="@drawable/test"
             android:layout_gravity="center_vertical"
             android:id="@+id/parallax_image"
@@ -64,12 +63,12 @@
             android:id="@+id/rv_product"
             tools:translationX="200dp"
             tools:layout_height="300dp"
-            android:layout_marginTop="@dimen/dp_14"
-            android:layout_marginBottom="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/home_component_margin_default"
-            android:paddingRight="@dimen/dp_8"
+            android:paddingStart="@dimen/home_banner_mix_margin_start"
+            android:paddingEnd="@dimen/dp_8"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toTopOf="parent"

@@ -18,10 +18,9 @@ class BrandRecommendationViewModel(val application: Application, val components:
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         componentData.value = components
-        mapBrandRecomItems()
     }
 
-    private fun mapBrandRecomItems() {
+    fun mapBrandRecomItems() {
         components.data?.let {
             if(listData == null){
                 listData = DiscoveryDataMapper.

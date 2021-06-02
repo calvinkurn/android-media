@@ -26,4 +26,6 @@
     <dimen name="widget_comparison_item_width">132dp</dimen>
     <dimen name="widget_sticky_title_item_width">126dp</dimen>
     <dimen name="widget_sticky_title_item_spacing">4dp</dimen>
+
+    <dimen name="recom_margin_default">16dp</dimen>
 </resources>

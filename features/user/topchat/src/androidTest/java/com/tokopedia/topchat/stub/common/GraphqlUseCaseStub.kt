@@ -10,10 +10,14 @@ class GraphqlUseCaseStub<T : Any> @Inject constructor(
 ) : GraphqlUseCase<T>(graphqlRepository) {
 
     lateinit var response: T
+    var isError = false
     var delayMs = 0L
 
     override suspend fun executeOnBackground(): T {
-        if(delayMs != 0L) {
+        if (isError) {
+            throw IllegalStateException()
+        }
+        if (delayMs != 0L) {
             delay(delayMs)
         }
         return response

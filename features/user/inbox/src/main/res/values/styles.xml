@@ -10,7 +10,7 @@
         <item name="android:background">@drawable/bg_inbox_red_dot</item>
         <item name="android:gravity">center</item>
         <item name="android:includeFontPadding">false</item>
-        <item name="android:textColor">@color/Neutral_N0</item>
+        <item name="android:textColor">@color/Unify_Static_White</item>
         <item name="android:visibility">gone</item>
         <item name="typographyType">small</item>
         <item name="typographyWeight">bold</item>

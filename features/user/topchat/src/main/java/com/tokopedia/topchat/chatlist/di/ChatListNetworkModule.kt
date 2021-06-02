@@ -14,11 +14,13 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.topchat.chatlist.domain.websocket.*
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.DEFAULT_PING
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -38,6 +40,18 @@ class ChatListNetworkModule {
     private val NET_WRITE_TIMEOUT = 60
     private val NET_CONNECT_TIMEOUT = 60
     private val NET_RETRY = 1
+
+    @ChatListScope
+    @Provides
+    fun provideWebSocketParser(): WebSocketParser {
+        return DefaultWebSocketParser()
+    }
+
+    @ChatListScope
+    @Provides
+    fun provideWebSocketStateHandler(): WebSocketStateHandler {
+        return DefaultWebSocketStateHandler()
+    }
 
     @ChatListScope
     @Provides
@@ -107,7 +121,7 @@ class ChatListNetworkModule {
     @Provides
     fun provideXUserIdInterceptor(@ApplicationContext context: Context,
                                   networkRouter: NetworkRouter,
-                                  userSession: UserSession):
+                                  userSession: UserSessionInterface):
             XUserIdInterceptor {
         return XUserIdInterceptor(context, networkRouter, userSession)
     }
@@ -131,8 +145,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context,
-                            retryPolicy: OkHttpRetryPolicy,
+    fun provideOkHttpClient(retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
@@ -143,6 +156,7 @@ class ChatListNetworkModule {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
+                .pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
@@ -153,4 +167,18 @@ class ChatListNetworkModule {
         }
         return builder.build()
     }
+
+    @ChatListScope
+    @Provides
+    fun provideTopChatWebSocket(
+            userSession: UserSessionInterface,
+            client: OkHttpClient
+    ): TopchatWebSocket {
+        val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
+                "?os_type=1" +
+                "&device_id=" + userSession.deviceId +
+                "&user_id=" + userSession.userId
+        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken)
+    }
+
 }

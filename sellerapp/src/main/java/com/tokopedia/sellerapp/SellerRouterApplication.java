@@ -24,6 +24,7 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
+import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
@@ -41,6 +42,7 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.device.info.DeviceScreenInfo;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
@@ -48,6 +50,8 @@ import com.tokopedia.fcmcommon.di.FcmComponent;
 import com.tokopedia.fcmcommon.di.FcmModule;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -71,6 +75,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
+import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -86,7 +91,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -297,9 +304,14 @@ public abstract class SellerRouterApplication extends MainApplication implements
     public void sendAnalyticsAnomalyResponse(String title,
                                              String accessToken, String refreshToken,
                                              String response, String request) {
-        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
-                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
-                ";response=" + response + ";request=" + request);
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "AnomalyResponse");
+        messageMap.put("title", title);
+        messageMap.put("accessToken", accessToken);
+        messageMap.put("refreshToken", refreshToken);
+        messageMap.put("response", response);
+        messageMap.put("request", request);
+        ServerLogger.log(Priority.P2, "USER_ANOMALY_REPONSE", messageMap);
     }
 
     @Override
@@ -324,6 +336,18 @@ public abstract class SellerRouterApplication extends MainApplication implements
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, response.request().url().toString());
 
+    }
+
+    @Override
+    public void logRefreshTokenException(String error, String type, String path, String accessToken) {
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", type);
+        messageMap.put("path", path);
+        messageMap.put("error", error);
+        if(!accessToken.isEmpty()) {
+            messageMap.put("oldToken", accessToken);
+        }
+        ServerLogger.log(Priority.P2, "USER_AUTHENTICATOR", messageMap);
     }
 
     @Override
@@ -468,13 +492,20 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword) {
+    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword, String orderId) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
-        return SomListFragment.newInstance(bundle);
+        if (DeviceScreenInfo.isTablet(context)) {
+            if (orderId != null && orderId.trim().length() > 0) {
+                bundle.putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, orderId);
+            }
+            return SomContainerFragment.newInstance(bundle);
+        } else {
+            return SomListFragment.newInstance(bundle);
+        }
     }
 
     @NotNull

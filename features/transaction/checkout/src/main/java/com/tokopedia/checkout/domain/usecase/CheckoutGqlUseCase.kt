@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.usecase
 
 import com.tokopedia.checkout.data.model.response.checkout.CheckoutGqlResponse
-import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
+import com.tokopedia.checkout.domain.mapper.CheckoutMapper
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -16,7 +16,7 @@ import javax.inject.Named
 
 class CheckoutGqlUseCase @Inject constructor(@Named(CHECKOUT_MUTATION) private val queryString: String,
                                              private val graphqlUseCase: GraphqlUseCase,
-                                             private val checkoutMapper: ICheckoutMapper,
+                                             private val checkoutMapper: CheckoutMapper,
                                              private val schedulers: ExecutorSchedulers) : UseCase<CheckoutData>() {
 
     companion object {

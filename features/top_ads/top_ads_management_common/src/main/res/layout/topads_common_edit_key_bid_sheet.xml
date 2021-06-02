@@ -5,152 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dp_2"
-        app:layout_constraintBottom_toBottomOf="@+id/title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title"
-        app:srcCompat="@drawable/topads_create_ic_group_close" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:gravity="center_vertical"
-        android:text="@string/topads_common_keyword_edit_bid_sheet_title"
-        android:textColor="@color/Unify_N700"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_close"
-        app:layout_constraintTop_toTopOf="@id/title"
-        app:typographyType="heading_3" />
-
-    <ImageButton
-        android:id="@+id/btnDeleteKeyword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_ic_delete" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/biayaTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:text="@string/topads_common_keyword_edit_bid_sheet_biaya_sheet_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:typographyType="body_1"
-        app:typographyWeight="bold" />
-
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/budget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusableInTouchMode="true"
-        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintBottom_toTopOf="@id/btnSave"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/biayaTitle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:text_field_append_text="@string/topads_common_per_click"
         app:text_field_input_type="number"
+        app:text_field_label="@string/topads_common_keyword_edit_bid_sheet_biaya_sheet_title"
         app:text_field_label_static="false"
         app:text_field_prepend_text="Rp"
-        tools:layout_height="@dimen/dp_50" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintBottom_toTopOf="@id/txtTypeKey"
-        app:layout_constraintTop_toBottomOf="@id/budget" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtTypeKey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        android:text="@string/topads_common_keyword_edit_info_sheet_sub_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:typographyType="body_1"
-        app:typographyWeight="bold" />
-
-    <RadioGroup
-        android:id="@+id/radio_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTypeKey">
-
-        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-            android:id="@+id/title_1"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_56"
-            android:gravity="start|center_vertical"
-            android:layoutDirection="rtl"
-            android:padding="@dimen/dp_16"
-            android:text="@string/topads_common_keyword_edit_info_sheet_title_1"
-            android:textAlignment="textStart"
-            app:bold="true" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/desc_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/topads_common_keyword_edit_info_sheet_desc_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_1"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_2"
-            android:layout_marginTop="@dimen/dp_16" />
-
-        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-            android:id="@+id/title_2"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_56"
-            android:gravity="start|center_vertical"
-            android:layoutDirection="rtl"
-            android:padding="@dimen/dp_16"
-            android:text="@string/topads_common_keyword_edit_info_sheet_title_2"
-            android:textAlignment="textStart"
-            app:bold="true" />
-
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/desc_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/topads_common_keyword_edit_info_sheet_desc_2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_2"
-            app:typographyType="body_3" />
-    </RadioGroup>
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/divider1"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintBottom_toTopOf="@id/btnSave"
-        app:layout_constraintTop_toBottomOf="@id/radio_group" />
+        tools:layout_height="@dimen/dp_200" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="@string/topads_common_save_butt"
+        android:text="@string/lanjutkan"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider1"
+        app:layout_constraintTop_toBottomOf="@id/budget"
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="filled" />
 

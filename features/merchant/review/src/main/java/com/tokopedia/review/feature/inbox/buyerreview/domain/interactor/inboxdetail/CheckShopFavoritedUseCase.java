@@ -28,7 +28,7 @@ public class CheckShopFavoritedUseCase extends UseCase<CheckShopFavoriteDomain> 
         return reputationRepository.checkIsShopFavorited(requestParams);
     }
 
-    public static RequestParams getParam(String loginID, int shopId) {
+    public static RequestParams getParam(String loginID, long shopId) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_USER_ID, loginID);
         params.putString(PARAM_SHOP_ID, String.valueOf(shopId));

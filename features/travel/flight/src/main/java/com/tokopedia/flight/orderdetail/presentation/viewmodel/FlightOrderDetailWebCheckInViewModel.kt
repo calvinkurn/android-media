@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
@@ -23,8 +23,8 @@ import javax.inject.Inject
 class FlightOrderDetailWebCheckInViewModel @Inject constructor(private val orderDetailUseCase: FlightOrderDetailUseCase,
                                                                private val flightAnalytics: FlightAnalytics,
                                                                private val userSession: UserSessionInterface,
-                                                               private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+                                                               private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var orderId: String = ""
 
@@ -46,7 +46,7 @@ class FlightOrderDetailWebCheckInViewModel @Inject constructor(private val order
     }
 
     fun fetchOrderDetailData() {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             val orderDetailData = orderDetailUseCase.execute(orderId)
             orderDetailData.let {
                 it.journeys.map { journey ->

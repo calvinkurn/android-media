@@ -10,10 +10,7 @@ import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggeste
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
 import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
-import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -45,6 +42,7 @@ import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.*
@@ -75,6 +73,9 @@ class AddEditProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var productPriceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase
+
+    @RelaxedMockK
+    lateinit var priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -139,7 +140,8 @@ class AddEditProductDetailViewModelTest {
     private val viewModel: AddEditProductDetailViewModel by lazy {
         AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase,
                 getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase,
-                annotationCategoryUseCase, productPriceSuggestionSuggestedPriceGetUseCase, userSession)
+                annotationCategoryUseCase, productPriceSuggestionSuggestedPriceGetUseCase,
+                priceSuggestionSuggestedPriceGetByKeywordUseCase, userSession)
     }
 
     @Test
@@ -151,12 +153,12 @@ class AddEditProductDetailViewModelTest {
         } returns successResult
 
         viewModel.getCategoryRecommendation("baju")
+        val result = viewModel.productCategoryRecommendationLiveData.getOrAwaitValue()
 
         coVerify {
             getCategoryRecommendationUseCase.executeOnBackground()
         }
 
-        val result = viewModel.productCategoryRecommendationLiveData.getOrAwaitValue()
         Assert.assertTrue(result != null && result == Success(successResult))
     }
 
@@ -167,12 +169,12 @@ class AddEditProductDetailViewModelTest {
         } throws MessageErrorException("")
 
         viewModel.getCategoryRecommendation("baju")
+        val result = viewModel.productCategoryRecommendationLiveData.getOrAwaitValue()
 
         coVerify {
             getCategoryRecommendationUseCase.executeOnBackground()
         }
 
-        val result = viewModel.productCategoryRecommendationLiveData.getOrAwaitValue()
         Assert.assertTrue(result != null && result is Fail)
     }
 
@@ -369,13 +371,14 @@ class AddEditProductDetailViewModelTest {
 
         viewModel.isProductNameChanged = true
         viewModel.validateProductNameInput( "batik cociks")
+        viewModel.isProductNameInputError.getOrAwaitValue()
 
-        coVerify {
+        coVerify(timeout = 300) {
             validateProductUseCase.executeOnBackground()
         }
 
-        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
-        Assert.assertTrue(resultViewmodel)
+        delay(200) // delay to receive latest result
+        Assert.assertEquals(resultMessage.joinToString("\n"), viewModel.productNameMessage)
     }
 
     @Test
@@ -393,12 +396,12 @@ class AddEditProductDetailViewModelTest {
 
         viewModel.isProductNameChanged = true
         viewModel.validateProductNameInput( "batik cociks")
+        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
 
-        coVerify {
+        coVerify(timeout = 300) {
             validateProductUseCase.executeOnBackground()
         }
 
-        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
         Assert.assertFalse(resultViewmodel)
     }
 
@@ -945,13 +948,13 @@ class AddEditProductDetailViewModelTest {
         } returns listOf()
 
         viewModel.getShopShowCasesUseCase()
+        val expectedResponse = Success(listOf<ShopEtalaseModel>())
+        val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
 
         coVerify {
             getShopEtalaseUseCase.executeOnBackground()
         }
 
-        val expectedResponse = Success(listOf<ShopEtalaseModel>())
-        val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
         assertEquals(expectedResponse, actualResponse)
 
     }
@@ -967,7 +970,7 @@ class AddEditProductDetailViewModelTest {
         )
 
         viewModel.getAnnotationCategory("", "")
-        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        val result = viewModel.annotationCategoryData.getOrAwaitValue(time = 3)
 
         coVerify {
             annotationCategoryUseCase.executeOnBackground()
@@ -1006,7 +1009,7 @@ class AddEditProductDetailViewModelTest {
         )
 
         viewModel.getAnnotationCategory("", "11090")
-        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        val result = viewModel.annotationCategoryData.getOrAwaitValue(time = 3)
 
         coVerify {
             annotationCategoryUseCase.executeOnBackground()
@@ -1071,7 +1074,7 @@ class AddEditProductDetailViewModelTest {
         every { provider.getProductSpecificationCounter(any()) } returns ", +1 lainnya"
 
         viewModel.getAnnotationCategory("", "11090")
-        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+        val result = viewModel.annotationCategoryData.getOrAwaitValue(time = 3)
 
         coVerify {
             annotationCategoryUseCase.executeOnBackground()
