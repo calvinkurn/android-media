@@ -160,14 +160,14 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         }
     }
 
-    fun bindChooseAddress(listener: ChooseAddressWidgetListener, tokonowParam: Boolean?) {
+    fun bindChooseAddress(listener: ChooseAddressWidgetListener) {
         this.chooseAddressWidgetListener = listener
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
             viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
         }
 
-        isTokonow = tokonowParam
+        isTokonow = chooseAddressWidgetListener?.getTokoNowParam()
         initChooseAddressFlow()
 
         buttonChooseAddress?.setOnClickListener {
@@ -208,6 +208,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     override fun onDismissChooseAddressBottomSheet() {
         hasClicked = false
+    }
+
+    override fun getTokoNowParam(): Boolean {
+        return chooseAddressWidgetListener?.getTokoNowParam()?: false
     }
 
     private fun onLocalizingAddressError() {
@@ -275,6 +279,10 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          */
         fun getEventLabelHostPage(): String {
             return ""
+        }
+
+        fun getTokoNowParam(): Boolean {
+            return false
         }
     }
 

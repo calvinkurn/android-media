@@ -40,6 +40,18 @@ object ChooseAddressUtils {
         }
     }
 
+    fun getLocalizingAddressDataDirectly(context: Context): LocalCacheModel? {
+        return if (isRollOutUser(context)) {
+            if (isLoginUser(context)) {
+                ChooseAddressConstant.emptyAddress
+            } else {
+                ChooseAddressConstant.defaultAddress
+            }
+        } else {
+            ChooseAddressConstant.emptyAddress
+        }
+    }
+
     private fun hasLocalizingAddressOnCache(context: Context): Boolean {
         val chooseAddressPref = ChooseAddressSharePref(context)
         return !chooseAddressPref.checkLocalCache().isNullOrEmpty()
