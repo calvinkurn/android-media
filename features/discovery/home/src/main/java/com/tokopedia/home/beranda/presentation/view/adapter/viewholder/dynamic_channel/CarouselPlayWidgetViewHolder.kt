@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
@@ -9,15 +10,16 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import kotlinx.android.synthetic.main.home_dc_play_banner_carousel.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.home_dc_play_banner_carousel.view.home_component_divider_header
+import kotlinx.android.synthetic.main.home_dc_play_banner_carousel.view.*
+
 /**
  * Created by mzennis on 19/10/20.
  */
 class CarouselPlayWidgetViewHolder(
-        private val playWidgetViewHolder: PlayWidgetViewHolder,
-        val homeCategoryListener: HomeCategoryListener
-) : AbstractViewHolder<CarouselPlayWidgetDataModel>(playWidgetViewHolder.itemView) {
+    private val view: View,
+    private val playWidgetViewHolder: PlayWidgetViewHolder,
+    val homeCategoryListener: HomeCategoryListener
+) : AbstractViewHolder<CarouselPlayWidgetDataModel>(view) {
 
     private val playWidgetAnalyticListener = HomePlayWidgetAnalyticListener(
             trackingQueue = homeCategoryListener.getTrackingQueueObj(),
