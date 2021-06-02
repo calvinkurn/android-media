@@ -28,6 +28,7 @@ import com.tokopedia.sellerorder.requestpickup.di.SomConfirmReqPickupComponent
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmReqPickupCourierNotesAdapter
 import com.tokopedia.sellerorder.requestpickup.presentation.adapter.SomConfirmSchedulePickupAdapter
 import com.tokopedia.sellerorder.requestpickup.presentation.viewmodel.SomConfirmReqPickupViewModel
+import com.tokopedia.sellerorder.requestpickup.util.DateMapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -59,6 +60,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     private var tvSchedulePickupToday: Typography? = null
     private var tvSchedulePickupTomorrow: Typography? = null
     private var dividerSchedulePickup: View? = null
+    private var isFirstVisit: Boolean? = true
+    private val today: String = "Hari ini"
+    private val tomorrow: String = "Besok"
 
     private val somConfirmRequestPickupViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomConfirmReqPickupViewModel::class.java]
@@ -146,6 +150,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderConfirmReqPickup() {
         shop_address?.text = confirmReqPickupResponse.dataSuccess.pickupLocation.address
         shop_phone?.text = confirmReqPickupResponse.dataSuccess.pickupLocation.phone
@@ -164,7 +169,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
             if(confirmReqPickupResponse.dataSuccess.detail.orchestraPartner.isEmpty()) {
                 tv_courier_notes?.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
             } else {
-                tv_courier_notes?.text = getString(R.string.courier_option, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
+                tv_courier_notes?.text = getString(R.string.courier_option_schedule, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
             }
         }
 
@@ -186,12 +191,16 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         }
 
         if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty() || confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow.isNotEmpty()) {
+            val schedulePickupMapper = SchedulePickupMapper()
+
             rl_schedule_pickup?.visibility = View.VISIBLE
             btn_arrow?.visibility = View.GONE
             pickup_now?.centerText = true
             pickup_schedule?.centerText = true
             tv_schedule?.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
             setActiveChips(pickup_now, pickup_schedule)
+            bottomSheetSchedulePickupTodayAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, today), currSchedulePickupKey)
+            bottomSheetSchedulePickupTomorrowAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow, tomorrow), currSchedulePickupKey)
 
             pickup_now?.setOnClickListener {
                 setActiveChips(pickup_now, pickup_schedule)
@@ -202,15 +211,31 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
             }
 
             pickup_schedule?.setOnClickListener {
-                val schedulePickupMapper = SchedulePickupMapper()
+                if (isFirstVisit == true) {
+                    val startTime: String
+                    val endTime: String
+                    val formattedTime: String
+                    if (confirmReqPickupResponse.dataSuccess.schedule_time.today.isNotEmpty()) {
+                        startTime = DateMapper.formatDate(bottomSheetSchedulePickupTodayAdapter.scheduleTime[0].start)
+                        endTime = DateMapper.formatDate(bottomSheetSchedulePickupTodayAdapter.scheduleTime[0].end)
+                        formattedTime = "$startTime - $endTime WIB"
+                        tv_schedule?.text =  "${bottomSheetSchedulePickupTodayAdapter.scheduleTime[0].day}, $formattedTime"
+                    }
+                    else {
+                        startTime = DateMapper.formatDate(bottomSheetSchedulePickupTomorrowAdapter.scheduleTime[0].start)
+                        endTime = DateMapper.formatDate(bottomSheetSchedulePickupTomorrowAdapter.scheduleTime[0].end)
+                        formattedTime = "$startTime - $endTime WIB"
+                        tv_schedule?.text =  "${bottomSheetSchedulePickupTomorrowAdapter.scheduleTime[0].day}, $formattedTime"
+                    }
+                    isFirstVisit = false
+                } else {
+                    tv_schedule?.text =  currSchedulePickupTime
+                }
                 setActiveChips(pickup_schedule, pickup_now)
                 btn_arrow?.visibility = View.VISIBLE
                 divider_schedule?.visibility = View.VISIBLE
-                tv_schedule?.text = currSchedulePickupTime
                 btn_arrow.setOnClickListener {
                     openBottomSheetSchedulePickup()
-                    bottomSheetSchedulePickupTodayAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, "Hari ini"), currSchedulePickupKey)
-                    bottomSheetSchedulePickupTomorrowAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow, "Besok"), currSchedulePickupKey)
                 }
             }
 
