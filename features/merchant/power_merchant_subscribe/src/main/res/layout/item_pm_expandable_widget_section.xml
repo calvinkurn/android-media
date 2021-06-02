@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifyprinciples.Typography xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tvPmExpandableSection"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/layout_lvl1"
+    android:paddingBottom="@dimen/layout_lvl1"
+    android:textColor="@color/Unify_N700_96"
+    app:typographyType="body_3"
+    app:typographyWeight="bold"
+    tools:text="Pengaturan Produk" />

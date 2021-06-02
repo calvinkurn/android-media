@@ -48,6 +48,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.io.IOException
 import java.lang.reflect.Type
+import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -233,6 +234,63 @@ class DigitalCartViewModelTest {
         assert(digitalCartViewModel.totalPrice.value == dummyResponse.price)
     }
 
+    @Test
+    fun getCart_onSuccessWithCouponActive_NoNeedOtpAndIsSubscribed() {
+        //given
+        val dummyResponse = DigitalCartDummyData.getDummyGetCartResponseWithCouponActive()
+        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+            secondArg<(RechargeGetCart.Response) -> Unit>().invoke(RechargeGetCart.Response(dummyResponse))
+        }
+        coEvery { userSession.isLoggedIn } returns true
+
+        //when
+        val categoryId = "1"
+        digitalCartViewModel.getCart(categoryId)
+
+        // then
+        // must show content and show loading
+        assert(digitalCartViewModel.showContentCheckout.value != null)
+        assert(digitalCartViewModel.showContentCheckout.value!!)
+        assert(digitalCartViewModel.showLoading.value != null)
+        assert(!digitalCartViewModel.showLoading.value!!)
+
+        // show mapped cart data
+        val mappedCartInfoData = digitalCartViewModel.cartDigitalInfoData.value
+        assert(mappedCartInfoData != null)
+        assert(mappedCartInfoData!!.mainInfo.getOrNull(0)?.label == dummyResponse.mainnInfo.getOrNull(0)?.label)
+        assert(mappedCartInfoData.mainInfo.getOrNull(0)?.value == dummyResponse.mainnInfo.getOrNull(0)?.value)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value)
+        assert(mappedCartInfoData.attributes.categoryName == dummyResponse.categoryName)
+        assert(mappedCartInfoData.attributes.operatorName == dummyResponse.operatorName)
+        assert(mappedCartInfoData.attributes.clientNumber == dummyResponse.clientNumber)
+        assert(mappedCartInfoData.attributes.icon == dummyResponse.icon)
+        assert(mappedCartInfoData.attributes.isInstantCheckout == dummyResponse.isInstantCheckout)
+        assert(mappedCartInfoData.attributes.price == dummyResponse.priceText)
+        assert(mappedCartInfoData.attributes.pricePlain == dummyResponse.price)
+        assert(mappedCartInfoData.attributes.isEnableVoucher == dummyResponse.enableVoucher)
+        assert(mappedCartInfoData.attributes.isCouponActive == 1)
+        assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
+        assert(!mappedCartInfoData.isNeedOtp)
+        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
+        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
+        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
+                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
+        assert(mappedCartInfoData.id == dummyResponse.id)
+        assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
+
+        // show correct total price
+        assert(digitalCartViewModel.totalPrice.value != null)
+        assert(digitalCartViewModel.totalPrice.value == dummyResponse.price - dummyResponse.autoApply.discountAmount.toInt())
+
+        assert(digitalCartViewModel.promoData.value != null)
+        assert(digitalCartViewModel.promoData.value!!.amount == dummyResponse.autoApply.discountAmount.toInt())
+    }
+
 
     @Test
     fun getCart_onFailed_unknownHostException() {
@@ -266,6 +324,23 @@ class DigitalCartViewModelTest {
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value is SocketTimeoutException)
+    }
+
+    @Test
+    fun getCart_onFailed_socketConnectException() {
+        //given
+        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+            thirdArg<(Throwable) -> Unit>().invoke(ConnectException())
+        }
+        coEvery { userSession.isLoggedIn } returns true
+
+        //when
+        val categoryId = "1"
+        digitalCartViewModel.getCart(categoryId)
+
+        //then
+        assert(!digitalCartViewModel.showLoading.value!!)
+        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
     }
 
     @Test
@@ -475,6 +550,22 @@ class DigitalCartViewModelTest {
         assert(paymentPassDataValue == null)
         assert(!digitalCartViewModel.showLoading.value!!)
         assert(digitalCartViewModel.errorThrowable.value is IOException)
+    }
+
+    @Test
+    fun onCheckout_onPromoCodeEmptyAndCartEmpty_shouldNotCheckout() {
+        // given
+        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // when
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+
+        // then
+        assertNull(digitalCartViewModel.paymentPassData.value)
+        assertNull(digitalCartViewModel.showLoading.value)
+        assertNull(digitalCartViewModel.errorMessage.value)
     }
 
     @Test
@@ -779,6 +870,20 @@ class DigitalCartViewModelTest {
         assert(promoDigitalModel.categoryName == "Angsuran Kredit")
         assert(promoDigitalModel.operatorName == "JTrust Olympindo Multi Finance")
         assert(promoDigitalModel.price == 1000L)
+    }
+
+    @Test
+    fun getPromoDigitalModel_whenCartPassDataEqualsToNull_shouldReturnCorrectData() {
+        //when
+        val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(null, null)
+
+        //then
+        assert(promoDigitalModel.categoryId == 0)
+        assert(promoDigitalModel.productId == 0)
+        assert(promoDigitalModel.clientNumber == "")
+        assert(promoDigitalModel.categoryName == "")
+        assert(promoDigitalModel.operatorName == "")
+        assert(promoDigitalModel.price == 0L)
     }
 
     @Test

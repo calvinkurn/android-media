@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitleDetailPenalty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            tools:text="@string/example_title_detail_penalty" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvStartDateDetailPenalty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleDetailPenalty"
+            app:typographyType="body_3"
+            tools:text="@string/example_date_penalty_detail" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSummaryDetailPenalty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvStartDateDetailPenalty"
+            app:typographyType="body_3"
+            tools:text="@string/example_summary_detail_penalty" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/separatorDetailPenalty"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSummaryDetailPenalty" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitleResultDetailPenalty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_due_to_violations"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/separatorDetailPenalty"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_total_deduction_point_penalty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:cardBackgroundColor="@color/Unify_N50"
+            app:cardCornerRadius="@dimen/spacing_lvl3"
+            app:cardElevation="@dimen/layout_lvl0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleResultDetailPenalty">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_total_deduction_point_penalty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_lvl3"
+                android:text="@string/total_deduction_point_performance"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+        </androidx.cardview.widget.CardView>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitleStatusPenalty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_status_penalty"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toStartOf="@id/ic_info_status_penalty"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card_total_deduction_point_penalty"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_info_status_penalty"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:icon_color_light_enable="@color/Unify_N500"
+            app:icon_name="INFORMATION"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitleStatusPenalty"
+            app:layout_constraintStart_toEndOf="@id/tvTitleStatusPenalty"
+            app:layout_constraintTop_toTopOf="@id/tvTitleStatusPenalty" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_timeline_status_penalty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintStart_toStartOf="@id/tvTitleStatusPenalty"
+            app:layout_constraintEnd_toEndOf="@id/card_total_deduction_point_penalty"
+            app:layout_constraintTop_toBottomOf="@id/tvTitleStatusPenalty"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_penalty_stepper" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDescResultDetailPenalty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginEnd="@dimen/spacing_lvl5"
+            tools:text="@string/example_desc_result_detail_penalty"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_timeline_status_penalty"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvEndDateDetailPenalty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/spacing_lvl5"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDescResultDetailPenalty"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="@string/example_date_result_detail_penalty" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnCallHelpCenter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl5"
+            android:text="@string/btn_call_help_center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

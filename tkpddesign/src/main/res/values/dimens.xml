@@ -112,12 +112,9 @@
     <dimen name="keyboard_min_height">200dp</dimen>
     <dimen name="ktp_view_width" >170dp</dimen>
     <dimen name="ktp_view_height" >110dp</dimen>
-    <dimen name="hc_oval_width">33dp</dimen>
-    <dimen name="hc_oval_height">64dp</dimen>
     <dimen name="promo_image_height">140dp</dimen>
     <dimen name="item_banner_width_category">360dp</dimen>
     <dimen name="item_banner_height_category">118dp</dimen>
-    <dimen name="hc_ktp_height">93dp</dimen>
 
     <!--negative values-->
     <dimen name="dp_neg_16">-16dp</dimen>

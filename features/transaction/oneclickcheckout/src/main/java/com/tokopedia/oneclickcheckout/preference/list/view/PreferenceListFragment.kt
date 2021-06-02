@@ -160,7 +160,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     it.getFailure()?.let { failure ->
                         view?.let { view ->
                             if (failure.throwable is MessageErrorException) {
-                                Toaster.build(view, failure.throwable.message
+                                Toaster.build(view, com.tokopedia.network.utils.ErrorHandler.getErrorMessage(view.context, failure.throwable)
                                         ?: DEFAULT_LOCAL_ERROR_MESSAGE, type = Toaster.TYPE_ERROR).show()
                             } else {
                                 Toaster.build(view, failure.throwable?.localizedMessage

@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditPr
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.ACTION_URL_USE_VARIANT
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_DELETE_PRODUCTS
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_UPGRADE_TO_PM
+import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_UPGRADE_TO_PM_PRO
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_USE_PROMOTION
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.IMAGE_URL_USE_VARIANT
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
@@ -19,6 +20,14 @@ import com.tokopedia.product.addedit.productlimitation.presentation.model.Produc
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 
 class ProductLimitationMapper {
+
+    fun createUpgradeToPmProActionItem(context: Context) = ProductLimitationActionItemModel(
+            IMAGE_URL_UPGRADE_TO_PM_PRO,
+            context.getString(R.string.title_product_limitation_item_upgradepmpro),
+            context.getString(R.string.label_product_limitation_item_upgradepmpro),
+            context.getString(R.string.action_product_limitation_item),
+            ACTION_URL_UPGRADE_TO_PM
+    )
 
     fun createUpgradeToPmActionItem(context: Context) = ProductLimitationActionItemModel(
             IMAGE_URL_UPGRADE_TO_PM,
@@ -58,6 +67,9 @@ class ProductLimitationMapper {
                     UPGRADE_TO_PM -> {
                         createUpgradeToPmActionItem(context)
                     }
+                    UPGRADE_TO_PM_PRO -> {
+                        createUpgradeToPmProActionItem(context)
+                    }
                     USE_VARIANT -> {
                         createUseVariantActionItem(context)
                     }
@@ -73,6 +85,7 @@ class ProductLimitationMapper {
 
     companion object {
         private const val UPGRADE_TO_PM = "UpToPM"
+        private const val UPGRADE_TO_PM_PRO = "UpToPMPro"
         private const val USE_VARIANT = "Variant"
         private const val DELETE_PRODUCTS = "Delete"
         private const val USE_PROMOTION = "Promotion"
