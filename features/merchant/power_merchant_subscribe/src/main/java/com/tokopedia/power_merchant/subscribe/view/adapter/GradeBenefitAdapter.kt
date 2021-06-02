@@ -32,10 +32,16 @@ class GradeBenefitAdapter(
     override fun getItemCount(): Int = benefits.size
 
     inner class GradeBenefitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         fun bind(benefit: PMGradeBenefitUiModel) {
             with(itemView) {
-                benefit.iconUrl?.let {
-                    icPmBenefitItem.loadImageWithoutPlaceholder(it)
+                val drawableResIcon = benefit.drawableResIcon
+                if (drawableResIcon != null) {
+                    icPmBenefitItem.loadImageWithoutPlaceholder(drawableResIcon)
+                } else {
+                    benefit.iconUrl?.let {
+                        icPmBenefitItem.loadImageWithoutPlaceholder(it)
+                    }
                 }
                 tvPmBenefitItem.text = benefit.benefitName.parseAsHtml()
             }

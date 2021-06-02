@@ -102,11 +102,6 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
 
     private fun initLayout(view: View) {
         with(view) {
-            button_next.text = if (parentActivity.isFinalPage()) {
-                getString(R.string.label_send_answer)
-            } else {
-                getString(com.tokopedia.abstraction.R.string.label_next)
-            }
             button_next.setOnClickListener {
                 stepperModel?.let {
                     parentActivity.goToNextPage(it)

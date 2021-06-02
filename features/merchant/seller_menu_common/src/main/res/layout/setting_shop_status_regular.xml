@@ -1,83 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="@dimen/setting_status_padding_top"
-    android:paddingBottom="@dimen/setting_status_padding_bottom"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/setting_status_padding_top"
+    android:paddingBottom="@dimen/setting_status_padding_bottom">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/statusCard"
         android:layout_width="0dp"
-        android:layout_height="@dimen/setting_card_height"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_other_rounded"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.925">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/titleShopStatus"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/regular_merchant"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:text="@string/regular_merchant"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="heading_5"
-            app:typographyWeight="bold"
-            app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/rightRectangle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:paddingTop="@dimen/sah_dimen_1dp"
-            android:paddingRight="@dimen/sah_dimen_1dp"
-            android:paddingBottom="@dimen/sah_dimen_1dp"
-            app:layout_constraintWidth_percent="0.3"
-            app:srcCompat="@drawable/ic_setting_shop_regular_rectangle"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <View
-            android:id="@+id/badgeBorder"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintWidth_percent="0.06"
-            app:layout_constraintStart_toStartOf="@id/rightRectangle"
+            app:layout_constraintStart_toStartOf="@id/leftGuideline"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            android:background="@drawable/setting_image_circular"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/sah_dimen_19dp"
-            android:layout_height="@dimen/sah_dimen_17dp"
-            android:layout_margin="@dimen/setting_shop_badge_border_margin"
-            app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
-            app:layout_constraintEnd_toEndOf="@id/badgeBorder"
-            app:layout_constraintStart_toStartOf="@id/badgeBorder"
-            app:layout_constraintTop_toTopOf="@id/badgeBorder"
-            app:srcCompat="@drawable/ic_power_merchant" />
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/regularMerchantStatus"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
             android:gravity="center_vertical"
-            android:text="@string/setting_verifikasi"
+            android:text="@string/setting_upgrade"
             android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="@id/titleShopStatus"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/titleShopStatus"
             app:typographyType="body_2"
-            app:typographyWeight="bold"
-            app:layout_constraintStart_toEndOf="@id/badgeBorder"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:typographyWeight="bold" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftGuideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05"/>
+            app:layout_constraintGuide_percent="0.05" />
+
+        <View
+            android:id="@+id/divider_stats_rm"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="@id/titleShopStatus"
+            app:layout_constraintEnd_toEndOf="@id/regularMerchantStatus"
+            app:layout_constraintTop_toBottomOf="@id/titleShopStatus"
+            tools:background="@drawable/ic_divider_stats_rm"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tx_stats_rm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/leftGuideline"
+            app:layout_constraintTop_toBottomOf="@id/divider_stats_rm"
+            app:typographyType="body_2"
+            tools:visibility="visible"
+            tools:text="@string/transaction_since_joining" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tx_total_stats_rm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_stats_rm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:visibility="visible"
+            tools:text="@string/total_transaction" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

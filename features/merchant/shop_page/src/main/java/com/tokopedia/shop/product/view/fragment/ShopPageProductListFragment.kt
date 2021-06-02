@@ -673,7 +673,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun loadMerchantVoucher() {
-        viewModel.getNewMerchantVoucher(shopId)
+        viewModel.getNewMerchantVoucher(shopId, context)
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1193,7 +1193,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeViewModelLiveData.name,
                                 liveDataName = ShopPageProductListViewModel::productListData.name,
@@ -1386,7 +1386,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopId,
                     data,
                     isShowNewShopHomeTab(),
-                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+                    context
             )
         }
         if (initialProductListData == null){

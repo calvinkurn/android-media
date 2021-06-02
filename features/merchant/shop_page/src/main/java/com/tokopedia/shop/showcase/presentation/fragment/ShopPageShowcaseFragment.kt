@@ -20,6 +20,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageShowcaseTracking
@@ -452,7 +453,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     private fun setupLocalLoad(localLoad: LocalLoad?, title: String = "") {
         localLoad?.localLoadTitle = if (title.isNotEmpty()) {
-            title
+            ErrorHandler.getErrorMessage(context, MessageErrorException(title))
         } else {
             ErrorHandler.getErrorMessage(context, null)
         }
