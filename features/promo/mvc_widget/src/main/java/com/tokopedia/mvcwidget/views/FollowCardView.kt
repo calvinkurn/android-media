@@ -9,8 +9,8 @@ import android.util.AttributeSet
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.tokopedia.mvcwidget.R
-import com.tokopedia.mvcwidget.isDarkMode
 import com.tokopedia.promoui.common.dpToPx
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 const val TYPE_LARGE = 0
 const val TYPE_SMALL = 1
@@ -31,7 +31,7 @@ open class FollowCardView @JvmOverloads constructor(
         paintSmall.style = Paint.Style.FILL
         paintLarge.isAntiAlias = true
         paintLarge.style = Paint.Style.FILL
-        if (isDarkMode(context)) {
+        if (context.isDarkMode()) {
             paintSmall.color =
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.dark_N100)
             paintLarge.color =

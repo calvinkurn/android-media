@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class MvcFollowViewContainer @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -149,7 +150,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         iconBackground = findViewById(R.id.iconBackground)
         containerContent = findViewById(R.id.container_content)
 
-        if (isDarkMode(context)){
+        if (context.isDarkMode()){
             iconBackground.setColorFilter(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.dark_N75))
         }
         radius = dpToPx(8)
