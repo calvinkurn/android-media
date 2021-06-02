@@ -13,11 +13,11 @@
         android:minHeight="@dimen/unify_space_64"
         android:paddingEnd="@dimen/unify_space_8"
         android:paddingRight="@dimen/unify_space_8"
-        app:lv_image_margin_right="@dimen/unify_space_16"
-        app:lv_image_width="@dimen/unify_space_24"
-        app:lv_sub_title_text_size="@dimen/sp_14"
-        app:lv_title="@string/app_name"
-        app:lv_title_text_size="@dimen/sp_14" />
+        app:nav_lv_image_margin_right="@dimen/unify_space_16"
+        app:nav_lv_image_width="@dimen/unify_space_24"
+        app:nav_lv_sub_title_text_size="@dimen/sp_14"
+        app:nav_lv_title="@string/app_name"
+        app:nav_lv_title_text_size="@dimen/sp_14" />
 
     <View
         android:id="@+id/separator"
