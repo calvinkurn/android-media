@@ -2,29 +2,6 @@
     <string name="app_name">power_merchant_subscribe</string>
 
     <string name="error_cancellation_tryagain">Coba Lagi</string>
-
-    <string name="pm_label_kyc_verification_header">Semakin tepercaya dengan upload KTP di Power Merchant</string>
-    <string name="pm_label_kyc_verification_desc_1">Toko dengan Power Merchant terbukti dapat tingkatkan penjualan dan lebih dipercaya calon pembeli.</string>
-
-    <string name="pm_label_button_close">Tutup</string>
-
-    <string name="pm_label_score_verification_header">Yaah, pengajuan kamu belum berhasil</string>
-    <string name="pm_label_score_verification_desc">Skor performa tokomu kurang dari 75. Segera tingkatkan performa toko untuk menjadi Power Merchant.</string>
-
-    <string name="pm_label_bs_success_header_transition">Yay, kamu berhasil jadi Power Merchant</string>
-    <string name="pm_label_bs_success_header">Selamat! Kamu sudah menjadi Power Merchant</string>
-    <string name="pm_label_bs_success_desc_transition">Semua fitur terbaru akan aktif serentak pada 1 Juli 2019. Yuk, pelajari keuntungannya.</string>
-    <string name="pm_label_bs_success_desc">Tingkatkan penjualan tokomu dengan menggunakan fitur eksklusif Power Merchant.</string>
-    <string name="pm_label_bs_success_button_transition">Pelajari Power Merchant</string>
-    <string name="pm_label_bs_success_button">Mulai</string>
-
-    <string name="pm_label_transition_period_header">Upload KTP agar tokomu tetap jadi Power Merchant tepercaya</string>
-    <string name="pm_label_transition_period_desc"><![CDATA[Sekarang Power Merchant bebas biaya bulanan. Nikmati layanan baru Power Merchant dengan upload KTP sebelum tanggal <b>1 Juli 2019.</b>]]></string>
-    <string name="pm_label_transition_period_button">Upload KTP Sekarang</string>
-    <string name="pm_label_transition_period_learnmore">Pelajari Power Merchant Selengkapnya.</string>
-    <string name="pm_content_desc_transition_period_image_kyc">transition period image kyc verification</string>
-
-    <string name="expired_label">Pengajuan untuk berhenti jadi Power Merchant berhasil. Layanan otomatis berhenti pada %1$s, pukul %2$s WIB.</string>
     <string name="pm_bottom_sheet_expired_label">Status PM otomatis berhenti pada %1$s WIB.</string>
     <string name="pm_title_activity">Power Merchant</string>
 
@@ -32,43 +9,15 @@
     <string name="pm_label_bottom_sheet_cancel_button">Berhenti Jadi Power Merchant</string>
     <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan semua keuntungan eksklusif Power Merchant, yaitu:</string>
 
-    <string name="pm_i_agree">Saya Setuju</string>
-    <string name="pm_terms_agree">Dengan ini, saya menyetujui syarat dan ketentuan Power Merchant Tokopedia.</string>
-    <string name="pm_terms_error_no_agreed">Kamu harus menyetujui Syarat dan Ketentuan.</string>
-
-    <string name="pm_cancellation_success">Pengajuan untuk berhenti berhasil.</string>
-
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
 
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
     <string name="pm_label_cancellation_questionnaire_intro_title">Bantu kami meningkatkan layanan Power Merchant</string>
-    <string name="pm_label_cancellation_questionnaire_intro_desc">Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada %s.</string>
-    <string name="pm_label_cancellation_questionnaire_intro_rating_title">Bagaimana pengalamanmu jadi Power Merchant?</string>
-    <string name="pm_cancellation_questionnaire_intro_rating_1_star">Sangat Kurang</string>
-    <string name="pm_cancellation_questionnaire_intro_rating_2_star">Kurang</string>
-    <string name="pm_cancellation_questionnaire_intro_rating_3_star">Cukup</string>
-    <string name="pm_cancellation_questionnaire_intro_rating_4_star">Puas</string>
-    <string name="pm_cancellation_questionnaire_intro_rating_5_star">Sangat Puas</string>
-    <string name="pm_cancellation_questionnaire_some_question_not_answered_label">Pastikan semua pertanyaan sudah dijawab</string>
     <string name="label_back">Kembali</string>
     <string name="label_send_answer">Kirim Jawaban</string>
 
-    <string name="power_merchant_bebas_ongkir">Pengiriman Bebas Ongkir</string>
-    <string name="power_merchant_bebas_ongkir_description">Proses pengiriman pesanan dengan layanan SiCepat dan Anteraja. Syarat &amp; Ketentuan berlaku.</string>
-    <string name="power_merchant_featured_feature">Fitur Unggulan</string>
-    <string name="power_merchant_featured_feature_description">Optimalkan penjualan dengan Broadcast Chat, Modal Toko, dan fitur eksklusif lainnya. Pelajari Selengkapnya.</string>
-    <string name="power_merchant_featured_feature_description_bold_1">Broadcast Chat, Modal Toko,</string>
-    <string name="power_merchant_featured_feature_description_bold_2">fitur eksklusif</string>
-    <string name="power_merchant_featured_feature_clickable_text">Pelajari Selengkapnya.</string>
-    <string name="power_merchant_shop_benefit">Jadi toko pilihan pembeli</string>
-    <string name="power_merchant_shop_benefit_description">Dilihat banyak pembeli dengan fitur Etalase Toko (200 Etalase), Produk Unggulan, dan Sampul Toko.</string>
-    <string name="power_merchant_top_ads_benefit">Tambahan kredit TopAds</string>
-    <string name="power_merchant_top_ads_benefit_description" formatted="false">Dapatkan ekstra kredit 5% setiap top-up kredit TopAds.</string>
-    <string name="power_merchant_cost_benefit">Biaya layanan HANYA 1%</string>
-    <string name="power_merchant_cost_benefit_description" formatted="false">Biaya layanan Power Merchant 1% hanya dibayarkan setiap produk terjual.</string>
-    <string name="power_merchant_broadcast_benefit">GRATIS Broadcast Chat</string>
-    <string name="power_merchant_broadcast_benefit_description">Gunakan layanan Broadcast Chat gratis setiap bulannya sesuai syarat &amp; ketentuan.</string>
     <string name="power_merchant_register_now">Daftar Sekarang</string>
+
     <string name="power_merchant_full_eligibility_description">Yay, tokomu telah memenuhi syarat untuk gabung ke Power Merchant. Daftar sekarang!</string>
     <string name="power_merchant_kyc_verified_description">Wah, skor kamu bagus! Tinggal daftarin dan verifikasi data diri aja nih, yuk!</string>
     <string name="power_merchant_shop_score_description">Daftar dan tingkatkan performa untuk akses semua fitur Power Merchant. Lihat tips.</string>
