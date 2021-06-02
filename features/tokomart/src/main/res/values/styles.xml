@@ -8,7 +8,11 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <style name="CategoryListTheme" parent="Theme.White">
+    <style name="CategoryListTheme" parent="Theme.WhiteUnify">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 </resources>
