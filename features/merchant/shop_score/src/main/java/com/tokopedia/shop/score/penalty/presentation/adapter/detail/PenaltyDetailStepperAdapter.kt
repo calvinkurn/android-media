@@ -45,8 +45,8 @@ class PenaltyDetailStepperAdapter : RecyclerView.Adapter<PenaltyDetailStepperAda
                 } else {
                     divider_stepper_penalty?.hide()
                 }
-                tv_title_status_stepper?.text = data.titleStepper?.let { titleStepper ->
-                    MethodChecker.fromHtml(context.getString(titleStepper))
+                 data.titleStepper?.let { titleStepper ->
+                     tv_title_status_stepper?.text = MethodChecker.fromHtml(context.getString(titleStepper))
                 }
                 data.colorStatusTitle?.let { tv_title_status_stepper?.setTextColor(ContextCompat.getColor(context, it)) }
                 if (data.isBold) {
