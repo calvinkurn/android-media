@@ -213,6 +213,11 @@ class SearchProductFirstPageGqlUseCase(
                                         title
                                         type
                                         position
+                                        url
+                                    }
+                                    free_ongkir {
+                                        is_active
+                                        img_url
                                     }
                                     image_product{
                                         product_id
