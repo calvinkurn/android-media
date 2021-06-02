@@ -12,7 +12,7 @@
         android:background="@color/Unify_N600"
         app:titleTextColor="@color/Unify_N0"/>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
         android:id="@+id/youtube_player_fragment"
         android:layout_width="match_parent"
