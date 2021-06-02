@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemDetailPenaltyContainer"
+    android:layout_marginBottom="@dimen/dp_12"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_scrollFlags="scroll|enterAlways"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSectionDetailPenalty"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_width="wrap_content"
+        android:text="@string/title_detail_penalty_label"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPeriodDetailPenalty"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_width="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSectionDetailPenalty"
+        app:typographyType="body_3"
+        tools:text="Periode 5 Jun - 6 Aug" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_detail_penalty_filter"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_width="@dimen/spacing_lvl5"
+        app:icon_name="CALENDAR"
+        app:layout_constraintBottom_toBottomOf="@id/tvPeriodDetailPenalty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvSectionDetailPenalty" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

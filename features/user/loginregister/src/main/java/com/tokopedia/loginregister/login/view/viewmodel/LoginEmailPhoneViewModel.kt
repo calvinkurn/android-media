@@ -244,16 +244,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 ))
     }
 
-    private fun setSmartLock(isSmartLock: Boolean){
-        if (isSmartLock) {
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
-        } else {
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
-        }
-    }
-
-    fun loginEmail(email: String, password: String, isSmartLock: Boolean = false) {
-        setSmartLock(isSmartLock)
+    fun loginEmail(email: String, password: String) {
         loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                 email, password), LoginTokenSubscriber(userSession,
                 {
@@ -268,8 +259,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         ))
     }
 
-    fun loginEmailV2(email: String, password: String, isSmartLock : Boolean = false, useHash: Boolean) {
-        setSmartLock(isSmartLock)
+    fun loginEmailV2(email: String, password: String, useHash: Boolean) {
         launchCatchError(coroutineContext, {
             val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
             if(keyData.key.isNotEmpty()) {

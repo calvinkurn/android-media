@@ -1,12 +1,12 @@
 package com.tokopedia.topads.edit.view.sheet
 
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.edit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -20,6 +20,7 @@ class EditKeywordSortSheet : BottomSheetUnify() {
     var onItemClick: ((sortId: String) -> Unit)? = null
     var selectedSortText = 0
     var positionSort = 0
+    var selected: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var contentView = View.inflate(context, R.layout.topads_edit_keyword_edit_sort_sheet, null)
@@ -34,12 +35,18 @@ class EditKeywordSortSheet : BottomSheetUnify() {
 
         view.sortList.setData(sortListItemUnify)
 
+        view.goToStaticSheet?.text = MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_extra))
+
+        view.goToStaticSheet?.setOnClickListener {
+            val sheet = StaticInfoBottomSheet.newInstance()
+            sheet.show(childFragmentManager)
+        }
+
         view.sortList?.let {
             it.onLoadFinish {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
-                }
+                it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
+
 
                 it.setOnItemClickListener { adapterView, view, index, l ->
                     onItemSortClickedBottomSheet(index, sortListItemUnify, it)
@@ -58,9 +65,6 @@ class EditKeywordSortSheet : BottomSheetUnify() {
     private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
         try {
             positionSort = position
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
-            }
             selectedSortText = position
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             onItemClick?.invoke(sortListItemUnify[position].listTitleText)
@@ -72,24 +76,22 @@ class EditKeywordSortSheet : BottomSheetUnify() {
 
     private fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
         val clickedItem = this.getItemAtPosition(position) as ListItemUnify
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            when (choiceMode) {
-                ListView.CHOICE_MODE_SINGLE -> {
-                    items.filter {
-                        it.listRightRadiobtn?.isChecked ?: false
-                    }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+        when (choiceMode) {
+            ListView.CHOICE_MODE_SINGLE -> {
+                items.filter {
+                    it.listRightRadiobtn?.isChecked ?: false
+                }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
 
-                    clickedItem.listRightRadiobtn?.isChecked = true
-                }
+                clickedItem.listRightRadiobtn?.isChecked = true
             }
         }
     }
 
     fun setChecked(current: String) {
-        if(current == TITLE_1) {
-            positionSort = 0
+        positionSort = if (current == TITLE_1) {
+            0
         } else {
-            positionSort = 1
+            1
         }
     }
 
@@ -115,8 +117,8 @@ class EditKeywordSortSheet : BottomSheetUnify() {
 
     companion object {
 
-        const val TITLE_1 = "Pencarian luas"
-        const val TITLE_2 = "Pencarian Spesifik"
+        const val TITLE_1 = "Luas"
+        const val TITLE_2 = "Spesifik"
 
         fun newInstance(): EditKeywordSortSheet {
             return EditKeywordSortSheet()
