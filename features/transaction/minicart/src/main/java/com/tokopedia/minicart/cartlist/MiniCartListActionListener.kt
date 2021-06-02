@@ -1,8 +1,10 @@
 package com.tokopedia.minicart.cartlist
 
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+
 interface MiniCartListActionListener {
 
-    fun onDeleteClicked()
+    fun onDeleteClicked(element: MiniCartProductUiModel)
 
     fun onBulkDeleteUnavailableItems()
 

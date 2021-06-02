@@ -17,6 +17,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
+import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -66,6 +67,16 @@ class MiniCartWidget @JvmOverloads constructor(
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
         viewModel.miniCartWidgetUiModel.observe(fragment.viewLifecycleOwner, {
             renderWidget(it)
+        })
+        viewModel.globalEvent.observe(fragment.viewLifecycleOwner, {
+            when (it.state) {
+                GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
+
+                }
+                GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
+
+                }
+            }
         })
     }
 

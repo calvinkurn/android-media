@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget
+package com.tokopedia.minicart.common.widget.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListViewHolderMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartWidgetDataUseCase
+import com.tokopedia.minicart.common.domain.usecase.*
+import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -16,11 +16,19 @@ import javax.inject.Inject
 class MiniCartWidgetViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
                                                   private val getMiniCartWidgetDataUseCase: GetMiniCartWidgetDataUseCase,
                                                   private val getMiniCartListUseCase: GetMiniCartListUseCase,
-                                                  private val miniCartListViewHolderMapper: MiniCartListViewHolderMapper) : BaseViewModel(executorDispatchers.main) {
+                                                  private val deleteCartUseCase: DeleteCartUseCase,
+                                                  private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
+                                                  private val updateCartUseCase: UpdateCartUseCase,
+                                                  private val miniCartListViewHolderMapper: MiniCartListViewHolderMapper)
+    : BaseViewModel(executorDispatchers.main) {
 
     private val _currentShopIds = MutableLiveData<List<String>>()
     val currentShopIds: LiveData<List<String>>
         get() = _currentShopIds
+
+    private val _globalEvent = MutableLiveData<GlobalEvent>()
+    val globalEvent: LiveData<GlobalEvent>
+        get() = _globalEvent
 
     private val _miniCartWidgetUiModel = MutableLiveData<MiniCartWidgetUiModel>()
     val miniCartWidgetUiModel: LiveData<MiniCartWidgetUiModel>
@@ -31,6 +39,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         get() = _miniCartListUiModel
 
     private val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
+
 
     fun getLatestWidgetState(shopIds: List<String>) {
         _currentShopIds.value = shopIds
@@ -55,13 +64,16 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     fun getCartList() {
         val shopIds = currentShopIds.value ?: emptyList()
         getMiniCartListUseCase.setParams(shopIds)
-        getMiniCartListUseCase.execute(onSuccess = {
-            _miniCartListUiModel.value = miniCartListViewHolderMapper.mapUiModel(it)
-        }, onError = {
-            _miniCartListUiModel.value = MiniCartListUiModel().apply {
-                title = "Belanjaanmu di TokoNOW!"
-            }
-        })
+        getMiniCartListUseCase.execute(
+                onSuccess = {
+                    _miniCartListUiModel.value = miniCartListViewHolderMapper.mapUiModel(it)
+                },
+                onError = {
+                    _miniCartListUiModel.value = MiniCartListUiModel().apply {
+                        title = "Belanjaanmu di TokoNOW!"
+                    }
+                }
+        )
     }
 
     fun updateProductQty(productId: String, newQty: Int) {
@@ -279,4 +291,108 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         miniCartListListUiModel.value?.visitables = visitables
         _miniCartListUiModel.value = miniCartListListUiModel.value
     }
+
+    fun deleteCartItems(product: MiniCartProductUiModel) {
+        deleteCartUseCase.setParams(listOf(product))
+        deleteCartUseCase.execute(
+                onSuccess = {
+                    var visitables = miniCartListListUiModel.value?.visitables ?: mutableListOf()
+                    val deletedIndexes = mutableListOf<Int>()
+
+                    // Delete item
+                    loop@ for ((index, visitable) in visitables.withIndex()) {
+                        if (visitable is MiniCartProductUiModel && visitable.cartId == product.cartId) {
+                            deletedIndexes.add(index)
+                            break@loop
+                        }
+                    }
+
+                    // Validate to delete other for available items
+                    var hasAvailableItem = false
+                    loop@ for ((index, visitable) in visitables.withIndex()) {
+                        if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled && !deletedIndexes.contains(index)) {
+                            hasAvailableItem = true
+                            break@loop
+                        }
+                        if (visitable is MiniCartUnavailableHeaderUiModel) {
+                            hasAvailableItem = false
+                            visitables = visitables.subList(index, visitables.size)
+                        }
+                    }
+
+                    if (!hasAvailableItem) {
+                        miniCartListListUiModel.value?.visitables = visitables
+                        _miniCartListUiModel.value = miniCartListListUiModel.value
+
+                        _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM)
+                    } else {
+                        if (deletedIndexes.isNotEmpty()) {
+                            deletedIndexes.forEach {
+                                visitables.removeAt(it)
+                            }
+                            miniCartListListUiModel.value?.visitables = visitables
+                            _miniCartListUiModel.value = miniCartListListUiModel.value
+
+                            _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM)
+                        }
+                    }
+                },
+                onError = {
+                    _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_DELETE_CART_ITEM)
+                }
+        )
+    }
+
+    fun bulkDeleteUnavailableCartItems() {
+        val unavailableCartItems = mutableListOf<MiniCartProductUiModel>()
+        miniCartListListUiModel.value?.visitables?.forEach {
+            if (it is MiniCartProductUiModel && it.isProductDisabled) {
+                unavailableCartItems.add(it)
+            }
+        }
+        deleteCartUseCase.setParams(unavailableCartItems)
+        deleteCartUseCase.execute(
+                onSuccess = {
+                    _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_BULK_DELETE_UNAVAILABLE_ITEMS)
+                },
+                onError = {
+                    _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_BULK_DELETE_UNAVAILABLE_ITEMS)
+                }
+        )
+    }
+
+    fun undoDeleteCartItems(products: List<MiniCartProductUiModel>) {
+        undoDeleteCartUseCase.setParams(products)
+        undoDeleteCartUseCase.execute(
+                onSuccess = {
+
+                },
+                onError = {
+
+                }
+        )
+    }
+
+    fun updateCart(isForCheckout: Boolean = false) {
+        val productUiModels = mutableListOf<MiniCartProductUiModel>()
+        miniCartListListUiModel.value?.visitables?.forEach {
+            if (it is MiniCartProductUiModel && !it.isProductDisabled) {
+                productUiModels.add(it)
+            }
+        }
+        updateCartUseCase.setParamsFromUiModels(productUiModels)
+        updateCartUseCase.execute(
+                onSuccess = {
+                    if (isForCheckout) {
+                        _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT)
+                    }
+                },
+                onError = {
+                    if (isForCheckout) {
+                        _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT)
+                    }
+                }
+        )
+    }
+
 }

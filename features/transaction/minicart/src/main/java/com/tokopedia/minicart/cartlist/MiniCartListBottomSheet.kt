@@ -14,25 +14,29 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.minicart.common.widget.MiniCartWidgetViewModel
+import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration) : MiniCartWidgetListener, MiniCartListActionListener {
 
+    lateinit var view: View
     lateinit var viewModel: MiniCartWidgetViewModel
     private var bottomSheet: BottomSheetUnify? = null
     private var totalAmount: TotalAmount? = null
     private var rvMiniCartList: RecyclerView? = null
     private var adapter: MiniCartListAdapter? = null
-    private var delayCalculation: Job? = null
+    private var measureRecyclerViewPaddingJob: Job? = null
 
     fun show(context: Context?,
              fragmentManager: FragmentManager,
@@ -51,8 +55,28 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         viewModel.miniCartListListUiModel.observe(lifecycleOwner, {
             hideLoading()
             bottomSheet?.setTitle(it.title)
-            adapter?.updateList(it.visitables)
+            if (rvMiniCartList?.isComputingLayout == true) {
+                rvMiniCartList?.post {
+                    adapter?.updateList(it.visitables)
+                }
+            } else {
+                adapter?.updateList(it.visitables)
+            }
             updateTotalAmount(it.miniCartWidgetData)
+            adjustRecyclerViewPaddingBottom()
+        })
+        viewModel.globalEvent.observe(lifecycleOwner, {
+            when (it.state) {
+                GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
+                    calculateProduct()
+                    bottomSheet?.view?.let {
+                        Toaster.build(it, "Berhasil delete", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                    }
+                }
+                GlobalEvent.STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM -> {
+                    updateTotalAmount(MiniCartWidgetData())
+                }
+            }
         })
     }
 
@@ -72,12 +96,12 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 clearContentPadding = true
                 customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
                 setOnDismissListener {
-                    delayCalculation?.cancel()
+                    measureRecyclerViewPaddingJob?.cancel()
                     onDismiss.invoke()
                 }
             }
 
-            val view = View.inflate(it, R.layout.layout_bottomsheet_mini_cart_list, null)
+            view = View.inflate(it, R.layout.layout_bottomsheet_mini_cart_list, null)
             bottomSheet?.setChild(view)
             bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
 
@@ -93,8 +117,19 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         rvMiniCartList?.adapter = adapter
         rvMiniCartList?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvMiniCartList?.addItemDecoration(miniCartListDecoration)
-        rvMiniCartList?.itemAnimator = null
-//        (rvMiniCartList?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+    }
+
+    private fun adjustRecyclerViewPaddingBottom() {
+        measureRecyclerViewPaddingJob?.cancel()
+        measureRecyclerViewPaddingJob = GlobalScope.launch(Dispatchers.Main) {
+            delay(500)
+            if (rvMiniCartList?.canScrollVertically(-1) == true || rvMiniCartList?.canScrollVertically(1) == true) {
+                rvMiniCartList?.setPadding(0, 0, 0, rvMiniCartList?.resources?.getDimensionPixelOffset(R.dimen.dp_64)
+                        ?: 0)
+            } else {
+                rvMiniCartList?.setPadding(0, 0, 0, 0)
+            }
+        }
     }
 
     private fun initializeTotalAmount(view: View) {
@@ -118,8 +153,17 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private fun updateTotalAmount(miniCartWidgetData: MiniCartWidgetData) {
         totalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
-            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
-            setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+            if (miniCartWidgetData.totalProductCount == 0) {
+                setAmount("-")
+                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
+                amountCtaView.isEnabled = false
+                enableAmountChevron(false)
+            } else {
+                setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
+                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+                amountCtaView.isEnabled = true
+                enableAmountChevron(true)
+            }
         }
         totalAmount?.isTotalAmountLoading = false
     }
@@ -137,33 +181,29 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun calculateProduct() {
-        delayCalculation?.cancel()
-        delayCalculation = GlobalScope.launch(Dispatchers.Main) {
-            delay(250)
-            viewModel.calculateProduct()
-        }
+        viewModel.calculateProduct()
     }
-
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         // no-op
     }
 
-    override fun onDeleteClicked() {
-
+    override fun onDeleteClicked(element: MiniCartProductUiModel) {
+        viewModel.deleteCartItems(element)
     }
 
     override fun onBulkDeleteUnavailableItems() {
-
+        viewModel.bulkDeleteUnavailableCartItems()
     }
 
     override fun onQuantityChanged(productId: String, newQty: Int) {
         viewModel.updateProductQty(productId, newQty)
         calculateProduct()
+        viewModel.updateCart()
     }
 
     override fun onNotesChanged() {
-
+        viewModel.updateCart()
     }
 
     override fun onShowSimilarProductClicked() {

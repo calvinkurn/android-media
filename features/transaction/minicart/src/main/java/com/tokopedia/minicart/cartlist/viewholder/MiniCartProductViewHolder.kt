@@ -91,10 +91,12 @@ class MiniCartProductViewHolder(private val view: View,
 
     private var qtyTextWatcher: TextWatcher? = null
     private var delayChangeQty: Job? = null
+    private var delayChangeNotes: Job? = null
 
     override fun onViewRecycled() {
         super.onViewRecycled()
         delayChangeQty?.cancel()
+        delayChangeNotes?.cancel()
         qtyTextWatcher = null
     }
 
@@ -268,7 +270,12 @@ class MiniCartProductViewHolder(private val view: View,
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                element.productNotes = s.toString()
+                delayChangeQty?.cancel()
+                delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
+                    delay(250)
+                    element.productNotes = s.toString()
+                    listener.onNotesChanged()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {

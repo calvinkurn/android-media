@@ -115,21 +115,7 @@
         app:flexWrap="wrap"
         app:layout_constraintStart_toEndOf="@+id/image_product"
         app:layout_constraintTop_toBottomOf="@+id/text_product_price"
-        tools:visibility="gone">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_product_price1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text_product_variant"
-            android:layout_alignBottom="@+id/label_slash_price_percentage"
-            android:layout_toEndOf="@+id/text_slash_price"
-            android:gravity="center_vertical"
-            android:textColor="@color/Unify_N700_68"
-            app:typographyType="body_3"
-            tools:text="Cashback" />
-
-    </com.google.android.flexbox.FlexboxLayout>
+        tools:visibility="gone"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/text_field_notes"
@@ -211,8 +197,6 @@
         android:id="@+id/text_product_unavailable_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_0"
-        android:paddingEnd="@dimen/dp_16"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"

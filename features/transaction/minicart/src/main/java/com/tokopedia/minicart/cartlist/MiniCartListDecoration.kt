@@ -38,15 +38,15 @@ class MiniCartListDecoration @Inject constructor() : RecyclerView.ItemDecoration
             else -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, defaultMargin)
         }
 
-        if (parent.canScrollVertically(-1) && parent.getChildAdapterPosition(view) == state.itemCount - 1) {
-            outRect.bottom = lastItemMargin
-        }
+//        if (parent.canScrollVertically(-1) && parent.getChildAdapterPosition(view) == state.itemCount - 1 && parent.getChildViewHolder(view) !is MiniCartSeparatorViewHolder) {
+//            outRect.bottom = lastItemMargin
+//        }
     }
 
     private fun setupOutRect(outRect: Rect, left: Int, right: Int, top: Int, bottom: Int) {
-        outRect.top = top
-        outRect.bottom = bottom
         outRect.left = left
         outRect.right = right
+        outRect.top = top
+        outRect.bottom = bottom
     }
 }
