@@ -374,6 +374,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startUploadImages(image: ImageUploadViewModel) {
+        view?.removeSrwBubble()
         if (isEnableUploadImageService()) {
             addDummyToService(image)
             startUploadImageWithService(image)
