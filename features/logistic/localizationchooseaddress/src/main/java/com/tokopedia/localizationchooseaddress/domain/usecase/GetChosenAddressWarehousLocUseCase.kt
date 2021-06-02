@@ -6,8 +6,11 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-/*For TokoNow use only*/
-class GetStateChosenAddressUseCase @Inject constructor(private val chooseAddressRepository: ChooseAddressRepository) : UseCase<GetStateChosenAddressQglResponse>() {
+/**
+ * this usecase support feature that need warehouse location
+ * host/fragment need to implement in their viewModel/Presenter
+ */
+class GetChosenAddressWarehouseLocUseCase @Inject constructor(private val chooseAddressRepository: ChooseAddressRepository) : UseCase<GetStateChosenAddressQglResponse>() {
 
     private var source = ""
 

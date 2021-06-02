@@ -46,7 +46,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     private var buttonChooseAddress: ConstraintLayout? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var hasClicked: Boolean? = false
-    private var isTokonow: Boolean? = false
+    private var isSupportWarehouseLoc: Boolean? = false
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
@@ -75,7 +75,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
                     is Success -> {
                         if (it.data.addressId == 0) {
                             val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
-                            source?.let { it -> viewModel.getDefaultChosenAddress("", it, isTokonow) }
+                            source?.let { it -> viewModel.getDefaultChosenAddress("", it, isSupportWarehouseLoc) }
                         } else {
                             val data = it.data
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -155,7 +155,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
         if (localData?.city_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
-            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isTokonow) }
+            chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
             initObservers()
         }
     }
@@ -167,7 +167,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
         }
 
-        isTokonow = chooseAddressWidgetListener?.getTokoNowParam()
+        isSupportWarehouseLoc = chooseAddressWidgetListener?.isSupportWarehouseLoc()
         initChooseAddressFlow()
 
         buttonChooseAddress?.setOnClickListener {
@@ -210,8 +210,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         hasClicked = false
     }
 
-    override fun getTokoNowParam(): Boolean {
-        return chooseAddressWidgetListener?.getTokoNowParam()?: false
+    override fun isSupportWarehouseLoc(): Boolean {
+        return chooseAddressWidgetListener?.isSupportWarehouseLoc()?: false
     }
 
     private fun onLocalizingAddressError() {
@@ -281,7 +281,11 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             return ""
         }
 
-        fun getTokoNowParam(): Boolean {
+        /**
+         * To differentiate feature that need warehous loc or not
+         * host/fragment need to override this with true
+         */
+        fun isSupportWarehouseLoc(): Boolean {
             return false
         }
     }

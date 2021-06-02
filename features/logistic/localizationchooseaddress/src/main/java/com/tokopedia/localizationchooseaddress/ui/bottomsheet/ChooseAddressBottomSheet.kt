@@ -101,8 +101,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var isCardAddressClicked: Boolean = false
     //flag variable to differentiate setState from address list or not
     private var isAddressListFlow: Boolean = false
-    //flag variable to differentiate tokoNow param
-    private var isTokonow: Boolean = false
+    //flag variable to support warehous location, ex: for tokonow
+    private var isSupportWarehouseLoc: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,7 +170,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             longitude = saveAddressDataModel.longitude,
                             districtId = saveAddressDataModel.districtId.toString(),
                             postalCode = saveAddressDataModel.postalCode,
-                            isTokonow = isTokonow
+                            isTokonow = isSupportWarehouseLoc
                     )
                     isSnippetAddressFlow = false
                     isAddressListFlow = false
@@ -190,7 +190,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             latitude = latitude,
                             longitude = longitude,
                             postalCode = "",
-                            isTokonow = isTokonow
+                            isTokonow = isSupportWarehouseLoc
                     )
                     isSnippetAddressFlow = true
                     isAddressListFlow = false
@@ -209,7 +209,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             longitude = recipientAddress.longitude,
                             districtId = recipientAddress.destinationDistrictId.toString(),
                             postalCode = recipientAddress.postalCode,
-                            isTokonow = isTokonow
+                            isTokonow = isSupportWarehouseLoc
                     )
                     isSnippetAddressFlow = false
                     isAddressListFlow = true
@@ -226,7 +226,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                     setInitialViewState()
                     val chooseAddressPref = context?.getSharedPreferences(CHOOSE_ADDRESS_PREF, Context.MODE_PRIVATE)
                     chooseAddressPref?.edit()?.clear()?.apply()
-                    viewModel.getDefaultChosenAddress("", source, isTokonow)
+                    viewModel.getDefaultChosenAddress("", source, isSupportWarehouseLoc)
                 }
             }
         }
@@ -275,7 +275,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
-        isTokonow = listener?.getTokoNowParam()?: false
+        isSupportWarehouseLoc = listener?.isSupportWarehouseLoc()?: false
         viewModel.getChosenAddressList(source)
     }
 
@@ -528,7 +528,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 longitude = address.longitude,
                 districtId = address.districtId,
                 postalCode = address.postalCode,
-                isTokonow = isTokonow
+                isTokonow = isSupportWarehouseLoc
         )
     }
 
@@ -547,7 +547,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun setStateWithLocation(location: Location) {
         isLoginFlow = false
         setInitialViewState()
-        viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", source, isTokonow)
+        viewModel.getDefaultChosenAddress("${location.latitude},${location.longitude}", source, isSupportWarehouseLoc)
     }
 
     private fun showGpsPopUp() {
@@ -619,7 +619,11 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
         fun onDismissChooseAddressBottomSheet()
 
-        fun getTokoNowParam(): Boolean {
+        /**
+         * To differentiate feature that need warehous loc or not
+         * host/fragment need to override this with true
+         */
+        fun isSupportWarehouseLoc(): Boolean {
             return false
         }
     }
