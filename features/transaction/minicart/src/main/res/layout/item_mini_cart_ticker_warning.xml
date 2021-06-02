@@ -6,4 +6,4 @@
     android:layout_height="wrap_content"
     app:closeButtonVisibility="gone"
     app:tickerShapeType="loose"
-    app:tickerType="information" />
+    app:tickerType="warning" />
