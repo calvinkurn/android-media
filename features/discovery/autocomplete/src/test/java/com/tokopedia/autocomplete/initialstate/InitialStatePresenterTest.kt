@@ -1,5 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.complete
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
@@ -14,7 +15,11 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.shouldBe
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.usecase.RequestParams
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
@@ -23,6 +28,29 @@ import rx.Subscriber
 private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
+
+    private val requestParamsSlot = slot<RequestParams>()
+
+    @Test
+    fun `Test initial state presenter has set parameter`() {
+        `Given getInitialStateUseCase will be successful`(initialStateCommonData)
+
+        `When presenter get initial state data`()
+
+        `Then verify search parameter has warehouseId`(SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
+    }
+
+    private fun `Given getInitialStateUseCase will be successful`(list: List<InitialStateData>) {
+        every { getInitialStateUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<List<InitialStateData>>>().complete(list)
+        }
+    }
+
+    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+    }
 
     private fun `Test Initial State Data`(list: List<InitialStateData>) {
         `Given initial state use case capture request params`(list)

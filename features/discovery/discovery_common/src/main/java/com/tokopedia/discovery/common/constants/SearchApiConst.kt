@@ -95,5 +95,9 @@ class SearchApiConst {
         const val DEFAULT_VALUE_OF_PARAMETER_SC = "0"
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE = "sort"
         const val DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE = "filter"
+
+        // TODO:: Please delete this later
+        @Deprecated("Hardcoded warehouse id")
+        const val HARDCODED_WAREHOUSE_ID_PLEASE_DELETE = "2216"
     }
 }

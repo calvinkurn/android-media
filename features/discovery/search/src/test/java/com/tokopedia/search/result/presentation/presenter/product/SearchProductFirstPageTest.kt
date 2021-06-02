@@ -61,6 +61,7 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         val params = requestParams.getSearchProductParams()
         params.getOrDefault(SearchApiConst.START, null) shouldBe "0"
+        params.getOrDefault(SearchApiConst.USER_WAREHOUSE_ID, null) shouldBe warehouseId
 
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe false
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, false) shouldBe false
