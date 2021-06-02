@@ -107,18 +107,6 @@ class GmCommonModule {
     }
 
     @Provides
-    @Named(GMParamConstant.RAW_DEACTIVATION)
-    fun providePmOffRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_turn_off)
-    }
-
-    @Provides
-    @Named(GMParamConstant.RAW_ACTIVATION)
-    fun providePmOnRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_activation)
-    }
-
-    @Provides
     @Named(GMParamConstant.RAW_GM_STATUS)
     fun provicePmStatusRaw(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status)

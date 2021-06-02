@@ -32,12 +32,6 @@ class PowerMerchantSubscribeModule {
         return UserSession(context)
     }
 
-    @Provides
-    @Named(GMParamConstant.RAW_GM_QUESTIONNAIRE_QUESTION)
-    fun provicePmStatusRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_cancelation_questionnaire)
-    }
-
     @PowerMerchantSubscribeScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository {
