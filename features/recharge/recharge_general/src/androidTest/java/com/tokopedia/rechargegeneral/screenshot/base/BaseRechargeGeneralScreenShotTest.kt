@@ -20,6 +20,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions.takeScree
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import org.hamcrest.core.IsNot
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,6 +45,11 @@ abstract class BaseRechargeGeneralScreenShotTest {
         mActivityRule.launchActivity(intent)
         instrumentAuthLogin()
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    @After
+    fun cleanUp() {
+        Intents.release()
     }
 
     @Test
