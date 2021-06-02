@@ -160,7 +160,12 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 val htmlCourierCountService = HtmlLinkHelper(it, "${shipper.countText} <b>${shipper.count}</b>")
                 tv_courier_count?.text = htmlCourierCountService.spannedString
             }
-            tv_courier_notes?.text = "Oleh kurir: ${confirmReqPickupResponse.dataSuccess.detail.orchestraPartner}"
+
+            if(confirmReqPickupResponse.dataSuccess.detail.orchestraPartner.isEmpty()) {
+                tv_courier_notes?.text = confirmReqPickupResponse.dataSuccess.detail.listShippers[0].note
+            } else {
+                tv_courier_notes?.text = getString(R.string.courier_option, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
+            }
         }
 
         if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
@@ -205,7 +210,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 btn_arrow.setOnClickListener {
                     openBottomSheetSchedulePickup()
                     bottomSheetSchedulePickupTodayAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, "Hari ini"), currSchedulePickupKey)
-                    bottomSheetSchedulePickupTomorrowAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.today, "Besok"), currSchedulePickupKey)
+                    bottomSheetSchedulePickupTomorrowAdapter.setData(schedulePickupMapper.mapSchedulePickup(confirmReqPickupResponse.dataSuccess.schedule_time.tomorrow, "Besok"), currSchedulePickupKey)
                 }
             }
 
