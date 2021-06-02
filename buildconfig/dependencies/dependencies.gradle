@@ -111,7 +111,7 @@ ext {
     unifySortFilterVersion = '1.1.3'
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
-    unifyListVersion = '1.0.5'
+    unifyListVersion = '1.0.7'
     unifyAccordionVersion = '1.1.2'
 
     gradlePlugin = [
