@@ -260,9 +260,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onWatchVideoClicked(videoId: String) {
         context?.let {
-            it.startActivity(Intent(it, ShopPerformanceYoutubeActivity::class.java).apply {
-                putExtra(ShopPerformanceYoutubeActivity.EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE, videoId)
-            })
+            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
         }
         shopScorePenaltyTracking.clickWatchVideoNewSeller()
     }

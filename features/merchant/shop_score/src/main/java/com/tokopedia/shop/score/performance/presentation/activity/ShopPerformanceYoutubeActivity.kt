@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.activity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -17,14 +18,18 @@ import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 class ShopPerformanceYoutubeActivity : AppCompatActivity(), YouTubePlayer.OnInitializedListener {
 
     companion object {
-        const val EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE = "EXTRA_YOUTUBE_VIDEO_ID_SHOP_PERFORMANCE"
+        private const val EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE = "EXTRA_YOUTUBE_VIDEO_ID_SHOP_PERFORMANCE"
         private const val FULL_SCREEN_CONTROL_FLAGS_LANDSCAPE = 1
+        fun createIntent(context: Context, videoId: String) = Intent(context, ShopPerformanceYoutubeActivity::class.java).apply {
+            putExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE, videoId)
+        }
     }
 
     private var toolbar: Toolbar? = null
     private var isFullScreen = false
     private var videoUrl: String = ""
     private var youtubePlayerScreen: YouTubePlayer? = null
+    private var youTubePlayerSupportFragment: YouTubePlayerSupportFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +42,8 @@ class ShopPerformanceYoutubeActivity : AppCompatActivity(), YouTubePlayer.OnInit
 
         videoUrl = intent?.getStringExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE) ?: ShopScoreConstant.VIDEO_YOUTUBE_ID
 
-        val youtubePlayerFragment = supportFragmentManager.findFragmentById(R.id.youtube_player_fragment) as? YouTubePlayerSupportFragment
-        youtubePlayerFragment?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
+        youTubePlayerSupportFragment = supportFragmentManager.findFragmentById(R.id.youtube_player_fragment) as? YouTubePlayerSupportFragment
+        youTubePlayerSupportFragment?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
