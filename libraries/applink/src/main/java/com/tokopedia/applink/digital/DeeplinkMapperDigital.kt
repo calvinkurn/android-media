@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
@@ -20,6 +21,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
+    const val TEMPLATE_CATEGORY_ID = "category_id"
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
     const val REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_digital_checkout"
@@ -44,6 +46,7 @@ object DeeplinkMapperDigital {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
                 if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) getDigitalCheckoutNavigation(context, deeplink)
+                else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
                 else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
@@ -107,8 +110,11 @@ object DeeplinkMapperDigital {
     private fun handleEmoneyPdpApplink(context: Context, deeplink: String): String {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         val getNewEmoneyPage = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP, true)
-        return if (getNewEmoneyPage) ApplinkConsInternalDigital.ELECTRONIC_MONEY_PDP else
+        return if (getNewEmoneyPage) {
+            ApplinkConsInternalDigital.ELECTRONIC_MONEY_PDP
+        } else {
             deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+        }
     }
 
     private fun getDigitalSmartcardNavigation(deeplink: String): String {
@@ -120,5 +126,9 @@ object DeeplinkMapperDigital {
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, paramValue)
         else
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, paramValue)
+    }
+
+    private fun isEmoneyApplink(uri: Uri): Boolean {
+        return (!uri.getQueryParameter(TEMPLATE_CATEGORY_ID).isNullOrEmpty() && uri.getQueryParameter(TEMPLATE_CATEGORY_ID).equals(CATEGORY_ID_ELECTRONIC_MONEY))
     }
 }

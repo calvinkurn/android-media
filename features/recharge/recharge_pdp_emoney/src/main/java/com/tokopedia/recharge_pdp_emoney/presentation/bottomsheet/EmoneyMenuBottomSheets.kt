@@ -29,11 +29,6 @@ class EmoneyMenuBottomSheets : BottomSheetUnify() {
     private fun initView(view: View) {
         with(view) {
             setTitle("")
-            menu_langganan.setOnClickListener {
-                if (::listener.isInitialized) listener.onSubscriptionLanggananClicked()
-                dismiss()
-            }
-
             menu_help.setOnClickListener {
                 if (::listener.isInitialized) listener.onHelpClicked()
                 dismiss()
@@ -54,7 +49,6 @@ class EmoneyMenuBottomSheets : BottomSheetUnify() {
 
     interface MenuListener {
         fun onOrderListClicked()
-        fun onSubscriptionLanggananClicked()
         fun onHelpClicked()
     }
 }

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
@@ -22,7 +23,6 @@ import com.tokopedia.recharge_pdp_emoney.di.DaggerEmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -60,7 +60,7 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
                     .productId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
                     .clientNumber(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
                     .menuId(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_MENU_ID)
-                            ?: DEFAULT_EMONEY_MENU_ID)
+                            ?: DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY)
                     .isFromWidget(isFromWidget)
                     .isCouponApplied(isCouponApplied)
                     .build()
@@ -128,10 +128,6 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         }
     }
 
-    override fun onSubscriptionLanggananClicked() {
-        RouteManager.route(this, TokopediaUrl.getInstance().PULSA + PATH_SUBSCRIPTIONS)
-    }
-
     override fun onHelpClicked() {
         RouteManager.route(this, ApplinkConst.CONTACT_US_NATIVE)
     }
@@ -152,8 +148,6 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         const val REQUEST_CODE_LOGIN_EMONEY = 10000
 
         const val TAG_EMONEY_MENU = "menu_emoney"
-        const val PATH_SUBSCRIPTIONS = "subscribe/"
-        const val DEFAULT_EMONEY_MENU_ID = "267"
 
         private val KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied"
         private val EXTRA_RECHARGE_SLICE = "RECHARGE_PRODUCT_EXTRA"
