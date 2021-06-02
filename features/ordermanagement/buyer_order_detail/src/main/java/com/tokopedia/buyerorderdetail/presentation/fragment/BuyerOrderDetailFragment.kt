@@ -267,6 +267,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
                 navigator.goToCreateResolution(this, complaintUrl)
+                trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_COMPLAINT_ORDER)
             }
         }
         bottomSheetReceiveConfirmation?.finishLoading()
@@ -290,6 +291,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onDoReceiveConfirmationActionButtonClicked() {
         viewModel.finishOrder()
+        trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_FINISH_ORDER)
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
@@ -647,6 +649,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             if (it is Success) {
                 BuyerOrderDetailTracker.eventClickActionButton(
                         isPrimaryButton = fromPrimaryButton,
+                        buttonName = buttonName,
+                        orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                        orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
+            }
+        }
+    }
+
+    private fun trackClickActionButtonFromReceiveConfirmation(buttonName: String) {
+        viewModel.buyerOrderDetailResult.value?.let {
+            if (it is Success) {
+                BuyerOrderDetailTracker.eventClickActionButtonFromReceiveConfirmation(
                         buttonName = buttonName,
                         orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
                         orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)

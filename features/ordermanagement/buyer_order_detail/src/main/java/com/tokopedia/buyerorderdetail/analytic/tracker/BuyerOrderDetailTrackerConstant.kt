@@ -30,10 +30,10 @@ object BuyerOrderDetailTrackerConstant {
     // event labels
 
     // business unit
-    const val BUSINESS_UNIT_MARKETPLACE = "marketplace"
+    const val BUSINESS_UNIT_MARKETPLACE = "Seller Order Management"
 
     // current site
-    const val CURRENT_SITE_MARKETPLACE = "marketplace"
+    const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
 
     // separator
     const val SEPARATOR_STRIP = " - "
