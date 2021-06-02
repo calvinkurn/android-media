@@ -1,10 +1,12 @@
 package com.tokopedia.hotel.screenshot.srp_map
 
 import android.content.Intent
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
@@ -59,6 +61,9 @@ abstract class BaseHotelSearchMapScreenshotTesting {
 
     @Test
     fun screenShot(){
+        val bottomSheetLayout = activityRule.activity.findViewById<ConstraintLayout>(R.id.hotel_search_map_bottom_sheet)
+        val bottomSheet =  BottomSheetBehavior.from<ConstraintLayout>(bottomSheetLayout)
+
         uiDevice.findObject(
                 UiSelector().description("MAP READY")
         ).waitForExists(10000)
@@ -67,9 +72,9 @@ abstract class BaseHotelSearchMapScreenshotTesting {
             CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "top")
         }
 
-        uiDevice.findObject(
-                UiSelector().description("Bottomsheet Hotel Search Map")
-        ).swipeDown(4)
+        activityRule.activity.runOnUiThread {
+            bottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        }
 
         Thread.sleep(1000)
 
@@ -81,9 +86,9 @@ abstract class BaseHotelSearchMapScreenshotTesting {
 
         Thread.sleep(1000)
 
-        uiDevice.findObject(
-                UiSelector().description("Bottomsheet Hotel Search Map")
-        ).swipeUp(8)
+        activityRule.activity.runOnUiThread {
+            bottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
 
         Thread.sleep(1000)
 
