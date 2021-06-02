@@ -13,7 +13,7 @@ class BrizziCardObjectMapper @Inject constructor() {
     fun mapperBrizzi(brizziCardObject: BrizziCardObject, error: EmoneyInquiryError): EmoneyInquiry {
         return EmoneyInquiry(
                 attributesEmoneyInquiry = AttributesEmoneyInquiry(
-                        "Topup Sekarang",
+                        "Top-up Sekarang",
                         brizziCardObject.cardNumber,
                         "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
                         brizziCardObject.balance.toInt(),
