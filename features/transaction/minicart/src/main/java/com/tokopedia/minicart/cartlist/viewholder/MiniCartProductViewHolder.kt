@@ -182,11 +182,14 @@ class MiniCartProductViewHolder(private val view: View,
         val originalPrice = if (priceDropValue > price) price else priceDropValue
         textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false)
         textSlashPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
+        textProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productWholeSalePrice, false)
+        labelSlashPricePercentage?.gone()
     }
 
     private fun renderSlashPriceFromPriceDrop(element: MiniCartProductUiModel) {
         textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productInitialPriceBeforeDrop, false)
         textSlashPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
+        labelSlashPricePercentage?.gone()
     }
 
     private fun renderSlashPriceFromCampaign(element: MiniCartProductUiModel) {
@@ -205,27 +208,19 @@ class MiniCartProductViewHolder(private val view: View,
     }
 
     private fun renderProductInformation(element: MiniCartProductUiModel) {
-        if (element.productInformation.isNotEmpty()) {
+        val tmpProductInformation = element.productInformation.toMutableList()
+        if (element.productWholeSalePrice > 0) {
+            val wholesaleLabel = "Harga Grosir"
+            tmpProductInformation.add(wholesaleLabel)
+        }
+        if (tmpProductInformation.isNotEmpty()) {
             layoutProductInfo?.gone()
-            val productInformationList = element.productInformation
-            if (productInformationList.isNotEmpty()) {
+            if (tmpProductInformation.isNotEmpty()) {
                 layoutProductInfo?.removeAllViews()
-                productInformationList.forEach {
-                    var tmpLabel = it
-                    if (tmpLabel.toLowerCase(Locale.getDefault()).contains(LABEL_CASHBACK)) {
-                        tmpLabel = LABEL_CASHBACK
-                    }
-
+                tmpProductInformation.forEach {
                     val productInfo = createProductInfoText(it)
                     layoutProductInfo?.addView(productInfo)
                 }
-                layoutProductInfo?.show()
-            }
-
-            if (element.productWholeSalePrice > 0) {
-                val wholesaleLabel = "Harga Grosir"
-                val productInfo = createProductInfoText(wholesaleLabel)
-                layoutProductInfo?.addView(productInfo)
                 layoutProductInfo?.show()
             }
         } else {
@@ -365,7 +360,7 @@ class MiniCartProductViewHolder(private val view: View,
 
         buttonDelete?.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                listener.onDeleteClicked()
+                listener.onDeleteClicked(element)
             }
         }
         buttonDelete?.show()
@@ -377,6 +372,7 @@ class MiniCartProductViewHolder(private val view: View,
             return
         }
 
+        textProductUnavailableAction?.gone()
         qtyEditorProduct?.show()
         if (qtyTextWatcher != null) {
             // reset listener
