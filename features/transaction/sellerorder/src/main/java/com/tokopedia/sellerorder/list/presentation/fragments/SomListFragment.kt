@@ -753,7 +753,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
             })
             init(order.buttons.firstOrNull()?.popUp ?: PopUp(), order.cancelRequestOriginNote, order.orderStatusId)
-            setTitle(view.context.getString(R.string.som_request_cancel_bottomsheet_title))
             hideKnob()
             showCloseButton()
         }
@@ -767,7 +766,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     viewModel.editAwb(orderId, cancelNotes, invoice)
                 }
             })
-            setTitle(SomConsts.TITLE_UBAH_RESI)
             hideKnob()
             showCloseButton()
         }
