@@ -28,6 +28,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
+                  isTokoNow
                   shopName
                   productID
                   shopID
