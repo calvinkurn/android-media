@@ -3,11 +3,13 @@ package com.tokopedia.loginfingerprint.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintResult
+import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -28,6 +30,7 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
                                                    private val cryptographyUtils: Cryptography?,
                                                    private val fingerprintSetting: FingerprintSetting,
                                                    private val loginTokenUseCase: LoginTokenUseCase,
+                                                   private val verifyFingerprintUseCase: VerifyFingerprintUseCase,
                                                    private val validateFingerprintUseCase: ValidateFingerprintUseCase)
     : BaseViewModel(dispatcher.io) {
 
@@ -47,6 +50,13 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
         }
     }
 
+    fun verifyFingerprint() {
+        val signature = cryptographyUtils?.generateFingerprintSignature(fingerprintSetting.getFingerprintUserId(), userSession.deviceId)
+        signature?.run {
+            verifyFingerprintUseCase.verifyFingerprint(this, onSuccessVerifyFP(), onErrorValidateFP())
+        }
+    }
+
     fun loginToken(validateToken: String){
         val param = LoginTokenUseCase.generateParamForFingerprint(validateToken, fingerprintSetting.getFingerprintUserId())
         loginTokenUseCase.executeLoginFingerprint(param, loginSubscriber)
@@ -54,6 +64,20 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatch
 
     private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
         return { mutableLoginFingerprintResult.value = Success(it) }
+    }
+
+    private fun onSuccessVerifyFP(): (VerifyFingerprintPojo) -> Unit {
+        return {
+            val data = it.data
+            if (data.errorMessage.isBlank() && data.isSuccess) {
+                loginToken(data.validateToken)
+            } else if (data.errorMessage.isNotBlank()) {
+                mutableLoginFingerprintResult.value = Fail(com.tokopedia.network.exception.MessageErrorException(data.errorMessage,
+                    ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+            } else {
+                mutableLoginFingerprintResult.value = Fail(RuntimeException())
+            }
+        }
     }
 
     private fun onSuccessValidateFP(): (ValidateFingerprintResult) -> Unit {
