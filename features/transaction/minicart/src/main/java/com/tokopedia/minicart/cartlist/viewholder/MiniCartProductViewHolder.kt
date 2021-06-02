@@ -264,6 +264,7 @@ class MiniCartProductViewHolder(private val view: View,
         textNotesFilled?.gone()
         textNotesFilled?.text = element.productNotes
         textFieldNotes?.setCounter(element.maxNotesLength)
+        textFieldNotes?.textFieldInput?.setText(element.productNotes)
         textFieldNotes?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
