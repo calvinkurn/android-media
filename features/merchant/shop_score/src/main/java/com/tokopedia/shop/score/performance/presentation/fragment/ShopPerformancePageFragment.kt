@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -251,13 +252,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String) {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, infoPageUrl)
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, infoPageUrl)
+        }
         shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
     }
 
     override fun onWatchVideoClicked(videoId: String) {
         context?.let {
-            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
+            it.startActivity(Intent(it, ShopPerformanceYoutubeActivity::class.java).apply {
+                putExtra(ShopPerformanceYoutubeActivity.EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE, videoId)
+            })
         }
         shopScorePenaltyTracking.clickWatchVideoNewSeller()
     }
@@ -288,14 +293,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun goToFaqSection() {
         val faqData = shopPerformanceAdapter.list.find { it is SectionFaqUiModel }
         if (faqData != null) {
-            val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
+            context?.let {
+                val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_END
+                    }
                 }
+                smoothScroller.targetPosition = positionFaqSection
+                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
-            smoothScroller.targetPosition = positionFaqSection
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
         shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
     }

@@ -115,7 +115,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
                 if (data.shopIncome.toDoubleOrZero() < 0.0) {
                     "-"
                 } else {
-                    StringBuilder("Rp${data.shopIncome.toIntOrZero().getNumberFormatted()}")
+                    StringBuilder("Rp${data.shopIncome.toDoubleOrZero().getNumberFormatted()}")
                 }
         tvValueProductSoldTooltip?.text =
                 if (data.productSold.toDoubleOrZero() < 0.0) {

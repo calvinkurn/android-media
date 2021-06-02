@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarVideo"
+        android:id="@+id/toolbarVideoShopScore"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/Unify_N600"
