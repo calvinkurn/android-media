@@ -5,14 +5,14 @@ class TopchatRoomSrwBuyerTest {
     // TODO: SRW bubble should be displayed after click SRW preview
     // TODO: SRW bubble always stays at the bottom when receive response msg from ws
     // TODO: SRW bubble always stays at the bottom when receive response msg from ws from different day
-    // TODO: SRW bubble should be removed when user sent invoice
-    // TODO: SRW bubble should be removed when user receive invoice event from himself.
-    // TODO: SRW bubble should be removed when user receive attach product event from ws/seller.
-    // TODO: SRW preview should not be sent when user attach image.
-    // TODO: SRW preview should not be sent when user receive attach image event from himself.
+    // TODO: SRW bubble should be removed when user request sent invoice
+    // TODO: SRW bubble should be removed when user receive invoice event from ws.
     // TODO: SRW bubble should be removed when user return from attach image and request upload image.
-    // TODO: What if user receive event invoice & image from seller and SRW bubble still visible?.
+    // TODO: SRW bubble should be removed when user receive attach image event from ws.
+    // TODO: SRW preview should not be sent when user attach image.
 
+    // TODO: SRW bubble should be removed when user receive voucher event from ws.
+    // TODO: SRW bubble should be removed when user receive attach product event from ws/seller.
     // TODO: SRW bubble should maintain state (expand/collapse) if scrolled far top and back at it again
     // TODO: SRW should hide broadcast handler if visible
     // TODO: Template chat should be hidden when SRW bubble exist

@@ -54,6 +54,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
@@ -259,6 +260,12 @@ open class TopChatRoomPresenter @Inject constructor(
         when (pojo.attachment?.type) {
             AttachmentType.Companion.TYPE_INVOICE_SEND,
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD -> view?.removeSrwBubble()
+        }
+    }
+
+    private fun handleSrwBubbleState(previewToSent: SendablePreview) {
+        when (previewToSent) {
+            is InvoicePreviewUiModel -> view?.removeSrwBubble()
         }
     }
 
@@ -660,6 +667,7 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
+            handleSrwBubbleState(attachment)
             val wsMsgPayload = attachment.generateMsgObj(
                 messageId, opponentId, message, listInterceptor, userLocationInfo
             )
