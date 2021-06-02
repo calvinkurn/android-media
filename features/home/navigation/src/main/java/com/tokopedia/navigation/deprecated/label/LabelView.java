@@ -24,7 +24,6 @@ import com.tokopedia.unifyprinciples.Typography;
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
-
 public class LabelView extends BaseCustomView {
     private static final float MAX_WIDTH_PERCENT_CONTENT = 0.3f;
 
