@@ -82,7 +82,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
     val productSingleVariant: ProductSingleVariantDataModel?
-        get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? ProductSingleVariantDataModel
+        get() = mapOfData[ProductDetailConstant.MINI_VARIANT_OPTIONS] as? ProductSingleVariantDataModel
 
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
@@ -131,6 +131,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.VARIANT_OPTIONS, loadInitialData) {
                 productNewVariantDataModel?.run {
+                    isRefreshing = false
+                }
+            }
+
+            updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS, loadInitialData) {
+                productSingleVariant?.run {
                     isRefreshing = false
                 }
             }
@@ -532,6 +538,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
             productNewVariantDataModel?.listOfVariantCategory = processedVariant
         }
+
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+            productSingleVariant?.variantLevelOne = processedVariant?.firstOrNull()
+        }
     }
 
     fun updateVariantSelected(variantId: String, variantKey: String) {
@@ -542,12 +552,20 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 it.mapOfSelectedVariant = copyMap
             }
         }
+
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+            productSingleVariant?.let {
+                val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
+                copyMap[variantKey] = variantId
+                it.mapOfSelectedVariant = copyMap
+            }
+        }
     }
 
     fun updateVariantSelected(mapOfSelectedIds: MutableMap<String, String>?) {
         if (mapOfSelectedIds == null) return
-        updateData(ProductDetailConstant.VARIANT_OPTIONS) {
-            productNewVariantDataModel?.let {
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+            productSingleVariant?.let {
                 it.mapOfSelectedVariant = mapOfSelectedIds
             }
         }

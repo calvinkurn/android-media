@@ -7,7 +7,7 @@ import com.tkpd.atc_variant.data.uidata.ProductHeaderData
 import com.tkpd.atc_variant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atc_variant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atc_variant.util.PAYLOAD_UPDATE_PRICE_ONLY
-import com.tkpd.atc_variant.views.AtcVariantListener
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide

@@ -21,6 +21,14 @@ data class ProductVariant(
         @SerializedName("children")
         val children: List<VariantChild> = listOf()
 ){
+        //Hitam,M
+        fun getVariantCombineIdentifier(): String {
+                val list = variants.mapIndexed { index, variant ->
+                        "${variants.getOrNull(index)?.options?.size ?: ""} ${variant.name}"
+                }
+                return list.joinToString()
+        }
+
         fun getChildByOptionId(selectedIds: List<String>): VariantChild? {
                 var childResult: VariantChild? = null
                 for (it: VariantChild in children) {

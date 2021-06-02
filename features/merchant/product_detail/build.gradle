@@ -93,6 +93,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.minicart)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

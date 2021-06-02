@@ -27,4 +27,7 @@
     <string name="merchant_product_detail_error_default">Terjadi kesalahan. Coba lagi</string>
     <string name="merchant_product_detail_success_atc_default">barang berhasil ditambahkan ke keranjang belanja.</string>
 
+    <string name="atc_variant_promo">PROMO</string>
+    <string name="atc_variant_empty">Habis</string>
+    <string name="atc_content_desc_txtChipVariant">text varian %1s</string>
 </resources>

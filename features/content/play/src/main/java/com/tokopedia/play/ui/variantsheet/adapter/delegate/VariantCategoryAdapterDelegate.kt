@@ -5,15 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
-import com.tokopedia.variant_common.view.ProductVariantListener
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 
 /**
  * Created by mzennis on 2020-03-10.
  */
 class VariantCategoryAdapterDelegate(
-        listener: ProductVariantListener
-) : TypedAdapterDelegate<VariantCategory, Any, VariantContainerViewHolder>(com.tokopedia.variant_common.R.layout.item_variant_container_view_holder), ProductVariantListener by listener {
+        listener: AtcVariantListener
+) : TypedAdapterDelegate<VariantCategory, Any, VariantContainerViewHolder>(com.tokopedia.variant_common.R.layout.item_variant_container_view_holder), AtcVariantListener by listener {
 
     override fun onBindViewHolder(item: VariantCategory, holder: VariantContainerViewHolder) {
         holder.bind(item)

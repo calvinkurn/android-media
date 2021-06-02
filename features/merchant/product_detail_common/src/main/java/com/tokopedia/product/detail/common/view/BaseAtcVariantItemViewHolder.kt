@@ -1,4 +1,4 @@
-package com.tkpd.atc_variant.views.viewholder
+package com.tokopedia.product.detail.common.view
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

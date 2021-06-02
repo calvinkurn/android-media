@@ -27,10 +27,10 @@ import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.variant_common.util.VariantCommonMapper
-import com.tokopedia.variant_common.view.ProductVariantListener
 
 /**
  * Created by jegul on 31/07/20
@@ -38,7 +38,7 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 class VariantSheetViewComponent(
         container: ViewGroup,
         private val listener: Listener
-) : ViewComponent(container, R.id.cl_variant_sheet), ProductVariantListener {
+) : ViewComponent(container, R.id.cl_variant_sheet), AtcVariantListener {
 
     private val clProductVariant: ConstraintLayout = findViewById(R.id.cl_product_variant)
     private val phProductVariant: ConstraintLayout = findViewById(R.id.ph_product_variant)

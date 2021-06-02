@@ -1,14 +1,12 @@
-package com.tkpd.atc_variant.views.viewholder.item
+package com.tokopedia.product.detail.common.view
 
 import android.view.View
 import android.widget.FrameLayout
-import com.tkpd.atc_variant.R
-import com.tkpd.atc_variant.views.AtcVariantListener
-import com.tkpd.atc_variant.views.viewholder.BaseAtcVariantItemViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.data.views.ProductRoundedImageView

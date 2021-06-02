@@ -85,6 +85,7 @@ object ProductDetailConstant {
     const val TICKER_INFO = "ticker_info"
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
+    const val MINI_VARIANT_OPTIONS = "mini_variant_option"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
     const val PRODUCT_VARIANT_INFO = "variant"

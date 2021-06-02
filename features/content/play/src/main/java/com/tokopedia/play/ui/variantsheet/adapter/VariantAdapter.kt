@@ -5,15 +5,15 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.variantsheet.adapter.delegate.VariantCategoryAdapterDelegate
 import com.tokopedia.play.ui.variantsheet.adapter.delegate.VariantPlaceholderAdapterDelegate
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
-import com.tokopedia.variant_common.view.ProductVariantListener
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder.Companion.VARIANT_OPTION_CHANGED
 
 /**
  * Created by mzennis on 2020-03-10.
  */
 class VariantAdapter(
-        listener: ProductVariantListener
-) : BaseDiffUtilAdapter<Any>(), ProductVariantListener by listener {
+        listener: AtcVariantListener
+) : BaseDiffUtilAdapter<Any>(), AtcVariantListener by listener {
 
     init {
         delegatesManager

@@ -1,4 +1,4 @@
-package com.tkpd.atc_variant.views
+package com.tokopedia.product.detail.common.view
 
 import android.view.View
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -8,11 +8,12 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  */
 interface AtcVariantListener {
     fun onVariantClicked(variantOptions: VariantOptionWithAttribute)
+    fun getStockWording(): String = ""
 
     fun onVariantGuideLineClicked(url: String) {}
     fun onSelectionChanged(view: View, position: Int) {}
     fun onVariantGuideLineHide(): Boolean = false
-    fun onVariantImageClicked(url: String)
+    fun onVariantImageClicked(url: String){}
 
-    fun onQuantityUpdate(quantity: Int, productId: String)
+    fun onQuantityUpdate(quantity: Int, productId: String) {}
 }

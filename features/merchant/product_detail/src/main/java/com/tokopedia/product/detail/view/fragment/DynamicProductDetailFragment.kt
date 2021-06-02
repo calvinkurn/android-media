@@ -96,6 +96,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -166,7 +167,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.util.VariantCommonMapper
-import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
@@ -182,7 +182,7 @@ import javax.inject.Inject
 
 open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(),
         DynamicProductDetailListener,
-        ProductVariantListener,
+        AtcVariantListener,
         ProductAccessRequestDialogFragment.Listener,
         PartialButtonActionListener,
         ProductDetailBottomSheetListener,
@@ -256,7 +256,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldFireVariantTracker = true
     private var recomWishlistItem: RecommendationItem? = null
     private var pdpUiUpdater: PdpUiUpdater? = PdpUiUpdater(mutableMapOf())
-    private var enableCheckImeiRemoteConfig = false
     private var alreadyPerformSellerMigrationAction = false
     private var isAutoSelectVariant = false
     private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
@@ -345,6 +344,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeImageVariantPartialyChanged()
         observeAddToCart()
         observeInitialVariantData()
+        observeSingleVariantData()
         observeonVariantClickedData()
         observeDiscussionData()
         observeP2Other()
@@ -386,7 +386,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
         firstOpenPage = true
         super.onCreate(savedInstanceState)
-        setupRemoteConfig()
         assignDeviceId()
         loadData()
     }
@@ -457,7 +456,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         updateCartNotification()
                     }
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
-                    updateVariantDataToExistingProductData(listOfVariantSelected)
+                    val variantLevelOne = listOfVariantSelected?.firstOrNull()
+                    updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
                 }
             }
         }
@@ -1313,9 +1313,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
-        val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
-                ?: ProductVariant(), pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList()
-                ?: listOf())
+        val selectedOptionIds = if (pdpUiUpdater?.productSingleVariant != null) pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.toList()
+                ?: listOf()
+        else pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList()
+                ?: listOf()
+
+        val selectedChildAndPosition = VariantCommonMapper.selectedProductData(
+                viewModel.variantData
+                        ?: ProductVariant(), selectedOptionIds)
         val selectedChild = selectedChildAndPosition?.second
         val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
 
@@ -1374,13 +1379,25 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         showOrHideButton()
     }
 
+    private fun observeSingleVariantData() {
+        viewLifecycleOwner.observe(viewModel.singleVariantData) {
+            val listOfVariantLevelOne = listOf(it)
+            if (!isAutoSelectVariant) {
+                pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
+            } else {
+                //If variant did auto select, we have to update the UI
+                updateVariantDataToExistingProductData(listOfVariantLevelOne)
+            }
+        }
+    }
+
     private fun observeInitialVariantData() {
         viewLifecycleOwner.observe(viewModel.initialVariantData) {
             if (!isAutoSelectVariant) {
                 pdpUiUpdater?.updateVariantData(it)
             } else {
                 //If variant did auto select, we have to update the UI
-                 updateVariantDataToExistingProductData(it)
+                updateVariantDataToExistingProductData(it)
             }
         }
     }
@@ -1709,7 +1726,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
-            renderVariant(viewModel.variantData)
+            renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
             val hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             navAbTestCondition({ setNavToolbarSearchHint(hint) }, { et_search.setHint(hint) })
             pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), true)
@@ -1931,29 +1948,65 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
-        pdpUiUpdater?.updateVariantSelected(variantOptions.variantId, variantOptions.variantCategoryKey)
-        val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
-                ?: false
+        if (pdpUiUpdater?.productSingleVariant != null) {
+            goToAtcVariant()
+        } else {
+            pdpUiUpdater?.updateVariantSelected(variantOptions.variantId, variantOptions.variantCategoryKey)
+            val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
+                    ?: false
 
-        viewModel.onVariantClicked(viewModel.variantData, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
-                variantOptions.imageOriginal)
+            viewModel.onVariantClicked(viewModel.variantData, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
+                    variantOptions.imageOriginal)
+        }
     }
 
-    private fun renderVariant(data: ProductVariant?) {
-        if (data == null || !data.hasChildren || pdpUiUpdater?.productNewVariantDataModel == null) {
+    private fun goToAtcVariant() {
+
+        context?.let {
+            if (viewModel.getDynamicProductInfoP1 != null) {
+                AtcVariantHelper.pdpToAtcVariant(
+                        context = it,
+                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
+                        warehouseId = warehouseId ?: "",
+                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
+                        isTokoNow = true,
+                        isShopOwner = viewModel.isShopOwner(),
+                        productVariant = viewModel.variantData ?: ProductVariant(),
+                        warehouseResponse = mapOf(),
+                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
+                ) { data, code ->
+                    startActivityForResult(data, code)
+                }
+            }
+        }
+//            AtcVariantHelper.goToAtcVariant(
+//                    context = it,
+//                    productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
+//                    pageSource = "wishlist",
+//                    shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
+//                    isTokoNow = true
+//            ) { data, code ->
+//                startActivityForResult(data, code)
+//            }
+//        }
+    }
+
+    private fun renderVariant(data: ProductVariant?, shouldRenderNewVariant: Boolean) {
+        if (data == null || !data.hasChildren) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
         } else {
             if (data.errorCode > 0) {
                 pdpUiUpdater?.updateVariantError()
                 updateUi()
             } else {
                 val selectedOptionIds = autoSelectVariant(productId)
-                viewModel.processVariant(data, selectedOptionIds)
+                viewModel.processVariant(data, selectedOptionIds, shouldRenderNewVariant)
             }
         }
     }
 
-    private fun autoSelectVariant(productId: String?): MutableMap<String,String> {
+    private fun autoSelectVariant(productId: String?): MutableMap<String, String> {
         viewModel.variantData?.let {
             //Auto select variant will be execute when there is only 1 child left
             val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
@@ -1962,7 +2015,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = pairAutoSelectAndSelectedOptionIds.second
         }
-        return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
+        return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant
+                ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
     }
 
     private fun showAddToCartDoneBottomSheet() {
@@ -2795,13 +2849,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
             }
 
-            if (viewModel.getDynamicProductInfoP1?.checkImei(enableCheckImeiRemoteConfig) == true) {
-                activity?.run {
-                    ImeiPermissionAsker.checkImeiPermission(this, {
-                        showImeiPermissionBottomSheet()
-                    }, { hitAtc(buttonAction) }) { onNeverAskAgain() }
-                }
-            } else hitAtc(buttonAction)
+            hitAtc(buttonAction)
         }
     }
 
@@ -2931,43 +2979,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {
-//        activity?.let {
-//            val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: return
-//            DynamicProductDetailTracking.Click.eventImageShopClicked(viewModel.getDynamicProductInfoP1, shopId, componentTrackDataModel)
-//            startActivityForResult(RouteManager.getIntent(it,
-//                    ApplinkConst.SHOP, shopId),
-//                    ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
-//        }
-
-        context?.let {
-//            if (viewModel.getDynamicProductInfoP1 != null) {
-//                AtcVariantHelper.pdpToAtcVariant(
-//                        context = it,
-//                        productInfoP1 = viewModel.getDynamicProductInfoP1!!,
-//                        warehouseId = warehouseId ?: "",
-//                        pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-//                        isTokoNow = true,
-//                        isShopOwner = viewModel.isShopOwner(),
-//                        isCheckImeiRemoteConfig = enableCheckImeiRemoteConfig,
-//                        productVariant = viewModel.variantData ?: ProductVariant(),
-//                        warehouseResponse = mapOf(),
-//                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
-//                ) { data, code ->
-//                    startActivityForResult(data, code)
-//                }
-//            }
-//        }
-
-                AtcVariantHelper.goToAtcVariant(
-                        context = it,
-                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-                        pageSource = "wishlist",
-                        shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
-                        isTokoNow = true
-                ) { data, code ->
-                    startActivityForResult(data, code)
-                }
-            }
+        activity?.let {
+            val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: return
+            DynamicProductDetailTracking.Click.eventImageShopClicked(viewModel.getDynamicProductInfoP1, shopId, componentTrackDataModel)
+            startActivityForResult(RouteManager.getIntent(it,
+                    ApplinkConst.SHOP, shopId),
+                    ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
+        }
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
@@ -3289,25 +3307,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun onNeverAskAgain() {
-        DynamicProductDetailTracking.Click.eventClickBuyAskForImei(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
-        activity?.run {
-            CheckImeiBottomSheet.showPermissionDialog(this) {
-                DynamicProductDetailTracking.Click.eventClickGiveAccessPhoneStatePermission(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
-                showRationaleDialog()
-            }
-        }
-    }
-
-    private fun showRationaleDialog() {
-        DynamicProductDetailTracking.Click.eventClickBuyAskForImei(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
-        CheckImeiRationaleDialog.showRationaleDialog(activity, {
-            DynamicProductDetailTracking.Click.eventClickGoToSetting(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
-        }, {
-            DynamicProductDetailTracking.Click.eventClickLater(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
-        })
-    }
-
     private fun observeToggleNotifyMe() {
         viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) { data ->
             data.doSuccessOrFail({
@@ -3358,16 +3357,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun trackOnTickerClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String) {
         DynamicProductDetailTracking.Click.eventClickTicker(tickerTitle, tickerType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, viewModel.userId, tickerDescription)
-    }
-
-    private fun showImeiPermissionBottomSheet() {
-        DynamicProductDetailTracking.Click.eventClickBuyAskForImei(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
-        activity?.run {
-            CheckImeiBottomSheet.showPermissionDialog(this) {
-                DynamicProductDetailTracking.Click.eventClickGiveAccessPhoneStatePermission(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
-                ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragment)
-            }
-        }
     }
 
     private fun doActionOrLogin(actionLogin: () -> Unit, actionNonLogin: (() -> Unit)? = null) {
@@ -3449,11 +3438,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun setupRemoteConfig() {
-        enableCheckImeiRemoteConfig = remoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
-                ?: false
-    }
-
     private fun getAbTestPlatform(): AbTestPlatform? {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform
@@ -3479,6 +3463,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         return trackingQueue
     }
 
+    override fun getVariantString(): String {
+        return viewModel.variantData?.getVariantCombineIdentifier() ?: ""
+    }
+
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
         if (!isNavOld()) {
             ifNavRevamp.invoke()
@@ -3488,7 +3476,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToRecommendation() {
-        val uri = UriUtil.buildUri(ProductDetailConstant.RECOM_URL, viewModel.getDynamicProductInfoP1?.basic?.productID).toString()
+        val uri = UriUtil.buildUri(ProductDetailConstant.RECOM_URL, viewModel.getDynamicProductInfoP1?.basic?.productID)
         RouteManager.route(context, uri)
     }
 

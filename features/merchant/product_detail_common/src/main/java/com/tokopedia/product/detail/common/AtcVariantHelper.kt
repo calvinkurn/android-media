@@ -34,7 +34,6 @@ object AtcVariantHelper {
                         pdpSession: String,
                         isTokoNow: Boolean,
                         isShopOwner: Boolean,
-                        isCheckImeiRemoteConfig: Boolean,
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
                         cartRedirection: Map<String, CartTypeData>,
@@ -56,7 +55,6 @@ object AtcVariantHelper {
                 categoryName = productInfoP1.basic.category.name,
                 categoryId = productInfoP1.basic.category.id,
                 isTradein = productInfoP1.data.isTradeIn,
-                isCheckImei = productInfoP1.checkImei(isCheckImeiRemoteConfig),
                 minimumShippingPrice = productInfoP1.basic.getDefaultOngkirInt(),
                 shopId = productInfoP1.basic.shopID,
                 shopName = productInfoP1.basic.shopName

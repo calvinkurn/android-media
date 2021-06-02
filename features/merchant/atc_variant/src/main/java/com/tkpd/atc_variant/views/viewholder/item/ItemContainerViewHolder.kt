@@ -13,12 +13,12 @@ import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tkpd.atc_variant.R
-import com.tkpd.atc_variant.views.AtcVariantListener
-import com.tkpd.atc_variant.views.adapter.variantitem.AtcVariantOptionAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.product.detail.common.view.AtcVariantOptionAdapter
 
 
 /**

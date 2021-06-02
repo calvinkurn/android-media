@@ -60,7 +60,11 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.VARIANT -> {
-                    listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
+                    if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+                        listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))
+                    } else {
+                        listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
+                    }
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))

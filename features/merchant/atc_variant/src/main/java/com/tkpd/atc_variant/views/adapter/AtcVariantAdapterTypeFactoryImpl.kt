@@ -5,7 +5,7 @@ import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tkpd.atc_variant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atc_variant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atc_variant.data.uidata.VariantShimmeringDataModel
-import com.tkpd.atc_variant.views.AtcVariantListener
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tkpd.atc_variant.views.viewholder.AtcVariantComponentViewHolder
 import com.tkpd.atc_variant.views.viewholder.AtcVariantHeaderViewHolder
 import com.tkpd.atc_variant.views.viewholder.AtcVariantQuantityViewHolder

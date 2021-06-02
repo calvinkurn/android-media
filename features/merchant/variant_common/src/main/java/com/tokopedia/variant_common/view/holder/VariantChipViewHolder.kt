@@ -8,16 +8,16 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.R
-import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.item_variant_chip_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 08/03/20
  */
 class VariantChipViewHolder(val view: View,
-                            val listener: ProductVariantListener) : BaseVariantViewHolder<VariantOptionWithAttribute>(view) {
+                            val listener: AtcVariantListener) : BaseVariantViewHolder<VariantOptionWithAttribute>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_variant_chip_view_holder

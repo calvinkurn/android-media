@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.data.uidata.VariantQuantityDataModel
-import com.tkpd.atc_variant.views.AtcVariantListener
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifyprinciples.Typography

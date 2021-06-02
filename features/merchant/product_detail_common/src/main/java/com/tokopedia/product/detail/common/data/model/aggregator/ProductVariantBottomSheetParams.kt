@@ -24,7 +24,6 @@ data class ProductVariantBottomSheetParams(
         var categoryName: String = "",
         var categoryId: String = "",
         var isTradein: Boolean = false,
-        var isCheckImei: Boolean = false,
         var minimumShippingPrice: Int = 30000,
         var shopId: String = "",
         var trackerAttribution: String = "",

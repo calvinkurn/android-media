@@ -9,14 +9,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.variant_common.R
-import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.adapter.VariantOptionAdapter
 
 /**
  * Created by mzennis on 2020-03-11.
  */
-class VariantContainerViewHolder(val view: View, val listener: ProductVariantListener) : RecyclerView.ViewHolder(view), ProductVariantListener by listener {
+class VariantContainerViewHolder(val view: View, val listener: AtcVariantListener) : RecyclerView.ViewHolder(view), AtcVariantListener by listener {
 
     private val variantOptionAdapter = VariantOptionAdapter(this)
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)

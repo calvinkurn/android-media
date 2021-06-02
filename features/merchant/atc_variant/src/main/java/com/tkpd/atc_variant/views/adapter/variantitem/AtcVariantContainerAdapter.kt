@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.atc_variant.R
-import com.tkpd.atc_variant.views.AtcVariantListener
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tkpd.atc_variant.views.viewholder.item.ItemContainerViewHolder
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 

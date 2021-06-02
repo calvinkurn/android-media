@@ -110,15 +110,7 @@
     <string name="variant_failed_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_refresh">Refresh</string>
     <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
-
-    //Check Imei
-    <string name="ask_phone_state_rationale">Izinkan Tokopedia mengakses panggilan telepon untuk pastikan kamu adalah pengguna baru.</string>
-    <string name="ask_phone_state_title">Aktifkan akses telepon, yuk!</string>
-    <string name="check_imei_description">Untuk membeli produk ini, Tokopedia memerlukan akses perangkat untuk memastikan kamu adalah pengguna baru.</string>
-    <string name="check_imei_title">Butuh Akses ke HP-mu</string>
-    <string name="check_imei_btn_rationale">Ke Pengaturan HP</string>
-    <string name="check_imei_btn_later">Nanti Saja</string>
-    <string name="check_imei_understand_title">Berikan Akses</string>
+    <string name="variant_choose_label">Pilih varian:</string>
 
     //NotifyMe (UpComing Teaser) section
     <string name="notify_me_active">Pengingat Aktif</string>
