@@ -102,8 +102,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val updatedVisitableIndicesMutableLiveData = MutableLiveData<Event<List<Int>>>(null)
     val updatedVisitableIndicesLiveData: LiveData<Event<List<Int>>> = updatedVisitableIndicesMutableLiveData
 
-    protected val isRefreshStickyChipMutableLiveData = MutableLiveData(false)
-    val isRefreshStickyChipLiveData: LiveData<Boolean> = isRefreshStickyChipMutableLiveData
+    protected val isRefreshPageMutableLiveData = MutableLiveData(false)
+    val isRefreshPageLiveData: LiveData<Boolean> = isRefreshPageMutableLiveData
 
     protected var totalData = 0
     protected var totalFetchedData = 0
@@ -171,7 +171,7 @@ abstract class BaseSearchCategoryViewModel(
                 headerDataView.categoryFilterDataValue.filter
 
         filterController.initFilterController(queryParamMutable, filterList)
-        isRefreshStickyChipMutableLiveData.value = true
+        isRefreshPageMutableLiveData.value = true
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         clearVisitableListLiveData()

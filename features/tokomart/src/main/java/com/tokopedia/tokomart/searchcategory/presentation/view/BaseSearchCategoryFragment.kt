@@ -236,7 +236,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isL3FilterPageOpenLiveData.observe(this::configureL3BottomSheet)
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
-        getViewModel().isRefreshStickyChipLiveData.observe(this::refreshStickyChip)
+        getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
         getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
     }
 
@@ -263,7 +263,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onLoadMore()
     }
 
-    protected open fun refreshStickyChip(isRefresh: Boolean) {
+    protected open fun scrollToTop(isRefresh: Boolean) {
         stickyView?.scrollToTop()
     }
 
