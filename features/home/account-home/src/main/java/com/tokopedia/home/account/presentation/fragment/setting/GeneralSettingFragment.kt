@@ -142,12 +142,24 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                             .baseAppComponent).settingsModule(SettingsModule(activity)).build()
             component.inject(this)
             settingsPresenter.attachView(this)
-            settingsPresenter.verifyUserAge()
-
+            if (savedInstanceState == null) {
+                settingsPresenter.verifyUserAge()
+            } else {
+                setupSafeSearchLocally()
+            }
         }
         presenter.attachView(this)
 
         return inflater.inflate(R.layout.fragment_general_setting, container, false)
+    }
+
+    private fun setupSafeSearchLocally() {
+        val isAdultAge = isItemSelected(
+                SettingsPresenter.PREFERENCE_ADULT_AGE_VERIFIED_KEY, false)
+        settingsPresenter.adultAgeVerified = isAdultAge
+        if(isAdultAge) {
+            refreshSafeSearchOption()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -203,7 +215,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
         val isShowDarkMode = remoteConfig.getBoolean(
                 RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-        if(isShowDarkMode) {
+        if(true) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false))
         }
