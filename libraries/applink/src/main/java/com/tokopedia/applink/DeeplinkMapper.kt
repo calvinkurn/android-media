@@ -200,6 +200,11 @@ object DeeplinkMapper {
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
         }
+
+        if(deeplink.startsWithPattern(DeeplinkMapperAccount.getLoginByQrNavigationFromHttp())){
+            return DeeplinkMapperAccount.getLoginByQr(uri)
+        }
+
         return ""
     }
 
@@ -335,7 +340,7 @@ object DeeplinkMapper {
                         UriUtil.buildUri(ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO_WITH_ID,
                                 uri.pathSegments.first())
                     }),
-            DLP.exact(ApplinkConst.POWER_MERCHANT_SUBSCRIBE, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE),
+            DLP.startWith(ApplinkConst.POWER_MERCHANT_SUBSCRIBE) { ctx, _, _, _ -> PowerMerchantDeepLinkMapper.getPowerMerchantAppLink(ctx) },
             DLP.exact(ApplinkConst.SELLER_SHIPPING_EDITOR, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING),
             DLP.exact(ApplinkConst.SELLER_COD_ACTIVATION, ApplinkConstInternalMarketplace.SHOP_SETTINGS_COD),
             DLP.exact(ApplinkConst.SELLER_WAREHOUSE_DATA, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
@@ -349,6 +354,8 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.KYC_FORM_NO_PARAM, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE),
             DLP.exact(ApplinkConst.SETTING_BANK, ApplinkConstInternalGlobal.SETTING_BANK),
             DLP.exact(ApplinkConst.OTP, ApplinkConstInternalGlobal.COTP),
+            DLP.startWith(ApplinkConst.QR_LOGIN, ApplinkConstInternalGlobal.QR_LOGIN),
+            DLP.exact(ApplinkConst.LOGIN, ApplinkConstInternalUserPlatform.LOGIN),
             DLP.exact(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER, ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_RECEIVER),
             DLP.exact(ApplinkConst.ADD_PIN_ONBOARD, ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING),
             DLP.exact(ApplinkConst.ADD_FINGERPRINT_ONBOARDING, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING),
@@ -381,7 +388,6 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalGlobal.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM),
-            DLP.host(ApplinkConst.HOST_LOGIN, targetDeeplink = { _, _, _, _ -> ApplinkConstInternalUserPlatform.LOGIN }),
             DLP.startWith(ApplinkConst.CHANGE_INACTIVE_PHONE, ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE),
             DLP.startWith(ApplinkConst.OVO_REGISTER_INIT, ApplinkConstInternalGlobal.OVO_REG_INIT),
             DLP.startWith(ApplinkConst.REGISTER_INIT, ApplinkConstInternalGlobal.INIT_REGISTER),

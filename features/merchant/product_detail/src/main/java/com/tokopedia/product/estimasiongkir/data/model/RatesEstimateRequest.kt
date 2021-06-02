@@ -20,7 +20,8 @@ data class RatesEstimateRequest(
         val poTime: Long = 0L,
         val uspImageUrl: String = "",
         val userId: String = "",
-        val forceRefresh: Boolean = false
+        val forceRefresh: Boolean = false,
+        val shopTier: Int = 0
 ) {
     companion object {
         const val KG_TEXT = "kilo"

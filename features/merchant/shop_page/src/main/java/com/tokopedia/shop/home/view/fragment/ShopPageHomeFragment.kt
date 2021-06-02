@@ -466,13 +466,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
-                    viewModel?.getMerchantVoucherCoupon(shopId)
+                    viewModel?.getMerchantVoucherCoupon(shopId, context)
 
                 }
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = ShopHomeViewModel::shopHomeLayoutData.name,
@@ -514,7 +514,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = ShopHomeViewModel::productListData.name,
@@ -1072,7 +1072,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onVoucherReloaded() {
-        viewModel?.getMerchantVoucherCoupon(shopId)
+        viewModel?.getMerchantVoucherCoupon(shopId, context)
     }
 
     override fun onVoucherImpression() {
@@ -1198,7 +1198,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             },
                             {
                                 if (!ShopUtil.isExceptionIgnored(it)) {
-                                    ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                    ShopUtil.logShopPageP2BuyerFlowAlerting(
                                             tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                             functionName = ShopHomeViewModel::addProductToCartOcc.name,
                                             liveDataName = "",
@@ -1228,7 +1228,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             },
                             {
                                 if (!ShopUtil.isExceptionIgnored(it)) {
-                                    ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                    ShopUtil.logShopPageP2BuyerFlowAlerting(
                                             tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                             functionName = ShopHomeViewModel::addProductToCart.name,
                                             liveDataName = "",
@@ -1444,7 +1444,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         },
                         {
                             if (!ShopUtil.isExceptionIgnored(it)) {
-                                ShopUtil.logShopPageP1BuyerFlowAlerting(
+                                ShopUtil.logShopPageP2BuyerFlowAlerting(
                                         tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                         functionName = ShopHomeViewModel::addProductToCart.name,
                                         liveDataName = "",
