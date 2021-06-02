@@ -7,16 +7,14 @@ import com.tokopedia.tokopoints.view.tokopointhome.RecommendationWrapper
 import java.util.*
 
 class DataMapper {
+    val RECOM_PRODUCT_SIZE = 10
+    val recommendationList = ArrayList<RecommendationWrapper>()
 
     suspend fun recommWidgetToListOfVisitables(recommendationWidget: RecommendationWidget): List<RecommendationWrapper> {
-        val recommendationList = ArrayList<RecommendationWrapper>()
-        for (i in 0..9) {
-            recommendationList.add(
-                RecommendationWrapper(
-                    recommendationWidget.recommendationItemList[i],
-                    getProductModel(recommendationWidget.recommendationItemList[i])
-                )
-            )
+        if (recommendationList.size >= RECOM_PRODUCT_SIZE) {
+            composeRecommendationList(RECOM_PRODUCT_SIZE, recommendationWidget)
+        } else {
+            composeRecommendationList(recommendationList.size, recommendationWidget)
         }
         return recommendationList
     }
@@ -43,5 +41,16 @@ class DataMapper {
                 imageUrl = element.freeOngkirImageUrl
             )
         )
+    }
+
+    fun composeRecommendationList(size: Int , recommendationWidget:RecommendationWidget){
+        for (i in 0 until size) {
+            recommendationList.add(
+                RecommendationWrapper(
+                    recommendationWidget.recommendationItemList[i],
+                    getProductModel(recommendationWidget.recommendationItemList[i])
+                )
+            )
+        }
     }
 }

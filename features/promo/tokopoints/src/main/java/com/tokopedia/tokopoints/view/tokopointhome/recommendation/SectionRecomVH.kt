@@ -35,8 +35,7 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
         (view.findViewById<View>(R.id.text_title_recomm) as TextView).text = data.title
 
         (view.findViewById<View>(R.id.text_sub_title_recomm) as TextView).text =
-            "Nggak perlu mikir 2x, cus beli produknya!"
-
+            view.context.resources.getString(R.string.tp_recom_subtitle)
         val rvCarousel: RecyclerView = view.findViewById(R.id.rv_recomm)
         rvCarousel?.isDrawingCacheEnabled = true
         rvCarousel.setHasFixedSize(true)
