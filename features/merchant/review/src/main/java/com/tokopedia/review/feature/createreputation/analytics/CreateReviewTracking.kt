@@ -299,6 +299,17 @@ object CreateReviewTracking {
         ))
     }
 
+    fun eventViewReviewTemplate(templateCount: Int, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_VIEW_TEMPLATE,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_TEMPLATE, templateCount),
+                productId,
+                userId
+        ))
+    }
+
     fun eventClickSubmitForm(rating: Int, textLength: Int, numberOfPicture: Int, isAnonymous: Boolean, isEligible: Boolean, isTemplateAvailable: Boolean, templateSelectedCount: Int, orderId: String, productId: String, userId: String) {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,

@@ -85,9 +85,9 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
             _submitReviewResult.postValue(LoadingView())
             if (imageData.isEmpty()) {
-                sendReviewWithoutImage(it.reputationID, it.productData.productID, it.shopData.shopID, rating, reputationScore, reviewText, isAnonymous, utmSource)
+                sendReviewWithoutImage(it.reputationID, it.productData.productID, it.shopData.shopID, reputationScore, rating, reviewText, isAnonymous, utmSource)
             } else {
-                sendReviewWithImage(it.reputationID, it.productData.productID, it.shopData.shopID, rating, reputationScore, reviewText, isAnonymous, getSelectedImagesUrl(), utmSource)
+                sendReviewWithImage(it.reputationID, it.productData.productID, it.shopData.shopID, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl(), utmSource)
             }
         }
     }

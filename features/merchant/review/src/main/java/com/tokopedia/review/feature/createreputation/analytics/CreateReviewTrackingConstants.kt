@@ -35,4 +35,6 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_DISMISS_FORM = "click - dismiss create review form"
     const val EVENT_LABEL_VIEW_INCENTIVES_TICKER = "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_ACTION_CLICK_INCENTIVES_TICKER = "click - pelajari on ovo incentives ticker"
+    const val EVENT_ACTION_VIEW_TEMPLATE = "view - review template"
+    const val EVENT_LABEL_VIEW_TEMPLATE = "template_impressed:%d"
 }

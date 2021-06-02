@@ -447,6 +447,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
             layoutManager = StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL)
+            viewTreeObserver.addOnGlobalLayoutListener {
+                if(templates.isNotEmpty()) {
+                    CreateReviewTracking.eventViewReviewTemplate(templates.size, productId.toString(), getUserId())
+                }
+            }
         }
         templatesAdapter.setData(templates)
     }
