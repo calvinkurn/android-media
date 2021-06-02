@@ -11,7 +11,9 @@
         android:visibility="gone"
         tools:visibility="visible"
         tools:background="@color/Unify_Static_Black"/>
-    <include layout="@layout/item_play_widget"/>
+    <include
+        android:id="@+id/playWidgetView"
+        layout="@layout/item_play_widget"/>
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/home_component_divider_footer"
         android:layout_width="match_parent"

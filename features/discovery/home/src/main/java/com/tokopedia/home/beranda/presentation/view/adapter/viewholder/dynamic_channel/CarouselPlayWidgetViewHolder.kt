@@ -9,7 +9,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import kotlinx.android.synthetic.main.home_dc_play_banner_carousel.view.*
 import kotlinx.android.synthetic.main.home_dc_play_banner_carousel.view.home_component_divider_footer
 import kotlinx.android.synthetic.main.home_dc_play_banner_carousel.view.home_component_divider_header
 /**
