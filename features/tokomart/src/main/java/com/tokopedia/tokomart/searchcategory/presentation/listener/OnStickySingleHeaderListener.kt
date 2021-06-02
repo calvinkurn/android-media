@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.common.listener
+package com.tokopedia.tokomart.searchcategory.presentation.listener
 
 interface OnStickySingleHeaderListener {
     fun refreshSticky()

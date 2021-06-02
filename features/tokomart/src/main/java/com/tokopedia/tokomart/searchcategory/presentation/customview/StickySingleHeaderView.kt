@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.common.view
+package com.tokopedia.tokomart.searchcategory.presentation.customview
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,12 +6,11 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.common.listener.OnStickySingleHeaderListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.OnStickySingleHeaderListener
 import kotlin.math.roundToInt
 
 /**
@@ -41,7 +40,6 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder
         fun bindSticky(viewHolder: RecyclerView.ViewHolder?)
         fun setListener(onStickySingleHeaderViewListener: OnStickySingleHeaderListener?)
-        fun updateEtalaseListViewHolderData()
     }
 
     private fun initView() {
@@ -112,16 +110,13 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
                 var _stickyPosition = stickyPosition
                 if (_stickyPosition != null) {
                     _stickyPosition += 1
-                    if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) { // make the etalase label always visible
+                    if (firstCompletelyVisiblePosition >= _stickyPosition && currentScroll >= recyclerViewPaddingTop) {
                         if (!isStickyShowed || refreshSticky) {
                             showSticky()
                             mHeaderContainer?.visibility = View.VISIBLE
                             refreshSticky = false
                         }
-                        if (firstVisiblePosition == _stickyPosition) {
-                            adapter?.updateEtalaseListViewHolderData()
-                        }
-                    } else { // make the etalase label always gone
+                    } else {
                         if (isStickyShowed || refreshSticky) {
                             clearHeaderView()
                             mHeaderContainer?.visibility = View.GONE
