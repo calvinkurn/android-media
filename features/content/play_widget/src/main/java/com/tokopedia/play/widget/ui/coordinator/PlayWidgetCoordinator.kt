@@ -12,7 +12,6 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigProvider
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import kotlinx.android.synthetic.main.item_play_widget.view.*
 import kotlinx.coroutines.*
 
 /**
@@ -101,7 +100,7 @@ class PlayWidgetCoordinator(
     }
 
     fun controlWidget(widgetViewHolder: PlayWidgetViewHolder) {
-        controlWidget(widgetViewHolder.itemView.play_widget_view as PlayWidgetView)
+        controlWidget(widgetViewHolder.itemView as PlayWidgetView)
         widgetViewHolder.setListener(widgetHolderListener)
     }
 

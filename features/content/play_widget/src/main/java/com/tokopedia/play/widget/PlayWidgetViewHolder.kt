@@ -6,8 +6,6 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.analytic.ImpressionableModel
-import com.tokopedia.unifycomponents.DividerUnify
-import kotlinx.android.synthetic.main.item_play_widget.view.*
 
 /**
  * Created by mzennis on 05/10/20.
@@ -17,7 +15,7 @@ class PlayWidgetViewHolder(
         val coordinator: PlayWidgetCoordinator
 ) : RecyclerView.ViewHolder(itemView) {
 
-    private val playWidgetView = itemView.play_widget_view
+    private val playWidgetView = itemView as PlayWidgetView
 
     private var mListener: Listener? = null
 
@@ -45,14 +43,6 @@ class PlayWidgetViewHolder(
 
     fun setListener(listener: Listener) {
         mListener = listener
-    }
-
-    fun getPlayDividerHeader(): DividerUnify? {
-        return itemView.play_component_divider_header
-    }
-
-    fun getPlayDividerFooter(): DividerUnify? {
-        return itemView.play_component_divider_footer
     }
 
     companion object {
