@@ -6,6 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -149,7 +151,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private val isNewLazyLoad by lazy {
-        remoteConfig.isSellerHomeDashboardNewLazyLoad()
+        Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
     }
 
     private var notifCenterCount = 0
@@ -248,10 +250,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        pmShopScoreInterruptHelper.onActivityResult(requestCode) {
-            scrollToRecommendationWidget()
-            isEligibleShowRecommendationCoachMark = true
-        }
+        handleInterruptPageOnActivityResult(requestCode)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -471,9 +470,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
-            recyclerView?.layoutAnimation = null
-        }
+        setRecyclerViewLayoutAnimation()
 
         setViewBackground()
     }
@@ -777,7 +774,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         updateScrollListenerState(false)
 
         var isWidgetHasError = false
-        val newWidgetFromCache = widgets.first().isFromCache
+        val newWidgetFromCache = widgets.firstOrNull()?.isFromCache ?: false
         if (isNewLazyLoad) {
             startHomeLayoutRenderMonitoring()
             stopPltMonitoringIfNotCompleted(fromCache = newWidgetFromCache)
@@ -1247,6 +1244,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    private fun setRecyclerViewLayoutAnimation() {
+        if (isNewLazyLoad) {
+            context?.let {
+                val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(it, R.anim.seller_home_rv_layout_animation)
+                recyclerView?.layoutAnimation = animation
+            }
+        }
+    }
+
     private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
@@ -1338,6 +1344,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 )
             }
             return@lazy coachMarkItems
+        }
+    }
+
+    private fun handleInterruptPageOnActivityResult(requestCode: Int) {
+        view?.let {
+            if (::pmShopScoreInterruptHelper.isInitialized) {
+                pmShopScoreInterruptHelper.onActivityResult(requestCode) {
+                    scrollToRecommendationWidget()
+                    isEligibleShowRecommendationCoachMark = true
+                }
+            }
         }
     }
 

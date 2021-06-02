@@ -11,4 +11,9 @@ object PMShopGrade {
     const val SILVER = "Silver"
     const val GOLD = "Gold"
     const val DIAMOND = "Diamond"
+
+    //pm pro
+    const val ADVANCED = "advanced"
+    const val EXPERT = "expert"
+    const val ULTIMATE = "ultimate"
 }

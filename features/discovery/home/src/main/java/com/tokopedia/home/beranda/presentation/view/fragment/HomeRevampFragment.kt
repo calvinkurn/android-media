@@ -19,7 +19,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
-import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -139,12 +138,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_EXP
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_OLD
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_CATEGORYWIDGET_VARIANT
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_EXP
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_OLD
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_COMPONENT_LEGO4BANNER_VARIANT
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
@@ -216,6 +209,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
+        private const val REQUEST_CODE_LOGIN = 131
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -223,8 +217,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val EXTRA_URL = "url"
         private const val EXTRA_TITLE = "core_web_view_extra_title"
         private const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
         private const val DEFAULT_UTM_SOURCE = "home_notif"
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
@@ -339,6 +331,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var serverOffsetTime: Long = 0L
     private var bottomSheetIsShowing = false
     private var coachMarkIsShowing = false
+    private var pmProCoachmarkIsShowing = false
     private var useNewInbox = false
     private var coachmark: CoachMark2? = null
     private var bannerCarouselCallback: BannerComponentCallback? = null
@@ -365,7 +358,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return ChooseAddressUtils.isRollOutUser(requireContext())
+        return if (context == null) {
+            true
+        } else {
+            ChooseAddressUtils.isRollOutUser(context)
+        }
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
@@ -723,8 +720,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachMarkIsShowing = true
             val coachMarkItem = ArrayList<CoachMark2Item>()
             coachmark = CoachMark2(it)
-
-            coachMarkItem.buildHomeCoachmark()
             coachmark?.let {
                 it.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
@@ -744,7 +739,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
         }
     }
-
 
     private fun CoachMark2Item.setCoachmarkShownPref() {
         when {
@@ -998,6 +992,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         if (isAddressChanged) {
+            chooseAddressWidgetInitialized = false
             val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
             val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
@@ -1529,12 +1524,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onGoToLogin() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_ACCOUNT)
-        val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
-        intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        activity?.let {
-            it.startActivities(arrayOf(intentHome, intent))
-            it.finish()
-        }
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
     private fun onGoToCreateShop() {
@@ -1691,6 +1681,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 handleWishlistAction(productCardOptionsModel)
                             }
                         })
+            }
+            REQUEST_CODE_LOGIN -> {
+                activity?.let {
+                    val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+                    val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    if (resultCode == Activity.RESULT_OK &&
+                            getUserSession().isLoggedIn &&
+                            data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER, false) == false
+                    ) {
+                        it.startActivities(arrayOf(intentHome, intentNewUser))
+                    } else {
+                        it.startActivity(intentHome)
+                    }
+                    it.finish()
+                }
             }
         }
     }
@@ -2401,6 +2407,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
+            feedViewHolder.hidePmProCoachmark()
         }
     }
 

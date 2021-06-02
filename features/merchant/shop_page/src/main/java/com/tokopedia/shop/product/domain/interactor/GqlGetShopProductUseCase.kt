@@ -1,10 +1,10 @@
 package com.tokopedia.shop.product.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.usecase.coroutines.UseCase

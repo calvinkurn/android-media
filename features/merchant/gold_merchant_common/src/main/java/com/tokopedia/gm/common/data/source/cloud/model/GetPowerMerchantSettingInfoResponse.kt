@@ -13,8 +13,6 @@ data class GetPowerMerchantSettingInfoResponse(
 )
 
 data class PMSettingInfoModel(
-        @SerializedName("shop_id")
-        val shopId: Long? = 0,
         @SerializedName("period_type")
         val periodeType: String? = PeriodType.COMMUNICATION_PERIOD,
         @SerializedName("period_end_date_time")

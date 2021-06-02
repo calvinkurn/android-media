@@ -19,7 +19,7 @@ class ProductEmptyViewHolder(val view: View): ProductViewHolder<ProductEmptyView
 
     override fun bind(item: ProductEmptyViewModel) {
         item.let {
-            view.imageView8.setImageDrawable(view.context.getResDrawable(R.drawable.ill_no_product))
+            view.imageView8.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
         }
     }
 
