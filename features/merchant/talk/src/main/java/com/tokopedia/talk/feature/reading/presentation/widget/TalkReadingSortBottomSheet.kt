@@ -3,7 +3,6 @@ package com.tokopedia.talk.feature.reading.presentation.widget
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.R
