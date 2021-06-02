@@ -12,7 +12,8 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 
 class HomeTickerViewHolder(
-        itemView: View
+        itemView: View,
+        private val listener: HomeTickerListener? = null
 ) : AbstractViewHolder<HomeTickerUiModel>(itemView), TickerPagerCallback {
 
     companion object {
@@ -25,6 +26,9 @@ class HomeTickerViewHolder(
         val ticker: Ticker = itemView.findViewById(R.id.ticker_announcement)
         val adapter = TickerPagerAdapter(itemView.context, data.tickers)
         adapter.setPagerDescriptionClickEvent(this)
+        adapter.onDismissListener = {
+            listener?.onTickerDismiss()
+        }
         ticker.post {
             ticker.addPagerView(adapter, data.tickers)
         }
@@ -38,5 +42,9 @@ class HomeTickerViewHolder(
         } else {
             RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${url}")
         }
+    }
+
+    interface HomeTickerListener {
+        fun onTickerDismiss()
     }
 }

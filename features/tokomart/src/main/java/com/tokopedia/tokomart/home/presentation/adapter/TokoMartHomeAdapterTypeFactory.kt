@@ -35,7 +35,8 @@ import com.tokopedia.tokomart.home.presentation.view.listener.TokoMartDynamicLeg
 import com.tokopedia.tokomart.home.presentation.viewholder.*
 
 class TokoMartHomeAdapterTypeFactory(
-        private val listener: TokoMartHomeView? = null
+        private val tokoMartHomeListener: TokoMartHomeView? = null,
+        private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null
 ): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
     // region Toko Mart Home Component
@@ -65,8 +66,8 @@ class TokoMartHomeAdapterTypeFactory(
             // region Toko Mart Home Component
             HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
-            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, listener)
-            HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view)
+            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoMartHomeListener)
+            HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
             // endregion
 
             // region Global Home Component
