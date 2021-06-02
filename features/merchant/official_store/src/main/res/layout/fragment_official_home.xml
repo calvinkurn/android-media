@@ -6,6 +6,7 @@
     android:id="@+id/official_home_motion"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:background="@color/Unify_N0"
     app:currentState="@+id/start"
     app:layoutDescription="@xml/fragment_official_home_scene">
     <View

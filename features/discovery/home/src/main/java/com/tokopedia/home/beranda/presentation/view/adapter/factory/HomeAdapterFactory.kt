@@ -267,6 +267,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomeAtfErrorViewHolder.LAYOUT
     }
 
+    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
+        return 0
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder

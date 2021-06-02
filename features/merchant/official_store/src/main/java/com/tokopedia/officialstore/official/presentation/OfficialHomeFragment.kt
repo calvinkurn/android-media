@@ -54,10 +54,7 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.*
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -171,6 +168,7 @@ class OfficialHomeFragment :
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
                 OSMixTopComponentCallback(this),
+                OSFeaturedBrandCallback(this, tracking),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter

@@ -29,6 +29,7 @@ data class Grid(
         @Expose @SerializedName("cashback") val cashback: String,
         @Expose @SerializedName("discountPercentage") val discountPercentage: String,
         @Expose @SerializedName("labelGroup") val labelGroup: List<LabelGroup> = arrayListOf(),
+
         // Impression purposed
         var isImpressed: Boolean = false
 ) : Parcelable

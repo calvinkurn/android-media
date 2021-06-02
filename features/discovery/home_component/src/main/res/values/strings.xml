@@ -20,4 +20,7 @@
     <string name="content_desc_shop_badge_image">Shop badge</string>
     <string name="content_desc_shop_rating">Shop rating star</string>
     <string name="content_desc_shop_location_icon">Shop location icon</string>
+
+    <string name="content_desc_featured_brand_icon">featured brand icon</string>
+    <string name="content_desc_featured_brand_image">featured brand image</string>
 </resources>
