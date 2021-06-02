@@ -18,6 +18,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions.screenSho
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import org.hamcrest.core.IsNot
 import org.junit.After
@@ -34,6 +35,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         setupDarkModeTest(forceDarkMode())
         setupGraphqlMockResponse(getMockConfig())
 
