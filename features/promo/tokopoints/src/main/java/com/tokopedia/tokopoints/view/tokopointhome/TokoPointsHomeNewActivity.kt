@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -24,7 +25,7 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
     private var mUserSession: UserSessionInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        mUserSession = UserSession(this)
+        mUserSession = UserSession(applicationContext)
         super.onCreate(savedInstanceState)
         toolbar.visibility = View.GONE
         updateTitle(getString(R.string.tp_title_tokopoints))
@@ -65,9 +66,10 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             inflateFragment()
         }
+        else finish()
     }
 
     companion object {
