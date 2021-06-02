@@ -48,7 +48,8 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
             .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
-    if (isFromNetwork && shouldSendResult) sendTestResult(queryId, validationResult)
+    if (isFromNetwork && shouldSendResult)
+        sendTestResult(queryId, validationResult)
     return validationResult
 }
 
