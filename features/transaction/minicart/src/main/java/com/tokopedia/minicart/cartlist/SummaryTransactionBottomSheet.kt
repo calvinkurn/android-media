@@ -18,7 +18,7 @@ class SummaryTransactionBottomSheet @Inject constructor() {
     private var textTotalPayTitle: Typography? = null
     private var textTotalPayValue: Typography? = null
 
-    fun showSummaryTransactionBottomsheet(data: MiniCartSummaryTransactionUiModel, fragmentManager: FragmentManager, context: Context) {
+    fun show(data: MiniCartSummaryTransactionUiModel, fragmentManager: FragmentManager, context: Context) {
 
         val bottomSheet = BottomSheetUnify()
         bottomSheet.showKnob = true
@@ -39,7 +39,7 @@ class SummaryTransactionBottomSheet @Inject constructor() {
         renderPaymentTotal(data)
 
         bottomSheet.setChild(view)
-        bottomSheet.show(fragmentManager, "Cart Summary Transaction")
+        bottomSheet.show(fragmentManager, "Mini Cart Summary Transaction")
     }
 
     private fun renderPaymentTotal(data: MiniCartSummaryTransactionUiModel) {

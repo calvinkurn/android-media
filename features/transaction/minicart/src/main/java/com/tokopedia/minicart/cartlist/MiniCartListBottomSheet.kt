@@ -31,7 +31,8 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration,
-                                                  var summaryTransactionBottomSheet: SummaryTransactionBottomSheet)
+                                                  var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
+                                                  var globalErrorBottomSheet: GlobalErrorBottomSheet)
     : MiniCartWidgetListener, MiniCartListActionListener {
 
     lateinit var viewModel: MiniCartWidgetViewModel
@@ -165,7 +166,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         totalAmount = view.findViewById(R.id.total_amount)
         totalAmount?.amountChevronView?.setOnClickListener {
            viewModel.miniCartListListUiModel.value?.miniCartSummaryTransactionUiModel?.let {
-               summaryTransactionBottomSheet.showSummaryTransactionBottomsheet(it, fragmentManager, context)
+               summaryTransactionBottomSheet.show(it, fragmentManager, context)
            }
         }
         totalAmount?.enableAmountChevron(true)
