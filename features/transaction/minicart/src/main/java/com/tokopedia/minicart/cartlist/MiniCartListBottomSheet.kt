@@ -34,7 +34,7 @@ import javax.inject.Inject
 class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration,
                                                   var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
                                                   var globalErrorBottomSheet: GlobalErrorBottomSheet)
-    : MiniCartWidgetListener, MiniCartListActionListener {
+    : MiniCartListActionListener {
 
     lateinit var viewModel: MiniCartWidgetViewModel
     private var bottomsheetContainer: CoordinatorLayout? = null
@@ -59,6 +59,27 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     fun initializeViewModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
+        observeGlobalEvent(viewModel, lifecycleOwner)
+        observeMiniCartListUiModel(viewModel, lifecycleOwner)
+    }
+
+    private fun observeGlobalEvent(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
+        viewModel.globalEvent.observe(lifecycleOwner, {
+            when (it.state) {
+                GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
+                    hideProgressLoading()
+                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
+                            ?: ""
+                    viewModel.getCartList()
+                    showToaster(message, "Batalkan") {
+                        viewModel.undoDeleteCartItems()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun observeMiniCartListUiModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.miniCartListListUiModel.observe(lifecycleOwner, {
             hideLoading()
             hideProgressLoading()
@@ -72,30 +93,6 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             }
             updateTotalAmount(it.miniCartWidgetUiModel)
             adjustRecyclerViewPaddingBottom()
-        })
-        viewModel.globalEvent.observe(lifecycleOwner, {
-            when (it.state) {
-                GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
-                    hideProgressLoading()
-                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
-                            ?: ""
-                    viewModel.getCartList()
-                    showToaster(message, "Batalkan") {
-                        viewModel.undoDeleteCartItems()
-                    }
-                }
-/*
-                GlobalEvent.STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM -> {
-                    hideProgressLoading()
-                    updateTotalAmount(MiniCartWidgetData())
-                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
-                            ?: ""
-                    showToaster(message, "Batalkan") {
-                        viewModel.getCartList()
-                    }
-                }
-*/
-            }
         })
     }
 
@@ -147,7 +144,6 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         rvMiniCartList?.adapter = adapter
         rvMiniCartList?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvMiniCartList?.addItemDecoration(miniCartListDecoration)
-//        rvMiniCartList?.itemAnimator = null
     }
 
     private fun adjustRecyclerViewPaddingBottom() {
@@ -165,18 +161,20 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun initializeTotalAmount(view: View, fragmentManager: FragmentManager, context: Context) {
         totalAmount = view.findViewById(R.id.total_amount)
-        totalAmount?.amountChevronView?.setOnClickListener {
-           viewModel.miniCartListListUiModel.value?.miniCartSummaryTransactionUiModel?.let {
-               summaryTransactionBottomSheet.show(it, fragmentManager, context)
-           }
-        }
-        totalAmount?.enableAmountChevron(true)
-        totalAmount?.context?.let {
-            val chatIcon = getIconUnifyDrawable(it, IconUnify.CHAT, ContextCompat.getColor(it, R.color.Unify_G500))
-            totalAmount?.setAdditionalButton(chatIcon)
-        }
-        if (totalAmount?.isTotalAmountLoading == false) {
-            totalAmount?.isTotalAmountLoading = true
+        totalAmount?.let {
+            it.amountChevronView.setOnClickListener {
+                viewModel.miniCartListListUiModel.value?.miniCartSummaryTransactionUiModel?.let {
+                    summaryTransactionBottomSheet.show(it, fragmentManager, context)
+                }
+            }
+            it.enableAmountChevron(true)
+            it.context?.let { context ->
+                val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
+                it.setAdditionalButton(chatIcon)
+            }
+            if (it.isTotalAmountLoading == false) {
+                it.isTotalAmountLoading = true
+            }
         }
     }
 
@@ -236,18 +234,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    fun hideProgressLoading() {
+    private fun hideProgressLoading() {
         if (progressDialog?.isShowing == true) {
             progressDialog?.dismiss()
         }
-    }
-
-    private fun calculateProduct() {
-        viewModel.calculateProduct()
-    }
-
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        // no-op
     }
 
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
