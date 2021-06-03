@@ -524,9 +524,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 if (context != null) {
                     if (shopInfo != null && shopInfo.getInfo() != null) {
-                        String shopId = shopInfo.getInfo().getShopId();
+                        String shopId = "";
+                        if(shopInfo.getInfo().getShopId() != null){
+                            shopId = shopInfo.getInfo().getShopId();
+                        }
                         String lastSegment = linkSegment.get(linkSegment.size() - 1);
-                        if (isEtalase(linkSegment)) {
+                        if (shopId.equals(ApplinkConst.TokoNow.TOKONOW_PRODUCTION_SHOP_ID)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.TokoNow.HOME);
+                        } else if (isEtalase(linkSegment)) {
                             RouteManager.route(context,
                                     bundle,
                                     ApplinkConst.SHOP_ETALASE,
