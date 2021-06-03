@@ -8,7 +8,7 @@ import android.media.ExifInterface;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.ImageRatioType;
-import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilderKt;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
@@ -122,7 +122,7 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                         .textColor(Color.WHITE);
 
 
-                                return Observable.just(WatermarkBuilderKt
+                                return Observable.just(WatermarkBuilder
                                         .create(getView().getContext(), bitmap)
                                         .loadWatermarkText(watermarkText)
                                         .setTileMode(true)

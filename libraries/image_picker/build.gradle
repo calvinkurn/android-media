@@ -2,27 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-android {
-    defaultConfig {
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-            }
-        }
-
-        ndk {
-            // Add libs for ndk, here is log.
-            ldLibs("log")
-        }
-    }
-
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-        }
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()

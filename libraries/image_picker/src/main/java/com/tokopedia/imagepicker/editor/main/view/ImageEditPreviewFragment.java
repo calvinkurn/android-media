@@ -4,13 +4,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +19,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
-import com.tokopedia.imagepicker.editor.watermark.Watermark;
-import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
-import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilderKt;
-import com.tokopedia.imagepicker.editor.watermark.WatermarkKt;
-import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
@@ -35,18 +28,12 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import kotlin.Pair;
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
@@ -376,13 +363,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     private void setImageData() {
-        WatermarkText watermarkText = new WatermarkText()
-                .setContentText("Tokopedia")
-                .positionX(0.5)
-                .positionY(0.5)
-                .textAlpha(255)
-                .textColor(Color.WHITE);
-
         showLoadingAndHidePreview();
         processOptions();
 
@@ -392,21 +372,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         try {
             gestureCropImageView.setImageUri(inputUri, outputUri);
         } catch (Exception ignored) { }
-
-//        new Handler().postDelayed(() -> {
-//            Subscription preRenderBitmap = Observable.just(inputUri)
-//                    .flatMap((Func1<Uri, Observable<Uri>>) uri -> Observable.just(outputUri))
-//                    .flatMap((Func1<Uri, Observable<WatermarkKt>>) uri -> Observable.just(WatermarkBuilderKt
-//                            .create(requireContext(), gestureCropImageView)
-//                            .loadWatermarkText(watermarkText)
-//                            .setTileMode(true)
-//                            .getWatermark()))
-//                    .subscribeOn(Schedulers.newThread())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(result -> result.setToImageView(gestureCropImageView));
-//
-//            compositeSubscription.add(preRenderBitmap);
-//        }, 2000);
     }
 
     private void processOptions() {

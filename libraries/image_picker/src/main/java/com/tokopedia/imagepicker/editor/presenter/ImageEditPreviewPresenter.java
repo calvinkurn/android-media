@@ -7,7 +7,6 @@ import android.graphics.ColorMatrixColorFilter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;

@@ -7,7 +7,7 @@ import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkImage
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapUtils
 
-data class WatermarkKt(
+data class Watermark(
     var context: Context,
     var backgroundImg: Bitmap? = null,
     var watermarkImg: WatermarkImage? = null,
