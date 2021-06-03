@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
@@ -33,6 +34,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS
@@ -75,6 +77,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.dialog.TitleValidationBottomSheet
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
@@ -107,6 +110,7 @@ import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -157,9 +161,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productPictureList: List<PictureInputModel>? = null
 
     // product name
-    private var productNameField: TextFieldUnify? = null
+    private var productNameField: TextFieldUnify2? = null
     private var productNameRecView: RecyclerView? = null
-    private var productNameRecLoader: LoaderUnify? = null
     private var productNameRecShimmering: View? = null
     private var productNameRecAdapter: NameRecommendationAdapter? = null
 
@@ -303,11 +306,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productNameField = view.findViewById(R.id.tfu_product_name)
         productNameRecView = view.findViewById(R.id.rv_product_name_rec)
         productNameRecShimmering = view.findViewById(R.id.product_name_rec_shimmering)
-        productNameRecLoader = view.findViewById(R.id.lu_product_name)
         productNameRecAdapter = NameRecommendationAdapter(this)
         productNameRecView?.let {
             it.adapter = productNameRecAdapter
             it.layoutManager = LinearLayoutManager(context)
+        }
+        productNameField?.editText?.apply {
+            setHorizontallyScrolling(false)
+            isSingleLine = false
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
 
         // add edit product category views
@@ -491,7 +499,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         addProductPhotoButton?.setOnClickListener(createAddProductPhotoButtonOnClickListener())
 
-        productNameField?.textFieldInput?.setOnFocusChangeListener { _, hasFocus ->
+        productNameField?.editText?.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) productNameRecView?.hide()
         }
 
@@ -506,7 +514,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         // product name text change listener
-        productNameField?.textFieldInput?.afterTextChanged { editable ->
+        productNameField?.editText?.afterTextChanged { editable ->
             // make sure when user is typing the field, the behaviour to get categories is not blocked by this variable
             if (needToSetCategoryName && editable.isNotBlank()) {
                 needToSetCategoryName = false
@@ -701,7 +709,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
 
-        TitleValidationBottomSheet("toyota honda samsung kia", listOf("kia"), listOf("honda")).show(childFragmentManager)
+        val titleValidationModel = TitleValidationModel("toyota honda samsung kia", listOf("kia"), listOf("honda"))
+        TitleValidationBottomSheet(titleValidationModel).show(childFragmentManager)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -998,20 +1007,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onNameItemClicked(productName: String) {
-
-        productNameRecView?.hide()
-
-        viewModel.isNameRecommendationSelected = true
-
         var newProductName = productName
-        val maxLengthKeyword = 70
+        val maxLengthKeyword = resources.getInteger(R.integer.max_product_name_length)
 
         if (productName.trim().length > maxLengthKeyword) {
             newProductName = productName.take(maxLengthKeyword)
         }
 
-        productNameField?.textFieldInput?.setText(newProductName)
-        productNameField?.textFieldInput?.setSelection(newProductName.length)
+        productNameRecView?.hide()
+        viewModel.isNameRecommendationSelected = true
+        productNameField?.editText?.setText(newProductName)
+        productNameField?.editText?.setSelection(newProductName.length)
 
         if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
@@ -1205,7 +1211,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
 
         // product name
-        productNameField?.textFieldInput?.setText(detailInputModel.productName)
+        productNameField.setText(detailInputModel.productName)
 
         // product price
         val productPrice = detailInputModel.price
@@ -1289,7 +1295,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToProductNameInputStatus() {
         viewModel.isProductNameInputError.observe(viewLifecycleOwner, Observer {
-            productNameField?.setError(it)
+            productNameField?.isInputError = it
             productNameField?.setMessage(viewModel.productNameMessage)
             // if product name input has no issue
             if (!it) {
@@ -1304,6 +1310,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 if (viewModel.isAdding && !viewModel.hasVariants && !needToSetCategoryName) {
                     viewModel.getCategoryRecommendation(productNameInput)
                 }
+                showProductNameIconSuccess()
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
@@ -1312,6 +1319,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
                 }
+                showProductNameIconBlacklist()
             }
 
             if (needToSetCategoryName) {
@@ -1804,7 +1812,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun showProductNameLoadingIndicator() {
-        productNameRecLoader?.visible()
+        productNameField?.isLoading = true
         productNameRecShimmering?.visible()
     }
 
@@ -1817,8 +1825,31 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun hideProductNameLoadingIndicator() {
-        productNameRecLoader?.hide()
+        productNameField?.isLoading = false
         productNameRecShimmering?.hide()
+    }
+
+    private fun showProductNameIconSuccess() {
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_G500, IconUnify.CHECK_CIRCLE)
+    }
+
+    private fun showProductNameIconTypo() {
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_N700, IconUnify.INFORMATION)
+    }
+
+    private fun showProductNameIconNegative() {
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_Y300, IconUnify.INFORMATION)
+    }
+
+    private fun showProductNameIconBlacklist() {
+        showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_R500, IconUnify.INFORMATION)
+    }
+
+    private fun showProductNameIconIndicator(colorResource: Int, iconResource: Int) {
+        val color = ContextCompat.getColor(requireContext(), colorResource)
+        val iconDrawable = getIconUnifyDrawable(requireContext(), iconResource, color)
+        productNameField?.icon2?.loadImage(iconDrawable)
+        productNameField?.icon2?.show()
     }
 
     private fun showImmutableCategoryDialog() {
@@ -1962,7 +1993,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun enableProductNameField() {
-        productNameField?.textFieldInput?.isEnabled = !viewModel.hasTransaction
+        productNameField?.isEnabled = !viewModel.hasTransaction
     }
 
     override fun getValidationCurrentWholeSaleQuantity(quantity: String, position: Int): String {

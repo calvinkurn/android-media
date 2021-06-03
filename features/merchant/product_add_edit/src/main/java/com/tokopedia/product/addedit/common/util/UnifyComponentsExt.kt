@@ -11,18 +11,22 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.add_edit_product_insurance_input_layout.*
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
 fun TextFieldUnify?.setText(text: String) = this?.textFieldInput?.setText(text)
 
+fun TextFieldUnify2?.setText(text: String) = this?.editText?.setText(text)
+
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
 fun TextFieldUnify?.getText(): String = this?.textFieldInput?.text.toString()
+
+fun TextFieldUnify2?.getText(): String = this?.editText?.text.toString()
 
 fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toString().replace(".", "").toIntOrZero()
 

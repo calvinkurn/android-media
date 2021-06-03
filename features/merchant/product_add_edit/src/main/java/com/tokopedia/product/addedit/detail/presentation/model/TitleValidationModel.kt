@@ -1,7 +1,10 @@
 package com.tokopedia.product.addedit.detail.presentation.model
 
 data class TitleValidationModel (
-        val title: String = "",
-        val errorKeywords: List<String> = emptyList(),
-        val warningKeywords: List<String> = emptyList()
+        var title: String = "",
+        var errorKeywords: List<String> = emptyList(),
+        var warningKeywords: List<String> = emptyList(),
+        var isBlacklistKeyword: Boolean = false,
+        var isNegativeKeyword: Boolean = false,
+        var isTypoDetected: Boolean = false
 )

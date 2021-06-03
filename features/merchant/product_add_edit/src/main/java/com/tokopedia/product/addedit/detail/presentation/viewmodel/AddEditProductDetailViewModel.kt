@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.detail.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -270,10 +269,10 @@ class AddEditProductDetailViewModel @Inject constructor(
             if (productNameInput != productInputModel.detailInputModel.currentProductName) {
                 // remote product name validation
                 launchCatchError(block = {
-                    withContext(Dispatchers.IO) {
+                    /*withContext(Dispatchers.IO) {
                         getProductTitleValidationUseCase.setParam(productNameInput)
                         getProductTitleValidationUseCase.executeOnBackground()
-                    }
+                    }*/
                     val response = withContext(Dispatchers.IO) {
                         validateProductUseCase.setParamsProductName(productNameInput)
                         validateProductUseCase.executeOnBackground()

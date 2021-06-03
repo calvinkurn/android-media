@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name_header"
@@ -24,33 +24,25 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/tfu_product_name"
         android:contentDescription="@string/content_desc_tfu_product_name"
         android:theme="@style/TextDarkMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_product_name_header"
-        app:text_field_counter="@integer/max_product_name_length"
-        app:text_field_label="@string/detail_label_product_name"
-        app:text_field_message="@string/label_add_product_name_tips" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/lu_product_name"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:translationY="@dimen/dp_20"
-        android:visibility="gone"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tfu_product_name" />
+        app:unify_text_field_counter="@integer/max_product_name_length"
+        app:unify_text_field_label="@string/detail_label_product_name"
+        app:unify_text_field_message="@string/label_add_product_name_tips" />
 
     <LinearLayout
         android:id="@+id/product_name_rec_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -59,27 +51,24 @@
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/dp_12" />
+            android:layout_marginBottom="@dimen/unify_space_12" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl5"
-            android:layout_marginRight="@dimen/spacing_lvl5"
-            android:layout_marginBottom="@dimen/dp_12" />
+            android:layout_marginBottom="@dimen/unify_space_12" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl8"
-            android:layout_marginRight="@dimen/spacing_lvl8"
-            android:layout_marginBottom="@dimen/dp_12" />
+            android:layout_marginBottom="@dimen/unify_space_12" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/layout_lvl9"
-            android:layout_marginRight="@dimen/layout_lvl9" />
+            android:layout_marginEnd="@dimen/layout_lvl9" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -87,7 +76,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginStart="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tfu_product_name" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

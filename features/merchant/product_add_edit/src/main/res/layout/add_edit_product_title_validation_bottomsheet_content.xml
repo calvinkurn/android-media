@@ -25,6 +25,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ivValidationSuccess" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvErrorDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700"
