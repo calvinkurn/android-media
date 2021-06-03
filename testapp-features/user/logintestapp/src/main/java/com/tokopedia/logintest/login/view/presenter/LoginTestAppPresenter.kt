@@ -109,7 +109,7 @@ class LoginTestAppPresenter @Inject constructor(private val registerCheckTestApp
                         loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                         val tokenResult = loginTokenV2UseCase.executeOnBackground()
 
-                        LoginV2Mapper(userSession).map(tokenResult,
+                        LoginV2Mapper(userSession).map(tokenResult.loginToken,
                                 onSuccessLoginToken = {
                                     view.onSuccessLoginEmail()
                                 },
