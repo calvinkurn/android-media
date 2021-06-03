@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
+import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
@@ -12,6 +13,7 @@ import com.tokopedia.shop.score.common.ShopScoreUtils
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.item_header_shop_performance.view.*
 
 class ItemHeaderShopPerformanceViewHolder(view: View,
@@ -35,10 +37,31 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         with(itemView) {
             tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel)
 
-            tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore else "-"
+            tvPerformanceLevel?.text = if (element?.shopScore != null) element.shopScore else "-"
 
             ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
                     ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toIntOrZero()))
+        }
+        setupTextColorDarkMode(element)
+    }
+
+    private fun setupTextColorDarkMode(elemet: HeaderShopPerformanceUiModel?) {
+        with(itemView) {
+            if (context.isDarkMode()) {
+                tvPerformanceLevel?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                ic_performance_level_information?.drawable?.let { applyIconUnifyColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }
+                tvTitleShopPerformance?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                ic_shop_score_performance?.drawable?.let { applyIconUnifyColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }
+                tvShopScoreValue?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tvShopScoreMaximum?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tvHeaderShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tvDescShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
+                if (elemet?.showCardNewSeller == true) {
+                    tvHeaderShopServiceNewSeller?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    tvDescShopServiceNewSeller?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                }
+            }
         }
     }
 

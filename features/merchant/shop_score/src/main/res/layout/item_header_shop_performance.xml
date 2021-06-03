@@ -50,7 +50,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl5"
             android:adjustViewBounds="true"
-            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="@id/ic_performance_level_information"
             app:layout_constraintStart_toEndOf="@id/ic_performance_level_information"
             app:layout_constraintTop_toTopOf="@id/tvPerformanceLevel"

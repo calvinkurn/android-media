@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 
 import android.util.TypedValue
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.media.loader.loadImage
@@ -11,6 +12,7 @@ import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemHeaderCardPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.card_shop_score_total_penalty.view.*
 
 class ItemHeaderCardPenaltyViewHolder(view: View,
@@ -46,6 +48,17 @@ class ItemHeaderCardPenaltyViewHolder(view: View,
             }
             tvTotalPointDeductions?.text = if (element?.deductionPoints?.isLessThanZero() == true) element.deductionPoints.toString() else "-"
         }
+        setupTextColorDarkMode()
     }
 
+    private fun setupTextColorDarkMode() {
+        with(itemView) {
+            if (context.isDarkMode()) {
+                tvTitleTotalPenalty?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tvCountTotalPenalty?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tvPointDeductions?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tvTotalPointDeductions?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            }
+        }
+    }
 }
