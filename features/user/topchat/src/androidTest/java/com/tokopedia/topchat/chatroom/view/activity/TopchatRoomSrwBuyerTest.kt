@@ -65,7 +65,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO-Alert: what if SRW in error state and user send msg/sticker
 
     // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
-    // TODO: CTA on left msg
+    // TODO: CTA on left msg - possibly different tasks
 
     lateinit var productPreview: ProductPreview
 
