@@ -53,12 +53,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawTokenQuery, BrizziTokenResponse::class.java, mapParam)
-                if (refreshToken) {
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
-                } else {
-                    graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 30).build())
-                }
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<BrizziTokenResponse>()
 
             if (data.tokenResponse.token != token) {
@@ -78,7 +73,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                 override fun OnSuccess(brizziCardObject: BrizziCardObject) {
                     issuerId.postValue(ISSUER_ID_BRIZZI)
-                    val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
+                    val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = BRIZZI_SUCCESS_LAST_BALANCE))
                     balanceInquiry.attributesEmoneyInquiry?.let {
                         logBrizzi(0, it.cardNumber, rawLogBrizzi, "success", it.lastBalance.toDouble())
 
@@ -149,7 +144,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Informasi saldo berhasil diperbarui"))
+                val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = BRIZZI_SUCCESS_UPDATE_BALANCE))
 
                 if (inquiryIdBrizzi > -1) {
                     balanceInquiry.attributesEmoneyInquiry?.let {
@@ -175,5 +170,8 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
         const val ETOLL_BRIZZI_OPERATOR_ID = "1015"
         const val BRIZZI_TOKEN_EXPIRED = "61"
         const val BRIZZI_CARD_NOT_FOUND = "21"
+
+        const val BRIZZI_SUCCESS_UPDATE_BALANCE = "Oke, saldo kamu berhasil di-update!"
+        const val BRIZZI_SUCCESS_LAST_BALANCE = "Ini saldo kamu yang paling baru, ya."
     }
 }
