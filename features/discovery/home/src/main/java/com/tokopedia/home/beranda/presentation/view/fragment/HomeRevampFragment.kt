@@ -992,7 +992,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val localChooseAddressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
             val updatedChooseAddressData = HomeChooseAddressData(isActive = true)
                     .setLocalCacheModel(localChooseAddressData)
-            viewModel.get().updateChooseAddressData(updatedChooseAddressData)
+            getHomeViewModel().updateChooseAddressData(updatedChooseAddressData)
+            getHomeViewModel().refresh(isFirstInstall = isFirstInstall(), forceRefresh = true)
         }
 
         return isAddressChanged
@@ -1095,6 +1096,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         observePlayWidgetReminder()
         observePlayWidgetReminderEvent()
         observeRechargeBUWidget()
+        observeResetNestedScrolling()
+    }
+
+    private fun observeResetNestedScrolling() {
+        getHomeViewModel().resetNestedScrolling.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+            val isResetNestedScrolling = data.peekContent()
+            if (isResetNestedScrolling) {
+                homeRecyclerView?.setNestedCanScroll(false)
+            }
+        })
     }
 
     private fun observeIsNeedRefresh() {
