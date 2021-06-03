@@ -260,6 +260,7 @@ open class TopChatRoomPresenter @Inject constructor(
         when (pojo.attachment?.type) {
             AttachmentType.Companion.TYPE_INVOICE_SEND,
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
+            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT,
             AttachmentType.Companion.TYPE_VOUCHER-> view?.removeSrwBubble()
         }
     }
