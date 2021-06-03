@@ -382,13 +382,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 showThankYouBottomSheet(ovoDomain)
                 return
             }
-            if (ovoIncentiveBottomSheet == null) {
-                ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this, "", getTncBottomSheetTrackerData()) }
-            }
             hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.subtitle)
                 setOnClickListener { _ ->
+                    if (ovoIncentiveBottomSheet == null) {
+                        ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this@CreateReviewBottomSheet, "", getTncBottomSheetTrackerData()) }
+                    }
                     ovoIncentiveBottomSheet?.let { bottomSheet ->
                         activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
                         CreateReviewTracking.eventClickIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
