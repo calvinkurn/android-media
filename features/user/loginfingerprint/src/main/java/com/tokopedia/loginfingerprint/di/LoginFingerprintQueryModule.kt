@@ -4,9 +4,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
+import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -33,6 +35,13 @@ class LoginFingerprintQueryModule {
     fun provideVerifyFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): VerifyFingerprintUseCase {
         val useCase = GraphqlUseCase<VerifyFingerprintPojo>(graphqlRepository)
         return VerifyFingerprintUseCase(useCase, dispatchers)
+    }
+
+    @LoginFingerprintSettingScope
+    @Provides
+    fun provideCheckFingerprintToggleUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): CheckFingerprintToggleStatusUseCase {
+        val useCase = GraphqlUseCase<CheckFingerprintPojo>(graphqlRepository)
+        return CheckFingerprintToggleStatusUseCase(useCase, dispatchers)
     }
 
     @LoginFingerprintSettingScope
