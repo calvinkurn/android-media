@@ -12,6 +12,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -63,7 +64,7 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                 } else _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
 
             }) {
-                if (!it.message.isNullOrEmpty()) {
+                if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                     _addToCartResult.postValue(Fail(MessageErrorException(it.message)))
                 } else {
                     _addToCartResult.postValue(Fail(it))

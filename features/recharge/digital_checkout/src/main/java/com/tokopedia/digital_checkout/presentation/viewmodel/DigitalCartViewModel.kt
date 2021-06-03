@@ -34,6 +34,7 @@ import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -142,7 +143,9 @@ class DigitalCartViewModel @Inject constructor(
 
         }) {
             _showLoading.postValue(false)
-            _errorThrowable.postValue(it)
+            if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                _errorThrowable.postValue(MessageErrorException(it.message))
+            } else _errorThrowable.postValue(it)
         }
     }
 
@@ -320,7 +323,9 @@ class DigitalCartViewModel @Inject constructor(
 
                 }) {
                     _showLoading.postValue(false)
-                    _errorThrowable.postValue(it)
+                    if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                        _errorThrowable.postValue(MessageErrorException(it.message))
+                    } else _errorThrowable.postValue(it)
                 }
             }
         }
