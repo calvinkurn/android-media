@@ -11,7 +11,7 @@ import com.tokopedia.imagepicker.editor.watermark.utils.BitmapUtils.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 
 data class WatermarkImage(
-    var image: Bitmap,
+    var image: Bitmap? = null,
     @DrawableRes var imageDrawable: Int = 0,
     var alpha: Int = 50,
     var context: Context? = null,
@@ -31,7 +31,7 @@ data class WatermarkImage(
         position.rotation = rotation
     }
 
-    fun setImageDrawable(value: Int) = apply {
+    fun imageDrawable(value: Int) = apply {
         this.imageDrawable = value
     }
 

@@ -7,8 +7,10 @@ import android.media.ExifInterface;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
+import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkImage;
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
@@ -114,17 +116,21 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                         .flatMap(new Func1<Bitmap, Observable<Bitmap>>() {
                             @Override
                             public Observable<Bitmap> call(Bitmap bitmap) {
-                                WatermarkText watermarkText = new WatermarkText()
-                                        .setContentText("Tokopedia")
-                                        .positionX(0.5)
-                                        .positionY(0.5)
-                                        .textAlpha(255)
-                                        .textColor(Color.WHITE);
+//                                WatermarkText watermarkText = new WatermarkText()
+//                                        .setContentText("Tokopedia")
+//                                        .positionX(0.5)
+//                                        .positionY(0.5)
+//                                        .textAlpha(255)
+//                                        .textColor(Color.WHITE);
+
+                                WatermarkImage watermarkImage = new WatermarkImage()
+                                        .imageDrawable(R.drawable.ic_tokopedia_text);
 
 
                                 return Observable.just(WatermarkBuilder
                                         .create(getView().getContext(), bitmap)
-                                        .loadWatermarkText(watermarkText)
+//                                        .loadWatermarkText(watermarkText)
+                                        .loadWatermarkImage(watermarkImage)
                                         .setTileMode(true)
                                         .getWatermark()
                                         .getOutputImage()
