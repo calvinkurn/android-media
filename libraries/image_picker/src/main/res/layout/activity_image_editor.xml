@@ -80,7 +80,7 @@
                 android:divider="@drawable/bg_line_separator"
                 android:showDividers="end">
 
-                <com.tokopedia.imagepicker.picker.gallery.widget.SquareFrameLayout
+                <com.tokopedia.imagepicker.common.widget.SquareFrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -99,7 +99,7 @@
                         android:indeterminate="true"
                         android:visibility="gone"
                         tools:visibility="visible" />
-                </com.tokopedia.imagepicker.picker.gallery.widget.SquareFrameLayout>
+                </com.tokopedia.imagepicker.common.widget.SquareFrameLayout>
             </LinearLayout>
 
             <FrameLayout

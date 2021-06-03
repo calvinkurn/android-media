@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
-import com.tokopedia.feedcomponent.di.CoroutineDispatcherModule;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -28,7 +27,7 @@ import retrofit2.Retrofit;
  * @author by milhamj on 12/02/18.
  */
 
-@Module(includes = {FeedComponentModule.class, CoroutineDispatcherModule.class})
+@Module(includes = {FeedComponentModule.class})
 public class KolProfileModule {
 
     @KolProfileScope

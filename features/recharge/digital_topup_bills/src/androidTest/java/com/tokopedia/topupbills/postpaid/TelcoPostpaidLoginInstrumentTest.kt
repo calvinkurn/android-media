@@ -104,6 +104,7 @@ class TelcoPostpaidLoginInstrumentTest {
 
         click_on_fav_number_login()
         enquiry_phone_number()
+        enquiry_new_input_phone_number()
         click_on_tab_menu_login()
         click_item_recent_widget_login()
 
@@ -118,6 +119,8 @@ class TelcoPostpaidLoginInstrumentTest {
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+
+        Thread.sleep(2000)
 
         onView(withId(R.id.telco_ac_input_number)).perform(click())
         val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
@@ -135,7 +138,7 @@ class TelcoPostpaidLoginInstrumentTest {
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
         onView(withId(R.id.telco_ac_input_number)).check(matches(withText("")))
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Recents"))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
     }
@@ -150,11 +153,33 @@ class TelcoPostpaidLoginInstrumentTest {
         onView(withId(R.id.telco_buy_widget)).perform(click())
     }
 
+    fun enquiry_new_input_phone_number() {
+        Thread.sleep(2000)
+        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(R.id.searchbar_icon)).perform(click())
+        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
+        onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER_2), ViewActions.pressImeActionButton())
+        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER_2)))
+
+        Thread.sleep(2000)
+        onView(withId(R.id.telco_buy_widget)).check(matches(IsNot.not(isDisplayed())))
+        onView(withId(R.id.telco_enquiry_btn))
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        Thread.sleep(2000)
+        onView(withId(R.id.telco_enquiry_btn)).check(matches(IsNot.not(isDisplayed())))
+        onView(withId(R.id.telco_title_enquiry_result)).check(matches(isDisplayed()))
+        onView(withId(R.id.telco_buy_widget)).check(matches(isDisplayed()))
+        onView(withId(R.id.telco_buy_widget)).perform(click())
+
+    }
+
     fun click_item_recent_widget_login() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Recents"))).perform(click())
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         val viewInteraction = onView(AllOf.allOf(isDescendantOfA(withId(R.id.layout_widget)),
                 withId(R.id.recycler_view_menu_component), isDisplayed())).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions
@@ -180,6 +205,7 @@ class TelcoPostpaidLoginInstrumentTest {
         private const val PATH_RESPONSE_POSTPAID_ENQUIRY = "postpaid/response_mock_data_postpaid_enquiry.json"
 
         private const val VALID_PHONE_NUMBER = "08123232323"
+        private const val VALID_PHONE_NUMBER_2 = "085252525252"
         private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_postpaid_login.json"
     }
 }

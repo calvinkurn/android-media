@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
@@ -93,7 +94,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             stepperListener?.goToNextPage(stepperModel)
         else {
             stepperModel?.redirectionToSummary = false
-            stepperListener?.getToFragment(3, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
         }
     }
 
@@ -164,6 +165,9 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (stepperModel?.redirectionToSummary == true) {
+            btn_next?.text = getString(R.string.topads_common_save_butt)
+        }
         context?.let {
             sortProductList = ProductSortSheetList.newInstance()
             filterSheetProductList = ProductFilterSheetList.newInstance()
@@ -183,6 +187,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         tip_btn.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
+                add(TipsUiRowModel(R.string.pilih_produk_yang_berada_dalam, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.pilih_produk_dengan_ulasan_terbanyak, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.pilih_produk_terpopuler, R.drawable.topads_create_ic_checklist))
             }

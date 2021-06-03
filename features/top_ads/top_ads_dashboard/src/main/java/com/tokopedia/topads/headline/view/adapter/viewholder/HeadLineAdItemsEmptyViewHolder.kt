@@ -27,7 +27,7 @@ class HeadLineAdItemsEmptyViewHolder(val view: View) : HeadLineAdItemsViewHolder
             view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
             view.btn_submit.visibility = View.GONE
             view.text_desc.visibility = View.VISIBLE
-            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
+            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
         } else {
             view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.topads_empty_headline))
             view.text_title.text = String.format(view.context.getString(R.string.topads_dash_headline_empty_title), selectedText)

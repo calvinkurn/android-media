@@ -146,11 +146,11 @@ class RechargeCCViewModelTest {
         //given
         val prefixes = mutableListOf<CatalogPrefixs>()
         prefixes.add(CatalogPrefixs("1", "1234",
-                CatalogOperator(12, CatalogPrefixAttributes("image1", 14))))
+                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))))
         prefixes.add(CatalogPrefixs("2", "4567",
-                CatalogOperator(13, CatalogPrefixAttributes("image2", 15))))
+                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))))
 
-        val rechargeCCSelected = RechargeCreditCard(13, 15, "image2")
+        val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 
         val result = HashMap<Type, Any>()
         result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(prefixes = prefixes))
@@ -194,11 +194,11 @@ class RechargeCCViewModelTest {
         //given
         val prefixes = mutableListOf<CatalogPrefixs>()
         prefixes.add(CatalogPrefixs("1", "1234",
-                CatalogOperator(12, CatalogPrefixAttributes("image1", 14))))
+                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))))
         prefixes.add(CatalogPrefixs("2", "4567",
-                CatalogOperator(13, CatalogPrefixAttributes("image2", 15))))
+                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))))
 
-        val rechargeCCSelected = RechargeCreditCard(13, 15, "image2")
+        val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 
         val result = HashMap<Type, Any>()
         result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(prefixes = prefixes))

@@ -63,6 +63,8 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String shipperName;
     private MerchantVoucherProductModel merchantVoucherProductModel;
 
+    private PreOrderModel preOrderModel;
+
     public CourierItemData() {
     }
 
@@ -475,6 +477,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.priorityPdpMessage);
         dest.writeParcelable(this.ontimeDelivery, flags);
         dest.writeParcelable(this.codProductData, flags);
+        dest.writeParcelable(this.preOrderModel, flags);
     }
 
     protected CourierItemData(Parcel in) {
@@ -524,6 +527,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.priorityPdpMessage = in.readString();
         this.ontimeDelivery = in.readParcelable(OntimeDelivery.class.getClassLoader());
         this.codProductData = in.readParcelable(CodProductData.class.getClassLoader());
+        this.preOrderModel = in.readParcelable(PreOrderModel.class.getClassLoader());
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
@@ -576,5 +580,13 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     public void setMerchantVoucherProductModel(MerchantVoucherProductModel merchantVoucherProductModel) {
         this.merchantVoucherProductModel = merchantVoucherProductModel;
+    }
+
+    public PreOrderModel getPreOrderModel() {
+        return preOrderModel;
+    }
+
+    public void setPreOrderModel(PreOrderModel preOrderModel) {
+        this.preOrderModel = preOrderModel;
     }
 }

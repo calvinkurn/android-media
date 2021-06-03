@@ -64,6 +64,8 @@ internal fun createInspirationCardListener(): InspirationCardListener {
 
 internal fun createInspirationCarouselListener(): InspirationCarouselListener {
     return object: InspirationCarouselListener {
+        override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
+            get() = null
         override fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
@@ -72,6 +74,11 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onImpressedInspirationCarouselChipsProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselChipsSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
+        override fun onInspirationCarouselChipsClicked(inspirationCarouselAdapterPosition: Int, inspirationCarouselViewModel: InspirationCarouselDataView, inspirationCarouselOption: InspirationCarouselDataView.Option) {}
+
     }
 }
 
@@ -81,6 +88,8 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {}
         override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {}
+        override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
+            get() = null
     }
 }
 
@@ -99,7 +108,11 @@ internal fun createBannerAdsListener(): BannerAdsListener {
 }
 
 internal fun createSuggestionListener(): SuggestionListener {
-    return SuggestionListener { }
+    return object : SuggestionListener {
+        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView?) {
+
+        }
+    }
 }
 
 internal fun createEmptyStateListener(): EmptyStateListener {

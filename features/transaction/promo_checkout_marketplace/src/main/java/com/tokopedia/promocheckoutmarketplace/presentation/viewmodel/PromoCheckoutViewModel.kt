@@ -23,8 +23,8 @@ import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutU
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
@@ -143,17 +143,17 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Get Promo List */
     //---------------------------------------//
 
-    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String) {
+    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null) {
         launchCatchError(block = {
-            doGetPromoList(mutation, promoRequest, promoCode)
+            doGetPromoList(mutation, promoRequest, promoCode, chosenAddress)
         }) { throwable ->
             setFragmentStateLoadPromoListFailed(throwable)
         }
     }
 
-    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String) {
+    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String, chosenAddress: ChosenAddress?) {
         // Set request data
-        val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest)
+        val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest, chosenAddress)
 
         // Get response data
         PromoCheckoutIdlingResource.increment()
@@ -168,7 +168,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         handleGetPromoListResponse(response, tmpPromoCode)
     }
 
-    private fun setGetPromoRequestData(tmpPromoCode: String, promoRequest: PromoRequest): Map<String, Any?> {
+    private fun setGetPromoRequestData(tmpPromoCode: String, promoRequest: PromoRequest, chosenAddress: ChosenAddress?): Map<String, Any?> {
         val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
 
         resetGetPromoRequestData(promoCode, promoRequest)
@@ -193,7 +193,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         return mapOf(
                 "params" to CouponListRecommendationRequest(promoRequest = promoRequest),
                 // Add current selected address from local cache
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress ?: chosenAddressRequestHelper.getChosenAddress())
         )
     }
 
@@ -577,16 +577,16 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Apply Promo */
     //------------------------------------//
 
-    fun applyPromo(mutation: String, requestParam: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+    fun applyPromo(mutation: String, requestParam: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>, chosenAddress: ChosenAddress? = null) {
         launchCatchError(block = {
-            doApplyPromo(mutation, requestParam, bboPromoCodes)
+            doApplyPromo(mutation, requestParam, bboPromoCodes, chosenAddress)
         }) { throwable ->
             // Notify fragment apply promo to stop loading
             setApplyPromoStateFailed(throwable)
         }
     }
 
-    private suspend fun doApplyPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+    private suspend fun doApplyPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>, chosenAddress: ChosenAddress?) {
         // Set request data
         setApplyPromoRequestData(validateUsePromoRequest)
 
@@ -606,7 +606,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                         "promo" to validateUsePromoRequest
                 ),
                 // Add current selected address from local cache
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress ?: chosenAddressRequestHelper.getChosenAddress())
         )
 
         // Get response data

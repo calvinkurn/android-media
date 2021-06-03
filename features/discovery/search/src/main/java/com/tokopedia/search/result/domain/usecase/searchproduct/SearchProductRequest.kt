@@ -58,6 +58,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     query
                     typeId
                 }
+                banner {
+                    position
+                    text
+                    applink
+                    imageUrl
+                }
                 related {
                     relatedKeyword
                     position

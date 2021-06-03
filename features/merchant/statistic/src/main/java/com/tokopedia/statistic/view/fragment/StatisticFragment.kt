@@ -230,13 +230,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        recyclerView.post {
+        recyclerView?.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
         }
     }
 
-    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
+    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
         showErrorToaster()
     }
 
@@ -397,7 +397,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
 
-        with(recyclerView) {
+        recyclerView?.run {
             layoutManager = mLayoutManager
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
@@ -524,7 +524,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
-        recyclerView.visible()
+        recyclerView?.visible()
         view?.globalErrorStc?.gone()
 
         val mWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
@@ -537,7 +537,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         scrollToWidgetBySelectedDataKey()
 
         if (isFirstLoad) {
-            recyclerView.post {
+            recyclerView?.post {
                 requestVisibleWidgetsData()
             }
             isFirstLoad = false
@@ -558,7 +558,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
             val invalidIndex = -1
             if (index != invalidIndex) {
-                recyclerView.post {
+                recyclerView?.post {
                     val offset = 0
                     mLayoutManager.scrollToPositionWithOffset(index, offset)
                 }
@@ -586,7 +586,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
         if (adapter.data.isEmpty()) {
             globalErrorStc.visible()
-            recyclerView.gone()
+            recyclerView?.gone()
         } else {
             showErrorToaster()
             globalErrorStc.gone()
@@ -670,7 +670,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 }
 
         showErrorToaster()
-        recyclerView.post {
+        recyclerView?.post {
             requestVisibleWidgetsData()
         }
         StatisticLogger.logToCrashlytics(this, "${StatisticLogger.ERROR_WIDGET} $widgetType")
@@ -689,13 +689,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 }
             }
         }
-        recyclerView.post {
+        recyclerView?.post {
             requestVisibleWidgetsData()
         }
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
-        recyclerView.post {
+        recyclerView?.post {
             val widgetPosition = adapter.data.indexOf(widget)
             if (widgetPosition != RecyclerView.NO_POSITION) {
                 adapter.notifyItemChanged(widgetPosition)
@@ -850,7 +850,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun stopPLTPerformanceMonitoring() {
         if (!isPltMonitoringCompleted) {
             isPltMonitoringCompleted = true
-            recyclerView.addOneTimeGlobalLayoutListener {
+            recyclerView?.addOneTimeGlobalLayoutListener {
                 (activity as? StatisticPerformanceMonitoringListener)?.stopPerformanceMonitoring()
             }
         }

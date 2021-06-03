@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.net.Network
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -37,6 +38,7 @@ import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.searchHashMap
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetString
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
 import java.io.Serializable
@@ -148,6 +150,15 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             hideProgressBar()
             renderList(it)
             showData()
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, Observer { throwable ->
+            context?.let { context ->
+                view?.let { view ->
+                    Toaster.build(view, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            getString(R.string.ent_checkout_error)).show()
+                }
+            }
         })
     }
 

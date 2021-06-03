@@ -26,4 +26,9 @@
     <string name="checkout_flow_toaster_action_ok">Oke</string>
     <string name="checkout_flow_error_global_message">Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya</string>
     <string name="label_separator_line">|</string>
+
+    <!--  Common Content Descriptions  -->
+    <string name="pp_cd_image_shop_badge_with_shop_type">image shop badge %1$s</string>
+    <string name="pp_cd_image_badge_bo">image badge bebas ongkir</string>
+    <string name="pp_cd_image_badge_boe">image badge bebas ongkir extra</string>
 </resources>

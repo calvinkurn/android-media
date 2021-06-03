@@ -147,8 +147,13 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
         boolean perstOn = inAppData.isPersistentToggle();
         if (!perstOn && checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()))
             return false;
-        else return inAppData.endTime < System.currentTimeMillis() ||
-                (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ));
+        else {
+            if (inAppData.endTime < System.currentTimeMillis() && inAppData.lastShownTime == 0 && inAppData.freq > 0) {
+                RepositoryManager.getInstance().onInappExpired(inAppData);
+            }
+            return inAppData.endTime < System.currentTimeMillis() ||
+                    (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ));
+        }
     }
 
     private boolean checkIfBehaviourRulesAreValid(CMInApp inAppData){

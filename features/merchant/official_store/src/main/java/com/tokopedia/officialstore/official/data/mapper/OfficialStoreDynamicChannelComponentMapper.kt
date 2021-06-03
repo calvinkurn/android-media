@@ -73,7 +73,7 @@ object OfficialStoreDynamicChannelComponentMapper {
                             cashback = it.cashback,
                             rating = it.rating,
                             countReview = it.countReview,
-                            ratingFloat = it.ratingAverage,
+                            ratingFloat = it.ratingAverage?:"",
                             productClickUrl = it.productClickUrl,
                             isFreeOngkirActive = it.freeOngkir?.isActive?:false,
                             freeOngkirImageUrl = it.freeOngkir?.imageUrl?:"",

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +27,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -50,7 +49,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -59,6 +58,8 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -409,6 +410,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onErrorFollowKol(errorMessage: String) {
+
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
@@ -541,7 +543,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         context?.let {
             val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
-                    createDeleteDialog(positionInFeed, postId).show()
+                    createDeleteDialog(positionInFeed, postId)?.show()
                 }
 
                 override fun onReportClick() {
@@ -689,8 +691,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        if (adapter.list[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
+        if (adapter.list[positionInFeed] is TopadsShopUiModel) {
+            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopUiModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }
@@ -829,18 +831,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
-        dialog.setDesc(getString(com.tokopedia.kolcommon.R.string.kol_delete_post_desc))
-        dialog.setBtnOk(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
-        dialog.setBtnCancel(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
-        dialog.setOnOkClickListener {
-            presenter.deletePost(id, rowNumber)
-            dialog.dismiss()
+    private fun createDeleteDialog(rowNumber: Int, id: Int): DialogUnify? {
+        return context?.let{
+            val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
+            dialog.setDescription(getString(com.tokopedia.kolcommon.R.string.kol_delete_post_desc))
+            dialog.setPrimaryCTAText(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
+            dialog.setSecondaryCTAText(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
+            dialog.setPrimaryCTAClickListener {
+                presenter.deletePost(id, rowNumber)
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+            dialog
         }
-        dialog.setOnCancelClickListener { dialog.dismiss() }
-        return dialog
     }
 
     private fun goToContentReport(contentId: Int) {
@@ -872,15 +876,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         view?.let {
             Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
+                    getString(R.string.label_close), View.OnClickListener { })
         }
     }
 
-    private fun onErrorReportContent(errorMsg: String) {
+    private fun onErrorReportContent(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMsg,
+            Toaster.make(it, errorMessage,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
+                    getString(R.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -902,9 +906,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         showError(message, null)
     }
 
-    private fun showError(message: String, listener: View.OnClickListener?) {
+    private fun showError(errorMessage: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.make(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }

@@ -21,10 +21,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerD
 import javax.inject.Inject
 import kotlin.math.min
 
-/**
- * Created by Irfan Khoirul on 2019-10-17.
- */
-
 class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: Context) {
 
     companion object {
@@ -54,8 +50,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
         var errorCount = 0
         cartDataListResponse.unavailableSections.forEach {
-            it.unavailableGroups.forEach {
-                errorCount += it.cartDetails.size
+            it.unavailableGroups.forEach { unavailableGroup ->
+                errorCount += unavailableGroup.cartDetails.size
             }
         }
         cartListData.isError = errorCount > 0
@@ -195,17 +191,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isError = false
             it.errorTitle = ""
             it.shopName = availableGroup.shop.shopName
-            it.shopId = availableGroup.shop.shopId.toString()
-            it.shopType =
-                    if (availableGroup.shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE
-                    else if (availableGroup.shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT
-                    else SHOP_TYPE_REGULER
-            it.isGoldMerchant = availableGroup.shop.goldMerchant.isGoldBadge
-            it.isOfficialStore = availableGroup.shop.isOfficial == 1
-            it.shopBadge =
-                    if (availableGroup.shop.isOfficial == 1) availableGroup.shop.officialStore.osLogoUrl
-                    else if (availableGroup.shop.goldMerchant.isGoldBadge) availableGroup.shop.goldMerchant.goldMerchantLogoUrl
-                    else ""
+            it.shopId = availableGroup.shop.shopId
+            it.shopTypeInfo = mapShopTypeInfo(availableGroup.shop)
             it.isFulfillment = availableGroup.isFulFillment
             it.fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
             it.fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
@@ -215,6 +202,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
 
             it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
+            it.isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
             it.freeShippingBadgeUrl = when {
                 availableGroup.shipmentInformation.freeShippingExtra.eligible -> availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
                 availableGroup.shipmentInformation.freeShipping.eligible -> availableGroup.shipmentInformation.freeShipping.badgeUrl
@@ -223,6 +211,25 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.incidentInfo = availableGroup.shop.shopAlertMessage
             it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
             it
+        }
+    }
+
+    private fun mapShopTypeInfo(shop: Shop): ShopTypeInfoData {
+        val shopTypeInfo = shop.shopTypeInfo
+        val tmpShopType =
+                when {
+                    shop.isGold == 1 -> SHOP_TYPE_GOLD_MERCHANT
+                    shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
+                    else -> SHOP_TYPE_REGULER
+                }
+        return ShopTypeInfoData().apply {
+            shopTier = shopTypeInfo.shopTier
+            shopGrade = shopTypeInfo.shopGrade
+            shopBadge = shopTypeInfo.shopBadge
+            badgeSvg = shopTypeInfo.badgeSvg
+            title = shopTypeInfo.title
+            titleFmt = shopTypeInfo.titleFmt
+            shopType = tmpShopType
         }
     }
 
@@ -357,7 +364,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isPreOrder = cartDetail.product.isPreorder == 1
             it.isCod = cartDetail.product.isCod
             it.isFreeReturn = cartDetail.product.isFreereturns == 1
-            it.isCashBack = !cartDetail.product.productCashback.isEmpty()
+            it.isCashBack = cartDetail.product.productCashback.isNotEmpty()
             it.isFavorite = false
             it.productCashBack = cartDetail.product.productCashback
             it.cashBackInfo = "Cashback ${cartDetail.product.productCashback}"
@@ -404,13 +411,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartItemData.let {
             it.shopName = availableGroup.shop.shopName
             it.shopCity = availableGroup.shop.cityName
-            it.shopId = availableGroup.shop.shopId.toString()
-            it.shopType =
-                    if (availableGroup.shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE
-                    else if (availableGroup.shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT
-                    else SHOP_TYPE_REGULER
-            it.isOfficialStore = availableGroup.shop.isOfficial == 1
-            it.isGoldMerchant = availableGroup.shop.goldMerchant.isGoldBadge
+            it.shopId = availableGroup.shop.shopId
+            it.shopTypeInfoData = mapShopTypeInfo(availableGroup.shop)
             it.cartString = availableGroup.cartString
             it.warehouseId = availableGroup.warehouse.warehouseId
             it.listPromoCheckout = listPromoCheckout
@@ -421,13 +423,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartItemData.let {
             it.shopName = unavailableGroup.shop.shopName
             it.shopCity = unavailableGroup.shop.cityName
-            it.shopId = unavailableGroup.shop.shopId.toString()
-            it.shopType =
-                    if (unavailableGroup.shop.isOfficial == 1) SHOP_TYPE_OFFICIAL_STORE
-                    else if (unavailableGroup.shop.goldMerchant.isGoldBadge) SHOP_TYPE_GOLD_MERCHANT
-                    else SHOP_TYPE_REGULER
-            it.isOfficialStore = unavailableGroup.shop.isOfficial == 1
-            it.isGoldMerchant = unavailableGroup.shop.goldMerchant.isGoldBadge
+            it.shopId = unavailableGroup.shop.shopId
+            it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop)
             it.cartString = unavailableGroup.cartString
             it.warehouseId = unavailableGroup.warehouse.warehouseId
         }
@@ -556,22 +553,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isError = !unavailableGroup.errors.isNullOrEmpty()
             it.errorLabel = unavailableGroup.errors.firstOrNull() ?: ""
             it.shopName = unavailableGroup.shop.shopName
-            it.shopId = unavailableGroup.shop.shopId.toString()
-            it.shopType =
-                    when {
-                        unavailableGroup.shop.isOfficial == 1 -> SHOP_TYPE_OFFICIAL_STORE
-                        unavailableGroup.shop.goldMerchant.isGoldBadge -> SHOP_TYPE_GOLD_MERCHANT
-                        else -> SHOP_TYPE_REGULER
-                    }
+            it.shopId = unavailableGroup.shop.shopId
+            it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop)
             it.cityName = unavailableGroup.shop.cityName
-            it.isGoldMerchant = unavailableGroup.shop.goldMerchant.isGoldBadge
-            it.isOfficialStore = unavailableGroup.shop.isOfficial == 1
-            it.shopBadge =
-                    when {
-                        unavailableGroup.shop.isOfficial == 1 -> unavailableGroup.shop.officialStore.osLogoUrl
-                        unavailableGroup.shop.goldMerchant.isGoldBadge -> unavailableGroup.shop.goldMerchant.goldMerchantLogoUrl
-                        else -> ""
-                    }
             it.isFulfillment = unavailableGroup.isFulFillment
             it.fulfillmentName = unavailableGroup.shipmentInformation.shopLocation
             it.cartString = unavailableGroup.cartString

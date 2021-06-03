@@ -48,16 +48,20 @@ import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.URLGenerator;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -72,6 +76,7 @@ import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
@@ -111,7 +116,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String SCHEME_INTENT = "intent";
-    private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
@@ -143,7 +147,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @NonNull
     protected String getUrl() {
         String env = TokopediaUrl.Companion.getInstance().getTYPE().getValue();
-        if (url.contains(JS_TOKOPEDIA)  || (url.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
+        if (url.contains(JS_TOKOPEDIA) || (url.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
             return url;
         } else if (isTokopediaUrl) {
             String gcmId = userSession.getDeviceId();
@@ -504,13 +508,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
     }
-
 
     class MyWebViewClient extends WebViewClient {
         @Override
@@ -529,6 +531,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.setWebViewTitle(title);
                         activity.updateTitle(title);
                     }
+                }
+                if (url.startsWith(BaseWebViewFragment.this.url)) {
+                    activity.setOnWebViewPageFinished();
+                } else {
+                    activity.enableBackButton();
                 }
             } else if (activityInstance != null && !activityInstance.isFinishing() && activityInstance instanceof BaseSimpleActivity) {
                 ActionBar actionBar = ((AppCompatActivity) activityInstance).getSupportActionBar();
@@ -617,15 +624,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             super.onReceivedHttpError(view, request, errorResponse);
             String webUrl = view.getUrl();
-            Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s';web_url='%s'",
-                    request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase(), webUrl);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", request.getUrl().toString());
+            messageMap.put("status_code", String.valueOf(errorResponse.getStatusCode()));
+            messageMap.put("reason", errorResponse.getReasonPhrase());
+            messageMap.put("web_url", webUrl);
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR_RESPONSE", messageMap);
         }
     }
 
     private void onWebPageReceivedError(String failingUrl, int errorCode, String description, String webUrl) {
         progressBar.setVisibility(View.GONE);
-        Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s';web_url='%s'",
-                failingUrl, errorCode, description, webUrl);
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", failingUrl);
+        messageMap.put("error_code", String.valueOf(errorCode));
+        messageMap.put("desc", description);
+        messageMap.put("web_url", webUrl);
+        ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
         if (errorCode == WebViewClient.ERROR_HOST_LOOKUP &&
                 description.contains(ERR_INTERNET_DISCONNECTED) &&
                 globalError != null && swipeRefreshLayout != null) {
@@ -638,7 +653,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
             globalError.setVisibility(View.VISIBLE);
-            swipeRefreshLayout.setVisibility(View.GONE);
+            if (swipeRefreshLayout!= null) {
+                swipeRefreshLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -653,6 +670,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
         if (getActivity() == null) {
+            return false;
+        }
+        if ("".equals(url)) {
             return false;
         }
         Uri uri = Uri.parse(url);
@@ -718,11 +738,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
 
-        if (url.contains(PARAM_EXTERNAL)) {
+        if (url.contains(PARAM_EXTERNAL_TRUE)) {
             try {
-                Intent destination = new Intent(Intent.ACTION_VIEW);
-                destination.setData(Uri.parse(url));
-                startActivity(destination);
+                routeToNativeBrowser(url);
                 hasMoveToNativePage = true;
                 return true;
             } catch (ActivityNotFoundException e) {
@@ -753,6 +771,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 try {
                     hasMoveToNativePage = true;
                     startActivity(intent);
+                    finishActivityIfBackPressedDisabled(hasMoveToNativePage);
                 } catch (Exception ignored) {
                 }
                 return true;
@@ -764,13 +783,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
+        finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private void routeToNativeBrowser(String browserUrl){
+        RouteManager.route(getContext(), ApplinkConst.BROWSER + "?url=" + browserUrl);
     }
 
     private void logApplinkErrorOpen(String url) {
         String referrer = getPreviousUri();
-        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s';journey='-'",
-                getClass().getSimpleName(), referrer, url);
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "Webview");
+        messageMap.put("source", getClass().getSimpleName());
+        messageMap.put("referrer", referrer);
+        messageMap.put("uri", url);
+        messageMap.put("journey", "-");
+        ServerLogger.log(Priority.P1, "APPLINK_OPEN_ERROR", messageMap);
     }
 
     private void checkActivityFinish() {
@@ -842,6 +871,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     }
 
+    // If back pressed is disabled and the webview has moved to a native page,
+    // finish the webview activity to avoid user not being able to get out of the webview.
+    private void finishActivityIfBackPressedDisabled(boolean hasMoveToNativePage) {
+        if (hasMoveToNativePage && getActivity() != null
+                && getActivity() instanceof BaseSimpleWebViewActivity
+                && !((BaseSimpleWebViewActivity) getActivity()).getBackPressedEnabled()) {
+            getActivity().finish();
+        }
+    }
 
     public TkpdWebView getWebView() {
         return webView;
@@ -856,12 +894,16 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     public void reloadPage() {
-        BaseSimpleWebViewActivity activity = (BaseSimpleWebViewActivity) getActivity();
-        if (activity!= null) {
-            activity.setWebViewTitle("");
+        Activity activity = getActivity();
+        if (activity instanceof BaseSimpleWebViewActivity) {
+            ((BaseSimpleWebViewActivity) activity).setWebViewTitle("");
         }
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
-        globalError.setVisibility(View.GONE);
+        if (swipeRefreshLayout!= null) {
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
+        if (globalError!= null) {
+            globalError.setVisibility(View.GONE);
+        }
         webView.reload();
     }
 

@@ -3,6 +3,7 @@
     "data": {
       "rechargeGetCart": {
         "id": "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
+        "product_id": "123",
         "user_id": 8964392,
         "client_number": "191111410111",
         "title": "Detail Pembayaran",
@@ -141,6 +142,24 @@
               "subtitle": "Rp 500",
               "link_text": "",
               "link_url": "",
+              "tooltip_text": "Nominal pembulatan disesuaikan dengan total tagihan setiap transaksi yang otomatis ditabung dan dapat di cek saldonya di Tokopedia Emas (berpartner dengan Pegadaian)."
+            }
+          },
+          {
+            "id": 0,
+            "transaction_type": "emoney",
+            "tier_id": 3,
+            "opt_in": false,
+            "check_box_disabled": false,
+            "allow_ovo_points": false,
+            "fintech_amount": 1000,
+            "fintech_partner_amount": 1000,
+            "info": {
+              "title": "Fintech product 2",
+              "subtitle": " Rp 1000",
+              "link_text": "",
+              "link_url": "",
+              "icon_url": "https://ecs7.tokopedia.net/img/qfBCeS/2021/3/3/286b8ac3-3eec-4459-a464-3cf3eff8a8bd.png",
               "tooltip_text": "Nominal pembulatan disesuaikan dengan total tagihan setiap transaksi yang otomatis ditabung dan dapat di cek saldonya di Tokopedia Emas (berpartner dengan Pegadaian)."
             }
           }

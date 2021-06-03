@@ -10,10 +10,11 @@ object DigitalCheckoutConst {
         const val REQUEST_BODY_OTP_CART_TYPE = "cart"
     }
 
-    object AdditionalInfo {
-        const val STRING_PRICE = "Harga"
-        const val STRING_PROMO = "Promo"
-        const val STRING_TOTAL_PAYMENT = "Total Bayar"
-        const val STRING_PAYMENT = "Pembayaran"
+    object SummaryInfo {
+        const val STRING_SUBTOTAL_TAGIHAN = "Subtotal Tagihan"
+        const val STRING_KODE_PROMO = "Kode Promo"
+
+        const val SUMMARY_TOTAL_PAYMENT_POSITION = 0
+        const val SUMMARY_PROMO_CODE_POSITION = 1
     }
 }

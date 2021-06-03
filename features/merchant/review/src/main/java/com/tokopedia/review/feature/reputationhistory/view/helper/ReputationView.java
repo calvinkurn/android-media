@@ -5,12 +5,12 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.Stats;
 import com.tokopedia.review.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author normansyahputa on 3/20/17.
@@ -19,7 +19,7 @@ import com.tokopedia.review.R;
 public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationUiModel> {
 
     LinearLayout reputationBadgeListener;
-    TextView reputationPoints;
+    Typography reputationPoints;
     @LayoutRes
     private int defaultLayoutId;
 
@@ -29,17 +29,7 @@ public class ReputationView extends FrameLayout implements BaseView<ReputationVi
         LayoutInflater.from(context).inflate(defaultLayoutId, this);
 
         reputationBadgeListener = (LinearLayout) findViewById(R.id.reputation_badge_listener);
-        reputationPoints = (TextView) findViewById(R.id.reputation_points);
-    }
-
-    private String separate(String layoutName) {
-        return layoutName.split("/")[2].replace(".xml", "");
-    }
-
-    private int getLayoutByName(String layoutName) {
-        String packageName = getContext().getPackageName();
-        int resId = getResources().getIdentifier(layoutName, "layout", packageName);
-        return resId;
+        reputationPoints = (Typography) findViewById(R.id.reputation_points);
     }
 
     @Override

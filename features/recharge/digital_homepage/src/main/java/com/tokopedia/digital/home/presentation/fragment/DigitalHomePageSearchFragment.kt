@@ -84,9 +84,9 @@ open class DigitalHomePageSearchFragment: BaseListFragment<DigitalHomePageSearch
             inputMethodManager.showSoftInput(digital_homepage_search_view_search_bar.searchBarTextField, InputMethod.SHOW_FORCED)
         }
 
-        val recyclerView = getRecyclerView(view) as VerticalRecyclerView
-        recyclerView.clearItemDecoration()
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val recyclerView = getRecyclerView(view) as? VerticalRecyclerView
+        recyclerView?.clearItemDecoration()
+        recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     open fun onSearchBarTextChanged(text: String) { searchCategory(text) }

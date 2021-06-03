@@ -13,18 +13,19 @@
         android:focusableInTouchMode="true"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        app:srcCompat="@drawable/setting_rm_header_background_ramadhan"
+        app:srcCompat="@drawable/setting_regular_header"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_other_menu_thematic"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:translationY="@dimen/layout_lvl2"
+        android:id="@+id/shopStatusHeaderIcon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.117"
+        app:layout_constraintHorizontal_bias="0.867"
         app:layout_constraintBottom_toBottomOf="@id/shopStatusHeader"
-        app:layout_constraintTop_toTopOf="@id/shopStatusHeader"
+        app:layout_constraintStart_toStartOf="@id/shopStatusHeader"
         app:layout_constraintEnd_toEndOf="@id/shopStatusHeader"
-        tools:src="@tools:sample/avatars"/>
+        tools:src="@drawable/ic_pm_icon_header"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/otherMenuScrollView"
@@ -43,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_header_height_extra"
                 android:layout_marginTop="@dimen/setting_header_height"
-                android:background="@color/Neutral_N0"
+                android:background="@color/Unify_N0"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <include

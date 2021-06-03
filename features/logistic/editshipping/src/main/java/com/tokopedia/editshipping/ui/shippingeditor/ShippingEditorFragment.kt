@@ -557,11 +557,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         tvCourierInactive?.text = getString(R.string.text_header_validate_courier_not_covered, courierCount)
         btnPrimaryHorizontal?.text = getString(R.string.button_deactivate)
         btnPrimaryHorizontal?.setOnClickListener {
+            viewModel.saveShippingData(userSession.shopId.toLong(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
             bottomSheetCourierInactive?.dismiss()
         }
         btnSecondaryHorizontal?.text = getString(R.string.button_activate)
         btnSecondaryHorizontal?.setOnClickListener {
-            viewModel.saveShippingData(userSession.shopId.toLong(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
             bottomSheetCourierInactive?.dismiss()
         }
         tickerChargeBoCourierInactive?.apply {

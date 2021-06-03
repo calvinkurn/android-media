@@ -4,17 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.*
-import com.tokopedia.flight.searchV4.domain.FlightSearchCountUseCase
-import com.tokopedia.flight.searchV4.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat
-import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
+import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
+import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.statistics.AirlineStat
+import com.tokopedia.flight.search.presentation.model.statistics.FlightSearchStatisticModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +24,8 @@ import javax.inject.Inject
 class FlightFilterViewModel @Inject constructor(
         private val flightSearchCountUseCase: FlightSearchCountUseCase,
         private val flightSearchStatisticUseCase: FlightSearchStatisticsUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     private val mutableSelectedSort = MutableLiveData<Int>()
     val selectedSort: LiveData<Int>
@@ -56,57 +56,57 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     fun init(selectedSort: Int, filterModel: FlightFilterModel) {
-        mutableSelectedSort.value = selectedSort
-        mutableFilterModel.value = filterModel
+        mutableSelectedSort.postValue(selectedSort)
+        mutableFilterModel.postValue(filterModel)
 
         getStatistics()
         getFlightCount()
     }
 
     fun setSelectedSort(selectedId: Int) {
-        mutableSelectedSort.value = selectedId
+        mutableSelectedSort.postValue(selectedId)
     }
 
     fun filterTransit(selectedTransits: List<TransitEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.transitTypeList = selectedTransits.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterDepartureTime(selectedDepartureTimes: List<DepartureTimeEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.departureTimeList = selectedDepartureTimes.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterArrivalTime(selectedArrivalTimes: List<DepartureTimeEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.arrivalTimeList = selectedArrivalTimes.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterAirlines(selectedArlines: List<String>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.airlineList = selectedArlines.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterFacilities(selectedFacilities: List<FlightFilterFacilityEnum>) {
         val updatedFilterModel = (filterModel.value as FlightFilterModel)
         updatedFilterModel.facilityList = selectedFacilities.toMutableList()
-        mutableFilterModel.value = updatedFilterModel
+        mutableFilterModel.postValue(updatedFilterModel)
     }
 
     fun filterPrices(minPrice: Int, maxPrice: Int) {
         val updateFilterModel = (filterModel.value as FlightFilterModel)
         updateFilterModel.priceMin = minPrice
         updateFilterModel.priceMax = maxPrice
-        mutableFilterModel.value = updateFilterModel
+        mutableFilterModel.postValue(updateFilterModel)
     }
 
     fun resetFilter() {
-        mutableSelectedSort.value = SORT_DEFAULT_VALUE
-        mutableFilterModel.value = resetFilterModel()
+        mutableSelectedSort.postValue(SORT_DEFAULT_VALUE)
+        mutableFilterModel.postValue(resetFilterModel())
     }
 
     fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
@@ -116,7 +116,7 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     private fun getStatistics() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             filterModel.value?.let {
                 mutableStatisticModel.postValue(flightSearchStatisticUseCase.execute(it))
             }
@@ -124,7 +124,7 @@ class FlightFilterViewModel @Inject constructor(
     }
 
     private fun getFlightCount() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             filterModel.value?.run {
                 mediatorFlightCount.postValue(flightSearchCountUseCase.execute(filterModel.value!!))
             }

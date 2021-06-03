@@ -13,7 +13,7 @@
         style="@style/CheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:buttonTint="@color/checkbox_color_state"
+        app:buttonTint="@color/filter_dms_checkbox_color_state"
         tools:text="Free Returns"/>
 
 </FrameLayout>

@@ -75,7 +75,7 @@ class ChatSettingFragment : BaseListFragment<Visitable<*>, ChatSettingTypeFactor
         val list = getRecyclerView(view)
         val decoration = ChatSettingDividerItemDecoration(context)
         removeAllItemDecoration(list)
-        list.addItemDecoration(decoration)
+        list?.addItemDecoration(decoration)
     }
 
     private fun removeAllItemDecoration(list: RecyclerView?) {

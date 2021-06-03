@@ -4,7 +4,7 @@
         <activity android:name=".view.activity.ReferralActivity"
             android:theme="@style/Theme.White">
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -20,7 +20,7 @@
         <activity android:name=".view.activity.FriendsWelcomeActivity"
             android:theme="@style/Theme.White" >
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -40,7 +40,7 @@
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.White" >
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

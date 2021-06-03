@@ -167,7 +167,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             if (hasClicked == false ) {
                 val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
                 val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceTrackingData()
-                source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
+                val eventLabel = chooseAddressWidgetListener?.getEventLabelHostPage()
+                source?.let { _source -> eventLabel?.let { _eventLabel -> ChooseAddressTracking.onClickWidget(_source, userSession.userId, _eventLabel) } }
                 val chooseAddressBottomSheet = ChooseAddressBottomSheet()
                 chooseAddressBottomSheet.setListener(this)
                 chooseAddressBottomSheet.show(fragment?.childFragmentManager)
@@ -181,7 +182,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     override fun onAddressDataChanged() {
-        buttonChooseAddress?.let {
+        val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+        fragment?.view?.let {
             Toaster.build(it, context.getString(R.string.toaster_success_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
         chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromWidget()
@@ -202,7 +204,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     private fun onLocalizingAddressError() {
-        buttonChooseAddress?.let {
+        val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+        fragment?.view?.let {
             Toaster.build(it, context.getString(R.string.toaster_failed_chosen_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
         chooseAddressWidgetListener?.onLocalizingAddressServerDown()
@@ -258,6 +261,14 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          * host/fragment need to refresh their page
          */
         fun onLocalizingAddressLoginSuccess()
+
+        /**
+         * String Event Label of Host Page
+         * By default, this method will return String empty
+         */
+        fun getEventLabelHostPage(): String {
+            return ""
+        }
     }
 
 }

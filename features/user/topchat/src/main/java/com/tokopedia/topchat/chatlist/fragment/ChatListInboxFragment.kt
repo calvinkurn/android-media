@@ -28,7 +28,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Menus
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
@@ -66,6 +65,7 @@ import com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -78,7 +78,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         ChatListItemListener, LifecycleOwner, InboxFragment {
 
     @Inject
@@ -294,6 +294,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
             broadCastButton?.hide()
         } else {
             viewModel.loadChatBlastSellerMetaData()
+            viewModel.loadChatBlastSellerMetaData()
         }
     }
 
@@ -373,7 +374,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     chatFilter?.updateIsWhiteListTopBot(isWhiteListTopBot)
                 }
         )
-        viewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
+        viewModel.isChatAdminEligible.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
                     result.data.let { isEligible ->
@@ -388,7 +389,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
                     showGetListError(result.throwable)
                 }
             }
-        }
+        })
     }
 
     private fun setupWebSocketObserver() {
@@ -490,8 +491,8 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     private fun animateWhenOnTop() {
-        if ((getRecyclerView(view).layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == 0) {
-            getRecyclerView(view).smoothScrollToPosition(0)
+        if ((getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() == 0) {
+            getRecyclerView(view)?.smoothScrollToPosition(0)
         }
     }
 
@@ -514,7 +515,7 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private fun isFirstPage(): Boolean = currentPage == 1
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 if (totalItemsCount > 1) {
@@ -547,15 +548,15 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     private fun showFilterDialog() {
         activity?.let {
             if (filterMenu.isAdded) return@let
-            val itemMenus = ArrayList<Menus.ItemMenus>()
+            val itemMenus = ArrayList<TopchatItemMenu>()
             val arrayFilterString = viewModel.getFilterTittles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
-                if (index == filterChecked) itemMenus.add(Menus.ItemMenus(title, true))
-                else itemMenus.add(Menus.ItemMenus(title, false))
+                if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, true))
+                else itemMenus.add(TopchatItemMenu(title, false))
             }
 
-            val title = getString(com.tokopedia.design.R.string.label_filter)
+            val title = getString(R.string.menu_chat_filter)
             filterMenu.apply {
                 setTitle(title)
                 setItemMenuList(itemMenus)
@@ -580,12 +581,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun initInjector() {
-        DaggerChatListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .chatListContextModule(context?.let { ChatListContextModule(it) })
-                .build()
+        generateChatListComponent()
                 .inject(this)
     }
+
+    protected open fun generateChatListComponent() = DaggerChatListComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .chatListContextModule(context?.let { ChatListContextModule(it) })
+            .build()
 
     override fun loadData(page: Int) {
         viewModel.getChatListMessage(page, role)

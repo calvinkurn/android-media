@@ -2,7 +2,7 @@ package com.tokopedia.homenav.mainnav.view.datamodel.orderlist
 
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.OrderListTypeFactory
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class OrderProductModel(
         val navProductModel: NavProductOrder
