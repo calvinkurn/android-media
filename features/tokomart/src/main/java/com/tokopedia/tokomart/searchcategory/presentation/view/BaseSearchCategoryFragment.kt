@@ -180,7 +180,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureMiniCart() {
-        val shopIds = listOf("123")
+        val shopIds = listOf(getViewModel().shopId)
 
         miniCartWidget?.initialize(
                 shopIds = shopIds,
@@ -418,9 +418,9 @@ abstract class BaseSearchCategoryFragment:
 
         if (message.isEmpty()) {
             val successMessage = getString(R.string.tokomart_add_to_cart_success)
-            Toaster.build(view, successMessage, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            Toaster.build(view, successMessage, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
         } else {
-            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

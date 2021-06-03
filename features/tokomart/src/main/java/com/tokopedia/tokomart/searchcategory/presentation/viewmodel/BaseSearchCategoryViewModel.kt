@@ -13,6 +13,7 @@ import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_SHOP_ID_PLEASE_DELETE
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -75,6 +76,7 @@ abstract class BaseSearchCategoryViewModel(
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
+    val shopId: String = HARDCODED_SHOP_ID_PLEASE_DELETE
     var autoCompleteApplink = ""
         private set
 
@@ -177,11 +179,11 @@ abstract class BaseSearchCategoryViewModel(
                 headerDataView.categoryFilterDataValue.filter
 
         filterController.initFilterController(queryParamMutable, filterList)
-        isRefreshPageMutableLiveData.value = true
 
         createVisitableListFirstPage(headerDataView, contentDataView)
         clearVisitableListLiveData()
         updateVisitableListLiveData()
+        updateIsRefreshPage()
         updateNextPageData()
     }
 
@@ -297,7 +299,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
             contentDataView.aceSearchProductData.productList.map(::mapToProductItemDataView)
 
-    private fun mapToProductItemDataView(product: Product): ProductItemDataView {
+    protected open fun mapToProductItemDataView(product: Product): ProductItemDataView {
         return ProductItemDataView(
                 id = product.id,
                 imageUrl300 = product.imageUrl300,
@@ -331,12 +333,12 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun createVariantATCDataView(product: Product) =
+    protected open fun createVariantATCDataView(product: Product) =
             if (product.childs.isNotEmpty())
                 VariantATCDataView()
             else null
 
-    private fun createNonVariantATCDataView(product: Product) =
+    protected open fun createNonVariantATCDataView(product: Product) =
             if (product.childs.isEmpty())
                 NonVariantATCDataView(
                     minQuantity = product.minOrder,
@@ -355,12 +357,16 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createFooterVisitableList() = listOf<Visitable<*>>()
 
-    private fun clearVisitableListLiveData() {
+    protected fun clearVisitableListLiveData() {
         visitableListMutableLiveData.value = listOf()
     }
 
     protected fun updateVisitableListLiveData() {
         visitableListMutableLiveData.value = visitableList
+    }
+
+    protected fun updateIsRefreshPage() {
+        isRefreshPageMutableLiveData.value = true
     }
 
     protected open fun updateNextPageData() {

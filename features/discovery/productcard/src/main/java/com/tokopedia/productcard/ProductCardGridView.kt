@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
@@ -70,7 +71,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         renderQuantityEditorNonVariant(productCardModel)
 
-        renderVariant(productCardModel)
+        renderChooseVariant(productCardModel)
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
@@ -171,18 +172,18 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
         val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
 
-        quantityEditorNonVariant?.shouldShowWithAction(shouldShowQuantityEditor) {
-            configureQuantityEditorDebounce()
+        quantityEditorNonVariant?.showWithCondition(shouldShowQuantityEditor)
+        quantityEditorNonVariant?.configureQuantityEditor(productCardModel)
+    }
 
-            productCardModel.nonVariant?.let {
-                quantityEditorNonVariant?.setValue(it.quantity)
-                quantityEditorNonVariant?.maxValue = it.maxQuantity
-                quantityEditorNonVariant?.minValue = it.minQuantity
-            }
+    private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {
+        val nonVariant = productCardModel.nonVariant ?: return
 
-            quantityEditorNonVariant?.setValueChangedListener { newValue, _, _ ->
-                quantityEditorDebounce?.onQuantityChanged(newValue)
-            }
+        configureQuantityEditorDebounce()
+        configureQuantitySettings(nonVariant)
+
+        setValueChangedListener { newValue, _, _ ->
+            quantityEditorDebounce?.onQuantityChanged(newValue)
         }
     }
 
@@ -215,7 +216,16 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
                 .subscribe(quantityEditorSubscriber)
     }
 
-    private fun renderVariant(productCardModel: ProductCardModel) {
+    private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
+        val quantity = nonVariant.quantity
+        if (quantity > 0)
+            this.setValue(quantity)
+
+        this.maxValue = nonVariant.maxQuantity
+        this.minValue = nonVariant.minQuantity
+    }
+
+    private fun renderChooseVariant(productCardModel: ProductCardModel) {
         buttonAddVariant?.shouldShowWithAction(productCardModel.hasVariant()) {
             renderButtonAddVariant(productCardModel)
         }
