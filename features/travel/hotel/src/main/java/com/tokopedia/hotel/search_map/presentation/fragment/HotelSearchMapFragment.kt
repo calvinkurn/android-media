@@ -362,6 +362,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         if(zoomLevel <= MAX_RADIUS){
             hideFindNearHereView()
             showInfoMaxRadius()
+        }else{
+            hideInfoMaxRadius()
+            showFindNearHereView()
         }
     }
 
@@ -384,13 +387,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun hideInfoMaxRadius(){
         view?.let {
-            fabHotelInfoMaxRadius.gone()
+            animateInfoMaxRadius(false)
         }
     }
 
     private fun showInfoMaxRadius(){
         view?.let {
-            fabHotelInfoMaxRadius.gone()
+            animateInfoMaxRadius(true)
         }
     }
 
@@ -1166,6 +1169,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
+    private fun animateInfoMaxRadius(visibility: Boolean){
+        val alphaValue: Float = if(visibility) 1.0f else 0.0f
+        ObjectAnimator.ofFloat(fabHotelInfoMaxRadius, FAB_MAX_RADIUS, alphaValue).apply {
+            start()
+        }
+    }
+
     //for setup quick filter after click submit in bottom sheet
     private fun setupQuickFilterBaseOnSelectedFilter(selectedFilters: List<ParamFilterV2>) {
         quickFilterSortHotelSearchMap.chipItems?.forEach { it.type = ChipsUnify.TYPE_NORMAL }
@@ -1467,6 +1477,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val BUTTON_RADIUS_PADDING_ALL = 0
         private const val BUTTON_RADIUS_PADDING_RIGHT = 6
         private const val BUTTON_RADIUS_ANIMATION_Y = "translationY"
+        private const val FAB_MAX_RADIUS = "alpha"
 
         private const val INIT_MARKER_TAG = 0
         private const val DEFAULT_INCREMENT_PAGE = 1
