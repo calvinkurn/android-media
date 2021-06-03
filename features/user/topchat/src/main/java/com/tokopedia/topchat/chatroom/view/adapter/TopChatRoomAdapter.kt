@@ -427,6 +427,17 @@ class TopChatRoomAdapter constructor(
         _srwUiModel.value = null
     }
 
+    /**
+     * Remove SRW bubble if [productId] is not relevant with
+     * current visible SRW bubble
+     */
+    fun removeSrwBubble(productId: String) {
+        val srwModel = srwUiModel.value ?: return
+        if (!srwModel.isRelatedTo(productId)) {
+            removeSrwBubble()
+        }
+    }
+
     fun isLastMsgSrwBubble(): Boolean {
         return visitables.getOrNull(0) is SrwBubbleUiModel
     }

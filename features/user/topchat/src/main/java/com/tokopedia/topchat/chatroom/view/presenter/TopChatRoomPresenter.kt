@@ -246,22 +246,26 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onReplyMessage(pojo: ChatSocketPojo) {
-        val temp = mapToVisitable(pojo)
-        view?.onReceiveMessageEvent(temp)
-        handleSrwBubbleState(pojo)
+        val uiModel = mapToVisitable(pojo)
+        view?.onReceiveMessageEvent(uiModel)
+        handleSrwBubbleState(pojo, uiModel)
         if (!pojo.isOpposite) {
-            checkDummyAndRemove(temp)
+            checkDummyAndRemove(uiModel)
         } else {
             readMessage()
         }
     }
 
-    private fun handleSrwBubbleState(pojo: ChatSocketPojo) {
+    private fun handleSrwBubbleState(pojo: ChatSocketPojo, uiModel: Visitable<*>) {
         when (pojo.attachment?.type) {
             AttachmentType.Companion.TYPE_INVOICE_SEND,
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
-            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT,
             AttachmentType.Companion.TYPE_VOUCHER-> view?.removeSrwBubble()
+            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
+                if (uiModel is ProductAttachmentViewModel) {
+                    view?.removeSrwBubble(uiModel.productId)
+                }
+            }
         }
     }
 

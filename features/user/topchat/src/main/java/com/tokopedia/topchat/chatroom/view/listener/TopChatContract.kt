@@ -76,6 +76,12 @@ interface TopChatContract {
         fun collapseSrwPreview()
         fun expandSrwPreview()
         fun removeSrwBubble()
+
+        /**
+         * Remove SRW bubble if [productId] is not relevant with
+         * current visible SRW bubble
+         */
+        fun removeSrwBubble(productId: String)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -86,16 +92,17 @@ interface TopChatContract {
         fun stopTyping()
 
         fun getExistingChat(
-                messageId: String,
-                onError: (Throwable) -> Unit,
-                onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit)
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
+        )
 
         fun getMessageId(
-                toUserId: String,
-                toShopId: String,
-                source: String,
-                onError: (Throwable) -> Unit,
-                onSuccessGetMessageId: (String) -> Unit
+            toUserId: String,
+            toShopId: String,
+            source: String,
+            onError: (Throwable) -> Unit,
+            onSuccessGetMessageId: (String) -> Unit
         )
 
         fun readMessage()
@@ -105,47 +112,63 @@ interface TopChatContract {
         fun startUploadImages(it: ImageUploadViewModel)
 
         fun loadTopChat(
-                messageId: String,
-                onError: (Throwable) -> Unit,
-                onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
         )
 
         fun loadBottomChat(
-                messageId: String,
-                onError: (Throwable) -> Unit,
-                onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
         )
 
         fun isUploading(): Boolean
 
-        fun deleteChat(messageId: String,
-                       onError: (Throwable) -> Unit,
-                       onSuccessDeleteConversation: () -> Unit)
-
-        fun getShopFollowingStatus(shopId: Long,
-                                   onError: (Throwable) -> Unit,
-                                   onSuccessGetShopFollowingStatus: (Boolean) -> Unit)
-
-        fun copyVoucherCode(fromUid: String?, replyId: String, blastId: String, attachmentId: String, replyTime: String?)
-
-        fun followUnfollowShop(
-                shopId: String,
-                onError: (Throwable) -> Unit,
-                onSuccess: (Boolean) -> Unit,
-                action: ToggleFavouriteShopUseCase.Action? = null
+        fun deleteChat(
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onSuccessDeleteConversation: () -> Unit
         )
 
-        fun sendAttachmentsAndMessage(messageId: String, sendMessage: String,
-                                      startTime: String, opponentId: String,
-                                      onSendingMessage: () -> Unit)
+        fun getShopFollowingStatus(
+            shopId: Long,
+            onError: (Throwable) -> Unit,
+            onSuccessGetShopFollowingStatus: (Boolean) -> Unit
+        )
 
-        fun sendAttachmentsAndSticker(messageId: String, sticker: Sticker,
-                                      startTime: String, opponentId: String,
-                                      onSendingMessage: () -> Unit)
+        fun copyVoucherCode(
+            fromUid: String?,
+            replyId: String,
+            blastId: String,
+            attachmentId: String,
+            replyTime: String?
+        )
 
-        fun sendAttachmentsAndSrw(messageId: String, question: QuestionUiModel,
-                                  startTime: String, opponentId: String,
-                                  onSendingMessage: () -> Unit)
+        fun followUnfollowShop(
+            shopId: String,
+            onError: (Throwable) -> Unit,
+            onSuccess: (Boolean) -> Unit,
+            action: ToggleFavouriteShopUseCase.Action? = null
+        )
+
+        fun sendAttachmentsAndMessage(
+            messageId: String, sendMessage: String,
+            startTime: String, opponentId: String,
+            onSendingMessage: () -> Unit
+        )
+
+        fun sendAttachmentsAndSticker(
+            messageId: String, sticker: Sticker,
+            startTime: String, opponentId: String,
+            onSendingMessage: () -> Unit
+        )
+
+        fun sendAttachmentsAndSrw(
+            messageId: String, question: QuestionUiModel,
+            startTime: String, opponentId: String,
+            onSendingMessage: () -> Unit
+        )
 
         fun initAttachmentPreview()
 
@@ -155,18 +178,21 @@ interface TopChatContract {
 
         fun onClickBannedProduct(liteUrl: String)
 
-        fun loadChatRoomSettings(messageId: String, onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit)
+        fun loadChatRoomSettings(
+            messageId: String,
+            onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
+        )
 
         fun addToWishList(
-                productId: String,
-                userId: String,
-                wishlistActionListener: WishListActionListener
+            productId: String,
+            userId: String,
+            wishlistActionListener: WishListActionListener
         )
 
         fun removeFromWishList(
-                productId: String,
-                userId: String,
-                wishListActionListener: WishListActionListener
+            productId: String,
+            userId: String,
+            wishListActionListener: WishListActionListener
         )
 
         fun getOrderProgress(messageId: String)
@@ -183,13 +209,29 @@ interface TopChatContract {
 
         fun resetUnreadMessage()
 
-        fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
+        fun requestBlockPromo(
+            messageId: String,
+            onSuccess: (ChatSettingsResponse) -> Unit,
+            onError: (Throwable) -> Unit
+        )
 
-        fun requestAllowPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
+        fun requestAllowPromo(
+            messageId: String,
+            onSuccess: (ChatSettingsResponse) -> Unit,
+            onError: (Throwable) -> Unit
+        )
 
-        fun blockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
+        fun blockChat(
+            messageId: String,
+            onSuccess: (ChatSettingsResponse) -> Unit,
+            onError: (Throwable) -> Unit
+        )
 
-        fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit)
+        fun unBlockChat(
+            messageId: String,
+            onSuccess: (ChatSettingsResponse) -> Unit,
+            onError: (Throwable) -> Unit
+        )
 
         fun getBackground()
 
@@ -198,15 +240,15 @@ interface TopChatContract {
         fun hasEmptyAttachmentPreview(): Boolean
 
         fun addProductToCart(
-                requestParams: RequestParams,
-                onSuccessAddToCart: (data: DataModel) -> Unit,
-                onError: (msg: String) -> Unit
+            requestParams: RequestParams,
+            onSuccessAddToCart: (data: DataModel) -> Unit,
+            onError: (msg: String) -> Unit
         )
 
         fun addOngoingUpdateProductStock(
-                productId: String,
-                product: ProductAttachmentViewModel, adapterPosition: Int,
-                parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
+            productId: String,
+            product: ProductAttachmentViewModel, adapterPosition: Int,
+            parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
 
         fun getSmartReplyWidget(msgId: String)
@@ -214,9 +256,9 @@ interface TopChatContract {
         fun getProductIdPreview(): List<String>
         fun getAttachmentsPreview(): List<SendablePreview>
         fun sendSrwBubble(
-                messageId: String, question: QuestionUiModel,
-                products: List<SendablePreview>, opponentId: String,
-                onSendingMessage: () -> Unit
+            messageId: String, question: QuestionUiModel,
+            products: List<SendablePreview>, opponentId: String,
+            onSendingMessage: () -> Unit
         )
     }
 }
