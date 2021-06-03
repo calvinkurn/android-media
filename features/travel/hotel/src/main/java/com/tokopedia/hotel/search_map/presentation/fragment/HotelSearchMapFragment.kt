@@ -331,6 +331,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         initGetMyLocation()
         setupPersistentBottomSheet()
         halfExpandBottomSheet()
+        initInfoMaxRadius()
 
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
 
@@ -350,8 +351,46 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         when (reason) {
             GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE -> {
                 showFindNearHereView()
+                getInfoMaxRadius()
             }
             else -> hideFindNearHereView()
+        }
+    }
+
+    private fun getInfoMaxRadius(){
+        val zoomLevel = googleMap.cameraPosition.zoom
+        if(zoomLevel <= MAX_RADIUS){
+            hideFindNearHereView()
+            showInfoMaxRadius()
+        }
+    }
+
+    private fun initInfoMaxRadius() {
+        context?.let {
+            val wrapper = LinearLayout(it)
+            wrapper.gravity = Gravity.CENTER
+
+            val textView = Typography(it)
+            textView.apply {
+                setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+                text = getString(R.string.hotel_search_map_max_radius_info)
+            }
+            wrapper.addView(textView)
+            fabHotelInfoMaxRadius.addItem(wrapper)
+        }
+        hideInfoMaxRadius()
+    }
+
+    private fun hideInfoMaxRadius(){
+        view?.let {
+            fabHotelInfoMaxRadius.gone()
+        }
+    }
+
+    private fun showInfoMaxRadius(){
+        view?.let {
+            fabHotelInfoMaxRadius.gone()
         }
     }
 
@@ -1446,6 +1485,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
         private const val MAPS_ZOOM_IN: Float = 11f
         private const val MAPS_ZOOM_OUT: Float = 9f
+        private const val MAX_RADIUS: Float = 10.5f
 
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
