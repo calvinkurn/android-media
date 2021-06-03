@@ -255,20 +255,22 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun onSuccessTransaction(result: AddToCartDataModel) {
         val cartId = result.data.cartId
-        when (buttonActionType) {
-            ProductDetailCommonConstant.OCS_BUTTON -> {
-                onSuccessOcs(result)
-            }
-            ProductDetailCommonConstant.OCC_BUTTON -> {
-                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
-            }
-            ProductDetailCommonConstant.BUY_BUTTON -> {
-                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
-            }
-            ProductDetailCommonConstant.ATC_BUTTON -> {
-                onSuccessAtc(result.errorMessage.firstOrNull())
-            }
-        }
+        //todo change
+        onSuccessAtc(result.errorMessage.firstOrNull())
+//        when (buttonActionType) {
+//            ProductDetailCommonConstant.OCS_BUTTON -> {
+//                onSuccessOcs(result)
+//            }
+//            ProductDetailCommonConstant.OCC_BUTTON -> {
+//                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+//            }
+//            ProductDetailCommonConstant.BUY_BUTTON -> {
+//                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
+//            }
+//            ProductDetailCommonConstant.ATC_BUTTON -> {
+//                onSuccessAtc(result.errorMessage.firstOrNull())
+//            }
+//        }
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -342,7 +344,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton, false)
+        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
         doAtc(atcKey)
     }
 

@@ -69,7 +69,6 @@ object ProductDetailCommonConstant{
     const val ATC_BUTTON = 2
     const val OCS_BUTTON = 3
     const val OCC_BUTTON = 4
-    const val LEASING_BUTTON = 5
     const val TRADEIN_BUTTON = 6
     const val TRADEIN_AFTER_DIAGNOSE = 7
     const val REMIND_ME_BUTTON = 8

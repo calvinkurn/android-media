@@ -36,6 +36,7 @@ class PartialButtonActionView private constructor(val view: View,
     var miniCartItem: MiniCartItem? = null
     var isVariant: Boolean = false
     var minQuantity: Int = 0
+    var alternateButtonVariant: String = ""
 
     private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(R.id.qty_editor_pdp)
 
@@ -43,7 +44,7 @@ class PartialButtonActionView private constructor(val view: View,
         fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
     }
 
-    fun setButtonP1(preOrder: PreOrder?, isLeasing: Boolean) {
+    fun setButtonP1(preOrder: PreOrder?) {
         this.preOrder = preOrder
     }
 
@@ -58,6 +59,7 @@ class PartialButtonActionView private constructor(val view: View,
                    hasTopAdsActive: Boolean,
                    isVariant: Boolean,
                    minQuantity: Int = 1,
+                   alternateButtonVariant: String = "",
                    cartTypeData: CartTypeData? = null,
                    miniCartItem: MiniCartItem? = null) {
 
@@ -70,6 +72,7 @@ class PartialButtonActionView private constructor(val view: View,
         this.miniCartItem = miniCartItem
         this.isVariant = isVariant
         this.minQuantity = minQuantity
+        this.alternateButtonVariant = alternateButtonVariant
         renderButton()
     }
 
@@ -98,18 +101,29 @@ class PartialButtonActionView private constructor(val view: View,
 
         if (!isVariant && miniCartItem != null) {
             renderQuantityButton(miniCartItem?.quantity ?: 1)
-        } else if (isVariant && miniCartItem != null) {
-
+        } else if (isVariant && alternateButtonVariant.isNotEmpty()) {
+            renderNormalButtonCartRedirection(alternateButtonVariant)
         } else {
             renderNormalButtonCartRedirection()
         }
+
+        val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
+        btn_topchat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
+        btn_topchat.setOnClickListener {
+            buttonListener.topChatButtonClicked()
+        }
+
     }
 
-    private fun renderNormalButtonCartRedirection(shouldChangeText: Boolean = false) = with(view) {
-        val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
-        val availableButton = cartTypeData?.availableButtons ?: listOf()
-
-        btn_topchat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
+    private fun renderNormalButtonCartRedirection(alternateButtonVariant: String = "") = with(view) {
+        qtyButtonPdp.hide()
+        val availableButton = cartTypeData?.availableButtons?.map {
+            if (alternateButtonVariant.isNotEmpty()) {
+                it.copy(text = alternateButtonVariant)
+            } else {
+                it
+            }
+        } ?: listOf()
 
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
@@ -127,10 +141,6 @@ class PartialButtonActionView private constructor(val view: View,
             buttonListener.buttonCartTypeClick(availableButton.getOrNull(1)?.cartType
                     ?: "", btn_add_to_cart.text.toString(), availableButton.getOrNull(1)?.showRecommendation
                     ?: false)
-        }
-
-        btn_topchat.setOnClickListener {
-            buttonListener.topChatButtonClicked()
         }
 
         btn_buy_now.generateTheme(availableButton.getOrNull(0)?.color ?: "")
@@ -190,6 +200,7 @@ class PartialButtonActionView private constructor(val view: View,
 
     private fun showNewCheckoutButton() {
         with(view) {
+            qtyButtonPdp.hide()
             hideButtonEmptyAndTopAds()
             btn_topchat.visibility = View.VISIBLE
             btn_buy_now.text = context.getString(
@@ -234,6 +245,7 @@ class PartialButtonActionView private constructor(val view: View,
             btn_topchat.hide()
             btn_buy_now.hide()
             btn_add_to_cart.hide()
+            qtyButtonPdp.hide()
 
             seller_button_container.show()
             if (hasTopAdsActive) {
@@ -251,6 +263,7 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             seller_button_container.hide()
             btn_empty_stock.show()
+            qtyButtonPdp.hide()
             btn_topchat.showWithCondition(!isShopOwner)
             btn_topchat.setOnClickListener { buttonListener.topChatButtonClicked() }
         }

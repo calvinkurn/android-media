@@ -148,8 +148,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
         get() = _loadTopAdsProduct
 
-    private val _miniCartData = MutableLiveData<Map<String, MiniCartItem>?>()
-    val miniCartData: LiveData<Map<String, MiniCartItem>?>
+    private val _miniCartData = MutableLiveData<Boolean>()
+    val miniCartData: LiveData<Boolean>
         get() = _miniCartData
 
     private val _quantityUpdated = MutableLiveData<Pair<Int, MiniCartItem>>()
@@ -267,7 +267,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun iniQuantityFlow() {
         launch {
             _quantityUpdated.asFlow()
-                    .debounce(200)
+                    .debounce(500)
                     .flatMapLatest { request ->
                         hitUpdateCart(request.first, request.second)
                                 .catch {
@@ -285,7 +285,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         if (getDynamicProductInfoP1?.basic?.isTokoNow == false) return
 
         val miniCartData = _p2Data.value?.miniCart
-        if (miniCartData == null) {
+        if (miniCartData.isNullOrEmpty()) {
             _p2Data.value?.miniCart = mapOf(productId to MiniCartItem(
                     cartId = cartId,
                     productId = productId,
@@ -364,6 +364,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getMiniCartItem(): MiniCartItem? {
         return p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
+    }
+
+    fun isParentExistInMiniCart(parentId: String): Boolean {
+        val data = p2Data.value?.miniCart?.values?.toList() ?: listOf()
+        return data.any {
+            it.productParentId == parentId
+        }
     }
 
     fun updateDynamicProductInfoData(data: DynamicProductInfoP1?) {
@@ -522,6 +529,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 }
                 _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
             } else {
+                val isTokoNow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
+                if (isTokoNow) {
+                    updateMiniCartData(result.data.productId.toString(), result.data.cartId, result.data.quantity, result.data.notes)
+                }
+
                 _addToCartLiveData.postValue(result.asSuccess())
             }
         }
@@ -821,13 +833,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
             if (result.miniCartItems.isEmpty()) {
-                _miniCartData.postValue(null)
+                _miniCartData.postValue(false)
             } else {
                 val data = result.miniCartItems.associateBy({ it.productId }) {
                     it
                 }
                 _p2Data.value?.miniCart = data
-                _miniCartData.postValue(data)
+                _miniCartData.postValue(true)
             }
         }) {
         }

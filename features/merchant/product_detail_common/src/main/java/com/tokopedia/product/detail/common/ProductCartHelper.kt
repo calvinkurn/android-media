@@ -49,10 +49,9 @@ object ProductCartHelper {
         }
     }
 
-    fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
+    fun generateButtonAction(it: String, atcButton: Boolean): Int {
         return when {
             atcButton -> ProductDetailCommonConstant.ATC_BUTTON
-            leasing -> ProductDetailCommonConstant.LEASING_BUTTON
             it == ProductDetailCommonConstant.KEY_NORMAL_BUTTON -> {
                 ProductDetailCommonConstant.BUY_BUTTON
             }

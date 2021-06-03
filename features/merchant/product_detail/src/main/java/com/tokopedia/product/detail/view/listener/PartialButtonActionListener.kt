@@ -13,7 +13,6 @@ interface PartialButtonActionListener {
     fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean)
 
     fun topChatButtonClicked()
-    fun leasingButtonClicked()
     fun editProductButtonClicked()
     fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem)
 }

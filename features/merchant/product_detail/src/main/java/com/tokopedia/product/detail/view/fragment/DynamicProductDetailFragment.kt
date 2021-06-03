@@ -352,6 +352,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeTopAdsImageData()
         observeVideoDetail()
         observeShippingAddressChanged()
+        observeUpdateCart()
+        observeMiniCart()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -1250,6 +1252,25 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun observeMiniCart() {
+        viewModel.miniCartData.observe(viewLifecycleOwner) {
+            if (it) {
+                updateButtonState()
+            }
+        }
+    }
+
+    private fun observeUpdateCart() {
+        viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
+            it.doSuccessOrFail({
+                view?.showToasterSuccess(it.data)
+            }) {
+                view?.showToasterError(it.message
+                        ?: "", ctaText = getString(com.tokopedia.design.R.string.oke))
+            }
+        }
+    }
+
     private fun observeShippingAddressChanged() {
         activity?.let { activity ->
             sharedViewModel?.isAddressChanged?.observe(activity, {
@@ -1384,7 +1405,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
             val miniCartItem = if (it.basic.isTokoNow) viewModel.getMiniCartItem() else null
-
+            val alternateText = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) "Perbarui Keranjang" else ""
             actionButtonView.renderData(
                     isWarehouseProduct = !it.isProductActive(),
                     hasShopAuthority = viewModel.hasShopAuthority(),
@@ -1392,6 +1413,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
                     cartTypeData = viewModel.getCartTypeByProductId(),
+                    alternateButtonVariant = alternateText,
                     miniCartItem = miniCartItem)
         }
         showOrHideButton()
@@ -1638,6 +1660,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
+        //todo change
+        if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
+            updateButtonState()
+            return
+        }
+
         when (buttonActionType) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 if (result.data.success == 0) {
@@ -1748,7 +1776,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             navAbTestCondition({ setNavToolbarSearchHint(hint) }, { et_search.setHint(hint) })
             pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), true)
-            actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
+            actionButtonView.setButtonP1(productInfo.data.preOrder)
 
             if (productInfo.basic.category.isAdult) {
                 AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productInfo.basic.productID)
@@ -2750,18 +2778,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
         viewModel.buttonActionText = buttonText
-        val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
-        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton, isLeasing)
+        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
         doAtc(atcKey)
     }
 
     override fun topChatButtonClicked() {
         DynamicProductDetailTracking.Click.eventButtonChatClicked(viewModel.getDynamicProductInfoP1)
         onShopChatClicked()
-    }
-
-    override fun leasingButtonClicked() {
-        doAtc(ProductDetailCommonConstant.LEASING_BUTTON)
     }
 
     override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem) {
@@ -2830,9 +2853,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val isPartialySelected = pdpUiUpdater?.productNewVariantDataModel?.isPartialySelected()
                     ?: false
 
-            if (isVariant) {
-                //todo remove
+            if (isVariant && viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
                 goToAtcVariant()
+                return@let
             }
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON || buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
@@ -2874,10 +2897,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             if (openShipmentBottomSheetWhenError()) return@let
 
             when (buttonActionType) {
-                ProductDetailCommonConstant.LEASING_BUTTON -> {
-                    goToLeasing()
-                    return@let
-                }
                 ProductDetailCommonConstant.TRADEIN_BUTTON -> {
                     goToTradein()
                     return@let
@@ -2975,29 +2994,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             userId = viewModel.userId
         }
         viewModel.addToCart(addToCartOccRequestParams)
-    }
-
-    private fun goToLeasing() {
-        viewModel.getDynamicProductInfoP1?.run {
-            val selectedProductId = basic.productID
-
-            if (!viewModel.isUserSessionActive) {
-                goToLogin()
-                return@run
-            }
-
-            DynamicProductDetailTracking.Click.eventClickApplyLeasing(
-                    viewModel.getDynamicProductInfoP1,
-                    generateVariantString(viewModel.variantData)
-            )
-
-            val urlApplyLeasingWithProductId = String.format(
-                    ProductDetailCommonConstant.URL_APPLY_LEASING,
-                    selectedProductId
-            )
-
-            openWebViewUrl(urlApplyLeasingWithProductId)
-        }
     }
 
     private fun openWebViewUrl(url: String) {
