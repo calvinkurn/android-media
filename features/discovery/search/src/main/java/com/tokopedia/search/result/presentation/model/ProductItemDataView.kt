@@ -64,7 +64,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         return typeFactory?.type(this) ?: 0
     }
 
-    fun getProductAsObjectDataLayer(userId: String, filterSortParams: String, dimension90: String): Any {
+    fun getProductAsObjectDataLayer(filterSortParams: String, dimension90: String): Any {
         return DataLayer.mapOf(
                 "name", productName,
                 "id", productID,
@@ -74,9 +74,8 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
                 "variant", "none / other",
                 "list", actionFieldString,
                 "position", position.toString(),
-                "userId", userId,
-                "shopId", shopID,
                 "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+                "dimension79", shopID,
                 "dimension83", getFreeOngkirDataLayer(),
                 "dimension87", "search result",
                 "dimension88", "search - product",

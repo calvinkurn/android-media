@@ -160,8 +160,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_order"
-                    android:path="@string/path_order_request_cancel"
+                    android:host="@string/host_buyer"
+                    android:path="@string/path_order_buyer_cancellation_request_page"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

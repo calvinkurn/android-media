@@ -103,11 +103,12 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
                 ::singleItemDelete, ::statusChange, ::editGroup, ::onGroupClicked))
     }
 
-    private fun editGroup(groupId: Int) {
+    private fun editGroup(groupId: Int, strategy: String) {
         if (AppUtil.isSellerInstalled(context)) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                 putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+                putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, strategy)
             }
             startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
 

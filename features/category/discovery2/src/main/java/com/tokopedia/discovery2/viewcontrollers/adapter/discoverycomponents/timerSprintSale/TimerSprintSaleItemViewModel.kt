@@ -20,6 +20,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     var timerWithBannerCounter: CountDownTimer? = null
     private val elapsedTime: Long = 1000
+    private val delayBeforeRefresh: Long = 3000
     private val needPageRefresh: MutableLiveData<Boolean> = MutableLiveData()
     private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
     private val restartStoppedTimerEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
@@ -41,7 +42,7 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     fun handleSaleEndSates() {
         when {
             Utils.isFutureSale(getStartDate()) || (Utils.isFutureSaleOngoing(getStartDate(), getEndDate())) -> {
-                needPageRefresh.value = true
+                refreshAfterDelay()
             }
             Utils.isSaleOver(getEndDate()) -> {
                 this@TimerSprintSaleItemViewModel.syncData.value = true
@@ -54,51 +55,23 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
         getComponent(components.parentComponentId, pageEndPoint)?.let { tabItemParent ->
             getComponent(tabItemParent.parentComponentId, pageEndPoint)?.let { tabs ->
                 tabs.data?.let { tabItem ->
-                    if (tabItem.size >= 2 && !tabItem[1].targetComponentId.isNullOrEmpty()) {
-                        val targetComponentIdList = tabItem[1].targetComponentId?.split(",")?.map { it.trim() }
-                        if (!targetComponentIdList.isNullOrEmpty()) {
-                            targetComponentIdList.forEach { componentId ->
-                                getComponent(componentId, pageEndPoint)?.let { componentItem ->
-                                    checkForTimerComponent(componentItem)
-                                }
-                            }
-                        }
+                    if (tabItem.size > 1 ) {
+                        stopTimer()
+                        refreshAfterDelay()
                     }
                 }
             }
         }
     }
 
-    private fun checkForTimerComponent(componentItem: ComponentsItem) {
-        if (componentItem.name == ComponentNames.TimerSprintSale.componentName && !componentItem.data.isNullOrEmpty()) {
-            componentItem.data?.firstOrNull()?.startDate?.let { startDate ->
-                when {
-                    Utils.isFutureSale(startDate) -> {
-                        val currentSystemTime = Calendar.getInstance().time
-                        val parsedEndDate = Utils.parseData(startDate)
-                        parsedEndDate?.let {
-                            val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
-                            if (saleTimeMillis > 0) {
-                                timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, false) { timerData ->
-                                    if (timerData.timeFinish) {
-                                        stopTimer()
-                                        needPageRefresh.value = true
-                                    }
-                                }
-                                timerWithBannerCounter?.start()
-                            }
-                        }
-                    }
-                    Utils.isFutureSaleOngoing(startDate, componentItem.data!![0].endDate
-                            ?: "") -> {
-                        needPageRefresh.value = true
-                    }
-                    else -> {
-                        needPageRefresh.value = true
-                    }
-                }
+    private fun refreshAfterDelay() {
+        timerWithBannerCounter = SaleCountDownTimer(delayBeforeRefresh, elapsedTime, showDays = false, isCurrentTimer = false) { timerData ->
+            if (timerData.timeFinish) {
+                stopTimer()
+                needPageRefresh.value = true
             }
         }
+        timerWithBannerCounter?.start()
     }
 
     fun startTimer(timerUnify: TimerUnifySingle) {

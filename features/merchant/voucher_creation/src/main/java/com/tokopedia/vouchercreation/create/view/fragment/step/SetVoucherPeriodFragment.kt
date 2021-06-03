@@ -25,6 +25,9 @@ import com.tokopedia.kotlin.extensions.convertToDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -89,7 +92,7 @@ class SetVoucherPeriodFragment : Fragment() {
         private const val COMBINED_DATE = "dd MMM yyyy HH:mm"
         private const val COMBINED_DASHED_DATE = "yyyy-MM-dd HH:mm"
 
-        private const val ERROR_MESSAGE = "Error validate voucher period"
+        private const val PERIOD_VALIDATION_ERROR = "Error validate voucher period"
     }
 
     private var onNext: (String, String, String, String) -> Unit = { _,_,_,_ -> }
@@ -278,9 +281,13 @@ class SetVoucherPeriodFragment : Fragment() {
                             }
                         }
                         is Fail -> {
-                            val error = result.throwable.message.toBlankOrString()
-                            view?.showErrorToaster(error)
-                            MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
+                            // show user friendly error message to user
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            view?.showErrorToaster(errorMessage)
+                            // send crash report to firebase crashlytics
+                            MvcErrorHandler.logToCrashlytics(result.throwable, PERIOD_VALIDATION_ERROR)
+                            // log error type to scalyr
+                            ServerLogger.log(Priority.P2, "MVC_PERIOD_VALIDATION_ERROR", mapOf("type" to errorMessage))
                         }
                     }
                     isWaitingForValidation = false
