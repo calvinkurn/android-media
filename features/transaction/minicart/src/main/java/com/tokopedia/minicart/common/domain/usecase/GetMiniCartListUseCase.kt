@@ -271,10 +271,10 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
               "max_char_note": 144,
               "header_title": "Belanjaanmu di TokoNOW!",
               "shopping_summary": {
-                "total_wording": "Total Harga (2 Barang)",
-                "total_value": 200000,
+                "total_wording": "Total Harga (5 Barang)",
+                "total_value": 405000,
                 "discount_total_wording": "Total Diskon Barang",
-                "discount_value": 0,
+                "discount_value": 5000,
                 "payment_total_wording": "Total Bayar",
                 "payment_total_value": 200000
               },

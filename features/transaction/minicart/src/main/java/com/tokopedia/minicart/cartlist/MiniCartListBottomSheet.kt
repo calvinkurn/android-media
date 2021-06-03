@@ -18,7 +18,6 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
@@ -31,7 +30,9 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration) : MiniCartWidgetListener, MiniCartListActionListener {
+class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration,
+                                                  var summaryTransactionBottomSheet: SummaryTransactionBottomSheet)
+    : MiniCartWidgetListener, MiniCartListActionListener {
 
     lateinit var viewModel: MiniCartWidgetViewModel
     private var bottomsheetContainer: CoordinatorLayout? = null
@@ -67,7 +68,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             } else {
                 adapter?.updateList(it.visitables)
             }
-            updateTotalAmount(it.miniCartWidgetData)
+            updateTotalAmount(it.miniCartWidgetUiModel)
             adjustRecyclerViewPaddingBottom()
         })
         viewModel.globalEvent.observe(lifecycleOwner, {
@@ -106,7 +107,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             val view = View.inflate(it, R.layout.layout_bottomsheet_mini_cart_list, null)
             initializeBottomSheet(view, fragmentManager, onDismiss)
             initializeProgressDialog(it)
-            initializeTotalAmount(view)
+            initializeTotalAmount(view, fragmentManager, context)
             initializeRecyclerView(view)
         }
     }
@@ -160,15 +161,14 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun initializeTotalAmount(view: View) {
+    private fun initializeTotalAmount(view: View, fragmentManager: FragmentManager, context: Context) {
         totalAmount = view.findViewById(R.id.total_amount)
         totalAmount?.amountChevronView?.setOnClickListener {
-            // Show total amount bottomsheet
+           viewModel.miniCartListListUiModel.value?.miniCartSummaryTransactionUiModel?.let {
+               summaryTransactionBottomSheet.showSummaryTransactionBottomsheet(it, fragmentManager, context)
+           }
         }
         totalAmount?.enableAmountChevron(true)
-        totalAmount?.amountChevronView?.setOnClickListener {
-
-        }
         totalAmount?.context?.let {
             val chatIcon = getIconUnifyDrawable(it, IconUnify.CHAT, ContextCompat.getColor(it, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)

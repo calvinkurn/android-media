@@ -1,6 +1,5 @@
 package com.tokopedia.minicart.common.widget.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -123,14 +122,26 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         // Calculate total price
         var totalQty = 0
         var totalPrice = 0L
+        var totalValue = 0L
+        var totalDiscount = 0L
         var totalWeight = 0
         miniCartProductList.forEach { visitable ->
             val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
             totalQty += visitable.productQty
             totalPrice += visitable.productQty * price
+            val originalPrice = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice else visitable.productPrice
+            totalValue += visitable.productQty * originalPrice
             totalWeight += visitable.productQty * visitable.productWeight
-            miniCartListListUiModel.value?.miniCartWidgetData?.totalProductPrice = totalPrice
-            miniCartListListUiModel.value?.miniCartWidgetData?.totalProductCount = totalQty
+            val discountValue = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice else 0
+            totalDiscount += visitable.productQty * discountValue
+            miniCartListListUiModel.value?.let {
+                it.miniCartWidgetUiModel.totalProductPrice = totalPrice
+                it.miniCartWidgetUiModel.totalProductCount = totalQty
+                it.miniCartSummaryTransactionUiModel.qty = totalQty
+                it.miniCartSummaryTransactionUiModel.totalValue = totalValue
+                it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
+                it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
+            }
         }
 
         validateOverWeight(totalWeight, visitables)

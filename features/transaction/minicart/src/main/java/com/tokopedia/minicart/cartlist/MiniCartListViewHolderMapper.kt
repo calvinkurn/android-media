@@ -13,12 +13,25 @@ class MiniCartListViewHolderMapper @Inject constructor() {
     fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
         return MiniCartListUiModel().apply {
             title = miniCartData.data.headerTitle
-            miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
+            miniCartWidgetUiModel = mapMiniCartWidgetData(miniCartData)
+            miniCartSummaryTransactionUiModel = mapMiniCartSummaryTransactionUiModel(miniCartData)
             visitables = mapVisitables(miniCartData)
             if (miniCartData.data.availableSection.availableGroup.isNotEmpty()) {
                 maximumShippingWeight = miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight
                 maximumShippingWeightErrorMessage = miniCartData.data.availableSection.availableGroup[0].shop.maximumWeightWording
             }
+        }
+    }
+
+    private fun mapMiniCartSummaryTransactionUiModel(miniCartData: MiniCartData): MiniCartSummaryTransactionUiModel {
+        return MiniCartSummaryTransactionUiModel().apply {
+            qty = miniCartData.data.totalProductCount
+            totalWording = miniCartData.data.shoppingSummary.totalWording
+            totalValue = miniCartData.data.shoppingSummary.totalValue
+            discountTotalWording = miniCartData.data.shoppingSummary.discountTotalWording
+            discountValue = miniCartData.data.shoppingSummary.discountValue
+            paymentTotalWording = miniCartData.data.shoppingSummary.paymentTotalWording
+            paymentTotal = miniCartData.data.shoppingSummary.paymentTotalValue
         }
     }
 
