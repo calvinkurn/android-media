@@ -53,12 +53,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawTokenQuery, BrizziTokenResponse::class.java, mapParam)
-                if (refreshToken) {
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
-                } else {
-                    graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 30).build())
-                }
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<BrizziTokenResponse>()
 
             if (data.tokenResponse.token != token) {
