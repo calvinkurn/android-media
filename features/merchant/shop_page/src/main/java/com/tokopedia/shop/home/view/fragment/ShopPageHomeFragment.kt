@@ -168,7 +168,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopRef: String
         ): ShopPageHomeFragment {
             val bundle = Bundle()
-            bundle.putString(KEY_SHOP_ID, shopId)
+            bundle.putString(KEY_SHOP_ID, "479824")
             bundle.putBoolean(KEY_IS_OFFICIAL_STORE, isOfficialStore)
             bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
             bundle.putString(KEY_SHOP_NAME, shopName)
@@ -446,7 +446,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun getIntentData() {
         arguments?.let {
-            shopId = it.getString(KEY_SHOP_ID, "")
+            shopId = "479824"
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL_STORE, false)
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopName = it.getString(KEY_SHOP_NAME, "")

@@ -6,9 +6,7 @@ import android.os.Build
 import android.text.Html
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.AlphaAnimation
-import android.view.animation.AnimationSet
-import android.view.animation.TranslateAnimation
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +31,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var imageCoupon: AppCompatImageView
     lateinit var mvcContainer: View
     lateinit var mvcAnimContainer: ConstraintLayout
+    lateinit var bgOriginal: AppCompatImageView
     var shopId: String = ""
     var isMainContainerSetFitsSystemWindows = false
     @MvcSource
@@ -52,6 +51,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         imageCoupon = this.findViewById(R.id.image_coupon)
         mvcContainer = this.findViewById(R.id.mvc_container)
         mvcAnimContainer = this.findViewById(R.id.mvcAnimViewContainer)
+        bgOriginal = this.findViewById(R.id.bgOriginal)
     }
 
     private fun setClicks() {
@@ -66,11 +66,21 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         this.shopId = shopId
 
-        val iconList = mvcData.animatedInfos
-        if (iconList.size > 1) {
-            animateView(iconList)
-        } else {
-            setMVCData(iconList[0].title?: "", iconList[0].subTitle?: "", iconList[0].iconURL?: "")
+        if (source == MvcSource.PDP) {
+            setPdpStyleMvcView()
+            setMVCData(mvcData.title, mvcData.subTitle, mvcData.imageUrl)
+        }
+        else {
+            val iconList = mvcData.animatedInfos
+            if (iconList.size > 1) {
+                animateView(iconList)
+            } else {
+                setMVCData(
+                    iconList[0].title ?: "",
+                    iconList[0].subTitle ?: "",
+                    iconList[0].iconURL ?: ""
+                )
+            }
         }
     }
 
@@ -119,6 +129,21 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 .dontAnimate()
                 .into(imageCoupon)
         }
+    }
+
+    private fun setPdpStyleMvcView(){
+        bgOriginal.visibility = View.GONE
+        val marginLayoutParams = imageCoupon.layoutParams as ViewGroup.MarginLayoutParams
+        marginLayoutParams.setMargins(0, 0, 0, 0)
+        marginLayoutParams.marginStart = 0
+        imageCoupon.layoutParams = marginLayoutParams
+        val couponLayoutParams = imageCoupon.layoutParams
+        couponLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        couponLayoutParams.width =
+            imageCoupon.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)
+        imageCoupon.layoutParams = couponLayoutParams
+
+        imageCoupon.requestLayout()
     }
 
     override fun onDetachedFromWindow() {
