@@ -72,6 +72,7 @@ class GqlGetShopProductUseCase @Inject constructor (
                     position
                     type
                     title
+                    url
                   }
                 }
                 totalData
