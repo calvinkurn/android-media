@@ -49,7 +49,7 @@ interface FeedShopContract {
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
 
-        fun getFeedFirstPage(shopId: String, isPullToRefresh: Boolean)
+        fun getFeedFirstPage(shopId: String, isPullToRefresh: Boolean, authorListEmpty: Boolean)
 
         fun getFeed(shopId: String)
 
