@@ -37,4 +37,8 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_INCENTIVES_TICKER = "click - pelajari on ovo incentives ticker"
     const val EVENT_ACTION_VIEW_TEMPLATE = "view - review template"
     const val EVENT_LABEL_VIEW_TEMPLATE = "template_impressed:%d"
+    const val EVENT_ACTION_VIEW_THANK_YOU_BOTTOM_SHEET = "view - terimakasih untuk ulasanmu pop up"
+    const val EVENT_LABEL_VIEW_THANK_YOU_BOTTOM_SHEET = "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
+    const val EVENT_LABEL_DISMISS_TNC = "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_CLICK_CONTINUE_TNC = "title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
 }

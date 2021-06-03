@@ -81,6 +81,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val progressBarState: LiveData<CreateReviewProgressBarState>
         get() = _progressBarState
 
+    private var feedbackId: String = ""
+
     fun submitReview(rating: Int, reviewText: String, reputationScore: Int, isAnonymous: Boolean, utmSource: String) {
         (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
             _submitReviewResult.postValue(LoadingView())

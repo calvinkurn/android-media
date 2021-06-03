@@ -182,15 +182,6 @@ object CreateReviewTracking {
         ))
     }
 
-    fun eventViewThankYouBottomSheet(bottomSheetTitle: String, hasPendingIncentive: Boolean) {
-        tracker.sendGeneralEvent(createEventMap(
-                ReviewTrackingConstant.VIEW_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, bottomSheetTitle),
-                String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
-        ))
-    }
-
     fun eventClickSendAnother(title: String, hasPendingIncentive: Boolean) {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
@@ -327,6 +318,39 @@ object CreateReviewTracking {
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
                 CreateReviewTrackingConstants.EVENT_ACTION_DISMISS_FORM,
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_SUBMIT, orderId, productId, rating, textLength > 0, textLength, numberOfPicture, isAnonymous.toString(), isEligible.toString(), isTemplateAvailable.toString(), templateSelectedCount),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventViewThankYouBottomSheet(title: String, reputationId: String, orderId: String, feedbackId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.VIEW_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_VIEW_THANK_YOU_BOTTOM_SHEET,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_VIEW_THANK_YOU_BOTTOM_SHEET, title, reputationId, orderId, productId, feedbackId),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventDismissTncBottomSheet(message: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                ReviewTrackingConstant.CLICK_DISMISS_OVO_INCENTIVES_TICKER,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_DISMISS_TNC, message, reputationId, orderId, productId),
+                productId,
+                userId
+        ))
+    }
+
+    fun eventClickContinueTncBottomSheet(title: String, reputationId: String, orderId: String, productId: String, userId: String) {
+        tracker.sendGeneralEvent(createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                ReviewTrackingConstant.CLICK_CONTINUE_SEND_REVIEW_0N_OVO_INCENTIVES,
+                String.format(CreateReviewTrackingConstants.EVENT_LABEL_CLICK_CONTINUE_TNC, title, reputationId, orderId, productId),
                 productId,
                 userId
         ))

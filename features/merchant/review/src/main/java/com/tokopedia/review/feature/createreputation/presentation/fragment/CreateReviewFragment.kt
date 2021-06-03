@@ -59,6 +59,7 @@ import com.tokopedia.review.feature.createreputation.presentation.viewmodel.Crea
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -133,6 +134,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var isEditMode: Boolean = false
     private var feedbackId: Long = 0
     private var utmSource: String = ""
+    private var shouldShowThankYouBottomSheet = false
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -328,6 +330,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
             override fun onAnimationStart(animation: Animator?) {
             }
         })
+
+        createReviewAnonymousCheckbox.setOnClickListener {
+            if (createReviewAnonymousCheckbox.isChecked) {
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
+            }
+            clearFocusAndHideSoftInput(view)
+        }
 
         review_container.setOnTouchListener { _, _ ->
             clearFocusAndHideSoftInput(view)
@@ -595,6 +604,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
+        if (shouldShowThankYouBottomSheet) {
+            showThankYouBottomSheet(data)
+            return
+        }
         data?.productrevIncentiveOvo?.let {
             it.ticker.let {
                 ovoPointsTicker.apply {
@@ -629,7 +642,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
-            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment) }
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment, getThankYouFormTrackerData()) }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
@@ -781,7 +794,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopLoading()
         showLayout()
         if (isUserEligible() && !isReviewIncomplete) {
-            showThankYouBottomSheet((createReviewViewModel.incentiveOvo.value as? CoroutineSuccess)?.data)
+            getIncentiveOvoData()
+            shouldShowThankYouBottomSheet = true
             return
         }
         finishIfRoot(success = true, feedbackId = feedbackId)
@@ -1011,5 +1025,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 CreateReviewTracking.eventViewDialog(defaultTitle)
             }
         }
+    }
+
+    private fun getThankYouFormTrackerData(): ThankYouBottomSheetTrackerData {
+        return ThankYouBottomSheetTrackerData(reputationId.toString(), getOrderId(), productId.toString(), createReviewViewModel.getUserId(), getFeedbackId())
+    }
+
+    private fun getFeedbackId(): String {
+        return (createReviewViewModel.submitReviewResult.value as? com.tokopedia.review.common.data.Success)?.data ?: ""
     }
 }

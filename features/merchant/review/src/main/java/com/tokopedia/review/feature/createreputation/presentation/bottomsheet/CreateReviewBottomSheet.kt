@@ -43,6 +43,8 @@ import com.tokopedia.review.feature.createreputation.presentation.viewmodel.Crea
 import com.tokopedia.review.feature.createreputation.presentation.widget.*
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
+import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -100,6 +102,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var isReviewIncomplete = false
     private var incentiveHelper = ""
     private var templatesSelectedCount = 0
+    private var shouldShowThankYouBottomSheet = false
 
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
@@ -182,6 +185,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onClickReviewAnother() {
         dismiss()
+        goToReviewPending()
     }
 
     override fun onExpandButtonClicked(text: String) {
@@ -399,11 +403,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onSuccessGetOvoIncentive(ovoDomain: ProductRevIncentiveOvoDomain?) {
         ovoDomain?.productrevIncentiveOvo?.let {
+            if (shouldShowThankYouBottomSheet) {
+                showThankYouBottomSheet(ovoDomain)
+                return
+            }
             if (ovoIncentiveBottomSheet == null) {
-                ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this, "") }
+                ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this, "", getTncBottomSheetTrackerData()) }
             }
             hideTemplates()
-            CreateReviewTracking.eventViewIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
             incentivesTicker?.apply {
                 setHtmlDescription(it.subtitle)
                 setOnClickListener { _ ->
@@ -412,6 +419,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                         CreateReviewTracking.eventClickIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
                     }
                 }
+                viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        CreateReviewTracking.eventViewIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
+                        incentivesTicker?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
+                })
                 show()
             }
             return
@@ -427,7 +440,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun onSuccessSubmitReview() {
         stopButtonLoading()
         if (isUserEligible() && !isReviewIncomplete) {
-            showThankYouBottomSheet((createReviewViewModel.incentiveOvo.value as? Success)?.data)
+            shouldShowThankYouBottomSheet = true
+            getIncentiveOvoData()
             return
         }
         activity?.setResult(Activity.RESULT_OK)
@@ -842,10 +856,28 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
-            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this) }
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this, getThankYouBottomSheetTrackerData()) }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
         }
+        shouldShowThankYouBottomSheet = false
+    }
+
+    private fun goToReviewPending() {
+        RouteManager.route(context, ApplinkConst.REPUTATION)
+        activity?.finish()
+    }
+
+    private fun getThankYouBottomSheetTrackerData(): ThankYouBottomSheetTrackerData {
+        return ThankYouBottomSheetTrackerData(getReputationId(), getOrderId(), productId.toString(), getUserId(), getFeedbackId())
+    }
+
+    private fun getFeedbackId(): String {
+        return (createReviewViewModel.submitReviewResult.value as? com.tokopedia.review.common.data.Success)?.data ?: ""
+    }
+
+    private fun getTncBottomSheetTrackerData(): TncBottomSheetTrackerData {
+        return TncBottomSheetTrackerData(getReputationId(), getOrderId(), productId.toString(), getUserId())
     }
 }
