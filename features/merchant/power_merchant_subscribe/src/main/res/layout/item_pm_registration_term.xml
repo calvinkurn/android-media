@@ -20,7 +20,7 @@
         android:layout_marginStart="@dimen/unify_space_12"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icPmHeaderTermItem"
         app:layout_constraintTop_toTopOf="@+id/icPmHeaderTermItem"
