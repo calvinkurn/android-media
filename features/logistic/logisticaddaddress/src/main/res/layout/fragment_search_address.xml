@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/unify_space_16"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:search_bar_show_icon="false"/>
 
     <View
         android:id="@+id/map_search_divider_1"

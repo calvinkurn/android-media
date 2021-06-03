@@ -12,11 +12,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.gms.maps.MapView
-            android:id="@+id/map_view"
+            android:id="@+id/map_views"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
-        <ImageView
+   <!--     <ImageView
             android:id="@+id/pointer_0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/pointer"
             app:srcCompat="@drawable/ic_green_pointer" />
-
+-->
         <LinearLayout
             android:id="@+id/btn_horizonal_layout"
             android:layout_width="match_parent"
@@ -44,8 +44,9 @@
 
             <com.tokopedia.unifycomponents.ChipsUnify
                 android:id="@+id/filterBugs"
-                android:layout_width="200dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginStart="@dimen/unify_space_12"
                 app:centerText="true"
                 app:chipSize="medium"
@@ -54,8 +55,9 @@
 
             <com.tokopedia.unifycomponents.ChipsUnify
                 android:id="@+id/filterFeedback"
-                android:layout_width="170dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/unify_space_12"
                 app:centerText="true"

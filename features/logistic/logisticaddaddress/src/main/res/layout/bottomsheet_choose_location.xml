@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/unify_space_16"
-    android:id="@+id/bottomsheet_choose_location"
+    android:id="@+id/bottomsheet_location"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_8"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/tv_address_desc"
         app:layout_constraintBottom_toBottomOf="parent"

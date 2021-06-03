@@ -27,6 +27,9 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageFragment
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -36,7 +39,7 @@ import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
 
-class SearchPageFragment: BaseDaggerFragment() {
+class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoCompleteItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -83,7 +86,7 @@ class SearchPageFragment: BaseDaggerFragment() {
     }
 
     private fun initView() {
-        autoCompleteAdapter = AutoCompleteListAdapter()
+        autoCompleteAdapter = AutoCompleteListAdapter(this)
         binding.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvAddressList.adapter = autoCompleteAdapter
     }
@@ -231,6 +234,14 @@ class SearchPageFragment: BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+
+    override fun onItemClicked(placeId: String) {
+        val bundle = Bundle()
+        bundle.putString(EXTRA_PLACE_ID, placeId)
+        startActivity(context?.let { PinpointNewPageActivity.createIntent(it, bundle) })
+//        PinpointNewPageFragment.newInstance()
     }
 
     companion object {

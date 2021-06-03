@@ -469,7 +469,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
             startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
         } else {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
             val mapper = AddressModelMapper()
             intent.putExtra(EDIT_PARAM, mapper.transform(data))
             intent.putExtra(KERO_TOKEN, token)

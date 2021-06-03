@@ -175,4 +175,7 @@
     <!--Search Page-->
     <string name="txt_hint_search">Tulis nama jalan/gedung/perumahan</string>
     <string name="txt_message_initial_load">Mau cara lain? Isi alamat secara manual</string>
+
+    <!--PinpointNew Page-->
+    <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
 </resources>
