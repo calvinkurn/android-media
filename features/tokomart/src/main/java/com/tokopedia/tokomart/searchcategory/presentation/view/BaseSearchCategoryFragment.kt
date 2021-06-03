@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -40,6 +41,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
@@ -53,6 +55,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -177,7 +180,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureMiniCart() {
-        val shopIds = listOf("123")
+        val shopIds = listOf(getViewModel().shopId)
 
         miniCartWidget?.initialize(
                 shopIds = shopIds,
@@ -238,6 +241,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
         getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
+        getViewModel().addToCartErrorMessageLiveData.observe(this::showAddToCartMessage)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -274,13 +278,15 @@ abstract class BaseSearchCategoryFragment:
     override fun getFragment() = this
 
     override fun onSeeAllCategoryClicked() {
-
+        RouteManager.route(
+                context,
+                ApplinkConstInternalTokoMart.CATEGORY_LIST,
+                SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+        )
     }
 
     override fun onBannerClick(applink: String) {
-        context?.let {
-            RouteManager.route(it, applink)
-        }
+        RouteManager.route(context, applink)
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
@@ -403,7 +409,19 @@ abstract class BaseSearchCategoryFragment:
             productItemDataView: ProductItemDataView,
             quantity: Int,
     ) {
+        getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
+    }
 
+    private fun showAddToCartMessage(message: String?) {
+        val view = view ?: return
+        message ?: return
+
+        if (message.isEmpty()) {
+            val successMessage = getString(R.string.tokomart_add_to_cart_success)
+            Toaster.build(view, successMessage, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        } else {
+            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
     }
 
     override fun onResume() {

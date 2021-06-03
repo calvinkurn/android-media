@@ -1,13 +1,14 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
@@ -31,6 +32,7 @@ open class SearchTestFixtures {
     protected val getFilterUseCase = mockk<UseCase<DynamicFilterModel>>(relaxed = true)
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
+    protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     protected val chooseAdddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
     protected lateinit var searchViewModel: SearchViewModel
@@ -49,6 +51,7 @@ open class SearchTestFixtures {
                 getFilterUseCase,
                 getProductCountUseCase,
                 getMiniCartListSimplifiedUseCase,
+                addToCartUseCase,
                 chooseAdddressWrapper,
                 abTestPlatformWrapper,
         )
