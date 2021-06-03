@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
@@ -171,6 +172,13 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             it.context?.let { context ->
                 val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
                 it.setAdditionalButton(chatIcon)
+                it.totalAmountAdditionalButton.setOnClickListener {
+                    val shopId = viewModel.currentShopIds.value?.firstOrNull() ?: "0"
+                    val intent = RouteManager.getIntent(
+                            context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
+                    )
+                    context.startActivity(intent)
+                }
             }
             if (it.isTotalAmountLoading == false) {
                 it.isTotalAmountLoading = true

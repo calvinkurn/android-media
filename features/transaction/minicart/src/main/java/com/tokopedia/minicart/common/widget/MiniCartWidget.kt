@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
@@ -88,9 +90,16 @@ class MiniCartWidget @JvmOverloads constructor(
                 miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, ::onMiniCartBottomSheetDismissed)
             }
         }
-        totalAmount?.context?.let {
-            val chatIcon = getIconUnifyDrawable(it, IconUnify.CHAT, ContextCompat.getColor(it, R.color.Unify_G500))
+        totalAmount?.context?.let { context ->
+            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)
+            totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
+                val shopId = viewModel.currentShopIds.value?.firstOrNull() ?: "0"
+                val intent = RouteManager.getIntent(
+                        context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
+                )
+                context.startActivity(intent)
+            }
             ivTest?.setImageDrawable(chatIcon)
         }
         if (totalAmount?.isTotalAmountLoading == false) {
