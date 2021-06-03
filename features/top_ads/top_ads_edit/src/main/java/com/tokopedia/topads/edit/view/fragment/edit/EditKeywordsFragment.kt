@@ -99,7 +99,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
-    private lateinit var keywordTitle: LinearLayout
     private lateinit var budgetInput: TextFieldUnify
     private lateinit var selectedKeyword: Typography
     private lateinit var selected_Keyword: Typography
@@ -166,7 +165,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         recyclerView = view.findViewById(com.tokopedia.topads.common.R.id.bid_list)
         addKeyword = view.findViewById(com.tokopedia.topads.common.R.id.addKeyword)
         ticker = view.findViewById(com.tokopedia.topads.common.R.id.ticker)
-        keywordTitle = view.findViewById(com.tokopedia.topads.common.R.id.keyword_title)
         budgetInput = view.findViewById(com.tokopedia.topads.common.R.id.budget)
         selectedKeyword = view.findViewById(com.tokopedia.topads.common.R.id.selectedKeyword)
         selected_Keyword = view.findViewById(com.tokopedia.topads.common.R.id.selected_keyword)
@@ -590,7 +588,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private fun setVisibilityOperation(visibility: Int) {
         addKeyword.visibility = visibility
         ticker.visibility = View.GONE
-        keywordTitle.visibility = visibility
         selected_Keyword.visibility = visibility
         info2.visibility = visibility
         div.visibility = visibility
