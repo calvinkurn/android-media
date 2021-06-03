@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
@@ -75,7 +76,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     @Inject
-    lateinit var viewModel: BuyerOrderDetailViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: BuyerOrderDetailViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
+    }
 
     private var bottomSheetReceiveConfirmation: ReceiveConfirmationBottomSheet? = null
 
@@ -367,7 +372,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun observeBuyerOrderDetail() {
-        viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, { result ->
             buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
             hideLoadIndicator()
             when (result) {

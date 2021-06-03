@@ -13,10 +13,10 @@ import dagger.multibindings.IntoMap
 abstract class BuyerOrderDetailViewModelModule {
     @Binds
     @BuyerOrderDetailScope
-    abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    internal abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(BuyerOrderDetailViewModel::class)
-    abstract fun provideBuyerOrderDetailViewModel(viewModel: BuyerOrderDetailViewModel): ViewModel
+    internal abstract fun provideBuyerOrderDetailViewModel(viewModel: BuyerOrderDetailViewModel): ViewModel
 }
