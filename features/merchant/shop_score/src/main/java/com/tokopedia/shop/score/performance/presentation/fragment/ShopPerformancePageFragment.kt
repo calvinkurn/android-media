@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -95,6 +96,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+        }
         setupAdapter()
         onSwipeRefreshShopPerformance()
         observeShopPeriod()

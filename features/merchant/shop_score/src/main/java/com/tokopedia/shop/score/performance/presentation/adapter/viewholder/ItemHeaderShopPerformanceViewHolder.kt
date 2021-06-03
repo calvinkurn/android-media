@@ -49,9 +49,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         with(itemView) {
             if (context.isDarkMode()) {
                 tvPerformanceLevel?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                ic_performance_level_information?.drawable?.let { applyIconUnifyColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White) }
                 tvTitleShopPerformance?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                ic_shop_score_performance?.drawable?.let { applyIconUnifyColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White) }
                 tvShopScoreValue?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                 tvShopScoreMaximum?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                 tvHeaderShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
