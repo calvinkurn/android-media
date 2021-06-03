@@ -165,14 +165,29 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             tvTitle.text = returnTextFromHtml(t)
         }
 
-        followWidget.contentDetails?.let {
+        if (!followWidget.contentDetails.isNullOrEmpty()){
             val s = returnTextFromHtml(st)
             val minTransLabel = "{{MinimumTransaction}}"
             val indexMinTransLabel = s.indexOf(minTransLabel)
-            val highLightColor =  context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500)
-            val sb = SpannableStringBuilder(s).replace(indexMinTransLabel,indexMinTransLabel + minTransLabel.length,followWidget.membershipMinimumTransactionLabel)
-            sb.setSpan(ForegroundColorSpan(highLightColor), indexMinTransLabel, indexMinTransLabel + followWidget.membershipMinimumTransactionLabel?.length!!, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tvSubTitle.text = sb
+            if (indexMinTransLabel >= 0) {
+                val highLightColor =
+                    context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500)
+                val sb = SpannableStringBuilder(s).replace(
+                    indexMinTransLabel,
+                    indexMinTransLabel + minTransLabel.length,
+                    followWidget.membershipMinimumTransactionLabel
+                )
+                sb.setSpan(
+                    ForegroundColorSpan(highLightColor),
+                    indexMinTransLabel,
+                    indexMinTransLabel + followWidget.membershipMinimumTransactionLabel?.length!!,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                tvSubTitle.text = sb
+            }
+            else{
+                tvSubTitle.text=returnTextFromHtml(st)
+            }
         }
 
         when (followWidget.type) {
