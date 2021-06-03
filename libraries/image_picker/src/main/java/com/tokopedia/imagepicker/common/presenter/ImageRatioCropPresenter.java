@@ -2,21 +2,27 @@ package com.tokopedia.imagepicker.common.presenter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.ExifInterface;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.ImageRatioType;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilderKt;
+import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import kotlin.Pair;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -96,6 +102,47 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                     }
                                     return outputPath;
                                 }
+                            }
+                        })
+                        .flatMap(new Func1<String, Observable<Bitmap>>() {
+                            @Override
+                            public Observable<Bitmap> call(String path) {
+                                Bitmap bitmap = ImageProcessingUtil.getBitmapFromPath(path);
+                                return Observable.just(bitmap);
+                            }
+                        })
+                        .flatMap(new Func1<Bitmap, Observable<Bitmap>>() {
+                            @Override
+                            public Observable<Bitmap> call(Bitmap bitmap) {
+                                WatermarkText watermarkText = new WatermarkText()
+                                        .setContentText("Tokopedia")
+                                        .positionX(0.5)
+                                        .positionY(0.5)
+                                        .textAlpha(255)
+                                        .textColor(Color.WHITE);
+
+
+                                return Observable.just(WatermarkBuilderKt
+                                        .create(getView().getContext(), bitmap)
+                                        .loadWatermarkText(watermarkText)
+                                        .setTileMode(true)
+                                        .getWatermark()
+                                        .getOutputImage()
+                                );
+                            }
+                        })
+                        .flatMap(new Func1<Bitmap, Observable<String>>() {
+                            @Override
+                            public Observable<String> call(Bitmap bitmap) {
+                                File filePath;
+
+                                if (convertToWebp) {
+                                    filePath = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.WEBP);
+                                } else {
+                                    filePath = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.PNG);
+                                }
+
+                                return Observable.just(Objects.requireNonNull(filePath).getAbsolutePath());
                             }
                         })
                         .toList()

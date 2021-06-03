@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.picker.main.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
+import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 import com.tokopedia.utils.file.FileUtil;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 

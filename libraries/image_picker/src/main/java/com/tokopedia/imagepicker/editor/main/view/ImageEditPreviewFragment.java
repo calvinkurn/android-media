@@ -393,20 +393,20 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
             gestureCropImageView.setImageUri(inputUri, outputUri);
         } catch (Exception ignored) { }
 
-        new Handler().postDelayed(() -> {
-            Subscription preRenderBitmap = Observable.just(inputUri)
-                    .flatMap((Func1<Uri, Observable<Uri>>) uri -> Observable.just(outputUri))
-                    .flatMap((Func1<Uri, Observable<WatermarkKt>>) uri -> Observable.just(WatermarkBuilderKt
-                            .create(requireContext(), gestureCropImageView)
-                            .loadWatermarkText(watermarkText)
-                            .setTileMode(true)
-                            .getWatermark()))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(result -> result.setToImageView(gestureCropImageView));
-
-            compositeSubscription.add(preRenderBitmap);
-        }, 2000);
+//        new Handler().postDelayed(() -> {
+//            Subscription preRenderBitmap = Observable.just(inputUri)
+//                    .flatMap((Func1<Uri, Observable<Uri>>) uri -> Observable.just(outputUri))
+//                    .flatMap((Func1<Uri, Observable<WatermarkKt>>) uri -> Observable.just(WatermarkBuilderKt
+//                            .create(requireContext(), gestureCropImageView)
+//                            .loadWatermarkText(watermarkText)
+//                            .setTileMode(true)
+//                            .getWatermark()))
+//                    .subscribeOn(Schedulers.newThread())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(result -> result.setToImageView(gestureCropImageView));
+//
+//            compositeSubscription.add(preRenderBitmap);
+//        }, 2000);
     }
 
     private void processOptions() {
