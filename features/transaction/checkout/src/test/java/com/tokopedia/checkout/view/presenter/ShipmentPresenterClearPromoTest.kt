@@ -26,6 +26,7 @@ import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -186,6 +187,7 @@ class ShipmentPresenterClearPromoTest {
         verifySequence {
             view.onSuccessClearPromoLogistic(0, true)
         }
+        assertNull(presenter.validateUsePromoRevampUiModel)
     }
 
     @Test
@@ -217,6 +219,37 @@ class ShipmentPresenterClearPromoTest {
         verifySequence {
             view.onSuccessClearPromoLogistic(0, false)
         }
+    }
+
+    @Test
+    fun `WHEN clear BBO promo and it's last applied global promo THEN should render success and flag last applied promo is true`() {
+        // Given
+        val promoCode = "code"
+        presenter.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel(
+                promoUiModel = PromoUiModel(
+                        codes = ArrayList<String>().apply {
+                            add(promoCode)
+                        }
+                )
+        )
+
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+                ClearPromoUiModel(
+                        successDataModel = SuccessDataUiModel(
+                                success = true
+                        )
+                )
+        )
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+
+        // When
+        presenter.cancelAutoApplyPromoStackLogistic(0, promoCode)
+
+        // Then
+        verifySequence {
+            view.onSuccessClearPromoLogistic(0, true)
+        }
+        assertNull(presenter.validateUsePromoRevampUiModel)
     }
 
     @Test
