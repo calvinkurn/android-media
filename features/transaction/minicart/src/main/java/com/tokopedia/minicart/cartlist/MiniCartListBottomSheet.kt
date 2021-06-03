@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
@@ -57,6 +58,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         this.viewModel = viewModel
         viewModel.miniCartListListUiModel.observe(lifecycleOwner, {
             hideLoading()
+            hideProgressLoading()
             bottomSheet?.setTitle(it.title)
             if (rvMiniCartList?.isComputingLayout == true) {
                 rvMiniCartList?.post {
@@ -74,10 +76,12 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     hideProgressLoading()
                     val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
                             ?: ""
+                    viewModel.getCartList()
                     showToaster(message, "Batalkan") {
                         viewModel.undoDeleteCartItems()
                     }
                 }
+/*
                 GlobalEvent.STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM -> {
                     hideProgressLoading()
                     updateTotalAmount(MiniCartWidgetData())
@@ -87,6 +91,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                         viewModel.getCartList()
                     }
                 }
+*/
             }
         })
     }
@@ -128,7 +133,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private fun initializeProgressDialog(context: Context) {
         progressDialog = AlertDialog.Builder(context)
                 .setView(R.layout.mini_cart_progress_dialog_view)
-                .setCancelable(false)
+                .setCancelable(true)
                 .create()
     }
 
@@ -249,8 +254,24 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onBulkDeleteUnavailableItems() {
-        showProgressLoading()
-        viewModel.bulkDeleteUnavailableCartItems()
+        val unavailableProducts = viewModel.getUnavailableItems()
+        bottomSheet?.context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(it.getString(R.string.mini_cart_label_dialog_title_delete_unavailable_multiple_item, unavailableProducts.size))
+                setDescription(it.getString(R.string.mini_cart_label_dialog_message_remove_cart_unavailable_multiple_item))
+                setPrimaryCTAText(it.getString(R.string.mini_cart_label_dialog_action_delete))
+                setSecondaryCTAText(it.getString(R.string.mini_cart_label_dialog_action_cancel))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    showProgressLoading()
+                    viewModel.bulkDeleteUnavailableCartItems()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                show()
+            }
+        }
     }
 
     override fun onQuantityChanged(productId: String, newQty: Int) {
