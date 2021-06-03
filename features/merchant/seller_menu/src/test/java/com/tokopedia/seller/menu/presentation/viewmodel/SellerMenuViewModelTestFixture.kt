@@ -66,7 +66,6 @@ open class SellerMenuViewModelTestFixture {
                 getShopInfoPeriodUseCase,
                 getProductListMetaUseCase,
                 getSellerMenuNotifications,
-                getShopScoreUseCase,
                 getShopScoreLevelUseCase,
                 userSession,
                 coroutineTestRule.dispatchers

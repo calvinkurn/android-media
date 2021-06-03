@@ -63,8 +63,6 @@
     <string name="seller_menu_shop_score_empty_label">--</string>
     <string name="seller_menu_admin_no_permission_oops">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
 
-    <string name="seller_menu_ticker_title_shop_score">Mulai %s, ada skema Performa Toko baru!</string>
-    <string name="seller_menu_ticker_desc_shop_score">Ada 3 perubahan besar yang penting untuk tokomu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="transaction_since_joining">Transaksi sejak bergabung</string>
     <string name="transaction_on_date">Transaksi sejak 14 Juni 2021</string>
     <string name="transaction_passed">Kamu telah melewati <![CDATA[<b>100</b>]]> transaksi</string>

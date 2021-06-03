@@ -498,8 +498,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return copyItemDetail
     }
 
-    private fun mapToItemPMUiModel(isNewSeller: Boolean, isNewSellerProjection: Boolean): ItemStatusPMUiModel {
-        return ItemStatusPMUiModel(isNewSeller = isNewSeller,
+    private fun mapToItemPMUiModel(isNewSellerProjection: Boolean): ItemStatusPMUiModel {
+        return ItemStatusPMUiModel(
                 descPM = if (isNewSellerProjection)
                     context?.getString(R.string.desc_pm_section_new_seller).orEmpty()
                 else

@@ -13,11 +13,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
-import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
-import com.tokopedia.gm.common.utils.getShopScoreDate
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -27,7 +24,6 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
@@ -36,7 +32,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoErrorViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
-import com.tokopedia.seller.menu.common.view.viewholder.TickerShopScoreViewHolder
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
@@ -51,7 +46,7 @@ import kotlinx.android.synthetic.main.fragment_seller_menu.*
 import javax.inject.Inject
 
 class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
-        ShopInfoErrorViewHolder.ShopInfoErrorListener, TickerShopScoreViewHolder.TickerShopScoreListener {
+        ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
         private const val SCREEN_NAME = "MA - Akun Toko"
@@ -77,7 +72,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private var canShowErrorToaster = true
     private var isNewSeller = false
-    private var periodType = ""
     private var shopAge = 0
 
     private val adapter by lazy {
@@ -145,11 +139,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {}
 
     override fun onScoreClicked() {
-        if (periodType == COMMUNICATION_PERIOD) {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession.shopId)
-        } else {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE, userSession.shopId)
-        }
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE, userSession.shopId)
         sellerMenuTracker.sendShopScoreEntryPoint(isNewSeller)
     }
 
@@ -168,7 +158,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
-        viewModel.getShopAccountTickerPeriod()
+        getAllShopInfo()
     }
 
     private fun initInjector() {
@@ -181,7 +171,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
             showShopInfoLoading()
-            viewModel.getShopAccountTickerPeriod()
+            getAllShopInfo()
         }
     }
 
@@ -190,15 +180,14 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observeProductCount()
         observeNotifications()
         observeErrorToaster()
-        viewModel.getShopAccountTickerPeriod()
+        getAllShopInfo()
     }
 
     private fun observeShopInfoPeriod() {
-        observe(viewModel.shopAccountTickerPeriod) {
+        observe(viewModel.shopAccountInfo) {
             when (it) {
                 is Success -> {
                     isNewSeller = it.data.isNewSeller
-                    periodType = it.data.periodType
                     shopAge = it.data.shopAge
                     getAllShopInfo()
                 }
@@ -248,13 +237,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    /***
-     * TickerShopScoreListener
-     */
-    override fun onDescriptionViewClick() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, GMCommonUrl.SHOP_INTERRUPT_PAGE)
-    }
-
     private fun observeErrorToaster() {
         observe(viewModel.isToasterAlreadyShown) {
             canShowErrorToaster = !it
@@ -264,16 +246,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0, shopAge: Int = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
-                if (periodType == COMMUNICATION_PERIOD) {
-                    val tickerShopInfoData = TickerShopScoreUiModel(
-                            tickerTitle = context?.let { context ->
-                                getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_title_shop_score, getShopScoreDate(context))
-                            } ?: "",
-                            descTitle = getString(com.tokopedia.seller.menu.common.R.string.seller_menu_ticker_desc_shop_score))
-                    adapter.showShopScoreTicker(tickerShopInfoData)
-                } else {
-                    adapter.hideShopScoreTicker()
-                }
                 if (settingResponseState is SettingShopInfoUiModel) {
                     adapter.showShopInfo(settingResponseState, shopScore, shopAge)
                     sellerMenuTracker.sendEventViewShopAccount(settingResponseState)
@@ -292,7 +264,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun getAllShopInfo() {
-        viewModel.getAllSettingShopInfo(periodType = periodType, shopAge = shopAge)
+        viewModel.getAllSettingShopInfo(shopAge = shopAge)
         viewModel.getProductCount()
         viewModel.getNotifications()
     }
@@ -324,8 +296,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private fun retryFetchAfterError() {
         showShopInfoLoading()
-        viewModel.getShopAccountTickerPeriod()
-        viewModel.getAllSettingShopInfo(isToasterRetry = true, periodType = periodType, shopAge = shopAge)
+        viewModel.getShopAccountInfo()
+        viewModel.getAllSettingShopInfo(isToasterRetry = true, shopAge = shopAge)
     }
 
     private fun showShopInfoLoading() {

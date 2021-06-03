@@ -4,20 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="tkpd_grey_text">#60000000</color>
-    <color name="tkpd_grey">#E0E0E0</color>
-
-    <color name="tkpd_bg_color">#EAEAEA</color>
-
-    <color name="card_header_has_penalty_dms_color_1">#FFFF7193</color>
-    <color name="card_header_has_penalty_dms_color_2">#FFFB4868</color>
-    <color name="card_header_has_penalty_dms_color_3">#FF8EA5</color>
-
-    <color name="card_header_no_penalty_dms_color_1">#FF4FD15A</color>
-    <color name="card_header_no_penalty_dms_color_2">#FF03AC0E</color>
-    <color name="card_header_no_penalty_dms_color_3">#FF82EF95</color>
-    <color name="card_header_no_penalty_dms_color_4">#00EBFFEF</color>
-
     <color name="shadow_dms_color_1">#00CCCCCC</color>
     <color name="shadow_dms_color_2">#10CCCCCC</color>
     <color name="shadow_dms_color_3">#15CCCCCC</color>
