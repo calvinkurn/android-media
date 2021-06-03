@@ -115,7 +115,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
             }
             setOnDismissListener {
                 editText?.onFocusChangeListener = null
-                textAreaListener?.onDismissBottomSheet(editText?.text.toString())
+                textAreaListener?.onDismissBottomSheet(editText?.text.toString(), templatesAdapter.getTemplates())
             }
             isKeyboardOverlap = false
             setShowListener {
@@ -145,7 +145,10 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     }
 
     private fun setTemplates() {
-        if (templates.isEmpty() || isUserEligible) return
+        if (templates.isEmpty() || isUserEligible)  {
+            hideTemplates()
+            return
+        }
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
             layoutManager = StaggeredGridLayoutManager(CreateReviewBottomSheet.TEMPLATES_ROW_COUNT, RecyclerView.HORIZONTAL)
@@ -155,6 +158,10 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     }
 
     private fun showTemplates() {
+        templatesRecyclerView?.show()
+    }
+
+    private fun hideTemplates() {
         templatesRecyclerView?.show()
     }
 }

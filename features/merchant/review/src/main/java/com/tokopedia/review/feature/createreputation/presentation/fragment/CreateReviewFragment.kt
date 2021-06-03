@@ -404,7 +404,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         textAreaBottomSheet?.dismiss()
     }
 
-    override fun onDismissBottomSheet(text: String) {
+    override fun onDismissBottomSheet(text: String, templates: List<String>) {
         createReviewExpandableTextArea.setText(text)
         clearFocusAndHideSoftInput(view)
     }
@@ -642,7 +642,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
-            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment, getThankYouFormTrackerData()) }
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment, getThankYouFormTrackerData(), createReviewViewModel.getThankYouBottomSheetText()) }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }

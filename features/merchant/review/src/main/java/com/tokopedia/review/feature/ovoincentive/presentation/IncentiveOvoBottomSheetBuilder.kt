@@ -5,8 +5,8 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
@@ -58,15 +58,15 @@ object IncentiveOvoBottomSheetBuilder {
         return bottomSheetUnify
     }
 
-    fun getThankYouBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?, incentiveOvoListener: IncentiveOvoListener, trackerData: ThankYouBottomSheetTrackerData): BottomSheetUnify {
+    fun getThankYouBottomSheet(context: Context, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?, incentiveOvoListener: IncentiveOvoListener, trackerData: ThankYouBottomSheetTrackerData, thankYouText: String): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
         bottomSheetUnify.setChild(child)
-        setupThankYouView(child, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener, trackerData)
+        setupThankYouView(child, productRevIncentiveOvoDomain, bottomSheetUnify, incentiveOvoListener, trackerData, thankYouText)
         return bottomSheetUnify
     }
 
-    private fun setupThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener, trackerData: ThankYouBottomSheetTrackerData) {
+    private fun setupThankYouView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener, trackerData: ThankYouBottomSheetTrackerData, thankYouText: String) {
         bottomSheet.run {
             view.apply {
                 overlayClickDismiss = false
@@ -81,7 +81,7 @@ object IncentiveOvoBottomSheetBuilder {
                     CreateReviewTracking.eventViewThankYouBottomSheet(defaultTitle, trackerData.reputationId, trackerData.orderId, trackerData.feedbackId, trackerData.productId, trackerData.userId)
                     incentiveOvoSubmittedImage?.loadImage(THANK_YOU_BOTTOMSHEET_IMAGE_URL)
                     incentiveOvoSubmittedTitle?.text = defaultTitle
-                    incentiveOvoSubmittedSubtitle?.text = productRevIncentiveOvoDomain?.productrevIncentiveOvo?.bottomSheetText ?: ""
+                    incentiveOvoSubmittedSubtitle?.text = thankYouText
                     productRevIncentiveOvoDomain?.productrevIncentiveOvo?.let {
                         incentiveOvoSendAnother?.apply {
                             setOnClickListener {

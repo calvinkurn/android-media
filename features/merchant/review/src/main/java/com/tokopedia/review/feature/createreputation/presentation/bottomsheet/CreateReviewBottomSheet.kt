@@ -32,6 +32,7 @@ import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewCompon
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ReviewTemplatesAdapter
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
@@ -182,9 +183,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         textAreaBottomSheet?.dismiss()
     }
 
-    override fun onDismissBottomSheet(text: String) {
+    override fun onDismissBottomSheet(text: String, templates: List<String>) {
         textArea?.setText(text)
         clearFocusAndHideSoftInput(view)
+        templatesAdapter.setData(templates)
+        if(templates.isEmpty()) {
+            hideTemplates()
+            return
+        }
     }
 
     override fun scrollToShowTextArea() {
@@ -294,7 +300,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         createReviewViewModel.getProductReputation(productId, reputationId)
     }
 
-    private fun getIncentiveOvoData() {
+    private fun getIncentiveOvoData(productId: Long = 0, reputationId: Long = 0) {
         createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
@@ -316,6 +322,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             when (it) {
                 is Success -> onSuccessGetOvoIncentive(it.data)
                 is Fail -> onFailGetOvoIncentive(it.throwable)
+                else -> onSuccessGetOvoIncentive(null)
             }
         })
     }
@@ -377,11 +384,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun onSuccessGetOvoIncentive(ovoDomain: ProductRevIncentiveOvoDomain?) {
+        if (shouldShowThankYouBottomSheet) {
+            showThankYouBottomSheet(ovoDomain)
+            dismiss()
+            return
+        }
         ovoDomain?.productrevIncentiveOvo?.let {
-            if (shouldShowThankYouBottomSheet) {
-                showThankYouBottomSheet(ovoDomain)
-                return
-            }
             hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.subtitle)
@@ -765,7 +773,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun getRating(): Int {
-        return ratingStars?.clickAt ?: 5
+        return ratingStars?.clickAt ?: CreateReviewActivity.DEFAULT_PRODUCT_RATING
     }
 
     private fun isAnonymous(): Boolean {
@@ -803,7 +811,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun getData() {
         getForm()
-        getIncentiveOvoData()
+        getIncentiveOvoData(productId, reputationId)
         getTemplates()
     }
 
@@ -831,7 +839,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
-            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this, getThankYouBottomSheetTrackerData()) }
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this, getThankYouBottomSheetTrackerData(), createReviewViewModel.getThankYouBottomSheetText()) }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
@@ -893,7 +901,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun setTemplateVisibility() {
-        if(isGoodRating()) {
+        if(isGoodRating() && !isUserEligible()) {
             showTemplates()
         } else {
             hideTemplates()
