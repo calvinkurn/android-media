@@ -112,7 +112,7 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.5'
-    unifyAccordionVersion = '1.1.2'
+    unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
     unifyTotalAmountVersion = '1.0.3'
     unifyExplorePromoVersion = '1.0.2'
 
