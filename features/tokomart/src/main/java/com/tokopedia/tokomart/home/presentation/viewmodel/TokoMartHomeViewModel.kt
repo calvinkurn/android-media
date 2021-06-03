@@ -60,13 +60,13 @@ class TokoMartHomeViewModel @Inject constructor(
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
         get() = _homeLayoutList
-    val searchHint: LiveData<SearchPlaceholder>
-        get() = _searchHint
+    val keywordSearch: LiveData<SearchPlaceholder>
+        get() = _keywordSearch
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
-    private val _searchHint = MutableLiveData<SearchPlaceholder>()
+    private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     private var layoutList = listOf<Visitable<*>>()
@@ -98,9 +98,9 @@ class TokoMartHomeViewModel @Inject constructor(
                         homeLayoutResponse,
                         mapTickerData(getTickerAsync.await().orEmpty())
                 )
+                val data = HomeLayoutListUiModel(layoutList, isInitialLoad = true)
+                _homeLayoutList.postValue(Success(data))
             }
-            val data = HomeLayoutListUiModel(layoutList, isInitialLoad = true)
-            _homeLayoutList.postValue(Success(data))
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
@@ -126,11 +126,10 @@ class TokoMartHomeViewModel @Inject constructor(
         }
     }
 
-    fun getSearchHint(isFirstInstall: Boolean, deviceId: String, userId: String) {
+    fun getKeywordSearch(isFirstInstall: Boolean, deviceId: String, userId: String) {
         launchCatchError(coroutineContext, block = {
-            getKeywordSearchUseCase.params = getKeywordSearchUseCase.createParams(isFirstInstall, deviceId, userId)
-            val data = getKeywordSearchUseCase.executeOnBackground()
-            _searchHint.postValue(data.searchData)
+            val response = getKeywordSearchUseCase.execute(isFirstInstall, deviceId, userId)
+            _keywordSearch.postValue(response.searchData)
         }) {}
     }
 

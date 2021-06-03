@@ -324,7 +324,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
 
     //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
     private fun getSearchHint() {
-        viewModel.getSearchHint(isFirstInstall(), userSession.deviceId, userSession.userId)
+        viewModel.getKeywordSearch(isFirstInstall(), userSession.deviceId, userSession.userId)
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
