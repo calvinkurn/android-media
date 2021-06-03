@@ -118,9 +118,9 @@ class CryptographyUtils: Cryptography {
         return ""
     }
 
-    override fun generateFingerprintSignature(userId: String, deviceId: String): SignatureData {
+    override fun generateFingerprintSignature(adsId: String, deviceId: String): SignatureData {
         val datetime = (System.currentTimeMillis()/1000).toString()
-        return SignatureData(signature = getSignature(userId + datetime + deviceId, BiometricConstant.SHA_1_WITH_RSA), datetime = datetime)
+        return SignatureData(signature = getSignature(adsId + datetime + deviceId, BiometricConstant.SHA_1_WITH_RSA), datetime = datetime)
     }
 
     override fun getSignature(textToEncrypt: String, algorithm: String): String {
