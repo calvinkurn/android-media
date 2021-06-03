@@ -1,6 +1,8 @@
 package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.autocomplete.complete
+import com.tokopedia.autocomplete.initialstate.InitialStateData
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
@@ -14,8 +16,11 @@ import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineData
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.usecase.RequestParams
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
@@ -27,6 +32,29 @@ private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/loc
 
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
+    private val requestParamsSlot = slot<RequestParams>()
+
+    @Test
+    fun `Test suggestion presenter has set parameter`() {
+        `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
+
+        `when presenter get suggestion data (search)`()
+
+        `Then verify search parameter has warehouseId`(SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
+    }
+
+    private fun `Given getSuggestionUseCase will be successful`(suggestionUniverse: SuggestionUniverse) {
+        every { getSuggestionUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<SuggestionUniverse>>().complete(suggestionUniverse)
+        }
+    }
+
+    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+    }
+
     @Test
     fun `test get suggestion data`() {
         val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
@@ -35,7 +63,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list`(suggestionUniverse)
     }
 
@@ -54,7 +82,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         verify { getSuggestionUseCase.execute(any(), any()) }
     }
 
-    private fun `then verify suggestion view will call showInitialStateResult behavior`() {
+    private fun `then verify suggestion view will call showSuggestionResult behavior`() {
         verify {
             suggestionView.showSuggestionResult(capture(slotVisitableList))
         }
@@ -173,7 +201,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list with top shop`(suggestionUniverse)
     }
 
@@ -210,7 +238,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list should have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
 
@@ -241,7 +269,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list should only have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
 

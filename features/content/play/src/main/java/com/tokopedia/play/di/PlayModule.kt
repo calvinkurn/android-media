@@ -25,12 +25,12 @@ import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
+import com.tokopedia.product.detail.common.VariantConstant.QUERY_VARIANT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.constant.VariantConstant
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -81,7 +81,7 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    @Named(VariantConstant.QUERY_VARIANT)
+    @Named(QUERY_VARIANT)
     internal fun provideQueryVariant(): String {
         return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
     }

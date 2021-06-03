@@ -1,0 +1,142 @@
+{
+  "mini_cart": {
+    "data": {
+      "available_section": {
+        "available_group": [
+          {
+            "cart_details": [
+              {
+                "cart_id": "2147627765",
+                "product": {
+                  "parent_id": 2147818569,
+                  "product_id": 2147818574,
+                  "product_notes": "",
+                  "product_quantity": 1
+                }
+              },{
+                "cart_id": "2147627769",
+                "product": {
+                  "parent_id": 2147818569,
+                  "product_id": 2147818576,
+                  "product_notes": "",
+                  "product_quantity": 23
+                }
+              },
+              {
+                "cart_id": "2147627764",
+                "product": {
+                  "parent_id": 2147818569,
+                  "product_id": 2147818573,
+                  "product_notes": "",
+                  "product_quantity": 1
+                }
+              },
+              {
+                "cart_id": "2147627763",
+                "product": {
+                  "parent_id": 2147818569,
+                  "product_id": 2147818570,
+                  "product_notes": "",
+                  "product_quantity": 2
+                }
+              },
+              {
+                "cart_id": "2147626758",
+                "product": {
+                  "parent_id": 2147818756,
+                  "product_id": 2147818788,
+                  "product_notes": "",
+                  "product_quantity": 1
+                }
+              },
+              {
+                "cart_id": "2147626757",
+                "product": {
+                  "parent_id": 2147818756,
+                  "product_id": 2147818787,
+                  "product_notes": "",
+                  "product_quantity": 1
+                }
+              },
+              {
+                "cart_id": "2147626735",
+                "product": {
+                  "parent_id": 2147818756,
+                  "product_id": 2147818791,
+                  "product_notes": "",
+                  "product_quantity": 1
+                }
+              },
+              {
+                "cart_id": "2147626718",
+                "product": {
+                  "parent_id": 2147818756,
+                  "product_id": 2147818790,
+                  "product_notes": "",
+                  "product_quantity": 1
+                }
+              },
+              {
+                "cart_id": "2147626717",
+                "product": {
+                  "parent_id": 2147818756,
+                  "product_id": 2147818793,
+                  "product_notes": "",
+                  "product_quantity": 2
+                }
+              },
+              {
+                "cart_id": "2147626708",
+                "product": {
+                  "parent_id": 2147818756,
+                  "product_id": 2147818778,
+                  "product_notes": "",
+                  "product_quantity": 1
+                }
+              },
+              {
+                "cart_id": "2147626418",
+                "product": {
+                  "parent_id": 15617239,
+                  "product_id": 15617241,
+                  "product_notes": "",
+                  "product_quantity": 1
+                }
+              },
+              {
+                "cart_id": "2147626266",
+                "product": {
+                  "parent_id": 15617239,
+                  "product_id": 15617245,
+                  "product_notes": "",
+                  "product_quantity": 6
+                }
+              }
+            ]
+          },
+          {
+            "cart_details": [
+              {
+                "cart_id": "2147626252",
+                "product": {
+                  "parent_id": 15617239,
+                  "product_id": 15617242,
+                  "product_notes": "",
+                  "product_quantity": 23
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "errors": [],
+      "total_product_count": 12,
+      "total_product_error": 0,
+      "total_product_price": 61011000,
+      "unavailable_section": []
+    },
+    "error_message": [],
+    "status": "OK"
+  },
+  "status": "OK"
+}

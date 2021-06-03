@@ -122,7 +122,6 @@ public class AutoCompleteActivity extends BaseActivity
 
     private void removeBaseSRPApplink(SearchParameter searchParameter) {
         searchParameter.remove(SearchApiConst.BASE_SRP_APPLINK);
-
     }
 
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {

@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.domain.model.KeywordSearchData
@@ -36,6 +37,8 @@ abstract class TokoMartHomeViewModelTestFixture {
     lateinit var getKeywordSearchUseCase: GetKeywordSearchUseCase
     @RelaxedMockK
     lateinit var getTickerUseCase: GetTickerUseCase
+    @RelaxedMockK
+    lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -51,6 +54,7 @@ abstract class TokoMartHomeViewModelTestFixture {
                 getCategoryListUseCase,
                 getKeywordSearchUseCase,
                 getTickerUseCase,
+                getMiniCartUseCase,
                 CoroutineTestDispatchersProvider
         )
     }

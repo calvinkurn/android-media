@@ -1,6 +1,7 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -14,16 +15,12 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(response: PMGradeBenefitInfoModel?): PMGradeBenefitInfoUiModel {
         return PMGradeBenefitInfoUiModel(
-                shopId = response?.shopId.orZero().toString(),
                 nextMonthlyRefreshDate = getRefreshDateFmt(response?.nextMonthlyRefreshDate.orEmpty()),
                 nextQuarterlyCalibrationRefreshDate = getRefreshDateFmt(response?.nextQuarterlyCalibrationRefreshDate.orEmpty()),
                 currentPMGrade = getCurrentPMGrade(response?.currentPMGrade),
                 currentPMBenefits = getPMGradeBenefits(response?.currentPMBenefits),
                 nextPMGrade = getNextPMGrade(response?.nextPMGrade),
-                nextPMBenefits = getPMGradeBenefits(response?.nextPMBenefits),
-                potentialPmGrade = getPMPotentialGrade(response?.potentialPmGrade),
-                potentialPMBenefits = getPMGradeBenefits(response?.potentialBenefits),
-                pmGradeBenefitList = getPMGradeBenefitList(response?.pmGradeBenefitList)
+                nextPMBenefits = getPMGradeBenefits(response?.nextPMBenefits)
         )
     }
 
@@ -33,6 +30,7 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
                 PMGradeWithBenefitsUiModel(
                         gradeName = it.gradeName.orEmpty(),
                         isActive = it.isActive ?: false,
+                        pmTier = it.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                         benefits = getPMGradeBenefits(it.benefits)
                 )
             }
@@ -86,8 +84,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
     private fun getCurrentPMGrade(currentPmGrade: CurrentPmGradeModel?): PMCurrentGradeUiModel? {
         currentPmGrade?.let {
             return PMCurrentGradeUiModel(
-                    shopLevel = it.shopLevel.orZero(),
-                    shopScore = it.shopScore.orZero(),
                     gradeName = it.gradeName.orEmpty(),
                     imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
                     backgroundUrl = it.backgroundUrl.orEmpty()

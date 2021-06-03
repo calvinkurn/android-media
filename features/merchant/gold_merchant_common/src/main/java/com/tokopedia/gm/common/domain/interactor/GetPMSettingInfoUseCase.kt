@@ -26,11 +26,14 @@ class GetPMSettingInfoUseCase @Inject constructor(
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPowerMerchantSettingInfoResponse::class.java)
 
         if (errors.isNullOrEmpty()) {
-            val response = gqlResponse.getData<GetPowerMerchantSettingInfoResponse>()
-            val data = mapper.mapRemoteModelToUiModel(response.goldGetPMSettingInfo)
-            return data
+            val response = gqlResponse.getData<GetPowerMerchantSettingInfoResponse>(GetPowerMerchantSettingInfoResponse::class.java)
+            if (response != null) {
+                return mapper.mapRemoteModelToUiModel(response.goldGetPMSettingInfo)
+            } else {
+                throw RuntimeException("${getClassName()} : returns null")
+            }
         } else {
-            throw MessageErrorException(errors.joinToString(" - ") { it.message })
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 
@@ -40,7 +43,6 @@ class GetPMSettingInfoUseCase @Inject constructor(
         private val QUERY = """
            query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!) {
              goldGetPMSettingInfo(shopID: ${'$'}shopID, source:${'$'}source) {
-               shop_id
                period_type
                period_end_date_time
                ticker_list {

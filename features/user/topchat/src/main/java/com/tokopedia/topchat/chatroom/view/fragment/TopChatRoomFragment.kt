@@ -70,6 +70,7 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -149,7 +150,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         SearchListener, BroadcastSpamHandlerViewHolder.Listener,
         RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
         TopchatProductAttachmentListener, UploadImageBroadcastListener,
-        SrwQuestionViewHolder.Listener, SrwLinearLayout.Listener, ReplyBoxTextListener {
+        SrwQuestionViewHolder.Listener, ReplyBoxTextListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -239,7 +240,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initSrw() {
-        rvSrw?.initialize(this, this)
+        rvSrw?.initialize(this, object : SrwLinearLayout.Listener {
+            override fun onRetrySrw() {
+                presenter.getSmartReplyWidget(messageId)
+            }
+            override fun trackViewSrw() {
+                analytics.eventViewSrw(shopId, session.userId)
+            }
+            override fun onExpandStateChanged(isExpanded: Boolean) {
+                if (isExpanded) {
+                    getViewState().hideKeyboard()
+                }
+            }
+        })
     }
 
     private fun initUserLocation() {
@@ -500,6 +513,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 context, ApplinkConstInternalMarketplace.RESERVED_STOCK,
                 id, product.shopId.toString()
         )
+        intent.putExtra(EXTRA_SOURCE, EXTRA_SOURCE_STOCK)
         presenter.addOngoingUpdateProductStock(id, product, adapterPosition, parentMetaData)
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
@@ -587,14 +601,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (!isSeller()) {
             presenter.getSmartReplyWidget(messageId)
         }
-    }
-
-    override fun onRetrySrw() {
-        presenter.getSmartReplyWidget(messageId)
-    }
-
-    override fun trackViewSrw() {
-        analytics.eventViewSrw(shopId, session.userId)
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -2038,6 +2044,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
         const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
+        private const val EXTRA_SOURCE_STOCK = "chat"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

@@ -258,7 +258,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
             eventVerifyRequest.cartdata.metadata.itemIds = getItemIds(hashItemMap)
             eventVerifyRequest.cartdata.metadata.itemMaps = getListItemMap(hashItemMap)
             eventVerifyRequest.cartdata.metadata.quantity = getTotalQuantity(hashItemMap)
-            eventPDPTracking.onClickPesanTiket(viewModel.categoryData, PACKAGES_ID, getListItemMap(hashItemMap))
+            eventPDPTracking.onClickPesanTiket(viewModel.categoryData, PACKAGES_ID,
+                    getListItemMap(hashItemMap), userSession.userId)
             viewModel.verify(mutationVerifyV2(), eventVerifyRequest)
         }
     }

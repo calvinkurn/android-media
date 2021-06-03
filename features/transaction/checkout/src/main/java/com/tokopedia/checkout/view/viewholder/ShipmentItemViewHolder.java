@@ -3,8 +3,6 @@ package com.tokopedia.checkout.view.viewholder;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Editable;
@@ -970,7 +968,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSingleShippingEta.setText(R.string.estimasi_tidak_tersedia);
         }
 
-        if (!selectedCourierItemData.getLogPromoDesc().isEmpty()) {
+        if (selectedCourierItemData.getLogPromoDesc() != null && !selectedCourierItemData.getLogPromoDesc().isEmpty()) {
             labelSingleShippingMessage.setText(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));
             labelSingleShippingMessage.setVisibility(View.VISIBLE);
         } else {

@@ -296,62 +296,6 @@ fun String.goToWebView(context: Context) {
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
 fun Throwable.asFail(): Fail = Fail(this)
 
-fun View?.showToasterSuccess(message: String,
-                             @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8) {
-    this?.let {
-        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
-        Toaster.toasterCustomBottomHeight = toasterOffset
-        Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-    }
-}
-
-fun View?.showToasterSuccess(message: String,
-                           @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
-                           ctaMaxWidth: Int? = null,
-                           ctaText: String = "",
-                           ctaListener: (() -> Unit?)? = null) {
-    this?.let {
-        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
-        ctaMaxWidth?.let {
-            Toaster.toasterCustomCtaWidth = ctaMaxWidth
-        }
-
-        Toaster.toasterCustomBottomHeight = toasterOffset
-        if (ctaText.isNotEmpty()) {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            }).show()
-        } else {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            }).show()
-        }
-    }
-}
-fun View?.showToasterError(message: String,
-                           @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
-                           ctaMaxWidth: Int? = null,
-                           ctaText: String = "",
-                           ctaListener: (() -> Unit?)? = null) {
-    this?.let {
-        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
-        ctaMaxWidth?.let {
-            Toaster.toasterCustomCtaWidth = ctaMaxWidth
-        }
-
-        Toaster.toasterCustomBottomHeight = toasterOffset
-        if (ctaText.isNotEmpty()) {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            }).show()
-        } else {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            }).show()
-        }
-    }
-}
-
 internal fun View?.animateExpand() = this?.run {
     val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
     val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)

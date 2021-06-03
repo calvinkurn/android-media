@@ -7,12 +7,12 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1">
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:background="@color/Unify_N0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0"
             android:paddingStart="@dimen/layout_lvl2"
             android:paddingTop="@dimen/layout_lvl1"
             android:paddingEnd="@dimen/layout_lvl2"
