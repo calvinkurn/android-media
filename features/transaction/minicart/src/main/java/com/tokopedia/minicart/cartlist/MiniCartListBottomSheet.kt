@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -277,7 +278,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     override fun onQuantityChanged(productId: String, newQty: Int) {
         viewModel.updateProductQty(productId, newQty)
-        calculateProduct()
+        viewModel.calculateProduct()
         viewModel.updateCart()
     }
 
@@ -285,8 +286,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         viewModel.updateCart()
     }
 
-    override fun onShowSimilarProductClicked() {
-
+    override fun onShowSimilarProductClicked(appLink: String) {
+        bottomSheet?.context?.let {
+            RouteManager.route(it, appLink)
+        }
     }
 
     override fun onShowUnavailableItemsCLicked() {

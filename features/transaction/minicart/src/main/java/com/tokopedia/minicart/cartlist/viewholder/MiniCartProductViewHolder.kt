@@ -450,7 +450,7 @@ class MiniCartProductViewHolder(private val view: View,
         textProductUnavailableAction?.text = action.message
         textProductUnavailableAction?.setOnClickListener {
             if (element.selectedUnavailableActionLink.isNotBlank()) {
-                listener.onShowSimilarProductClicked()
+                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink)
             }
         }
         textProductUnavailableAction?.context?.let {
