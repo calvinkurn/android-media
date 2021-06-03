@@ -1,11 +1,13 @@
 package com.tokopedia.tokomart.searchcategory.presentation.view
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -34,25 +36,21 @@ import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
-import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
-import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
-import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
-import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.*
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import java.util.HashMap
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -78,8 +76,18 @@ abstract class BaseSearchCategoryFragment:
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
     protected var miniCartWidget: MiniCartWidget? = null
+    private var statusBarBackground: View? = null
+    private var headerBackground: AppCompatImageView? = null
+    private var movingPosition = 0
 
     protected abstract val toolbarPageName: String
+
+    private val searchCategoryToolbarHeight: Int
+        get() {
+            var height = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
+            height += resources.getDimensionPixelSize(R.dimen.dp_8)
+            return height
+        }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -95,6 +103,7 @@ abstract class BaseSearchCategoryFragment:
         findViews(view)
 
         configureNavToolbar()
+        configureStatusBar()
         configureMiniCart()
         configureRecyclerView()
         observeViewModel()
@@ -106,6 +115,8 @@ abstract class BaseSearchCategoryFragment:
         navToolbar = view.findViewById(R.id.tokonowSearchCategoryNavToolbar)
         recyclerView = view.findViewById(R.id.tokonowSearchCategoryRecyclerView)
         miniCartWidget = view.findViewById(R.id.tokonowSearchCategoryMiniCart)
+        statusBarBackground = view.findViewById(R.id.tokonowSearchCategoryStatusBarBackground)
+        headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
     }
 
     protected open fun configureNavToolbar() {
@@ -118,6 +129,36 @@ abstract class BaseSearchCategoryFragment:
                 hints = getNavToolbarHint(),
                 searchbarClickCallback = ::onSearchBarClick,
         )
+        setupTopNavigation()
+    }
+
+    private fun setupTopNavigation() {
+        navToolbar?.let { toolbar ->
+            activity?.let { toolbar.setupToolbarWithStatusBar(it, applyPadding = false) }
+
+            viewLifecycleOwner.lifecycle.addObserver(toolbar)
+
+            recyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
+                    navToolbar = toolbar,
+                    startTransitionPixel = searchCategoryToolbarHeight,
+                    toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range),
+                    navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                        override fun onAlphaChanged(offsetAlpha: Float) {
+
+                        }
+                        override fun onSwitchToLightToolbar() {
+
+                        }
+                        override fun onSwitchToDarkToolbar() {
+                            navToolbar?.hideShadow()
+                        }
+                        override fun onYposChanged(yOffset: Int) {
+                            headerBackground?.y = -(yOffset.toFloat())
+                        }
+                    },
+                    fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+            ))
+        }
     }
 
     protected abstract fun createNavToolbarIconBuilder(): IconBuilder
@@ -174,6 +215,27 @@ abstract class BaseSearchCategoryFragment:
         return params
     }
 
+    private fun configureStatusBar() {
+        /*
+            this status bar background only shows for android Kitkat below
+            In that version, status bar can't be forced to dark mode
+            We must set background to keep status bar icon visible
+        */
+        activity?.let {
+            statusBarBackground?.apply {
+                layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
+                visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
+            }
+            setStatusBarAlpha()
+        }
+    }
+
+    private fun setStatusBarAlpha() {
+        val drawable = statusBarBackground?.background
+        drawable?.alpha = 0
+        statusBarBackground?.background = drawable
+    }
+
     protected open fun configureMiniCart() {
         val shopIds = listOf("123")
 
@@ -197,6 +259,7 @@ abstract class BaseSearchCategoryFragment:
         endlessScrollListener?.let {
             recyclerView?.addOnScrollListener(it)
         }
+        recyclerView?.addOnScrollListener(createScrollListener())
     }
 
     private fun createEndlessScrollListener(layoutManager: StaggeredGridLayoutManager) =
@@ -205,6 +268,24 @@ abstract class BaseSearchCategoryFragment:
                     onLoadMore()
                 }
             }
+
+    private fun createScrollListener() =
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    evaluateSearchCategoryComponentOnScroll(recyclerView, dy)
+                }
+            }
+
+    private fun evaluateSearchCategoryComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
+        movingPosition += dy
+        headerBackground?.y = -(movingPosition.toFloat())
+        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
+            navToolbar?.showShadow(lineShadow = true)
+        } else {
+            navToolbar?.hideShadow(lineShadow = true)
+        }
+    }
 
     abstract fun createTypeFactory(): BaseSearchCategoryTypeFactory
 
