@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -40,6 +41,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
@@ -276,13 +278,15 @@ abstract class BaseSearchCategoryFragment:
     override fun getFragment() = this
 
     override fun onSeeAllCategoryClicked() {
-
+        RouteManager.route(
+                context,
+                ApplinkConstInternalTokoMart.CATEGORY_LIST,
+                SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+        )
     }
 
     override fun onBannerClick(applink: String) {
-        context?.let {
-            RouteManager.route(it, applink)
-        }
+        RouteManager.route(context, applink)
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
