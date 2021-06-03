@@ -108,7 +108,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 )
             }
 
-            BUY_AGAIN -> {
+            BUY_AGAIN, REMINDER -> {
                 recyclerView?.bindCarouselProductCardViewList(
                         productCardModelList = carouselProductList,
                         carouselProductCardOnItemAddToCartListener = productAddToCartListener,

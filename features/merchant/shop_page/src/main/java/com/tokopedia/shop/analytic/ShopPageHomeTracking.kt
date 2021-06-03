@@ -122,6 +122,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITH_CART
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
+import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -240,7 +242,7 @@ class ShopPageHomeTracking(
             widgetName: String,
             customDimensionShopPage: CustomDimensionShopPage
     ) {
-        val widgetType = if(widgetName == "buy_again") {
+        val widgetType = if(isSameTypeAsBuyAgain(widgetName)) {
             WIDGET_TYPE_BUY_AGAIN
         } else {
             WIDGET_TYPE_CAROUSELL
@@ -288,6 +290,10 @@ class ShopPageHomeTracking(
                         actionFieldList
                 )))
         sendDataLayerEvent(eventMap)
+    }
+
+    private fun isSameTypeAsBuyAgain(widgetName: String): Boolean {
+        return widgetName == BUY_AGAIN || widgetName == REMINDER
     }
 
     fun impressionProduct(
@@ -399,7 +405,7 @@ class ShopPageHomeTracking(
             widgetName: String,
             customDimensionShopPage: CustomDimensionShopPage
     ) {
-        val widgetType = if(widgetName == "buy_again") {
+        val widgetType = if(isSameTypeAsBuyAgain(widgetName)) {
             WIDGET_TYPE_BUY_AGAIN
         } else {
             WIDGET_TYPE_CAROUSELL
@@ -519,7 +525,7 @@ class ShopPageHomeTracking(
             customDimensionShopPage: CustomDimensionShopPage
     ) {
 
-        val widgetType = if(widgetName == "buy_again") {
+        val widgetType = if(isSameTypeAsBuyAgain(widgetName)) {
             WIDGET_TYPE_BUY_AGAIN
         } else {
             WIDGET_TYPE_CAROUSELL
