@@ -8,6 +8,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
 
 class ItemStatusPMViewHolder(view: View,
@@ -20,6 +21,15 @@ class ItemStatusPMViewHolder(view: View,
     override fun bind(element: ItemStatusPMUiModel?) {
         setupIconClickListener()
         setupItemPowerMerchant(element)
+        setupDarkModeColor()
+    }
+
+    private fun setupDarkModeColor() {
+        with(itemView) {
+            if(context.isDarkMode()) {
+                setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            }
+        }
     }
 
     private fun setupItemPowerMerchant(element: ItemStatusPMUiModel?) {
