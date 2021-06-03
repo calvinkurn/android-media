@@ -7,7 +7,7 @@
       "eventCategory": "choose otp page",
       "eventAction": "click on otp method",
       "eventLabel": "116 - sms",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

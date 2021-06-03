@@ -11,6 +11,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.gson.Gson
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
@@ -20,7 +21,6 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.matchers.withRecyclerView
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.Matcher
 
 open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
@@ -37,12 +37,12 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
     protected var sellerBroadcastProductCarouselChatReplies = GetExistingChatPojo()
     protected var sellerProductAttachment = ChatAttachmentResponse()
     protected var sellerProductVariantAttachment = ChatAttachmentResponse()
+    protected var sellerProductVariantAttachmentWithParentId = ChatAttachmentResponse()
 
     private val templateChats = listOf(
             "I am seller", "Yes, this product is ready"
     )
 
-    @ExperimentalCoroutinesApi
     override fun before() {
         super.before()
         setupDefaultResponse()
@@ -96,6 +96,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
         )
         sellerProductVariantAttachment = AndroidFileUtil.parse(
                 "seller/success_get_chat_attachments_with_product_variant.json",
+                ChatAttachmentResponse::class.java
+        )
+        sellerProductVariantAttachmentWithParentId = AndroidFileUtil.parse(
+                "seller/success_get_chat_attachments_with_product_variant_parentid.json",
                 ChatAttachmentResponse::class.java
         )
     }
@@ -205,6 +209,25 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
             product.productProfile.dropPercentage = ""
             product.productProfile.priceBefore = ""
             product.productProfile.campaignId = 0
+        }
+        attachment.attributes = gson.toJson(product)
+        return this
+    }
+
+    protected fun ChatAttachmentResponse.setEmptyStock(
+            attachmentIndex: Int,
+            isEmpty: Boolean
+    ): ChatAttachmentResponse {
+        val attachment = chatAttachments.list[attachmentIndex]
+        val product = gson.fromJson(
+                attachment.attributes, ProductAttachmentAttributes::class.java
+        )
+        if (isEmpty) {
+            product.productProfile.status = ProductAttachmentViewModel.statusWarehouse
+            product.productProfile.remainingStock = 0
+        } else {
+            product.productProfile.status = ProductAttachmentViewModel.statusActive
+            product.productProfile.remainingStock = 1
         }
         attachment.attributes = gson.toJson(product)
         return this

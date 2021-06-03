@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmDeactivationPmProTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/pm_deactivation_pm_pro_bottom_sheet_title"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmDeactivationPmProDesc"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:gravity="center"
+        android:text="@string/pm_deactivation_pm_pro_bottom_sheet_title"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmDeactivationPmProTitle"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.power_merchant.subscribe.view.viewcomponent.PMDowngradeOption
+        android:id="@+id/optionPmPowerMerchant"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        app:layout_constraintEnd_toStartOf="@+id/optionPmRegularMerchant"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmDeactivationPmProDesc"
+        tools:layout_height="100dp" />
+
+    <com.tokopedia.power_merchant.subscribe.view.viewcomponent.PMDowngradeOption
+        android:id="@+id/optionPmRegularMerchant"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/optionPmPowerMerchant"
+        app:layout_constraintTop_toBottomOf="@+id/tvPmDeactivationPmProDesc"
+        tools:layout_height="100dp" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnPmOptionsNext"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:text="@string/pm_label_next"
+        android:enabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/optionPmPowerMerchant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmOptionsTnC"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPmOptionsNext"
+        app:typographyType="small"
+        tools:text="@string/pm_options_tnc_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -109,9 +109,13 @@ class BannerComponentViewHolder(itemView: View,
         bind(element)
     }
 
+    fun scrollTo(position: Int) {
+        rvBanner.smoothScrollToPosition(position)
+    }
+
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
         if (isAutoScroll) {
-            rvBanner.smoothScrollToPosition(currentPagePosition)
+            scrollTo(currentPagePosition)
 
             channelModel?.let {
                 val size = channelModel?.channelGrids?.size?:0

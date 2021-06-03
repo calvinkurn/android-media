@@ -297,8 +297,16 @@ class AddEditProductShipmentFragment:
 
     private fun setupSubmitButton() {
         btnEnd?.setOnClickListener {
-            val productLimitationModel = SharedPreferencesUtil.getProductLimitationModel(requireActivity())
-            if (productLimitationModel.isEligible) {
+            var isEligible = true
+            var productLimitationModel = ProductLimitationModel()
+
+            if (RollenceUtil.getProductLimitationRollence()) {
+                productLimitationModel = SharedPreferencesUtil.getProductLimitationModel(requireActivity())
+                        ?: ProductLimitationModel()
+                isEligible = productLimitationModel.isEligible
+            }
+
+            if (isEligible) {
                 btnEnd?.isLoading = true
                 submitInput(UPLOAD_DATA)
             } else {

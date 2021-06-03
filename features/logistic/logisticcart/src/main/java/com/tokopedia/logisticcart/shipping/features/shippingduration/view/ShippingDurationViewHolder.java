@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.purchase_platform.common.utils.Utils;
@@ -47,7 +48,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvDurationOrPrice;
     private TextView tvPriceOrDuration;
     private TextView tvTextDesc;
-    private ImageView imgCheck;
+    private IconUnify imgCheck;
     private ImageView imgMvc;
     private Typography tvMvc;
     private RelativeLayout rlContent;
@@ -59,6 +60,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private ConstraintLayout layoutMvc;
     private Label labelCodAvailabelEta;
     private FrameLayout flDisableContainer;
+    private Label labelDynamicPricing;
 
     private int cartPosition;
 
@@ -82,6 +84,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
         layoutMvc = itemView.findViewById(R.id.layout_mvc);
         flDisableContainer = itemView.findViewById(R.id.fl_container);
+        labelDynamicPricing = itemView.findViewById(R.id.lbl_dynamic_pricing);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
@@ -176,6 +179,14 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             labelCodAvailabelEta.setVisibility(View.GONE);
             labelCodAvailable.setText(shippingDurationUiModel.getCodText());
             labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
+        }
+
+        /*Dynamic Price*/
+        if (shippingDurationUiModel.getDynamicPriceModel().getTextLabel().isEmpty()) {
+            labelDynamicPricing.setVisibility(View.GONE);
+        } else {
+            labelDynamicPricing.setVisibility(View.VISIBLE);
+            labelDynamicPricing.setText(shippingDurationUiModel.getDynamicPriceModel().getTextLabel());
         }
 
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);

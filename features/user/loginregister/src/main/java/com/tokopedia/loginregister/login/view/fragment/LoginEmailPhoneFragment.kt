@@ -17,6 +17,7 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
@@ -56,10 +57,7 @@ import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
@@ -67,6 +65,8 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
@@ -75,6 +75,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.error.LoginErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
@@ -98,9 +99,9 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
-import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -174,7 +175,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     private var source: String = ""
     protected var isAutoLogin: Boolean = false
-    protected var isEnableSmartLock = true
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     protected var isEnableFingerprint = true
@@ -281,6 +281,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupBackgroundColor()
         callbackManager = CallbackManager.Factory.create()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -296,6 +297,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+    }
+
+    private fun setupBackgroundColor() {
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -344,6 +353,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             val email = it.getString(PARAM_EMAIL, "")
             val method = it.getString(PARAM_LOGIN_METHOD, "")
 
+            isFromRegister = it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
+
             if (phone.isNotEmpty()) {
                 emailPhoneEditText?.setText(phone)
             } else if(email.isNotEmpty()) {
@@ -359,10 +370,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                         METHOD_LOGIN_FACEBOOK -> onLoginFacebookClick()
                         METHOD_LOGIN_GOOGLE -> onLoginGoogleClick()
                         METHOD_LOGIN_EMAIL -> onLoginEmailClick()
-                        else -> showSmartLock()
+                        else -> {}
                     }
                 }
-                else -> showSmartLock()
+                else -> {}
             }
         }
     }
@@ -516,43 +527,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     }
 
-    private fun loginEmail(email: String, password: String, isSmartLock: Boolean = false, useHash: Boolean = false) {
-        showLoadingLogin()
+    private fun loginEmail(email: String, password: String, useHash: Boolean = false) {
         currentEmail = email
         resetError()
         if(isValid(email, password)) {
+            showLoadingLogin()
             if(isEnableEncryption() && useHash) {
-                viewModel.loginEmailV2(email = email, password = password, isSmartLock = isSmartLock, useHash = useHash)
+                viewModel.loginEmailV2(email = email, password = password, useHash = useHash)
             }else {
-                viewModel.loginEmail(email, password, isSmartLock = isSmartLock)
+                viewModel.loginEmail(email, password)
             }
         } else {
             stopTrace()
         }
-    }
-
-
-    private fun showSmartLock() {
-        if (isEnableSmartLock) {
-            val intent = Intent(activity, SmartLockActivity::class.java)
-            val bundle = Bundle()
-            bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
-            intent.putExtras(bundle)
-            startActivityForResult(intent, REQUEST_SMART_LOCK)
-        }
-    }
-
-    private fun doLoginAfterSmartLock(data: Intent) {
-        val username = data.extras?.getString(SmartLockActivity.USERNAME).orEmpty()
-        val password = data.extras?.getString(SmartLockActivity.PASSWORD).orEmpty()
-
-        emailPhoneEditText?.let {
-            it.setText(username)
-            it.setSelection(it.text.length)
-        }
-
-        loginEmail(username, password, isSmartLock = true)
-        analytics.eventClickSmartLock(activity?.applicationContext)
     }
 
     override fun showLoadingDiscover() {
@@ -577,9 +564,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun prepareView() {
-
         partialRegisterInputView?.showForgotPassword()
-
         socmedBottomSheet = SocmedBottomSheet(context)
         socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
         socmedBottomSheet?.setCloseClickListener {
@@ -827,14 +812,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 )
             }
         } catch (e: Exception) {
-            e.message?.let { onErrorLogin(it) }
+            e.message?.let { onErrorLogin(it, LoginErrorCode.ERROR_ON_FACEBOOK_CATCH_SUCCESS) }
         }
     }
 
-    private fun onErrorGetFacebookCredential(errorMessage: Throwable?){
+    private fun onErrorGetFacebookCredential(errorMessage: Throwable){
         dismissLoadingLogin()
         if (isAdded && activity != null) {
-            onErrorLogin(ErrorHandler.getErrorMessage(context, errorMessage))
+            val msg = ErrorHandler.getErrorMessage(context, errorMessage)
+            onErrorLogin(msg, LoginErrorCode.ERROR_ON_FACEBOOK, errorMessage)
         }
     }
 
@@ -869,7 +855,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             override fun onErrorGetFacebookCredential(errorMessage: Exception?) {
                 dismissLoadingLogin()
                 if (isAdded && activity != null) {
-                    onErrorLogin(ErrorHandler.getErrorMessage(context, errorMessage))
+                    onErrorLogin(ErrorHandler.getErrorMessage(context, errorMessage), LoginErrorCode.ERROR_ON_FACEBOOK_CREDENTIAL)
                 }
             }
 
@@ -924,6 +910,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     })
         }
         emailExtension?.hide()
+        callTokopediaCare?.showWithCondition(!isLoading)
     }
 
     override fun goToRegisterInitial(source: String) {
@@ -966,7 +953,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo?) {
         currentEmail = ""
-        setSmartLock()
         viewModel.getUserInfo()
     }
 
@@ -999,7 +985,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             } else {
-                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister())
+                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister)
             }
 
             setTrackingUserId(userSession.userId)
@@ -1102,15 +1088,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
-    fun onErrorLogin(errorMessage: String?) {
-        analytics.eventFailedLogin(userSession.loginMethod, errorMessage)
+    private fun onErrorLogin(errorMessage: String?, flow: String) {
+        analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        loggingError(flow, errorMessage)
     }
 
-    override fun isFromRegister(): Boolean {
-        return arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
+    private fun onErrorLogin(errorMessage: String?, flow: String, throwable: Throwable) {
+        analytics.eventFailedLogin(userSession.loginMethod, errorMessage, isFromRegister)
+
+        dismissLoadingLogin()
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        loggingErrorWithThrowable(flow, errorMessage, throwable)
     }
 
     override fun trackSuccessValidate() {
@@ -1231,28 +1222,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         partialRegisterInputView?.onErrorValidate(getString(resId))
     }
 
-    override fun setSmartLock() {
-        wrapper_password?.textFieldInput?.text?.let {
-            if (emailPhoneEditText?.text?.isNotBlank() == true && it.isNotBlank()) {
-                saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
-                        emailPhoneEditText?.text.toString(),
-                        it.toString())
-            }
-        }
-    }
-
-    private fun saveSmartLock(state: Int, email: String, password: String) {
-        val intent = Intent(activity, SmartLockActivity::class.java)
-        val bundle = Bundle()
-        bundle.putInt(SmartLockActivity.STATE, state)
-        if (state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE) {
-            bundle.putString(SmartLockActivity.USERNAME, email)
-            bundle.putString(SmartLockActivity.PASSWORD, password)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_SAVE_SMART_LOCK)
-    }
-
     override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
         return {
             currentEmail = ""
@@ -1270,7 +1239,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
             } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
-                onErrorLogin(it.errorDescription)
+                onErrorLogin(it.errorDescription, LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION, it)
             } else {
                 val forbiddenMessage = context?.getString(
                         com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
@@ -1278,7 +1247,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 if (errorMessage == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
-                    onErrorLogin(errorMessage)
+                    onErrorLogin(errorMessage, LoginErrorCode.ERROR_EMAIL_UNKNOWN, it)
 
                     context?.run {
                         if (!TextUtils.isEmpty(it.message)
@@ -1310,7 +1279,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GET_USER_INFO, it)
         }
     }
 
@@ -1347,7 +1316,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onGoToActivationPageAfterRelogin(): (MessageErrorException) -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_ACTIVATION_AFTER_RELOGIN)
         }
     }
 
@@ -1355,7 +1324,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onGoToSecurityQuestionAfterRelogin(): () -> Unit {
         return {
             dismissLoadingLogin()
-            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
+            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context)
+                            , LoginErrorCode.ERROR_SQ_AFTER_RELOGIN)
         }
     }
 
@@ -1381,7 +1351,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK, it)
             }
         }
     }
@@ -1402,7 +1372,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK_PHONE, it)
             }
         }
     }
@@ -1414,7 +1384,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 dismissLoadingLogin()
                 showPopupErrorAkamai()
             } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it))
+                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_GMAIL, it)
             }
         }
     }
@@ -1422,13 +1392,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onSuccessActivateUser(activateUserData: ActivateUserData) {
         dismissLoadingLogin()
         userSession.clearToken()
-        userSession.setToken(activateUserData.accessToken, activateUserData.tokenType, activateUserData.refreshToken)
+        userSession.setToken(activateUserData.accessToken, activateUserData.tokenType, EncoderDecoder.Encrypt(activateUserData.refreshToken, userSession.refreshTokenIV))
         viewModel.getUserInfo()
     }
 
     override fun onFailedActivateUser(throwable: Throwable) {
         dismissLoadingLogin()
-        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
+        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable), LoginErrorCode.ERROR_ACTIVATE_USER, throwable)
     }
 
     protected fun isEmailNotActive(e: Throwable, email: String): Boolean {
@@ -1474,20 +1444,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data)
-            if (requestCode == REQUEST_SMART_LOCK && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.extras != null
-                    && data.extras?.getString(SmartLockActivity.USERNAME) != null
-                    && data.extras?.getString(SmartLockActivity.PASSWORD) != null) {
-                doLoginAfterSmartLock(data)
-            } else if (requestCode == REQUEST_SMART_LOCK
-                    && resultCode == SmartLockActivity.RC_READ
-                    && !userSession.autofillUserData.isNullOrEmpty()) {
-                        emailPhoneEditText?.let {
-                            it.setText(userSession.autofillUserData)
-                            it.setSelection(it.text.length)
-                        }
-            } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
+            if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
             } else if (requestCode == REQUEST_SECURITY_QUESTION
@@ -1629,15 +1586,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     showLoadingLogin()
                     viewModel.loginGoogle(accessToken, email)
                 } else {
-                    onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, context))
+                    onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, context), LoginErrorCode.ERROR_ON_GMAIL_NULL_EMAIL)
                 }
             } else {
-                onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context))
+                onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context), LoginErrorCode.ERROR_ON_GMAIL_NULL_ACCOUNT)
             }
         } catch (e: ApiException) {
             onErrorLogin(String.format(getString(R.string.loginregister_failed_login_google),
-                    e.statusCode.toString())
-            )
+                    e.statusCode.toString()), LoginErrorCode.ERROR_ON_GMAIL_CATCH)
         }
 
     }
@@ -1900,6 +1856,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 getString(R.string.popup_error_desc),
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
         )
+        loggingError("Login", "Akamai Error")
     }
 
     override fun onFingerprintValid() {}
@@ -1915,6 +1872,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun removeFingerprintData() {
         fingerprintPreferenceHelper.removeUserId()
         fingerprintPreferenceHelper.unregisterFingerprint()
+    }
+
+    private fun loggingError(flow: String, errorMessage: String?) {
+        ServerLogger.log(Priority.P1, "BUYER_FLOW_LOGIN"
+                , mapOf("type" to flow
+                        , "error" to errorMessage.orEmpty()))
+    }
+
+    private fun loggingErrorWithThrowable(flow: String, errorMessage: String?, throwable: Throwable) {
+        ServerLogger.log(Priority.P1, "BUYER_FLOW_LOGIN"
+                , mapOf("type" to flow
+                , "error" to errorMessage.orEmpty()
+                , "throwable" to Log.getStackTraceString(throwable)))
     }
 
     companion object {
@@ -1966,6 +1936,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         private const val SOURCE_ATC = "atc"
 
         private const val FACEBOOK_LOGIN_TYPE = "fb"
+        private const val GMAIL_LOGIN_TYPE = "fb"
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
