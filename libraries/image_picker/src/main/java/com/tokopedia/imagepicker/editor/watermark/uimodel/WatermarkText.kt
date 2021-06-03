@@ -22,6 +22,26 @@ data class WatermarkText(
     var position: WatermarkPosition = WatermarkPosition()
 ) {
 
+    fun setContentText(value: String) = apply {
+        this.text = value
+    }
+
+    fun positionX(value: Double) = apply {
+        this.position.positionX = value
+    }
+
+    fun positionY(value: Double) = apply {
+        this.position.positionY = value
+    }
+
+    fun textAlpha(value: Int) = apply {
+        this.alpha = value
+    }
+
+    fun textColor(value: Int) = apply {
+        this.color = value
+    }
+
     fun setTextShadow(
         blurRadius: Float,
         shadowXOffset: Float,

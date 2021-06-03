@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -24,6 +25,7 @@ import com.tokopedia.imagepicker.editor.watermark.Watermark;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilderKt;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkKt;
+import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
@@ -374,6 +376,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     private void setImageData() {
+        WatermarkText watermarkText = new WatermarkText()
+                .setContentText("Tokopedia")
+                .positionX(0.5)
+                .positionY(0.5)
+                .textAlpha(255)
+                .textColor(Color.WHITE);
+
         showLoadingAndHidePreview();
         processOptions();
 
@@ -387,9 +396,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         new Handler().postDelayed(() -> {
             Subscription preRenderBitmap = Observable.just(inputUri)
                     .flatMap((Func1<Uri, Observable<Uri>>) uri -> Observable.just(outputUri))
-                    .flatMap((Func1<Uri, Observable<Watermark>>) uri -> Observable.just(WatermarkBuilder
+                    .flatMap((Func1<Uri, Observable<WatermarkKt>>) uri -> Observable.just(WatermarkBuilderKt
                             .create(requireContext(), gestureCropImageView)
-                            .loadWatermarkText("Tokopedia")
+                            .loadWatermarkText(watermarkText)
+                            .setTileMode(true)
                             .getWatermark()))
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
