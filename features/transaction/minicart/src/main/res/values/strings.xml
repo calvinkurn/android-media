@@ -8,4 +8,5 @@
     <string name="mini_cart_label_dialog_message_remove_cart_unavailable_multiple_item">Semua barang ini akan dihapus dari keranjangmu.</string>
     <string name="mini_cart_label_dialog_action_delete">Hapus Barang</string>
     <string name="mini_cart_label_dialog_action_cancel">Kembali</string>
+    <string name="mini_cart_label_cancel">Batalkan</string>
 </resources>

@@ -32,6 +32,14 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_height="100dp" />
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/chat_icon"
+            android:layout_width="0.5dp"
+            android:layout_height="0.5dp"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

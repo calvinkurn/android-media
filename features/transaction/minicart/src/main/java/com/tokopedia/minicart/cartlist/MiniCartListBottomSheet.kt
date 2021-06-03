@@ -25,6 +25,7 @@ import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -35,10 +36,11 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                                                   var globalErrorBottomSheet: GlobalErrorBottomSheet)
     : MiniCartListActionListener {
 
-    lateinit var viewModel: MiniCartWidgetViewModel
+    private var viewModel: MiniCartWidgetViewModel? = null
     private var bottomsheetContainer: CoordinatorLayout? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var totalAmount: TotalAmount? = null
+    private var chatIcon: ImageUnify? = null
     private var rvMiniCartList: RecyclerView? = null
     private var adapter: MiniCartListAdapter? = null
     private var progressDialog: AlertDialog? = null
@@ -55,7 +57,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         context?.let {
             initializeView(it, fragmentManager, onDismiss)
             initializeViewModel(viewModel, lifecycleOwner)
-            initializeCartData()
+            initializeCartData(viewModel)
         }
     }
 
@@ -72,8 +74,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     hideProgressLoading()
                     val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
                             ?: ""
+                    val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_label_cancel) ?: ""
                     viewModel.getCartList()
-                    showToaster(message, "Batalkan") {
+                    showToaster(message, ctaText) {
                         viewModel.undoDeleteCartItems()
                     }
                 }
@@ -98,7 +101,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         })
     }
 
-    private fun initializeCartData() {
+    private fun initializeCartData(viewModel: MiniCartWidgetViewModel) {
         showLoading()
         viewModel.getCartList()
     }
@@ -169,27 +172,44 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun initializeTotalAmount(view: View, fragmentManager: FragmentManager, context: Context) {
         totalAmount = view.findViewById(R.id.total_amount)
+        chatIcon = view.findViewById(R.id.chat_icon)
         totalAmount?.let {
             it.amountChevronView.setOnClickListener {
-                viewModel.miniCartListListUiModel.value?.miniCartSummaryTransactionUiModel?.let {
+                viewModel?.miniCartListListUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
                     summaryTransactionBottomSheet.show(it, fragmentManager, context)
                 }
             }
             it.enableAmountChevron(true)
-            it.context?.let { context ->
-                val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
-                it.setAdditionalButton(chatIcon)
-                it.totalAmountAdditionalButton.setOnClickListener {
-                    val shopId = viewModel.currentShopIds.value?.firstOrNull() ?: "0"
-                    val intent = RouteManager.getIntent(
-                            context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
-                    )
-                    context.startActivity(intent)
-                }
+            setTotalAmountChatIcon()
+            setTotalAmountLoading(true)
+        }
+    }
+
+    private fun setTotalAmountLoading(isLoading: Boolean) {
+        if (isLoading) {
+            if (totalAmount?.isTotalAmountLoading == false) {
+                totalAmount?.isTotalAmountLoading = true
             }
-            if (it.isTotalAmountLoading == false) {
-                it.isTotalAmountLoading = true
+        } else {
+            if (totalAmount?.isTotalAmountLoading == true) {
+                totalAmount?.isTotalAmountLoading = false
             }
+        }
+        setTotalAmountChatIcon()
+    }
+
+    private fun setTotalAmountChatIcon() {
+        totalAmount?.context?.let { context ->
+            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
+            totalAmount?.setAdditionalButton(chatIcon)
+            totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
+                val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: "0"
+                val intent = RouteManager.getIntent(
+                        context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
+                )
+                context.startActivity(intent)
+            }
+            this.chatIcon?.setImageDrawable(chatIcon)
         }
     }
 
@@ -208,7 +228,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 enableAmountChevron(true)
             }
         }
-        totalAmount?.isTotalAmountLoading = false
+        setTotalAmountLoading(false)
     }
 
     private fun showToaster(message: String, ctaText: String = "", onClickListener: View.OnClickListener? = null) {
@@ -259,7 +279,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         measureRecyclerViewPaddingDebounceJob?.cancel()
         measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(1000)
-            viewModel.updateCart()
+            viewModel?.updateCart()
         }
     }
 
@@ -267,17 +287,17 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         calculationDebounceJob?.cancel()
         calculationDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(200)
-            viewModel.calculateProduct()
+            viewModel?.calculateProduct()
         }
     }
 
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
         showProgressLoading()
-        viewModel.singleDeleteCartItems(element)
+        viewModel?.singleDeleteCartItems(element)
     }
 
     override fun onBulkDeleteUnavailableItems() {
-        val unavailableProducts = viewModel.getUnavailableItems()
+        val unavailableProducts = viewModel?.getUnavailableItems() ?: emptyList()
         bottomSheet?.context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(it.getString(R.string.mini_cart_label_dialog_title_delete_unavailable_multiple_item, unavailableProducts.size))
@@ -287,7 +307,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 setPrimaryCTAClickListener {
                     dismiss()
                     showProgressLoading()
-                    viewModel.bulkDeleteUnavailableCartItems()
+                    viewModel?.bulkDeleteUnavailableCartItems()
                 }
                 setSecondaryCTAClickListener {
                     dismiss()
@@ -298,13 +318,13 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onQuantityChanged(productId: String, newQty: Int) {
-        viewModel.updateProductQty(productId, newQty)
+        viewModel?.updateProductQty(productId, newQty)
         calculateProduct()
         updateCart()
     }
 
     override fun onNotesChanged(productId: String, newNotes: String) {
-        viewModel.updateProductNotes(productId, newNotes)
+        viewModel?.updateProductNotes(productId, newNotes)
         updateCart()
     }
 
@@ -325,7 +345,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onToggleShowHideUnavailableItemsClicked() {
-        viewModel.handleUnavailableItemsAccordion()
+        viewModel?.handleUnavailableItemsAccordion()
         val lastItemPosition = adapter?.list?.size ?: 0 - 1
         if (lastItemPosition != -1) {
             rvMiniCartList?.smoothScrollToPosition(lastItemPosition)
