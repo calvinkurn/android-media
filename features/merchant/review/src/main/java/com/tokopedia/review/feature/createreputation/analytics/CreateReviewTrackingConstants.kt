@@ -41,4 +41,5 @@ object CreateReviewTrackingConstants {
     const val EVENT_LABEL_VIEW_THANK_YOU_BOTTOM_SHEET = "pop up title:%s;reputation_id:%s;order_id:%s;product_id:%s;feedback_id:%s;"
     const val EVENT_LABEL_DISMISS_TNC = "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_CLICK_CONTINUE_TNC = "title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val BOTTOM_SHEET_SCREEN_NAME = "create-review-form"
 }

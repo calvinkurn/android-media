@@ -1665,9 +1665,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             REQUEST_CODE_REVIEW -> {
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
-                    if (shouldShowToaster()) {
-                        showToasterReviewSuccess()
-                    }
+                    showToasterReviewSuccess()
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
@@ -2641,11 +2639,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showToasterReviewSuccess() {
         view?.let { build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, TYPE_NORMAL, getString(R.string.review_oke)).show() }
-    }
-
-    private fun shouldShowToaster(): Boolean {
-        val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_REVIEW_KEY, "")
-        return abTestValue == ConstantKey.ABtestValue.VALUE_NEW_REVIEW_FLOW
     }
 
     private fun shouldShowTransition(): Boolean {

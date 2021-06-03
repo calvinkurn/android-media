@@ -681,7 +681,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setOnTouchOutsideListener() {
         setShowListener {
-            CreateReviewTracking.openScreenWithCustomDimens(CreateReviewTrackingConstants.SCREEN_NAME, productId.toString())
+            CreateReviewTracking.openScreenWithCustomDimens(CreateReviewTrackingConstants.BOTTOM_SHEET_SCREEN_NAME, productId.toString())
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
             isCancelable = false
             dialog?.setCanceledOnTouchOutside(false)
