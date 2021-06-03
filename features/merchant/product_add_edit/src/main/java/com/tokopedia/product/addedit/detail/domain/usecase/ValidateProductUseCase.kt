@@ -39,12 +39,6 @@ class ValidateProductUseCase @Inject constructor(
         setTypeClass(ValidateProductResponse::class.java)
     }
 
-    fun setParamsProductName(productName: String) {
-        requestParamsObject.productName = productName
-        requestParams.putObject(PARAM_INPUT, requestParamsObject)
-        setRequestParams(requestParams.parameters)
-    }
-
     fun setParamsProductSku(productSku: String) {
         requestParamsObject.productSku = productSku
         requestParams.putObject(PARAM_INPUT, requestParamsObject)

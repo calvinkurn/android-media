@@ -3,7 +3,7 @@ package com.tokopedia.product.addedit.detail.domain.mapper
 import com.tokopedia.product.addedit.detail.domain.UniverseSearchResponse
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIVERSE_SEARCH_TYPE
 
-object AddEditProductDetailMapper {
+object ProductNameRecommendationMapper {
 
     fun getProductNameAutoComplete(universeSearchResponse: UniverseSearchResponse): List<UniverseSearchResponse.UniverseSearch.Data> {
         return universeSearchResponse.universeSearch.data.filter { it.name == UNIVERSE_SEARCH_TYPE }

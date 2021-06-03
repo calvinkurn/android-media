@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -45,7 +46,8 @@ import javax.inject.Inject
 
 @FlowPreview
 class AddEditProductDetailViewModel @Inject constructor(
-        val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
+        val provider: ResourceProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
         private val validateProductUseCase: ValidateProductUseCase,
@@ -55,16 +57,14 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
         private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
         private val userSession: UserSessionInterface
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatchers.main) {
 
     var isEditing = false
     var isAdding = false
     var isDrafting = false
 
     var isReloadingShowCase = false
-
     var isFirstMoved = false
-
     var shouldUpdateVariant = false
 
     var productInputModel = ProductInputModel()
@@ -269,16 +269,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             if (productNameInput != productInputModel.detailInputModel.currentProductName) {
                 // remote product name validation
                 launchCatchError(block = {
-                    /*withContext(Dispatchers.IO) {
+                    val validationResult = withContext(dispatchers.io) {
                         getProductTitleValidationUseCase.setParam(productNameInput)
-                        getProductTitleValidationUseCase.executeOnBackground()
-                    }*/
-                    val response = withContext(Dispatchers.IO) {
-                        validateProductUseCase.setParamsProductName(productNameInput)
-                        validateProductUseCase.executeOnBackground()
+                        getProductTitleValidationUseCase.getDataModelOnBackground()
                     }
-                    val validationMessage = response.productValidateV3.data.productName
-                            .joinToString("\n")
+
+                    val validationMessage = ""
                     if (validationMessage.isNotEmpty()) {
                         productNameMessage = validationMessage
                     }
@@ -425,7 +421,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun validateProductSkuInput(productSkuInput: String) {
         // remote product sku validation
         launchCatchError(block = {
-            val response = withContext(Dispatchers.IO) {
+            val response = withContext(dispatchers.io) {
                 validateProductUseCase.setParamsProductSku(productSkuInput)
                 validateProductUseCase.executeOnBackground()
             }
@@ -501,7 +497,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {
         launchCatchError(block = {
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(dispatchers.io) {
                 getNameRecommendationUseCase.requestParams = GetNameRecommendationUseCase.createRequestParam(shopId, query)
                 getNameRecommendationUseCase.executeOnBackground()
             }
@@ -513,7 +509,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun getCategoryRecommendation(productNameInput: String) {
         launchCatchError(block = {
-            productCategoryRecommendationLiveData.value = Success(withContext(Dispatchers.IO) {
+            productCategoryRecommendationLiveData.value = Success(withContext(dispatchers.io) {
                 getCategoryRecommendationUseCase.params = GetCategoryRecommendationUseCase.createRequestParams(productNameInput)
                 getCategoryRecommendationUseCase.executeOnBackground()
             })
@@ -524,7 +520,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun getShopShowCasesUseCase() {
         launchCatchError(block = {
-            mShopShowCases.value = Success(withContext(Dispatchers.IO) {
+            mShopShowCases.value = Success(withContext(dispatchers.io) {
                 val response = getShopEtalaseUseCase.executeOnBackground()
                 response.shopShowcases.result
             })
@@ -576,7 +572,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun getAnnotationCategory(categoryId: String, productId: String) {
         launchCatchError(block = {
-            mAnnotationCategoryData.value = Success(withContext(Dispatchers.IO) {
+            mAnnotationCategoryData.value = Success(withContext(dispatchers.io) {
                 delay(DEBOUNCE_DELAY_MILLIS)
                 annotationCategoryUseCase.setParamsCategoryId(categoryId)
                 annotationCategoryUseCase.setParamsProductId(productId)
@@ -622,7 +618,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun getProductPriceRecommendation() {
         launchCatchError(block = {
-            val response = withContext(Dispatchers.IO) {
+            val response = withContext(dispatchers.io) {
                 priceSuggestionSuggestedPriceGetUseCase.setParamsProductId(productInputModel.productId)
                 priceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
             }
@@ -634,7 +630,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun getProductPriceRecommendationByKeyword(keyword: String) {
         launchCatchError(block = {
-            val response = withContext(Dispatchers.IO) {
+            val response = withContext(dispatchers.io) {
                 priceSuggestionSuggestedPriceGetByKeywordUseCase.setParamsKeyword(keyword)
                 priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
             }
