@@ -20,14 +20,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.UnifyButton
 
 class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
     private lateinit var claimCouponItemViewModel: ClaimCouponItemViewModel
     private val claimCouponImage: ImageView = itemView.findViewById(R.id.appCompatImageView)
     private val claimCouponImageDouble: ImageView = itemView.findViewById(R.id.appCompatImageViewDouble)
-    private val claimBtn: Typography = itemView.findViewById(R.id.claim_btn)
+    private val claimBtn: UnifyButton = itemView.findViewById(R.id.claim_btn)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         claimCouponItemViewModel = discoveryBaseViewModel as ClaimCouponItemViewModel
@@ -48,7 +48,7 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
             claimCouponImage.loadImage(dataItem?.imageUrlMobile ?: "")
         }
 
-        setBtn(dataItem?.status)
+        setBtn(dataItem?.status,isDouble)
         itemView.setOnClickListener {
             claimCouponItemViewModel.setClick(itemView.context, dataItem?.status)
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventClickCoupon(dataItem, adapterPosition, isDouble)
@@ -82,16 +82,28 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
         }
     }
 
-    private fun setBtn(status: String?) {
+    private fun setBtn(status: String?,isDouble: Boolean? = null) {
+        isDouble?.let {
+            if (isDouble) {
+                claimBtn.buttonSize = UnifyButton.Size.MICRO
+            } else {
+                claimBtn.buttonSize = UnifyButton.Size.SMALL
+            }
+        }
         claimBtn.text = if (status == HABIS || status == null)
             HABIS
         else
             status
         claimBtn.isEnabled = status == KLAIM
-        if (claimBtn.isEnabled)
+        if (claimBtn.isEnabled) {
+            claimBtn.isInverse = true
+            claimBtn.buttonVariant = UnifyButton.Variant.GHOST
             claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
-        else
-            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.voucher_text_color_disable))
+        }
+        else {
+            claimBtn.isInverse = false
+            claimBtn.buttonVariant = UnifyButton.Variant.FILLED
+        }
     }
 
 }
