@@ -98,4 +98,5 @@
     <string name="new_home_account_local_load_desc">Klik ikon di samping buat coba lagi.</string>
 
     <string name="default_member_title">Rewards</string>
+    <string name="new_home_account_label_beta">BETA</string>
 </resources>

@@ -58,6 +58,7 @@ import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
 import com.tokopedia.home.account.presentation.listener.SettingOptionsView
 import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
+import com.tokopedia.home.account.presentation.view.GeneralSettingMenuLabel
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
 import com.tokopedia.internal_review.factory.createReviewHelper
@@ -223,7 +224,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
         if(isShowDarkMode && showDarkModeSetting()) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
-                    getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false))
+                    getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
+                    GeneralSettingMenuLabel.LABEL_BETA))
         }
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ABOUT_US,

@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.presentation.view.GeneralSettingMenuLabel;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.home.account.presentation.widget.TagRoundedSpan;
@@ -115,9 +116,9 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     class GeneralSettingViewHolder extends RecyclerView.ViewHolder{
-        private Typography titleView;
-        private Typography bodyView;
-        private ImageView arrowIcon;
+        private final Typography titleView;
+        private final Typography bodyView;
+        private final ImageView arrowIcon;
 
         public GeneralSettingViewHolder(View itemView) {
             super(itemView);
@@ -135,7 +136,8 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         public void bind(SettingItemViewModel item){
-            SpannableString title = generateSpannableTitle(item);
+            SpannableString title = GeneralSettingMenuLabel.INSTANCE.generateSpannableTitle(
+                    itemView.getContext(), item, GeneralSettingMenuLabel.LABEL_NEW);
             titleView.setText(title);
             bodyView.setText(item.getSubtitle());
             if(item.isHideArrow()) {
@@ -144,92 +146,13 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 arrowIcon.setVisibility(View.VISIBLE);
             }
         }
-
-        private SpannableString generateSpannableTitle(SettingItemViewModel item) {
-            String indicatorNew = " BARU";
-            String title = item.getTitle();
-            String notificationTitle = itemView
-                    .getContext()
-                    .getResources()
-                    .getString(R.string.title_notification_setting);
-            String mediaTitle = itemView
-                    .getContext()
-                    .getResources()
-                    .getString(R.string.image_quality_setting_screen);
-            int boxColor = -1;
-
-            if (title.equals(notificationTitle)) {
-                boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R400;
-            } else if (title.equals(mediaTitle)) {
-                boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R500;
-            }
-
-            if (boxColor > -1 && !hasBeenOneMonth(title)) {
-                int startPosition = title.length() + 1;
-                int endPosition = startPosition + indicatorNew.length() - 1;
-                title += indicatorNew;
-
-                SpannableString spannable = new SpannableString(title);
-                TagRoundedSpan newTag = new TagRoundedSpan(
-                        itemView.getContext(),
-                        4,
-                        boxColor,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
-                );
-
-                spannable.setSpan(
-                        new RelativeSizeSpan(0.57f),
-                        startPosition,
-                        endPosition,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                spannable.setSpan(
-                        new StyleSpan(Typeface.BOLD),
-                        startPosition,
-                        endPosition,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                spannable.setSpan(
-                        newTag,
-                        startPosition,
-                        endPosition,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                return spannable;
-            } else {
-                return new SpannableString(title);
-            }
-        }
-
-        private boolean hasBeenOneMonth(String title) {
-            String key = title + ".NewTag";
-            String prefKey = this.getClass().getName() + ".pref";
-            int dayOffset = 30;
-            long now = new Date().getTime();
-
-            SharedPreferences preferences = itemView.getContext().getSharedPreferences(prefKey, Context.MODE_PRIVATE);
-
-            if (!preferences.contains(key)) {
-                preferences.edit().putLong(key, now).apply();
-                return false;
-            }
-
-            long firstTimeSeenDate = preferences.getLong(key, -1);
-            long duration = Math.abs(firstTimeSeenDate - now);
-            long dayPassed = TimeUnit.DAYS.convert(duration, TimeUnit.MILLISECONDS);
-
-            return dayPassed >= dayOffset;
-        }
     }
 
     class SwitchSettingViewHolder extends RecyclerView.ViewHolder{
-        private Typography titleTextView;
-        private Typography summaryextView;
-        private SwitchUnify aSwitch;
-        private View view;
+        private final Typography titleTextView;
+        private final Typography summaryextView;
+        private final SwitchUnify aSwitch;
+        private final View view;
 
         public SwitchSettingViewHolder(View itemView) {
             super(itemView);
@@ -245,7 +168,13 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         public void bind(SwitchSettingItemViewModel item){
-            titleTextView.setText(item.getTitle());
+            if(!item.labelType().isEmpty()) {
+                SpannableString title = GeneralSettingMenuLabel.INSTANCE.generateSpannableTitle(
+                        itemView.getContext(), item, item.labelType());
+                titleTextView.setText(title);
+            } else {
+                titleTextView.setText(item.getTitle());
+            }
             summaryextView.setText(item.getSubtitle());
 
             boolean switchState = switchSettingListener.isSwitchSelected(item.getId());
