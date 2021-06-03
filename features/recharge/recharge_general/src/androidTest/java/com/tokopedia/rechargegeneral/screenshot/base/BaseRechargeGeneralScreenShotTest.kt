@@ -13,6 +13,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewAndScreenShot
 import com.tokopedia.test.application.espresso_component.CommonActions.screenShotFullRecyclerView
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -78,14 +79,29 @@ abstract class BaseRechargeGeneralScreenShotTest {
         Thread.sleep(3000)
 
         // ss recyclerview product
-        screenShotFullRecyclerView(
-                R.id.rv_digital_product,
-                0,
-                getRecyclerViewItemCount(R.id.rv_digital_product),
-                "${generatePrefix()}-rv_digital_product")
+        doScreenShotForEachViewholder(R.id.rv_digital_product)
 
         run_specific_product_test()
         see_promo()
+    }
+
+    private fun doScreenShotForEachViewholder(rvId: Int) {
+        val rvCount = getRecyclerViewItemCount(rvId)
+        for (idx in 0 until rvCount) {
+            screenShotViewholdersAtPosition(idx, rvId)
+        }
+    }
+
+    private fun screenShotViewholdersAtPosition(
+            position: Int,
+            rvId: Int
+    ) {
+        CommonActions.findViewHolderAndScreenshot(
+                recyclerViewId = rvId,
+                position = position,
+                fileName = generatePrefix(),
+                fileNamePostFix = "rv_digital_product_vh_$position"
+        )
     }
 
     private fun see_promo() {
