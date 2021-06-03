@@ -11,7 +11,7 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
 data class WidgetNextShopGradeUiModel(
         val shopLevel: Int = 0,
         val shopScoreMin: Int = 0,
-        @ShopGrade val gradeName: String = PMShopGrade.NO_GRADE,
+        @ShopGrade val gradeName: String = PMShopGrade.ADVANCED,
         val gradeBadgeUrl: String = "",
         val benefitList: List<String>
 ) : BaseWidgetUiModel {

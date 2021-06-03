@@ -772,7 +772,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         return WidgetNextShopGradeUiModel(
                 shopLevel = nextGrade?.shopLevel.orZero(),
                 shopScoreMin = nextGrade?.shopScoreMin.orZero(),
-                gradeName = nextGrade?.gradeName ?: PMShopGrade.NO_GRADE,
+                gradeName = nextGrade?.gradeName ?: PMShopGrade.ADVANCED,
                 gradeBadgeUrl = nextGrade?.imgBadgeUrl.orEmpty(),
                 benefitList = data.nextPMBenefits?.map { it.benefitName }.orEmpty()
         )

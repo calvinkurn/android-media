@@ -7,14 +7,10 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class PMInterruptDataResponse(
-        @SerializedName("goldGetPMGradeBenefitInfo")
-        val gradeBenefitInfo: PMGradeBenefitInfoModel? = null,
         @SerializedName("goldGetPMShopInfo")
         val shopInfo: GoldGetPMShopInfoDataModel? = null,
         @SerializedName("goldGetPMOSStatus")
         val pmStatus: PMShopStatusModel? = null,
         @SerializedName("goldGetPMSettingInfo")
-        val pmSettingInfo: PMSettingInfoModel? = null,
-        @SerializedName("reputation_shops")
-        val shopReputation: List<ShopReputationScoreModel>
+        val pmSettingInfo: PMSettingInfoModel? = null
 )

@@ -17,79 +17,28 @@
     <string name="label_send_answer">Kirim Jawaban</string>
 
     <string name="power_merchant_register_now">Daftar Sekarang</string>
-
-    <string name="power_merchant_full_eligibility_description">Yay, tokomu telah memenuhi syarat untuk gabung ke Power Merchant. Daftar sekarang!</string>
-    <string name="power_merchant_kyc_verified_description">Wah, skor kamu bagus! Tinggal daftarin dan verifikasi data diri aja nih, yuk!</string>
-    <string name="power_merchant_shop_score_description">Daftar dan tingkatkan performa untuk akses semua fitur Power Merchant. Lihat tips.</string>
-    <string name="power_merchant_register_text">Daftar sekarang</string>
-    <string name="power_merchant_see_tips">Lihat tips</string>
-    <string name="power_merchant_how_to_upgrade">Cara Upgrade</string>
-    <string name="power_merchant_register">Daftar jadi Power Merchant</string>
-    <string name="power_merchant_verification_hint">Verifikasi data diri dengan upload KTP</string>
-    <string name="power_merchant_register_title">Upgrade ke Power Merchant</string>
-    <string name="power_merchant_shop_score_hint">Pastikan skor performa toko lebih dari 75</string>
-    <string name="power_merchant_exclusive_feature">Fitur Eksklusif Power Merchant</string>
-    <string name="power_merchant_benefit_feature">Keuntungan Power Merchant</string>
-    <string name="power_merchant_free_shipping_clickable_text">Syarat &amp; Ketentuan berlaku.</string>
-    <string name="power_merchant_broadcast_chat_clickable_text">syarat &amp; ketentuan.</string>
-    <string name="power_merchant_benefit_title">Keuntungan menjadi Power Merchant</string>
     <string name="power_merchant_learn_more">Pelajari Selengkapnya</string>
-    <string name="power_merchant_premium_account">Rekening Premium</string>
-    <string name="power_merchant_label_new">BARU</string>
-    <string name="power_merchant_premium_account_description">Upgrade rekeningmu &amp; menangkan kesempatan dapat hadiah tiap tarik saldo. Pelajari &amp; upgrade.</string>
-    <string name="power_merchant_premium_account_clickable_text">Pelajari &amp; upgrade.</string>
     <string name="power_merchant_performance_tips">Tips Tingkatkan Performa</string>
     <string name="power_merchant_max_score">/100</string>
-    <string name="power_merchant_shop_performance_label">Performa Toko:</string>
     <string name="power_merchant_status_label">Status Power Merchant:</string>
-    <string name="power_merchant_cancel_membership"><![CDATA[<strong><font color=\"#03ac0e\">Berhenti</font></strong>]]> jadi Power Merchant</string>
+
     <string name="power_merchant_shop_score_member_hint">Pertahankan skor performa toko **minimum 65 poin** untuk tetap menjadi Power Merchant.</string>
     <string name="power_merchant_active">Aktif</string>
     <string name="power_merchant_inactive">Tidak Aktif</string>
     <string name="power_merchant_shop_score_description_good">“Bagus!”</string>
     <string name="power_merchant_shop_score_description_not_eligible">“Kurang, tingkatkan lagi!”</string>
     <string name="power_merchant_upgrade_text">Upgrade Power Merchant</string>
-
-    <string name="power_merchant_kyc_rejected"><![CDATA[<font color=\"#ef144a\">Verifikasi Gagal</font>]]></string>
-    <string name="power_merchant_kyc_pending">Menunggu Verifikasi</string>
-    <string name="power_merchant_kyc_not_verified">Belum Verifikasi></string>
-    <string name="power_merchant_kyc_verification">Verifikasi Data Diri</string>
-
-    <string name="power_merchant_registration_status_label">Status Pendaftaraan:</string>
     <string name="power_merchant_ok_label">Oke</string>
-    <string name="power_merchant_success_title">Selamat! Tokomu sudah menjadi\nPower Merchant</string>
-    <string name="power_merchant_success_description">Tingkatkan penjualan tokomu dengan mengakses fitur-fitur andalan **Power Merchant!**</string>
-    <string name="power_merchant_bottom_sheet_score_title">Yaah, pengajuan kamu belum berhasil</string>
-    <string name="power_merchant_bottom_sheet_score_description">Skor performa tokomu kurang dari 75. Segera tingkatkan performa toko untuk menjadi Power Merchant.</string>
-
     <string name="power_merchant_free_shipping">Bebas Ongkir</string>
-    <string name="power_merchant_free_shipping_eligible_title">Tokomu memenuhi syarat untuk Bebas Ongkir</string>
-    <string name="power_merchant_free_shipping_not_eligible_title">Pelajari tentang Bebas Ongkir</string>
-    <string name="power_merchant_free_shipping_transition_title">Perubahan Skema Bebas Ongkir</string>
-    <string name="power_merchant_free_shipping_transition_description"><![CDATA[<strong><font color=\"#31353b\">Per 13 Juli 2020,</font></strong> skema baru akan diterapkan. Pelajari lebih lanjut.]]></string>
-    <string name="power_merchant_free_shipping_description"><![CDATA[Tingkatkan potensi penjualanmu <strong><font color=\"#31353b\">hingga 50%.</font></strong>]]></string>
-    <string name="power_merchant_free_shipping_not_eligible_description">Tarik perhatian pembeli dan tingkatkan penjualanmu.</string>
-    <string name="power_merchant_free_shipping_active_description">Cek penggunaan Bebas Ongkir-mu</string>
-    <string name="power_merchant_free_shipping_title">Status Bebas Ongkir : <![CDATA[<strong><font color=\"#31353b\">Aktif</font></strong>]]></string>
-    <string name="power_merchant_free_shipping_shop_score_description">Aktivasi ulang setelah performa tokomu meningkat.</string>
-    <string name="power_merchant_free_shipping_shop_score_title">Status Bebas Ongkir : <![CDATA[<strong><font color=\"#31353b\">Tidak aktif</font></strong>]]></string>
-    <string name="power_merchant_free_shipping_load_error">Bebas Ongkir tak bisa ditampilkan</string>
-    <string name="power_merchant_free_shipping_activate">Aktifkan Bebas Ongkir</string>
-    <string name="power_merchant_free_shipping_learn_more">Pelajari Bebas Ongkir</string>
-    <string name="power_merchant_click_to_reload">Ketuk ikon untuk memuat ulang</string>
-    <string name="power_merchant_success_free_shipping_description">Yuk, aktivasi fitur Bebas Ongkir untuk meningkatkan penjualan tokomu.</string>
+
     <string name="pm_power_merchant">Power Merchant</string>
     <string name="pm_power_merchant_pro">Power Merchant PRO</string>
-    <string name="pm_power_merchant_status">Power Merchant Status :</string>
+
     <string name="pm_active">Aktif</string>
     <string name="pm_inactive">Tidak Aktif</string>
-    <string name="pm_power_merchant_exclusive_features">Fitur Eksklusif Power Merchant</string>
-    <string name="pm_bebas_ongkir_description">Proses pengiriman pesanan dengan layanan SiCepat dan Anteraja. S&amp;K berlaku.</string>
-    <string name="pm_free_shipping_clickable_text">S&amp;K berlaku.</string>
     <string name="pm_label_next">Selanjutnya</string>
-    <string name="pm_power_merchant_slider_title">Perubahan Power Merchant</string>
-    <string name="pm_power_merchant_slider_footer_cta_text">Lebih lanjut tentang Performa Toko, <font color="#03AC0E"><b>di sini</b></font></string>
     <string name="pm_content_slider_last_slide_button">Oke, Saya Mengerti</string>
+
     <string name="pm_registration_header_pm">Seller yang ingin meningkatkan penjualan &amp; kepercayaan pembeli</string>
     <string name="pm_registration_header_pm_pro">Seller terbaik dengan lebih banyak keuntungan eksklusif dari Tokopedia</string>
     <string name="pm_registration_terms">Syarat Pendaftaran</string>
@@ -101,15 +50,11 @@
     <string name="pm_pm_transition_period_learnmore">Pelajari Power Merchant Selengkapnya</string>
     <string name="pm_pm_registration_header_ticker_message">Tunggu, ya! Jika verifikasi data berhasil, tokomu akan langsung jadi Power Merchant!</string>
     <string name="pm_cancel_submission">Batalkan Pengajuan</string>
-    <string name="pm_your_shop_grade">Grade tokomu: %1$s</string>
-    <string name="pm_bronze">Bronze</string>
-    <string name="pm_silver">Silver</string>
-    <string name="pm_gold">Gold</string>
-    <string name="pm_diamond">Diamond</string>
     <string name="pm_later">Nanti Saja</string>
+
     <string name="pm_label_rating_power_merchant_experience">Bagaimana Anda menilai pengalaman menggunakan Power Merchant</string>
     <string name="pm_label_deactivation_questionnaire_intro_desc"><![CDATA[Sebelum berhenti, yuk kasih masukan buat layanan ini! Fitur Power Merchant di tokomu akan dinonaktifkan pada <b>%s WIB</b>]]></string>
-    <string name="pm_new_seller">New Seller</string>
+
     <string name="pm_potential_benefit_01"><![CDATA[Lebih sering dikunjungi pembeli hingga <br><b>4,3 kali lipat</b>]]></string>
     <string name="pm_potential_benefit_02"><![CDATA[Menerima pesanan lebih banyak hingga <br><b>5 kali lipat</b>]]></string>
     <string name="pm_potential_benefit_03"><![CDATA[Meningkatkan penghasilan hingga <br><b>5,5 kali lipat</b>]]></string>
@@ -124,7 +69,7 @@
     <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor hingga min. %1$d, ya! <br>Pelajari Performa Toko]]></string>
     <string name="pm_add_product">Tambah Produk</string>
     <string name="pm_learn_shop_performance">Pelajari Performa Toko</string>
-    <string name="pm_learn_new_pm">Pelajari Perubahan</string>
+
     <string name="pm_kyc_verified">Data Diri Terverifikasi</string>
     <string name="pm_kyc_not_verified">Data Diri Belum Terverifikasi</string>
     <string name="pm_kyc_verification_waiting">Menunggu Verifikasi Data Diri</string>
@@ -146,7 +91,7 @@
     <string name="pm_tnc_agreement_error_message">Kamu belum menyetujui S&amp;K yang berlaku.</string>
     <string name="pm_shop_performance_sum"><![CDATA[Performa Toko : <font color="%1$s">%2$s</font>]]></string>
     <string name="pm_shop_performance_sum_new_seller"><![CDATA[Proyeksi Performa Toko : <font color="%1$s">%2$s</font>]]></string>
-    <string name="pm_shop_score_threshold_description"><![CDATA[Pertahankan skor performa toko <b>min. %1$d poin</b> untuk tetap menjadi Power Merchant setelah %2$s.]]></string>
+
     <string name="pm_shop_grade_shop_score_threshold_description_pm_active"><![CDATA[Pertahankan skor <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu tetap aktif, ya.]]></string>
     <string name="pm_shop_grade_shop_score_threshold_description_pm_idle"><![CDATA[Yuk, tingkatkan skor jadi <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu kembali aktif!]]></string>
     <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>level %1$d</b> untuk mendapatkan paket keuntungan <b>%2$s</b> pada periode update berikutnya. Pelajari Selengkapnya]]></string>
@@ -154,23 +99,13 @@
     <string name="pm_label_next_three_months_pm_grade_update">Update selanjutnya: %1$s</string>
     <string name="pm_deactivate_power_merchant_bottom_cta">Berhenti dari Power Merchant? <font color="#03AC0E"><b>Klik di sini</b></font></string>
     <string name="pm_deactivate_power_merchant_message_info"><![CDATA[Pengajuan penurunan status jadi Power Merchant berhasil. Layanan dan status PM otomatis berhenti pada <b>%1$s WIB.</b>]]></string>
-    <string name="pm_registration_success_description">Mulai %1$s, ada sistem penilaian baru yang berlaku untuk tokomu, lho. Pelajari tentang perubahannya, yuk!</string>
-    <string name="pm_power_merchant_new_term_title">Syarat Baru Power Merchant</string>
-    <string name="pm_power_merchant_new_term_description">Mulai %1$s, ada perhitungan skor baru yang didasarkan pada level &amp; skor tokomu. Pertahankan skor toko min. 60 poin untuk tetap jadi Power Merchant, ya.</string>
-    <string name="pm_integrated_with_reputation_title">Integrasi dengan Reputasi</string>
-    <string name="pm_integrated_with_reputation_description">Power Merchant akan dapat grade yang sesuai dengan Reputasi Toko saat ini. Mulai %1$s, Reputasi Toko juga tidak akan muncul lagi di sisi pembeli &amp; penjual, ya.</string>
-    <string name="pm_new_benefits_title">Banyak Keuntungan Baru</string>
-    <string name="pm_new_benefits_description">Power Merchant akan dapat banyak keuntungan eksklusif sesuai dengan grade-nya. Didasarkan oleh Performa Toko, update grade dilakukan tiap bulan &amp; penurunan grade setiap 3 bulan.</string>
-    <string name="pm_new_schema_title">Masa Adaptasi Skema Baru </string>
-    <string name="pm_new_schema_description">Mulai %1$s, Power Merchant dengan status nonaktif akan otomatis jadi Regular Merchant. Selama 3 bulan setelahnya, tokomu akan tetap menjadi Power Merchant aktif dan tidak mengalami penurunan grade.</string>
-    <string name="pm_new_pm_inf_title">Informasi Power Merchant Baru</string>
-    <string name="pm_new_pm_inf_description">Belum ada penilaian untuk tokomu karena penilaian toko baru akan muncul setelah 90 hari bergabung. Tokomu akan dapat grade Power Merchant sesuai dengan performa, ya.</string>
+
     <string name="pm_expired_time_format">%1$s, pukul %2$s</string>
     <string name="pm_system_error_message">Terjadi kesalahan pada sistem</string>
     <string name="pm_network_error_message">Koneksi internetmu terganggu</string>
     <string name="pm_try_again">Coba lagi</string>
     <string name="pm_terms_eligible">Memenuhi Syarat</string>
-    <string name="pm_cancel_pm_deactivation_success">Penonaktifan Power Merchant-mu dibatalkan.</string>
+
     <string name="pm_rate_1_star">Sangat Kurang</string>
     <string name="pm_rate_2_star">Kurang</string>
     <string name="pm_rate_3_star">Cukup</string>
@@ -181,11 +116,6 @@
     <string name="pm_number_of_minimum_order">Min. %1$s pesanan dalam 30 hari terakhir</string>
     <string name="pm_niv_term"><![CDATA[Pendapatan Bersih: <font color=\"%1$s\">%2$s</font>]]></string>
     <string name="pm_niv_threshold_term">Min. %1$s dalam 30 hari terakhir</string>
-    <string name="pm_free_shipping_description">Biaya Bebas Ongkir yang lebih murah</string>
-    <string name="pm_search_ranking_description">Peringkat pencarian lebih tinggi</string>
-    <string name="pm_discount_shipping_fee">Diskon biaya pengiriman Same Day &amp; Instan</string>
-    <string name="pm_growing_benefit_description">Keuntungan bertambah sesuai level toko</string>
-    <string name="pm_pm_pro_statistic_benefit_description">Berbagai keuntungan yang bisa didapatkan!</string>
     <string name="pm_not_eligible_order_term_title">Tingkatkan jumlah pesanan \nTokomu dulu, yuk!</string>
     <string name="pm_not_eligible_order_term_description"><![CDATA[Tokomu harus mendapatkan <b>min. %1$s pesanan</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan jumlah pesananmu, ya!]]></string>
     <string name="pm_learn_ad_and_promotion">Pelajari Iklan &amp; Promosi</string>
@@ -223,8 +153,7 @@
     <string name="pm_option_become_regular_merchant_description"><![CDATA[Berjualan di Tokopedia dengan biaya layanan <b>%1$s</b>]]></string>
     <string name="pm_option_become_power_merchant_description"><![CDATA[Jadi Seller tepercaya dengan biaya layanan <b>%1$s</b>]]></string>
     <string name="pm_options_tnc_text">Dengan melanjutkan, saya setuju dengan S&amp;K yang berlaku</string>
-    <string name="pm_registration_success_message">Tokomu berhasil jadi Power Merchant!</string>
-    <string name="pm_pro_registration_success_message">Tokomu berhasil jadi Power Merchant PRO!</string>
+
     <string name="pm_moderated_shop_ticker_title">Tokomu sedang dalam pengawasan Tokopedia</string>
     <string name="pm_moderated_shop_ticker_description">Kamu bisa daftar Power Merchant jika toko kembali aktif.</string>
     <string name="pm_bottom_sheet_moderated_shop_title">Oops, pendaftaran Power \nMerchant tidak bisa dilanjutkan</string>
