@@ -15,7 +15,7 @@ import javax.inject.Inject
 class UserShopInfoMapper @Inject constructor() {
 
     fun mapToUserShopInfoUiModel(userShopInfoResponse: UserShopInfoResponse): UserShopInfoWrapper {
-        val targetDateText = "2021-07-14"
+        val targetDateText = "2021-06-14"
         val isBeforeOnDate = isBeforeOnDate(userShopInfoResponse.userShopInfo.info.dateShopCreated, targetDateText)
         val goldOsResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS
         return UserShopInfoWrapper(

@@ -26,7 +26,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
-import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker

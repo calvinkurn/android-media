@@ -324,9 +324,9 @@ class ShopInfoViewHolder(
                     txTotalStatsRM.hide()
                 } else {
                     if (userShopInfo.isBeforeOnDate) {
-                        txStatsRM.text = getString(R.string.transaction_on_date)
+                        txStatsRM.text = context?.getString(R.string.transaction_on_date)
                     } else {
-                        txStatsRM.text = getString(R.string.transaction_since_joining)
+                        txStatsRM.text = context?.getString(R.string.transaction_since_joining)
                     }
                     txTotalStatsRM.show()
                     txTotalStatsRM.text = getString(R.string.total_transaction, totalTransaction.toString())
