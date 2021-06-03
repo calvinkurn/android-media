@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/Unify_G500" android:state_selected="true" />
-    <item android:color="@color/Unify_N200" android:state_focused="true" />
-    <item android:color="#FFCCCCCC" android:state_focused="false" />
-    <item android:color="@color/Unify_R600" android:state_active="true" />
-
-</selector>
