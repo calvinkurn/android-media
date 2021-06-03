@@ -27,7 +27,6 @@ android {
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.searchbar)
