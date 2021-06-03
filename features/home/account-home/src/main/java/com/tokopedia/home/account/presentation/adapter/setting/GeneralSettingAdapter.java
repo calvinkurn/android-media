@@ -57,14 +57,16 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void updateSettingItem(int settingId) {
-        int position = findSwitchPosition(settingId);
-        if (position != POSITION_UNDEFINED) {
-            SettingItemViewModel settingItemViewModel =
-                    settingItems.get(position);
-            if (settingItemViewModel instanceof SwitchSettingItemViewModel) {
-                notifyItemChanged(position);
+        try {
+            int position = findSwitchPosition(settingId);
+            if (position != POSITION_UNDEFINED) {
+                SettingItemViewModel settingItemViewModel =
+                        settingItems.get(position);
+                if (settingItemViewModel instanceof SwitchSettingItemViewModel) {
+                    notifyItemChanged(position);
+                }
             }
-        }
+        } catch (Throwable ignored) {}
     }
 
     private int findSwitchPosition(int settingId) {
@@ -160,10 +162,6 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             titleTextView = itemView.findViewById(R.id.account_user_item_common_title);
             summaryextView = itemView.findViewById(R.id.account_user_item_common_body);
             aSwitch = itemView.findViewById(R.id.account_user_item_common_switch);
-            aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (switchSettingListener != null) {
-                switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
-            }});
             itemView.setOnClickListener(view -> aSwitch.toggle());
         }
 
@@ -188,6 +186,11 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     }
                 });
             }
+
+            aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if (switchSettingListener != null) {
+                    switchSettingListener.onChangeChecked(settingItems.get(getAdapterPosition()).getId(), isChecked);
+                }});
         }
     }
 
