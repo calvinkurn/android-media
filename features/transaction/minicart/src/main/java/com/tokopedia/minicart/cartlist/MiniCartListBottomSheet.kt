@@ -20,10 +20,8 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
-import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -43,8 +41,11 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private var totalAmount: TotalAmount? = null
     private var rvMiniCartList: RecyclerView? = null
     private var adapter: MiniCartListAdapter? = null
-    private var measureRecyclerViewPaddingJob: Job? = null
     private var progressDialog: AlertDialog? = null
+
+    private var measureRecyclerViewPaddingDebounceJob: Job? = null
+    private var updateCartDebounceJob: Job? = null
+    private var calculationDebounceJob: Job? = null
 
     fun show(context: Context?,
              fragmentManager: FragmentManager,
@@ -123,12 +124,18 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             clearContentPadding = true
             customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
             setOnDismissListener {
-                measureRecyclerViewPaddingJob?.cancel()
+                cancelAllDebounceJob()
                 onDismiss.invoke()
             }
             setChild(view)
             show(fragmentManager, this.javaClass.simpleName)
         }
+    }
+
+    private fun cancelAllDebounceJob() {
+        measureRecyclerViewPaddingDebounceJob?.cancel()
+        updateCartDebounceJob?.cancel()
+        calculationDebounceJob?.cancel()
     }
 
     private fun initializeProgressDialog(context: Context) {
@@ -148,8 +155,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun adjustRecyclerViewPaddingBottom() {
-        measureRecyclerViewPaddingJob?.cancel()
-        measureRecyclerViewPaddingJob = GlobalScope.launch(Dispatchers.Main) {
+        measureRecyclerViewPaddingDebounceJob?.cancel()
+        measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(500)
             if (rvMiniCartList?.canScrollVertically(-1) == true || rvMiniCartList?.canScrollVertically(1) == true) {
                 rvMiniCartList?.setPadding(0, 0, 0, rvMiniCartList?.resources?.getDimensionPixelOffset(R.dimen.dp_64)
@@ -248,6 +255,22 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
+    private fun updateCart() {
+        measureRecyclerViewPaddingDebounceJob?.cancel()
+        measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
+            delay(1000)
+            viewModel.updateCart()
+        }
+    }
+
+    private fun calculateProduct() {
+        calculationDebounceJob?.cancel()
+        calculationDebounceJob = GlobalScope.launch(Dispatchers.Main) {
+            delay(200)
+            viewModel.calculateProduct()
+        }
+    }
+
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
         showProgressLoading()
         viewModel.singleDeleteCartItems(element)
@@ -276,12 +299,13 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     override fun onQuantityChanged(productId: String, newQty: Int) {
         viewModel.updateProductQty(productId, newQty)
-        viewModel.calculateProduct()
-        viewModel.updateCart()
+        calculateProduct()
+        updateCart()
     }
 
-    override fun onNotesChanged() {
-        viewModel.updateCart()
+    override fun onNotesChanged(productId: String, newNotes: String) {
+        viewModel.updateProductNotes(productId, newNotes)
+        updateCart()
     }
 
     override fun onShowSimilarProductClicked(appLink: String) {

@@ -10,7 +10,7 @@ interface MiniCartListActionListener {
 
     fun onQuantityChanged(productId: String, newQty: Int)
 
-    fun onNotesChanged()
+    fun onNotesChanged(productId: String, newNotes: String)
 
     fun onShowSimilarProductClicked(appLink: String)
 

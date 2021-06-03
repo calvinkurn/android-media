@@ -87,6 +87,16 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         }
     }
 
+    fun updateProductNotes(productId: String, newNotes: String) {
+        val visitables = miniCartListListUiModel.value?.visitables ?: emptyList()
+        loop@ for (visitable in visitables) {
+            if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
+                visitable.productNotes = newNotes
+                break@loop
+            }
+        }
+    }
+
     fun calculateProduct() {
         val visitables = miniCartListListUiModel.value?.visitables ?: mutableListOf()
 

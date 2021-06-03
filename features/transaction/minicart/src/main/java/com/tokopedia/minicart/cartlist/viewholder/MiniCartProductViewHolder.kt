@@ -274,8 +274,9 @@ class MiniCartProductViewHolder(private val view: View,
                 delayChangeQty?.cancel()
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                     delay(250)
-                    element.productNotes = s.toString()
-                    listener.onNotesChanged()
+                    val notes = s.toString()
+                    element.productNotes = notes
+                    listener.onNotesChanged(element.productId, notes)
                 }
             }
 
