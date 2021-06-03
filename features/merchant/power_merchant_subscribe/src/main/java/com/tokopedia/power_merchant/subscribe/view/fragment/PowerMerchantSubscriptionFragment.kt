@@ -131,7 +131,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val shopTier = getShopTireByPmTire(currentPmTireType)
         mViewModel.cancelPmDeactivationSubmission(shopTier)
 
-        powerMerchantTracking.sendEventClickCancelOptOutPowerMerchant()
+        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        powerMerchantTracking.sendEventClickCancelOptOutPowerMerchant(isPmPro)
     }
 
     override fun setOnReloadClickListener() {

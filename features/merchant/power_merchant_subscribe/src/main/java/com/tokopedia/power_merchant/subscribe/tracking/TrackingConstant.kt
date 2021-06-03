@@ -11,6 +11,7 @@ object TrackingConstant {
     const val OS = "os"
     const val PM = "pm"
     const val RM = "rm"
+    const val POWER_MERCHANT = "power merchant"
     const val POWER_MERCHANT_PRO = "power merchant pro"
     const val TOKOPEDIA_SELLER = "tokopediaseller"
     const val PHYSICAL_GOODS = "physicalgoods"
@@ -24,7 +25,7 @@ object TrackingConstant {
 
     const val CATEGORY_SELLER_APP = "tokopedia seller app"
     const val CATEGORY_MAIN_APP = "tokopedia main app"
-    const val CATEGORY_POWER_MERCHANT_OPT_OUT = "power merchant opt out questionnaire"
+    const val CATEGORY_POWER_MERCHANT_OPT_OUT = "power merchant pro opt out questionnaire"
 
     const val ACTION_CLICK_TICKBOX_TNC = "click tickbox term & condition"
     const val ACTION_CLICK_UPGRADE_POWER_MERCHANT_PRO = "click upgrade power merchant pro"
@@ -43,7 +44,6 @@ object TrackingConstant {
     const val ACTION_CLICK_ON_POWER_MERCHANT_BENEFIT = "click on power merchant benefit"
     const val ACTION_CLICK_TIPS_TO_IMPROVE_SHOP_SCORE = "click tips to improve shop score"
     const val ACTION_POPUP_SUCCESS_REGISTER = "pop up success register pm"
-    const val ACTION_POPUP_IMPROVE_SHOP_PERFORMANCE = "pop up improve shop performance"
     const val ACTION_POPUP_ADD_NEW_PRODUCT = "pop up add new product"
     const val ACTION_CLICK_TAB_POWER_MERCHANT_PRO = "click power merchant pro tab"
     const val ACTION_POPUP_UNABLE_TO_REGISTER_SHOP_MODERATION = "pop up unable to register shop moderation"

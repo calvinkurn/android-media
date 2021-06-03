@@ -183,12 +183,16 @@ class PowerMerchantTracking @Inject constructor(
         sendEvent(event)
     }
 
-    fun sendEventClickCancelOptOutPowerMerchant() {
+    fun sendEventClickCancelOptOutPowerMerchant(isPmPro: Boolean) {
         val event = createEvent(
                 event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
                 category = TrackingConstant.getPowerMerchantCategory(),
                 action = TrackingConstant.ACTION_CLICK_CANCEL_OPT_OUT_PROCESS,
-                label = ""
+                label = if (isPmPro) {
+                    TrackingConstant.POWER_MERCHANT_PRO
+                } else {
+                    TrackingConstant.POWER_MERCHANT
+                }
         )
 
         sendEvent(event)
@@ -231,8 +235,8 @@ class PowerMerchantTracking @Inject constructor(
         val event = createEvent(
                 event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
                 category = TrackingConstant.getPowerMerchantCategory(),
-                action = TrackingConstant.ACTION_POPUP_IMPROVE_SHOP_PERFORMANCE,
-                label = ""
+                action = TrackingConstant.ACTION_CLICK_LEARN_MORE_SHOP_PERFORMANCE_POP_UP,
+                label = getShopStatus()
         )
 
         sendEvent(event)

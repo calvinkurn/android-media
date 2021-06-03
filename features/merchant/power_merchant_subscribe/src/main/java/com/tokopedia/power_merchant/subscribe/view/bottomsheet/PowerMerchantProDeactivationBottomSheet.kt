@@ -108,6 +108,8 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
                     childView?.optionPmRegularMerchant?.setSelectedStatus(!selectedStatus)
                     childView?.btnPmOptionsNext?.isEnabled = true
                     selectedShopTire = PMConstant.ShopTierType.REGULAR_MERCHANT
+
+                    powerMerchantTracking.sendEventClickStopPmBecomeRm()
                 }
             }
         }
