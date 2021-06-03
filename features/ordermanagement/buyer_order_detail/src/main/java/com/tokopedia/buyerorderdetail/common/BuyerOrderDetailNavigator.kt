@@ -113,7 +113,7 @@ class BuyerOrderDetailNavigator(
     ) {
         fragment.context?.let { context ->
             if (buyerOrderDetailData is Success) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.MP_INTERNAL_REQUEST_CANCEL)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
                 val payload: Map<String, Any> = mapOf(
                         BuyerOrderDetailConst.PARAM_SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
                         BuyerOrderDetailConst.PARAM_INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
