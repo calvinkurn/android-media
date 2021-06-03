@@ -32,6 +32,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         const val WRITE_FORM_EXPERIMENT_NAME = "ReviewForm_AB"
         const val WRITE_FORM_BOTTOM_SHEET_VARIANT = "variant_bottomsheet"
         const val WRITE_FORM_CONTROL_VARIANT = "control_page"
+        const val CREATE_REVIEW_BOTTOM_SHEET_TAG = "CreateReviewBottomSheetTag"
     }
 
 
@@ -195,7 +196,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId.toLongOrZero(), reputationId.toLongOrZero(), utmSource)
         createReviewBottomSheet?.apply {
             clearContentPadding = true
-            show(supportFragmentManager, "BottomSheet Tag")
+            show(supportFragmentManager, CREATE_REVIEW_BOTTOM_SHEET_TAG)
         }
     }
 
@@ -213,8 +214,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     private fun isNewFormVariant(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                WRITE_FORM_EXPERIMENT_NAME, WRITE_FORM_CONTROL_VARIANT
-        ) == WRITE_FORM_BOTTOM_SHEET_VARIANT
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    WRITE_FORM_EXPERIMENT_NAME, WRITE_FORM_CONTROL_VARIANT
+            ) == WRITE_FORM_BOTTOM_SHEET_VARIANT
+        } catch (t: Throwable) {
+            false
+        }
     }
 }

@@ -80,7 +80,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                CreateReviewTrackingConstants.VIEW_SMILEY,
+                CreateReviewTrackingConstants.EVENT_ACTION_VIEW_SMILEY,
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
         ))
     }
@@ -132,7 +132,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                CreateReviewTrackingConstants.CLICK_EXPAND_TEXTBOX,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_EXPAND_TEXTBOX,
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
         ))
     }
@@ -141,7 +141,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                CreateReviewTrackingConstants.CLICK_COLLAPSE_TEXT_BOX,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_COLLAPSE_TEXT_BOX,
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_ORDER_ID_PRODUCT_ID, orderId, productId)
         ))
     }
@@ -159,7 +159,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.VIEW_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.VIEW_DIALOG, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_VIEW_DIALOG, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
@@ -168,7 +168,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_CONTINUE_IN_DIALOG, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_CONTINUE_IN_DIALOG, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
@@ -177,7 +177,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_LEAVE_PAGE, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_LEAVE_PAGE, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
@@ -186,7 +186,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_SEND_ANOTHER, title),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_ANOTHER, title),
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
         ))
     }
@@ -195,7 +195,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_LATER, title),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_LATER, title),
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
         ))
     }
@@ -204,7 +204,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_OK, title),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_OK, title),
                 String.format(CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE, hasPendingIncentive.toString())
         ))
     }
@@ -213,7 +213,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_COMPLETE_REVIEW_FIRST, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_COMPLETE_REVIEW_FIRST, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }
@@ -222,7 +222,7 @@ object CreateReviewTracking {
         tracker.sendGeneralEvent(createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.CLICK_SEND_NOW, dialogTitle),
+                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_NOW, dialogTitle),
                 CreateReviewTrackingConstants.EMPTY_LABEL
         ))
     }

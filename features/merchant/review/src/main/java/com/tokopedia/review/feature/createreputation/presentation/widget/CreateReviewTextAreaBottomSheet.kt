@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ReviewTemplatesAdapter
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewTemplateListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
@@ -147,7 +148,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
         if (templates.isEmpty() || isUserEligible) return
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
-            layoutManager = StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL)
+            layoutManager = StaggeredGridLayoutManager(CreateReviewBottomSheet.TEMPLATES_ROW_COUNT, RecyclerView.HORIZONTAL)
             showTemplates()
         }
         templatesAdapter.setData(templates)

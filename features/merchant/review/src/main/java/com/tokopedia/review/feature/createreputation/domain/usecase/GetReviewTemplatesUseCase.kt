@@ -26,7 +26,7 @@ class GetReviewTemplatesUseCase @Inject constructor(graphqlRepository: GraphqlRe
             """
     }
 
-    private var requestParams = RequestParams.EMPTY
+    private var requestParams = RequestParams.create()
 
     init {
         setGraphqlQuery(ReviewTemplates.GQL_QUERY)

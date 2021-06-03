@@ -34,4 +34,8 @@ class ReviewTemplatesAdapter(private val reviewTemplateListener: ReviewTemplateL
         notifyDataSetChanged()
     }
 
+    fun getTemplates(): List<String> {
+        return reviewTemplates
+    }
+
 }

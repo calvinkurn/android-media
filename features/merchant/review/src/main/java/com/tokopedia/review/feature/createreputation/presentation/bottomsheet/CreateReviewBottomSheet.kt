@@ -61,6 +61,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     companion object {
         const val GOOD_RATING_THRESHOLD = 3
+        const val CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG = "CreateReviewTextAreaBottomSheet"
+        const val TEMPLATES_ROW_COUNT = 2
         fun createInstance(rating: Int, productId: Long, reputationId: Long, utmSource: String): CreateReviewBottomSheet {
             return CreateReviewBottomSheet().apply {
                 this.rating = rating
@@ -142,30 +144,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         when (requestCode) {
             CreateReviewFragment.REQUEST_CODE_IMAGE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val result = ImagePickerResultExtractor.extract(data)
-                    val selectedImage = result.imageUrlOrPathList
-                    val imagesFedIntoPicker = result.imagesFedIntoPicker
-                    createReviewViewModel.clearImageData()
-
-                    CreateReviewTracking.reviewOnImageUploadTracker(
-                            getOrderId(),
-                            productId.toString(10),
-                            true,
-                            selectedImage.size.toString(10),
-                            isEditMode,
-                            feedbackId.toString()
-                    )
-
-                    if (!selectedImage.isNullOrEmpty()) {
-                        val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage, imagesFedIntoPicker)
-                        imageAdapter.setImageReviewData(imageListData)
-                        photosRecyclerView?.apply {
-                            adapter = imageAdapter
-                            show()
-                        }
-                        addPhoto?.hide()
-                        createReviewViewModel.updateProgressBarFromPhotos()
-                    }
+                    handleOnActivityResult(data)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -195,7 +174,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         }
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, isUserEligible(), getTemplatesForTextArea())
         (textAreaBottomSheet as BottomSheetUnify).setTitle(textAreaTitle?.text.toString())
-        fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
+        fragmentManager?.let { textAreaBottomSheet?.show(it, CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG) }
     }
 
     override fun onCollapseButtonClicked(text: String) {
@@ -251,12 +230,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onResume() {
         super.onResume()
-        dialog?.setOnKeyListener { _, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                handleDismiss()
-                true
-            } else false
-        }
+        handleOnBackPressed()
     }
 
     private fun initInjector() {
@@ -313,6 +287,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         updateTitleBasedOnSelectedRating(rating)
         updateButtonState(isGoodRating(), textArea?.isEmpty()?.not() ?: false)
         createReviewViewModel.updateProgressBarFromRating(isGoodRating())
+        setTemplateVisibility()
     }
 
     private fun getForm() {
@@ -429,7 +404,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             }
             return
         }
-        showTemplates()
+        setTemplateVisibility()
         incentivesTicker?.hide()
     }
 
@@ -457,7 +432,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun onSuccessGetTemplate(templates: List<String>) {
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
-            layoutManager = StaggeredGridLayoutManager(2, RecyclerView.HORIZONTAL)
+            layoutManager = StaggeredGridLayoutManager(TEMPLATES_ROW_COUNT, RecyclerView.HORIZONTAL)
             viewTreeObserver.addOnGlobalLayoutListener (object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     if(templates.isNotEmpty()) {
@@ -681,7 +656,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setOnTouchOutsideListener() {
         setShowListener {
-            CreateReviewTracking.openScreenWithCustomDimens(CreateReviewTrackingConstants.BOTTOM_SHEET_SCREEN_NAME, productId.toString())
+            CreateReviewTracking.openScreenWithCustomDimens(CreateReviewTrackingConstants.SCREEN_NAME_BOTTOM_SHEET, productId.toString())
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
             isCancelable = false
             dialog?.setCanceledOnTouchOutside(false)
@@ -849,7 +824,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun getTemplatesForTextArea(): List<String> {
         if(isGoodRating()) {
-            return (createReviewViewModel.reviewTemplates.value as? Success)?.data ?: listOf()
+            return templatesAdapter.getTemplates()
         }
         return listOf()
     }
@@ -879,5 +854,49 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun getTncBottomSheetTrackerData(): TncBottomSheetTrackerData {
         return TncBottomSheetTrackerData(getReputationId(), getOrderId(), productId.toString(), getUserId())
+    }
+
+    private fun handleOnActivityResult(data: Intent) {
+        val result = ImagePickerResultExtractor.extract(data)
+        val selectedImage = result.imageUrlOrPathList
+        val imagesFedIntoPicker = result.imagesFedIntoPicker
+        createReviewViewModel.clearImageData()
+
+        CreateReviewTracking.reviewOnImageUploadTracker(
+                getOrderId(),
+                productId.toString(10),
+                true,
+                selectedImage.size.toString(10),
+                isEditMode,
+                feedbackId.toString()
+        )
+
+        if (!selectedImage.isNullOrEmpty()) {
+            val imageListData = createReviewViewModel.getAfterEditImageList(selectedImage, imagesFedIntoPicker)
+            imageAdapter.setImageReviewData(imageListData)
+            photosRecyclerView?.apply {
+                adapter = imageAdapter
+                show()
+            }
+            addPhoto?.hide()
+            createReviewViewModel.updateProgressBarFromPhotos()
+        }
+    }
+
+    private fun handleOnBackPressed() {
+        dialog?.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                handleDismiss()
+                true
+            } else false
+        }
+    }
+
+    private fun setTemplateVisibility() {
+        if(isGoodRating()) {
+            showTemplates()
+        } else {
+            hideTemplates()
+        }
     }
 }
