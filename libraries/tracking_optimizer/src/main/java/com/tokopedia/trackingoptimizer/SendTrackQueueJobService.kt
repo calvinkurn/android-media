@@ -28,7 +28,7 @@ class SendTrackQueueJobService : JobService(), CoroutineScope {
     }
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
-        sendTrackNew(this, trackRepository) {
+        sendTrack(this, trackRepository) {
             jobFinished(jobParameters, false)
         }
         return true

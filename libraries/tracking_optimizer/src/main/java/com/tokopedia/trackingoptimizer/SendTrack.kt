@@ -30,7 +30,7 @@ fun decreaseCounter() {
     }
 }
 
-fun sendTrack(it: TrackingDbModel) {
+private fun sendTrack(it: TrackingDbModel) {
     var hasSent = false
     val map = mutableMapOf<String, Any?>()
     val eventModel: EventModel = GsonSingleton.instance.fromJson(it.event,
@@ -62,8 +62,8 @@ fun sendTrack(it: TrackingDbModel) {
     }
 }
 
-fun sendTrackNew(coroutineScope: CoroutineScope, trackingRepository: TrackRepository,
-                 onFinished: (() -> Unit)) {
+fun sendTrack(coroutineScope: CoroutineScope, trackingRepository: TrackRepository,
+              onFinished: (() -> Unit)) {
     atomicInteger.getAndIncrement()
     coroutineScope.launch {
         val eeModelList = trackingRepository.getAllEE()

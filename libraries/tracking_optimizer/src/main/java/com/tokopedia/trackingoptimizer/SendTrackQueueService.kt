@@ -62,7 +62,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        sendTrackNew(this, trackRepository) {
+        sendTrack(this, trackRepository) {
             stopSelf()
         }
         return Service.START_NOT_STICKY
