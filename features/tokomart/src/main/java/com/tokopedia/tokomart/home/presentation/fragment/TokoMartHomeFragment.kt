@@ -11,16 +11,14 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -86,10 +84,11 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
     private var statusBarBackground: View? = null
     private var localCacheModel: LocalCacheModel? = null
     private var ivHeaderBackground: ImageView? = null
+    private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
-    private var isRefreshWidget = false
+    private var isRefreshChooseAddressWidget = false
     private var movingPosition = 0
 
     private val homeMainToolbarHeight: Int
@@ -117,6 +116,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
         setupNavToolbar()
         setupStatusBar()
         setupRecyclerView()
+        setupSwipeRefreshLayout()
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
 
@@ -148,6 +148,22 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        context?.let {
+            swipeLayout = view?.findViewById(R.id.swipe_refresh_layout)
+            swipeLayout?.setMargin(0, NavToolbarExt.getFullToolbarHeight(it) - 8, 0, 0)
+            swipeLayout?.setOnRefreshListener {
+                onRefreshLayout()
+            }
+        }
+    }
+
+    private fun onRefreshLayout() {
+        adapter.clearAllElements()
+        getHomeLayout()
+        getMiniCart()
     }
 
     private fun setupNavToolbar() {
@@ -263,7 +279,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
         }
 
         context?.let {
-            rvHome?.setPadding(0, NavToolbarExt.getFullToolbarHeight(it) - 8, 0, 0)
             rvHome?.setItemViewCacheSize(20)
             rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -279,6 +294,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
             if (it is Success) {
                 loadHomeLayout(it.data)
             }
+            resetSwipeLayout()
         }
 
         observe(viewModel.miniCart) {
@@ -286,6 +302,11 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
                 setupMiniCart(it.data)
             }
         }
+    }
+
+    private fun resetSwipeLayout() {
+        swipeLayout?.isEnabled = true
+        swipeLayout?.isRefreshing = false
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
@@ -335,8 +356,8 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
                         it
                 )
                 if (isUpdated) {
-                    isRefreshWidget = !isRefreshWidget
-                    adapter.updateHomeChooseAddressWidget(isRefreshWidget)
+                    isRefreshChooseAddressWidget = !isRefreshChooseAddressWidget
+                    adapter.updateHomeChooseAddressWidget(isRefreshChooseAddressWidget)
                 }
             }
         }
