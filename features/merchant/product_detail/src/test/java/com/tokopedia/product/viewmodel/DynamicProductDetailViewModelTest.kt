@@ -15,11 +15,13 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -27,7 +29,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
-import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirProduct
@@ -56,7 +58,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -138,6 +139,9 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var getRecommendationFilterChips: GetRecommendationFilterChips
 
+    @RelaxedMockK
+    lateinit var miniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase
+
     private lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -148,7 +152,8 @@ class DynamicProductDetailViewModelTest {
         MockKAnnotations.init(this)
         mockkStatic(RemoteConfigInstance::class)
         spykViewModel = spyk(DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
-                Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase }, userSessionInterface)
+                Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase },
+                Lazy {miniCartListSimplifiedUseCase} , userSessionInterface)
         )
     }
 
@@ -159,7 +164,8 @@ class DynamicProductDetailViewModelTest {
 
     private val viewModel by lazy {
         DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
-                Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase }, userSessionInterface)
+                Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase },
+                Lazy {miniCartListSimplifiedUseCase} ,userSessionInterface)
     }
 
     //=========================================VARIABLE SECTION======================================//
@@ -1015,7 +1021,7 @@ class DynamicProductDetailViewModelTest {
      */
     @Test
     fun `process initial variant`() {
-        viewModel.processVariant(ProductVariantCommon(), mutableMapOf())
+        viewModel.processVariant(ProductVariant(), mutableMapOf(), false)
 
         Assert.assertTrue(viewModel.initialVariantData.value != null)
     }
@@ -1024,7 +1030,7 @@ class DynamicProductDetailViewModelTest {
     fun `variant clicked not partial`() {
         val partialySelect = false
         val imageVariant = "image"
-        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
         Assert.assertTrue(viewModel.onVariantClickedData.value != null)
         Assert.assertTrue(viewModel.updatedImageVariant.value == null)
     }
@@ -1034,7 +1040,7 @@ class DynamicProductDetailViewModelTest {
         val partialySelect = true
         val imageVariant = "image"
         viewModel.listOfParentMedia = mutableListOf(Media(uRLOriginal = "gambar 1"))
-        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
         Assert.assertTrue(viewModel.onVariantClickedData.value == null)
         Assert.assertTrue(viewModel.updatedImageVariant.value != null)
         Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.first()?.uRLOriginal == imageVariant)
@@ -1045,7 +1051,7 @@ class DynamicProductDetailViewModelTest {
         val partialySelect = true
         val imageVariant = "gambar gan"
         viewModel.listOfParentMedia = null
-        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
         Assert.assertTrue(viewModel.onVariantClickedData.value == null)
         Assert.assertTrue(viewModel.updatedImageVariant.value != null)
         Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.isEmpty() == true)

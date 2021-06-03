@@ -21,12 +21,17 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -48,6 +53,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
+import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
@@ -64,9 +70,6 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantCategory
-import com.tokopedia.variant_common.model.WarehouseInfo
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -106,6 +109,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
                                                              private val discussionMostHelpfulUseCase: Lazy<DiscussionMostHelpfulUseCase>,
                                                              private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+                                                             private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -142,6 +146,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
         get() = _loadTopAdsProduct
 
+    private val _miniCartData = MutableLiveData<Map<String,MiniCartItem>?>()
+    val miniCartData: LiveData<Map<String,MiniCartItem>?>
+        get() = _miniCartData
+
+
     private val _filterTopAdsProduct = MutableLiveData<ProductRecommendationDataModel>()
     val filterTopAdsProduct: LiveData<ProductRecommendationDataModel>
         get() = _filterTopAdsProduct
@@ -174,6 +183,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val initialVariantData: LiveData<List<VariantCategory>?>
         get() = _initialVariantData
 
+    private val _singleVariantData = MutableLiveData<VariantCategory>()
+    val singleVariantData: LiveData<VariantCategory>
+        get() = _singleVariantData
+
     private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()
     val onVariantClickedData: LiveData<List<VariantCategory>?>
         get() = _onVariantClickedData
@@ -195,7 +208,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var tradeInParams: TradeInParams = TradeInParams()
-    var variantData: ProductVariantCommon? = null
+    var variantData: ProductVariant? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
@@ -331,13 +344,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return WarehouseInfo()
     }
 
-    fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
+    fun processVariant(data: ProductVariant, mapOfSelectedVariant: MutableMap<String, String>?, shouldRenderNewVariant: Boolean) {
         launchCatchError(dispatcher.io, block = {
-            _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
+            if (shouldRenderNewVariant) {
+                _singleVariantData.postValue(ProductDetailVariantLogic.determineVariant(mapOfSelectedVariant ?: mapOf(), data))
+            } else {
+                _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
+            }
         }) {}
     }
 
-    fun onVariantClicked(data: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>?,
+    fun onVariantClicked(data: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>?,
                          isPartialySelected: Boolean, variantLevel: Int, imageVariant: String) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
@@ -730,6 +747,21 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     )
             )
         } ?: listOf()
+    }
+
+    fun getMiniCart(productId: String, shopId: String) {
+        launchCatchError(dispatcher.io, block = {
+            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
+            val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
+            if (result.miniCartItems.isEmpty()) {
+                _miniCartData.postValue(null)
+            } else {
+                _miniCartData.postValue(result.miniCartItems.associateBy({ it.productId }) {
+                    it
+                })
+            }
+        }) {
+        }
     }
 
     fun moveProductToWareHouse(productId: String) {

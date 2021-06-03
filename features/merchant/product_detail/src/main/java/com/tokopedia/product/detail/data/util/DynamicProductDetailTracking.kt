@@ -8,11 +8,13 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
-import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
 import com.tokopedia.product.detail.data.util.TrackingUtil.sendTrackingBundle
 import com.tokopedia.product.util.processor.Product
@@ -23,7 +25,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.variant_common.model.ProductVariantCommon
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -50,7 +51,7 @@ object DynamicProductDetailTracking {
         return ComponentTrackDataModel(data?.type() ?: "", data?.name() ?: "", position)
     }
 
-    fun generateVariantString(variant: ProductVariantCommon?, selectedProductId: String): String {
+    fun generateVariantString(variant: ProductVariant?, selectedProductId: String): String {
         return variant?.getOptionListString(selectedProductId)?.map {
             it
         }?.joinToString(",") ?: ""
@@ -303,7 +304,7 @@ object DynamicProductDetailTracking {
         }
 
         fun eventClickButtonNonLogin(actionButton: Int, productInfo: DynamicProductInfoP1?, userId: String, shopType: String, buttonActionText: String) {
-            if (actionButton == ProductDetailConstant.ATC_BUTTON) {
+            if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) {
                 eventAtcButtonNonLogin(productInfo, userId, shopType)
             } else {
                 eventBuyButtonNonLogin(productInfo, userId, shopType, buttonActionText)
@@ -353,8 +354,8 @@ object DynamicProductDetailTracking {
 
             val quantity = productInfo?.basic?.minOrder ?: 0
             val generateButtonActionString = when (actionButton) {
-                ProductDetailConstant.OCS_BUTTON -> "$buttonText ocs"
-                ProductDetailConstant.OCC_BUTTON -> "$buttonText occ"
+                ProductDetailCommonConstant.OCS_BUTTON -> "$buttonText ocs"
+                ProductDetailCommonConstant.OCC_BUTTON -> "$buttonText occ"
                 else -> "$buttonText normal"
             }
 
@@ -369,8 +370,8 @@ object DynamicProductDetailTracking {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Tracking.KEY_ACTION, if (actionButton == ProductDetailConstant.ATC_BUTTON) "click - tambah ke keranjang on pdp" else "click - $buttonText on pdp",
-                    ProductTrackingConstant.Tracking.KEY_LABEL, if (actionButton == ProductDetailConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
+                    ProductTrackingConstant.Tracking.KEY_ACTION, if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) "click - tambah ke keranjang on pdp" else "click - $buttonText on pdp",
+                    ProductTrackingConstant.Tracking.KEY_LABEL, if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
                     ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
@@ -407,7 +408,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION,
-                    if (actionButton == ProductDetailConstant.BUY_BUTTON) "beli button name" else "tambah ke keranjang")
+                    if (actionButton == ProductDetailCommonConstant.BUY_BUTTON) "beli button name" else "tambah ke keranjang")
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
         }
@@ -422,7 +423,7 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
         }
 
-        fun onVariantLevel1Clicked(productInfo: DynamicProductInfoP1?, variantData: VariantDataModel?, variantCommonData: ProductVariantCommon?, variantPosition: Int) {
+        fun onVariantLevel1Clicked(productInfo: DynamicProductInfoP1?, variantData: VariantDataModel?, variantCommonData: ProductVariant?, variantPosition: Int) {
 
             val variantLevel = variantData?.listOfVariantCategory?.size.toString().toList().joinToString(prefix = "level : ", postfix = ";")
             val variantTitle = variantData?.listOfVariantCategory?.map {
@@ -1129,24 +1130,6 @@ object DynamicProductDetailTracking {
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
-        fun eventClickReportOnHelpPopUpAtc() {
-            TrackApp.getInstance().gtm.sendGeneralEvent(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_REPORT_ON_HELP_POP_UP_ATC,
-                    ProductTrackingConstant.Label.EMPTY_LABEL
-            )
-        }
-
-        fun eventClickCloseOnHelpPopUpAtc() {
-            TrackApp.getInstance().gtm.sendGeneralEvent(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
-                    ProductTrackingConstant.Label.EMPTY_LABEL
-            )
-        }
-
         fun eventAddToCartRecommendationATCClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String) {
             val valueLoginOrNotLogin = if (!isSessionActive)
                 " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
@@ -1694,16 +1677,6 @@ object DynamicProductDetailTracking {
             )
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
-
-        fun eventViewHelpPopUpWhenAtc() {
-            TrackApp.getInstance().gtm.sendGeneralEvent(
-                    ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.VIEW_HELP_POP_UP_WHEN_ATC,
-                    ProductTrackingConstant.Label.EMPTY_LABEL
-            )
-        }
-
     }
 
     object TradeIn {

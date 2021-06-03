@@ -5,10 +5,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.variant_common.R
-import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
-import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.item_variant_image_view_holder.view.*
 
 /**
@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.item_variant_image_view_holder.view.*
  */
 
 class VariantImageViewHolder(val view: View,
-                             val listener: ProductVariantListener) : BaseVariantViewHolder<VariantOptionWithAttribute>(view) {
+                             val listener: AtcVariantListener) : BaseVariantViewHolder<VariantOptionWithAttribute>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_variant_image_view_holder

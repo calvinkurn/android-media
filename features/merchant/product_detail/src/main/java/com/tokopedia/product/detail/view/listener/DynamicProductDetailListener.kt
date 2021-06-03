@@ -22,6 +22,7 @@ interface DynamicProductDetailListener {
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
+    fun getVariantString(): String
 
     /**
      * ProductMediaViewHolder
@@ -30,6 +31,7 @@ interface DynamicProductDetailListener {
     fun onVideoVolumeCLicked(isMute: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
+
     /**
      * ProductSnapshotViewHolder
      */
@@ -164,7 +166,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductShippingViewHolder
      */
-    fun openShipmentClickedBottomSheet(title:String, labelShipping:String, isCod:Boolean, componentTrackDataModel:ComponentTrackDataModel?)
-    fun clickShippingComponentError(errorCode: Int, title:String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun showCoachmark(view: Typography?, isBoeType:Boolean)
+    fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
+    fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun showCoachmark(view: Typography?, isBoeType: Boolean)
 }

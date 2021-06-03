@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_chip_variant"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_atc_variant_chip_unselected"
+    android:minWidth="@dimen/dp_44"
+    android:gravity="center"
+    android:layout_marginEnd="@dimen/dp_4"
+    android:layout_marginRight="@dimen/dp_4"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_chip_variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxWidth="@dimen/dp_180"
+        android:maxLines="1"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_2"
+        tools:text="S" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/promo_chip_variant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:visibility="visible"
+        tools:visibility="gone"
+        app:notificationType="text_type"
+        app:notificationColor="color_text_type"
+        app:notificationTitle="@string/atc_variant_promo" />
+</LinearLayout>

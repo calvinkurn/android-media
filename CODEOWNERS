@@ -160,6 +160,7 @@
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
+/features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
 /features/discovery/home_wishlist/                     	@tokopedia/android-minionbob-dev
 /features/discovery/wishlist_common/                	@tokopedia/android-minionbob-dev

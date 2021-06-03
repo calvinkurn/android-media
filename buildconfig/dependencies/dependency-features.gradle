@@ -130,6 +130,7 @@ ext {
             productDetailCommon             : ":features:merchant:product_detail_common",
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
+            atcVariant                      : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
             ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",

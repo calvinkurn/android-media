@@ -1,120 +1,109 @@
 package com.tokopedia.product.detail.common.data.model.product
 
-import android.content.Context
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.R
-import com.tokopedia.product.detail.common.data.model.constant.PriceCurrencyTypeDef
-import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
-import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 
-data class Basic(
-        @SerializedName("isLeasing")
-        @Expose
-        val isLeasing: Boolean = false,
-
-        @SerializedName("alias")
-        @Expose
-        val alias: String = "",
-
-        @SerializedName("catalogID")
-        @Expose
-        val catalogID: Int = 0,
-
-        @SerializedName("condition")
-        @Expose
-        val condition: String = ProductConditionTypeDef.UNKNOWN,
-
-        @SerializedName("description")
-        @Expose
-        val description: String = "",
-
-        @SerializedName("gtin")
-        @Expose
-        val gtin: String = "",
-
+data class Etalase(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
-
-        @SerializedName("isEligibleCOD")
-        @Expose
-        val isEligibleCod: Boolean = false,
-
-        @SerializedName("isKreasiLokal")
-        @Expose
-        val isKreasiLokal: Boolean = false,
-
-        @SerializedName("isMustInsurance")
-        @Expose
-        val isMustInsurance: Boolean = false,
-
-        @SerializedName("needPrescription")
-        @Expose
-        val needPrescription: Boolean = false,
-
-        @SerializedName("lastUpdatePrice")
-        @Expose
-        val lastUpdatePrice: String = "",
-
-        @SerializedName("maxOrder")
-        @Expose
-        val maxOrder: Int = 0,
-
-        @SerializedName("minOrder")
-        @Expose
-        val minOrder: Int = 0,
+        val id: String = "",
 
         @SerializedName("name")
         @Expose
         val name: String = "",
 
-        @SerializedName("price")
-        @Expose
-        val price: Float = 0f,
-
-        @SerializedName("priceCurrency")
-        @Expose
-        val priceCurrency: String = PriceCurrencyTypeDef.IDR,
-
-        @SerializedName("shopID")
-        @Expose
-        val shopID: Int = 0,
-
-        @SerializedName("sku")
-        @Expose
-        val sku: String = "",
-
-        @SerializedName("status")
-        @Expose
-        val status: String = ProductStatusTypeDef.ACTIVE,
-
         @SerializedName("url")
         @Expose
-        val url: String = "",
+        val url: String = ""
+)
 
-        @SerializedName("weight")
+data class VariantBasic(
+        @SerializedName("parentID")
         @Expose
-        val weight: Float = 0f,
+        val parentID: String = "",
 
-        @SerializedName("weightUnit")
+        @SerializedName("isVariant")
         @Expose
-        val weightUnit: String = WeightTypeDef.UNKNOWN
-) {
-    fun isActive(): Boolean {
-        return status == ProductStatusTypeDef.ACTIVE
-    }
+        val isVariant: Boolean = false
+)
 
-    fun statusMessage(context: Context): String {
-        return when(status) {
-            ProductStatusTypeDef.DELETED -> context.getString(R.string.product_status_deleted)
-            ProductStatusTypeDef.ACTIVE -> context.getString(R.string.product_status_active)
-            ProductStatusTypeDef.WAREHOUSE -> context.getString(R.string.product_status_warehouse)
-            ProductStatusTypeDef.HIDDEN -> context.getString(R.string.product_status_hidden)
-            ProductStatusTypeDef.PENDING -> context.getString(R.string.product_status_pending)
-            ProductStatusTypeDef.BANNED -> context.getString(R.string.product_status_banned)
-            else -> context.getString(R.string.product_status_active)
-        }
-    }
+data class Stock(
+        @SerializedName("useStock")
+        @Expose
+        val useStock: Boolean = false,
+
+        @SerializedName("value")
+        @Expose
+        val value: Int = 0,
+
+        @SerializedName("stockWording")
+        @Expose
+        val stockWording: String = ""
+)
+
+data class Stats(
+        @SerializedName("countReview")
+        @Expose
+        val countReview: String = "",
+
+        @SerializedName("countTalk")
+        @Expose
+        val countTalk: String = "",
+
+        @SerializedName("rating")
+        @Expose
+        val rating: Float = 0f
+)
+
+data class Category(
+        @SerializedName("breadcrumbUrl")
+        @Expose
+        val breadcrumbUrl: String = "",
+
+        @SerializedName("detail")
+        @Expose
+        val detail: List<Detail> = listOf(),
+
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
+
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
+        @SerializedName("isAdult")
+        @Expose
+        val isAdult: Boolean = false,
+
+        @SerializedName("title")
+        @Expose
+        val title: String = ""
+){
+        data class Detail(
+                @SerializedName("breadcrumbUrl")
+                @Expose
+                val breadcrumbUrl: String = "",
+
+                @SerializedName("id")
+                @Expose
+                val id: String = "",
+
+                @SerializedName("name")
+                @Expose
+                val name: String = ""
+        )
 }
+
+data class TxStatsDynamicPdp(
+        @SerializedName("transactionSuccess")
+        val txSuccess: String = "",
+        @SerializedName("transactionReject")
+        val txReject: String = "",
+        @SerializedName("countSold")
+        val countSold: String = "",
+        @SerializedName("paymentVerified")
+        val paymentVerified: String = "",
+        @SerializedName("itemSoldPaymentVerified")
+        val itemSoldPaymentVerified: String = ""
+)

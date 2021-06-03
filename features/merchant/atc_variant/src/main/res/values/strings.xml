@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">varian</string>
+    <string name="title_activity_atc_variant">Varian Barang</string>
+    <string name="title_bottomsheet_atc_variant">Varian barang: %1s</string>
+    <string name="title_bottomsheet_choose_atc_variant">Pilih varian</string>
+
+    <string name="atc_variant_option_builder_1">Pilih %1$s: </string>
+    <string name="atc_variant_option_builder_2">%1$d varian</string>
+    <string name="atc_variant_guideline">Lihat Panduan</string>
+
+    <string name="atc_variant_quantity_label">Jumlah barang: </string>
+    <string name="atc_variant_oke_label">Oke</string>
+    <string name="atc_variant_toko_cabang_label">Varian ini akan dikirim dari TokoCabang</string>
+    <string name="atc_variant_empty_stock_label">Stok habis. Klik Ingatkan Saya untuk aktifkan pengingat ketika barang kembali tersedia.</string>
+    <string name="atc_variant_total_stock_empty_label">Total Stok: %1$s</string>
+    <string name="atc_variant_min_order_builder">Min. pembelian barang ini %1$d buah </string>
+
+
+</resources>

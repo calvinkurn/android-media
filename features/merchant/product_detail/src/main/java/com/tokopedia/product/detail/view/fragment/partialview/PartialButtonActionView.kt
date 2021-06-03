@@ -8,9 +8,9 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
@@ -87,7 +87,7 @@ class PartialButtonActionView private constructor(val view: View,
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
         val availableButton = cartTypeData?.availableButtons ?: listOf()
 
-        btn_topchat.showWithCondition(ProductDetailConstant.KEY_CHAT !in unavailableButton)
+        btn_topchat.showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
 
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
@@ -117,27 +117,27 @@ class PartialButtonActionView private constructor(val view: View,
 
     private fun UnifyButton.generateTheme(colorDescription: String) {
         when (colorDescription) {
-            ProductDetailConstant.KEY_BUTTON_PRIMARY -> {
+            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY -> {
                 this.buttonVariant = UnifyButton.Variant.FILLED
                 this.buttonType = UnifyButton.Type.TRANSACTION
                 this.isEnabled = true
             }
-            ProductDetailConstant.KEY_BUTTON_DISABLE -> {
+            ProductDetailCommonConstant.KEY_BUTTON_DISABLE -> {
                 this.buttonVariant = UnifyButton.Variant.FILLED
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = false
             }
-            ProductDetailConstant.KEY_BUTTON_PRIMARY_GREEN -> {
+            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN -> {
                 this.buttonVariant = UnifyButton.Variant.FILLED
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = true
             }
-            ProductDetailConstant.KEY_BUTTON_SECONDARY_GREEN -> {
+            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN -> {
                 this.buttonVariant = UnifyButton.Variant.GHOST
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = true
             }
-            ProductDetailConstant.KEY_BUTTON_SECONDARY_GRAY -> {
+            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY -> {
                 this.buttonVariant = UnifyButton.Variant.GHOST
                 this.buttonType = UnifyButton.Type.ALTERNATE
                 this.isEnabled = true
@@ -159,12 +159,12 @@ class PartialButtonActionView private constructor(val view: View,
                         R.string.action_preorder
                     } else {
                         if (isExpressCheckout) {
-                            R.string.buy_now
+                            com.tokopedia.product.detail.common.R.string.buy_now
                         } else {
                             R.string.buy
                         }
                     })
-            btn_add_to_cart.text = context.getString(R.string.plus_product_to_cart)
+            btn_add_to_cart.text = context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
             btn_buy_now.visible()
             btn_add_to_cart.visible()
 
@@ -186,8 +186,8 @@ class PartialButtonActionView private constructor(val view: View,
                 buttonListener.addToCartClick(btn_add_to_cart.text.toString())
             }
 
-            btn_buy_now.generateTheme(ProductDetailConstant.KEY_BUTTON_SECONDARY)
-            btn_add_to_cart.generateTheme(ProductDetailConstant.KEY_BUTTON_PRIMARY)
+            btn_buy_now.generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY)
+            btn_add_to_cart.generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY)
             btn_topchat.setOnClickListener {
                 buttonListener.topChatButtonClicked()
             }
