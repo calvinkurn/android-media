@@ -77,6 +77,7 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
@@ -412,6 +413,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         super.onResume()
         reloadCartCounter()
         reloadUserLocationChanged()
+        reloadMiniCart()
     }
 
     override fun onDestroy() {
@@ -450,11 +452,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
                 if (shouldRefreshPreviousPage) {
                     productId = selectedProductId
+                    //donot run onresume
+                    firstOpenPage = true
                     onSwipeRefresh()
                 } else {
                     if (requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
                         updateCartNotification()
                     }
+                    if (pdpUiUpdater?.productSingleVariant == null || pdpUiUpdater?.productSingleVariant?.isVariantError == true) return@onActivityResultAtcVariant
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
                     val variantLevelOne = listOfVariantSelected?.firstOrNull()
                     updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
@@ -591,6 +596,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 })
             }
         }
+    }
+
+    private fun reloadMiniCart() {
+        if (viewModel.getDynamicProductInfoP1 == null || context == null || viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == false || firstOpenPage == true) return
+        val data = viewModel.getDynamicProductInfoP1
+        viewModel.getMiniCart(data?.basic?.shopID ?: "")
     }
 
     private fun reloadUserLocationChanged() {
@@ -1372,9 +1383,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
-            actionButtonView.renderData(!it.isProductActive(),
-                    viewModel.hasShopAuthority(), viewModel.isShopOwner(), hasTopAds(),
-                    viewModel.getCartTypeByProductId())
+            val miniCartItem = if (it.basic.isTokoNow) viewModel.getMiniCartItem() else null
+
+            actionButtonView.renderData(
+                    isWarehouseProduct = !it.isProductActive(),
+                    hasShopAuthority = viewModel.hasShopAuthority(),
+                    isShopOwner = viewModel.isShopOwner(),
+                    hasTopAdsActive = hasTopAds(),
+                    isVariant = it.data.variant.isVariant,
+                    cartTypeData = viewModel.getCartTypeByProductId(),
+                    miniCartItem = miniCartItem)
         }
         showOrHideButton()
     }
@@ -1972,8 +1990,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow ?: false,
                         isShopOwner = viewModel.isShopOwner(),
                         productVariant = viewModel.variantData ?: ProductVariant(),
-                        warehouseResponse = mapOf(),
-                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf()
+                        warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
+                        cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf(),
+                        miniCart = viewModel.p2Data.value?.miniCart
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
@@ -1996,6 +2015,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
             pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
         } else {
+            if (shouldRenderNewVariant) {
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
+            } else {
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
+            }
+
             if (data.errorCode > 0) {
                 pdpUiUpdater?.updateVariantError()
                 updateUi()
@@ -2737,6 +2762,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun leasingButtonClicked() {
         doAtc(ProductDetailCommonConstant.LEASING_BUTTON)
+    }
+
+    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem) {
+        viewModel.updateQuantity(quantity, miniCart)
     }
 
     override fun editProductButtonClicked() {

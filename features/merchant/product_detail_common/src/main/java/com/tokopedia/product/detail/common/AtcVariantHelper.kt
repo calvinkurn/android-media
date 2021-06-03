@@ -5,6 +5,7 @@ import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
@@ -37,6 +38,7 @@ object AtcVariantHelper {
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
                         cartRedirection: Map<String, CartTypeData>,
+                        miniCart: Map<String, MiniCartItem>?,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -52,6 +54,7 @@ object AtcVariantHelper {
                         cardRedirection = cartRedirection,
                         nearestWarehouse = warehouseResponse
                 ),
+                miniCartData = miniCart,
                 categoryName = productInfoP1.basic.category.name,
                 categoryId = productInfoP1.basic.category.id,
                 isTradein = productInfoP1.data.isTradeIn,

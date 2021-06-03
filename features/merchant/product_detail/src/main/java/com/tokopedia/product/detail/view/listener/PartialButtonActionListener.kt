@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+
 /**
  * Created by Yehezkiel on 28/09/20
  */
@@ -13,4 +15,5 @@ interface PartialButtonActionListener {
     fun topChatButtonClicked()
     fun leasingButtonClicked()
     fun editProductButtonClicked()
+    fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem)
 }

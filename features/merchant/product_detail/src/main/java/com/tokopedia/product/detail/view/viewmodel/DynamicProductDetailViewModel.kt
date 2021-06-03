@@ -4,6 +4,7 @@ import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
@@ -21,8 +22,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -75,10 +78,8 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import rx.Observer
 import rx.Subscriber
 import rx.Subscription
@@ -91,7 +92,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
                                                              private val getProductInfoP2LoginUseCase: Lazy<GetProductInfoP2LoginUseCase>,
                                                              private val getProductInfoP2OtherUseCase: Lazy<GetProductInfoP2OtherUseCase>,
-                                                             private val getProductInfoP2DataUseCase: Lazy<GetProductInfoP2DataUseCase>,
+                                                             private val getP2DataAndMiniCartUseCase: Lazy<GetP2DataAndMiniCartUseCase>,
                                                              private val getProductInfoP3UseCase: Lazy<GetProductInfoP3UseCase>,
                                                              private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
                                                              private val removeWishlistUseCase: Lazy<RemoveWishListUseCase>,
@@ -110,6 +111,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val discussionMostHelpfulUseCase: Lazy<DiscussionMostHelpfulUseCase>,
                                                              private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
                                                              private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
+                                                             private val updateCartUseCase: Lazy<UpdateCartUseCase>,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -146,10 +148,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
         get() = _loadTopAdsProduct
 
-    private val _miniCartData = MutableLiveData<Map<String,MiniCartItem>?>()
-    val miniCartData: LiveData<Map<String,MiniCartItem>?>
+    private val _miniCartData = MutableLiveData<Map<String, MiniCartItem>?>()
+    val miniCartData: LiveData<Map<String, MiniCartItem>?>
         get() = _miniCartData
 
+    private val _quantityUpdated = MutableLiveData<Pair<Int, MiniCartItem>>()
+
+    private val _updateCartLiveData = MutableLiveData<Result<String>>()
+    val updateCartLiveData: LiveData<Result<String>>
+        get() = _updateCartLiveData
 
     private val _filterTopAdsProduct = MutableLiveData<ProductRecommendationDataModel>()
     val filterTopAdsProduct: LiveData<ProductRecommendationDataModel>
@@ -249,6 +256,61 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 Timber.d(it)
             }
         }
+
+        iniQuantityFlow()
+    }
+
+    fun updateQuantity(quantity: Int, miniCartItem: MiniCartItem) {
+        _quantityUpdated.value = quantity to miniCartItem
+    }
+
+    private fun iniQuantityFlow() {
+        launch {
+            _quantityUpdated.asFlow()
+                    .debounce(200)
+                    .flatMapLatest { request ->
+                        hitUpdateCart(request.first, request.second)
+                                .catch {
+                                    emit(it.asFail())
+                                }
+                    }
+                    .flowOn(dispatcher.io)
+                    .collect {
+                        _updateCartLiveData.value = it
+                    }
+        }
+    }
+
+    private fun updateMiniCartData(productId: String, cartId: String, quantity: Int, notes: String) {
+        if (getDynamicProductInfoP1?.basic?.isTokoNow == false) return
+
+        val miniCartData = _p2Data.value?.miniCart
+        if (miniCartData == null) {
+            _p2Data.value?.miniCart = mapOf(productId to MiniCartItem(
+                    cartId = cartId,
+                    productId = productId,
+                    quantity = quantity,
+                    notes = notes
+            ))
+        } else {
+            _p2Data.value?.miniCart?.get(productId)?.quantity = quantity
+        }
+    }
+
+    private fun hitUpdateCart(quantity: Int, request: MiniCartItem): Flow<Result<String>> {
+        return flow {
+            val copyOfMiniCartItem = request.copy(quantity = quantity)
+
+            updateCartUseCase.get().setParams(listOf(copyOfMiniCartItem))
+            val result = updateCartUseCase.get().executeOnBackground()
+
+            if (result.error.isNotEmpty()) {
+                emit(Throwable(result.error.firstOrNull() ?: "").asFail())
+            } else {
+                updateMiniCartData(copyOfMiniCartItem.productId, copyOfMiniCartItem.cartId, copyOfMiniCartItem.quantity, copyOfMiniCartItem.notes)
+                emit("sukses".asSuccess())
+            }
+        }
     }
 
     override fun flush() {
@@ -280,7 +342,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun clearCacheP2Data() {
-        getProductInfoP2DataUseCase.get().clearCache()
+        getP2DataAndMiniCartUseCase.get().clearCacheP2Data()
     }
 
     fun getShopInfo(): ShopInfo {
@@ -298,6 +360,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun updateNotifyMeData() {
         val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(getDynamicProductInfoP1?.basic?.productID)
         p2Data.value?.upcomingCampaigns?.get(getDynamicProductInfoP1?.basic?.productID)?.notifyMe = selectedUpcoming?.notifyMe != true
+    }
+
+    fun getMiniCartItem(): MiniCartItem? {
+        return p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
     fun updateDynamicProductInfoData(data: DynamicProductInfoP1?) {
@@ -347,7 +413,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun processVariant(data: ProductVariant, mapOfSelectedVariant: MutableMap<String, String>?, shouldRenderNewVariant: Boolean) {
         launchCatchError(dispatcher.io, block = {
             if (shouldRenderNewVariant) {
-                _singleVariantData.postValue(ProductDetailVariantLogic.determineVariant(mapOfSelectedVariant ?: mapOf(), data))
+                _singleVariantData.postValue(ProductDetailVariantLogic.determineVariant(mapOfSelectedVariant
+                        ?: mapOf(), data))
             } else {
                 _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
             }
@@ -498,10 +565,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.productID)
             } else null
-            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
+            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession, it.basic.shopID, it.basic.isTokoNow)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
-            p2DataDeffered.await()?.let {
+            p2DataDeffered.await().let {
                 _p2Data.postValue(it)
                 updateTradeinParams(it.validateTradeIn)
             }
@@ -749,16 +816,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         } ?: listOf()
     }
 
-    fun getMiniCart(productId: String, shopId: String) {
+    fun getMiniCart(shopId: String) {
         launchCatchError(dispatcher.io, block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
             if (result.miniCartItems.isEmpty()) {
                 _miniCartData.postValue(null)
             } else {
-                _miniCartData.postValue(result.miniCartItems.associateBy({ it.productId }) {
+                val data = result.miniCartItems.associateBy({ it.productId }) {
                     it
-                })
+                }
+                _p2Data.value?.miniCart = data
+                _miniCartData.postValue(data)
             }
         }) {
         }
@@ -919,17 +988,20 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
+    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String, shopId: String, isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
-            getProductInfoP2DataUseCase.get().setErrorLogListener { logP2Data(it, productId, pdpSession) }
-            getProductInfoP2DataUseCase.get().executeOnBackground(
-                    GetProductInfoP2DataUseCase.createParams(
+            getP2DataAndMiniCartUseCase.get().executeOnBackground(
+                    requestParams = GetProductInfoP2DataUseCase.createParams(
                             productId,
                             pdpSession,
                             generatePdpSessionWithDeviceId(),
-                            generateUserLocationRequest(userLocationCache)
-                    ), forceRefresh
-            )
+                            generateUserLocationRequest(userLocationCache)),
+                    isTokoNow = isTokoNow,
+                    shopId = shopId,
+                    forceRefresh = forceRefresh,
+                    setErrorLogListener = {
+                        logP2Data(it, productId, pdpSession)
+                    })
         }
     }
 

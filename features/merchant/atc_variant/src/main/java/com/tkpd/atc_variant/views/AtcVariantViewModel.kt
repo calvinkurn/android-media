@@ -245,7 +245,7 @@ class AtcVariantViewModel @Inject constructor(
          * If data completely provided from previous page, use that
          * if not call GQL
          */
-        if (aggregatorParams.variantAggregator.isAggregatorEmpty() || (aggregatorParams.isTokoNow && aggregatorParams.miniCartData.isNullOrEmpty())) {
+        if (aggregatorParams.variantAggregator.isAggregatorEmpty() || (aggregatorParams.isTokoNow && aggregatorParams.miniCartData == null)) {
             val result = aggregatorMiniCartUseCase.executeOnBackground(
                     GetProductVariantAggregatorUseCase.createRequestParams(aggregatorParams.productId,
                             aggregatorParams.pageSource, aggregatorParams.whId, aggregatorParams.pdpSession, UserLocationRequest()),
