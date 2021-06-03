@@ -36,13 +36,17 @@ object ShopPageGqlQueryConstant {
                   stats{
                     reviewCount
                     rating
+                    viewCount
                   }
                   campaign{
+                    hide_gimmick
                     original_price
                     original_price_fmt
                     discounted_price_fmt
                     discounted_percentage
                     discounted_price
+                    is_upcoming
+                    stock_sold_percentage
                   }
                   primary_image{
                     original
