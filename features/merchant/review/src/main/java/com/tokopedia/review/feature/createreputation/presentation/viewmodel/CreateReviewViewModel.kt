@@ -258,8 +258,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun isTemplateAvailable(): Boolean {
-        return (reviewTemplates.value as? com.tokopedia.usecase.coroutines.Success)?.data?.isNotEmpty()
-                ?: false
+        return ((reviewTemplates.value as? com.tokopedia.usecase.coroutines.Success)?.data?.isNotEmpty() ?: false) && !isUserEligible()
     }
 
     fun getImageCount(): Int {

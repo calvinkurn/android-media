@@ -111,7 +111,7 @@
     <string name="review_form_progress_bar_good_need_photo">Fotoin barangnya dong 📸</string>
     <string name="review_form_progress_bar_good_need_text">Ceritain dong pengalamanmu</string>
     <string name="review_form_progress_bar_good_complete">Udah lengkap nih, keren! 😍</string>
-    <string name="review_form_progress_bar_bad_empty">Harus dilengkapi alasan, ya ✍️</string>
+    <string name="review_form_progress_bar_bad_empty">Ceritain alasanmu, yuk ✍️</string>
     <string name="review_form_progress_bar_bad_need_photo">Lengkapi juga dengan foto 📸</string>
     <string name="review_form_progress_bar_bad_need_text">Harus dilengkapi alasan, ya ✍️</string>
     <string name="review_form_progress_bar_bad_complete">Oke, udah siap kirim! 👉</string>
