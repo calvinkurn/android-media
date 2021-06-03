@@ -177,7 +177,6 @@
         android:id="@+id/tipView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_40"
         app:layout_constraintBottom_toTopOf="@+id/bottom">
 
         <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -186,6 +185,7 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
             app:fbType="group"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
