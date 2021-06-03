@@ -156,14 +156,14 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bid_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_24"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="true"
-            android:paddingBottom="@dimen/dp_90"
+            android:paddingBottom="@dimen/dp_150"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:itemCount="4"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -177,6 +177,7 @@
         android:id="@+id/tipView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_40"
         app:layout_constraintBottom_toTopOf="@+id/bottom">
 
         <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
