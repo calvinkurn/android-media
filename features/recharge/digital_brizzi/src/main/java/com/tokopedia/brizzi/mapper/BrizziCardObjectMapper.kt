@@ -10,10 +10,14 @@ import javax.inject.Inject
 
 class BrizziCardObjectMapper @Inject constructor() {
 
+    companion object {
+        const val BUTTON_TEXT = "Top-up Sekarang"
+    }
+
     fun mapperBrizzi(brizziCardObject: BrizziCardObject, error: EmoneyInquiryError): EmoneyInquiry {
         return EmoneyInquiry(
                 attributesEmoneyInquiry = AttributesEmoneyInquiry(
-                        "Top-up Sekarang",
+                        BUTTON_TEXT,
                         brizziCardObject.cardNumber,
                         "https://ecs7.tokopedia.net/img/recharge/operator/brizzi.png",
                         brizziCardObject.balance.toInt(),

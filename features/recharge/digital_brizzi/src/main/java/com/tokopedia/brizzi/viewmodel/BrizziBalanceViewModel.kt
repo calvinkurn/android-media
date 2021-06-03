@@ -73,7 +73,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                 override fun OnSuccess(brizziCardObject: BrizziCardObject) {
                     issuerId.postValue(ISSUER_ID_BRIZZI)
-                    val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Ini saldo kamu yang paling baru, ya."))
+                    val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = BRIZZI_SUCCESS_LAST_BALANCE))
                     balanceInquiry.attributesEmoneyInquiry?.let {
                         logBrizzi(0, it.cardNumber, rawLogBrizzi, "success", it.lastBalance.toDouble())
 
@@ -144,7 +144,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
             }
 
             override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Oke, saldo kamu berhasil di-update!"))
+                val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = BRIZZI_SUCCESS_UPDATE_BALANCE))
 
                 if (inquiryIdBrizzi > -1) {
                     balanceInquiry.attributesEmoneyInquiry?.let {
@@ -170,5 +170,8 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
         const val ETOLL_BRIZZI_OPERATOR_ID = "1015"
         const val BRIZZI_TOKEN_EXPIRED = "61"
         const val BRIZZI_CARD_NOT_FOUND = "21"
+
+        const val BRIZZI_SUCCESS_UPDATE_BALANCE = "Oke, saldo kamu berhasil di-update!"
+        const val BRIZZI_SUCCESS_LAST_BALANCE = "Ini saldo kamu yang paling baru, ya."
     }
 }
