@@ -145,4 +145,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             buyerOrderDetailResult.data.actionButtonsUiModel.secondaryActionButtons
         } else emptyList()
     }
+
+    fun restoreBuyerOrderDetailData(savedBuyerOrderDetailData: BuyerOrderDetailUiModel) {
+        _buyerOrderDetailResult.value = Success(savedBuyerOrderDetailData)
+    }
 }

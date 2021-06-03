@@ -198,4 +198,10 @@ class BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
         val actionButtonList = viewModel.getSecondaryActionButtons()
         assert(actionButtonList.isEmpty())
     }
+
+    @Test
+    fun `restoreBuyerOrderDetailData should be able to post restored value to live data`() {
+        viewModel.restoreBuyerOrderDetailData(mockk())
+        assert(viewModel.buyerOrderDetailResult.value is Success)
+    }
 }

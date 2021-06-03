@@ -73,6 +73,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
         private const val CONTENT_CHANGING_ANIMATION_DURATION = 300L
         private const val CONTENT_CHANGING_ANIMATION_DELAY = 45L
+
+        private const val SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY = "buyerOrderDetailSavedInstanceState"
     }
 
     @Inject
@@ -166,7 +168,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         observeAddSingleToCart()
         observeAddMultipleToCart()
         buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
-        loadInitialData()
+        if (savedInstanceState == null) {
+            loadInitialData()
+        } else {
+            restoreFragmentState(savedInstanceState)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -174,6 +180,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         when (requestCode) {
             BuyerOrderDetailConst.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
             BuyerOrderDetailConst.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.buyerOrderDetailResult.value?.let {
+            if (it is Success) {
+                cacheManager.put(SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY, it.data)
+                outState.putString(BuyerOrderDetailConst.PARAM_CACHE_ID, cacheManager.id)
+            }
         }
     }
 
@@ -239,6 +255,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         val productCopy = product.copy(isProcessing = true)
         adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
+    }
+
+    private fun restoreFragmentState(savedInstanceState: Bundle) {
+        val cacheManagerId = savedInstanceState.getString(BuyerOrderDetailConst.PARAM_CACHE_ID).orEmpty()
+        cacheManager.id = cacheManagerId
+        val savedBuyerOrderDetailData = cacheManager.get<BuyerOrderDetailUiModel>(SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY, BuyerOrderDetailUiModel::class.java)
+        if (savedBuyerOrderDetailData != null) {
+            viewModel.restoreBuyerOrderDetailData(savedBuyerOrderDetailData)
+        } else {
+            loadInitialData()
+        }
     }
 
     private fun loadInitialData() {

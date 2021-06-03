@@ -60,6 +60,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     url = ""
             ),
             orderDetailId = "20531238",
+            orderStatusId = "220",
             orderId = "166835036",
             price = "500000",
             priceText = "Rp500.000",
