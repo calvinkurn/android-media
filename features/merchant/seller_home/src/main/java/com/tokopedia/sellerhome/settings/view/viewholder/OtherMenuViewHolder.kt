@@ -447,9 +447,9 @@ class OtherMenuViewHolder(private val itemView: View,
                     txTotalStatsRM.hide()
                 } else {
                     if (userShopInfo.isBeforeOnDate) {
-                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
-                    } else {
                         txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+                    } else {
+                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
                     }
                     txTotalStatsRM.show()
                     txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
