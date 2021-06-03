@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <com.tokopedia.totalamount.TotalAmount xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.tokopedia.totalamount.TotalAmount
         android:id="@+id/mini_cart_total_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-12dp" />
 
-    <ImageView
-        android:visibility="gone"
-        android:id="@+id/iv_test"
-        android:layout_width="1dp"
-        android:layout_height="1dp"/>
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/chat_icon"
+        android:layout_width="0.5dp"
+        android:layout_height="0.5dp"
+        android:visibility="visible" />
 
 </LinearLayout>

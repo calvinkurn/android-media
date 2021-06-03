@@ -22,6 +22,7 @@ import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
 import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
@@ -37,14 +38,14 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
-    private var ivTest: ImageView? = null
+    private var chatIcon: ImageUnify? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
     lateinit var viewModel: MiniCartWidgetViewModel
 
     init {
         view = inflate(context, R.layout.widget_mini_cart, this)
-        ivTest = view?.findViewById(R.id.iv_test)
+        chatIcon = view?.findViewById(R.id.chat_icon)
     }
 
     /*
@@ -90,6 +91,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, ::onMiniCartBottomSheetDismissed)
             }
         }
+        setTotalAmountLoading(true)
         totalAmount?.context?.let { context ->
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)
@@ -100,10 +102,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 )
                 context.startActivity(intent)
             }
-            ivTest?.setImageDrawable(chatIcon)
-        }
-        if (totalAmount?.isTotalAmountLoading == false) {
-            totalAmount?.isTotalAmountLoading = true
+            this.chatIcon?.setImageDrawable(chatIcon)
         }
     }
 
@@ -146,7 +145,35 @@ class MiniCartWidget @JvmOverloads constructor(
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetUiModel.totalProductPrice, false))
             setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetUiModel.totalProductCount))
         }
-        totalAmount?.isTotalAmountLoading = false
+        setTotalAmountLoading(false)
+    }
+
+    private fun setTotalAmountLoading(isLoading: Boolean) {
+        if (isLoading) {
+            if (totalAmount?.isTotalAmountLoading == false) {
+                totalAmount?.isTotalAmountLoading = true
+            }
+        } else {
+            if (totalAmount?.isTotalAmountLoading == true) {
+                totalAmount?.isTotalAmountLoading = false
+            }
+        }
+        setTotalAmountChatIcon()
+    }
+
+    private fun setTotalAmountChatIcon() {
+        totalAmount?.context?.let { context ->
+            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
+            totalAmount?.setAdditionalButton(chatIcon)
+            totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
+                val shopId = viewModel.currentShopIds.value?.firstOrNull() ?: "0"
+                val intent = RouteManager.getIntent(
+                        context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
+                )
+                context.startActivity(intent)
+            }
+            this.chatIcon?.setImageDrawable(chatIcon)
+        }
     }
 
 }
