@@ -54,10 +54,10 @@ class ItemHeaderCardPenaltyViewHolder(view: View,
     private fun setupTextColorDarkMode() {
         with(itemView) {
             if (context.isDarkMode()) {
-                tvTitleTotalPenalty?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tvCountTotalPenalty?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tvPointDeductions?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tvTotalPointDeductions?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tvTitleTotalPenalty?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                tvCountTotalPenalty?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                tvPointDeductions?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                tvTotalPointDeductions?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             }
         }
     }

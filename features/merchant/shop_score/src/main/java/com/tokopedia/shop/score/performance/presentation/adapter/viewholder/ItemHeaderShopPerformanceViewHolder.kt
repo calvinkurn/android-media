@@ -37,7 +37,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         with(itemView) {
             tvPerformanceLevel?.text = getString(R.string.shop_performance_level_header, element?.shopLevel)
 
-            tvPerformanceLevel?.text = if (element?.shopScore != null) element.shopScore else "-"
+            tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore else "-"
 
             ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
                     ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toIntOrZero()))
@@ -45,21 +45,21 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
         setupTextColorDarkMode(element)
     }
 
-    private fun setupTextColorDarkMode(elemet: HeaderShopPerformanceUiModel?) {
+    private fun setupTextColorDarkMode(element: HeaderShopPerformanceUiModel?) {
         with(itemView) {
             if (context.isDarkMode()) {
-                tvPerformanceLevel?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                ic_performance_level_information?.drawable?.let { applyIconUnifyColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }
-                tvTitleShopPerformance?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                ic_shop_score_performance?.drawable?.let { applyIconUnifyColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }
-                tvShopScoreValue?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tvShopScoreMaximum?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tvHeaderShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tvDescShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tvPerformanceLevel?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                ic_performance_level_information?.drawable?.let { applyIconUnifyColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White) }
+                tvTitleShopPerformance?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                ic_shop_score_performance?.drawable?.let { applyIconUnifyColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White) }
+                tvShopScoreValue?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                tvShopScoreMaximum?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                tvHeaderShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                tvDescShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
 
-                if (elemet?.showCardNewSeller == true) {
-                    tvHeaderShopServiceNewSeller?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    tvDescShopServiceNewSeller?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                if (element?.showCardNewSeller == true) {
+                    tvHeaderShopServiceNewSeller?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                    tvDescShopServiceNewSeller?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
                 }
             }
         }

@@ -27,7 +27,7 @@ class ItemStatusPMViewHolder(view: View,
     private fun setupDarkModeColor() {
         with(itemView) {
             if(context.isDarkMode()) {
-                setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                containerPowerMerchant?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             }
         }
     }
