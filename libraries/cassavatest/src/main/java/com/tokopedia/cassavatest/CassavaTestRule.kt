@@ -13,7 +13,15 @@ import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
-class CassavaTestRule(private val isFromNetwork: Boolean = false) : TestRule {
+/**
+ * @param isFromNetwork if True, will use thanos regex validation, if false will use local regex validation
+ *                      Default is False because Thanos still in staging
+ * @param sendValidationResult if True, will send validation result to Thanos API.
+ *                             Default is True, can be False for development purpose
+ */
+class CassavaTestRule(private val isFromNetwork: Boolean = false,
+                      private val sendValidationResult: Boolean = true)
+    : TestRule {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
@@ -36,7 +44,10 @@ class CassavaTestRule(private val isFromNetwork: Boolean = false) : TestRule {
         val cassavaQuery = getQuery(context, queryId, isFromNetwork)
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
         return runBlocking {
-            ValidatorEngine(daoSource).computeCo(validators, cassavaQuery.mode.value)
+            val validationResult = ValidatorEngine(daoSource).computeCo(validators, cassavaQuery.mode.value)
+            if (isFromNetwork && sendValidationResult)
+                sendTestResult(queryId, validationResult)
+            validationResult
         }
     }
 

@@ -63,6 +63,7 @@
     <string name="placeholder_reject_reason">Contoh: Kurir menolak paket saya</string>
     <string name="additional_invalid_resi"><br><font color="#03ac0e">Unggah Sekarang</font></br></string>
     <string name="sale_from_top_ads">Penjualan dari TopAds</string>
+    <string name="sale_from_broadcast_chat">Penjualan dari Broadcast Chat</string>
 
     <string name="chat">Chat</string>
 
