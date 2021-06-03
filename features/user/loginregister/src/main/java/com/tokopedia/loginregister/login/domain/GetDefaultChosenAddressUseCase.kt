@@ -18,7 +18,7 @@ class GetDefaultChosenAddressUseCase @Inject constructor(private val chooseAddre
     }
 
     override suspend fun executeOnBackground(): GetDefaultChosenAddressGqlResponse {
-        return chooseAddressRepo.getDefaultChosenAddress(null, SOURCE_LOGIN)
+        return chooseAddressRepo.getDefaultChosenAddress(null, SOURCE_LOGIN, null)
     }
 
 

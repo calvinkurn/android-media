@@ -51,6 +51,10 @@ object ChooseAddressQuery {
                 longitude
                 postal_code
               }
+              tokonow {
+                shop_id
+                warehouse_id
+              }
             }
             status
             config
@@ -60,8 +64,8 @@ object ChooseAddressQuery {
     """.trimIndent()
 
     val getStateChosenAddress = """
-        query KeroAddrGetStateChosenAddress(${'$'}source: String!){
-          keroAddrGetStateChosenAddress(source: ${'$'}source) {
+        query KeroAddrGetStateChosenAddress(${'$'}source: String!, ${'$'}is_tokonow_request: Boolean!){
+          keroAddrGetStateChosenAddress(source: ${'$'}source, is_tokonow_request: ${'$'}is_tokonow_request) {
             data {
               addr_id
               receiver_name
@@ -74,6 +78,10 @@ object ChooseAddressQuery {
               latitude
               longitude
               postal_code
+            }
+            tokonow {
+              shop_id
+              warehouse_id
             }
             kero_addr_error {
               code
@@ -88,8 +96,8 @@ object ChooseAddressQuery {
     """.trimIndent()
 
     val getDefaultChosenAddress = """
-        query KeroAddrGetDefaultChosenAddress(${'$'}lat_long: String!,  ${'$'}source: String!){
-          keroAddrGetDefaultChosenAddress(input: {lat_long: ${'$'}lat_long, source: ${'$'}source}) {
+        query KeroAddrGetDefaultChosenAddress(${'$'}lat_long: String!,  ${'$'}source: String!,  ${'$'}is_tokonow_request: Boolean!){
+          keroAddrGetDefaultChosenAddress(input: {lat_long: ${'$'}lat_long, source: ${'$'}source}, is_tokonow_request: ${'$'}is_tokonow_request) {
             data {
               addr_id
               receiver_name
@@ -108,6 +116,10 @@ object ChooseAddressQuery {
               country
               latitude
               longitude
+            }
+            tokonow {
+              shop_id
+              warehouse_id
             }
             kero_addr_error {
               code

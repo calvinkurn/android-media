@@ -8,7 +8,8 @@ data class StateChooseAddressParam(
         val latitude: String,
         val longitude: String,
         val districtId: Int,
-        val postalCode: String
+        val postalCode: String,
+        val isTokonow: Boolean
 ) {
 
     fun toMap(): Map<Any, Any> = mapOf(
@@ -19,6 +20,7 @@ data class StateChooseAddressParam(
             "district" to districtId,
             "latitude" to latitude,
             "longitude" to longitude,
-            "postal_code" to postalCode
+            "postal_code" to postalCode,
+            "is_tokonow_request" to isTokonow
     )
 }
