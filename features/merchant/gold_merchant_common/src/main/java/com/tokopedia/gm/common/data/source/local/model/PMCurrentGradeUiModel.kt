@@ -5,8 +5,6 @@ package com.tokopedia.gm.common.data.source.local.model
  */
 
 data class PMCurrentGradeUiModel(
-        val shopLevel: Int = 0,
-        val shopScore: Int = 0,
         val gradeName: String = "",
         val imgBadgeUrl: String = "",
         val backgroundUrl: String = ""

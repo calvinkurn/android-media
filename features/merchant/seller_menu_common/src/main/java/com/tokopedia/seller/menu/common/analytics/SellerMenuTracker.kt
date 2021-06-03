@@ -338,8 +338,8 @@ class SellerMenuTracker(
                 TrackAppUtils.EVENT_CATEGORY to MY_SHOP,
                 TrackAppUtils.EVENT_ACTION to CLICK_SHOP_SCORE_PERFORMANCE,
                 TrackAppUtils.EVENT_LABEL to if (isNewSeller) "$NEW_SELLER ${getShopType()}" else getShopType(),
-                KEY_CURRENT_SITE to PHYSICAL_GOODS,
-                KEY_BUSINESS_UNIT to TOKOPEDIA_MARKET_PALCE,
+                KEY_CURRENT_SITE to TOKOPEDIA_MARKET_PALCE,
+                KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
                 KEY_USER_ID to userSession.shopId
         )
         analytics.sendGeneralEvent(mapData)
@@ -351,8 +351,8 @@ class SellerMenuTracker(
                 TrackAppUtils.EVENT_CATEGORY to MY_SHOP,
                 TrackAppUtils.EVENT_ACTION to IMPRESSION_SHOP_SCORE_PERFORMANCE,
                 TrackAppUtils.EVENT_LABEL to if (isNewSeller) "$NEW_SELLER ${getShopType()}" else getShopType(),
-                KEY_CURRENT_SITE to PHYSICAL_GOODS,
-                KEY_BUSINESS_UNIT to TOKOPEDIA_MARKET_PALCE,
+                KEY_CURRENT_SITE to TOKOPEDIA_MARKET_PALCE,
+                KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
                 KEY_USER_ID to userSession.shopId
         )
         analytics.sendGeneralEvent(mapData)
@@ -394,12 +394,10 @@ class SellerMenuTracker(
     }
 
     private fun getShopStatus(shopInfo: SettingShopInfoUiModel): String {
-        return when(shopInfo.shopStatusUiModel?.shopType) {
+        return when(shopInfo.shopStatusUiModel?.userShopInfoWrapper?.shopType) {
             is PowerMerchantStatus.Active -> SHOP_STATUS_ACTIVE
             is PowerMerchantStatus.NotActive -> SHOP_STATUS_NOT_ACTIVE
             is RegularMerchant.NeedUpgrade -> SHOP_STATUS_UPGRADE
-            is RegularMerchant.NeedVerification -> SHOP_STATUS_VERIFICATION
-            is PowerMerchantStatus.OnVerification -> SHOP_STATUS_ON_VERIFICATION
             is ShopType.OfficialStore -> SHOP_STATUS_OS
             else -> UNDEFINED
         }

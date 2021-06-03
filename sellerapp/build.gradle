@@ -205,7 +205,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.deviceFingerprint)
-    implementation project(rootProject.ext.libraries.workManagerUtil)
     implementation project(rootProject.ext.libraries.utils)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.features.developerOptions)

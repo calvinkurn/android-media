@@ -32,6 +32,9 @@ public class ServiceData implements Parcelable {
     @SerializedName("texts")
     @Expose
     private ServiceTextData texts;
+    @SerializedName("features")
+    @Expose
+    private FeaturesData features;
     @SerializedName("error")
     @Expose
     private ErrorServiceData error;
@@ -177,5 +180,13 @@ public class ServiceData implements Parcelable {
 
     public void setMerchantVoucherData(MerchantVoucherData merchantVoucherData) {
         this.merchantVoucherData = merchantVoucherData;
+    }
+
+    public FeaturesData getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(FeaturesData features) {
+        this.features = features;
     }
 }
