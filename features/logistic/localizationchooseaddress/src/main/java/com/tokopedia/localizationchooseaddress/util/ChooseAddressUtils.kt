@@ -109,10 +109,10 @@ object ChooseAddressUtils {
     }
 
     fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
-                                             postalCode: String) {
+                                             postalCode: String, shopId: String, warehouseId: String) {
         if (isRollOutUser(context)) {
             val chooseAddressPref = ChooseAddressSharePref(context)
-            val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, "", "")
+            val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, shopId, warehouseId)
             chooseAddressPref.setLocalCache(localData)
         }
     }
