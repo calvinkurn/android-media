@@ -71,8 +71,10 @@
 
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
+    <string name="title_price_recommendation_applied">Rekomendasi harga sudah diterapkan</string>
     <string name="title_price_recommendation_bottom_sheet">Rekomendasi harga pasar</string>
     <string name="label_price_recommendation_description">Harga rata-rata %1s - %2s</string>
+    <string name="label_price_recommendation_price_description">Rekomendasi ini untuk &lt;b>“%1s”&lt;/b> </string>
     <string name="label_price_recommendation_apply">Terapkan</string>
     <string name="label_price_recommendation_next">Pelajari Selengkapnya</string>
     <string-array name="array_price_recommendation_content_titles">

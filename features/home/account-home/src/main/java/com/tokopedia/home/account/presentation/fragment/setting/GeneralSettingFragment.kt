@@ -164,7 +164,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     //Request to hide Dark Mode regardless RemoteConfig
     private fun showDarkModeSetting(): Boolean {
-        return false
+        val showDarkModeSetting = false
+        return showDarkModeSetting
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

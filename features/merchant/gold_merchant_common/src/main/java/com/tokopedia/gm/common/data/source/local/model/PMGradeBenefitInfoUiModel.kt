@@ -11,8 +11,5 @@ data class PMGradeBenefitInfoUiModel(
         val currentPMGrade: PMCurrentGradeUiModel? = null,
         val currentPMBenefits: List<PMGradeBenefitUiModel>? = null,
         val nextPMGrade: PMNextGradeUiModel? = null,
-        val nextPMBenefits: List<PMGradeBenefitUiModel>? = null,
-        val potentialPmGrade: PMPotentialGradeUiModel? = null,
-        val potentialPMBenefits: List<PMGradeBenefitUiModel>? = null,
-        val pmGradeBenefitList: List<PMGradeWithBenefitsUiModel>? = null
+        val nextPMBenefits: List<PMGradeBenefitUiModel>? = null
 )

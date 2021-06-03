@@ -78,6 +78,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
 
     //Request to hide Dark Mode regardless RemoteConfig
     private fun showDarkModeSetting(): Boolean {
-        return false
+        val showDarkModeSetting = false
+        return showDarkModeSetting
     }
 }
