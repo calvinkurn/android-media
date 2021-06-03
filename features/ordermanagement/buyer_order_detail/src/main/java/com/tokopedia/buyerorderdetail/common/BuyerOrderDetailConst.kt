@@ -14,10 +14,6 @@ object BuyerOrderDetailConst {
     const val ACTION_BUTTON_KEY_SEE_SIMILAR_PRODUCTS = "see_similar_products"
     const val ACTION_BUTTON_KEY_GIVE_REVIEW = "give_review"
 
-    const val SECTION_HEADER_PRODUCT_LIST = "Daftar Produk"
-    const val SECTION_HEADER_SHIPMENT_INFO = "Info Pengiriman"
-    const val SECTION_HEADER_PAYMENT_INFO = "Rincian Pembayaran"
-
     const val PARAM_BODY_CANCEL_REQUESTED = "body_cancel_requested"
     const val PARAM_CACHE_ID = "cache_id"
     const val PARAM_CACHE_MANAGER_ID = "cache_manager_id"

@@ -29,4 +29,7 @@
     <string name="label_see">Lihat</string>
     <string name="label_pre_order_duration">PO: %1$s</string>
     <string name="error_message_please_reload_order_detail">Terjadi kesalahan, silahkan muat ulang detil pesanan!</string>
+    <string name="header_section_product_list">Daftar Produk</string>
+    <string name="header_section_shipment_info">Info Pengiriman</string>
+    <string name="header_section_payment_into">Rincian Pembayaran</string>
 </resources>

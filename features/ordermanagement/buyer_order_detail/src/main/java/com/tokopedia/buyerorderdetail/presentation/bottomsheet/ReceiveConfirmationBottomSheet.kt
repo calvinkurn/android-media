@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
-import com.tokopedia.buyerorderdetail.common.Utils
+import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -120,7 +120,9 @@ class ReceiveConfirmationBottomSheet(
     }
 
     fun dismiss() {
-        bottomSheet.dismiss()
+        if (bottomSheet.isAdded) {
+            bottomSheet.dismiss()
+        }
     }
 
     fun finishLoading() {

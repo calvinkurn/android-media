@@ -4,7 +4,7 @@ import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
-import com.tokopedia.buyerorderdetail.common.Utils
+import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_awb.view.*
 

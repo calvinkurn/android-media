@@ -52,6 +52,8 @@ class SecondaryActionButtonBottomSheet(
     }
 
     fun dismiss() {
-        bottomSheet.dismiss()
+        if (bottomSheet.isAdded) {
+            bottomSheet.dismiss()
+        }
     }
 }

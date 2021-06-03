@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorderdetail.common
+package com.tokopedia.buyerorderdetail.common.utils
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -12,8 +12,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerType
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 object Utils {
 

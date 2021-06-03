@@ -5,7 +5,7 @@ import android.view.View
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
-import com.tokopedia.buyerorderdetail.common.Utils
+import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info_header.view.*

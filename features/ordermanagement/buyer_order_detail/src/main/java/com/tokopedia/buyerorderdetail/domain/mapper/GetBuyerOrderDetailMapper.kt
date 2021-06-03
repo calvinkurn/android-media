@@ -1,12 +1,15 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
+import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import java.lang.StringBuilder
 import javax.inject.Inject
 
-class GetBuyerOrderDetailMapper @Inject constructor() {
+class GetBuyerOrderDetailMapper @Inject constructor(
+        private val resourceProvider: ResourceProvider
+) {
     fun mapDomainModelToUiModel(buyerOrderDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail): BuyerOrderDetailUiModel {
         return BuyerOrderDetailUiModel(
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
@@ -34,7 +37,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
 
     private fun mapPaymentInfoUiModel(payment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Payment, cashbackInfo: String): PaymentInfoUiModel {
         return PaymentInfoUiModel(
-                headerUiModel = mapPlainHeader(BuyerOrderDetailConst.SECTION_HEADER_PAYMENT_INFO),
+                headerUiModel = mapPlainHeader(resourceProvider.getPaymentInfoSectionHeader()),
                 paymentMethodInfoItem = mapPaymentMethodInfoItem(payment.paymentMethod),
                 paymentInfoItems = mapPaymentInfoItems(payment.paymentDetails),
                 paymentGrandTotal = mapPaymentGrandTotal(payment.paymentAmount),
@@ -54,7 +57,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
                 awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
                 courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
                 courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
-                headerUiModel = mapPlainHeader(BuyerOrderDetailConst.SECTION_HEADER_SHIPMENT_INFO),
+                headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
                 receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
                 ticker = mapTicker(shipment.shippingInfo)
         )
@@ -207,7 +210,7 @@ class GetBuyerOrderDetailMapper @Inject constructor() {
 
     private fun mapProductListHeaderUiModel(shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel.ProductListHeaderUiModel {
         return ProductListUiModel.ProductListHeaderUiModel(
-                header = BuyerOrderDetailConst.SECTION_HEADER_PRODUCT_LIST,
+                header = resourceProvider.getProductListSectionHeader(),
                 orderId = orderId,
                 shopBadgeUrl = shop.badgeUrl,
                 shopName = shop.shopName,
