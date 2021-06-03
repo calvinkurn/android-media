@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -35,6 +36,9 @@ class MiniCartWidget @JvmOverloads constructor(
 
     @Inject
     lateinit var miniCartListBottomSheet: MiniCartListBottomSheet
+
+    @Inject
+    lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
 
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
@@ -68,18 +72,38 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun initializeViewModel(fragment: Fragment) {
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
-        viewModel.miniCartWidgetUiModel.observe(fragment.viewLifecycleOwner, {
-            renderWidget(it)
-        })
+        observeGlobalEvent(fragment)
+        observeMiniCartWidgetUiModel(fragment)
+    }
+
+    private fun observeGlobalEvent(fragment: Fragment) {
         viewModel.globalEvent.observe(fragment.viewLifecycleOwner, {
             when (it.state) {
+                GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
+                    miniCartListBottomSheet.dismiss()
+                    fragment.context?.let {
+                        globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalErrorBottomSheet.TYPE_FAILED_TO_LOAD) {
+                            showMiniCartListBottomSheet(fragment)
+                        }
+                    }
+                }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
 
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
+                    fragment.context?.let {
+                        globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalErrorBottomSheet.TYPE_FAILED_TO_LOAD) {
 
+                        }
+                    }
                 }
             }
+        })
+    }
+
+    private fun observeMiniCartWidgetUiModel(fragment: Fragment) {
+        viewModel.miniCartWidgetUiModel.observe(fragment.viewLifecycleOwner, {
+            renderWidget(it)
         })
     }
 
@@ -88,22 +112,18 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.let {
             it.enableAmountChevron(true)
             it.amountChevronView.setOnClickListener {
-                miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, ::onMiniCartBottomSheetDismissed)
+                showMiniCartListBottomSheet(fragment)
+            }
+            it.amountCtaView.setOnClickListener {
+                viewModel.updateCart(true)
             }
         }
         setTotalAmountLoading(true)
-        totalAmount?.context?.let { context ->
-            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
-            totalAmount?.setAdditionalButton(chatIcon)
-            totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
-                val shopId = viewModel.currentShopIds.value?.firstOrNull() ?: "0"
-                val intent = RouteManager.getIntent(
-                        context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
-                )
-                context.startActivity(intent)
-            }
-            this.chatIcon?.setImageDrawable(chatIcon)
-        }
+        setTotalAmountChatIcon()
+    }
+
+    private fun showMiniCartListBottomSheet(fragment: Fragment) {
+        miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, ::onMiniCartBottomSheetDismissed)
     }
 
     private fun onMiniCartBottomSheetDismissed() {

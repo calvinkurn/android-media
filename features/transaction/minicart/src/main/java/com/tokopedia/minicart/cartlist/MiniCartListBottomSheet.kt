@@ -61,6 +61,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
+    fun dismiss() {
+        bottomSheet?.dismiss()
+    }
+
     fun initializeViewModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         observeGlobalEvent(viewModel, lifecycleOwner)
@@ -74,7 +78,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     hideProgressLoading()
                     val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
                             ?: ""
-                    val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_label_cancel) ?: ""
+                    val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_label_cancel)
+                            ?: ""
                     viewModel.getCartList()
                     showToaster(message, ctaText) {
                         viewModel.undoDeleteCartItems()
@@ -103,7 +108,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun initializeCartData(viewModel: MiniCartWidgetViewModel) {
         showLoading()
-        viewModel.getCartList()
+        viewModel.getCartList(true)
     }
 
     private fun initializeView(context: Context, fragmentManager: FragmentManager, onDismiss: () -> Unit) {

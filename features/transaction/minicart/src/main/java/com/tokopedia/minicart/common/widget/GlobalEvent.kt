@@ -5,6 +5,7 @@ data class GlobalEvent(
         var data: Any? = null
 ) {
     companion object {
+        const val STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET = 1
         const val STATE_SUCCESS_DELETE_CART_ITEM = 10
         const val STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM = 11
         const val STATE_FAILED_DELETE_CART_ITEM = 12

@@ -62,7 +62,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         })
     }
 
-    fun getCartList() {
+    fun getCartList(isFirstLoad: Boolean = false) {
         val shopIds = currentShopIds.value ?: emptyList()
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
@@ -70,8 +70,8 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     _miniCartListUiModel.value = miniCartListViewHolderMapper.mapUiModel(it)
                 },
                 onError = {
-                    _miniCartListUiModel.value = MiniCartListUiModel().apply {
-                        title = "Belanjaanmu di TokoNOW!"
+                    if (isFirstLoad) {
+                        _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET)
                     }
                 }
         )
