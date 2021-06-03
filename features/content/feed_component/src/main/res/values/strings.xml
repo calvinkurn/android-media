@@ -119,11 +119,10 @@
 
     <!--Follow Functionalities ASSETS-->
     <string name="feed_component_unfollow_success_toast">Oops, tidak bisa unfollow toko.</string>
-    <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> • </b></font> ]]></string>
+    <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> · </b></font> ]]></string>
     <string name="kol_action_follow_color"><![CDATA["<font color='#03AC0E'><b>Follow</b></font> ]]></string>
-    <string name="kol_Action_following_color"><![CDATA["<font color='#6D7588'><b>following</b></font> ]]></string>
+    <string name="kol_Action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>
     <string name="feed_header_follow_count_text">Rekomendasi • %s Followers</string>
-
 
     <!--REPORT BOTTOM SHEETS ASSETS-->
     <string name="feed_component_report_Header">Kenapa kamu ingin laporkan postingan ini?</string>
@@ -158,7 +157,10 @@
     <string name="feed_common_reason_desc_others">Lainnya</string>
 
     <!--SHARE-->
-    <string name="feed_share_default_text">Eh, [%s] baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+    <string name="feed_share_default_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
+
+    <!--POST-->
+    <string name="feed_post_tag_text">Lihat Produk</string>
 
 
 </resources>

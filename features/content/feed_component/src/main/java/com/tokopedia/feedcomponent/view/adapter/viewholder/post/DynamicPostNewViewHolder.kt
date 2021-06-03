@@ -12,17 +12,21 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
 
-class DynamicPostNewViewHolder(itemView: View, private val userSession: UserSessionInterface,
-                               private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
-                               private val videoListener: VideoViewHolder.VideoViewListener,
-                               private val gridItemListener: GridPostAdapter.GridItemListener)
-    : AbstractViewHolder<DynamicPostUiModel>(itemView) {
+open class DynamicPostNewViewHolder(
+    itemView: View, private val userSession: UserSessionInterface,
+    private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
+    private val videoListener: VideoViewHolder.VideoViewListener,
+    private val gridItemListener: GridPostAdapter.GridItemListener
+) : AbstractViewHolder<DynamicPostUiModel>(itemView) {
 
-    private val postDynamicView = itemView.findViewById<PostDynamicViewNew>(R.id.item_post_dynamic_view)
+    private val postDynamicView =
+        itemView.findViewById<PostDynamicViewNew>(R.id.item_post_dynamic_view)
 
     companion object {
         const val PAYLOAD_ANIMATE_LIKE = 47
         const val PAYLOAD_ANIMATE_FOLLOW = 7
+        const val ANIMATE_COUNTER = 77
+
         @LayoutRes
         val LAYOUT = R.layout.item_dynamic_post_new
     }
@@ -35,6 +39,7 @@ class DynamicPostNewViewHolder(itemView: View, private val userSession: UserSess
         when(payloads.firstOrNull() as Int){
             PAYLOAD_ANIMATE_LIKE -> postDynamicView.bindLike(element.feedXCard)
             PAYLOAD_ANIMATE_FOLLOW -> postDynamicView.bindFollow(element.feedXCard)
+            ANIMATE_COUNTER -> postDynamicView.bindItems(element.feedXCard)
         }
     }
 

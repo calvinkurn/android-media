@@ -59,8 +59,6 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -579,7 +577,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, type: Boolean) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -591,7 +589,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
-    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, imageUrl: String) {
+    override fun onShareClick(
+        positionInFeed: Int,
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
+        imageUrl: String,
+        typeASGC: Boolean
+    ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
                 override fun onShareItemClicked(packageName: String) {
@@ -777,20 +783,28 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
         feedAnalytics.eventShopPageClickReadMore(
-                trackingPostModel.postId.toString(),
-                trackingPostModel.activityName,
-                trackingPostModel.mediaType
+            trackingPostModel.postId.toString(),
+            trackingPostModel.activityName,
+            trackingPostModel.mediaType
         )
+    }
+
+    override fun onReadMoreClicked(postId: String) {
     }
 
     override fun onImageClicked(activityId: String) {
     }
 
-    override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener) {
+    override fun onTagClicked(
+        postId: Int,
+        products: List<FeedXProduct>,
+        listener: DynamicPostViewHolder.DynamicPostListener
+    ) {
     }
 
-    private fun showBottomSheetSellerMigration(){
-        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+    private fun showBottomSheetSellerMigration() {
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state =
+            BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun hideBottomSheetSellerMigration(){

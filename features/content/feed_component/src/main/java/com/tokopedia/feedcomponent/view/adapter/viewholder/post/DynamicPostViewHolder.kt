@@ -545,13 +545,21 @@ open class DynamicPostViewHolder(v: View,
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean)
+        fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, type: Boolean = false)
 
         fun onCommentClick(positionInFeed: Int, id: Int)
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
 
-        fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, imageUrl: String)
+        fun onShareClick(
+            positionInFeed: Int,
+            id: Int,
+            title: String,
+            description: String,
+            url: String,
+            imageUrl: String,
+            postTypeASGC: Boolean = false
+        )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
@@ -561,7 +569,11 @@ open class DynamicPostViewHolder(v: View,
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
 
-        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String)
+        fun onPostTagItemBuyClicked(
+            positionInFeed: Int,
+            postTagItem: PostTagItem,
+            authorType: String
+        )
 
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
 
@@ -569,6 +581,8 @@ open class DynamicPostViewHolder(v: View,
 
         fun onImageClicked(activityId: String)
 
-        fun onTagClicked(postId: Int, products: List<FeedXProduct>,listener: DynamicPostListener)
+        fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostListener)
+
+        fun onReadMoreClicked(postId: String)
     }
 }

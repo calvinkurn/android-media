@@ -848,7 +848,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, type: Boolean) {
         profileAnalytics.eventClickLike(isOwner, userId.toString())
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
@@ -862,17 +862,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
-    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
-                              url: String, imageUrl: String) {
+    override fun onShareClick(
+        positionInFeed: Int, id: Int, title: String, description: String,
+        url: String, imageUrl: String, typeASGC: Boolean
+    ) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
             checkShouldChangeUsername(url) {
                 linkerData = showShareBottomSheet(
-                        ProfileHeaderViewModel(link = url),
-                        description,
-                        title,
-                        null
+                    ProfileHeaderViewModel(link = url),
+                    description,
+                    title,
+                    null
                 )
             }
         }
@@ -1123,22 +1125,29 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
         feedAnalytics.eventProfileClickReadMore(
-                isOwner,
-                trackingPostModel.postId.toString(),
-                trackingPostModel.activityName,
-                trackingPostModel.mediaType
+            isOwner,
+            trackingPostModel.postId.toString(),
+            trackingPostModel.activityName,
+            trackingPostModel.mediaType
         )
+    }
+
+    override fun onReadMoreClicked(postId: String) {
     }
 
     override fun onImageClicked(activityId: String) {
     }
 
-    override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener) {
+    override fun onTagClicked(
+        postId: Int,
+        products: List<FeedXProduct>,
+        listener: DynamicPostViewHolder.DynamicPostListener
+    ) {
     }
 
     override fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel) {
         getPostStatisticBottomSheet()
-                .setPostStatisticCommissionModel(statisticCommissionModel)
+            .setPostStatisticCommissionModel(statisticCommissionModel)
     }
 
     override fun onErrorGetPostStatistic(error: Throwable, activityId: String, productIds: List<String>) {

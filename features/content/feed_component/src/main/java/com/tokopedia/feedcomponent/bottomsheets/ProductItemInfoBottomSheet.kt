@@ -25,7 +25,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private lateinit var listProducts: List<FeedXProduct>
     private lateinit var listener: DynamicPostViewHolder.DynamicPostListener
     private var postId: Int = 0
-
+    var closeClicked: (() -> Unit)? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val contentView = View.inflate(context, R.layout.item_posttag, null)
@@ -40,13 +40,19 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         rvPosttag.show()
         rvPosttag.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager =
-           LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvPosttag.isNestedScrollingEnabled = false
         rvPosttag.layoutManager = layoutManager
         rvPosttag.setPadding(0, 0, 0, 0)
-        rvPosttag.adapter = PostTagAdapter(mapPostTag(listProducts),
-                PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext())))
+        rvPosttag.adapter = PostTagAdapter(
+            mapPostTag(listProducts),
+            PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext()))
+        )
         (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
+        setCloseClickListener {
+            closeClicked?.invoke()
+            dismiss()
+        }
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<BasePostTagViewModel> {

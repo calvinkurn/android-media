@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,7 @@ import com.tokopedia.feedcomponent.bottomsheets.ReportBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
@@ -56,6 +58,7 @@ import com.tokopedia.feedcomponent.util.util.copy
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder.Companion.ANIMATE_COUNTER
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder.Companion.PAYLOAD_ANIMATE_LIKE
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -244,6 +247,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val OPEN_PLAY_CHANNEL = 1858
         const val REQUEST_LOGIN = 345
         private const val KOL_COMMENT_CODE = 13
+        private const val TYPE = "text/plain"
 
 
         private val TAG = FeedPlusFragment::class.java.simpleName
@@ -593,12 +597,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
         mainContent = parentView.findViewById(R.id.main)
         newFeed = parentView.findViewById(R.id.layout_new_feed)
-
         prepareView()
         return parentView
-
     }
-
 
     private fun prepareView() {
         adapter.itemTreshold = 1
@@ -625,7 +626,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         when (newState) {
                             RecyclerView.SCROLL_STATE_IDLE -> {
                                 var position = 0
-                                val item: Visitable<*>
                                 when {
                                     itemIsFullScreen() -> {
                                         position = layoutManager?.findLastVisibleItemPosition() ?: 0
@@ -635,20 +635,25 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                             layoutManager?.findFirstCompletelyVisibleItemPosition()
                                                 ?: 0
                                     }
-                                    layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
-                                        position =
-                                            layoutManager?.findLastCompletelyVisibleItemPosition()
-                                                ?: 0
-                                    }
+//                                    layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
+//                                        position =
+//                                            layoutManager?.findLastCompletelyVisibleItemPosition()
+//                                                ?: 0
+//                                    }
                                 }
 
-                                item = adapter.getlist()[position]
+                                val item: Visitable<*> = adapter.getlist()[position]
 
-                                if (item is DynamicPostViewModel) {
-                                    if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
+                                if (item is DynamicPostUiModel) {
+                                    //to show timer
+                                    if (item.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
+                                        Log.d(
+                                            "bhoo",
+                                            item.feedXCard.author.name + "  " + item.feedXCard.text
+                                        )
                                         adapter.notifyItemChanged(
                                             position,
-                                            DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER
+                                            ANIMATE_COUNTER
                                         )
                                     }
                                 }
@@ -658,9 +663,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
-
             }
-
         })
     }
 
@@ -788,7 +791,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 FeedEnhancedTracking.Promotion.TRACKING_EMPTY
             )
         )
-
         analytics.eventTrackingEnhancedEcommerce(
             FeedEnhancedTracking.getClickTracking(listTopAds, loginIdInt)
         )
@@ -1307,10 +1309,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.AVATAR)
         feedAnalytics.eventClickFeedAvatar(
-            activityId.toString(),
-            activityName,
-            followCta.authorID,
-            followCta.authorType
+            activityId.toString()
         )
     }
 
@@ -1321,7 +1320,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (userSession.isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
                 val userIdInt = id.toIntOrZero()
-
                 if (isFollow) {
                     onUnfollowKolClicked(positionInFeed, userIdInt)
                 } else {
@@ -1399,7 +1397,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, type: Boolean) {
+        feedAnalytics.eventClickLikeButton(id.toString(), type, isLiked)
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -1408,21 +1407,31 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onCommentClick(positionInFeed: Int, id: Int) {
+        feedAnalytics.eventClickOpenComment(id.toString())
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(
         positionInFeed: Int, id: Int, title: String,
         description: String, url: String,
-        imageUrl: String
+        imageUrl: String,
+        typeASGC: Boolean
     ) {
         activity?.let {
+            val urlString = if (typeASGC) {
+                String.format(getString(R.string.feed_share_asgc_weblink), id.toString())
+            } else {
+                String.format(getString(R.string.feed_share_weblink), id.toString())
+
+            }
             shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
-                .setUri(url)
+                .setUri(urlString)
+                .setDeepLink(url)
                 .setType(LinkerData.FEED_TYPE)
+                .setDesktopUrl(urlString)
                 .build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
             LinkerManager.getInstance().executeShareRequest(
@@ -1433,7 +1442,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             )
         }
-        trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
+        feedAnalytics.eventClickOpenShare(id.toString())
     }
 
     override fun onStatsClick(
@@ -1457,17 +1466,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         postTagItem: PostTagItem,
         itemPosition: Int
     ) {
-        onGoToLink(redirectUrl)
-        if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
-            val (id, _, header, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
-            postTagAnalytics.trackClickPostTagFeed(
-                id,
-                postTagItem,
-                itemPosition,
-                header.followCta.authorType,
-                trackingPostModel
-            )
-        }
     }
 
     override fun onPostTagItemBSClick(
@@ -1476,6 +1474,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         postTagItem: FeedXProduct,
         itemPosition: Int
     ) {
+
+        if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
+            val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
+            //  val (id, _, header, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostUiModel
+
+            feedAnalytics.eventClickBSitem(item.feedXCard.id, item.feedXCard.products, itemPosition)
+
+        }
         onGoToLink(redirectUrl)
     }
 
@@ -1630,6 +1636,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
+    override fun onReadMoreClicked(postId: String) {
+        feedAnalytics.eventClickReadMoreNew(postId)
+    }
+
     override fun onImageClicked(activityId: String) {
         feedAnalytics.eventImageClicked(activityId)
     }
@@ -1639,7 +1649,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
         products: List<FeedXProduct>,
         listener: DynamicPostViewHolder.DynamicPostListener
     ) {
-        ProductItemInfoBottomSheet().show(childFragmentManager, products, listener, postId)
+        feedAnalytics.eventTagClicked(postId.toString())
+        val sheet = ProductItemInfoBottomSheet()
+        sheet.show(childFragmentManager, products, listener, postId)
+        sheet.closeClicked = {
+            feedAnalytics.eventClickCloseProductInfoSheet(postId.toString())
+
+        }
     }
 
     override fun onGridItemClick(
@@ -1975,10 +1991,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
             if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
                 val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
                 item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
-                adapter.notifyItemChanged(
-                    rowNumber,
-                    DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                )
+                if (!item.feedXCard.followers.isFollowed) {
+                    adapter.notifyItemChanged(
+                        rowNumber,
+                        DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                    )
+                }
             }
 
             if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
@@ -2448,7 +2466,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun getIntent(): Intent {
         return Intent().apply {
             action = Intent.ACTION_SEND
-            type = "plain/text"
+            type = TYPE
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_REFERRER, shareData.uri)
             putExtra(Intent.EXTRA_TITLE, shareData.name)

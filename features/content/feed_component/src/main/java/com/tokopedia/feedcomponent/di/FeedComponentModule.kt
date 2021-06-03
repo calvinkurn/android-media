@@ -7,8 +7,10 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.domain.SUSPEND_GRAPHQL_REPOSITORY
 import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase.Companion.SEARCH_PROFILE_QUERY
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
@@ -38,5 +40,9 @@ class FeedComponentModule {
 
     @Provides
     @Named(SUSPEND_GRAPHQL_REPOSITORY)
-    fun provideSuspendGraphqlInteractor(): GraphqlRepository = Interactor.getInstance().graphqlRepository
+    fun provideSuspendGraphqlInteractor(): GraphqlRepository =
+        GraphqlInteractor.getInstance().graphqlRepository
+
+    @Provides
+    fun getIrisSession(@ApplicationContext context: Context): IrisSession = IrisSession(context)
 }

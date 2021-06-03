@@ -1,8 +1,13 @@
 package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CONTENT
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.MARKETPLACE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
@@ -10,15 +15,14 @@ import com.tokopedia.track.TrackAppUtils.*
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import kotlin.collections.HashMap
-import kotlin.collections.List
+
 /**
  * Created by jegul on 2019-08-28.
  */
 class FeedAnalyticTracker
 @Inject constructor(
-        private val trackingQueue: TrackingQueue,
-        private val userSessionInterface: UserSessionInterface
+    private val trackingQueue: TrackingQueue,
+    private val userSessionInterface: UserSessionInterface
 ) {
 
     private companion object {
@@ -51,12 +55,12 @@ class FeedAnalyticTracker
         const val CLICK_SOCIAL_COMMERCE = "clickSocialCommerce"
         const val OPEN_SCREEN = "openScreen"
         const val ADD_TO_CART = "addToCart"
+        const val CONTENT = "content"
 
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
         const val PRODUCT_CLICK = "productClick"
         const val PRODUCT_VIEW = "productView"
-        const val ECOMMERCE = "ecommerce"
         const val ACTION_FIELD = "actionField"
 
         const val ADD = "add"
@@ -118,13 +122,16 @@ class FeedAnalyticTracker
         const val ACTION_CLICK_MEDIAPREVIEW_AVATAR = "click - %s - media preview - %s"
         const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
         const val FORMAT_TWO_PARAM = "%s - %s"
+        const val FORMAT_THREE_PARAM = "%s - %s - %s"
 
 
         object Field {
             object List {
                 const val POSTED_PRODUCT = "produk di post"
-                const val USER_PROFILE_PAGE_POSTED_PRODUCT = "${Screen.USER_PROFILE_PAGE} - $POSTED_PRODUCT"
-                const val USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT = "${Screen.USER_PROFILE_PAGE_DETAIL} - $POSTED_PRODUCT"
+                const val USER_PROFILE_PAGE_POSTED_PRODUCT =
+                    "${Screen.USER_PROFILE_PAGE} - $POSTED_PRODUCT"
+                const val USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT =
+                    "${Screen.USER_PROFILE_PAGE_DETAIL} - $POSTED_PRODUCT"
                 const val FEED_POSTED_PRODUCT = "${Screen.FEED} - $POSTED_PRODUCT"
             }
         }
@@ -142,6 +149,7 @@ class FeedAnalyticTracker
         const val INTEREST_PICK_DETAIL = "/feed/interest-pick"
         const val HOME_FEED_SCREEN = "/feed"
         const val ONBOARDING_PROFILE_RECOM = "/feed/profile-recom"
+        const val MARKETPLACE = "tokopediamarketplace"
 
         const val SCREEN_DIMENSION_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
         const val SCREEN_DIMENSION_IS_FEED_EMPTY = "isFeedEmpty"
@@ -184,20 +192,23 @@ class FeedAnalyticTracker
         const val PROFILE_FOLLOW_RECOM_SHOP_RECOM = "/feed follow recom - shop recommendation"
         const val PROFILE_FOLLOW_RECOM_USER_RECOM = "/feed follow recom - user recommendation"
         const val PROFILE_FOLLOW_RECOM_RECOM = "/feed follow recom - {usertype} recommendation"
-        const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER ="{usertype}"
+        const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER = "{usertype}"
     }
 
-    private fun getIrisSessionId(): String = "1234"
+    @Inject
+    lateinit var irisSession: IrisSession
+
+    private fun getIrisSessionId(): String = irisSession.getSessionId()
 
 
     //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
     //    screenshot 47
     fun eventContentDetailClickShopNameAvatar(activityId: String, shopId: String) {
         trackGeneralEvent(
-                Event.CLICK_SOCIAL_COMMERCE,
-                if (shopId.equals(userSessionInterface.shopId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
-                Action.CLICK_CONTENT_DETAIL_SHOP,
-                String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+            Event.CLICK_SOCIAL_COMMERCE,
+            if (shopId.equals(userSessionInterface.shopId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
+            Action.CLICK_CONTENT_DETAIL_SHOP,
+            String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
         )
     }
 
@@ -205,10 +216,10 @@ class FeedAnalyticTracker
     //    screenshot 47
     fun eventContentDetailClickAffiliateNameAvatar(activityId: String, userId: String) {
         trackGeneralEvent(
-                Event.CLICK_SOCIAL_COMMERCE,
-                if (userId.equals(userSessionInterface.userId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
-                Action.CLICK_CONTENT_DETAIL_AFFILIATE,
-                String.format(Action.FORMAT_TWO_PARAM, userId, activityId)
+            Event.CLICK_SOCIAL_COMMERCE,
+            if (userId.equals(userSessionInterface.userId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
+            Action.CLICK_CONTENT_DETAIL_AFFILIATE,
+            String.format(Action.FORMAT_TWO_PARAM, userId, activityId)
         )
     }
 
@@ -217,10 +228,10 @@ class FeedAnalyticTracker
     //    screenshot 21
     fun eventClickFeedProfileRecommendation(targetId: String, targetType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CATEGORY_FEED_TIMELINE,
-                Action.CLICK,
-                String.format(Action.ACTION_FEED_RECOM_USER, targetType, targetId)
+            Event.CLICK_FEED,
+            Category.CATEGORY_FEED_TIMELINE,
+            Action.CLICK,
+            String.format(Action.ACTION_FEED_RECOM_USER, targetType, targetId)
         )
     }
 
@@ -228,70 +239,281 @@ class FeedAnalyticTracker
     //    screenshot 19
     //https://mynakama.tokopedia.com/datatracker/requestdetail/view/942
     //1
-    fun eventClickFeedAvatar(activityId: String, activityName: String, targetId: String, targetType: String) {
+    fun eventClickFeedAvatar(
+        activityId: String
+    ) {
         val map = mapOf(
-                KEY_EVENT to Event.CLICK_FEED,
-                KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
-                KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR,"shop","sgc image"),
-                KEY_EVENT_LABEL to  String.format(Action.FORMAT_TWO_PARAM, activityId, userSessionInterface.shopId),
-                KEY_BUSINESS_UNIT_EVENT to "content",
-                KEY_CURRENT_SITE_EVENT to "tokopediamarketplace",
-                KEY_SESSION_IRIS to getIrisSessionId(),
-                KEY_EVENT_USER_ID to userSessionInterface.userId)
+            KEY_EVENT to Event.CLICK_FEED,
+            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR, "shop", "sgc image"),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                activityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
 
     }
 
     fun evenClickMenu(activityId: String) {
         val map = mapOf(
-                KEY_EVENT to Event.CLICK_FEED,
-                KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
-                KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR,"three dots","sgc image"),
-                KEY_EVENT_LABEL to  String.format(Action.FORMAT_TWO_PARAM, activityId, userSessionInterface.shopId),
-                KEY_BUSINESS_UNIT_EVENT to "content",
-                KEY_CURRENT_SITE_EVENT to "tokopediamarketplace",
-                KEY_SESSION_IRIS to getIrisSessionId(),
-                KEY_EVENT_USER_ID to userSessionInterface.userId)
+            KEY_EVENT to Event.CLICK_FEED,
+            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(
+                Action.ACTION_CLICK_FEED_AVATAR,
+                "three dots",
+                "sgc image"
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                activityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
 
-
     fun eventTagClicked(activityId: String) {
         val map = mapOf(
-                KEY_EVENT to Event.CLICK_FEED,
-                KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
-                KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR,"lihat produk","sgc image"),
-                KEY_EVENT_LABEL to  String.format(Action.FORMAT_TWO_PARAM, activityId, userSessionInterface.shopId),
-                KEY_BUSINESS_UNIT_EVENT to "content",
-                KEY_CURRENT_SITE_EVENT to "tokopediamarketplace",
-                KEY_SESSION_IRIS to getIrisSessionId(),
-                KEY_EVENT_USER_ID to userSessionInterface.userId)
+            KEY_EVENT to Event.CLICK_FEED,
+            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(
+                Action.ACTION_CLICK_FEED_AVATAR,
+                "lihat produk",
+                "sgc image"
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                activityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to "content",
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun eventImageClicked(activityId: String) {
         val map = mapOf(
-                KEY_EVENT to Event.CLICK_FEED,
-                KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
-                KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR,"image","sgc image"),
-                KEY_EVENT_LABEL to  String.format(Action.FORMAT_TWO_PARAM, activityId, userSessionInterface.shopId),
-                KEY_BUSINESS_UNIT_EVENT to "content",
-                KEY_CURRENT_SITE_EVENT to "tokopediamarketplace",
-                KEY_SESSION_IRIS to getIrisSessionId(),
-                KEY_EVENT_USER_ID to userSessionInterface.userId)
+            KEY_EVENT to Event.CLICK_FEED,
+            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(
+                Action.ACTION_CLICK_FEED_AVATAR,
+                "image",
+                "sgc image"
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                activityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun eventClickLikeButton(activityId: String, doubleTap: Boolean = false, isLiked: Boolean) {
+        val likeType = if (doubleTap && isLiked)
+            "double tap like"
+        else if (doubleTap && !isLiked)
+            "double tap unlike"
+        else
+            "like"
+        var map = getCommonMap()
+        map = map.plus(
+            mapOf(
+                KEY_EVENT_ACTION to String.format(
+                    Action.ACTION_CLICK_FEED_AVATAR,
+                    likeType,
+                    "sgc image"
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+    }
+
+    fun eventClickOpenComment(activityId: String) {
+        var map = getCommonMap()
+        map = map.plus(
+            mapOf(
+                KEY_EVENT_ACTION to String.format(
+                    Action.ACTION_CLICK_FEED_AVATAR,
+                    "comment",
+                    "sgc image"
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+    }
+
+    fun eventClickOpenShare(activityId: String) {
+        var map = getCommonMap()
+        map = map.plus(
+            mapOf(
+                KEY_EVENT_ACTION to String.format(
+                    Action.ACTION_CLICK_FEED_AVATAR,
+                    "share",
+                    "sgc image"
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun eventClickReadMoreNew(activityId: String) {
+        var map = getCommonMap()
+        map = map.plus(
+            mapOf(
+                KEY_EVENT_ACTION to String.format(
+                    Action.ACTION_CLICK_FEED_AVATAR,
+                    " lihat selengkapnya",
+                    "sgc image"
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun eventClickCloseProductInfoSheet(activityId: String) {
+        var map = getCommonMap()
+        map = map.plus(
+            mapOf(
+                KEY_EVENT_ACTION to String.format(
+                    Action.ACTION_CLICK_FEED_AVATAR,
+                    " x ",
+                    "sgc image"
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    /*{"event":"productClick","eventCategory":"content feed timeline - bottom sheet","eventAction":"click - product - sgc image","eventLabel":"{activity_id} - {shop_id} - {product_id}","businessUnit":"content","currentSite":"tokopediamarketplace","ecommerce":{
+    "click":
+    {"actionField":{
+    "list":"/feed - sgc image"
+    },
+    "products":
+    [{"brand":"{product_brand}",
+    "category":"{cat name lv1}",
+    "id":"{product_id}",
+    "list":"/feed - sgc image",
+    "name":"{product_name}",
+    "position":"{product horizontal position from 1}",
+    "price":"{product_price}",
+    "variant":"{product variant}"}]}},"sessionIris":"{session_Iris}","userId":"{user_id}"}*/
+
+    fun eventClickBSitem(activityId: String, products: List<FeedXProduct>, position: Int) {
+
+        val map = mapOf(
+            KEY_EVENT to Event.PRODUCT_CLICK,
+            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE + "- bottom sheet",
+            KEY_EVENT_ACTION to String.format(
+                Action.ACTION_CLICK_FEED_AVATAR,
+                "product",
+                "sgc image"
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_THREE_PARAM,
+                activityId,
+                userSessionInterface.shopId,
+                products[position].id
+            ),
+            ECOMMERCE to mapOf(
+                CLICK to mapOf(
+                    "actionField" to mapOf(
+                        "list" to "feed - sgc image"
+                    ),
+                    "products" to getProductItem(products[position])
+                )
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+    }
+
+    private fun getProductItem(feedXProduct: FeedXProduct): Map<String, String> {
+        return mapOf(
+            "brand" to "{product_brand}",
+            "category" to "{cat name lv1}",
+            "id" to "{product_id}",
+            "list" to "/feed - sgc image",
+            "name" to "{product_name}",
+            "position" to "{product horizontal position from 1}",
+            "price" to "{product_price}",
+            "variant" to "{product variant}"
+        )
+
+    }
+
+    private fun getCommonMap(): Map<String, String> {
+        return mapOf(
+            KEY_EVENT to Event.CLICK_FEED,
+            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
     }
 
     //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
     //    screenshot 31
     fun eventClickMediaPreviewAvatar(targetId: String, targetType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CATEGORY_FEED_TIMELINE,
-                String.format(Action.ACTION_CLICK_MEDIAPREVIEW_AVATAR, targetType,
-                        if (userSessionInterface.isLoggedIn()) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN),
-                targetId
+            Event.CLICK_FEED,
+            Category.CATEGORY_FEED_TIMELINE,
+            String.format(
+                Action.ACTION_CLICK_MEDIAPREVIEW_AVATAR, targetType,
+                if (userSessionInterface.isLoggedIn) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN
+            ),
+            targetId
         )
     }
 
@@ -299,10 +521,10 @@ class FeedAnalyticTracker
     //    screenshot 15
     fun eventClickFeedDetailAvatar(activityId: String, shopId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CATEGORY_FEED_TIMELINE_FEED_DETAIL,
-                Action.CLICK_FEED_PRODUCT_DETAIL,
-                String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+            Event.CLICK_FEED,
+            Category.CATEGORY_FEED_TIMELINE_FEED_DETAIL,
+            Action.CLICK_FEED_PRODUCT_DETAIL,
+            String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
         )
     }
 
@@ -310,10 +532,10 @@ class FeedAnalyticTracker
     //    screenshot 7
     fun eventClickTopadsPromoted(shopId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CATEGORY_FEED_TIMELINE,
-                Action.ACTION_CLICK_TOPADS_PROMOTED,
-                shopId
+            Event.CLICK_FEED,
+            Category.CATEGORY_FEED_TIMELINE,
+            Action.ACTION_CLICK_TOPADS_PROMOTED,
+            shopId
         )
     }
 
@@ -325,10 +547,11 @@ class FeedAnalyticTracker
      */
     fun eventClickFeedInterestPick(optionName: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_INTEREST,
-                optionName)
+            Event.CLICK_FEED,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_INTEREST,
+            optionName
+        )
     }
 
     /**
@@ -339,10 +562,11 @@ class FeedAnalyticTracker
      */
     fun eventClickFeedInterestPickSeeAll() {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_INTEREST_SEE_ALL,
-                "")
+            Event.CLICK_FEED,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_INTEREST_SEE_ALL,
+            ""
+        )
     }
 
     /**
@@ -353,10 +577,11 @@ class FeedAnalyticTracker
      */
     fun eventClickFeedCheckAccount(countString: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_INTEREST_CHECK_ACCOUNT,
-                countString)
+            Event.CLICK_FEED,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_INTEREST_CHECK_ACCOUNT,
+            countString
+        )
     }
 
     /**
@@ -367,10 +592,11 @@ class FeedAnalyticTracker
      */
     fun eventClickFeedCheckInspiration(countString: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_INTEREST_CHECK_INSPIRATION,
-                countString)
+            Event.CLICK_FEED,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_INTEREST_CHECK_INSPIRATION,
+            countString
+        )
     }
 
     /**
@@ -388,9 +614,11 @@ class FeedAnalyticTracker
      *
      */
     fun eventOpenFeedPlusFragment(isLoggedInStatus: Boolean, isFeedEmpty: Boolean) {
-        trackOpenScreenEventC2s(Screen.HOME_FEED_SCREEN,
-                isLoggedInStatus = isLoggedInStatus.toString(),
-                isFeedEmpty = isFeedEmpty.toString())
+        trackOpenScreenEventC2s(
+            Screen.HOME_FEED_SCREEN,
+            isLoggedInStatus = isLoggedInStatus.toString(),
+            isFeedEmpty = isFeedEmpty.toString()
+        )
     }
 
     /**
@@ -410,19 +638,25 @@ class FeedAnalyticTracker
      */
     fun eventViewContentRecommendation(userId: String, position: Int, authorType: String) {
         trackEnhancedEcommerceEvent(
-                Event.PROMO_VIEW,
-                Category.CONTENT_INTEREST_PICK,
-                Action.IMPRESSION_CONTENT_RECOM,
-                userId,
-                getPromoViewData(
-                        getPromotionsData(
-                                listOf(getPromotionData(
-                                        userId,
-                                        ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType),
-                                        userSessionInterface.name,
-                                        position))
+            Event.PROMO_VIEW,
+            Category.CONTENT_INTEREST_PICK,
+            Action.IMPRESSION_CONTENT_RECOM,
+            userId,
+            getPromoViewData(
+                getPromotionsData(
+                    listOf(
+                        getPromotionData(
+                            userId,
+                            ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(
+                                ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER,
+                                authorType
+                            ),
+                            userSessionInterface.name,
+                            position
                         )
+                    )
                 )
+            )
         )
     }
 
@@ -434,19 +668,25 @@ class FeedAnalyticTracker
      */
     fun eventClickContentRecommendation(activityId: String, position: Int, authorType: String) {
         trackEnhancedEcommerceEvent(
-                Event.PROMO_CLICK,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_CONTENT_RECOM,
-                activityId,
-                getPromoClickData(
-                        getPromotionsData(
-                                listOf(getPromotionData(
-                                        activityId,
-                                        ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER, authorType),
-                                        userSessionInterface.name,
-                                        position))
+            Event.PROMO_CLICK,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_CONTENT_RECOM,
+            activityId,
+            getPromoClickData(
+                getPromotionsData(
+                    listOf(
+                        getPromotionData(
+                            activityId,
+                            ListSource.PROFILE_FOLLOW_RECOM_RECOM.replace(
+                                ListSource.PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER,
+                                authorType
+                            ),
+                            userSessionInterface.name,
+                            position
                         )
+                    )
                 )
+            )
         )
     }
 
@@ -458,10 +698,11 @@ class FeedAnalyticTracker
      */
     fun eventClickFollowRecomNameAndImage(activityId: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_AVATAR,
-                activityId)
+            Event.CLICK_FEED,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_AVATAR,
+            activityId
+        )
     }
 
     /**
@@ -472,10 +713,11 @@ class FeedAnalyticTracker
      */
     fun eventClickFollowShopOrProfile(activityId: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_FOLLOW,
-                activityId)
+            Event.CLICK_FEED,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_FOLLOW,
+            activityId
+        )
     }
 
     /**
@@ -486,10 +728,11 @@ class FeedAnalyticTracker
      */
     fun eventClickUnFollowShopOrProfile(activityId: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_UNFOLLOW,
-                activityId)
+            Event.CLICK_FEED,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_UNFOLLOW,
+            activityId
+        )
     }
 
     /**
@@ -500,10 +743,11 @@ class FeedAnalyticTracker
      */
     fun eventClickFollowAll() {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_INTEREST_PICK,
-                Action.CLICK_FOLLOW_ALL,
-                "")
+            Event.CLICK_FEED,
+            Category.CONTENT_INTEREST_PICK,
+            Action.CLICK_FOLLOW_ALL,
+            ""
+        )
     }
 
     /**
@@ -524,10 +768,11 @@ class FeedAnalyticTracker
      */
     fun eventMediaDetailClickAvatar(activityId: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
-                Action.CLICK_AVATAR,
-                activityId)
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_TIMELINE,
+            Action.CLICK_AVATAR,
+            activityId
+        )
     }
 
     /**
@@ -539,10 +784,11 @@ class FeedAnalyticTracker
      */
     fun eventMediaDetailClickLihat(activityId: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
-                Action.CLICK_SEE,
-                activityId)
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_TIMELINE,
+            Action.CLICK_SEE,
+            activityId
+        )
     }
 
     /**
@@ -552,36 +798,44 @@ class FeedAnalyticTracker
      *
      * @param productId - productId
      */
-    fun eventMediaDetailClickBuy(role: String,
-                                 productId: String,
-                                 productName: String,
-                                 price: String,
-                                 quantity: Int,
-                                 shopId: Int,
-                                 shopName: String) {
+    fun eventMediaDetailClickBuy(
+        role: String,
+        productId: String,
+        productName: String,
+        price: String,
+        quantity: Int,
+        shopId: Int,
+        shopName: String
+    ) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
-                Action.CLICK_BUY,
-                productId)
-        trackEnhancedEcommerceEvent(Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
-                Action.CLICK_BUY,
-                productId,
-                DataLayer.mapOf(
-                        Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
-                        Event.ADD, getMediaPreviewAddData(
-                        role,
-                        getProductsDataList(listOf(
-                                getProductData(
-                                        productId,
-                                        productName,
-                                        price.getDigits().toZeroIfNull(),
-                                        quantity,
-                                        shopId,
-                                        shopName)))
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_TIMELINE,
+            Action.CLICK_BUY,
+            productId
+        )
+        trackEnhancedEcommerceEvent(
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_TIMELINE,
+            Action.CLICK_BUY,
+            productId,
+            DataLayer.mapOf(
+                Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
+                Event.ADD, getMediaPreviewAddData(
+                    role,
+                    getProductsDataList(
+                        listOf(
+                            getProductData(
+                                productId,
+                                productName,
+                                price.getDigits().toZeroIfNull(),
+                                quantity,
+                                shopId,
+                                shopName
+                            )
+                        )
+                    )
                 )
-                )
+            )
         )
     }
 
@@ -605,10 +859,11 @@ class FeedAnalyticTracker
      */
     fun eventTrendingClickMedia(activityId: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_EXPLORE_TRENDING,
-                Action.CLICK_MEDIA,
-                activityId)
+            Event.CLICK_FEED,
+            Category.CONTENT_EXPLORE_TRENDING,
+            Action.CLICK_MEDIA,
+            activityId
+        )
     }
 
     /**
@@ -620,10 +875,11 @@ class FeedAnalyticTracker
      */
     fun eventTrendingClickSeeAll(activityId: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_EXPLORE_TRENDING,
-                Action.CLICK_SEE_ALL,
-                activityId)
+            Event.CLICK_FEED,
+            Category.CONTENT_EXPLORE_TRENDING,
+            Action.CLICK_SEE_ALL,
+            activityId
+        )
     }
 
     /**
@@ -635,10 +891,11 @@ class FeedAnalyticTracker
      */
     fun eventTrendingClickProfile(activityId: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_EXPLORE_TRENDING,
-                Action.CLICK_AVATAR,
-                activityId)
+            Event.CLICK_FEED,
+            Category.CONTENT_EXPLORE_TRENDING,
+            Action.CLICK_AVATAR,
+            activityId
+        )
     }
 
     /**
@@ -651,14 +908,20 @@ class FeedAnalyticTracker
      * @param mediaType - video or image
      * @param hashtag - the hashtag name
      */
-    fun eventTimelineClickHashtag(activityId: String, activityName: String, mediaType: String, hashtag: String) {
+    fun eventTimelineClickHashtag(
+        activityId: String,
+        activityName: String,
+        mediaType: String,
+        hashtag: String
+    ) {
         eventClickHashtag(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
-                activityId,
-                activityName,
-                mediaType,
-                hashtag)
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_TIMELINE,
+            activityId,
+            activityName,
+            mediaType,
+            hashtag
+        )
     }
 
     /**
@@ -671,14 +934,20 @@ class FeedAnalyticTracker
      * @param mediaType - video or image
      * @param hashtag - the hashtag name
      */
-    fun eventDetailClickHashtag(activityId: String, activityName: String, mediaType: String, hashtag: String) {
+    fun eventDetailClickHashtag(
+        activityId: String,
+        activityName: String,
+        mediaType: String,
+        hashtag: String
+    ) {
         eventClickHashtag(
-                Event.CLICK_FEED,
-                Category.FEED_DETAIL_PAGE,
-                activityId,
-                activityName,
-                mediaType,
-                hashtag)
+            Event.CLICK_FEED,
+            Category.FEED_DETAIL_PAGE,
+            activityId,
+            activityName,
+            mediaType,
+            hashtag
+        )
     }
 
     /**
@@ -694,10 +963,11 @@ class FeedAnalyticTracker
      */
     fun eventProfileClickHashtag(isOwner: Boolean, activityId: String, hashtag: String) {
         eventClickHashtag(
-                Event.CLICK_SOCIAL_COMMERCE,
-                if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
-                activityId,
-                hashtag)
+            Event.CLICK_SOCIAL_COMMERCE,
+            if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
+            activityId,
+            hashtag
+        )
     }
 
     /**
@@ -711,11 +981,11 @@ class FeedAnalyticTracker
      */
     fun eventTimelineClickReadMore(activityId: String, activityName: String, mediaType: String) {
         eventClickReadMore(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
-                activityId,
-                activityName,
-                mediaType
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_TIMELINE,
+            activityId,
+            activityName,
+            mediaType
         )
     }
 
@@ -729,13 +999,18 @@ class FeedAnalyticTracker
      * @param activityId - postId
      * @param mediaType - video or image
      */
-    fun eventProfileClickReadMore(isOwner: Boolean, activityId: String, activityName: String, mediaType: String) {
+    fun eventProfileClickReadMore(
+        isOwner: Boolean,
+        activityId: String,
+        activityName: String,
+        mediaType: String
+    ) {
         eventClickReadMore(
-                Event.CLICK_SOCIAL_COMMERCE,
-                if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
-                activityId,
-                activityName,
-                mediaType
+            Event.CLICK_SOCIAL_COMMERCE,
+            if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
+            activityId,
+            activityName,
+            mediaType
         )
     }
 
@@ -750,11 +1025,11 @@ class FeedAnalyticTracker
      */
     fun eventShopPageClickReadMore(activityId: String, activityName: String, mediaType: String) {
         eventClickReadMore(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_SHOP_PAGE,
-                activityId,
-                activityName,
-                mediaType
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_SHOP_PAGE,
+            activityId,
+            activityName,
+            mediaType
         )
     }
 
@@ -768,12 +1043,14 @@ class FeedAnalyticTracker
      * @param activityId - postId
      * @param mediaType - video or image
      */
-    fun eventImageImpressionPost(screenName: String, activityId: String, activityName: String, mediaType: String,
-                                 imageUrl: String, recomId: Int, rowNumber: Int ) {
+    fun eventImageImpressionPost(
+        screenName: String, activityId: String, activityName: String, mediaType: String,
+        imageUrl: String, recomId: Int, rowNumber: Int
+    ) {
         var eventCategory = ""
         var promotionsNameInitial = ""
         var eventLabel = ""
-        when(screenName) {
+        when (screenName) {
             Screen.FEED -> {
                 eventCategory = Category.CONTENT_FEED_TIMELINE
                 promotionsNameInitial = "/content feed"
@@ -786,17 +1063,22 @@ class FeedAnalyticTracker
             }
         }
         trackEnhancedEcommerceEvent(
-                Event.PROMO_VIEW,
-                eventCategory,
-                "${Action.IMPRESSION_POST} - $activityName - $mediaType",
-                eventLabel,
-                getPromoViewData(getPromotionsData(
-                        listOf(getPromotionData(
-                                activityId,
-                                "$promotionsNameInitial - $activityName - $mediaType",
-                                imageUrl,
-                                rowNumber))
-                ))
+            Event.PROMO_VIEW,
+            eventCategory,
+            "${Action.IMPRESSION_POST} - $activityName - $mediaType",
+            eventLabel,
+            getPromoViewData(
+                getPromotionsData(
+                    listOf(
+                        getPromotionData(
+                            activityId,
+                            "$promotionsNameInitial - $activityName - $mediaType",
+                            imageUrl,
+                            rowNumber
+                        )
+                    )
+                )
+            )
         )
     }
 
@@ -809,27 +1091,38 @@ class FeedAnalyticTracker
      * @param activityId - postId
      * @param mediaType - video or image
      */
-    fun eventShopPageClickPost(activityId: String, activityName: String, mediaType: String, imageUrl: String, rowNumber: Int) {
+    fun eventShopPageClickPost(
+        activityId: String,
+        activityName: String,
+        mediaType: String,
+        imageUrl: String,
+        rowNumber: Int
+    ) {
         eventClickReadMore(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_SHOP_PAGE,
-                activityId,
-                activityName,
-                mediaType
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_SHOP_PAGE,
+            activityId,
+            activityName,
+            mediaType
         )
         trackEnhancedEcommerceEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_SHOP_PAGE,
-                Action.CLICK,
-                String.format("post - %s - %s - %s", activityName, activityId, mediaType),
-                getPromoClickData(getPromotionsData(
-                        listOf(getPromotionData(
-                                activityId,
-                                String.format("/feed shop page - %s - %s", activityName, mediaType),
-                                imageUrl,
-                                rowNumber))
-                ))
+            Event.CLICK_FEED,
+            Category.CONTENT_FEED_SHOP_PAGE,
+            Action.CLICK,
+            String.format("post - %s - %s - %s", activityName, activityId, mediaType),
+            getPromoClickData(
+                getPromotionsData(
+                    listOf(
+                        getPromotionData(
+                            activityId,
+                            String.format("/feed shop page - %s - %s", activityName, mediaType),
+                            imageUrl,
+                            rowNumber
+                        )
+                    )
                 )
+            )
+        )
     }
 
     /**
@@ -842,20 +1135,27 @@ class FeedAnalyticTracker
      * @param position - position of item in list
      */
     fun eventHashtagPageClickThumbnail(
-            activityId: String,
-            hashtag: String,
-            position: Int
+        activityId: String,
+        hashtag: String,
+        position: Int
     ) {
         trackEnhancedEcommerceEvent(
-                Event.PROMO_CLICK,
-                Category.CONTENT_HASHTAG,
-                Action.CLICK_POST,
-                activityId,
-                getPromoClickData(
-                        getPromotionsData(
-                                listOf(getPromotionData(activityId, Screen.HASHTAG_POST_LIST, hashtag, position))
+            Event.PROMO_CLICK,
+            Category.CONTENT_HASHTAG,
+            Action.CLICK_POST,
+            activityId,
+            getPromoClickData(
+                getPromotionsData(
+                    listOf(
+                        getPromotionData(
+                            activityId,
+                            Screen.HASHTAG_POST_LIST,
+                            hashtag,
+                            position
                         )
+                    )
                 )
+            )
         )
     }
 
@@ -867,10 +1167,10 @@ class FeedAnalyticTracker
      */
     fun eventHashtagPageClickNameAvatar(id: String) {
         trackGeneralEvent(
-                Event.CLICK_FEED,
-                Category.CONTENT_HASHTAG,
-                Action.CLICK_AVATAR,
-                id
+            Event.CLICK_FEED,
+            Category.CONTENT_HASHTAG,
+            Action.CLICK_AVATAR,
+            id
         )
     }
 
@@ -884,20 +1184,27 @@ class FeedAnalyticTracker
      * @param position - position of item in list
      */
     fun eventHashtagPageViewPost(
-            activityId: String,
-            hashtag: String,
-            position: Int
+        activityId: String,
+        hashtag: String,
+        position: Int
     ) {
         trackEnhancedEcommerceEvent(
-                Event.PROMO_VIEW,
-                Category.CONTENT_HASHTAG,
-                Action.IMPRESSION_POST,
-                activityId,
-                getPromoViewData(
-                        getPromotionsData(
-                                listOf(getPromotionData(activityId, Screen.HASHTAG_POST_LIST, hashtag, position))
+            Event.PROMO_VIEW,
+            Category.CONTENT_HASHTAG,
+            Action.IMPRESSION_POST,
+            activityId,
+            getPromoViewData(
+                getPromotionsData(
+                    listOf(
+                        getPromotionData(
+                            activityId,
+                            Screen.HASHTAG_POST_LIST,
+                            hashtag,
+                            position
                         )
+                    )
                 )
+            )
         )
     }
 
@@ -921,22 +1228,24 @@ class FeedAnalyticTracker
      * @param shopId - id of the shop owner
      * @param shopName - name of the shop owner (usually "")
      */
-    fun eventProfileAddToCart(productId: String,
-                              productName: String,
-                              price: String,
-                              quantity: Int,
-                              shopId: Int,
-                              shopName: String) {
+    fun eventProfileAddToCart(
+        productId: String,
+        productName: String,
+        price: String,
+        quantity: Int,
+        shopId: Int,
+        shopName: String
+    ) {
 
         eventAddToCart(
-                Category.USER_PROFILE_SOCIALCOMMERCE,
-                Action.Field.List.USER_PROFILE_PAGE_POSTED_PRODUCT,
-                productId,
-                productName,
-                price,
-                quantity,
-                shopId,
-                shopName
+            Category.USER_PROFILE_SOCIALCOMMERCE,
+            Action.Field.List.USER_PROFILE_PAGE_POSTED_PRODUCT,
+            productId,
+            productName,
+            price,
+            quantity,
+            shopId,
+            shopName
         )
     }
 
@@ -952,23 +1261,25 @@ class FeedAnalyticTracker
      * @param shopName - name of the shop owner (usually "")
      * @param author - type of the post author (usually user or shop)
      */
-    fun eventFeedAddToCart(productId: String,
-                           productName: String,
-                           price: String,
-                           quantity: Int,
-                           shopId: Int,
-                           shopName: String,
-                           author: String) {
+    fun eventFeedAddToCart(
+        productId: String,
+        productName: String,
+        price: String,
+        quantity: Int,
+        shopId: Int,
+        shopName: String,
+        author: String
+    ) {
 
         eventAddToCart(
-                Category.CONTENT_FEED_TIMELINE,
-                "${Action.Field.List.FEED_POSTED_PRODUCT} - $author",
-                productId,
-                productName,
-                price,
-                quantity,
-                shopId,
-                shopName
+            Category.CONTENT_FEED_TIMELINE,
+            "${Action.Field.List.FEED_POSTED_PRODUCT} - $author",
+            productId,
+            productName,
+            price,
+            quantity,
+            shopId,
+            shopName
         )
     }
 
@@ -984,23 +1295,25 @@ class FeedAnalyticTracker
      * @param shopName - name of the shop owner (usually "")
      * @param author - type of the post author (usually user or shop)
      */
-    fun eventContentDetailAddToCart(productId: String,
-                                    productName: String,
-                                    price: String,
-                                    quantity: Int,
-                                    shopId: Int,
-                                    shopName: String,
-                                    author: String) {
+    fun eventContentDetailAddToCart(
+        productId: String,
+        productName: String,
+        price: String,
+        quantity: Int,
+        shopId: Int,
+        shopName: String,
+        author: String
+    ) {
 
         eventAddToCart(
-                Category.CONTENT_DETAIL,
-                "${Action.Field.List.USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT} - $author",
-                productId,
-                productName,
-                price,
-                quantity,
-                shopId,
-                shopName
+            Category.CONTENT_DETAIL,
+            "${Action.Field.List.USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT} - $author",
+            productId,
+            productName,
+            price,
+            quantity,
+            shopId,
+            shopName
         )
     }
 
@@ -1014,18 +1327,18 @@ class FeedAnalyticTracker
     /**
      * Base track click read more
      */
-    private fun eventClickReadMore(
-            eventName: String,
-            eventCategory: String,
-            activityId: String,
-            activityName: String,
-            mediaType: String
+    fun eventClickReadMore(
+        eventName: String,
+        eventCategory: String,
+        activityId: String,
+        activityName: String,
+        mediaType: String
     ) {
         trackGeneralEvent(
-                eventName = eventName,
-                eventCategory = eventCategory,
-                eventAction = "${Action.CLICK_READ_MORE} - $activityName - $mediaType",
-                eventLabel = activityId
+            eventName = eventName,
+            eventCategory = eventCategory,
+            eventAction = "${Action.CLICK_READ_MORE} - $activityName - $mediaType",
+            eventLabel = activityId
         )
     }
 
@@ -1033,30 +1346,32 @@ class FeedAnalyticTracker
      * Base track click hashtag
      */
     private fun eventClickHashtag(
-            eventName: String,
-            eventCategory: String,
-            activityId: String,
-            hashtag: String) {
+        eventName: String,
+        eventCategory: String,
+        activityId: String,
+        hashtag: String
+    ) {
         trackGeneralEvent(
-                eventName = eventName,
-                eventCategory = eventCategory,
-                eventAction = Action.CLICK_HASHTAG,
-                eventLabel = "$activityId - $hashtag"
+            eventName = eventName,
+            eventCategory = eventCategory,
+            eventAction = Action.CLICK_HASHTAG,
+            eventLabel = "$activityId - $hashtag"
         )
     }
 
     private fun eventClickHashtag(
-            eventName: String,
-            eventCategory: String,
-            activityId: String,
-            activityName: String,
-            mediaType: String,
-            hashtag: String) {
+        eventName: String,
+        eventCategory: String,
+        activityId: String,
+        activityName: String,
+        mediaType: String,
+        hashtag: String
+    ) {
         trackGeneralEvent(
-                eventName = eventName,
-                eventCategory = eventCategory,
-                eventAction = "${Action.CLICK_HASHTAG} - $activityName - $mediaType",
-                eventLabel = "$activityId - $hashtag"
+            eventName = eventName,
+            eventCategory = eventCategory,
+            eventAction = "${Action.CLICK_HASHTAG} - $activityName - $mediaType",
+            eventLabel = "$activityId - $hashtag"
         )
     }
 
@@ -1065,36 +1380,36 @@ class FeedAnalyticTracker
      */
 
     private fun eventAddToCart(
-            eventCategory: String,
-            actionField: String,
-            productId: String,
-            productName: String,
-            price: String,
-            quantity: Int,
-            shopId: Int,
-            shopName: String
+        eventCategory: String,
+        actionField: String,
+        productId: String,
+        productName: String,
+        price: String,
+        quantity: Int,
+        shopId: Int,
+        shopName: String
     ) {
         trackEnhancedEcommerceEvent(
-                Event.ADD_TO_CART,
-                eventCategory,
-                Action.CLICK_BUY,
-                productId,
-                eCommerceData = getCurrencyData() +
-                        getAddData(
-                                getActionFieldData(getListData(actionField)) +
-                                        getProductsData(
-                                                listOf(
-                                                        getProductData(
-                                                                productId,
-                                                                productName,
-                                                                price.getDigits().toZeroIfNull(),
-                                                                quantity,
-                                                                shopId,
-                                                                shopName
-                                                        )
-                                                )
+            Event.ADD_TO_CART,
+            eventCategory,
+            Action.CLICK_BUY,
+            productId,
+            eCommerceData = getCurrencyData() +
+                    getAddData(
+                        getActionFieldData(getListData(actionField)) +
+                                getProductsData(
+                                    listOf(
+                                        getProductData(
+                                            productId,
+                                            productName,
+                                            price.getDigits().toZeroIfNull(),
+                                            quantity,
+                                            shopId,
+                                            shopName
                                         )
-                        )
+                                    )
+                                )
+                    )
         )
     }
 
@@ -1102,45 +1417,50 @@ class FeedAnalyticTracker
      * Base tracker function
      */
     private fun trackGeneralEvent(
-            eventName: String,
-            eventCategory: String,
-            eventAction: String,
-            eventLabel: String) {
+        eventName: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                getGeneralData(eventName, eventCategory, eventAction, eventLabel)
+            getGeneralData(eventName, eventCategory, eventAction, eventLabel)
         )
     }
 
     private fun trackOpenScreenEvent(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
-                screenName,
-                mapOf(
-                        EVENT.capitalize() to Event.OPEN_SCREEN
-                )
+            screenName,
+            mapOf(
+                EVENT.capitalize() to Event.OPEN_SCREEN
+            )
         )
     }
 
-    private fun trackOpenScreenEventC2s(screenName: String,
-                                        isLoggedInStatus: String,
-                                        isFeedEmpty: String) {
+    private fun trackOpenScreenEventC2s(
+        screenName: String,
+        isLoggedInStatus: String,
+        isFeedEmpty: String
+    ) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
-                screenName,
-                mapOf(
-                        SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus,
-                        SCREEN_DIMENSION_IS_FEED_EMPTY to isFeedEmpty
-                )
+            screenName,
+            mapOf(
+                SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus,
+                SCREEN_DIMENSION_IS_FEED_EMPTY to isFeedEmpty
+            )
         )
     }
 
     private fun trackEnhancedEcommerceEvent(
-            eventName: String,
-            eventCategory: String,
-            eventAction: String,
-            eventLabel: String,
-            eCommerceData: Map<String, Any>
+        eventName: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
+        eCommerceData: Map<String, Any>
     ) {
-        trackingQueue.putEETracking(getGeneralData(eventName, eventCategory, eventAction, eventLabel)
-                .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>)
+        trackingQueue.putEETracking(
+            getGeneralData(eventName, eventCategory, eventAction, eventLabel)
+                .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>
+        )
 
     }
 
@@ -1148,103 +1468,116 @@ class FeedAnalyticTracker
      * Data Generator
      */
     private fun getGeneralData(
-            eventName: String,
-            eventCategory: String,
-            eventAction: String,
-            eventLabel: String
+        eventName: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
     ): Map<String, Any> = DataLayer.mapOf(
-            EVENT, eventName,
-            EVENT_CATEGORY, eventCategory,
-            EVENT_ACTION, eventAction,
-            EVENT_LABEL, eventLabel,
-            USER_ID, userSessionInterface.userId
+        EVENT, eventName,
+        EVENT_CATEGORY, eventCategory,
+        EVENT_ACTION, eventAction,
+        EVENT_LABEL, eventLabel,
+        USER_ID, userSessionInterface.userId
     )
 
     private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)
 
-    private fun getPromoClickData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.PROMO_CLICK, data)
+    private fun getPromoClickData(data: Any): Map<String, Any> =
+        DataLayer.mapOf(Event.PROMO_CLICK, data)
 
-    private fun getPromoViewData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.PROMO_VIEW, data)
+    private fun getPromoViewData(data: Any): Map<String, Any> =
+        DataLayer.mapOf(Event.PROMO_VIEW, data)
 
     private fun getPromotionsData(
-            promotionDataList: List<Any>
+        promotionDataList: List<Any>
     ): Map<String, Any> = DataLayer.mapOf(PROMOTIONS, promotionDataList)
 
     private fun getPromotionData(
-            id: String,
-            name: String,
-            creative: String,
-            position: Int,
-            creativeUrl: String = "",
-            category: String = "",
-            promoId: String = "",
-            promoCode: String = ""
+        id: String,
+        name: String,
+        creative: String,
+        position: Int,
+        creativeUrl: String = "",
+        category: String = "",
+        promoId: String = "",
+        promoCode: String = ""
     ): Map<String, Any> = DataLayer.mapOf(
-            Promotion.ID, id,
-            Promotion.NAME, name,
-            Promotion.CREATIVE, creative,
-            Promotion.POSITION, position,
-            Promotion.CREATIVE_URL, creativeUrl,
-            Promotion.CATEGORY, category,
-            Promotion.PROMO_ID, promoId,
-            Promotion.PROMO_CODE, promoCode)
+        Promotion.ID, id,
+        Promotion.NAME, name,
+        Promotion.CREATIVE, creative,
+        Promotion.POSITION, position,
+        Promotion.CREATIVE_URL, creativeUrl,
+        Promotion.CATEGORY, category,
+        Promotion.PROMO_ID, promoId,
+        Promotion.PROMO_CODE, promoCode
+    )
 
     private fun getAddData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.ADD, data)
 
-    private fun getActionFieldData(data: Any): Map<String, Any> = DataLayer.mapOf(ACTION_FIELD, data)
+    private fun getActionFieldData(data: Any): Map<String, Any> =
+        DataLayer.mapOf(ACTION_FIELD, data)
 
     private fun getListData(data: Any): Map<String, Any> = DataLayer.mapOf(LIST, data)
 
-    private fun getCurrencyData(): Map<String, Any> = DataLayer.mapOf(Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR)
+    private fun getCurrencyData(): Map<String, Any> =
+        DataLayer.mapOf(Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR)
 
     private fun getMediaPreviewAddData(
-            role: String,
-            productDataList: List<Any>
+        role: String,
+        productDataList: List<Any>
     ): Map<String, Any> = DataLayer.mapOf(
-            Event.ACTION_FIELD, getMediaPreviewActionFieldData(role),
-            PRODUCTS, productDataList
+        Event.ACTION_FIELD, getMediaPreviewActionFieldData(role),
+        PRODUCTS, productDataList
     )
 
-    private fun getMediaPreviewActionFieldData(role: String
-    ): Map<String, Any> = DataLayer.mapOf(LIST, Product.MEDIA_PREVIEW.replace(Product.MEDIA_PREVIEW_TAG, role))
+    private fun getMediaPreviewActionFieldData(
+        role: String
+    ): Map<String, Any> =
+        DataLayer.mapOf(LIST, Product.MEDIA_PREVIEW.replace(Product.MEDIA_PREVIEW_TAG, role))
 
     private fun getProductsData(
-            productDataList: List<Any>
+        productDataList: List<Any>
     ): Map<String, Any> = DataLayer.mapOf(PRODUCTS, productDataList)
 
     private fun getProductsDataList(
-            productDataList: List<Any>
+        productDataList: List<Any>
     ): List<Any> = DataLayer.listOf(productDataList)
 
     private fun getProductData(
-            id: String,
-            name: String,
-            price: Int,
-            quantity: Int,
-            shopId: Int,
-            shopName: String
+        id: String,
+        name: String,
+        price: Int,
+        quantity: Int,
+        shopId: Int,
+        shopName: String
     ): Map<String, Any> = DataLayer.mapOf(
-            Product.ID, id,
-            Product.NAME, name,
-            Product.PRICE, price,
-            Product.QTY, quantity,
-            Product.SHOP_ID, shopId,
-            Product.SHOP_NAME, shopName
+        Product.ID, id,
+        Product.NAME, name,
+        Product.PRICE, price,
+        Product.QTY, quantity,
+        Product.SHOP_ID, shopId,
+        Product.SHOP_NAME, shopName
     )
 
     fun getEcommerceView(listProduct: List<ProductItem>): Map<String, Any> {
-        return DataLayer.mapOf(CURRENCY_CODE, CURRENCY_CODE_IDR,
-                Product.IMPRESSIONS, getProducts(listProduct))
+        return DataLayer.mapOf(
+            CURRENCY_CODE, CURRENCY_CODE_IDR,
+            Product.IMPRESSIONS, getProducts(listProduct)
+        )
     }
 
     fun getEcommerceClick(listProduct: List<ProductItem>, listSource: String): Map<String, Any> {
         return DataLayer.mapOf(Product.CLICK, getEcommerceClickValue(listProduct, listSource))
     }
 
-    fun getEcommerceClickValue(listProduct: List<ProductItem>, listSource: String): Map<String, Any> {
+    fun getEcommerceClickValue(
+        listProduct: List<ProductItem>,
+        listSource: String
+    ): Map<String, Any> {
         return DataLayer.mapOf(
-                Product.ACTION_FIELD, getEcommerceActionFieldValue(listSource),
-                PRODUCTS, getProducts(listProduct))
+            Product.ACTION_FIELD, getEcommerceActionFieldValue(listSource),
+            PRODUCTS, getProducts(listProduct)
+        )
     }
 
     fun getEcommerceActionFieldValue(listSource: String): Map<String, Any> {
@@ -1260,7 +1593,7 @@ class FeedAnalyticTracker
         return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
-    fun createProductMap(product: ProductItem) : Map<String, Any> {
+    fun createProductMap(product: ProductItem): Map<String, Any> {
         val map = java.util.HashMap<String, Any>()
         map[Product.ID] = product.id.toString()
         map[Product.NAME] = product.name
@@ -1273,19 +1606,24 @@ class FeedAnalyticTracker
         return map
     }
 
-    private fun getProductItemList(id: Int, name: String, price: Int, brand: String, category: String,
-                                variant: String, list: String, position: Int)
+    private fun getProductItemList(
+        id: Int, name: String, price: Int, brand: String, category: String,
+        variant: String, list: String, position: Int
+    )
             : List<ProductItem> {
         val dataList = ArrayList<ProductItem>()
-        dataList.add(ProductItem(
+        dataList.add(
+            ProductItem(
                 id, name, price, brand, category, variant, list, position
-        ))
+            )
+        )
         return dataList
     }
 
-
-    class ProductItem(id: Int, name: String, price: Int, brand: String, category: String,
-                  variant: String, list: String, position: Int) {
+    class ProductItem(
+        id: Int, name: String, price: Int, brand: String, category: String,
+        variant: String, list: String, position: Int
+    ) {
         var id: Int = 0
             internal set
         var name: String

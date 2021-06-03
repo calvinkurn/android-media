@@ -47,8 +47,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder, MentionAdapterListener, ContentReportContract.View {
-
+class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder,
+    MentionAdapterListener, ContentReportContract.View {
 
     private var adapter: KolCommentAdapter? = null
     private var header: KolCommentHeaderNewModel? = null
@@ -79,13 +79,17 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun initInjector() {
         DaggerKolCommentComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(activity?.application))
-                .kolCommentModule(KolCommentModule(this, this))
-                .build()
-                .inject(this)
+            .kolComponent(KolComponentInstance.getKolComponent(activity?.application))
+            .kolCommentModule(KolCommentModule(this, this))
+            .build()
+            .inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val parentView: View = inflater.inflate(R.layout.fragment_kol_comment_new, container, false)
         listComment = parentView.findViewById(R.id.comment_list)
         kolComment = parentView.findViewById(R.id.new_comment)
@@ -119,23 +123,35 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         removeLoading()
         showError(false) {
             presenter.getCommentFirstTime(
-                    requireArguments().getInt(KolCommentActivity.ARGS_ID))
+                requireArguments().getInt(KolCommentActivity.ARGS_ID)
+            )
         }
     }
 
     override fun onErrorDeleteComment(errorMessage: String?) {
         view?.let {
-            Toaster.build(it, getString(R.string.kol_deleting_comment_error), Toaster.TYPE_ERROR).show()
+            Toaster.build(it, getString(R.string.kol_deleting_comment_error), Toaster.TYPE_ERROR)
+                .show()
         }
     }
 
-    override fun onDeleteCommentKol(id: String?, canDeleteComment: Boolean, adapterPosition: Int): Boolean {
+    override fun onDeleteCommentKol(
+        id: String?,
+        canDeleteComment: Boolean,
+        adapterPosition: Int
+    ): Boolean {
         if (canDeleteComment || isInfluencer()) {
             var toBeDeleted = true
             view?.let {
-                Toaster.build(it, getString(R.string.kol_delete_1_comment), 3000, Toaster.TYPE_NORMAL, getString(R.string.kol_delete_comment_ok), View.OnClickListener {
-                    toBeDeleted = false
-                }).show()
+                Toaster.build(
+                    it,
+                    getString(R.string.kol_delete_1_comment),
+                    3000,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.kol_delete_comment_ok),
+                    View.OnClickListener {
+                        toBeDeleted = false
+                    }).show()
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
                     delay(3000L)
@@ -156,7 +172,13 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 && userSession?.userId == header?.userId)
     }
 
-    override fun reportAction(adapterPosition: Int, canDeleteComment: Boolean, id: String, reasonType: String, reasonDesc: String) {
+    override fun reportAction(
+        adapterPosition: Int,
+        canDeleteComment: Boolean,
+        id: String,
+        reasonType: String,
+        reasonDesc: String
+    ) {
         presenterReport.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
         this.adapterPosition = adapterPosition
         this.commentId = id
@@ -168,15 +190,20 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             kolComment?.append(userToMention)
         } else {
             val mentionFormatBuilder = StringBuilder()
-            if (kolComment?.text?.isNotEmpty() == true && kolComment?.text!![kolComment?.length()
-                            ?: 1 - 1] != ' ') mentionFormatBuilder.append(" ")
+            if (kolComment?.text?.isNotEmpty() == true && kolComment?.text?.get(
+                    kolComment?.length()
+                        ?: 1 - 1
+                ) != ' '
+            ) mentionFormatBuilder.append(" ")
             mentionFormatBuilder
-                    .append("@")
-                    .append(user?.fullName)
-                    .append(" ")
+                .append("@")
+                .append(user?.fullName)
+                .append(" ")
             kolComment?.append(mentionFormatBuilder.toString())
         }
         kolComment?.setSelection(kolComment?.length() ?: 0)
+        kolComment?.requestFocus()
+        KeyboardHandler.showSoftKeyboard(activity)
     }
 
     override fun onGoToProfile(url: String?) {
@@ -185,8 +212,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onClickMentionedProfile(id: String?) {
         RouteManager.route(
-                context,
-                ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, id ?: "")
+            context,
+            ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, id ?: "")
         )
     }
 
@@ -207,16 +234,15 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         routeUrl(url)
     }
 
-
     private fun routeUrl(url: String?) {
         if (RouteManager.isSupportApplink(context, url)) {
             RouteManager.route(context, url)
         } else {
             RouteManager.route(
-                    context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+                context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
+            )
         }
     }
-
 
     override fun onSuccessSendComment(sendKolCommentDomain: SendKolCommentDomain?) {
 //        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -225,7 +251,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 //                KolEventTracking.Action.FEED_SUBMIT_COMMENT,
 //                KolEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_COMMENT
 //        ))
-        adapter?.addItem(KolCommentNewModel(
+        adapter?.addItem(
+            KolCommentNewModel(
                 sendKolCommentDomain?.id, sendKolCommentDomain?.domainUser?.id.toString(),
                 null,
                 sendKolCommentDomain?.domainUser?.photo,
@@ -236,7 +263,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 sendKolCommentDomain?.canDeleteComment() ?: false,
                 "",
                 false
-        ))
+            )
+        )
 
         kolComment?.setText("")
         enableSendComment()
@@ -300,7 +328,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onErrorSendComment(errorMessage: String?) {
         view?.let {
-            Toaster.build(it, getString(R.string.kol_adding_comment_error), Toaster.TYPE_ERROR).show()
+            Toaster.build(it, getString(R.string.kol_adding_comment_error), Toaster.TYPE_ERROR)
+                .show()
         }
         enableSendComment()
     }
@@ -318,10 +347,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         }
 
         showError(
-                false
+            false
         ) {
             presenter.getCommentFirstTime(
-                    requireArguments().getInt(KolCommentActivity.ARGS_ID))
+                requireArguments().getInt(KolCommentActivity.ARGS_ID)
+            )
         }
     }
 
@@ -333,7 +363,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             onError()
         }
         globalError.setType(
-                if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
+            if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
         )
     }
 
@@ -376,13 +406,14 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private fun prepareView() {
         adapter = KolCommentAdapter(typeFactory)
         ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
-        listComment?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        listComment?.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         listComment?.adapter = adapter
         sendButton?.setOnClickListener { v: View? ->
             if (userSession != null && userSession?.isLoggedIn != false) {
                 presenter.sendComment(
-                        arguments?.getInt(KolCommentActivity.ARGS_ID) ?: 0,
-                        kolComment?.getRawText()
+                    arguments?.getInt(KolCommentActivity.ARGS_ID) ?: 0,
+                    kolComment?.getRawText()
                 )
             } else {
                 RouteManager.route(context, ApplinkConst.LOGIN)

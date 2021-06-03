@@ -92,7 +92,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -101,6 +101,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation project(rootProject.ext.libraries.irisSession)
+
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants

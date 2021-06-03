@@ -108,4 +108,8 @@
     <!-- Like -->
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
 
+    <!--Share -->
+    <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
+    <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
+
 </resources>

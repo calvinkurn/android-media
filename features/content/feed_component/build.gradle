@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation project(rootProject.ext.libraries.irisSession)
 
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -82,6 +83,7 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    implementation project(path: ':libraries:iris_session')
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
 

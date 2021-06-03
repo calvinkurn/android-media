@@ -52,8 +52,7 @@
                 android:fontFamily="sans-serif"
                 android:text="@string/you_have_new_feed"
                 android:textColor="@color/Unify_N700_44"
-                android:textSize="@dimen/sp_12"
-                android:visibility="gone" />
+                android:textSize="@dimen/sp_12" />
         </LinearLayout>
 
     </RelativeLayout>

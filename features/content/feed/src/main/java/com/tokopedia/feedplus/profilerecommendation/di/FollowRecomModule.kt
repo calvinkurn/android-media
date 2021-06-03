@@ -8,7 +8,7 @@ import com.tokopedia.feedplus.profilerecommendation.domain.usecase.FollowAllReco
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.SetOnboardingStatusUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -60,4 +60,7 @@ class FollowRecomModule {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
+    @Provides
+    fun getIrisSession(@ApplicationContext context: Context): IrisSession = IrisSession(context)
 }

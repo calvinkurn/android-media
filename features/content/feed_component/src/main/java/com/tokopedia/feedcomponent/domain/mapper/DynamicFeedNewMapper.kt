@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
 private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
-private const val TYPE_FEED_X_CARD_POST: String = "FeedXCardPost"
+const val TYPE_FEED_X_CARD_POST: String = "FeedXCardPost"
 private const val TYPE_TOPADS_HEADLINE = "topads_headline"
 private const val TYPE_CARD_PLAY_CAROUSEL = "play_carousel"
 
@@ -59,14 +59,6 @@ object DynamicFeedNewMapper {
     }
 
     private fun mapCardPost(posts: MutableList<Visitable<*>>, feedXCard: FeedXCard) {
-        //please remove this code if you want to show for video post
-//        val media = ArrayList<FeedXMedia>()
-//        feedXCard.media.map {
-//            if (it.type == TYPE_IMAGE) {
-//                media.add(it)
-//            }
-//        }
-//        feedXCard.media = media
         val dynamicPostUiModel = DynamicPostUiModel(feedXCard.copyPostData())
         posts.add(dynamicPostUiModel)
     }

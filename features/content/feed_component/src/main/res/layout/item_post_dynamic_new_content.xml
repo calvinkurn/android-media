@@ -180,6 +180,19 @@
         app:layout_constraintTop_toBottomOf="@id/caption_text"
         tools:text="17 Oktober 2020" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/see_all_comment_text"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/timestamp_text"
+        app:layout_constraintTop_toBottomOf="@id/timestamp_text"
+        app:typographyType="body_3"
+        tools:text="Lihat semua 4 komentar"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/comment_user_image1"
         android:layout_width="@dimen/feed_component_dp_14"
@@ -264,20 +277,6 @@
         app:layout_constraintStart_toEndOf="@id/comment_text2"
         app:layout_constraintTop_toTopOf="@id/comment_text2"
         tools:src="@tools:sample/avatars"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/see_all_comment_text"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:textColor="@color/Neutral_N700_32"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/comment_text1"
-        app:layout_constraintStart_toStartOf="@id/comment_text1"
-        app:layout_constraintTop_toBottomOf="@id/comment_text2"
-        app:typographyType="body_3"
-        tools:text="Lihat semua 4 komentar"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify

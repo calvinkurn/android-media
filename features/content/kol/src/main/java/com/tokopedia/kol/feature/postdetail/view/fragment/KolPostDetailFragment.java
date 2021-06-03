@@ -679,7 +679,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeClick(int positionInFeed, int id, boolean isLiked) {
+    public void onLikeClick(int positionInFeed, int id, boolean isLiked, boolean type) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id);
         } else {
@@ -705,11 +705,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onShareClick(int positionInFeed, int id, @NotNull String title,
                              @NotNull String description, @NotNull String url,
-                             @NotNull String imageUrl) {
+                             @NotNull String imageUrl,
+                             boolean postTypeASGC) {
         if (getActivity() != null) {
             ShareBottomSheets.Companion.newInstance(packageName -> {
 
-            }, "", imageUrl, url, description, title,"").show(getActivity().getSupportFragmentManager());
+            }, "", imageUrl, url, description, title, "").show(getActivity().getSupportFragmentManager());
         }
     }
 
@@ -1009,6 +1010,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener) {
+
+    }
+
+    @Override
+    public void onReadMoreClicked(@NotNull String postId) {
 
     }
 }

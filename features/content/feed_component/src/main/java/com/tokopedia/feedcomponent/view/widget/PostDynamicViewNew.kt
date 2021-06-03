@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.widget
 
+import android.app.Activity
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
@@ -11,10 +12,8 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.*
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -42,8 +41,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.item_post_image_new.view.*
-import kotlinx.android.synthetic.main.item_post_video.view.*
+import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import java.net.URLEncoder
 
 
@@ -86,9 +86,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var gridList: RecyclerView
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var videoListener: VideoViewHolder.VideoViewListener? = null
-
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
     private var positionInFeed: Int = 0
+    private val NO_VOLUME = 0f
+    private val NORMAL_VOLUME = 1f
+
 
     init {
         val view =
@@ -121,6 +123,43 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
+    fun bindData(
+        dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
+        gridItemListener: GridPostAdapter.GridItemListener,
+        videoListener: VideoViewHolder.VideoViewListener,
+        adapterPosition: Int,
+        userSession: UserSessionInterface,
+        feedXCard: FeedXCard
+    ) {
+        this.listener = dynamicPostListener
+        this.gridPostListener = gridItemListener
+        this.videoListener = videoListener
+        this.positionInFeed = adapterPosition
+        bindFollow(feedXCard)
+        bindItems(feedXCard)
+        bindCaption(feedXCard)
+        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
+        bindLike(feedXCard)
+        bindComment(
+            feedXCard.comments,
+            userSession.profilePicture,
+            userSession.name,
+            feedXCard.id.toIntOrZero()
+        )
+        shareButton.setOnClickListener {
+            val desc = context.getString(R.string.feed_share_default_text)
+            listener?.onShareClick(
+                positionInFeed,
+                feedXCard.id.toIntOrZero(),
+                feedXCard.author.name + " `post",
+                desc.replace("%s", feedXCard.author.name),
+                feedXCard.appLink,
+                feedXCard.media.firstOrNull()?.mediaUrl ?: "",
+                feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+            )
+        }
+    }
+
     fun bindLike(feedXCard: FeedXCard) {
         bindLike(feedXCard.like, feedXCard.id.toIntOrZero())
     }
@@ -135,43 +174,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
     }
 
-    fun bindData(
-        dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
-        gridItemListener: GridPostAdapter.GridItemListener,
-        videoListener: VideoViewHolder.VideoViewListener,
-        adapterPosition: Int,
-        userSession: UserSessionInterface,
-        feedXCard: FeedXCard
-    ) {
-        this.listener = dynamicPostListener
-        this.gridPostListener = gridItemListener
-        this.videoListener = videoListener
-        this.positionInFeed = adapterPosition
-        bindFollow(feedXCard)
-        bindItems(feedXCard.typename, feedXCard.id.toIntOrZero(), feedXCard.media, feedXCard)
-        bindCaption(feedXCard)
-        bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
-        bindLike(feedXCard)
-        bindComment(
-            feedXCard.comments,
-            userSession.profilePicture,
-            userSession.name,
-            feedXCard.id.toIntOrZero()
-        )
-        shareButton.setOnClickListener {
-            //please confirm for the values passed as function params
-            val desc = context.getString(R.string.feed_share_default_text)
-            listener?.onShareClick(
-                positionInFeed,
-                feedXCard.id.toIntOrZero(),
-                feedXCard.author.name + " `post",
-                desc.replace("%s", feedXCard.author.name),
-                feedXCard.share.operation,
-                feedXCard.media.firstOrNull()?.mediaUrl ?: ""
-            )
-        }
-    }
-
     private fun bindHeader(
         activityId: Int,
         author: FeedXAuthor,
@@ -179,11 +181,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         count: Int,
         reportable: Boolean
     ) {
-
         followCount.text =
             String.format(
                 context.getString(R.string.feed_header_follow_count_text),
-                count.thousandFormatted()
+                count.thousandFormatted(1)
             )
         var isFollow = isFollowed
         followCount.showWithCondition(!isFollow)
@@ -210,10 +211,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     shopName.postDelayed({
-                        shopName.text = author.name
+                        shopName.text = author.name + " "
                         shopName.append(MethodChecker.fromHtml(context.getString(R.string.feed_header_separator)))
                         shopName.append(MethodChecker.fromHtml(context.getString(R.string.kol_Action_following_color)))
                     }, 1000)
+                    followCount.visible()
                     listener?.onHeaderActionClick(
                         positionInFeed, author.id,
                         authorType, isFollow
@@ -347,6 +349,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindCaption(caption: FeedXCard) {
         val tagConverter = TagConverter()
+        var spannableString: SpannableString
+        val authorType =
+            if (caption.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val followCta =
+            FollowCta(
+                authorID = caption.author.id,
+                authorType = authorType,
+                isFollow = caption.followers.isFollowed
+            )
         badge2.setImageUrl(caption.author.badgeURL)
         badge2.showWithCondition(caption.author.badgeURL.isNotEmpty())
         badge2.showWithCondition(caption.text.isNotEmpty())
@@ -360,22 +371,26 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     else
                         DynamicPostViewHolder.CAPTION_END
 
-                    val captionTxt: String = buildString {
-                        if (caption.author.badgeURL.isNotEmpty()) append(SPACE)
-                        append(("<b>" + caption.author.name + "</b>" + " - ")
+                val captionTxt: String = buildString {
+                    if (caption.author.badgeURL.isNotEmpty()) append(SPACE)
+                    append(
+                        ("<b>" + caption.author.name + "</b>" + " - ")
                             .plus(caption.text.substring(0, captionEnd))
                             .replace("\n", "<br/>")
                             .replace(DynamicPostViewHolder.NEWLINE, "<br/>")
                             .plus("... ")
                             .plus("<font color='#6D7588'><b>")
                             .plus(context.getString(R.string.feed_component_read_more_button))
-                            .plus("</b></font>"))
-                    }
-
+                            .plus("</b></font>")
+                    )
+                }
                 captionText.text = tagConverter.convertToLinkifyHashtag(
                     SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag
                 ) { hashtag -> onHashtagClicked(hashtag) }
+
+                spannableString = SpannableString(MethodChecker.fromHtml(captionTxt))
                 captionText.setOnClickListener {
+                    listener?.onReadMoreClicked(caption.id)
                     val txt: String = buildString {
                         if (caption.author.badgeURL.isNotEmpty()) append(SPACE)
                         append(("<b>" + caption.author.name + "</b>" + " - " + caption.text))
@@ -384,17 +399,21 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         SpannableString(MethodChecker.fromHtml(txt)),
                         colorLinkHashtag
                     ) { hashtag -> onHashtagClicked(hashtag) }
-                    //  }
+                    spannableString = SpannableString(MethodChecker.fromHtml(txt))
+
                 }
                 captionText.movementMethod = LinkMovementMethod.getInstance()
+
             } else {
 
                 val captionTxt: String = buildString {
                     if (caption.author.badgeURL.isNotEmpty()) append(SPACE)
-                    append(("<b>" + caption.author.name + "</b>" + " - ").plus(
-                        caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")))
+                    append(
+                        ("<b>" + caption.author.name + "</b>" + " - ").plus(
+                            caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")
+                        )
+                    )
                 }
-
                 captionText.text = tagConverter
                     .convertToLinkifyHashtag(
                         SpannableString(
@@ -404,8 +423,34 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         ),
                         colorLinkHashtag
                     ) { hashtag -> onHashtagClicked(hashtag) }
+                spannableString = SpannableString(
+                    MethodChecker.fromHtml(
+                        captionTxt
+                    )
+                )
                 captionText.movementMethod = LinkMovementMethod.getInstance()
             }
+
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    listener?.onAvatarClick(
+                        positionInFeed,
+                        caption.appLink,
+                        caption.id.toIntOrZero(),
+                        "",
+                        followCta
+                    )
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Neutral_N600
+                    )
+                }
+            }, 0, caption.author.name.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         }
     }
 
@@ -475,14 +520,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun bindItems(
-        typeName: String,
-        postId: Int,
-        media: List<FeedXMedia>,
+    fun bindItems(
         feedXCard: FeedXCard
     ) {
-
-        if (typeName != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
+        val media = feedXCard.media
+        val postId = feedXCard.id.toIntOrZero()
+        if (feedXCard.typename != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
             val products = feedXCard.tags
             gridList.gone()
             carouselView.visible()
@@ -493,6 +536,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 if (media.size > 1) {
                     pageControl.show()
                     pageControl.setIndicator(media.size)
+                    pageControl.indicatorCurrentPosition = 0
                 } else {
                     pageControl.hide()
                 }
@@ -506,62 +550,74 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         imageItem.layoutParams = param
                         imageItem.run {
                             findViewById<ImageUnify>(R.id.post_image).setImageUrl(feedMedia.mediaUrl)
-                            findViewById<IconUnify>(R.id.collapsed).showWithCondition(products.isNotEmpty())
-                            val productTag = findViewById<IconUnify>(R.id.collapsed)
-                            val productTagText = findViewById<ImageView>(R.id.expanded)
-                            like_anim.setImageDrawable( MethodChecker.getDrawable(context,R.drawable.ic_thumb_filled))
+                            findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(
+                                products.isNotEmpty()
+                            )
+                            val productTag = findViewById<IconUnify>(R.id.product_tag_button)
+                            val productTagText = findViewById<Typography>(R.id.product_tag_text)
+                            like_anim.setImageDrawable(
+                                MethodChecker.getDrawable(
+                                    context,
+                                    R.drawable.ic_thumb_filled
+                                )
+                            )
                             productTagText.gone()
-                            post_image.viewTreeObserver.addOnGlobalLayoutListener(
-                                object : OnGlobalLayoutListener {
-                                    override fun onGlobalLayout() {
-                                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-                                        productTagText.postDelayed({
-                                            if (products.isNotEmpty()) {
-                                                productTag.gone()
-                                                productTagText.visible()
-                                            }
-                                        }, 1000)
+                            productTagText.postDelayed({
+                                if (products.isNotEmpty()) {
+                                    productTagText.visible()
+                                }
+
+                            }, 1000)
+                            val gd = GestureDetector(
+                                context,
+                                object : GestureDetector.SimpleOnGestureListener() {
+                                    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                                        listener?.onImageClicked(postId.toString())
+                                        productTag.gone()
+                                        productTagText.visible()
+                                        return true
                                     }
 
+                                    override fun onDown(e: MotionEvent): Boolean {
+                                        return true
+                                    }
+
+                                    override fun onDoubleTap(e: MotionEvent): Boolean {
+                                        val pulseFade: Animation =
+                                            AnimationUtils.loadAnimation(
+                                                context,
+                                                android.R.anim.fade_in
+                                            )
+                                        pulseFade.setAnimationListener(object :
+                                            Animation.AnimationListener {
+                                            override fun onAnimationStart(animation: Animation) {
+                                                like_anim.visibility = VISIBLE
+                                                listener?.onLikeClick(
+                                                    positionInFeed, postId,
+                                                    isLiked = false,
+                                                    type = true
+                                                )
+                                            }
+
+                                            override fun onAnimationEnd(animation: Animation) {
+                                                like_anim.gone()
+                                            }
+
+                                            override fun onAnimationRepeat(animation: Animation) {}
+                                        })
+                                        like_anim.visible()
+                                        like_anim.startAnimation(pulseFade)
+                                        return true
+                                    }
+
+                                    override fun onLongPress(e: MotionEvent) {
+                                        super.onLongPress(e)
+                                    }
+
+                                    override fun onDoubleTapEvent(e: MotionEvent): Boolean {
+                                        return true
+                                    }
                                 })
-                            val gd = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-
-
-                                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                                    productTag.gone()
-                                    productTagText.visible()
-                                    return true
-                                }
-                                override fun onDown(e: MotionEvent): Boolean {
-                                    return true
-                                }
-
-                                override fun onDoubleTap(e: MotionEvent): Boolean {
-                                    val pulseFade: Animation =
-                                        AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
-                                    pulseFade.setAnimationListener(object : Animation.AnimationListener {
-                                        override fun onAnimationStart(animation: Animation) {
-                                            like_anim.visibility = VISIBLE
-                                            listener?.onLikeClick(positionInFeed, feedXCard.id.toIntOrZero(), false)
-                                        }
-                                        override fun onAnimationEnd(animation: Animation) {
-                                            like_anim.visibility = GONE
-                                        }
-                                        override fun onAnimationRepeat(animation: Animation) {}
-                                    })
-                                    like_anim.visible()
-                                    like_anim.startAnimation(pulseFade)
-                                    return true
-                                }
-
-                                override fun onLongPress(e: MotionEvent) {
-                                    super.onLongPress(e)
-                                }
-
-                                override fun onDoubleTapEvent(e: MotionEvent): Boolean {
-                                    return true
-                                }
-                            })
 
                             productTagText?.setOnClickListener {
                                 listener?.let { listener ->
@@ -576,50 +632,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         addItem(imageItem)
 
                     } else {
-                        val videoItem = View.inflate(context, R.layout.item_post_video, null)
-                        val param = LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                        )
-                        videoItem.layoutParams = param
-                        videoItem.run{
-//                        videoItem.run {
-//                            findViewById<VideoPlayerView>(R.id.layout_video).setVideoURI(
-//                                Uri.parse(
-//                                    feedMedia.mediaUrl
-//                                )
-//                            )
-                            image.loadImage(feedMedia.coverUrl)
-                            setOnClickListener {
-                                if (feedMedia.mediaUrl.isNotBlank()) {
-                                    videoListener?.onVideoPlayerClicked(
-                                        positionInFeed,
-                                        positionInFeed,
-                                        postId.toString(),
-                                        feedMedia.appLink
-                                    )
-                                }
-                            }
-                            layout_video.setVideoURI(Uri.parse(feedMedia.mediaUrl))
-                            frame_video.gone()
-                            layout_video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
-                                override fun onPrepared(mp: MediaPlayer) {
-                                    mp.isLooping = true
-                                    ic_play.visibility = View.GONE
-                                    image.visibility = View.GONE
-                                    mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
-                                        override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-                                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                                                frame_video.visibility = View.VISIBLE
-                                                return true
-                                            }
-                                            return false
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                        addItem(videoItem)
+                        addItem(setVideoCarouselView(feedMedia, feedXCard.id, products))
                     }
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
@@ -630,33 +643,112 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
         } else {
-            gridList.visible()
-            carouselView.gone()
-            commentButton.gone()
-            val layoutManager = GridLayoutManager(
-                gridList.context,
-                SPAN_SIZE_FULL,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
-            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return when (feedXCard.products.size) {
-                        1 -> SPAN_SIZE_FULL
-                        2 -> SPAN_SIZE_HALF
-                        else -> SPAN_SIZE_SINGLE
+            setGridASGCLayout(feedXCard)
+        }
+    }
+
+    private fun setVideoCarouselView(
+        feedMedia: FeedXMedia,
+        postId: String,
+        products: List<FeedXProduct>
+    ): View {
+        val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
+        val param = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        videoItem.layoutParams = param
+        videoItem.run {
+            image.setImageUrl(feedMedia.coverUrl)
+            image.setOnClickListener {
+                playVideo(feedMedia, videoItem)
+            }
+            video_tag_text.gone()
+            video_tag_text.postDelayed({
+                if (!products.isEmpty()) {
+                    video_tag_text.visible()
+                }
+
+            }, 3000)
+            volumeIcon?.setOnClickListener {
+                volumeIcon.setImage(IconUnify.VOLUME_UP)
+                //   mp.setVolume(NORMAL_VOLUME,NORMAL_VOLUME)
+            }
+            playVideo(feedMedia, videoItem)
+        }
+        return (videoItem)
+    }
+
+    private fun playVideo(feedMedia: FeedXMedia, videoItem: View) {
+        videoItem.run {
+            frame_video.invisible()
+            layout_video.setVideoURI(Uri.parse(feedMedia.mediaUrl))
+            layout_video.setOnPreparedListener(object :
+                MediaPlayer.OnPreparedListener {
+                override fun onPrepared(mp: MediaPlayer) {
+                    context?.let {
+                        val videoSize = Video.resize(it as Activity, mp.videoWidth, mp.videoHeight)
+                        layout_video.setSize(videoSize.videoWidth, videoSize.videoHeight)
+                        layout_video.holder.setFixedSize(
+                            videoSize.videoWidth,
+                            videoSize.videoHeight
+                        )
+                    }
+                    mp.isLooping = true
+                    ic_play.gone()
+                    image.gone()
+                    loader.gone()
+                    mp.setVolume(NO_VOLUME, NO_VOLUME)
+                    mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
+                        override fun onInfo(
+                            mp: MediaPlayer?,
+                            what: Int,
+                            extra: Int
+                        ): Boolean {
+                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                                frame_video.visibility = View.VISIBLE
+                                return true
+                            }
+                            return false
+                        }
+                    })
+                    volumeIcon?.setOnClickListener {
+                        volumeIcon.setImage(IconUnify.VOLUME_UP)
+                        mp.setVolume(NORMAL_VOLUME, NORMAL_VOLUME)
                     }
                 }
-            }
-            gridList.layoutManager = layoutManager
-            val adapter = GridPostAdapter(
-                0,
-                getGridPostModel(feedXCard, feedXCard.products),
-                gridPostListener
-            )
-            gridList.adapter = adapter
-            setGridListPadding(feedXCard.products.size)
+            })
+            layout_video.start()
         }
+    }
+
+    private fun setGridASGCLayout(feedXCard: FeedXCard) {
+        gridList.visible()
+        carouselView.gone()
+        commentButton.gone()
+        val layoutManager = GridLayoutManager(
+            gridList.context,
+            SPAN_SIZE_FULL,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (feedXCard.products.size) {
+                    1 -> SPAN_SIZE_FULL
+                    2 -> SPAN_SIZE_HALF
+                    else -> SPAN_SIZE_SINGLE
+                }
+            }
+        }
+        gridList.layoutManager = layoutManager
+        val adapter = GridPostAdapter(
+            0,
+            getGridPostModel(feedXCard, feedXCard.products),
+            gridPostListener
+        )
+        gridList.adapter = adapter
+        setGridListPadding(feedXCard.products.size)
     }
 
 
@@ -722,5 +814,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 SpannableString(avatarDate)
             }
         timestampText.text = spannableString
+    }
+
+
+    fun showAnim() {
+        carouselView.getChildAt(0)
     }
 }
