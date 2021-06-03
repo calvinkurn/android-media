@@ -7,17 +7,41 @@ import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
+import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_address.view.*
 
-class ReceiverAddressInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUiModel.ReceiverAddressInfoUiModel>(itemView) {
+class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiModel.ReceiverAddressInfoUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_shipment_info_address
+
+        private const val LABEL_RECEIVER_ADDRESS = "receiverAddress"
+    }
+
+    init {
+        setupListeners()
+    }
+
+    private var element: ShipmentInfoUiModel.ReceiverAddressInfoUiModel? = null
+
+    private fun setupListeners() {
+        itemView.icBuyerOrderDetailCopyReceiverAddress.setOnClickListener {
+            copyAwb()
+        }
+    }
+
+    private fun copyAwb() {
+        element?.let {
+            Utils.copyText(itemView.context, LABEL_RECEIVER_ADDRESS, it.receiverAddress)
+            showToaster(itemView.context.getString(R.string.message_receiver_address_copied))
+        }
     }
 
     override fun bind(element: ShipmentInfoUiModel.ReceiverAddressInfoUiModel?) {
         element?.let {
+            this.element = it
             setupReceiverName(it.receiverName)
             setupReceiverPhoneNumber(it.receiverPhoneNumber)
             setupReceiverAddress(it.receiverAddress)
@@ -30,6 +54,7 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipme
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is ShipmentInfoUiModel.ReceiverAddressInfoUiModel && newItem is ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
+                    this.element = newItem
                     itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     if (oldItem.receiverName != newItem.receiverName) {
                         setupReceiverName(newItem.receiverName)
@@ -58,11 +83,5 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : AbstractViewHolder<Shipme
 
     private fun setupReceiverAddress(receiverAddress: String) {
         itemView.tvBuyerOrderDetailReceiverAddressValue?.text = receiverAddress
-    }
-
-    private fun composeReceiverAddressNote(receiverAddressNote: String): SpannableString {
-        return SpannableString(receiverAddressNote).apply {
-            setSpan(StyleSpan(android.graphics.Typeface.ITALIC), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
     }
 }

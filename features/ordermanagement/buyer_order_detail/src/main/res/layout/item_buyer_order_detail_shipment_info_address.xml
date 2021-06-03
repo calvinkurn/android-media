@@ -16,14 +16,26 @@
         android:layout_height="wrap_content"
         android:text="@string/label_address"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailCopyReceiverAddress"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="wrap"
-        app:typographyType="body_3"
-        tools:text="Alamat" />
+        app:typographyType="body_3" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBuyerOrderDetailCopyReceiverAddress"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:icon_color_light_enable="@color/Unify_N700_96"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailReceiverAddressLabel"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailReceiverAddressLabel"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailReceiverAddressLabel" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailReceiverNameValue"
