@@ -28,7 +28,9 @@ data class LocalizationChooseAddressData(
         var buyerStoreCode: String = "",
         var type: Int = 0,
         var state: Int = 0,
-        var stateDetail: String = ""
+        var stateDetail: String = "",
+        var shopId: String = "",
+        var warehouseId: String = ""
 ) : Parcelable {
 
     companion object {

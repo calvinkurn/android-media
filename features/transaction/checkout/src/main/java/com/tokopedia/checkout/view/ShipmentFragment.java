@@ -61,9 +61,9 @@ import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
-import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -71,7 +71,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
@@ -3054,7 +3053,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     userAddress.getLongitude(),
                     String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
                     userAddress.getPostalCode(),
-                    "", ""
+                    userAddress.getShopId(), userAddress.getWarehouseId()
             );
         }
     }

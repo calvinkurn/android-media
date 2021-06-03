@@ -26,6 +26,8 @@ data class UserAddress(
         var isCorner: Boolean = false,
         var state: Int = 0,
         var stateDetail: String = "",
+        var shopId: String = "",
+        var warehouseId: String = ""
 ) : Parcelable {
 
     companion object {
