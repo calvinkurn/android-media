@@ -5,20 +5,18 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.common.data.response.minicartlist.Button
+import com.tokopedia.minicart.common.data.response.minicartlist.OutOfService
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.setImage
 import javax.inject.Inject
 
 class GlobalErrorBottomSheet @Inject constructor() {
 
-    companion object {
-        const val TYPE_FAILED_TO_LOAD = 1
-        const val TYPE_NO_CONNECTION = 2
-        const val TYPE_OVERLOAD = 3
-        const val TYPE_DOWN = 4
-        const val TYPE_MAINTENANCE = 5
-    }
-
-    fun show(fragmentManager: FragmentManager, context: Context, type: Int, actionCallback: () -> Unit) {
+    fun show(fragmentManager: FragmentManager,
+             context: Context,
+             outOfService: OutOfService? = null,
+             listener: GlobalErrorBottomSheetActionListener? = null) {
 
         val bottomSheet = BottomSheetUnify()
         bottomSheet.showCloseIcon = true
@@ -26,30 +24,54 @@ class GlobalErrorBottomSheet @Inject constructor() {
 
         val view = View.inflate(context, R.layout.layout_bottomsheet_mini_cart_global_error, null)
         val layoutGlobalError: GlobalError = view.findViewById(R.id.layout_global_error)
-        when (type) {
-            TYPE_FAILED_TO_LOAD -> {
-                layoutGlobalError.setType(GlobalError.NO_CONNECTION)
+        if (outOfService != null) {
+            when (outOfService.id) {
+                OutOfService.ID_MAINTENANCE, OutOfService.ID_TIMEOUT, OutOfService.ID_OVERLOAD -> {
+                    layoutGlobalError.setType(GlobalError.SERVER_ERROR)
+                    outOfService.buttons.firstOrNull()?.let { buttonData ->
+                        layoutGlobalError.errorAction.text = buttonData.message
+                        layoutGlobalError.setActionClickListener {
+                            when (buttonData.id) {
+                                Button.ID_START_SHOPPING, Button.ID_HOMEPAGE -> {
+                                    listener?.onGoToHome()
+                                    bottomSheet.dismiss()
+                                }
+                                Button.ID_RETRY -> {
+                                    listener?.onRefreshErrorPage()
+                                    bottomSheet.dismiss()
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            TYPE_NO_CONNECTION -> {
-                layoutGlobalError.setType(GlobalError.NO_CONNECTION)
+
+            if (outOfService.title.isNotBlank()) {
+                layoutGlobalError.errorTitle.text = outOfService.title
             }
-            TYPE_OVERLOAD -> {
-                layoutGlobalError.setType(GlobalError.PAGE_FULL)
+            if (outOfService.description.isNotBlank()) {
+                layoutGlobalError.errorDescription.text = outOfService.description
             }
-            TYPE_DOWN -> {
-                layoutGlobalError.setType(GlobalError.SERVER_ERROR)
+            if (outOfService.image.isNotBlank()) {
+                layoutGlobalError.errorIllustration.setImage(outOfService.image, 0f)
             }
-            TYPE_MAINTENANCE -> {
-                layoutGlobalError.setType(GlobalError.MAINTENANCE)
+        } else {
+            layoutGlobalError.setType(GlobalError.SERVER_ERROR)
+            layoutGlobalError.setActionClickListener {
+                listener?.onRefreshErrorPage()
+                bottomSheet.dismiss()
             }
-        }
-        layoutGlobalError.setActionClickListener {
-            actionCallback()
-            bottomSheet.dismiss()
         }
 
         bottomSheet.setChild(view)
         bottomSheet.show(fragmentManager, "Mini Cart Global Error")
-
     }
+}
+
+interface GlobalErrorBottomSheetActionListener {
+
+    fun onGoToHome()
+
+    fun onRefreshErrorPage()
+
 }

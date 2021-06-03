@@ -409,7 +409,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         updateCartUseCase.execute(
                 onSuccess = {
                     if (isForCheckout) {
-                        _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT)
+                        if (it.data.status) {
+                            _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT)
+                        } else {
+                            _globalEvent.value = GlobalEvent(
+                                    state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
+                                    data = it.data
+                            )
+                        }
                     }
                 },
                 onError = {

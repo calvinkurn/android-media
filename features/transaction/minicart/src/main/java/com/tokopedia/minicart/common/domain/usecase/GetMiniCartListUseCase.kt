@@ -29,8 +29,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
     }
 
     override suspend fun executeOnBackground(): MiniCartData {
-        throw RuntimeException("Test error!")
-/*
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
@@ -44,7 +42,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
         } else {
             throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
         }
-*/
     }
 
     companion object {

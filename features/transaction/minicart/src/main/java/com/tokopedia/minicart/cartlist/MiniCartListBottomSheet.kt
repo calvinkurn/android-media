@@ -81,7 +81,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_label_cancel)
                             ?: ""
                     viewModel.getCartList()
-                    showToaster(message, ctaText) {
+                    showToaster(message, Toaster.TYPE_NORMAL, ctaText) {
                         viewModel.undoDeleteCartItems()
                     }
                 }
@@ -236,7 +236,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         setTotalAmountLoading(false)
     }
 
-    private fun showToaster(message: String, ctaText: String = "", onClickListener: View.OnClickListener? = null) {
+    private fun showToaster(message: String, type: Int, ctaText: String = "", onClickListener: View.OnClickListener? = null) {
         if (message.isBlank()) return
 
         bottomSheet?.context?.let {
@@ -248,9 +248,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     if (onClickListener != null) {
                         tmpCtaClickListener = onClickListener
                     }
-                    Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, tmpCtaClickListener).show()
+                    Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
                 } else {
-                    Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                    Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
                 }
             }
         }
@@ -281,8 +281,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun updateCart() {
-        measureRecyclerViewPaddingDebounceJob?.cancel()
-        measureRecyclerViewPaddingDebounceJob = GlobalScope.launch(Dispatchers.Main) {
+        updateCartDebounceJob?.cancel()
+        updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(1000)
             viewModel?.updateCart()
         }

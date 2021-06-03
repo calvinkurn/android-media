@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +14,9 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheet
+import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
+import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
@@ -24,6 +25,7 @@ import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
@@ -82,18 +84,43 @@ class MiniCartWidget @JvmOverloads constructor(
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
                     miniCartListBottomSheet.dismiss()
                     fragment.context?.let {
-                        globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalErrorBottomSheet.TYPE_FAILED_TO_LOAD) {
-                            showMiniCartListBottomSheet(fragment)
-                        }
+                        globalErrorBottomSheet.show(fragment.parentFragmentManager, it, null, object : GlobalErrorBottomSheetActionListener {
+                            override fun onGoToHome() {
+                                // No-op
+                            }
+
+                            override fun onRefreshErrorPage() {
+                                showMiniCartListBottomSheet(fragment)
+                            }
+                        })
                     }
                 }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
 
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
-                    fragment.context?.let {
-                        globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalErrorBottomSheet.TYPE_FAILED_TO_LOAD) {
+                    fragment.context?.let { context ->
+                        val data = it.data
+                        if (data is Data) {
+                            if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
+                                globalErrorBottomSheet.show(fragment.parentFragmentManager, context, data.outOfService, object : GlobalErrorBottomSheetActionListener {
+                                    override fun onGoToHome() {
+                                        RouteManager.route(context, ApplinkConst.HOME)
+                                    }
 
+                                    override fun onRefreshErrorPage() {
+                                        viewModel.updateCart(true)
+                                    }
+                                })
+                            } else {
+                                var ctaText = ""
+                                if (data.toasterAction.showCta) {
+                                    ctaText = data.toasterAction.text
+                                }
+                                showToaster(data.error, Toaster.TYPE_ERROR, ctaText) {
+                                    viewModel.undoDeleteCartItems()
+                                }
+                            }
                         }
                     }
                 }
@@ -128,6 +155,24 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun onMiniCartBottomSheetDismissed() {
         miniCartWidgetListener?.onCartItemsUpdated(MiniCartSimplifiedData())
+    }
+
+    private fun showToaster(message: String, type: Int, ctaText: String = "", onClickListener: View.OnClickListener? = null) {
+        if (message.isBlank()) return
+
+        view?.let {
+            Toaster.toasterCustomBottomHeight = view?.resources?.getDimensionPixelSize(R.dimen.dp_72)
+                    ?: 0
+            if (ctaText.isNotBlank()) {
+                var tmpCtaClickListener = View.OnClickListener { }
+                if (onClickListener != null) {
+                    tmpCtaClickListener = onClickListener
+                }
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
+            } else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
+            }
+        }
     }
 
     /*
