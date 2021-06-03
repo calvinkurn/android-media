@@ -17,6 +17,9 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.home_component.listener.BannerComponentListener
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -64,7 +67,8 @@ import kotlinx.android.synthetic.main.fragment_tokomart_home.*
 import java.util.*
 import javax.inject.Inject
 
-class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.HomeTickerListener, MiniCartWidgetListener {
+class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.HomeTickerListener,
+        MiniCartWidgetListener, BannerComponentListener {
 
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
@@ -80,7 +84,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
     @Inject
     lateinit var viewModel: TokoMartHomeViewModel
 
-    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this, this), TokoMartHomeListDiffer()) }
+    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this, this, this), TokoMartHomeListDiffer()) }
 
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
@@ -142,6 +146,33 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
     }
+
+    override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
+        context?.let {
+            RouteManager.route(it, channelGrid.applink)
+        }
+    }
+
+    override fun isMainViewVisible(): Boolean {
+        return true
+    }
+
+    override fun onPromoScrolled(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
+    }
+
+    override fun onPageDragStateChanged(isDrag: Boolean) {
+    }
+
+    override fun onPromoAllClick(channelModel: ChannelModel) {
+    }
+
+    override fun isBannerImpressed(id: String): Boolean {
+        return true
+    }
+
+    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
+    }
+
 
     private fun initInjector() {
         DaggerTokoMartHomeComponent.builder()
@@ -434,4 +465,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
             ""
         }
     }
+
+
 }
