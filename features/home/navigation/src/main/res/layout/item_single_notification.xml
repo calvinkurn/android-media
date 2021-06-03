@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true">
 
     <com.tokopedia.navigation.deprecated.label.LabelView
         android:id="@+id/labelview"
         style="@style/LabelLayout"
         android:minHeight="@dimen/unify_space_64"
+        android:paddingStart="@dimen/unify_space_0"
         android:paddingEnd="@dimen/unify_space_8"
-        android:paddingRight="@dimen/unify_space_8"
         app:nav_lv_image_margin_right="@dimen/unify_space_16"
         app:nav_lv_image_width="@dimen/unify_space_24"
         app:nav_lv_sub_title_text_size="@dimen/sp_14"
@@ -24,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginLeft="@dimen/unify_space_16"
         android:background="@color/Unify_N100" />
 
 </LinearLayout>
