@@ -264,9 +264,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initObserver() {
-        presenter.srw.observe(viewLifecycleOwner, Observer {
+        presenter.srw.observe(viewLifecycleOwner, {
             rvSrw?.updateStatus(it)
             updateSrwState()
+        })
+        adapter.srwUiModel.observe(viewLifecycleOwner, {
+            if (it == null) {
+                showTemplateChatIfReady()
+            } else {
+                getViewState().hideTemplateChat()
+            }
         })
     }
 
@@ -276,10 +283,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             getViewState().hideTemplateChat()
         } else {
             rvSrw?.hideSrw()
-            getViewState().showTemplateChatIfReady(
-                    adapter.isLastMessageBroadcast(), !isSeller()
-            )
+            showTemplateChatIfReady()
         }
+    }
+
+    private fun showTemplateChatIfReady() {
+        getViewState().showTemplateChatIfReady(
+            adapter.isLastMessageBroadcast(), adapter.isLastMsgSrwBubble(),
+            !isSeller()
+        )
     }
 
     override fun hasProductPreviewShown(): Boolean {

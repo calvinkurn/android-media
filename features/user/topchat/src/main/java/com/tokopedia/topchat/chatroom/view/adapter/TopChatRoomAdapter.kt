@@ -6,6 +6,8 @@ import android.os.Looper
 import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -54,7 +56,8 @@ class TopChatRoomAdapter constructor(
     private val handler = Handler(Looper.getMainLooper())
     private var offset = 0
     private var offsetUiModelMap = ArrayMap<Visitable<*>, Int>()
-    private var srwUiModel: SrwBubbleUiModel? = null
+    private var _srwUiModel: MutableLiveData<SrwBubbleUiModel?> = MutableLiveData()
+    val srwUiModel: LiveData<SrwBubbleUiModel?> get() = _srwUiModel
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -395,12 +398,13 @@ class TopChatRoomAdapter constructor(
         products: List<SendablePreview>
     ) {
         srwState ?: return
-        srwUiModel = SrwBubbleUiModel(srwState, products)
+        val srwModel = SrwBubbleUiModel(srwState, products)
         val indexToAdd = getOffsetSafely()
-        visitables.add(indexToAdd, srwUiModel)
+        _srwUiModel.value = srwModel
+        visitables.add(indexToAdd, srwModel)
         notifyItemInserted(indexToAdd)
         offset++
-        offsetUiModelMap[srwUiModel] = indexToAdd
+        offsetUiModelMap[srwModel] = indexToAdd
     }
 
     override fun addElement(item: Visitable<*>) {
@@ -410,7 +414,7 @@ class TopChatRoomAdapter constructor(
     }
 
     fun removeSrwBubble() {
-        val srwModel = srwUiModel ?: return
+        val srwModel = srwUiModel.value ?: return
         var lastKnownPosition = offsetUiModelMap[srwModel] ?: return
         val upToDateUiModelData = getUpToDateUiModelPosition(lastKnownPosition, srwModel)
         if (lastKnownPosition != upToDateUiModelData.first) {
@@ -420,7 +424,11 @@ class TopChatRoomAdapter constructor(
         notifyItemRemoved(lastKnownPosition)
         offset--
         offsetUiModelMap.remove(srwModel)
-        srwUiModel = null
+        _srwUiModel.value = null
+    }
+
+    fun isLastMsgSrwBubble(): Boolean {
+        return visitables.getOrNull(0) is SrwBubbleUiModel
     }
 
     private fun getOffsetSafely(): Int {

@@ -620,12 +620,18 @@ open class TopChatViewStateImpl constructor(
         return attachmentPreviewContainer.isVisible && attachmentPreviewAdapter.isShowingProduct()
     }
 
-    override fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean) {
+    override fun showTemplateChatIfReady(
+        lastMessageBroadcast: Boolean,
+        lastMessageSrwBubble: Boolean,
+        amIBuyer: Boolean
+    ) {
         val isLastMsgFromBroadcastAndIamBuyer = lastMessageBroadcast && amIBuyer
         if (!templateRecyclerView.isVisible &&
-                templateAdapter.hasTemplateChat() &&
-                !isLastMsgFromBroadcastAndIamBuyer &&
-                fragmentView?.shouldShowSrw() == false) {
+            templateAdapter.hasTemplateChat() &&
+            !isLastMsgFromBroadcastAndIamBuyer &&
+            fragmentView?.shouldShowSrw() == false &&
+            !lastMessageSrwBubble
+        ) {
             showTemplateChat()
         }
     }

@@ -21,7 +21,6 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
-import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -35,22 +34,22 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     override fun before() {
         super.before()
         productPreview = ProductPreview(
-                "1111",
-                ProductPreviewAttribute.productThumbnail,
-                ProductPreviewAttribute.productName,
-                "Rp 23.000.000",
-                "",
-                "",
-                "",
-                "",
-                "",
-                "tokopedia://product/1111",
-                false,
-                "",
-                "Rp 50.000.000",
-                500000,
-                "50%",
-                false
+            "1111",
+            ProductPreviewAttribute.productThumbnail,
+            ProductPreviewAttribute.productName,
+            "Rp 23.000.000",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "tokopedia://product/1111",
+            false,
+            "",
+            "Rp 50.000.000",
+            500000,
+            "50%",
+            false
         )
     }
 
@@ -67,7 +66,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(matches(withTotalItem(1)))
+            .check(matches(withTotalItem(1)))
     }
 
     @Test
@@ -86,7 +85,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(matches(withTotalItem(1)))
+            .check(matches(withTotalItem(1)))
     }
 
     @Test
@@ -97,11 +96,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-                .respondWith(
-                        Instrumentation.ActivityResult(
-                                Activity.RESULT_OK, getAttachProductData(1)
-                        )
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(1)
                 )
+            )
 
         // When
         clickPlusIconMenu()
@@ -110,7 +109,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(matches(withTotalItem(1)))
+            .check(matches(withTotalItem(1)))
     }
 
     @Test
@@ -123,37 +122,37 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         // When
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-                .respondWith(
-                        Instrumentation.ActivityResult(
-                                Activity.RESULT_OK, getAttachProductData(1)
-                        )
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(1)
                 )
+            )
         clickPlusIconMenu()
         clickAttachProductMenu()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-                .respondWith(
-                        Instrumentation.ActivityResult(
-                                Activity.RESULT_OK, getAttachProductData(2)
-                        )
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(2)
                 )
+            )
         clickPlusIconMenu()
         clickAttachProductMenu()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-                .respondWith(
-                        Instrumentation.ActivityResult(
-                                Activity.RESULT_OK, getAttachProductData(3)
-                        )
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(3)
                 )
+            )
         clickPlusIconMenu()
         clickAttachProductMenu()
         onView(withId(R.id.rv_attachment_preview)).perform(
-                scrollToPosition<RecyclerView.ViewHolder>(2)
+            scrollToPosition<RecyclerView.ViewHolder>(2)
         )
 
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(matches(withTotalItem(3)))
+            .check(matches(withTotalItem(3)))
     }
 
     @Test
@@ -164,11 +163,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-                .respondWith(
-                        Instrumentation.ActivityResult(
-                                Activity.RESULT_OK, getAttachProductData(1)
-                        )
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(1)
                 )
+            )
 
         // When
         clickPlusIconMenu()
@@ -187,11 +186,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         inflateTestFragment()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-                .respondWith(
-                        Instrumentation.ActivityResult(
-                                Activity.RESULT_OK, getAttachProductData(3)
-                        )
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(3)
                 )
+            )
 
         // When
         clickPlusIconMenu()
@@ -202,7 +201,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_attachment_preview))
-                .check(matches(withTotalItem(1)))
+            .check(matches(withTotalItem(1)))
     }
 
     @Test
@@ -217,7 +216,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
         assertSrwTotalQuestion(1)
     }
@@ -234,7 +233,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
         assertSrwTotalQuestion(3)
     }
@@ -254,7 +253,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         clickAttachProductMenu()
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwTitle(chatSrwResponse.chatSmartReplyQuestion.title)
         assertSrwTotalQuestion(1)
     }
@@ -271,14 +270,15 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        assertSrwContentIsHidden()
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     @Test
     fun template_chat_shown_if_srw_load_finish_first_with_no_question() {
         // Given
         val templateChats = listOf(
-                "Hi barang ini ready gk?", "Lorem Ipsum"
+            "Hi barang ini ready gk?", "Lorem Ipsum"
         )
         val templateResponse = generateTemplateResponse(templates = templateChats)
         val templateDelay = 500L
@@ -296,7 +296,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         waitForIt(templateDelay + 10)
 
         // Then
-        assertSrwContentIsHidden()
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     @Test
@@ -314,7 +315,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         clickCloseAttachmentPreview(0)
 
         // Then
-        assertSrwContentIsHidden()
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     @Test
@@ -332,7 +334,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         clickSendBtn()
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
     }
 
     @Test
@@ -350,7 +352,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         clickAttachProductMenu()
 
         // Then
-        assertSrwContentIsHidden()
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     @Test
@@ -362,13 +365,13 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.setResponseWithDelay(
-                chatSrwResponse, 1500
+            chatSrwResponse, 1500
         )
         inflateTestFragment()
 
         // Then
         assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwContentIsLoading()
+        assertSrwPreviewContentIsLoading()
     }
 
     @Test
@@ -383,7 +386,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        assertSrwContentIsError()
+        assertSrwPreviewContentIsError()
     }
 
     @Test
@@ -401,10 +404,10 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatSrwUseCase.isError = false
         chatSrwUseCase.response = chatSrwResponse
         onView(withId(com.tokopedia.unifycomponents.R.id.refreshID))
-                .perform(click())
+            .perform(click())
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
     }
 
     @Test
@@ -419,21 +422,21 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwExpanded()
 
         // When
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwCollapsed()
 
         // When
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwExpanded()
     }
 
@@ -449,14 +452,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         inflateTestFragment()
 
         // When
-        onView(
-                withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
-                        0, R.id.tp_srw_title
-                )
-        ).perform(click())
+        clickSrwPreviewItemAt(0)
 
         // Then
-        assertSrwContentIsHidden()
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(not(isDisplayed()))
     }
 
     @Test
@@ -474,7 +474,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         clickComposeArea()
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwCollapsed()
     }
 
@@ -494,7 +494,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         pressBack()
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwExpanded()
     }
 
@@ -514,7 +514,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwExpanded()
         assertKeyboardIsNotVisible()
     }
@@ -536,7 +536,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwCollapsed()
     }
 
@@ -555,11 +555,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         chatSrwUseCase.response = chatSrwResponse
         inflateTestFragment()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-                .respondWith(
-                        Instrumentation.ActivityResult(
-                                Activity.RESULT_OK, getAttachProductData(1)
-                        )
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(1)
                 )
+            )
 
         // When
         clickComposeArea()
@@ -569,7 +569,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         clickAttachProductMenu()
 
         // Then
-        assertSrwContentIsVisible()
+        assertSrwPreviewContentIsVisible()
         assertSrwExpanded()
     }
 

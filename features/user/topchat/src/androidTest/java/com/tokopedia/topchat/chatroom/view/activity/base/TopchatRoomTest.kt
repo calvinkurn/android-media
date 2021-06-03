@@ -58,6 +58,7 @@ import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -416,29 +417,28 @@ abstract class TopchatRoomTest {
         onView(withText(msg)).check(matches(isDisplayed()))
     }
 
-    protected fun assertSrwContentIsVisible() {
+    protected fun assertSrwPreviewContentIsVisible() {
         assertSrwContentContainerVisibility(isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
         assertSrwErrorVisibility(not(isDisplayed()))
         assertSrwLoadingVisibility(not(isDisplayed()))
     }
 
-    protected fun assertSrwContentIsLoading() {
+    protected fun assertSrwPreviewContentIsLoading() {
         assertSrwLoadingVisibility(isDisplayed())
         assertSrwContentContainerVisibility(not(isDisplayed()))
         assertTemplateChatVisibility(not(isDisplayed()))
         assertSrwErrorVisibility(not(isDisplayed()))
     }
 
-    protected fun assertSrwContentIsError() {
+    protected fun assertSrwPreviewContentIsError() {
         assertSrwErrorVisibility(isDisplayed())
         assertSrwLoadingVisibility(not(isDisplayed()))
         assertSrwContentContainerVisibility(not(isDisplayed()))
         assertTemplateChatVisibility(not(isDisplayed()))
     }
 
-    protected fun assertSrwContentIsHidden() {
-        assertTemplateChatVisibility(isDisplayed())
+    protected fun assertSrwPreviewContentIsHidden() {
         assertSrwContentContainerVisibility(not(isDisplayed()))
         assertSrwErrorVisibility(not(isDisplayed()))
         assertSrwLoadingVisibility(not(isDisplayed()))
@@ -503,6 +503,16 @@ abstract class TopchatRoomTest {
         onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
     }
 
+    protected fun clickSrwPreviewItemAt(position: Int) {
+        onView(
+            Matchers.allOf(
+                withRecyclerView(R.id.rv_srw_partial).atPositionOnView(
+                    position, R.id.tp_srw_title
+                ),
+                isDescendantOfA(withId(R.id.cl_attachment_preview))
+            )
+        ).perform(click())
+    }
 
     protected fun intendingAttachProduct(totalProductAttached: Int) {
         Intents.intending(IntentMatchers.hasExtra(ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, TopChatInternalRouter.Companion.SOURCE_TOPCHAT))

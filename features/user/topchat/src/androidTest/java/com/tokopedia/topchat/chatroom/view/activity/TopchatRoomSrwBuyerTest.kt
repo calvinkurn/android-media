@@ -13,11 +13,11 @@ class TopchatRoomSrwBuyerTest {
     // TODO: SRW preview should not be sent when user attach image.
     // TODO: SRW bubble should removed when user receive voucher event from ws.
     // TODO: SRW bubble should removed when user re-attach product (in preview mode).
+    // TODO: Template chat should be hidden when SRW bubble exist
 
     // TODO: SRW bubble should removed when user receive attach product event from ws/seller.
     // TODO: SRW bubble should maintain state (expand/collapse) if scrolled far top and back at it.
     // TODO: SRW should hide broadcast handler if visible
-    // TODO: Template chat should be hidden when SRW bubble exist
     // TODO: SRW bubble & preview should collapsed when user open sticker
     // TODO: SRW bubble & preview should expanded when user close sticker
     // TODO: SRW bubble & preview should collapsed when user open chat menu

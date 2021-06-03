@@ -254,7 +254,8 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         clickAttachProductMenu()
 
         // Then
-        assertSrwContentIsHidden()
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     @Test
