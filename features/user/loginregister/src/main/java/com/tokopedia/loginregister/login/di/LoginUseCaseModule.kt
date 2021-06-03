@@ -1,9 +1,12 @@
 package com.tokopedia.loginregister.login.di
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
+import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
@@ -69,4 +72,9 @@ class LoginUseCaseModule {
         return DynamicBannerUseCase(graphqlUseCase)
     }
 
+    @Provides
+    fun provideVerifyFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): VerifyFingerprintUseCase {
+        val useCase = GraphqlUseCase<VerifyFingerprintPojo>(graphqlRepository)
+        return VerifyFingerprintUseCase(useCase, dispatchers)
+    }
 }
