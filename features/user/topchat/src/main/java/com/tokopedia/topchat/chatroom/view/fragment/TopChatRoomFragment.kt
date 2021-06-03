@@ -302,11 +302,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return rvSrw?.isAllowToShow() == false && rvSrw?.isSuccessState() == true
     }
 
-    override fun collapseSrw() {
+    override fun collapseSrwPreview() {
         rvSrw?.isExpanded = false
     }
 
-    override fun expandSrw() {
+    override fun expandSrwPreview() {
         rvSrw?.isExpanded = true
     }
 
@@ -371,6 +371,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun initStickerView() {
         chatMenu?.setStickerListener(this)
+        chatMenu?.setVisibilityListener(object : ChatMenuView.VisibilityListener {
+            override fun onShow() {
+                collapseSrwPreview()
+            }
+
+            override fun onHide() {
+                expandSrwPreview()
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
