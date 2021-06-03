@@ -62,7 +62,6 @@ class MainValidatorActivity : AppCompatActivity(),
     override fun goDetail(expected: String, actual: List<GtmLogUi>) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("detail")
-                .setCustomAnimations(R.anim.slide_left_in, 0, R.anim.pop_delay_in, R.anim.slide_right_out)
                 .replace(R.id.container, ValidatorDetailFragment.newIntent(expected, actual))
                 .commit()
     }
