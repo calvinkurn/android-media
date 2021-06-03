@@ -10,6 +10,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
+import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.common.data.ResponseConverter
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
@@ -28,9 +32,9 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -60,6 +64,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val loginTokenV2UseCase: LoginTokenV2UseCase,
         private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         private val dynamicBannerUseCase: DynamicBannerUseCase,
+        private val verifyFingerprintUseCase: VerifyFingerprintUseCase,
+        private val cryptographyUtils: Cryptography?,
+        private val fingerprintSetting: FingerprintSetting,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
@@ -81,8 +88,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val loginTokenResponse: LiveData<Result<LoginTokenPojo>>
         get() = mutableLoginTokenResponse
 
-    private val mutableLoginTokenV2Response = MutableLiveData<Result<LoginTokenPojoV2>>()
-    val loginTokenV2Response: LiveData<Result<LoginTokenPojoV2>>
+    private val mutableLoginTokenV2Response = MutableLiveData<Result<LoginToken>>()
+    val loginTokenV2Response: LiveData<Result<LoginToken>>
         get() = mutableLoginTokenV2Response
 
     private val mutableProfileResponse = MutableLiveData<Result<ProfilePojo>>()
@@ -145,6 +152,10 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = mutableDynamicBannerResponse
 
+    private val mutableVerifyFingerprint = MutableLiveData<Result<String>>()
+    val verifyFingerprint: LiveData<Result<String>>
+        get() = mutableVerifyFingerprint
+
     fun registerCheck(id: String) {
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
@@ -193,6 +204,34 @@ class LoginEmailPhoneViewModel @Inject constructor(
                     mutableShowLocationAdminPopUp.value = Fail(it)
                 }
         ))
+    }
+
+    fun verifyFingerprint(adsId: String) {
+        val signature = cryptographyUtils?.generateFingerprintSignature(adsId, userSession.deviceId)
+        signature?.run {
+            verifyFingerprintUseCase.verifyFingerprint(this, onSuccessVerifyFP(), onErrorVerifyFP())
+        }
+    }
+
+    private fun onSuccessVerifyFP(): (VerifyFingerprintPojo) -> Unit {
+        return {
+            val data = it.data
+            if (data.errorMessage.isBlank() && data.isSuccess && data.validateToken.isNotEmpty()) {
+                mutableVerifyFingerprint.value = Success(data.validateToken)
+            } else if (data.errorMessage.isNotBlank()) {
+                mutableVerifyFingerprint.value = Fail(MessageErrorException(data.errorMessage,
+                    ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+            } else {
+                mutableVerifyFingerprint.value = Fail(RuntimeException())
+            }
+        }
+    }
+
+    private fun onErrorVerifyFP(): (Throwable) -> Unit {
+        return {
+            it.printStackTrace()
+            mutableVerifyFingerprint.value = Fail(it)
+        }
     }
 
     fun loginFacebook(accessToken: AccessToken, email: String) {
@@ -279,14 +318,14 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 }
                 loginTokenV2UseCase.setParams(email, finalPassword, keyData.hash)
                 val tokenResult = loginTokenV2UseCase.executeOnBackground()
-                LoginV2Mapper(userSession).map(tokenResult,
+                LoginV2Mapper(userSession).map(tokenResult.loginToken,
                         onSuccessLoginToken = {
                             mutableLoginTokenV2Response.value = Success(it)
                         },
                         onErrorLoginToken = {
                             mutableLoginTokenV2Response.value = Fail(it)
                         },
-                        onShowPopupError = { showPopup(it.loginToken.popupError) },
+                        onShowPopupError = { showPopup(it.popupError) },
                         onGoToActivationPage = { onGoToActivationPage(email) },
                         onGoToSecurityQuestion = { onGoToSecurityQuestion(email) }
                 )
