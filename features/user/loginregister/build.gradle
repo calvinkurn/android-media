@@ -56,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.encryption)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.akamaiBotLib)
+    implementation project(rootProject.ext.libraries.deviceInfo)
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.otp)
