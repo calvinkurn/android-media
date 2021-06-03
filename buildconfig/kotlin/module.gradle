@@ -70,7 +70,7 @@ android {
     lintOptions {
         abortOnError false
         xmlReport true
-        htmlReport true
+        htmlReport false
     }
 }
 
