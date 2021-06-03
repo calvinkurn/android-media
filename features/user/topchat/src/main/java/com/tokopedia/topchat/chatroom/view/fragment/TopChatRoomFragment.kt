@@ -251,6 +251,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             override fun onExpandStateChanged(isExpanded: Boolean) {
                 if (isExpanded) {
                     getViewState().hideKeyboard()
+                    chatMenu?.hideMenu()
                 }
             }
         })
