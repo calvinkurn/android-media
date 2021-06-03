@@ -17,7 +17,6 @@ import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSh
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.unifycomponents.SearchBarUnify
-import kotlin.coroutines.coroutineContext
 
 abstract class BaseListrikScreenShotTest: BaseRechargeGeneralScreenShotTest() {
 
@@ -44,9 +43,6 @@ abstract class BaseListrikScreenShotTest: BaseRechargeGeneralScreenShotTest() {
     private fun select_operator() {
         // Click "Jenis Produk Listrik"
         Espresso.onView(ViewMatchers.withId(R.id.operator_select)).perform(ViewActions.click())
-
-        Thread.sleep(2000)
-        mActivityRule.activity.findViewById<SearchBarUnify>(R.id.vg_input_dropdown_search_view).clearFocus()
 
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(
