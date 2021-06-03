@@ -153,8 +153,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
     override fun onUpgradePmProClickListener(adapterPosition: Int) {
         submitPmRegistration(PMConstant.ShopTierType.POWER_MERCHANT_PRO)
-
-        powerMerchantTracking.sendEventClickUpgradePowerMerchantPro()
     }
 
     override fun onUpgradePmProTnCClickListener() {
@@ -656,6 +654,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         showActivationProgress()
         observePmActivationStatus()
         mViewModel.submitPMActivation(currentShopTireType, nextShopTireType)
+
+        powerMerchantTracking.sendEventClickUpgradePowerMerchantPro()
     }
 
     private fun getShopTireByPmTire(pmTire: Int): Int {
