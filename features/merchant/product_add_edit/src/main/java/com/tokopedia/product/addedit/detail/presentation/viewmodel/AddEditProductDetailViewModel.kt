@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommenda
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.PriceSuggestionSuggestedPriceGetUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
@@ -489,6 +490,14 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun updateProductShowCases(selectedShowcaseList: ArrayList<ShowcaseItemPicker>) {
         productShowCases = selectedShowcaseList
+    }
+
+    fun getMaxProductPhotos(): Int {
+        return if (userSession.isShopOfficialStore) {
+            AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS
+        } else {
+            AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS
+        }
     }
 
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {

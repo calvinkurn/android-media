@@ -59,7 +59,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
@@ -287,7 +286,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, viewModel.productPhotoPaths, this)
+        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, viewModel.productPhotoPaths, this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -1491,8 +1490,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val adapter = productPhotoAdapter ?: return@OnClickListener
 
             // show error message when maximum product image is reached
-            val productPhotoSize = adapter.getProductPhotoPaths().size
-            if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+            val productPhotoCount = adapter.getProductPhotoPaths().size
+            if (productPhotoCount == viewModel.getMaxProductPhotos()) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
             else {
                 val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                     val pictureList = viewModel.productInputModel.detailInputModel.pictureList
@@ -1510,6 +1509,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val ctx = context ?: return
         val isEditing = viewModel.isEditing
         val isAdding = viewModel.isAdding || !isEditing
+        val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
         // tracking
         if (isEditing) {
@@ -1517,7 +1517,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         } else {
             ProductAddMainTracking.trackAddPhoto(shopId)
         }
-        val intent = ImagePickerAddEditNavigation.getIntent(ctx,ArrayList(imageUrlOrPathList), isAdding)
+        val intent = ImagePickerAddEditNavigation.getIntent(ctx, ArrayList(imageUrlOrPathList), maxProductPhotoCount, isAdding)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 

@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS_OS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
@@ -48,9 +49,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddEditProductPreviewViewModel @Inject constructor(
-        private val getProductUseCase: GetProductUseCase,
         private val getProductMapper: GetProductMapper,
         private val resourceProvider: ResourceProvider,
+        private val getProductUseCase: GetProductUseCase,
         private val getProductDraftUseCase: GetProductDraftUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase,
         private val validateProductNameUseCase: ValidateProductNameUseCase,
@@ -58,9 +59,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
         private val authorizeAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
-        private val userSession: UserSessionInterface,
         private val annotationCategoryUseCase: AnnotationCategoryUseCase,
         private val productLimitationUseCase: ProductLimitationUseCase,
+        private val userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -221,6 +222,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return if (draftId.isBlank()) 0 else draftId.toLong()
     }
 
+    fun getMaxProductPhotos(): Int {
+        return if (userSession.isShopOfficialStore) {
+            MAX_PRODUCT_PHOTOS_OS
+        } else {
+            MAX_PRODUCT_PHOTOS
+        }
+    }
+
     fun setProductId(id: String) {
         productId.value = id
     }
@@ -338,7 +347,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
 
         // validate images already reached limit
-        if (detailInputModel.imageUrlOrPathList.size > MAX_PRODUCT_PHOTOS)  {
+        if (detailInputModel.imageUrlOrPathList.size > getMaxProductPhotos())  {
             errorMessage = resourceProvider.getInvalidPhotoReachErrorMessage() ?: ""
         }
 
