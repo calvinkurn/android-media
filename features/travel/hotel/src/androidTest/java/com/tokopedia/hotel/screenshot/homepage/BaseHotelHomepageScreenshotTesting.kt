@@ -102,8 +102,8 @@ abstract class BaseHotelHomepageScreenshotTesting {
         CommonActions.findViewAndScreenShot(R.id.hotel_container_promo, filePrefix(), "promo-container")
 
         CommonActions.findViewAndScreenShot(R.id.hotel_homepage_video_banner, filePrefix(), "video-banner")
-
-//            CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.widget_hotel_homepage_popular_cities, filePrefix(), "widget-popular-cities")
+        //TODO: will implement it soon after adding mock data for this field [widget_hotel_homepage_popular_cities]
+        // CommonActions.findViewAndScreenShot(com.tokopedia.hotel.R.id.widget_hotel_homepage_popular_cities, filePrefix(), "widget-popular-cities")
 
         activityRule.activity.finishAndRemoveTask()
     }
