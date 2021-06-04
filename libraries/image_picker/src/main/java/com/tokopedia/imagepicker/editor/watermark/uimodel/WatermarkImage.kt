@@ -33,15 +33,23 @@ data class WatermarkImage(
 
     fun imageDrawable(value: Int) = apply {
         this.imageDrawable = value
+
+        if (imageDrawable != 0) {
+            image = getBitmapFromDrawable(imageDrawable)
+        }
     }
 
-    fun watermarkFromImageView(imageView: ImageView) {
+    fun imageFromImageView(imageView: ImageView) = apply {
+        watermarkFromImageView(imageView)
+    }
+
+    private fun watermarkFromImageView(imageView: ImageView) {
         imageView.invalidate()
         val drawable = imageView.drawable as BitmapDrawable
         image = resizeBitmap(drawable.bitmap, MAX_IMAGE_SIZE)
     }
 
-    fun getBitmapFromDrawable(@DrawableRes imageDrawable: Int): Bitmap {
+    private fun getBitmapFromDrawable(@DrawableRes imageDrawable: Int): Bitmap {
         return resizeBitmap(
             BitmapFactory.decodeResource(context?.resources, imageDrawable),
             MAX_IMAGE_SIZE
