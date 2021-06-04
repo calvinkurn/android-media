@@ -249,7 +249,7 @@ object DeeplinkMapperUohOrder {
 
                 var category = ""
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
-                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER_REVAMPED else ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER else ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER_OLD
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
                     category = ApplinkConstInternalOrder.DIGITAL_ORDER
                 }
@@ -266,7 +266,7 @@ object DeeplinkMapperUohOrder {
 
                 var category = ""
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
-                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER_REVAMPED else ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER else ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER_OLD
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
                     category = ApplinkConstInternalOrder.DIGITAL_ORDER
                 }
