@@ -10,7 +10,7 @@ object FingerprintDialogHelper {
             val dialog = DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.error_fingerprint_invalid_title))
             dialog.setDescription(getString(R.string.error_fingerprint_invalid_description))
-            dialog.setPrimaryCTAText(getString(R.string.error_fingerprint_invalid_primary_btn_text))
+            dialog.setPrimaryCTAText(getString(R.string.error_fingerprint_use_other_method))
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 onPositiveButtonClick()
