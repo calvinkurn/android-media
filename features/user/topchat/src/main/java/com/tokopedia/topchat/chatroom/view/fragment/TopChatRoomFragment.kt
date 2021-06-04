@@ -328,7 +328,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun expandSrwBubble() {
-        if (!getViewState().hasVisibleSendablePreview()) {
+        if (
+            !getViewState().hasVisibleSendablePreview()
+        ) {
             adapter.expandSrwBubble()
         }
     }
@@ -1065,6 +1067,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (sticker == null) return
         onSendAndReceiveMessage()
         val startTime = SendableViewModel.generateStartTime()
+        if (rvSrw?.isShowing() == true) {
+            addSrwBubbleToChat()
+        }
         presenter.sendAttachmentsAndSticker(
             messageId,
             sticker,
@@ -2160,8 +2165,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun sendSrwQuestion(question: QuestionUiModel) {
         onSendAndReceiveMessage()
         val startTime = SendableViewModel.generateStartTime()
-        val srwState = rvSrw?.getStateInfo()
-        adapter.addSrwBubbleUiModel(srwState, presenter.getAttachmentsPreview().toList())
+        addSrwBubbleToChat()
         presenter.sendAttachmentsAndSrw(
             messageId,
             question,
@@ -2169,6 +2173,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             opponentId,
             onSendingMessage()
         )
+    }
+
+    private fun addSrwBubbleToChat() {
+        val srwState = rvSrw?.getStateInfo()
+        adapter.addSrwBubbleUiModel(srwState, presenter.getAttachmentsPreview().toList())
     }
 
     private fun sendSrwQuestion(

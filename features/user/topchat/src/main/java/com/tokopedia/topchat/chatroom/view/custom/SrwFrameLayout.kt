@@ -285,6 +285,10 @@ class SrwFrameLayout : FrameLayout {
         return SrwState(isExpanded, listener, latestState)
     }
 
+    fun isShowing(): Boolean {
+        return isAllowToShow() && isVisible
+    }
+
     class SrwState(
             val isExpanded: Boolean,
             val listener: Listener? = null,

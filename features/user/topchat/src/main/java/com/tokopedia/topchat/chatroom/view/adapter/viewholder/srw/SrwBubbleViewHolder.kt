@@ -34,7 +34,7 @@ class SrwBubbleViewHolder constructor(
         if (payloads.isEmpty()) return
         when (payloads.first()) {
             State.COLLAPSED,
-            State.EXPANDED-> bindState(element)
+            State.EXPANDED -> bindState(element)
         }
     }
 
