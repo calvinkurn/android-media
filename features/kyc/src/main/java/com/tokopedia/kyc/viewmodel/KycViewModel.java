@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
 
 public class KycViewModel extends AndroidViewModel {
+    
 
     private ConfirmRequestDataContainer confirmRequestDataContainer;
 
