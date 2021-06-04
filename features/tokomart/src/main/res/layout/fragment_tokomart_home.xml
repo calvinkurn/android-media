@@ -18,16 +18,25 @@
             android:id="@+id/view_background_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/home_header_background_content_description"
+            android:contentDescription="@string/tokomart_header_background_content_description"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/tokomart_ic_header_background" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvHome"
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:descendantFocusability="beforeDescendants" />
+            android:layout_height="wrap_content"
+            tools:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:descendantFocusability="beforeDescendants" />
+
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <com.tokopedia.searchbar.navigation_component.NavToolbar
             android:id="@+id/navToolbar"

@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageButton
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -23,13 +24,14 @@ class HomeTickerViewHolder(
     }
 
     override fun bind(data: HomeTickerUiModel) {
-        val ticker: Ticker = itemView.findViewById(R.id.ticker_announcement)
-        val adapter = TickerPagerAdapter(itemView.context, data.tickers)
-        adapter.setPagerDescriptionClickEvent(this)
-        adapter.onDismissListener = {
+        val closeBtn = itemView.findViewById<AppCompatImageButton>(R.id.ticker_close_icon)
+        val ticker = itemView.findViewById<Ticker>(R.id.ticker_announcement)
+        closeBtn.setOnClickListener {
             listener?.onTickerDismiss()
         }
         ticker.post {
+            val adapter = TickerPagerAdapter(itemView.context, data.tickers)
+            adapter.setPagerDescriptionClickEvent(this)
             ticker.addPagerView(adapter, data.tickers)
         }
     }

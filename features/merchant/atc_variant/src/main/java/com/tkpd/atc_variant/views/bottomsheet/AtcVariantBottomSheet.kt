@@ -171,7 +171,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeWishlist()
     }
 
-    private fun showToasterSuccess(message:String) {
+    private fun showToasterSuccess(message: String) {
         viewContent?.rootView?.showToasterSuccess(message, R.dimen.space_toaster_offsite_atc_variant)
     }
 
@@ -216,9 +216,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.toaster_success_add_wishlist_from_button))
                 }
             } else if (it is Fail) {
-                viewContent.showToasterError(getErrorMessage(it.throwable))
+                showToasterError(getErrorMessage(it.throwable))
             }
         })
+    }
+
+    private fun showToasterError(message: String, ctaBtn: String = "") {
+        viewContent?.rootView.showToasterError(message, ctaText = ctaBtn) {
+
+        }
     }
 
     private fun observeCart() {
@@ -230,10 +236,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 it.throwable.run {
                     viewModel.updateActivityResult(atcSuccessMessage = "")
                     if (this is AkamaiErrorException && message != null) {
-                        viewContent?.showToasterError(message
-                                ?: "", ctaText = getString(R.string.atc_variant_oke_label))
+                        showToasterError(message
+                                ?: "", getString(R.string.atc_variant_oke_label))
                     } else {
-                        viewContent?.showToasterError(getErrorMessage(this), ctaText = getString(R.string.atc_variant_oke_label))
+                        showToasterError(getErrorMessage(this), getString(R.string.atc_variant_oke_label))
                     }
                 }
             }
@@ -249,20 +255,22 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun onSuccessTransaction(result: AddToCartDataModel) {
         val cartId = result.data.cartId
-        when (buttonActionType) {
-            ProductDetailCommonConstant.OCS_BUTTON -> {
-                onSuccessOcs(result)
-            }
-            ProductDetailCommonConstant.OCC_BUTTON -> {
-                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
-            }
-            ProductDetailCommonConstant.BUY_BUTTON -> {
-                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
-            }
-            ProductDetailCommonConstant.ATC_BUTTON -> {
-                onSuccessAtc(result.errorMessage.firstOrNull())
-            }
-        }
+        //todo change
+        onSuccessAtc(result.errorMessage.firstOrNull())
+//        when (buttonActionType) {
+//            ProductDetailCommonConstant.OCS_BUTTON -> {
+//                onSuccessOcs(result)
+//            }
+//            ProductDetailCommonConstant.OCC_BUTTON -> {
+//                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+//            }
+//            ProductDetailCommonConstant.BUY_BUTTON -> {
+//                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
+//            }
+//            ProductDetailCommonConstant.ATC_BUTTON -> {
+//                onSuccessAtc(result.errorMessage.firstOrNull())
+//            }
+//        }
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -272,8 +280,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 viewModel.updateActivityResult(shouldRefreshPreviousPage = true)
                 dismiss()
             }, {
-                viewContent?.showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
-                        ctaText = getString(R.string.atc_variant_oke_label))
+                showToasterError(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
+                        getString(R.string.atc_variant_oke_label))
             })
         } else {
             goToCheckout()
@@ -336,7 +344,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
-        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton, false)
+        val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
         doAtc(atcKey)
     }
 
@@ -439,7 +447,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder, viewModel.getVariantData()?.getVariantsIdentifier()
                     ?: "")
         }
-        viewContent?.showToasterError(variantErrorMessage, ctaText = getString(R.string.atc_variant_oke_label))
+        showToasterError(variantErrorMessage, getString(R.string.atc_variant_oke_label))
     }
 
 
