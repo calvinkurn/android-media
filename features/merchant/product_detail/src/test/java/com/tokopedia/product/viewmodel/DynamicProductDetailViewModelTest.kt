@@ -16,11 +16,13 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -29,7 +31,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
-import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirProduct
@@ -131,7 +132,7 @@ class DynamicProductDetailViewModelTest {
     lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP2DataUseCase: GetProductInfoP2DataUseCase
+    lateinit var getP2DataAndMiniCartUseCase: GetP2DataAndMiniCartUseCase
 
     @RelaxedMockK
     lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
@@ -142,6 +143,9 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var miniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase
 
+    @RelaxedMockK
+    lateinit var updateCartUseCase: UpdateCartUseCase
+
     private lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -151,10 +155,9 @@ class DynamicProductDetailViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         mockkStatic(RemoteConfigInstance::class)
-        spykViewModel = spyk(DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
+        spykViewModel = spyk(DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getP2DataAndMiniCartUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
                 Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase },
-                Lazy {miniCartListSimplifiedUseCase} , userSessionInterface)
-        )
+                Lazy { miniCartListSimplifiedUseCase }, Lazy { updateCartUseCase }, userSessionInterface))
     }
 
     @After
@@ -163,16 +166,20 @@ class DynamicProductDetailViewModelTest {
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getProductInfoP2DataUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
+        createViewModel()
+    }
+
+    private fun createViewModel(): DynamicProductDetailViewModel {
+        return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getP2DataAndMiniCartUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
                 Lazy { getRecommendationFilterChips }, Lazy { moveProductToWarehouseUseCase }, Lazy { moveProductToEtalaseUseCase }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase },
-                Lazy {miniCartListSimplifiedUseCase} ,userSessionInterface)
+                Lazy { miniCartListSimplifiedUseCase }, Lazy { updateCartUseCase }, userSessionInterface)
     }
 
     //=========================================VARIABLE SECTION======================================//
     //==============================================================================================//
     @Test
     fun `on success get user location cache`() {
-        viewModel.getProductP1(ProductParams(),userLocationLocal = LocalCacheModel("123"))
+        viewModel.getProductP1(ProductParams(), userLocationLocal = LocalCacheModel("123"))
 
         val data = viewModel.getUserLocationCache()
         Assert.assertTrue(data.address_id == "123")
@@ -184,7 +191,7 @@ class DynamicProductDetailViewModelTest {
         viewModel.clearCacheP2Data()
 
         verify {
-            getProductInfoP2DataUseCase.clearCache()
+            getP2DataAndMiniCartUseCase.clearCacheP2Data()
         }
     }
 
@@ -850,7 +857,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         coVerify {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any())
         }
 
         coVerify {
@@ -876,7 +883,7 @@ class DynamicProductDetailViewModelTest {
         } returns ProductInfoP3()
 
         coEvery {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any())
         } returns ProductInfoP2UiData()
 
         coEvery {
@@ -912,7 +919,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         coVerify(inverse = true) {
-            getProductInfoP2DataUseCase.executeOnBackground()
+            getP2DataAndMiniCartUseCase.executeOnBackground()
         }
 
         coVerify(inverse = true) {
@@ -952,7 +959,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         coVerify {
-            getProductInfoP2DataUseCase.executeOnBackground(any(), any())
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any())
         }
 
         coVerify {
