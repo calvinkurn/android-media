@@ -40,7 +40,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
 
     private val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
-    private var lastDeletedProductItem = mutableMapOf<Int, MiniCartProductUiModel>()
+    private var lastDeletedProductItem: MiniCartProductUiModel? = null
 
     fun getLatestWidgetState(shopIds: List<String>) {
         _currentShopIds.value = shopIds
@@ -338,8 +338,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 tmpVisitables.removeAt(index)
 
                 val deletedItem = visitables[index] as MiniCartProductUiModel
-                lastDeletedProductItem.clear()
-                lastDeletedProductItem[index] = deletedItem
+                lastDeletedProductItem = deletedItem
 
                 miniCartListListUiModel.value?.visitables = tmpVisitables
                 _miniCartListUiModel.value = miniCartListListUiModel.value
@@ -383,18 +382,16 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     }
 
     fun undoDeleteCartItems() {
-        if (lastDeletedProductItem.isNotEmpty()) {
-            for ((index, value) in lastDeletedProductItem) {
-                undoDeleteCartUseCase.setParams(value.cartId)
-                undoDeleteCartUseCase.execute(
-                        onSuccess = {
-                            getCartList()
-                        },
-                        onError = {
-                            getCartList()
-                        }
-                )
-            }
+        lastDeletedProductItem?.let {
+            undoDeleteCartUseCase.setParams(it.cartId)
+            undoDeleteCartUseCase.execute(
+                    onSuccess = {
+                        getCartList()
+                    },
+                    onError = {
+                        getCartList()
+                    }
+            )
         }
     }
 
