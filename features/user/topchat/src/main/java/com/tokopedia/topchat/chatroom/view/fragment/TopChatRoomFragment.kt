@@ -252,6 +252,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 if (isExpanded) {
                     getViewState().hideKeyboard()
                     chatMenu?.hideMenu()
+                    adapter.setSrwBubbleState(isExpanded)
                 }
             }
         })
@@ -379,10 +380,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatMenu?.setVisibilityListener(object : ChatMenuView.VisibilityListener {
             override fun onShow() {
                 collapseSrwPreview()
+                adapter.collapseSrwBubble()
             }
 
             override fun onHide() {
                 expandSrwPreview()
+                adapter.expandSrwBubble()
             }
         })
     }

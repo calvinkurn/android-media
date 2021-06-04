@@ -9,24 +9,42 @@ import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 class SrwBubbleViewHolder constructor(
-        itemView: View?,
-        private val listener: Listener?
+    itemView: View?,
+    private val listener: Listener?
 ) : AbstractViewHolder<SrwBubbleUiModel>(itemView) {
 
     private val srwLayout: SrwFrameLayout? = itemView?.findViewById(R.id.chat_srw_bubble)
 
     interface Listener {
         fun trackClickSrwBubbleQuestion(
-                products: List<SendablePreview>, question: QuestionUiModel
+            products: List<SendablePreview>, question: QuestionUiModel
         )
 
         fun onClickSrwBubbleQuestion(
-                products: List<SendablePreview>, question: QuestionUiModel
+            products: List<SendablePreview>, question: QuestionUiModel
         )
+    }
+
+    enum class State {
+        EXPANDED,
+        COLLAPSED
+    }
+
+    override fun bind(element: SrwBubbleUiModel, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        when (payloads.first()) {
+            State.COLLAPSED,
+            State.EXPANDED-> bindState(element)
+        }
     }
 
     override fun bind(element: SrwBubbleUiModel) {
         setupSrw(element)
+        bindState(element)
+    }
+
+    private fun bindState(element: SrwBubbleUiModel) {
+        srwLayout?.isExpanded = element.isExpanded
     }
 
     private fun setupSrw(element: SrwBubbleUiModel) {

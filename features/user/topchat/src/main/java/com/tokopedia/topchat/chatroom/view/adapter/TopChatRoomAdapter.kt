@@ -30,6 +30,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
@@ -415,13 +416,9 @@ class TopChatRoomAdapter constructor(
 
     fun removeSrwBubble() {
         val srwModel = srwUiModel.value ?: return
-        var lastKnownPosition = offsetUiModelMap[srwModel] ?: return
-        val upToDateUiModelData = getUpToDateUiModelPosition(lastKnownPosition, srwModel)
-        if (lastKnownPosition != upToDateUiModelData.first) {
-            lastKnownPosition = upToDateUiModelData.first
-        }
-        visitables.removeAt(lastKnownPosition)
-        notifyItemRemoved(lastKnownPosition)
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        visitables.removeAt(srwModelPosition)
+        notifyItemRemoved(srwModelPosition)
         offset--
         offsetUiModelMap.remove(srwModel)
         _srwUiModel.value = null
@@ -440,6 +437,39 @@ class TopChatRoomAdapter constructor(
 
     fun isLastMsgSrwBubble(): Boolean {
         return visitables.getOrNull(0) is SrwBubbleUiModel
+    }
+
+    fun setSrwBubbleState(expanded: Boolean) {
+        if (expanded) {
+            expandSrwBubble()
+        } else {
+            collapseSrwBubble()
+        }
+    }
+
+    fun collapseSrwBubble() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        srwModel.isExpanded = false
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.State.COLLAPSED)
+    }
+
+    fun expandSrwBubble() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        srwModel.isExpanded = true
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.State.EXPANDED)
+    }
+
+    private fun getUpToDateSrwUiModelPosition(
+        uiModel: SrwBubbleUiModel
+    ): Int? {
+        var lastKnownPosition = offsetUiModelMap[uiModel] ?: return null
+        val upToDateUiModelData = getUpToDateUiModelPosition(lastKnownPosition, uiModel)
+        if (lastKnownPosition != upToDateUiModelData.first) {
+            lastKnownPosition = upToDateUiModelData.first
+        }
+        return lastKnownPosition
     }
 
     private fun getOffsetSafely(): Int {

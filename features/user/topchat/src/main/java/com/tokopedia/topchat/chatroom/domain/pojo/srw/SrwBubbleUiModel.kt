@@ -7,13 +7,16 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 
 data class SrwBubbleUiModel constructor(
-        val srwHangingState: SrwFrameLayout.SrwState,
-        val products: List<SendablePreview>
+    val srwHangingState: SrwFrameLayout.SrwState,
+    val products: List<SendablePreview>
 ) : Visitable<TopChatTypeFactory> {
 
-    val productIds: List<String> get() = products
-        .filterIsInstance<SendableProductPreview>()
-        .map { it.productId }
+    var isExpanded = true
+
+    val productIds: List<String>
+        get() = products
+            .filterIsInstance<SendableProductPreview>()
+            .map { it.productId }
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)

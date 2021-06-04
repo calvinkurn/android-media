@@ -46,17 +46,18 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO: Chat Sticker should be hidden when SRW preview expanded
     // TODO: SRW bubble should removed when user receive attach different product (compare with productId, product no longer relevant) event from ws seller/himself.
     // TODO: SRW bubble should not be removed when user receive attach same product (compare with productId, product attached still relevant to SRW) event from ws seller/himself.
-
     // TODO: SRW bubble should collapsed when user open sticker
     // TODO: SRW bubble should expanded when user close sticker
     // TODO: SRW bubble should collapsed when user open chat menu
     // TODO: SRW bubble should expanded when user close chat menu
-    // TODO: SRW bubble should remain collapsed when user click sticker menu and click open keyboard
-    // TODO: SRW bubble should remain collapsed when user open keyboard and open sticker menu
     // TODO: Chat Menu should be hidden when SRW bubble expanded
     // TODO: Chat Sticker should be hidden when SRW bubble expanded
+
+    // TODO: SRW bubble should remain collapsed when user click sticker menu and click open keyboard
+    // TODO: SRW bubble should remain collapsed when user open keyboard and open sticker menu
+    // TODO: SRW bubble should collapsed when user open keyboard
+    // TODO: SRW bubble should expanded when user close keyboard
     // TODO: SRW bubble should still displayed/added when user click send sticker
-    // TODO: SRW bubble should collapsed/expanded when user open/close keyboard
     // TODO: SRW Bubble should collapsed when preview attachment is visible other than product
     // TODO: SRW Bubble should expanded when preview attachment is not visible
     // TODO: SRW Bubble should displayed when user manually type msg and send instead of click SRW question
