@@ -16,12 +16,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
@@ -30,6 +33,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.Pinpoint
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageFragment
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -55,6 +59,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var currentLong: Double = 0.0
     private var currentPlaceId: String? = ""
     private var zipCodes: MutableList<String>? = null
+    private var bottomSheetInfo: BottomSheetUnify? = null
 
     private var saveAddressDataModel: SaveAddressDataModel? = null
 
@@ -261,6 +266,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private fun setViewListener() {
         binding?.run {
 
+            bottomsheetLocation.btnInfo.setOnClickListener {
+                bottomsheetLocation.root.hide()
+                showBottomSheetInfo()
+            }
+
             bottomsheetLocation.btnPrimary.setOnClickListener {
                 //go-to ANA posotive
             }
@@ -274,6 +284,37 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
         }
 
+    }
+
+    private fun showBottomSheetInfo() {
+        bottomSheetInfo = BottomSheetUnify()
+        val viewBinding = BottomsheetLocationUnmatchedBinding.inflate(LayoutInflater.from(context), null, false)
+        setupBottomSheetInfo(viewBinding)
+
+        bottomSheetInfo?.apply {
+            setCloseClickListener {
+                binding?.bottomsheetLocation?.root?.show()
+                dismiss()
+            }
+            setChild(viewBinding.root)
+            setOnDismissListener {
+                binding?.bottomsheetLocation?.root?.show()
+                dismiss()
+            }
+        }
+
+        childFragmentManager.let {
+            bottomSheetInfo?.show(it, "")
+        }
+    }
+
+    private fun setupBottomSheetInfo(viewBinding: BottomsheetLocationUnmatchedBinding) {
+        viewBinding.run {
+            btnClose.setOnClickListener {
+                binding?.bottomsheetLocation?.root?.show()
+                bottomSheetInfo?.dismiss()
+            }
+        }
     }
 
     private fun moveMap(latLng: LatLng, zoomLevel: Float) {
