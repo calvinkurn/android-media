@@ -81,8 +81,6 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val progressBarState: LiveData<CreateReviewProgressBarState>
         get() = _progressBarState
 
-    private var thankYouBottomSheetText: String = ""
-
     fun submitReview(rating: Int, reviewText: String, reputationScore: Int, isAnonymous: Boolean, utmSource: String) {
         (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
             _submitReviewResult.postValue(LoadingView())
@@ -208,7 +206,6 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             if (data?.productrevIncentiveOvo == null) {
                 _incentiveOvo.postValue(null)
             } else {
-                thankYouBottomSheetText = data.productrevIncentiveOvo?.bottomSheetText ?: thankYouBottomSheetText
                 _incentiveOvo.postValue(CoroutineSuccess(data))
             }
 
@@ -263,10 +260,6 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     fun getImageCount(): Int {
         return imageData.count { it is ImageReviewUiModel }
-    }
-
-    fun getThankYouBottomSheetText(): String {
-        return thankYouBottomSheetText
     }
 
     private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,

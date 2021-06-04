@@ -106,6 +106,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var incentiveHelper = ""
     private var templatesSelectedCount = 0
     private var shouldShowThankYouBottomSheet = false
+    private var thankYouBottomSheetText = ""
 
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
@@ -389,6 +390,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             return
         }
         ovoDomain?.productrevIncentiveOvo?.let {
+            thankYouBottomSheetText = it.bottomSheetText
             hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.ticker.subtitle)
@@ -844,7 +846,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
-            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this, getThankYouBottomSheetTrackerData(), createReviewViewModel.getThankYouBottomSheetText()) }
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this, getThankYouBottomSheetTrackerData(), thankYouBottomSheetText) }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }

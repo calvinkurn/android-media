@@ -123,7 +123,6 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         assertTrue(viewModel.isUserEligible())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
-        assertTrue(viewModel.getThankYouBottomSheetText().isEmpty())
     }
 
     @Test

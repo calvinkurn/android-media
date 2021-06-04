@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -142,6 +141,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var thankYouBottomSheet: BottomSheetUnify? = null
     private var incentiveHelper = ""
     private var isReviewIncomplete = false
+    private var thankYouBottomSheetText = ""
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -609,6 +609,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             return
         }
         data?.productrevIncentiveOvo?.let {
+            thankYouBottomSheetText = it.bottomSheetText
             it.ticker.let {
                 ovoPointsTicker.apply {
                     visibility = View.VISIBLE
@@ -642,7 +643,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
-            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment, getThankYouFormTrackerData(), createReviewViewModel.getThankYouBottomSheetText()) }
+            thankYouBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(it, data, this@CreateReviewFragment, getThankYouFormTrackerData(), thankYouBottomSheetText) }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
@@ -666,9 +667,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             animatedReviewPicker.renderInitialReviewWithData(rating)
             playAnimation()
             updateViewBasedOnSelectedRating(rating)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                createReviewAnonymousCheckbox.isChecked = sentAsAnonymous
-            }
+            createReviewAnonymousCheckbox.isChecked = sentAsAnonymous
             if (attachments.isNotEmpty()) {
                 createReviewViewModel.clearImageData()
                 val imageListData = createReviewViewModel.getImageList(attachments)
