@@ -238,7 +238,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     abstract fun processTagIntent(intent: Intent)
 
     protected fun isDigitalSmartcardEnabled(): Boolean {
-        return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_SMARTCARD, false)
+        return true
     }
 
     protected fun navigateToNFCSettings() {

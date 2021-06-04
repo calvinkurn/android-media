@@ -116,7 +116,7 @@ object DeeplinkMapperDigital {
         val paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
         val statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI) ?: "false"
 
-        return if (statusBrizzi == "true")
+        return if (deeplink.contains("brizzi"))
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, paramValue)
         else
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, paramValue)
