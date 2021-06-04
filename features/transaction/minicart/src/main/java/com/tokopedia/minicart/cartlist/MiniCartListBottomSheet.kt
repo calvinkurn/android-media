@@ -283,7 +283,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private fun updateCart() {
         updateCartDebounceJob?.cancel()
         updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
-            delay(1000)
+            delay(500)
             viewModel?.updateCart()
         }
     }

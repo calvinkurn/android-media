@@ -19,7 +19,7 @@ class ExampleFragment : Fragment(), MiniCartWidgetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val shopIds = listOf("123")
+        val shopIds = listOf("480552")
         val miniCartWidget = view.findViewById<MiniCartWidget>(R.id.mini_cart_widget)
         miniCartWidget.initialize(shopIds, this, this)
     }
