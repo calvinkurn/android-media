@@ -125,14 +125,9 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                         .textSize(20)
                                         .textColor(Color.WHITE);
 
-                                WatermarkImage watermarkImage = new WatermarkImage()
-                                        .imageDrawable(R.drawable.ic_tokopedia_text);
-
-
                                 return Observable.just(WatermarkBuilder
                                         .create(getView().getContext(), bitmap)
                                         .loadWatermarkText(watermarkText)
-//                                        .loadWatermarkImage(watermarkImage)
                                         .setTileMode(true)
                                         .getWatermark()
                                         .getOutputImage()
