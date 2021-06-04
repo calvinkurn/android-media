@@ -4,21 +4,17 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
-import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
-import com.tokopedia.tokomart.home.domain.model.KeywordSearchData
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.util.getOrAwaitValue
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
 
 abstract class TokoMartCategoryListViewModelTestFixture {
 
@@ -44,12 +40,21 @@ abstract class TokoMartCategoryListViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
-    protected fun onGetHomeLayout_thenReturn(layoutResponse: List<CategoryResponse>) {
-        coEvery { getCategoryListUseCase.execute(anyString(), anyInt()) } returns layoutResponse
+    protected fun verifyGetCategoryListResponseFail() {
+        val actualResponse = viewModel.categoryList.getOrAwaitValue()
+        Assert.assertTrue(actualResponse is Fail)
     }
 
-    protected fun onGetTicker_thenReturn(errorThrowable: Throwable) {
-        coEvery { getCategoryListUseCase.execute(anyString(), anyInt()) } throws errorThrowable
+    protected fun verifyGetHomeLayoutUseCaseCalled() {
+        coVerify { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) }
+    }
+
+    protected fun onGetCategoryList_thenReturn(layoutResponse: List<CategoryResponse>) {
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns layoutResponse
+    }
+
+    protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } throws errorThrowable
     }
 
 }
