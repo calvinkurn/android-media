@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.domain.usecase
+package com.tokopedia.shop.common.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -11,15 +11,15 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetShopNotesByShopIdUseCase @Inject constructor(
+class GetShopNoteUseCase @Inject constructor(
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<List<ShopNoteModel>>() {
 
-    var params: RequestParams = RequestParams.EMPTY
+    var params = mapOf<String, Any>()
     var isFromCacheFirst: Boolean = true
 
     override suspend fun executeOnBackground(): List<ShopNoteModel> {
-        val gqlRequest = GraphqlRequest(QUERY, ShopNoteQuery::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(QUERY, ShopNoteQuery::class.java, params)
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
@@ -64,14 +64,18 @@ class GetShopNotesByShopIdUseCase @Inject constructor(
                 }
             }
         """
-        
+
         @JvmStatic
-        fun createParams(shopId: String, noteId: String? = null, isTerm: Boolean? = null, slug: String? = null) =
-                RequestParams.create().apply {
-                    putString(SHOP_ID, shopId)
-                    putString(NOTE_ID, noteId)
-                    putObject(IS_TERM, isTerm)
-                    putString(SLUG, slug)
-                }
+        fun createParams(
+                shopId: String,
+                noteId: String = "",
+                isTerm: Boolean = false,
+                slug: String = ""
+        ) = mapOf(
+                SHOP_ID to shopId,
+                NOTE_ID to noteId,
+                IS_TERM to isTerm,
+                SLUG to slug
+        )
     }
 }
