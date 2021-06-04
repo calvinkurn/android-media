@@ -29,8 +29,6 @@ class DeleteCartUseCase @Inject constructor(@ApplicationContext private val grap
     }
 
     override suspend fun executeOnBackground(): RemoveFromCartData {
-        return RemoveFromCartData(data = Data(success = 1))
-/*
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
@@ -43,7 +41,6 @@ class DeleteCartUseCase @Inject constructor(@ApplicationContext private val grap
         } else {
             throw ResponseErrorException(response.removeFromCart.errorMessage.joinToString(", "))
         }
-*/
     }
 
     companion object {

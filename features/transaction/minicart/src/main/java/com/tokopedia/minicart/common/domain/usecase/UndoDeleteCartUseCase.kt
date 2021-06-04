@@ -14,6 +14,30 @@ import javax.inject.Inject
 
 class UndoDeleteCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository) : UseCase<UndoDeleteCartDataResponse>() {
 
+    private var params: Map<String, Any>? = null
+
+    fun setParams(cartId: String) {
+        params = mapOf(
+                PARAM_KEY_LANG to PARAM_VALUE_ID,
+                PARAM_KEY_CART_IDS to listOf(cartId)
+        )
+    }
+
+    override suspend fun executeOnBackground(): UndoDeleteCartDataResponse {
+        if (params == null) {
+            throw RuntimeException("Parameter is null!")
+        }
+
+        val request = GraphqlRequest(MUTATION, UndoDeleteCartGqlResponse::class.java, params)
+        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UndoDeleteCartGqlResponse>()
+
+        if (response.undoDeleteCartDataResponse.status == "OK" && response.undoDeleteCartDataResponse.data.success == 1) {
+            return response.undoDeleteCartDataResponse
+        } else {
+            throw ResponseErrorException(response.undoDeleteCartDataResponse.errorMessage.joinToString(", "))
+        }
+    }
+
     companion object {
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"
@@ -35,33 +59,6 @@ class UndoDeleteCartUseCase @Inject constructor(@ApplicationContext private val 
         }
 
         """.trimIndent()
-    }
-
-    private var params: Map<String, Any>? = null
-
-    fun setParams(cartId: String) {
-        params = mapOf(
-                PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_KEY_CART_IDS to listOf(cartId)
-        )
-    }
-
-    override suspend fun executeOnBackground(): UndoDeleteCartDataResponse {
-        return UndoDeleteCartDataResponse(data = Data(success = 1))
-/*
-        if (params == null) {
-            throw RuntimeException("Parameter is null!")
-        }
-
-        val request = GraphqlRequest(MUTATION, UndoDeleteCartGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UndoDeleteCartGqlResponse>()
-
-        if (response.undoDeleteCartDataResponse.status == "OK" && response.undoDeleteCartDataResponse.data.success == 1) {
-            return response.undoDeleteCartDataResponse
-        } else {
-            throw ResponseErrorException(response.undoDeleteCartDataResponse.errorMessage.joinToString(", "))
-        }
-*/
     }
 
 }

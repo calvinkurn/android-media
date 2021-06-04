@@ -71,12 +71,12 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
-        if (response.updateCartData.status == "OK") {
+        return if (response.updateCartData.status == "OK") {
             if (isFromMiniCartBottomSheet) {
-                return response.updateCartData
+                response.updateCartData
             } else {
                 if (response.updateCartData.data.status) {
-                    return response.updateCartData
+                    response.updateCartData
                 } else {
                     throw ResponseErrorException(response.updateCartData.error.joinToString(", "))
                 }
