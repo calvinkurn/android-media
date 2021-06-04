@@ -217,9 +217,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromPromo(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if (data?.getStringExtra(ARGS_PROMO_ERROR) != null) {
-                @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-                if (data.getStringExtra(ARGS_PROMO_ERROR).toString().equals(ARGS_FINISH_ERROR, true)) {
+            val errorPromoExtra = data?.getStringExtra(ARGS_PROMO_ERROR) ?: ""
+            if (errorPromoExtra.isNotBlank()) {
+                if (errorPromoExtra.equals(ARGS_FINISH_ERROR, true)) {
                     activity?.finish()
                 }
             } else {
