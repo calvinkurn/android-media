@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.tracking
 
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -281,6 +282,21 @@ class PowerMerchantTracking @Inject constructor(
                 category = TrackingConstant.getPowerMerchantCategory(),
                 action = TrackingConstant.ACTION_CLICK_ACKNOWLEDGE_SHOP_MODERATION,
                 label = ""
+        )
+
+        sendEvent(event)
+    }
+
+    fun sendEventClickNextPmProDeactivation(shopTire: Int) {
+        val event = createEvent(
+                event = TrackingConstant.EVENT_CLICK_POWER_MERCHANT,
+                category = TrackingConstant.getPowerMerchantCategory(),
+                action = TrackingConstant.ACTION_CLICK_STOP_PM_CONFIRM_TO_STOP,
+                label = if (shopTire == PMConstant.ShopTierType.REGULAR_MERCHANT) {
+                    TrackingConstant.BECOME_RM
+                } else {
+                    TrackingConstant.BECOME_PM
+                }
         )
 
         sendEvent(event)

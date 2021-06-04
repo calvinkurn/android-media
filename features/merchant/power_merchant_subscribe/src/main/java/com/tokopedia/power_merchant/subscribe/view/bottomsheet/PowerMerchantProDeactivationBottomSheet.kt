@@ -61,6 +61,8 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
         btnPmOptionsNext.setOnClickListener {
             if (selectedShopTire != PMConstant.ShopTierType.NA) {
                 onNextClickCallback?.invoke(selectedShopTire)
+
+                powerMerchantTracking.sendEventClickNextPmProDeactivation(selectedShopTire)
                 dismiss()
             }
         }
