@@ -22,7 +22,7 @@ import com.tokopedia.sellerorder.detail.data.model.SetDelivered
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 
-class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment(), Toolbar.OnMenuItemClickListener {
+class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment() {
 
     private var orderDetailListener: SomOrderDetailListener? = null
     private var shouldRefreshOrderList: Boolean = false

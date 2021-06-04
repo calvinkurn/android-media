@@ -8,6 +8,7 @@ import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.home_account_item_common.view.*
 
 /**
@@ -54,6 +55,17 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener) : 
                     account_user_item_common_body?.text = common.body
                 }
             }
+            setupLabel(common)
+        }
+    }
+
+    private fun setupLabel(common: CommonDataView) {
+        val label: Label? = itemView.findViewById(R.id.account_user_label)
+        if(common.labelText.isNotEmpty()) {
+            label?.setLabel(common.labelText)
+            label?.show()
+        } else {
+            label?.hide()
         }
     }
 

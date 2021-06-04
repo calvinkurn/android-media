@@ -163,6 +163,8 @@
     <string name="wallet_title_header_ovo">TokoCash to OVO</string>
     <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
 
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
+
     <!-- Digital-Deals-->
     <string name="digital_deals">digital_deals</string>
 
@@ -314,6 +316,9 @@
     <string name="title_buyer_order_list">Daftar Transaksi</string>
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
+
+    <!-- Dynamic feature for cart -->
+    <string name="checkout_module_title_activity_cart">Keranjang</string>
 
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
