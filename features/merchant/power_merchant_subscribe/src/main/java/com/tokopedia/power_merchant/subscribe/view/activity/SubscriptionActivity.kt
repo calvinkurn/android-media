@@ -275,7 +275,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private fun sendTrackerOnPMTabClicked(tabIndex: Int) {
-        if (tabIndex == PM_TAB_INDEX) {
+        if (tabIndex == PM_PRO_TAB_INDEX) {
             powerMerchantTracking.sendEventClickTabPowerMerchantPro()
         }
     }
