@@ -234,6 +234,7 @@ open class TopChatViewStateImpl constructor(
         sendListener.onEmptyProductPreview()
         hideProductPreviewLayout()
         fragmentView?.updateSrwPreviewState()
+        fragmentView?.expandSrwBubble()
     }
 
     override fun hideProductPreviewLayout() {
@@ -617,7 +618,11 @@ open class TopChatViewStateImpl constructor(
     }
 
     override fun hasProductPreviewShown(): Boolean {
-        return attachmentPreviewContainer.isVisible && attachmentPreviewAdapter.isShowingProduct()
+        return hasVisibleSendablePreview() && attachmentPreviewAdapter.isShowingProduct()
+    }
+
+    override fun hasVisibleSendablePreview(): Boolean {
+        return attachmentPreviewContainer.isVisible
     }
 
     override fun showTemplateChatIfReady(

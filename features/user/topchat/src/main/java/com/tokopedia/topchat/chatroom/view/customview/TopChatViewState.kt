@@ -47,4 +47,5 @@ interface TopChatViewState : BaseChatViewState {
 
     fun attachFragmentView(fragmentView: TopChatContract.View)
     fun hideKeyboard()
+    fun hasVisibleSendablePreview(): Boolean
 }

@@ -320,11 +320,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun expandSrw() {
         expandSrwPreview()
-        adapter.expandSrwBubble()
+        expandSrwBubble()
     }
 
     private fun expandSrwPreview() {
         rvSrw?.isExpanded = true
+    }
+
+    override fun expandSrwBubble() {
+        if (!getViewState().hasVisibleSendablePreview()) {
+            adapter.expandSrwBubble()
+        }
     }
 
     override fun removeSrwBubble() {
@@ -402,7 +408,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
             override fun onHide() {
                 expandSrw()
-                adapter.expandSrwBubble()
+                expandSrwBubble()
             }
         })
     }

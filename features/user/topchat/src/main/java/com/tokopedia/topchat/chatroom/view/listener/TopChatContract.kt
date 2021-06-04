@@ -82,6 +82,7 @@ interface TopChatContract {
          * current visible SRW bubble
          */
         fun removeSrwBubble(productId: String)
+        fun expandSrwBubble()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

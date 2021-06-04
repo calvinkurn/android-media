@@ -59,9 +59,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO: SRW Bubble should collapsed when preview attachment is visible other than product
 
     // TODO: SRW Bubble should expanded when preview attachment is not visible
+    // TODO: SRW Bubble should remain collapsed when invoice preview visible and user toggle chat menu on then off
+
+    // TODO: SRW bubble should maintain state (expand/collapse) if scrolled far top and back at it.
     // TODO: SRW bubble should still displayed/added when user click send sticker
     // TODO: SRW Bubble should displayed when user manually type msg and send instead of click SRW question
-    // TODO: SRW bubble should maintain state (expand/collapse) if scrolled far top and back at it.
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO-Alert: what if SRW in error state and user send msg/sticker
