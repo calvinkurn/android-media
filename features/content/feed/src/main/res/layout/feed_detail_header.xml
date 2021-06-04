@@ -26,25 +26,13 @@
         tools:src="@tools:sample/avatars"
         tools:visibility="visible" />
 
-    <com.tokopedia.gm.common.widget.GMImageView
-        android:id="@+id/goldMerchant"
-        android:layout_width="@dimen/dp_14"
-        android:layout_height="@dimen/dp_14"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/shopName"
-        app:layout_constraintStart_toEndOf="@+id/shopAvatar"
-        app:layout_constraintTop_toTopOf="@+id/shopName"
-        tools:visibility="gone" />
-
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/officialStore"
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/shopName"
         app:layout_constraintStart_toEndOf="@+id/shopAvatar"
         app:layout_constraintTop_toTopOf="@+id/shopName"

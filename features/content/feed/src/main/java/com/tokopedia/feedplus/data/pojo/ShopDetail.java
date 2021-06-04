@@ -24,6 +24,10 @@ public class ShopDetail {
   @Expose
   private Boolean isGold;
 
+  @SerializedName("badge")
+  @Expose
+  private String badgeUrl;
+
   @SerializedName("url")
   @Expose
   private String url;
@@ -60,6 +64,10 @@ public class ShopDetail {
     this.isGold = isGold;
   }
 
+  public void setBadgeUrl(String badgeUrl) {
+    this.badgeUrl = badgeUrl;
+  }
+
   public void setUrl(String url) {
     this.url = url;
   }
@@ -94,6 +102,10 @@ public class ShopDetail {
 
   public Boolean getIsGold() {
     return this.isGold;
+  }
+
+  public String getBadgeUrl() {
+    return badgeUrl;
   }
 
   public String getUrl() {

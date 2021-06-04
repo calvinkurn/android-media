@@ -133,7 +133,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         recyclerviewScrollListener = onRecyclerViewListener()
         val typeFactory: FeedPlusDetailTypeFactory = FeedPlusDetailTypeFactoryImpl(this)
         adapter = DetailFeedAdapter(typeFactory)
-        GraphqlClient.init(context!!)
+        GraphqlClient.init(requireContext())
         pagingHandler = PagingHandler()
     }
 
@@ -311,20 +311,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         (activity as FeedPlusDetailActivity).getShopInfoLayout()?.run {
             val shopNameString = MethodChecker.fromHtml(header.shopName).toString()
             ImageHandler.LoadImage(shopAvatar, header.shopAvatar)
-            when {
-                header.isOfficialStore -> {
-                    goldMerchant.hide()
-                    officialStore.show()
-                }
-                header.isGoldMerchant -> {
-                    goldMerchant.show()
-                    officialStore.hide()
-                }
-                else -> {
-                    goldMerchant.hide()
-                    officialStore.hide()
-                }
-            }
+            officialStore.setImageUrl(header.badgeUrl)
             shopName.text = shopNameString
             shopName.movementMethod = LinkMovementMethod.getInstance()
             if (header.actionText.isNotEmpty()) {
