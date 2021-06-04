@@ -73,8 +73,8 @@ interface TopChatContract {
         fun shouldShowSrw(): Boolean
         fun hasProductPreviewShown(): Boolean
         fun hasNoSrw(): Boolean
-        fun collapseSrwPreview()
-        fun expandSrwPreview()
+        fun collapseSrw()
+        fun expandSrw()
         fun removeSrwBubble()
 
         /**
