@@ -1,16 +1,16 @@
 {
-  "readme": "click share voucher button on voucher review page",
+  "readme": "click download voucher button on voucher review page",
   "mode": "subset",
   "query": [
     {
       "event" : "clickAdsCreation",
       "eventCategory" : "voucher creation - review",
-      "eventAction" : "voucher success - share now",
+      "eventAction" : "voucher success - download",
       "eventLabel" : ".*",
       "screenName" : "/vouchercreation - review",
       "currentSite" : "tokopediaseller",
       "userId" : ".+",
-      "businessUnit ": "physical goods"
+      "businessUnit": "physical goods"
     }
   ]
 }

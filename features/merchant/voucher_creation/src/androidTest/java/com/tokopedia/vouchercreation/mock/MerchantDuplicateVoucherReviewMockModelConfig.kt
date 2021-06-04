@@ -5,10 +5,10 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.vouchercreation.test.R
 
-class MerchantOnGoingVoucherDetailMockModelConfig : MockModelConfig() {
+class MerchantDuplicateVoucherReviewMockModelConfig : MockModelConfig() {
     companion object {
-        private const val GET_VOUCHER_BY_ID = "GetVoucherDataById"
         private const val GET_SHOP_BASIC_DATA = "ShopBasicData"
+        private const val GET_INITIATE_VOUCHER = "InitiateVoucher"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -18,8 +18,8 @@ class MerchantOnGoingVoucherDetailMockModelConfig : MockModelConfig() {
                 FIND_BY_CONTAINS
         )
         addMockResponse(
-                GET_VOUCHER_BY_ID,
-                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_get_ongoing_voucher_detail),
+                GET_INITIATE_VOUCHER,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_get_initiate_voucher),
                 FIND_BY_CONTAINS
         )
         return this

@@ -10,7 +10,7 @@
       "screenName" : "/voucherlistactive",
       "currentSite" : "tokopediaseller",
       "userId" : ".+",
-      "businessUnit ": "physical goods"
+      "businessUnit": "physical goods"
     }
   ]
 }

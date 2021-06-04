@@ -6,6 +6,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -59,8 +60,6 @@ class MerchantVoucherCreationAnalyticTest {
 
     @Test
     fun validateMerchantVoucherCreationJourneyTrackers() {
-        // validate open voucher target page tracker
-        doAnalyticDebuggerTest(VOUCHER_TARGET_PAGE_OPEN)
         // swipe the recycler view up to make the next button visible to espresso
         onView(CommonMatcher.withTagStringValue("voucher_target_recycler_view")).perform(swipeUp())
         // input the voucher name
@@ -69,16 +68,24 @@ class MerchantVoucherCreationAnalyticTest {
         // click the next button
         onView(CommonMatcher.withTagStringValue("voucher_target_next_step_button"))
                 .perform(click())
-        // validate open voucher type and budget page tracker
-        doAnalyticDebuggerTest(VOUCHER_TYPE_AND_BUDGET_PAGE_OPEN)
         // scroll to the next button and click the button
         onView(withId(R.id.rvMvcVoucherType))
-                .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.nextButton))), scrollTo()))
-                .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.nextButton))), click()))
-        // validate open voucher period page tracker
-        doAnalyticDebuggerTest(VOUCHER_PERIOD_PAGE_OPEN)
+                .perform(actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.nextButton))), scrollTo()))
+                .perform(actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.nextButton))), click()))
         // click the next button to proceed to the review page
         onView(withId(R.id.setDateNextButton)).perform(click())
+//        Need further investigation what is the root cause of AppNotIdleException that occurred during the voucher creation process
+//        Thread.sleep(1000)
+//        // scroll to and click the add voucher button
+//        onView(CommonMatcher.withTagStringValue("voucher_creation_review_recycler_view"))
+//                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(10, scrollTo()))
+//                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(10, click()))
+        // validate open voucher target page tracker
+        doAnalyticDebuggerTest(VOUCHER_TARGET_PAGE_OPEN)
+        // validate open voucher type and budget page tracker
+        doAnalyticDebuggerTest(VOUCHER_TYPE_AND_BUDGET_PAGE_OPEN)
+        // validate open voucher period page tracker
+        doAnalyticDebuggerTest(VOUCHER_PERIOD_PAGE_OPEN)
         // validate open voucher review page tracker
         doAnalyticDebuggerTest(VOUCHER_REVIEW_PAGE_OPEN)
     }

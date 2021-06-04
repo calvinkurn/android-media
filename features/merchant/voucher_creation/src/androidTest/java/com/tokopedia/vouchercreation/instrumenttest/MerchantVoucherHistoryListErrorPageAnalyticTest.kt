@@ -9,10 +9,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.vouchercreation.detail.view.activity.VoucherDetailActivity
-import com.tokopedia.vouchercreation.mock.MerchantActiveVoucherListMockModelConfig
-import com.tokopedia.vouchercreation.mock.MerchantCanceledVoucherDetailMockModelConfig
-import com.tokopedia.vouchercreation.mock.MerchantExpiredVoucherDetailMockModelConfig
+import com.tokopedia.vouchercreation.mock.MerchantVoucherHistoryListErrorMockModelConfig
 import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity
 import org.hamcrest.MatcherAssert
 import org.junit.After
@@ -20,14 +17,15 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class MerchantDuplicateVoucherDetailPageAnalyticTest {
+class MerchantVoucherHistoryListErrorPageAnalyticTest {
 
     companion object {
-        private const val DUPLICATE_VOUCHER_DETAIL_PAGE_OPEN = "tracker/merchant/voucher_creation/mvc_duplicate_voucher_page_open.json"
+        private const val VOUCHER_HISTORY_LIST_PAGE_ERROR_OPEN = "tracker/merchant/voucher_creation/mvc_voucher_history_list_page_error_state_show.json"
+        private const val IS_ACTIVE = "is_active"
     }
 
     @get:Rule
-    var activityRule: IntentsTestRule<VoucherDetailActivity> = IntentsTestRule(VoucherDetailActivity::class.java, false, false)
+    var activityRule: IntentsTestRule<VoucherListActivity> = IntentsTestRule(VoucherListActivity::class.java, false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -35,9 +33,9 @@ class MerchantDuplicateVoucherDetailPageAnalyticTest {
     @Before
     fun beforeTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponse(MerchantCanceledVoucherDetailMockModelConfig())
+        setupGraphqlMockResponse(MerchantVoucherHistoryListErrorMockModelConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
-        activityRule.launchActivity(Intent())
+        activityRule.launchActivity(Intent().putExtra(IS_ACTIVE, false))
     }
 
     @After
@@ -48,6 +46,8 @@ class MerchantDuplicateVoucherDetailPageAnalyticTest {
 
     @Test
     fun validateOpenScreenTracker() {
+        Thread.sleep(1000)
+        doAnalyticDebuggerTest(VOUCHER_HISTORY_LIST_PAGE_ERROR_OPEN)
     }
 
     private fun doAnalyticDebuggerTest(fileName: String) {
