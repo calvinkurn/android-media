@@ -4,8 +4,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
@@ -51,10 +53,14 @@ class ItemFeatureRecommendationAdapter(private val itemRecommendationFeatureList
 
                 ivRecommendedPromo?.loadImage(data.iconRecommendationUrl)
 
+                cardContent?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
                 loadImageWithTarget(context, ShopScoreConstant.IC_SQUIRCLE_RECOMMENDATION_URL, {}, MediaTarget(
                         findViewById<AppCompatImageView>(R.id.ivRecommendedPromo),
                         onReady = { recommendedPromoView, resourceBitmap ->
                             val bitmapRecommended = BitmapDrawable(resources, resourceBitmap)
+                            val bgColorRecommendPromo = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                            bitmapRecommended.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(bgColorRecommendPromo, BlendModeCompat.SRC_ATOP)
                             recommendedPromoView.background = bitmapRecommended
                         },
                         onFailed = { _, _ ->

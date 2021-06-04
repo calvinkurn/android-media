@@ -19,4 +19,8 @@
     <color name="shadow_dms_color_3">#15CCCCCC</color>
     <color name="shadow_dms_color_4">#20CCCCCC</color>
     <color name="shadow_dms_color_5">#25CCCCCC</color>
+
+    <color name="shop_score_penalty_dms_container">@color/Unify_Static_White</color>
+    <color name="shop_score_relief_transition_dms_container">@color/Unify_G100</color>
+
 </resources>

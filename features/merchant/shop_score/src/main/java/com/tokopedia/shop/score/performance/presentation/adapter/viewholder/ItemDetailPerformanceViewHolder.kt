@@ -63,7 +63,7 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
-            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            setBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_penalty_dms_container))
             separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
 
             if (element?.isDividerHide == true) {

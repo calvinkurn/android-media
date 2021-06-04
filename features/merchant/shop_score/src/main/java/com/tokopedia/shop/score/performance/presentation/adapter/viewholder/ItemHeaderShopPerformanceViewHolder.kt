@@ -42,25 +42,6 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
             ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
                     ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toIntOrZero()))
         }
-        setupTextColorDarkMode(element)
-    }
-
-    private fun setupTextColorDarkMode(element: HeaderShopPerformanceUiModel?) {
-        with(itemView) {
-            if (context.isDarkMode()) {
-                tvPerformanceLevel?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                tvTitleShopPerformance?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                tvShopScoreValue?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                tvShopScoreMaximum?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                tvHeaderShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                tvDescShopService?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-
-                if (element?.showCardNewSeller == true) {
-                    tvHeaderShopServiceNewSeller?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                    tvDescShopServiceNewSeller?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
-                }
-            }
-        }
     }
 
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {

@@ -2,6 +2,8 @@ package com.tokopedia.shop.score.performance.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +38,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     private var tvValueProductSoldTooltip: Typography? = null
     private var rvLevelCard: RecyclerView? = null
     private var tvValueNextUpdate: Typography? = null
+    private var containerCardIncomeInformation: ConstraintLayout? = null
 
     private val cardTooltipLevelAdapter by lazy { CardTooltipLevelAdapter() }
 
@@ -66,6 +69,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
         isFullpage = true
         initView(view)
         setRecyclerView()
@@ -82,6 +86,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
         tvValueProductSoldTooltip = view.findViewById(R.id.tv_value_product_sold_tooltip)
         rvLevelCard = view.findViewById(R.id.rv_level_card)
         tvValueNextUpdate = view.findViewById(R.id.tv_value_next_update)
+        containerCardIncomeInformation = view.findViewById(R.id.containerCardIncomeInformation)
     }
 
     private fun setRecyclerView() {
@@ -115,6 +120,9 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
         tvValueProductSoldTooltip?.text = data.productSold
         tvValueNextUpdate?.text = getString(R.string.title_update_date, data.nextUpdate)
         cardTooltipLevelAdapter.setCardToolTipLevelList(data.cardTooltipLevelList)
+        context?.let {
+            containerCardIncomeInformation?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
     }
 
 

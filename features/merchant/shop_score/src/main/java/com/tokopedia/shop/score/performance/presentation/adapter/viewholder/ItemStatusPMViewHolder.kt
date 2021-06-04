@@ -21,14 +21,12 @@ class ItemStatusPMViewHolder(view: View,
     override fun bind(element: ItemStatusPMUiModel?) {
         setupIconClickListener()
         setupItemPowerMerchant(element)
-        setupDarkModeColor()
+        setupBackgroundColor()
     }
 
-    private fun setupDarkModeColor() {
+    private fun setupBackgroundColor() {
         with(itemView) {
-            if(context.isDarkMode()) {
-                containerPowerMerchant?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-            }
+            bg_container_pm_status?.showWithCondition(!context.isDarkMode())
         }
     }
 
