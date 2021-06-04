@@ -11,7 +11,7 @@
     <string name="recharge_pdp_emoney_promo_tab">Promo</string>
     <string name="recharge_pdp_emoney_recents_tab">Transaksi Terakhir</string>
 
-    <string name="recharge_pdp_emoney_products_title">Pilih Nominal</string>
+    <string name="recharge_pdp_emoney_products_title">Mau top-up berapa?</string>
 
     <string name="recharge_pdp_emoney_check_saldo_title">Mau cek saldo? Bisa di sini &#128073;</string>
     <string name="recharge_pdp_emoney_check_saldo_description">Jangan lupa cek setelah top-up untuk lihat saldo terbaru kamu.</string>
@@ -31,5 +31,9 @@
 
     <string name="recharge_pdp_emoney_total_payment">Total Pembayaran</string>
     <string name="recharge_pdp_emoney_next">Lanjut</string>
+
+    <string name="recharge_pdp_emoney_coachmark_title">Pilih mau top-up berapa banyak &#x1f4b0;</string>
+    <string name="recharge_pdp_emoney_coachmark_subtitle">Ini nominal top-up yang bisa kamu pilih, lengkap dengan harga masing-masing.</string>
+
 
 </resources>

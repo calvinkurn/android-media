@@ -13,9 +13,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
@@ -65,6 +68,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.activity_emoney.*
 import kotlinx.android.synthetic.main.fragment_emoney_pdp.*
+import kotlinx.android.synthetic.main.item_emoney_product.view.*
+import kotlinx.android.synthetic.main.widget_emoney_pdp_product_list.view.*
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -92,6 +97,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private var emoneyCardNumber = ""
     lateinit var detailPassData: DigitalCategoryDetailPassData
 
+    private lateinit var localCacheHandler: LocalCacheHandler
+
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,6 +107,10 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             detailPassData = it.getParcelable(EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA)
                     ?: DigitalCategoryDetailPassData.Builder().build()
         }
+        activity?.let {
+            localCacheHandler = LocalCacheHandler(context, EMONEY_PDP_PREFERENCES_NAME)
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -163,13 +174,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 is Success -> {
                     if (detailPassData.clientNumber != null && detailPassData.clientNumber.isNotEmpty()) {
                         renderClientNumber(TopupBillsFavNumberItem(clientNumber = detailPassData.clientNumber))
+                    } else if (emoneyCardNumber.isNotEmpty()) {
+                        renderClientNumber(TopupBillsFavNumberItem(emoneyCardNumber))
                     } else {
-                        if (emoneyCardNumber.isNotEmpty()) renderClientNumber(TopupBillsFavNumberItem(emoneyCardNumber))
-                        else {
-                            topUpBillsViewModel.favNumberData.value?.let { favNumber ->
-                                if (favNumber is Success) {
-                                    favNumber.data.favNumberList.firstOrNull()?.let { num -> renderClientNumber(num) }
-                                }
+                        topUpBillsViewModel.favNumberData.value?.let { favNumber ->
+                            if (favNumber is Success) {
+                                favNumber.data.favNumberList.firstOrNull()?.let { num -> renderClientNumber(num) }
                             }
                         }
                     }
@@ -194,6 +204,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                 is Success -> {
                     renderProducts(it.data.product.dataCollections.firstOrNull()?.products
                             ?: listOf())
+                    showOnBoarding()
                 }
                 is Fail -> renderErrorMessage(it.throwable)
             }
@@ -401,7 +412,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun renderClientNumber(item: TopupBillsFavNumberItem) {
         emoneyCardNumber = item.clientNumber
-        if (item.clientNumber.length > MAX_CHAR_EMONEY_CARD_NUMBER) emoneyCardNumber = item.clientNumber.substring(0, MAX_CHAR_EMONEY_CARD_NUMBER)
+        if (item.clientNumber.length > MAX_CHAR_EMONEY_CARD_NUMBER) {
+            emoneyCardNumber = item.clientNumber.substring(0, MAX_CHAR_EMONEY_CARD_NUMBER)
+        }
         emoneyPdpInputCardWidget.setNumber(emoneyCardNumber)
     }
 
@@ -561,8 +574,44 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
+    private fun showOnBoarding() {
+        context?.run {
+            val coachMarkHasShown = localCacheHandler.getBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, false)
+            if (coachMarkHasShown) return
+
+            emoneyPdpProductWidget.emoneyProductListRecyclerView.let { rv ->
+                rv.post {
+                    try {
+                        (rv.findViewHolderForAdapterPosition(0) as EmoneyPdpProductViewHolder)
+                                .itemView.emoneyProductPrice?.let { firstNominalView ->
+                                    val coachMarks = ArrayList<CoachMark2Item>()
+                                    coachMarks.add(CoachMark2Item(firstNominalView,
+                                            getString(R.string.recharge_pdp_emoney_coachmark_title),
+                                            getString(R.string.recharge_pdp_emoney_coachmark_subtitle),
+                                            CoachMark2.POSITION_BOTTOM))
+
+                                    val coachMark = CoachMark2(requireContext())
+                                    coachMark.showCoachMark(coachMarks)
+
+                                    localCacheHandler.apply {
+                                        putBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, true)
+                                        applyEditor()
+                                    }
+                                }
+
+                    } catch (e: Throwable) {
+                        // do nothing, don't show coachmark then.
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         private const val TAG = "EmoneyProductDetailBottomSheet"
+
+        const val EMONEY_PDP_PREFERENCES_NAME = "emoney_pdp_preferences"
+        const val EMONEY_PDP_COACH_MARK_HAS_SHOWN = "emoney_pdp_show_coach_mark"
 
         private const val TAB_COUNT_THRESHOLD_NUMBER = 1
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
