@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.*
@@ -92,20 +93,25 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         viewModel.cancelPaymentDetailLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> showCancelDetailMessage(it.data)
-                is Fail -> showToast(it.throwable.message, Toaster.TYPE_ERROR)
+                is Fail -> showToast(
+                    ErrorHandler.getErrorMessage(context, it.throwable),
+                    Toaster.TYPE_ERROR
+                )
             }
         })
         viewModel.cancelPaymentLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> showCancelPaymentResult(it.data)
-                is Fail -> showToast(it.throwable.message, Toaster.TYPE_ERROR)
+                is Fail -> showToast(
+                    ErrorHandler.getErrorMessage(context, it.throwable),
+                    Toaster.TYPE_ERROR
+                )
             }
         })
     }
 
     private fun showCancelPaymentResult(data: CancelPayment) {
-        // refresh page
-        if (data.isSuccess) {
+        if (data.isSuccess == true) {
             showToast(data.message, Toaster.TYPE_NORMAL)
             onRefresh()
         } else showToast(data.message, Toaster.TYPE_ERROR)
@@ -113,26 +119,27 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     // show cancel detail dialog
     private fun showCancelDetailMessage(data: CancelDetailWrapper) {
-        val description = if (data.cancelDetailData.combineMessage.isNullOrBlank()) {
-            data.cancelDetailData.refundMessage ?: ""
-        } else data.cancelDetailData.combineMessage + "\n" + data.cancelDetailData.refundMessage
-        context?.let {
-            val title =
-                if (data.productName == null) it.getString(R.string.payment_cancel_title_default)
+        data.cancelDetailData?.let { detailData ->
+            val descriptionMessage = viewModel.getCancelDescriptionMessage(detailData)
+            context?.let {
+                val title = if (data.productName == null)
+                    it.getString(R.string.payment_cancel_title_default)
                 else "Yakin ingin batalkan ${data.productName}?"
-            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(title)
-            dialog.setDescription(description.parseAsHtml())
-            dialog.setPrimaryCTAText(getString(R.string.payment_cancel_yes))
-            dialog.setPrimaryCTAClickListener {
-                viewModel.cancelPayment(data.transactionId, data.merchantCode)
-                dialog.dismiss()
+
+                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle(title)
+                dialog.setDescription(descriptionMessage.parseAsHtml())
+                dialog.setPrimaryCTAText(getString(R.string.payment_cancel_yes))
+                dialog.setPrimaryCTAClickListener {
+                    viewModel.cancelPayment(data.transactionId, data.merchantCode)
+                    dialog.dismiss()
+                }
+                dialog.setSecondaryCTAText(getString(R.string.payment_cancel_back))
+                dialog.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog.show()
             }
-            dialog.setSecondaryCTAText(getString(R.string.payment_cancel_back))
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
         }
     }
 

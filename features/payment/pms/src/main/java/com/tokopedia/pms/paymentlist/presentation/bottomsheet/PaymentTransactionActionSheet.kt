@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pms.R
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.pms.paymentlist.presentation.adapter.PaymentTransactionActionAdapter
-import com.tokopedia.pms.paymentlist.presentation.listeners.PaymentListActionListener
+import com.tokopedia.pms.paymentlist.presentation.listener.PaymentListActionListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.pms_base_recycler_bottom_sheet.*

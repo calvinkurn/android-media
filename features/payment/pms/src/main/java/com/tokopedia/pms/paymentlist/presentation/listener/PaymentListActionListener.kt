@@ -1,4 +1,4 @@
-package com.tokopedia.pms.paymentlist.presentation.listeners
+package com.tokopedia.pms.paymentlist.presentation.listener
 
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 

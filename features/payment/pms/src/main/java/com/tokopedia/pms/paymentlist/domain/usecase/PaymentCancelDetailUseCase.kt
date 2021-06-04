@@ -4,13 +4,13 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pms.paymentlist.domain.data.CancelDetailWrapper
-import com.tokopedia.pms.paymentlist.domain.data.DataCancelDetail
+import com.tokopedia.pms.paymentlist.domain.data.PaymentCancelDetailResponse
 import javax.inject.Inject
 
 @GqlQuery("PaymentCancelDetailQuery", PaymentCancelDetailUseCase.GQL_GET_CANCEL_QUERY)
 class PaymentCancelDetailUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<DataCancelDetail>(graphqlRepository) {
+) : GraphqlUseCase<PaymentCancelDetailResponse>(graphqlRepository) {
 
     fun getCancelDetail(
         onSuccess: (CancelDetailWrapper) -> Unit,
@@ -19,19 +19,20 @@ class PaymentCancelDetailUseCase @Inject constructor(
         merchantCode: String,
         productName: String?
     ) {
-        this.setTypeClass(DataCancelDetail::class.java)
+        this.setTypeClass(PaymentCancelDetailResponse::class.java)
         this.setRequestParams(getRequestParams(transactionId, merchantCode))
         this.setGraphqlQuery(PaymentCancelDetailQuery.GQL_QUERY)
         this.execute(
             { result ->
-                onSuccess(
-                    CancelDetailWrapper(
-                        transactionId,
-                        merchantCode,
-                        productName,
-                        result.cancelDetail
-                    )
-                )
+                if (result.cancelDetail?.success == true)
+                    onSuccess(
+                        CancelDetailWrapper(
+                            transactionId,
+                            merchantCode,
+                            productName,
+                            result.cancelDetail
+                        )
+                    ) else onError(NullPointerException())
             }, { error ->
                 onError(error)
             }
@@ -48,8 +49,6 @@ class PaymentCancelDetailUseCase @Inject constructor(
     query cancelDetail(${'$'}transactionID: String!, ${'$'}merchantCode: String!) {
     cancelDetail(transactionID: ${'$'}transactionID, merchantCode: ${'$'}merchantCode) {
       success
-      hasRefund
-      refundCCAmount
       refundWalletAmount
       refundMessage
       combineMessage

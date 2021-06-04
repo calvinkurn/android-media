@@ -112,8 +112,10 @@ class PaymentListViewModel @Inject constructor(
         _cancelPaymentDetailLiveData.postValue(Success(cancelDetail))
     }
 
-    private fun paymentCancelledSuccessful(cancelPayment: CancelPayment) {
-        _cancelPaymentLiveData.postValue(Success(cancelPayment))
+    private fun paymentCancelledSuccessful(cancelPayment: CancelPayment?) {
+        cancelPayment?.let {
+            _cancelPaymentLiveData.postValue(Success(cancelPayment))
+        } ?: run { paymentCancelFailed(NullPointerException()) }
     }
 
     private fun onPaymentListError(throwable: Throwable) {
@@ -138,5 +140,12 @@ class PaymentListViewModel @Inject constructor(
 
     fun refreshPage() {
         gqlPaymentList.clear()
+    }
+
+    fun getCancelDescriptionMessage(detailData: CancelDetail): String {
+        return if (detailData.refundWalletAmount ?: 0 > 0 &&
+            detailData.combineMessage.isNullOrBlank()
+        ) detailData.refundMessage ?: ""
+        else detailData.combineMessage + "\n" + detailData.refundMessage
     }
 }

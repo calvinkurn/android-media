@@ -7,8 +7,8 @@ import com.tokopedia.pms.bankaccount.data.model.EditTransfer
 import com.tokopedia.pms.bankaccount.domain.SaveAccountDetailUseCase
 import com.tokopedia.pms.paymentlist.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 

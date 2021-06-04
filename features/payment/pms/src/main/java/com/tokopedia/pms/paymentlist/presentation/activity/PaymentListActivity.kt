@@ -13,7 +13,7 @@ import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.extractValues
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment
-import com.tokopedia.pms.paymentlist.presentation.listeners.PaymentListActionListener
+import com.tokopedia.pms.paymentlist.presentation.listener.PaymentListActionListener
 import com.tokopedia.pms.proof.view.UploadProofPaymentActivity
 
 class PaymentListActivity : BaseSimpleActivity(), HasComponent<PmsComponent>,

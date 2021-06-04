@@ -3,8 +3,8 @@ package com.tokopedia.pms.bankaccount.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.pms.bankaccount.view.viewholder.BankListViewHolder
 import com.tokopedia.pms.bankaccount.data.model.BankListModel
+import com.tokopedia.pms.bankaccount.view.viewholder.BankListViewHolder
 
 /**
  * Created by zulfikarrahman on 7/5/18.

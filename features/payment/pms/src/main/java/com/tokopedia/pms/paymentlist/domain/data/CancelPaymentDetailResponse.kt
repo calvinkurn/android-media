@@ -1,32 +1,16 @@
+package com.tokopedia.pms.paymentlist.domain.data
 
-package com.tokopedia.pms.paymentlist.domain.data;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+data class CancelPaymentDetailResponse(
+    @SerializedName("cancelPayment")
+    val cancelPayment: CancelPayment?
+)
 
-public class CancelPayment {
-
+data class CancelPayment(
     @SerializedName("success")
-    @Expose
-    private boolean success;
+    val isSuccess: Boolean?,
     @SerializedName("message")
-    @Expose
-    private String message;
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-}
+    val message: String?
+)

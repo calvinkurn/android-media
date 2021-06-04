@@ -49,7 +49,7 @@
                             android:layout_width="@dimen/pms_dp_6"
                             android:layout_height="@dimen/pms_dp_6"
                             android:layout_margin="@dimen/pms_dp_7"
-                            android:layout_marginRight="@dimen/pms_dp_5"
+                            android:layout_marginEnd="@dimen/pms_dp_5"
                             android:background="@drawable/pm_circle_green" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -57,7 +57,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/unify_space_8"
-                            android:layout_toRightOf="@+id/circle_green"
+                            android:layout_toEndOf="@+id/circle_green"
                             android:text="@string/payment_label_help_proof_date"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3"
@@ -67,7 +67,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/label_date"
-                            android:layout_alignLeft="@+id/label_date"
+                            android:layout_marginStart="@+id/label_date"
                             android:text="@string/payment_label_help_proof_example_date"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
@@ -83,7 +83,7 @@
                             android:layout_width="@dimen/pms_dp_6"
                             android:layout_height="@dimen/pms_dp_6"
                             android:layout_margin="@dimen/pms_dp_7"
-                            android:layout_marginRight="@dimen/pms_dp_5"
+                            android:layout_marginEnd="@dimen/pms_dp_5"
                             android:background="@drawable/pm_circle_green" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -91,7 +91,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/unify_space_8"
-                            android:layout_toRightOf="@+id/circle_green_2"
+                            android:layout_toEndOf="@+id/circle_green_2"
                             android:text="@string/payment_label_help_proof_success_status"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3"
@@ -101,7 +101,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/label_date_2"
-                            android:layout_alignLeft="@+id/label_date_2"
+                            android:layout_marginStart="@+id/label_date_2"
                             android:text="@string/payment_label_help_proof_example_success_status"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
@@ -117,7 +117,7 @@
                             android:layout_width="@dimen/pms_dp_6"
                             android:layout_height="@dimen/pms_dp_6"
                             android:layout_margin="@dimen/pms_dp_7"
-                            android:layout_marginRight="@dimen/pms_dp_5"
+                            android:layout_marginEnd="@dimen/pms_dp_5"
                             android:background="@drawable/pm_circle_green" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -125,7 +125,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/unify_space_8"
-                            android:layout_toRightOf="@+id/circle_green_3"
+                            android:layout_toEndOf="@+id/circle_green_3"
                             android:text="@string/payment_label_help_proof_receiver"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3"
@@ -135,7 +135,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/label_date_3"
-                            android:layout_alignLeft="@+id/label_date_3"
+                            android:layout_marginStart="@+id/label_date_3"
                             android:text="@string/payment_label_help_proof_example_receiver"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
@@ -151,7 +151,7 @@
                             android:layout_width="@dimen/pms_dp_6"
                             android:layout_height="@dimen/pms_dp_6"
                             android:layout_margin="@dimen/pms_dp_7"
-                            android:layout_marginRight="@dimen/pms_dp_5"
+                            android:layout_marginEnd="@dimen/pms_dp_5"
                             android:background="@drawable/pm_circle_green" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -159,7 +159,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/unify_space_8"
-                            android:layout_toRightOf="@+id/circle_green_4"
+                            android:layout_toEndOf="@+id/circle_green_4"
                             android:text="@string/payment_label_help_proof_total_transfer"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3"
@@ -169,7 +169,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/label_date_4"
-                            android:layout_alignLeft="@+id/label_date_4"
+                            android:layout_marginStart="@+id/label_date_4"
                             android:text="@string/payment_label_help_proof_example_total"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
@@ -261,9 +261,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/button_save"
-            android:layout_marginLeft="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginRight="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
             android:layout_marginBottom="@dimen/unify_space_8"
             android:maxHeight="52dp"
             android:text="@string/payment_label_choose_another_image"
@@ -277,9 +277,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginRight="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
             android:layout_marginBottom="@dimen/unify_space_8"
             android:text="@string/payment_label_choose_image"
             app:unifyButtonSize="large"

@@ -156,8 +156,7 @@ class PaymentListViewModelTest {
     @Test
     fun `getCancelPaymentDetail Success`() {
         val mockData = CancelDetailWrapper("", "", "",
-            CancelDetail().also
-            { it.isSuccess = true })
+            CancelDetail(true, 10, "" , ""))
 
         coEvery {
             cancelPaymentDetailUseCase.getCancelDetail(any(), any(), "", "", "")
@@ -166,7 +165,7 @@ class PaymentListViewModelTest {
         }
         viewModel.getCancelPaymentDetail("", "", "")
         assert(viewModel.cancelPaymentDetailLiveData.value is Success)
-        Assertions.assertThat((viewModel.cancelPaymentDetailLiveData.value as Success).data.cancelDetailData.isSuccess)
+        Assertions.assertThat((viewModel.cancelPaymentDetailLiveData.value as Success).data.cancelDetailData?.success)
             .isEqualTo(true)
     }
 
@@ -185,9 +184,7 @@ class PaymentListViewModelTest {
 
     @Test
     fun `cancelPayment successful`() {
-        val data = CancelPayment()
-        data.isSuccess = true
-        data.message = "Cancel Success"
+        val data = CancelPayment(true, "Cancel Success")
         coEvery {
             cancelPaymentUseCase.invokePaymentCancel(any(), any(), "t1234", "m1234")
         } coAnswers {

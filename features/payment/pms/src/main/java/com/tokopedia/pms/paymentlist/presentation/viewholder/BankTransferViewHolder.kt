@@ -13,17 +13,6 @@ import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.*
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.cardIcon
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.cardMenu
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.cardTitle
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.goToHowToPay
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.ivGatewayImage
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.tvPaymentCode
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.tvPaymentGatewayName
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.tvPaymentTransactionDate
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.tvTotalPaymentAmount
-import kotlinx.android.synthetic.main.bank_transfer_payment_list_item.view.tvTransactionExpireTime
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.*
 
 class BankTransferViewHolder(
     val view: View,
