@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
@@ -462,7 +463,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         decideSuccessValueHitGqlAggregator("2147818576", true)
         val actionButtonAtc = 2
         val miniCartItem = slot<List<MiniCartItem>>()
-        val updateAtcResponse = UpdateCartV2Data(status = "OK")
+        val updateAtcResponse = UpdateCartV2Data(status = "OK", data = Data(message = "sukses gan"))
 
         coEvery {
             updateCartUseCase.executeOnBackground()
@@ -478,6 +479,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertNotNull(miniCartItem.captured.firstOrNull { it.productId == "2147818576" })
         Assert.assertEquals(miniCartItem.captured.firstOrNull { it.productId == "2147818576" }!!.quantity, 50)
         Assert.assertTrue(viewModel.updateCartLiveData.value is Success)
+        Assert.assertEquals((viewModel.updateCartLiveData.value as Success).data, "sukses gan")
         assertButton(expectedAlternateCopy = "Perbarui Keranjang", expectedIsBuyable = true)
     }
 

@@ -74,8 +74,8 @@ class AtcVariantViewModel @Inject constructor(
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _updateCartLiveData = MutableLiveData<Result<Boolean>>()
-    val updateCartLiveData: LiveData<Result<Boolean>>
+    private val _updateCartLiveData = MutableLiveData<Result<String>>()
+    val updateCartLiveData: LiveData<Result<String>>
         get() = _updateCartLiveData
 
     private val _addWishlistResult = MutableLiveData<Result<Boolean>>()
@@ -377,13 +377,13 @@ class AtcVariantViewModel @Inject constructor(
 
             if (result.error.isEmpty()) {
                 updateMiniCartAndButtonData(productId = copyOfMiniCartItem.productId, isTokoNow = isTokoNow, quantity = copyOfMiniCartItem.quantity, notes = copyOfMiniCartItem.notes)
-                _updateCartLiveData.postValue(true.asSuccess())
+                _updateCartLiveData.postValue(result.data.message.asSuccess())
             } else {
-                _updateCartLiveData.postValue(Throwable(result.error.firstOrNull() ?: "").asFail())
+                _updateCartLiveData.postValue(MessageErrorException(result.error.firstOrNull() ?: "").asFail())
             }
         })
         {
-            _updateCartLiveData.postValue(it.asFail())
+            _updateCartLiveData.postValue(it.cause?.asFail() ?: it.asFail())
         }
     }
 
