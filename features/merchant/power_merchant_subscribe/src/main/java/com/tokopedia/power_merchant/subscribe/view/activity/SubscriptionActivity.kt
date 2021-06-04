@@ -24,6 +24,7 @@ import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeCom
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMTermAndConditionBottomSheet
+import com.tokopedia.power_merchant.subscribe.view.fragment.PMRegistrationFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
@@ -59,15 +60,15 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private var pmActiveStatePage: PowerMerchantSubscriptionFragment? = null
-    private val pmRegistrationPage: Pair<String, PowerMerchantSubscriptionFragment> by lazy {
+    private val pmRegistrationPage: Pair<String, PMRegistrationFragment> by lazy {
         val title = getString(R.string.pm_power_merchant)
         val rpmTire = PMConstant.PMTierType.POWER_MERCHANT
-        Pair(title, PowerMerchantSubscriptionFragment.createInstance(rpmTire))
+        Pair(title, PMRegistrationFragment.createInstance(rpmTire))
     }
-    private val pmProRegistrationPage: Pair<String, PowerMerchantSubscriptionFragment> by lazy {
+    private val pmProRegistrationPage: Pair<String, PMRegistrationFragment> by lazy {
         val title = getString(R.string.pm_power_merchant_pro)
         val pmProTire = PMConstant.PMTierType.POWER_MERCHANT_PRO
-        Pair(title, PowerMerchantSubscriptionFragment.createInstance(pmProTire))
+        Pair(title, PMRegistrationFragment.createInstance(pmProTire))
     }
 
     private val viewPagerAdapter by lazy {
