@@ -257,8 +257,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 if (isExpanded) {
                     getViewState().hideKeyboard()
                     chatMenu?.hideMenu()
-                    adapter.setSrwBubbleState(isExpanded)
                 }
+                adapter.setSrwBubbleState(isExpanded)
             }
         })
     }
