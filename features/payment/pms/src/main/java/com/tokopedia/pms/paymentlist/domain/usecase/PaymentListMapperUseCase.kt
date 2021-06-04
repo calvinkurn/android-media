@@ -16,7 +16,7 @@ class PaymentListMapperUseCase @Inject constructor(
     private val PARAM_PAYMENT_LIST = "param_payment_list"
 
     fun mapResponseToRenderPaymentList(
-        paymentList: List<PaymentListInside>,
+        paymentList: List<PaymentListItem>,
         onSuccess: (ArrayList<BasePaymentModel>) -> Unit,
         onError: (Throwable) -> Unit
     ) {
@@ -27,8 +27,8 @@ class PaymentListMapperUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): ArrayList<BasePaymentModel> {
-        val list: List<PaymentListInside> =
-            (useCaseRequestParams.getObject(PARAM_PAYMENT_LIST) as List<PaymentListInside>)
+        val list: List<PaymentListItem> =
+            (useCaseRequestParams.getObject(PARAM_PAYMENT_LIST) as List<PaymentListItem>)
         return mapList(list)
     }
 
@@ -41,14 +41,14 @@ class PaymentListMapperUseCase @Inject constructor(
     * be combined with current being processed.
     * Otherwise simply add in the returning list.
     * */
-    private fun mapList(paymentList: List<PaymentListInside>): ArrayList<BasePaymentModel> {
+    private fun mapList(paymentList: List<PaymentListItem>): ArrayList<BasePaymentModel> {
         val paymentListModels = arrayListOf<BasePaymentModel>()
-        val indexMap = HashMap<String, ArrayList<Int>>()
+        val indexMap = HashMap<String?, ArrayList<Int>>()
         var indexCount = 0
         for (paymentModel in paymentList) {
             paymentModel.apply {
 
-                val model: BasePaymentModel? = if (isIsVa) {
+                val model: BasePaymentModel? = if (isIsVa == true) {
                     if (indexMap.containsKey(paymentCode)) {
                         val combinedVaResult = combinedVirtualAccountModel(
                             indexMap,
@@ -70,7 +70,7 @@ class PaymentListMapperUseCase @Inject constructor(
                         indexCount++
                         vaPaymentModel
                     }
-                } else if (isIsKlikbca) {
+                } else if (isIsKlikbca == true) {
                     val klicBCA = getKlicBCAPaymentModel(this)
                     indexCount++
                     klicBCA
@@ -91,13 +91,13 @@ class PaymentListMapperUseCase @Inject constructor(
 
                 // will be null in case of Combined VA which is intentional
                 model?.let {
-                    model.paymentCode = paymentCode
-                    model.gatewayImage = if (bankImg.isNullOrBlank()) gatewayImg else bankImg
-                    model.gatewayName = gatewayName
-                    model.productImage = productImg
-                    model.howtoPayAppLink = appLink
-                    model.invoiceDetailUrl = invoiceUrl
-                    model.shouldShowHowToPay = isShowHelpPage
+                    model.paymentCode = paymentCode ?: ""
+                    model.gatewayImage = if (bankImg.isNullOrBlank()) gatewayImg ?: "" else bankImg
+                    model.gatewayName = gatewayName ?: ""
+                    model.productImage = productImg ?: ""
+                    model.howtoPayAppLink = appLink ?: ""
+                    model.invoiceDetailUrl = invoiceUrl ?: ""
+                    model.shouldShowHowToPay = isShowHelpPage ?: false
                     model.actionList.addAll(getListOfAction(this))
                     paymentListModels.add(model)
                 }
@@ -108,28 +108,28 @@ class PaymentListMapperUseCase @Inject constructor(
     }
 
     private fun getVirtualAccountPaymentModel(
-        model: PaymentListInside,
+        model: PaymentListItem,
         vaItemList: ArrayList<VaTransactionItem>
     ): VirtualAccountPaymentModel {
         model.apply {
             return VirtualAccountPaymentModel(
-                transactionExpireUnix,
-                transactionDate, paymentAmount,
+                transactionExpireUnix ?: 0,
+                transactionDate ?: "", paymentAmount ?: 0,
                 vaItemList
             )
         }
     }
 
     private fun combinedVirtualAccountModel(
-        indexMap: HashMap<String, ArrayList<Int>>,
-        paymentListInside: PaymentListInside,
+        indexMap: HashMap<String?, ArrayList<Int>>,
+        PaymentListItem: PaymentListItem,
         paymentListModels: ArrayList<BasePaymentModel>
     ): VirtualAccountPaymentModel? {
-        paymentListInside.apply {
+        PaymentListItem.apply {
             val vaListItem = getVirtualAccountTransactionItem(this)
             return getExistingVaByProductCode(
-                paymentCode,
-                gatewayName,
+                paymentCode ?: "",
+                gatewayName ?: "",
                 vaListItem,
                 this,
                 indexMap,
@@ -142,8 +142,8 @@ class PaymentListMapperUseCase @Inject constructor(
         paymentCode: String,
         gatewayName: String,
         vaListItem: VaTransactionItem,
-        responseModel: PaymentListInside,
-        indexMap: HashMap<String, ArrayList<Int>>,
+        responseModel: PaymentListItem,
+        indexMap: HashMap<String?, ArrayList<Int>>,
         paymentListModels: ArrayList<BasePaymentModel>
     ): VirtualAccountPaymentModel? {
         val indexListWithSamePaymentCode = indexMap[paymentCode] ?: listOf(0)
@@ -165,86 +165,97 @@ class PaymentListMapperUseCase @Inject constructor(
         } else null
     }
 
-    private fun getVirtualAccountTransactionItem(paymentListInside: PaymentListInside): VaTransactionItem {
-        paymentListInside.apply {
+    private fun getVirtualAccountTransactionItem(PaymentListItem: PaymentListItem): VaTransactionItem {
+        PaymentListItem.apply {
             return VaTransactionItem(
-                transactionId, merchantCode, transactionExpireUnix,
-                transactionDate, paymentAmount, isShowCancelButton,
-                invoiceUrl, productName
+                transactionId ?: "", merchantCode ?: "",
+                transactionExpireUnix ?: 0, transactionDate ?: "",
+                paymentAmount ?: 0, isShowCancelButton ?: false,
+                invoiceUrl ?: "", productName ?: ""
             )
         }
     }
 
-    private fun getCreditCardPaymentModel(paymentListInside: PaymentListInside): CreditCardPaymentModel {
-        paymentListInside.apply {
-            val label = if (isShowTickerMessage) tickerMessage else ""
+    private fun getCreditCardPaymentModel(PaymentListItem: PaymentListItem): CreditCardPaymentModel {
+        PaymentListItem.apply {
+            val label = if (isShowTickerMessage == true) tickerMessage else ""
             return CreditCardPaymentModel(
-                label, transactionId, merchantCode,
-                transactionExpireUnix, transactionDate, paymentAmount, isShowCancelButton,
-                productName
+                label ?: "", transactionId ?: "", merchantCode ?: "",
+                transactionExpireUnix ?: 0, transactionDate ?: "",
+                paymentAmount ?: 0, isShowCancelButton ?: false,
+                productName ?: ""
             )
         }
     }
 
-    private fun getKlicBCAPaymentModel(paymentListInside: PaymentListInside): KlicBCAPaymentModel {
-        paymentListInside.apply {
+    private fun getKlicBCAPaymentModel(PaymentListItem: PaymentListItem): KlicBCAPaymentModel {
+        PaymentListItem.apply {
             return KlicBCAPaymentModel(
-                transactionId, merchantCode, transactionExpireUnix,
-                transactionDate, paymentAmount, isShowCancelButton, productName
+                transactionId ?: "", merchantCode ?: "",
+                transactionExpireUnix ?: 0, transactionDate ?: "",
+                paymentAmount ?: 0, isShowCancelButton ?: false, productName ?: ""
             )
         }
     }
 
-    private fun getStorePaymentModel(paymentListInside: PaymentListInside): StorePaymentModel {
-        paymentListInside.apply {
+    private fun getStorePaymentModel(PaymentListItem: PaymentListItem): StorePaymentModel {
+        PaymentListItem.apply {
             return StorePaymentModel(
-                transactionId, merchantCode, transactionExpireUnix,
-                transactionDate, paymentAmount, isShowCancelButton, productName
+                transactionId ?: "", merchantCode ?: "",
+                transactionExpireUnix ?: 0, transactionDate ?: "",
+                paymentAmount ?: 0, isShowCancelButton ?: false,
+                productName ?: ""
             )
         }
     }
 
-    private fun getBankTransferPaymentModel(paymentListInside: PaymentListInside): BankTransferPaymentModel {
-        paymentListInside.apply {
+    private fun getBankTransferPaymentModel(PaymentListItem: PaymentListItem): BankTransferPaymentModel {
+        PaymentListItem.apply {
             return BankTransferPaymentModel(
-                transactionId, merchantCode, transactionExpireUnix,
-                transactionDate, paymentAmount, isShowCancelButton, productName,
-                BankInfo(userBankAccount.accNo, userBankAccount.accName, userBankAccount.bankId.toString()),
-                BankInfo(destBankAccount.accNo, destBankAccount.accName, null)
+                transactionId ?: "", merchantCode ?: "",
+                transactionExpireUnix ?: 0,
+                transactionDate ?: "", paymentAmount ?: 0,
+                isShowCancelButton ?: false, productName ?: "",
+                BankInfo(
+                    userBankAccount?.accNo,
+                    userBankAccount?.accName,
+                    userBankAccount?.bankId.toString()
+                ),
+                BankInfo(destBankAccount?.accNo, destBankAccount?.accName, null)
             )
         }
     }
 
-    private fun isStoreTransfer(insideModel: PaymentListInside) =
-        insideModel.isIsVa.not() && insideModel.isIsKlikbca.not() && insideModel.paymentCode?.isNotEmpty() == true
+    private fun isStoreTransfer(insideModel: PaymentListItem) =
+        insideModel.isIsVa == false && insideModel.isIsKlikbca == false && insideModel.paymentCode?.isNotEmpty() == true
 
-    private fun isBankTransfer(paymentListInside: PaymentListInside) =
-        paymentListInside.destBankAccount != null && !TextUtils.isEmpty(paymentListInside.destBankAccount.accNo)
-                && paymentListInside.userBankAccount != null && !TextUtils.isEmpty(paymentListInside.userBankAccount.accNo)
+    private fun isBankTransfer(PaymentListItem: PaymentListItem) =
+        PaymentListItem.destBankAccount != null && !TextUtils.isEmpty(PaymentListItem.destBankAccount.accNo)
+                && PaymentListItem.userBankAccount != null && !TextUtils.isEmpty(PaymentListItem.userBankAccount.accNo)
 
     private fun getListOfAction(
-        paymentListInside: PaymentListInside
+        PaymentListItem: PaymentListItem
     ): List<TransactionActionType> {
         val listOfActions: MutableList<TransactionActionType> = ArrayList()
-        if (paymentListInside.isShowEditKlikbcaButton) {
+        if (PaymentListItem.isShowEditKlikbcaButton == true) {
             val model: TransactionActionType = EditKlicBCA(EDIT_KLIC_BCA_USER_ID)
             model.actionName = context.getString(R.string.payment_label_change_bca_user_id)
             model.actionIcon = IconUnify.UPLOAD
             listOfActions.add(model)
         }
-        if (paymentListInside.isShowEditTransferButton) {
+        if (PaymentListItem.isShowEditTransferButton == true) {
             val model: TransactionActionType = EditBankTransfer(CHANGE_ACCOUNT_DETAIL)
             model.actionName = context.getString(R.string.payment_label_change_account_detail)
             model.actionIcon = IconUnify.EDIT
             listOfActions.add(model)
         }
-        if (paymentListInside.isShowUploadButton) {
+        if (PaymentListItem.isShowUploadButton == true) {
             val model: TransactionActionType = UploadProof(UPLOAD_PAYMENT_PROOF)
             model.actionName = context.getString(R.string.payment_label_upload_proof)
             model.actionIcon = IconUnify.UPLOAD
             listOfActions.add(model)
         }
-        if (paymentListInside.isShowCancelButton) {
+        if (PaymentListItem.isShowCancelButton == true) {
             val model: TransactionActionType = CancelTransaction(CANCEL_TRX)
             model.actionName = context.getString(R.string.payment_label_cancel_transaction)
             model.actionIcon = IconUnify.DELETE

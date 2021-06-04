@@ -18,7 +18,7 @@ class PaymentListViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private var gqlPaymentList = arrayListOf<PaymentListInside>()
+    private var gqlPaymentList = arrayListOf<PaymentListItem>()
 
     private val _paymentListResultLiveData =
         MutableLiveData<PaymentResult<ArrayList<BasePaymentModel>>>()
@@ -86,7 +86,7 @@ class PaymentListViewModel @Inject constructor(
             if (it.paymentList.isNullOrEmpty().not())
                 gqlPaymentList.addAll(it.paymentList)
 
-            if (it.isHasNextPage) getPaymentList(it.lastCursor)
+            if (it.isHasNextPage) getPaymentList(it.lastCursor ?: "")
             else combinePendingTransactions()
 
         } ?: run {

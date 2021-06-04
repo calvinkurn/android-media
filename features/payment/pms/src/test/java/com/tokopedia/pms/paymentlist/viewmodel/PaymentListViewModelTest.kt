@@ -85,16 +85,8 @@ class PaymentListViewModelTest {
 
     @Test
     fun `Execute getPaymentList Empty`() {
-        val mockGatewayName = "Test Gateway"
-        val responseData = PaymentListInside().also { it.gatewayName = mockGatewayName }
-        val paymentData = PaymentList().also {
-            it.lastCursor = ""
-            it.isHasNextPage = false
-            it.paymentList = arrayListOf()
-        }
-        val baseModel = mockk<BasePaymentModel>(relaxed = true) {
-            every { gatewayName } returns mockGatewayName
-        }
+        val paymentData = PaymentList(false, "", arrayListOf())
+
         coEvery { getPaymentListCountUseCase.getPaymentCount(any(), any()) } coAnswers {
             firstArg<(Int) -> Unit>().invoke(0)
         }
@@ -111,12 +103,11 @@ class PaymentListViewModelTest {
     @Test
     fun `Execute getPaymentList Success`() {
         val mockGatewayName = "Test Gateway"
-        val responseData = PaymentListInside().also { it.gatewayName = mockGatewayName }
-        val paymentData = PaymentList().also {
-            it.lastCursor = ""
-            it.isHasNextPage = false
-            it.paymentList = arrayListOf(responseData)
+        val responseData = mockk<PaymentListItem> {
+            every { gatewayName } returns  mockGatewayName
         }
+        val paymentData = PaymentList(false, "",  arrayListOf(responseData))
+
         val baseModel = mockk<BasePaymentModel>(relaxed = true) {
             every { gatewayName } returns mockGatewayName
         }

@@ -1,6 +1,5 @@
 package com.tokopedia.pms.paymentlist.domain.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CancelPaymentDetailResponse(

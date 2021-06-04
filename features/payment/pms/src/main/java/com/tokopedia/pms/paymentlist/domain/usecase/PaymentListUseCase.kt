@@ -3,20 +3,20 @@ package com.tokopedia.pms.paymentlist.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.pms.paymentlist.domain.data.DataPaymentList
 import com.tokopedia.pms.paymentlist.domain.data.PaymentList
+import com.tokopedia.pms.paymentlist.domain.data.PaymentListResponse
 import javax.inject.Inject
 
 @GqlQuery("PaymentListQuery", PaymentListUseCase.GQL_PAYMENT_LIST_QUERY)
 class PaymentListUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<DataPaymentList>(graphqlRepository) {
+) : GraphqlUseCase<PaymentListResponse>(graphqlRepository) {
 
     fun getPaymentList(
         onSuccess: (PaymentList?) -> Unit,
         onError: (Throwable) -> Unit, cursor: String,
     ) {
-        this.setTypeClass(DataPaymentList::class.java)
+        this.setTypeClass(PaymentListResponse::class.java)
         this.setRequestParams(getRequestParams(cursor))
         this.setGraphqlQuery(PaymentListQuery.GQL_QUERY)
         this.execute(
