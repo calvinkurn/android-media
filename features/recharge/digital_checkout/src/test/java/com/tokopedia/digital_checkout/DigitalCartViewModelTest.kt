@@ -340,7 +340,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
+        assert(digitalCartViewModel.errorThrowable.value is ConnectException)
     }
 
     @Test
@@ -565,7 +565,7 @@ class DigitalCartViewModelTest {
         // then
         assertNull(digitalCartViewModel.paymentPassData.value)
         assertNull(digitalCartViewModel.showLoading.value)
-        assertNull(digitalCartViewModel.errorMessage.value)
+        assertNull(digitalCartViewModel.errorThrowable.value)
     }
 
     @Test
