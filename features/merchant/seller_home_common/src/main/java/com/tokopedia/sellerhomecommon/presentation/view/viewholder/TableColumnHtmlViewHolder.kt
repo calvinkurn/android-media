@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
+import com.tokopedia.sellerhomecommon.utils.SpannableTouchListener
 import kotlinx.android.synthetic.main.shc_item_table_column_html.view.*
 import timber.log.Timber
 
@@ -67,6 +68,9 @@ class TableColumnHtmlViewHolder(
                             context?.let {
                                 applyTypographyFont(it)
                             }
+                        },
+                        onTouchListener = { spannable ->
+                            SpannableTouchListener(spannable)
                         },
                         onUrlClicked = { url ->
                             listener.onHyperlinkClicked(url)

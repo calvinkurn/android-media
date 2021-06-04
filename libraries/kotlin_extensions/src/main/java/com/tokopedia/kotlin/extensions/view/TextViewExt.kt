@@ -1,13 +1,15 @@
 package com.tokopedia.kotlin.extensions.view
 
-import android.text.SpannableStringBuilder
-import android.text.TextPaint
+import android.text.*
 import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.text.style.URLSpan
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 
-fun TextView.displayTextOrHide(text : String) {
+
+fun TextView.displayTextOrHide(text: String) {
     if (text.isNotEmpty()) {
         this.visibility = View.VISIBLE
         this.text = text
@@ -25,17 +27,24 @@ fun TextView.setTextAndContentDescription(text: String?, contentDescriptionTempl
 }
 
 /**
- * Ext function to provide onClick action to html string that contains hyperlink in your TextView
+ * Ext function to provide onClick action to [htmlText] that contains hyperlink in your TextView
  * By default, this wont redirect into the page related to the url, you should provide the action
+ *
+ * Custom [onTouchListener] could be provided to apply custom touch event or avoid unwanted behaviour,
+ * i.e. setting movementMethod could remove the ellipsize in spannable string, for given spannable
+ *
  * You could also set the styling for the html span text
- * Example string: "To open app click <a href="https://www.example.com>here</a>
+ *
+ * Example string: "Please <a href="https://www.abc.com/login>login</a> or <a href="https://www.example.com/register>register</a> first"
  *
  * @param   htmlText            string that should contain a href attribute
  * @param   applyCustomStyling  lambda provided for applying styling to TextPaint
+ * @param   onTouchListener     custom OnTouchListener
  * @param   onUrlClicked        action that called when the link is clicked
  */
 fun TextView.setClickableUrlHtml(htmlText: String?,
                                  applyCustomStyling: TextPaint.() -> Unit = {},
+                                 onTouchListener: (spannable: Spannable) -> View.OnTouchListener? = { null },
                                  onUrlClicked: (String) -> Unit) {
     htmlText?.let {
         val sequence: CharSequence = it.parseAsHtml()
@@ -44,8 +53,13 @@ fun TextView.setClickableUrlHtml(htmlText: String?,
         for (span in urls) {
             makeLinkClickable(strBuilder, span, applyCustomStyling, onUrlClicked)
         }
+        val touchListener = onTouchListener(strBuilder)
+        if (touchListener == null) {
+            movementMethod = LinkMovementMethod.getInstance()
+        } else {
+            setOnTouchListener(touchListener)
+        }
         text = strBuilder
-        movementMethod = LinkMovementMethod.getInstance()
     }
 }
 
