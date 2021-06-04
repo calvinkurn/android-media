@@ -391,7 +391,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         ovoDomain?.productrevIncentiveOvo?.let {
             hideTemplates()
             incentivesTicker?.apply {
-                setHtmlDescription(it.subtitle)
+                setHtmlDescription(it.ticker.subtitle)
                 setOnClickListener { _ ->
                     if (ovoIncentiveBottomSheet == null) {
                         ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this@CreateReviewBottomSheet, "", getTncBottomSheetTrackerData()) }
