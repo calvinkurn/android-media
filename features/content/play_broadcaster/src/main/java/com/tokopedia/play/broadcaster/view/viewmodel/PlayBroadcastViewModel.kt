@@ -166,7 +166,7 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
     
-    private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, dispatcher, scope)
+    private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, dispatcher, viewModelScope)
     private var isLiveStarted: Boolean = false
 
     init {
