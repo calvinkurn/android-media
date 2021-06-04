@@ -22,4 +22,12 @@ object DigitalEmoneyGqlQuery {
           }
         }
     """.trimIndent()
+
+    val rechargeBniTapcashQuery="""
+        mutation rechargerechargeUpdateBalanceEmoneyBniTapcash(${'$'}cardData: String!) {
+          rechargeUpdateBalanceEmoneyBniTapcash(cardData:${'$'}cardData) {
+            criptogram
+          }
+        }
+    """.trimIndent()
 }

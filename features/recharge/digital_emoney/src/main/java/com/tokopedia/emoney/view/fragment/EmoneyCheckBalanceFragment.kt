@@ -29,6 +29,7 @@ import com.tokopedia.emoney.R
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.util.DigitalEmoneyGqlQuery
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
+import com.tokopedia.emoney.viewmodel.TapcashBalanceViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -40,6 +41,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     protected lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
+    protected lateinit var tapcashBalanceViewModel: TapcashBalanceViewModel
     private lateinit var nfcAdapter: NfcAdapter
 
     @Inject
@@ -54,6 +56,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
+            tapcashBalanceViewModel = viewModelProvider.get(TapcashBalanceViewModel::class.java)
         }
     }
 
@@ -106,8 +109,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeMandiri(intent: Intent) {
+        val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (CardUtils.isEmoneyCard(intent)) {
-            val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
             if (tag != null) {
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
@@ -118,6 +121,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                         resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
                         true)
             }
+        } else if (CardUtils.isTapcashCard(intent)){
+            tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
+                    DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
         } else if(CardUtils.isBrizziCard(intent)) {
             processBrizzi(intent)
         } else {
@@ -175,6 +181,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
 
         emoneyBalanceViewModel.issuerId.observe(this, Observer {
             tapETollCardView.setIssuerId(it)
+        })
+
+        tapcashBalanceViewModel.errorCardMessage.observe(this, Observer {
+            showError(it)
         })
 
     }
