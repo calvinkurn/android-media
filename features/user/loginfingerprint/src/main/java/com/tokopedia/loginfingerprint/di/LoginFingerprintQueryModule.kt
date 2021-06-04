@@ -1,7 +1,9 @@
 package com.tokopedia.loginfingerprint.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
@@ -12,20 +14,20 @@ import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatu
 import com.tokopedia.loginfingerprint.domain.usecase.LoginFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
+import com.tokopedia.loginphone.R
+import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoMap
+import dagger.multibindings.StringKey
 import javax.inject.Named
 
 
 @Module
 class LoginFingerprintQueryModule {
-
-    @LoginFingerprintSettingScope
-    @Provides
-    fun provideCoroutineDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @LoginFingerprintSettingScope
     @Provides
@@ -56,6 +58,12 @@ class LoginFingerprintQueryModule {
         val useCase = GraphqlUseCase<LoginTokenPojo>(graphqlRepository)
         return LoginFingerprintUseCase(useCase, dispatchers, userSessionInterface)
     }
+
+    @Provides
+    @IntoMap
+    @StringKey(ChooseAccountQueryConstant.QUERY_GET_ACCOUNT_LIST)
+    fun provideRawQueryGetAccountList(@ApplicationContext context: Context): String =
+        GraphqlHelper.loadRawString(context.resources, R.raw.query_get_accounts_list)
 
     @LoginFingerprintSettingScope
     @Provides
