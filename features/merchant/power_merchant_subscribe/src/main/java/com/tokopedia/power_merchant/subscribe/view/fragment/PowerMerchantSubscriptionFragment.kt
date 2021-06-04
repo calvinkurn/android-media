@@ -118,6 +118,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             showPmProDeactivationBottomSheet()
         } else {
             showRegularPmDeactivationBottomSheet()
+
+            powerMerchantTracking.sendEventClickStopPmBecomeRm()
         }
 
         powerMerchantTracking.sendEventClickStopPowerMerchant()
@@ -128,6 +130,9 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
         val shopTier = getShopTireByPmTire(currentPmTireType)
         mViewModel.cancelPmDeactivationSubmission(shopTier)
+
+        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        powerMerchantTracking.sendEventClickCancelOptOutPowerMerchant(isPmPro)
     }
 
     override fun setOnReloadClickListener() {
@@ -533,6 +538,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 }
         )
 
+        powerMerchantTracking.sendEventClickLearnPopUpImproveNumberOfOrder()
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
@@ -550,6 +556,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 }
         )
 
+        powerMerchantTracking.sendEventClickLearnPopUpImproveNiv()
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
@@ -633,7 +640,6 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
             return
         }
 
-        powerMerchantTracking.sendEventClickUpgradePowerMerchant()
         submitPmRegistration(nextShopTireType)
     }
 
@@ -649,6 +655,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         showActivationProgress()
         observePmActivationStatus()
         mViewModel.submitPMActivation(currentShopTireType, nextShopTireType)
+
+        powerMerchantTracking.sendEventClickUpgradePowerMerchantPro()
     }
 
     private fun getShopTireByPmTire(pmTire: Int): Int {
