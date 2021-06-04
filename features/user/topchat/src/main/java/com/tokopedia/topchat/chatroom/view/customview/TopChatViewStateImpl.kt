@@ -233,7 +233,7 @@ open class TopChatViewStateImpl constructor(
         attachmentPreviewAdapter.clear()
         sendListener.onEmptyProductPreview()
         hideProductPreviewLayout()
-        fragmentView?.updateSrwState()
+        fragmentView?.updateSrwPreviewState()
     }
 
     override fun hideProductPreviewLayout() {

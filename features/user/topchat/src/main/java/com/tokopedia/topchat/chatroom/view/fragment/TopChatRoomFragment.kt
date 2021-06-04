@@ -273,7 +273,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initObserver() {
         presenter.srw.observe(viewLifecycleOwner, {
             rvSrw?.updateStatus(it)
-            updateSrwState()
+            updateSrwPreviewState()
         })
         adapter.srwUiModel.observe(viewLifecycleOwner, {
             if (it == null) {
@@ -284,7 +284,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    override fun updateSrwState() {
+    override fun updateSrwPreviewState() {
         if (shouldShowSrw()) {
             rvSrw?.renderSrwState()
             getViewState().hideTemplateChat()
@@ -908,7 +908,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onSendAndReceiveMessage() {
         adapter.removeBroadcastHandler()
-        updateSrwState()
+        updateSrwPreviewState()
     }
 
     override fun renderBackground(url: String) {
@@ -1698,6 +1698,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         getViewState().showAttachmentPreview(attachmentPreview)
+        adapter.collapseSrwBubble()
     }
 
     override fun onEmptyProductPreview() {
