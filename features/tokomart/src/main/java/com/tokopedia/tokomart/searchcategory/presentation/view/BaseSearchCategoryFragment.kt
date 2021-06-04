@@ -34,6 +34,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -402,7 +403,16 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
+        val context = context ?: return
 
+        AtcVariantHelper.goToAtcVariant(
+                context = context,
+                productId = productItemDataView.id,
+                pageSource = "tokonow",
+                isTokoNow = true,
+                shopId = productItemDataView.shop.id,
+                startActivitResult = this::startActivityForResult,
+        )
     }
 
     override fun onProductNonVariantQuantityChanged(
