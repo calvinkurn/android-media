@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.productcard.ProductCardGridView
+    android:id="@+id/productCardView"
+    android:layout_width="@dimen/dp_140"
+    android:layout_height="@dimen/dp_290"
+    android:clickable="true"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
