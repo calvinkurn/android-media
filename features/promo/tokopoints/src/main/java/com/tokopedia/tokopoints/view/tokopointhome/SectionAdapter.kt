@@ -13,7 +13,6 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : 
 
     private val sectionList: ArrayList<Any> = ArrayList()
     private val scrollStates = hashMapOf<String, Parcelable?>()
-
     private val viewTypeToBinders = viewBinders.mapKeys { it.value.getSectionItemType() }
 
     private fun getViewBinder(viewType: Int): SectionItemBinder = viewTypeToBinders.getValue(viewType)
@@ -21,14 +20,17 @@ class SectionAdapter(private val viewBinders: Map<String, SectionItemBinder>) : 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
             0 -> viewBinders.getValue(CommonConstant.SectionLayoutType.TOPHEADER).getSectionItemType()
-            sectionList.size - 1 -> viewBinders.getValue(CommonConstant.SectionLayoutType.RECOMM).getSectionItemType()
-
             else -> {
-                val item = sectionList[position] as SectionContent
-                if (item.layoutType == CommonConstant.SectionLayoutType.BANNER) {
-                    viewBinders.getValue(item.layoutBannerAttr.bannerType).getSectionItemType()
+                if (position == sectionList.size - 1 && viewBinders.containsKey(CommonConstant.SectionLayoutType.RECOMM)) {
+                    viewBinders.getValue(CommonConstant.SectionLayoutType.RECOMM)
+                        .getSectionItemType()
                 } else {
-                    viewBinders.getValue(item.layoutType).getSectionItemType()
+                    val item = sectionList[position] as SectionContent
+                    if (item.layoutType == CommonConstant.SectionLayoutType.BANNER) {
+                        viewBinders.getValue(item.layoutBannerAttr.bannerType).getSectionItemType()
+                    } else {
+                        viewBinders.getValue(item.layoutType).getSectionItemType()
+                    }
                 }
             }
         }

@@ -11,10 +11,10 @@ class DataMapper {
     val recommendationList = ArrayList<RecommendationWrapper>()
 
     suspend fun recommWidgetToListOfVisitables(recommendationWidget: RecommendationWidget): List<RecommendationWrapper> {
-        if (recommendationList.size >= RECOM_PRODUCT_SIZE) {
+        if (recommendationWidget.recommendationItemList.size >= RECOM_PRODUCT_SIZE) {
             composeRecommendationList(RECOM_PRODUCT_SIZE, recommendationWidget)
         } else {
-            composeRecommendationList(recommendationList.size, recommendationWidget)
+            composeRecommendationList(recommendationWidget.recommendationItemList.size, recommendationWidget)
         }
         return recommendationList
     }
