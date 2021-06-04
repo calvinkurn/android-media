@@ -8,7 +8,6 @@ import com.tkpd.atc_variant.data.uidata.PartialButtonDataModel
 import com.tkpd.atc_variant.data.uidata.VariantComponentDataModel
 import com.tkpd.atc_variant.data.uidata.VariantShimmeringDataModel
 import com.tkpd.atc_variant.usecase.GetAggregatorAndMiniCartUseCase
-import com.tkpd.atc_variant.usecase.GetProductVariantAggregatorUseCase
 import com.tkpd.atc_variant.util.AtcCommonMapper
 import com.tkpd.atc_variant.util.AtcCommonMapper.asFail
 import com.tkpd.atc_variant.util.AtcCommonMapper.asSuccess
@@ -30,7 +29,6 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
-import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
@@ -247,8 +245,8 @@ class AtcVariantViewModel @Inject constructor(
          */
         if (aggregatorParams.variantAggregator.isAggregatorEmpty() || (aggregatorParams.isTokoNow && aggregatorParams.miniCartData == null)) {
             val result = aggregatorMiniCartUseCase.executeOnBackground(
-                    GetProductVariantAggregatorUseCase.createRequestParams(aggregatorParams.productId,
-                            aggregatorParams.pageSource, aggregatorParams.whId, aggregatorParams.pdpSession, UserLocationRequest()),
+                    aggregatorMiniCartUseCase.createAggregatorRequestParams(aggregatorParams.productId,
+                            aggregatorParams.pageSource, aggregatorParams.whId, aggregatorParams.pdpSession),
                     aggregatorParams.shopId, aggregatorParams.isTokoNow
             )
             aggregatorData = result.variantAggregator

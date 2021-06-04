@@ -22,6 +22,11 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
     private var shopIds: List<String> = listOf()
     private var isTokoNow: Boolean = false
 
+    fun createAggregatorRequestParams(productId: String,
+                                      source: String,
+                                      warehouseId: String? = null,
+                                      pdpSession: String? = null): Map<String, Any?> = aggregatorUseCase.createRequestParams(productId, source, warehouseId, pdpSession)
+
     override val coroutineContext: CoroutineContext
         get() = dispatcher.main + SupervisorJob()
 

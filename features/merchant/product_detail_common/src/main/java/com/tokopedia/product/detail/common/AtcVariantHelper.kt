@@ -26,6 +26,12 @@ object AtcVariantHelper {
 
     const val ATC_VARIANT_RESULT_CODE = 19202
 
+    const val WISHLIST_PAGESOURCE = "wishlist"
+    const val PDP_PAGESOURCE = "pdp"
+    const val PLAY_PAGESOURCE = "play"
+    const val TOPCHAT_PAGESOURCE = "topchat"
+    const val NOTIFCENTER_PAGESOURCE = "notifcenter"
+
     /**
      * For PDP only
      */
@@ -65,7 +71,7 @@ object AtcVariantHelper {
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, "", "", "")
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, PDP_PAGESOURCE, "", "")
                 .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }

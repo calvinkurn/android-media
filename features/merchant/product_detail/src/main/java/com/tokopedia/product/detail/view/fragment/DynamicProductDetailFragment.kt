@@ -461,7 +461,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     if (requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
                         updateCartNotification()
                     }
-                    if (pdpUiUpdater?.productSingleVariant == null || pdpUiUpdater?.productSingleVariant?.isVariantError == true) return@onActivityResultAtcVariant
+                    if (pdpUiUpdater?.productSingleVariant == null
+                            || pdpUiUpdater?.productSingleVariant?.isVariantError == true
+                            || mapOfSelectedVariantOption == null
+                            || listOfVariantSelected == null) return@onActivityResultAtcVariant
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
                     val variantLevelOne = listOfVariantSelected?.firstOrNull()
                     updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
