@@ -124,13 +124,11 @@ object ProductTrackingConstant {
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
-        const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BUTTON_CHAT = "click - sticky chat"
         const val ADD_WISHLIST = "add wishlist"
         const val REMOVE_WISHLIST = "remove wishlist"
         const val ADD_WISHLIST_NON_LOGIN = "add wishlist - non logged in"
         const val CLICK_SHOP_PAGE = "click - shop page link"
-        const val CLICK_IMAGE_MOST_HELPFULL_REVIEW = "click -review gallery on most helpful review"
         const val CLICK_SEE_ALL_MERCHANT_VOUCHER = "click - merchant voucher - see all"
         const val CLICK_DETAIL_MERCHANT_VOUCHER = "click - merchant voucher - mvc detail"
         const val CLICK_USE_MERCHANT_VOUCHER = "click - merchant voucher - use voucher"
@@ -144,15 +142,10 @@ object ProductTrackingConstant {
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
         const val CLICK_WHOLESALE = "click - info harga grosir"
-        const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
         const val CLICK_TICKER = "click - selengkapnya on component ticker"
         const val CLICK_CUSTOM_INFO = "click - custom info component"
         const val CLICK_NPL_FOLLOWERS = "click - follow shop on bottom sheet"
 
-        const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
-        const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
-        const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on popup"
-        const val CLICK_PERMISSION_LATER = "click - nanti saja on popup"
         const val CLICK_NOTIFY_ME = "click - ingatkan saya on pdp campaign"
         const val CLICK_DISKUSI_PRODUCT_TAB = "click - diskusi produk tab"
 
@@ -237,11 +230,6 @@ object ProductTrackingConstant {
         const val CATEGORY = "product detail page tokopedia by.me"
         const val ACTION = "click tambah ke by.me"
         const val ACTION_CLICK_WISHLIST = "click wishlist"
-    }
-
-    object ImeiChecker {
-        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS = "butuh akses ke hp mu"
-        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO = "aktifkan akses telepon yuk"
     }
 
     object ImageReview {
