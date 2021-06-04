@@ -8,7 +8,6 @@ import com.tokopedia.settingnotif.usersetting.data.mapper.UserSettingMapper
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
-import com.tokopedia.settingnotif.usersetting.util.SingleLiveEvent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.settingnotif.usersetting.analytics.MoengageManager
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
@@ -18,6 +17,7 @@ import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError
 import com.tokopedia.track.TrackApp
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase.Companion.params as settingParams
