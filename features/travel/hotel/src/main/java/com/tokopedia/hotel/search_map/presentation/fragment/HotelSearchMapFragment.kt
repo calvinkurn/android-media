@@ -1168,7 +1168,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
         ObjectAnimator.ofFloat(btnGetRadiusHotelSearchMap, BUTTON_RADIUS_ANIMATION_Y, value).apply {
-//            duration = DELAY_BUTTON_RADIUS
             start()
         }
     }
@@ -1492,10 +1491,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val ARG_SORT_PARAM = "arg_hotel_sort_param"
 
         const val SELECTED_POSITION_INIT = 0
-        const val DELAY_BUTTON_RADIUS: Long = 1000L
         const val DELAY_EMPTY_STATE: Long = 100L
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
+        const val BUTTON_RADIUS_INFO_SHOW_VALUE: Float = 20f
 
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
         private const val MAPS_ZOOM_IN: Float = 11f
