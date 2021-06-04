@@ -66,8 +66,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO: SRW bubble should collapsed when user send sticker instead of click SRW preview question.
     // TODO: SRW Bubble should displayed when user send manually typed msg instead of click SRW preview question
     // TODO: SRW should hide broadcast handler if visible
-
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
+
     // TODO-Alert: what if SRW in error state and user send msg/sticker
 
     // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
