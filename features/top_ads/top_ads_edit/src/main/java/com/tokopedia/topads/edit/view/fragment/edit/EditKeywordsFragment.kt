@@ -249,7 +249,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun getCurrentBid(): Int {
-        return budgetInput.textFieldInput.text.toString().removeCommaRawString().toInt()
+        return if(budgetInput.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
+            budgetInput.textFieldInput.text.toString().removeCommaRawString().toInt()
+        else
+            0
     }
 
     private fun checkForbidValidity(result: Int) {

@@ -205,78 +205,75 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
             progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily)
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
-            try {
-                priceSpent = null
-                Utils.convertMoneyToValue(priceSpent ?: "0").let {
-                    progress_bar.setValue(it, false)
+
+            Utils.convertMoneyToValue(priceSpent ?: "0").let {
+                progress_bar.setValue(it, false)
+
+            }
+        }
+    }
+
+        private fun onStateChanged(state: TopAdsProductIklanFragment.State?) {
+            swipe_refresh_layout.isEnabled = state == TopAdsProductIklanFragment.State.EXPANDED
+        }
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == EDIT_GROUP_REQUEST_CODE) {
+                    loadData()
+                } else if (requestCode == EDIT_HEADLINE_REQUEST_CODE) {
+                    isDataChanged = true
+                    loadData()
+                    loadStatisticsData()
+                    renderTabAndViewPager()
                 }
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
+            }
+        }
+
+        private fun getBundleArguments() {
+            groupId = intent?.extras?.getInt(GROUP_ID)
+            priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
+        }
+
+        private fun loadStatisticsData() {
+            if (startDate == null || endDate == null) return
+            viewModel.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, ::onSuccesGetStatisticsInfo, groupId.toString())
+        }
+
+        private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
+            swipe_refresh_layout.isRefreshing = false
+            this.dataStatistic = dataStatistic
+            if (this.dataStatistic != null) {
+                topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
+            }
+            val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
+            if (fragment != null && fragment is TopAdsDashStatisticFragment) {
+                fragment.showLineGraph(this.dataStatistic)
+            }
+        }
+
+        override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent).build()
+
+        private fun initInjector() {
+            DaggerTopAdsDashboardComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
+        }
+
+        fun setKeywordCount(size: Int) {
+            tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
+        }
+
+        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+            setResult(Activity.RESULT_OK)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_toggle_icon, "{${userSession.shopId}} - {$groupId}", userSession.userId)
+            when {
+                isChecked -> viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId.toString()), resources)
+                else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId.toString()), resources)
             }
         }
     }
-
-    private fun onStateChanged(state: TopAdsProductIklanFragment.State?) {
-        swipe_refresh_layout.isEnabled = state == TopAdsProductIklanFragment.State.EXPANDED
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == EDIT_GROUP_REQUEST_CODE) {
-                loadData()
-            } else if (requestCode == EDIT_HEADLINE_REQUEST_CODE) {
-                isDataChanged = true
-                loadData()
-                loadStatisticsData()
-                renderTabAndViewPager()
-            }
-        }
-    }
-
-    private fun getBundleArguments() {
-        groupId = intent?.extras?.getInt(GROUP_ID)
-        priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
-    }
-
-    private fun loadStatisticsData() {
-        if (startDate == null || endDate == null) return
-        viewModel.getTopAdsStatistic(startDate!!, endDate!!, TopAdsStatisticsType.HEADLINE_ADS, ::onSuccesGetStatisticsInfo, groupId.toString())
-    }
-
-    private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
-        swipe_refresh_layout.isRefreshing = false
-        this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null) {
-            topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
-        }
-        val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
-        if (fragment != null && fragment is TopAdsDashStatisticFragment) {
-            fragment.showLineGraph(this.dataStatistic)
-        }
-    }
-
-    override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).baseAppComponent).build()
-
-    private fun initInjector() {
-        DaggerTopAdsDashboardComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent).build().inject(this)
-    }
-
-    fun setKeywordCount(size: Int) {
-        tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
-    }
-
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-        setResult(Activity.RESULT_OK)
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_toggle_icon, "{${userSession.shopId}} - {$groupId}", userSession.userId)
-        when {
-            isChecked -> viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId.toString()), resources)
-            else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId.toString()), resources)
-        }
-    }
-}
 
 
 
