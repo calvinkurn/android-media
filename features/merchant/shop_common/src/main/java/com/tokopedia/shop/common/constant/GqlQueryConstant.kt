@@ -197,6 +197,9 @@ object GqlQueryConstant {
             "         }"
 
     const val SHOP_CLOSE_DETAIL_INFO_QUERY_STRING = "result {\n" +
+            "      statusInfo {\n" +
+            "        shopStatus\n" +
+            "      }\n" +
             "      closedInfo {\n" +
             "        detail {\n" +
             "          startDate\n" +
@@ -208,6 +211,8 @@ object GqlQueryConstant {
             "          openDateUTC\n" +
             "        }\n" +
             "        closedNote\n" +
+            "        reason\n" +
+            "        until\n" +
             "      }\n" +
             "    }"
 

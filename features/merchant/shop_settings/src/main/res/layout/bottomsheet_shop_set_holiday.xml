@@ -6,12 +6,47 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_start_date_holiday"
+        android:layout_width="140dp"
+        android:layout_height="@dimen/dp_60"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="Pilih Tanggal"
+        app:text_field_label="Mulai"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_end_date_holiday"
+        android:layout_width="140dp"
+        android:layout_height="@dimen/dp_60"
+        app:text_field_label_static="true"
+        app:text_field_placeholder="Pilih Tanggal"
+        app:text_field_label="Selesai"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <com.tokopedia.calendar.UnifyCalendar
-        android:id="@+id/ops_hour_holiday_calendar"
+        android:id="@+id/ops_hour_holiday_calendar_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/text_field_start_date_holiday"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.calendar.UnifyCalendar
+        android:id="@+id/ops_hour_holiday_calendar_end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/text_field_start_date_holiday"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="gone"
+        />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/ops_hour_save_button_container"
@@ -34,6 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/label_save"
+                android:enabled="false"
                 />
 
         </LinearLayout>

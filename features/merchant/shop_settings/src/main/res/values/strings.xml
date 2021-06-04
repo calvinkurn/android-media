@@ -53,10 +53,15 @@
     <string name="shop_operational_hour_dialog_title">Simpan perubahan jam buka-tutup tokomu?</string>
     <string name="shop_operational_hour_dialog_description">Informasi jadwal toko akan langsung berubah sesuai dengan pengaturanmu.</string>
     <string name="shop_operational_hour_list_textview">%1$s - %2$s</string>
+    <string name="shop_operational_hour_edit_holiday_text">Ubah tanggal</string>
+    <string name="shop_operational_hour_delete_holiday_text">Hapus jadwal</string>
+    <string name="shop_operational_hour_ticker_description_auto_chat">Balas chat pembeli secara otomatis ketika tokomu tidak beroperasi. Atur di Sini</string>
     <string name="shop_operational_hour_list_button_add_holiday_text">Tambah Jadwal Libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_title">Jadwal Toko Libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan jadwal libur tokomu?</string>
+    <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus jadwal libur toko?</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_desc">Selama beristirahat, pembeli tidak bisa berbelanja di tokomu. Tapi jangan lupa proses pesanan yang sudah masuk, ya.</string>
+    <string name="shop_operational_hour_delete_holiday_schedule_dialog_desc">Jadwal libur akan langsung terhapus. Jika tokomu sedang libur saat ini, toko akan otomatis dibuka kembali.</string>
 
     <string name="title_dialog_delete_shop_note">Hapus Catatan</string>
     <string name="desc_dialog_delete_shop_note">Hapus Catatan “%1$s”?</string>
@@ -169,6 +174,7 @@
     <string name="label_close">Tutup</string>
     <string name="label_save">Simpan</string>
     <string name="label_choose">Pilih</string>
+    <string name="label_delete_schedule">Hapus Jadwal</string>
     <string name="connector">-</string>
     <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
     <string name="label_regular_merchant">Regular Merchant</string>

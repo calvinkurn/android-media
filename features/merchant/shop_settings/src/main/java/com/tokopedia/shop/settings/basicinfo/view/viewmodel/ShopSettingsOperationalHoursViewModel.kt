@@ -7,11 +7,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.di.GqlGetShopCloseDetailInfoQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.view.model.ShopSettingsOperationalHoursListUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -26,12 +28,17 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
         @GqlGetShopCloseDetailInfoQualifier
         private val getShopCloseDetailInfoUseCase: Lazy<GQLGetShopInfoUseCase>,
         private val gqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
+        private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _shopSettingsOperationalHoursListUiModel = MutableLiveData<Result<ShopSettingsOperationalHoursListUiModel>>()
     val shopSettingsOperationalHoursListUiModel: LiveData<Result<ShopSettingsOperationalHoursListUiModel>>
         get() = _shopSettingsOperationalHoursListUiModel
+
+    private val _shopInfoCloseSchedule = MutableLiveData<Result<String>>()
+    val shopInfoCloseSchedule: LiveData<Result<String>>
+        get() = _shopInfoCloseSchedule
 
     fun getShopOperationalHoursInitialData(shopId: String) {
         val shopSettingsOperationalHoursListUiModel = ShopSettingsOperationalHoursListUiModel()
@@ -47,16 +54,37 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
                 // getShopOperationalHoursList after get shop info finished
                 val opsHourList = executeGetShopOperationalHoursList(shopId)
                 opsHourList?.let { list ->
-                    if (list.isNotEmpty()) {
-                        shopSettingsOperationalHoursListUiModel.operationalHourList = list
-                        shopSettingsOperationalHoursListUiModel.closeInfo = shopInfo.closedInfo
-                        _shopSettingsOperationalHoursListUiModel.postValue(Success(shopSettingsOperationalHoursListUiModel))
-                    }
+                    shopSettingsOperationalHoursListUiModel.operationalHourList = list
+                    shopSettingsOperationalHoursListUiModel.closeInfo = shopInfo.closedInfo
+                    shopSettingsOperationalHoursListUiModel.statusInfo = shopInfo.statusInfo
+                    _shopSettingsOperationalHoursListUiModel.postValue(Success(shopSettingsOperationalHoursListUiModel))
                 }
             }
 
         }) {
             _shopSettingsOperationalHoursListUiModel.postValue(Fail(it))
+        }
+    }
+
+    fun setShopCloseSchedule(
+            @ShopScheduleActionDef action: Int,
+            closeNow: Boolean = false,
+            closeStart: String = "",
+            closeEnd: String = "",
+            closeNote: String = ""
+    ) {
+        launchCatchError(dispatchers.io, block = {
+            val requestParams = UpdateShopScheduleUseCase.createRequestParams(
+                    action = action,
+                    closeNow = closeNow,
+                    closeStart = closeStart,
+                    closeEnd = closeEnd,
+                    closeNote = closeNote
+            )
+            val updateScheduleResponse: String = updateShopScheduleUseCase.getData(requestParams)
+            _shopInfoCloseSchedule.postValue(Success(updateScheduleResponse))
+        }) {
+            _shopInfoCloseSchedule.postValue(Fail(it))
         }
     }
 

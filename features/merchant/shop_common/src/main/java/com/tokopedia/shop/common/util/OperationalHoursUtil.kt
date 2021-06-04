@@ -1,5 +1,8 @@
 package com.tokopedia.shop.common.util
 
+import java.text.SimpleDateFormat
+import java.util.*
+
 /**
  * Created by Rafli Syam on 03/05/2021
  */
@@ -26,6 +29,11 @@ object OperationalHoursUtil {
     const val HOLIDAY = "Libur"
     private const val DEFAULT_TIMEZONE = "WIB"
     private const val HOUR = "Jam"
+
+    private const val INDONESIA_LANGUAGE_ID = "id"
+    private const val INDONESIA_COUNTRY_ID = "ID"
+    private val defaultLocale = Locale(INDONESIA_LANGUAGE_ID, INDONESIA_COUNTRY_ID)
+    private val defaultLocalFormatter = SimpleDateFormat("dd MMMM yyyy", defaultLocale)
 
     /**
      * Day of operational represent as Int: 1 (Monday) - 7 (Sunday)
@@ -98,6 +106,10 @@ object OperationalHoursUtil {
             newSelectedMinutes = "0$selectedMinutes"
         }
         return "$newSelectedHour:$newSelectedMinutes:00"
+    }
+
+    fun toIndonesianDateFormat(date: Date): String {
+        return defaultLocalFormatter.format(date)
     }
 
     /**
