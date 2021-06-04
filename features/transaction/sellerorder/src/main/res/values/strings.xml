@@ -104,6 +104,7 @@
     <string name="card_courier_notes_example">Batas waktu penjemputan 24 jam</string>
     <string name="card_courier_count_example">Jumlah: 1</string>
     <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
+    <string name="courier_option_schedule">Oleh kurir: %1$s</string>
 
     <string name="cancel_order_batal">Batal</string>
     <string name="btn_konfirmasi">Konfirmasi</string>

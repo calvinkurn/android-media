@@ -52,7 +52,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
-                            titleStepper = context?.getString(R.string.title_point_have_not_been_deducted).orEmpty(),
+                            titleStepper = R.string.title_point_have_not_been_deducted,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
                             isBold = true,
                             isDividerShow = true
@@ -60,14 +60,14 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
-                            titleStepper = context?.getString(R.string.title_on_going).orEmpty(),
+                            titleStepper = R.string.title_on_going,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
                             isDividerShow = true
                     ))
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
-                            titleStepper = context?.getString(R.string.title_penalty_over).orEmpty(),
+                            titleStepper = R.string.title_penalty_over,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
                     ))
                 }
@@ -75,14 +75,14 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                            titleStepper = context?.getString(R.string.title_point_have_not_been_deducted).orEmpty(),
+                            titleStepper = R.string.title_point_have_not_been_deducted,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
                             isDividerShow = true
                     ))
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
-                            titleStepper = context?.getString(R.string.title_on_going).orEmpty(),
+                            titleStepper = R.string.title_on_going,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
                             isBold = true,
                             isDividerShow = true
@@ -90,7 +90,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_N100,
-                            titleStepper = context?.getString(R.string.title_penalty_over).orEmpty(),
+                            titleStepper = R.string.title_penalty_over,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
                     ))
                 }
@@ -98,21 +98,21 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                            titleStepper = context?.getString(R.string.title_point_have_not_been_deducted).orEmpty(),
+                            titleStepper = R.string.title_point_have_not_been_deducted,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
                             isDividerShow = true
                     ))
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                            titleStepper = context?.getString(R.string.title_on_going).orEmpty(),
+                            titleStepper = R.string.title_on_going,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
                             isDividerShow = true
                     ))
                     add(ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
                             colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_G500,
-                            titleStepper = context?.getString(R.string.title_penalty_over).orEmpty(),
+                            titleStepper = R.string.title_penalty_over,
                             colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
                             isBold = true
                     ))
