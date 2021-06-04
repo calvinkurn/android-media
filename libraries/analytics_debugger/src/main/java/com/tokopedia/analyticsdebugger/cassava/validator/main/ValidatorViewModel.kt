@@ -7,7 +7,7 @@ import com.tokopedia.analyticsdebugger.cassava.domain.JourneyListUseCase
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
 import com.tokopedia.analyticsdebugger.cassava.validator.core.*
 import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
-import com.tokopedia.analyticsdebugger.debugger.helper.SingleLiveEvent
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
