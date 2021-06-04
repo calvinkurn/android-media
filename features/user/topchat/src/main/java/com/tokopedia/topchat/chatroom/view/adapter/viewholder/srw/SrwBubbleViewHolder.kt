@@ -40,7 +40,12 @@ class SrwBubbleViewHolder constructor(
 
     override fun bind(element: SrwBubbleUiModel) {
         setupSrw(element)
+        bindPreviousSRWPreviewState(element)
         bindState(element)
+    }
+
+    private fun bindPreviousSRWPreviewState(element: SrwBubbleUiModel) {
+        element.isExpanded = element.srwPreviewState.isExpanded
     }
 
     private fun bindState(element: SrwBubbleUiModel) {
@@ -48,7 +53,7 @@ class SrwBubbleViewHolder constructor(
     }
 
     private fun setupSrw(element: SrwBubbleUiModel) {
-        srwLayout?.initialize(element.srwHangingState, object : SrwQuestionViewHolder.Listener {
+        srwLayout?.initialize(element.srwPreviewState, object : SrwQuestionViewHolder.Listener {
             override fun onClickSrwQuestion(question: QuestionUiModel) {
                 listener?.onClickSrwBubbleQuestion(element.products, question)
             }

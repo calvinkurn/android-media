@@ -7,7 +7,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 
 data class SrwBubbleUiModel constructor(
-    val srwHangingState: SrwFrameLayout.SrwState,
+    val srwPreviewState: SrwFrameLayout.SrwState,
     val products: List<SendablePreview>
 ) : Visitable<TopChatTypeFactory> {
 
