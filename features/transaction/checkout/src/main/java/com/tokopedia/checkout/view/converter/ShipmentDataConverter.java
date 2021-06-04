@@ -193,7 +193,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setDisableChangeCourier(groupShop.isDisableChangeCourier());
             shipmentCartItemModel.setAutoCourierSelection(groupShop.getAutoCourierSelection());
             shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
-            shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getDescription());
+            shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
