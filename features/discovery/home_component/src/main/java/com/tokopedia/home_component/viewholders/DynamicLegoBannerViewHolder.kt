@@ -112,6 +112,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
             marginLayoutParams.rightMargin = marginValue
             marginLayoutParams.topToBottom = R.id.home_component_header_view
             recyclerView.layoutParams = marginLayoutParams
+            recyclerView.setPadding(
+                0,0,0, marginValue
+            )
 
         } else {
             legoListener?.getDynamicLegoBannerData(element.channelModel)
