@@ -217,26 +217,33 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromPromo(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
-            if (validateUsePromoRevampUiModel != null) {
-                viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
-                viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
-            }
+            if (data?.getStringExtra(ARGS_PROMO_ERROR) != null) {
+                @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+                if (data.getStringExtra(ARGS_PROMO_ERROR).toString().equals(ARGS_FINISH_ERROR, true)) {
+                    activity?.finish()
+                }
+            } else {
+                val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
+                if (validateUsePromoRevampUiModel != null) {
+                    viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
+                    viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
+                }
 
-            val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
-            if (validateUsePromoRequest != null) {
-                viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
-            }
+                val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
+                if (validateUsePromoRequest != null) {
+                    viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
+                }
 
-            val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
-            if (clearPromoUiModel != null) {
-                //reset
-                viewModel.validateUsePromoRevampUiModel = null
-                viewModel.updatePromoState(PromoUiModel().apply {
-                    titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
-                })
-                // trigger validate to reset BBO benefit
-                viewModel.validateUsePromo()
+                val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
+                if (clearPromoUiModel != null) {
+                    //reset
+                    viewModel.validateUsePromoRevampUiModel = null
+                    viewModel.updatePromoState(PromoUiModel().apply {
+                        titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+                    })
+                    // trigger validate to reset BBO benefit
+                    viewModel.validateUsePromo()
+                }
             }
         }
     }

@@ -13,6 +13,7 @@ import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
+import com.tokopedia.promocheckoutmarketplace.data.response.ErrorPage
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
@@ -56,6 +57,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     private val _promoEmptyStateUiModel = MutableLiveData<PromoEmptyStateUiModel>()
     val promoEmptyStateUiModel: LiveData<PromoEmptyStateUiModel>
         get() = _promoEmptyStateUiModel
+
+    // Promo Error State UI Model
+    private val _promoErrorStateUiModel = MutableLiveData<PromoErrorStateUiModel>()
+    val promoErrorStateUiModel: LiveData<PromoErrorStateUiModel>
+        get() = _promoErrorStateUiModel
 
     // Promo Recommendation UI Model
     private val _promoRecommendationUiModel = MutableLiveData<PromoRecommendationUiModel>()
@@ -248,10 +254,14 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     private fun handleGetPromoListResponse(response: CouponListRecommendationResponse, tmpPromoCode: String) {
         if (response.couponListRecommendation.status == "OK") {
-            if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
-                handlePromoListNotEmpty(response, tmpPromoCode)
+            if (response.couponListRecommendation.data.errorPage.isShowErrorPage) {
+                handleShowErrorPage(response.couponListRecommendation.data.errorPage)
             } else {
-                handlePromoListEmpty(response, tmpPromoCode)
+                if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
+                    handlePromoListNotEmpty(response, tmpPromoCode)
+                } else {
+                    handlePromoListEmpty(response, tmpPromoCode)
+                }
             }
         } else {
             throw PromoErrorException()
@@ -320,6 +330,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         } else {
             handleEmptyStateData(response)
         }
+    }
+
+    private fun handleShowErrorPage(errorPage: ErrorPage) {
+        val errorState = uiModelMapper.mapErrorState(errorPage)
+        _promoErrorStateUiModel.value = errorState
     }
 
     private fun handleEmptyStateData(response: CouponListRecommendationResponse) {

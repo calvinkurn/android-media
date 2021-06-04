@@ -287,6 +287,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         intent.putExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, isPromoMvcLockCourierFlow)
     }
 
+    private fun setResultErrorPromo(intent: Intent) {
+        intent.putExtra(ARGS_PROMO_ERROR, ARGS_FINISH_ERROR)
+    }
+
     override fun getRecyclerViewResourceId() = R.id.promo_checkout_marketplace_module_recycler_view
 
     private fun initializeSwipeRefreshLayout() {
@@ -1070,4 +1074,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
+    override fun onClickErrorStateButton() {
+        val intent = Intent()
+        setResultErrorPromo(intent)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
 }

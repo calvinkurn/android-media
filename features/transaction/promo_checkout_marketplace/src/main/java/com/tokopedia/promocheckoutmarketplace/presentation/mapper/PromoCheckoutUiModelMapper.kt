@@ -152,6 +152,18 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
+    fun mapErrorState(errorPage: ErrorPage): PromoErrorStateUiModel {
+        return PromoErrorStateUiModel(
+            uiData = PromoErrorStateUiModel.UiData().apply {
+                imageUrl = errorPage.img
+                title = errorPage.title
+                description = errorPage.desc
+                buttonText = errorPage.button.text
+                buttonDestination = errorPage.button.destination
+            }
+        )
+    }
+
     fun mapEmptyState(couponListRecommendation: CouponListRecommendation): PromoEmptyStateUiModel {
         return PromoEmptyStateUiModel(
                 uiData = PromoEmptyStateUiModel.UiData().apply {
