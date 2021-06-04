@@ -100,6 +100,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                 data {
                     error
                     status 
+                    message
                     toaster_action {
                         text
                         show_cta
