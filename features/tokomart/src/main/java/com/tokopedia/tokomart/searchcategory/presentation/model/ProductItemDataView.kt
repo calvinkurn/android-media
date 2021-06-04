@@ -12,6 +12,7 @@ data class ProductItemDataView(
         val discountPercentage: Int = 0,
         val originalPrice: String = "",
         val parentId: String = "",
+        val shop: Shop = Shop(),
         val variantATC: VariantATCDataView? = null,
         val nonVariantATC: NonVariantATCDataView? = null,
         val labelGroupDataViewList: List<LabelGroupDataView> = listOf(),
@@ -20,4 +21,8 @@ data class ProductItemDataView(
 
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =
             typeFactory?.type(this) ?: 0
+
+    data class Shop(
+            val id: String = "",
+    )
 }

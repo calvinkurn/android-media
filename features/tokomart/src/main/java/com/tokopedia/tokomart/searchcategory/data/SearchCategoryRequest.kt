@@ -58,6 +58,9 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             childs
             parentId
             stock
+            shop {
+              id
+            }
             labelGroups {
               url
               title

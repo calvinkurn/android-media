@@ -31,6 +31,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
         `Then assert auto complete applink from API`(searchModel)
+        `Then assert is refresh page flag`()
     }
 
     private fun `Then assert first page visitables`(
@@ -69,6 +70,10 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         assertThat(searchViewModel.autoCompleteApplink, shouldBe(expectedApplink))
     }
 
+    private fun `Then assert is refresh page flag`() {
+        assertThat(searchViewModel.isRefreshPageLiveData.value, shouldBe(true))
+    }
+
     @Test
     fun `test first page has next page`() {
         val searchModel = "search/first-page-16-products.json".jsonToObject<SearchModel>()
@@ -83,5 +88,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
         `Then assert auto complete applink from API`(searchModel)
+        `Then assert is refresh page flag`()
     }
 }

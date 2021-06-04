@@ -200,10 +200,15 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
-                compositeSubscription.add(
-                        updateCartUseCase?.createObservable(requestParams)
-                                ?.subscribe(UpdateCartSubscriber(view, this, fireAndForget))
-                )
+                if (fireAndForget) {
+                    updateCartUseCase?.createObservable(requestParams)?.subscribe({/* no-op */ }, {/* no-op */})
+                    return@let
+                } else {
+                    compositeSubscription.add(
+                            updateCartUseCase?.createObservable(requestParams)
+                                    ?.subscribe(UpdateCartSubscriber(view, this))
+                    )
+                }
             } else {
                 if (!fireAndForget) {
                     it.hideProgressLoading()

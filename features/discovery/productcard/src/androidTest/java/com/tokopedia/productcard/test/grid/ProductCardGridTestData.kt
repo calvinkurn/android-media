@@ -255,7 +255,6 @@ private fun testAddToCartVariantWithQuantity(): ProductCardModelMatcher {
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonAddVariant] = isDisplayedWithText("+ varian lain")
-        it[R.id.dividerVariantQuantity] = isDisplayed()
         it[R.id.textVariantQuantity] = isDisplayedWithText("${productCardModel.variant?.quantity} pcs")
     }
 
@@ -309,7 +308,6 @@ private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonAddVariant] = isDisplayedWithText("+ varian lain")
-        it[R.id.dividerVariantQuantity] = isDisplayed()
         it[R.id.textVariantQuantity] = isDisplayedWithText("99+ pcs")
     }
 

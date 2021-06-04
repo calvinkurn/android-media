@@ -13,7 +13,7 @@ class TokoMartHomeAdapter(
 
     fun updateHomeChooseAddressWidget(isRefresh: Boolean) {
         val items = data.toMutableList()
-        val index = items.find { it is HomeChooseAddressWidgetUiModel }?.let { firstIndex }
+        val index = items.find { it is HomeChooseAddressWidgetUiModel }?.let { items.indexOf(it) }
         index?.let {
             items[it] = (items[it] as HomeChooseAddressWidgetUiModel).copy(isRefresh = isRefresh)
             submitList(items)
@@ -22,7 +22,7 @@ class TokoMartHomeAdapter(
 
     fun removeHomeChooseAddressWidget() {
         val items = data.toMutableList()
-        val widget = items.find { it is HomeChooseAddressWidgetUiModel }?.apply { firstIndex }
+        val widget = items.find { it is HomeChooseAddressWidgetUiModel }
         widget?.let {
             items.remove(it)
             submitList(items)
@@ -31,7 +31,7 @@ class TokoMartHomeAdapter(
 
     fun removeTickerWidget() {
         val items = data.toMutableList()
-        val widget = items.find { it is HomeTickerUiModel }?.apply { firstIndex }
+        val widget = items.find { it is HomeTickerUiModel }
         widget?.let {
             items.remove(it)
             submitList(items)

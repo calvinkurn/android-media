@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
@@ -45,4 +46,5 @@ data class ProductInfoP2UiData(
         var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
         var imageReviews: ImageReview? = null,
         var helpfulReviews: List<Review>? = null,
+        var miniCart: Map<String, MiniCartItem>? = null
 )

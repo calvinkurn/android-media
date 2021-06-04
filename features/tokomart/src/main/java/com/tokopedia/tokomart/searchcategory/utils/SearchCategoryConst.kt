@@ -14,15 +14,3 @@ internal const val CATEGORY_TOKONOW = "category_tokonow"
 internal const val CATEGORY_TOKONOW_DIRECTORY = "category_tokonow_directory"
 internal const val TOKONOW_SEARCH = "tokonow_search"
 internal const val TOKONOW_CATEGORY = "tokonow_category"
-
-
-
-
-
-
-
-
-
-// TODO:: Please delete this later
-@Deprecated("Hardcoded warehouse id")
-internal const val HARDCODED_WAREHOUSE_ID_PLEASE_DELETE = "19926"

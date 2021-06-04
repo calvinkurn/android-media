@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_SHOP_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.CreateSearchCategoryViewModelTestHelper
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -30,6 +31,7 @@ class CreateSearchViewModelTest:
 
         `Then assert keyword from parameter`()
         `Then assert query param has default sort`()
+        `Then assert shop id from choose address`()
     }
 
     private fun `Then assert keyword from parameter`() {
@@ -41,6 +43,10 @@ class CreateSearchViewModelTest:
                 searchViewModel.queryParam[SearchApiConst.OB],
                 shouldBe(DEFAULT_VALUE_OF_PARAMETER_SORT)
         )
+    }
+
+    private fun `Then assert shop id from choose address`() {
+        assertThat(searchViewModel.shopId, shouldBe(HARDCODED_SHOP_ID_PLEASE_DELETE))
     }
 
     @Test
