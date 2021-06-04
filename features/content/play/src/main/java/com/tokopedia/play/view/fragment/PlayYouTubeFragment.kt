@@ -122,6 +122,7 @@ class PlayYouTubeFragment @Inject constructor(
     override fun onInitFailure(view: YouTubeViewComponent, result: YouTubeInitializationResult) { }
 
     override fun onEnterFullscreen(view: YouTubeViewComponent) {
+        analytic.clickCtaFullScreenFromPortraitToLandscape()
         enterFullscreen()
     }
 

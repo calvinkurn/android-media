@@ -189,6 +189,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
     val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
 
+    private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
+    val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
+
     /**
      * Variable list
      */
@@ -273,13 +276,22 @@ open class HomeRevampViewModel @Inject constructor(
                         queryParam = bestSellerDataModel.widgetParam
                 )
                 recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
-
-                val recomData = getRecommendationUseCase.get().getData(
-                        GetRecommendationRequestParam(
-                                pageName = bestSellerDataModel.pageName,
-                                queryParam = bestSellerDataModel.widgetParam
-                        )
-                )
+                val activatedChip = recomFilterList.find { it.isActivated }
+                val recomData = if (activatedChip == null) {
+                    getRecommendationUseCase.get().getData(
+                            GetRecommendationRequestParam(
+                                    pageName = bestSellerDataModel.pageName,
+                                    queryParam = bestSellerDataModel.widgetParam
+                            )
+                    )
+                } else {
+                    getRecommendationUseCase.get().getData(
+                            GetRecommendationRequestParam(
+                                    pageName = bestSellerDataModel.pageName,
+                                    queryParam = if(activatedChip.isActivated) activatedChip.value else ""
+                            )
+                    )
+                }
 
                 if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                     val recomWidget = recomData.first().copy(
@@ -288,7 +300,7 @@ open class HomeRevampViewModel @Inject constructor(
                     val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
                     updateWidget(dataModel.copy(
                             id = bestSellerDataModel.id,
-                            pageName = bestSellerDataModel.pageName,
+                            pageName = dataModel.pageName,
                             widgetParam = bestSellerDataModel.widgetParam
                     ), index)
                 } else {
@@ -300,9 +312,8 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel){
-        val data = _homeLiveData.value?.list?.toMutableList()
-        data?.withIndex()?.find { it.value is BestSellerDataModel && (it.value as BestSellerDataModel).id == bestSellerDataModel.id }?.let {
+    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, selectedChipsPosition: Int){
+        findWidget<BestSellerDataModel> { currentDataModel, index ->
             launchCatchError(coroutineContext, block = {
                 val recomData = getRecommendationUseCase.get().getData(
                         GetRecommendationRequestParam(
@@ -315,7 +326,7 @@ open class HomeRevampViewModel @Inject constructor(
                             recommendationFilterChips = bestSellerDataModel.filterChip
                     )
                     val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
-                    val newModel = (it.value as BestSellerDataModel).copy(
+                    val newModel = currentDataModel.copy(
                             seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
                             recommendationItemList = newBestSellerDataModel.recommendationItemList,
                             productCardModelList = newBestSellerDataModel.productCardModelList,
@@ -323,16 +334,17 @@ open class HomeRevampViewModel @Inject constructor(
                             filterChip = newBestSellerDataModel.filterChip.map{
                                 it.copy(isActivated = filterChip.name == it.name
                                         && filterChip.isActivated)
-                            }
+                            },
+                            chipsPosition = (selectedChipsPosition+1)
                     )
-                    updateWidget(newModel, it.index)
+                    updateWidget(newModel, index)
                 } else {
                     updateWidget(bestSellerDataModel.copy(
                             filterChip = bestSellerDataModel.filterChip.map{
                                 it.copy(isActivated = filterChip.name == it.name
                                         && !filterChip.isActivated)
                             }
-                    ), it.index)
+                    ), index)
                 }
             }){ _ ->
                 updateWidget(bestSellerDataModel.copy(
@@ -340,7 +352,7 @@ open class HomeRevampViewModel @Inject constructor(
                             it.copy(isActivated = filterChip.name == it.name
                                     && !filterChip.isActivated)
                         }
-                ), it.index)
+                ), index)
             }
         }
     }
@@ -714,28 +726,39 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getFeedTabData() {
         if (getTabRecommendationJob?.isActive == true) return
-        addWidget(HomeLoadingMoreModel())
+        if (!widgetIsAvailable<HomeRecommendationFeedDataModel>()) {
+            addWidget(HomeLoadingMoreModel())
+        }
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
             getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
             val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
             }
-            val findRecommendationModel = homeDataModel.list.find {
-                data -> data is HomeRecommendationFeedDataModel
-            }
+
             val findLoadingModel = homeDataModel.list.withIndex().find {
                 data -> data.value is HomeLoadingMoreModel
             }
 
-            if (findRecommendationModel != null) return@launchCatchError
+            findWidget<HomeRecommendationFeedDataModel> { model, index ->
+                val newModel = model.copy(
+                    recommendationTabDataModel = homeRecommendationTabs,
+                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                )
+                if (findLoadingModel == null) {
+                    updateWidget(visitable = newModel, position = index)
+                } else {
+                    updateWidget(visitable = newModel, visitableToChange = findLoadingModel.value, position = index)
+                }
+                _resetNestedScrolling.postValue(Event(true))
+                return@launchCatchError
+            }
 
             val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel(homeDataModel.homeChooseAddressData)
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
             findLoadingModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel.index?:-1, it) }
-            findRetryModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel?.index?:-1, it) }
-
+            findRetryModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findRetryModel?.index?:-1, it) }
         }){
             val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
             }
@@ -912,7 +935,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
-        refresh(isFirstInstall = false, forceRefresh = true)
     }
 
     fun getAddressData(): HomeChooseAddressData {
@@ -975,18 +997,20 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun updateHomeData(homeNewDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
+        homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
         this.homeDataModel = homeNewDataModel
+
         if (!homeNewDataModel.isProcessingDynamicChannle) {
             homeNewDataModel.evaluateHomeFlagData(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
                     onNeedToGetBalanceData = { getBalanceWidgetData() }
             )
-            homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
             homeNewDataModel.evaluateRecommendationSection(
                     onNeedTabLoad = { getFeedTabData() }
             )
         }
         _homeLiveData.postValue(homeDataModel)
+        _resetNestedScrolling.postValue(Event(true))
     }
 
     private fun logChannelUpdate(message: String){

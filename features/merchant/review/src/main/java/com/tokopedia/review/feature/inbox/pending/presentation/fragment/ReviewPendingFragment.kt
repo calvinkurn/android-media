@@ -432,13 +432,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun goToCreateReviewActivity(reputationId: Long, productId: Long, rating: Int, inboxId: String) {
-        val intent = RouteManager.getIntent(context,
-                Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
-                        .buildUpon()
-                        .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
-                        .build()
-                        .toString())
-        startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+        context?.let {
+            val intent = RouteManager.getIntent(it,
+                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
+                            .buildUpon()
+                            .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
+                            .build()
+                            .toString())
+            startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+        }
     }
 
     private fun getSourceData() {

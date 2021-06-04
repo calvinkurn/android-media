@@ -63,6 +63,7 @@
     <string name="placeholder_reject_reason">Contoh: Kurir menolak paket saya</string>
     <string name="additional_invalid_resi"><br><font color="#03ac0e">Unggah Sekarang</font></br></string>
     <string name="sale_from_top_ads">Penjualan dari TopAds</string>
+    <string name="sale_from_broadcast_chat">Penjualan dari Broadcast Chat</string>
 
     <string name="chat">Chat</string>
 
@@ -265,4 +266,7 @@
     <string name="som_error_dialog_title_order_has_cancellation_request">Pembeli baru saja mengajukan pembatalan pesanan ini</string>
     <string name="som_error_dialog_subtitle_order_has_cancellation_request">Lanjut memproses pesanan tanpa konfirmasi pembeli dapat berujung dengan pengajuan komplain, lho.</string>
     <string name="som_error_validate_order">Gagal memeriksa status pesanan, silahkan coba lagi</string>
+
+    <string name="som_request_pickup_bottomsheet_title">Jadwal Pickup</string>
+    <string name="label_welcome_to_som_page">Selamat datang di halaman penjualan</string>
 </resources>

@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 
@@ -19,7 +20,7 @@ public class ShippingCourierUiModel implements Parcelable, RatesViewModelType {
     private int additionalFee;
     private boolean allowDropshipper;
     private boolean selected;
-
+    private PreOrderModel preOrderModel;
 
     public ShippingCourierUiModel() {
     }
@@ -32,6 +33,7 @@ public class ShippingCourierUiModel implements Parcelable, RatesViewModelType {
         additionalFee = in.readInt();
         allowDropshipper = in.readByte() != 0;
         selected = in.readByte() != 0;
+        preOrderModel = in.readParcelable(PreOrderModel.class.getClassLoader());
     }
 
     @Override
@@ -43,6 +45,7 @@ public class ShippingCourierUiModel implements Parcelable, RatesViewModelType {
         dest.writeInt(additionalFee);
         dest.writeByte((byte) (allowDropshipper ? 1 : 0));
         dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeParcelable(preOrderModel, flags);
     }
 
     @Override
@@ -113,4 +116,12 @@ public class ShippingCourierUiModel implements Parcelable, RatesViewModelType {
     public String getBlackboxInfo() { return blackboxInfo; }
 
     public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
+    public PreOrderModel getPreOrderModel() {
+        return preOrderModel;
+    }
+
+    public void setPreOrderModel(PreOrderModel preOrderModel) {
+        this.preOrderModel = preOrderModel;
+    }
 }
