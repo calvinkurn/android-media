@@ -185,8 +185,8 @@ class CategoryChooserFilterTestHelper(
     }
 
     fun `test apply filter from category chooser`() {
-        val requestParamsSlot = slot<RequestParams>()
-        val requestParams by lazy { requestParamsSlot.captured }
+        val requestParamsSlot = mutableListOf<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.last() }
 
         `Given view setup from created until open category chooser`()
 
@@ -217,9 +217,6 @@ class CategoryChooserFilterTestHelper(
     }
 
     fun `test dismiss category chooser`() {
-        val requestParamsSlot = slot<RequestParams>()
-        val requestParams by lazy { requestParamsSlot.captured }
-
         `Given view setup from created until open category chooser`()
 
         `When view dismiss L3 filter page`()
@@ -233,6 +230,8 @@ class CategoryChooserFilterTestHelper(
 
     interface Callback {
         fun `Given first page use case will be successful`()
-        fun `Then assert first page use case is called twice`(requestParamsSlot: CapturingSlot<RequestParams>)
+        fun `Then assert first page use case is called twice`(
+                requestParamsSlot: MutableList<RequestParams>
+        )
     }
 }
