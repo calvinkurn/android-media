@@ -13,6 +13,7 @@ interface KYCConstant {
         const val UNHANDLED_RESPONSE = "1005"
         const val KYC_PROJECT_ID = 1
         const val MERCHANT_KYC_PROJECT_ID = 10
+        const val PM_PRO_KYC_PROJECT_ID = 17
         const val EXTRA_STRING_IMAGE_RESULT = "image_result"
         const val REQUEST_CODE_CAMERA_KTP = 1010
         const val REQUEST_CODE_CAMERA_FACE = 2020
@@ -38,7 +39,6 @@ interface KYCConstant {
         const val KTP_RETAKE = 1
         const val FACE_RETAKE = 2
         const val USER_EXIT = -9
-        const val KYC_OVERLAY_COLOR = "#ae000000"
         const val KYC_AB_KEYWORD = "Liveness Detection 2"
         const val QUERY_GET_KYC_PROJECT_INFO = "get_kyc_project_info"
     }

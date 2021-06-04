@@ -1,10 +1,11 @@
 package com.tokopedia.shop.common.domain
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.constant.GqlQueryConstant.SHOP_REPUTATION_QUERY_STRING
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -14,7 +15,7 @@ class GetShopReputationUseCase @Inject constructor(private val gqlUseCase: Multi
     var params = mapOf<String, Any>()
     var isFromCacheFirst: Boolean = true
     val request by lazy{
-        GraphqlRequest(QUERY, ShopBadge.Response::class.java, params)
+        GraphqlRequest(SHOP_REPUTATION_QUERY_STRING, ShopBadge.Response::class.java, params)
     }
 
     override suspend fun executeOnBackground(): ShopBadge {
@@ -35,14 +36,7 @@ class GetShopReputationUseCase @Inject constructor(private val gqlUseCase: Multi
 
     companion object {
         private const val PARAM_SHOP_IDS = "shopIds"
-        private const val QUERY = "query getShopBadge(\$shopIds: [Int!]!){\n" +
-                "     reputation_shops(shop_ids: \$shopIds) {\n" +
-                "         badge\n" +
-                "         badge_hd\n" +
-                "         score\n" +
-                "         score_map\n" +
-                "     }\n" +
-                " }"
+
         @JvmStatic
         fun createParams(shopId: Int): Map<String, Any> = mapOf(PARAM_SHOP_IDS to listOf(shopId))
     }

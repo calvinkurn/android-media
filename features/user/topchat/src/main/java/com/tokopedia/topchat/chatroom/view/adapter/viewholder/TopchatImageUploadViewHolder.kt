@@ -68,7 +68,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     }
 
     private fun bindLoadingAnimation(element: ImageUploadViewModel) {
-        if (ViewUtil.areSystemAnimationsEnabled(itemView.context)) {
+        if (ViewUtil.areSystemAnimationsEnabled(itemView.context) && element.isDummy) {
             progressBarSendImage?.show()
         } else {
             progressBarSendImage?.hide()

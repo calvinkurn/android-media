@@ -723,6 +723,7 @@ public class FeedAnalytics {
             productItem.put("variant", "");
             productItem.put("brand", "");
             productItem.put("category", "");
+            productItem.put("creative_name", items.get(i).getImage().getM_url());
             productList.add(productItem);
         }
         return productList;
