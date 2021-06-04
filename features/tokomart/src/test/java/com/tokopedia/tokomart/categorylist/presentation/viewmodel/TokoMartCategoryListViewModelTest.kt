@@ -19,7 +19,7 @@ class TokoMartCategoryListViewModelTest: TokoMartCategoryListViewModelTestFixtur
     }
 
     @Test
-    fun `when getting categorylist should throw ticker's exception and get the failed result`() {
+    fun `when getting categorylist should throw exception and get the failed result`() {
         onGetCategoryList_thenReturn(Exception())
 
         viewModel.getCategoryList("1123")
