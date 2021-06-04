@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeFeedsListener
@@ -397,7 +398,14 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     homeComponentListener
             )
             CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
-            CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
+            CarouselPlayWidgetViewHolder.LAYOUT -> {
+                val playWidgetView = view.findViewById<View>(R.id.playWidgetView)
+                viewHolder = if (playWidgetView != null) {
+                    CarouselPlayWidgetViewHolder(view, PlayWidgetViewHolder(playWidgetView, playWidgetCoordinator), listener)
+                } else {
+                    super.createViewHolder(view, type)
+                }
+            }
             RechargeBUWidgetMixLeftViewHolder.LAYOUT -> viewHolder =
                     RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener)
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
