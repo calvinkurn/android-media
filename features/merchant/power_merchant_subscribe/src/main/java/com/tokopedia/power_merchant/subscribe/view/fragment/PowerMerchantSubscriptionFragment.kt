@@ -5,6 +5,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -283,6 +285,15 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         }
         recyclerView?.layoutManager = layManager
         recyclerView?.gone()
+
+        setupRecyclerViewAnimation()
+    }
+
+    private fun setupRecyclerViewAnimation() {
+        context?.let {
+            val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(it, R.anim.layout_animation_pm_recycler_view)
+            recyclerView?.layoutAnimation = animation
+        }
     }
 
     private fun setOnVerticalScrolled() {

@@ -39,7 +39,7 @@ class NextShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetNextShopGra
             val infoDescription = PowerMerchantSpannableUtil.createSpannableString(
                     text = context.getString(R.string.pm_next_pm_grade_info, element.shopLevel, element.gradeName.asUpperCase()).parseAsHtml(),
                     highlightText = clickableText,
-                    colorId = itemView.context.getResColor(ctaTextColor),
+                    colorId = context.getResColor(ctaTextColor),
                     isBold = true
             ) {
                 RouteManager.route(itemView.context, Constant.Url.PM_PRO_BENEFIT_PACKAGE_EDU)
