@@ -55,7 +55,7 @@ object DeeplinkMapperMarketplace {
         return (uri.pathSegments[0] == ApplinkConst.SALAM_UMRAH_SHOP_ID)
     }
 
-    fun getOnboardingApplink(deeplink: String) : String {
+    fun getOnboardingApplink(uri: Uri, deeplink: String) : String {
         if (deeplink.contains(ONBOARDING_COACHMARK_VALUE)) return ApplinkConstInternalMarketplace.ONBOARDING_COACHMARK_DISABLE
         return ApplinkConstInternalMarketplace.ONBOARDING
     }
