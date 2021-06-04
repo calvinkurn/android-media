@@ -386,18 +386,19 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             wrapper.addView(textView)
             fabHotelInfoMaxRadius.addItem(wrapper)
         }
+        fabHotelInfoMaxRadius.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
         hideInfoMaxRadius()
     }
 
     private fun hideInfoMaxRadius(){
         view?.let {
-            animateInfoMaxRadius(false)
+            animateFAB(fabHotelInfoMaxRadius, false)
         }
     }
 
     private fun showInfoMaxRadius(){
         view?.let {
-            animateInfoMaxRadius(true)
+            animateFAB(fabHotelInfoMaxRadius, true)
         }
     }
 
@@ -1155,26 +1156,20 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun showFindNearHereView() {
         view?.let {
             btnGetRadiusHotelSearchMap.visible()
+            animateFAB(btnGetRadiusHotelSearchMap, true)
         }
-        animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_SHOW_VALUE)
     }
 
     private fun hideFindNearHereView() {
-        animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_HIDE_VALUE)
         view?.let {
+            animateFAB(btnGetRadiusHotelSearchMap, false)
             btnGetRadiusHotelSearchMap.gone()
         }
     }
 
-    private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
-        ObjectAnimator.ofFloat(btnGetRadiusHotelSearchMap, BUTTON_RADIUS_ANIMATION_Y, value).apply {
-            start()
-        }
-    }
-
-    private fun animateInfoMaxRadius(visibility: Boolean){
-        val alphaValue: Float = if(visibility) BUTTON_RADIUS_INFO_SHOW_VALUE else BUTTON_RADIUS_INFO_HIDE_VALUE
-        ObjectAnimator.ofFloat(fabHotelInfoMaxRadius, BUTTON_RADIUS_ANIMATION_Y, alphaValue).apply {
+    private fun animateFAB(button: View, visibility: Boolean){
+        val alphaValue: Float = if(visibility) BUTTON_RADIUS_SHOW_VALUE else BUTTON_RADIUS_HIDE_VALUE
+        ObjectAnimator.ofFloat(button, BUTTON_RADIUS_ANIMATION_Y, alphaValue).apply {
             start()
         }
     }
@@ -1493,8 +1488,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val DELAY_EMPTY_STATE: Long = 100L
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
-        const val BUTTON_RADIUS_INFO_SHOW_VALUE: Float = 20f
-        const val BUTTON_RADIUS_INFO_HIDE_VALUE: Float = -200f
 
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
         private const val MAPS_ZOOM_IN: Float = 11f
