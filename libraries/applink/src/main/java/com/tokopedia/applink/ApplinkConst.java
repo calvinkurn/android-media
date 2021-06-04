@@ -389,7 +389,6 @@ public interface ApplinkConst {
     String ACCOUNT_HOST = "account";
     String ACCOUNT = "tokopedia://account";
     String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
-    String MARKETPLACE_ONBOARDING_EXTRA = "tokopedia://marketplace/onboarding/{type}";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
