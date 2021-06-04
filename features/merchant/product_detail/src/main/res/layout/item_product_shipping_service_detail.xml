@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_lvl3">
+    android:paddingBottom="6dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pdp_service_detail_name"
@@ -14,12 +14,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
+        android:layout_marginTop="2dp"
         tools:text="• AnterAja" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/pdp_service_detail_dynamic_pricing"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:labelType="general_light_green"
         android:visibility="gone"
@@ -32,7 +33,7 @@
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/pdp_service_detail_cod"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:labelType="general_light_grey"
         app:layout_constraintStart_toEndOf="@+id/pdp_service_detail_dynamic_pricing"
