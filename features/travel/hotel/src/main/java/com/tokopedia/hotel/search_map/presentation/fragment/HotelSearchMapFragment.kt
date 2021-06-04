@@ -80,7 +80,7 @@ import javax.inject.Inject
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener,
-        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, SubmitFilterListener, GoogleMap.OnCameraMoveStartedListener {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, SubmitFilterListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraMoveListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -347,11 +347,15 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
+    override fun onCameraMove() {
+        getInfoMaxRadius()
+    }
+
     override fun onCameraMoveStarted(reason: Int) {
         when (reason) {
             GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE -> {
                 showFindNearHereView()
-                getInfoMaxRadius()
+                googleMap.setOnCameraMoveListener(this)
             }
             else -> hideFindNearHereView()
         }
@@ -1164,14 +1168,14 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
         ObjectAnimator.ofFloat(btnGetRadiusHotelSearchMap, BUTTON_RADIUS_ANIMATION_Y, value).apply {
-            duration = DELAY_BUTTON_RADIUS
+//            duration = DELAY_BUTTON_RADIUS
             start()
         }
     }
 
     private fun animateInfoMaxRadius(visibility: Boolean){
-        val alphaValue: Float = if(visibility) 1.0f else 0.0f
-        ObjectAnimator.ofFloat(fabHotelInfoMaxRadius, FAB_MAX_RADIUS, alphaValue).apply {
+        val alphaValue: Float = if(visibility) 20f else BUTTON_RADIUS_HIDE_VALUE
+        ObjectAnimator.ofFloat(fabHotelInfoMaxRadius, BUTTON_RADIUS_ANIMATION_Y, alphaValue).apply {
             start()
         }
     }
