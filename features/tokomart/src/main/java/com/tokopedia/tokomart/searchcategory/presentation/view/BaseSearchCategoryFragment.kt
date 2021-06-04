@@ -184,7 +184,7 @@ abstract class BaseSearchCategoryFragment:
     private fun configureEmptySpace() {
         val context = context ?: return
         val top = NavToolbarExt.getFullToolbarHeight(context)
-        recyclerView?.setMargin(0.toDp(),top, 0.toDp(), 0.toDp())
+        stickyView?.setMargin(0.toDp(),top, 0.toDp(), 0.toDp())
     }
 
     protected abstract fun createNavToolbarIconBuilder(): IconBuilder
