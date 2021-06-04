@@ -10,7 +10,7 @@
 /features/content/feed_component/       				@tokopedia/android-minionskywalker-dev
 /features/category/       				                @tokopedia/android-minionsolo-dev
 /features/discovery2/       				            @tokopedia/android-minionsolo-dev
-/features/discovery/topadssdk/                      	@tokopedia/android-gatekeeperanalytic-dev
+/features/discovery/topadssdk/                      	@tokopedia/android-minionskywalker-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
