@@ -9,7 +9,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 
-@Module
+@Module(includes = [ShopNoteDetailViewModelModule::class])
 class ShopNoteModule {
     @ShopNoteScope
     @Provides

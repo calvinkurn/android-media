@@ -9,7 +9,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
-import com.tokopedia.shop.info.domain.usecase.GetShopNotesByShopIdUseCase
+import com.tokopedia.shop.common.domain.GetShopNoteUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
@@ -22,7 +22,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class ShopInfoViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
-                                            private val getShopNoteUseCase: GetShopNotesByShopIdUseCase,
+                                            private val getShopNoteUseCase: GetShopNoteUseCase,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getShopStatisticUseCase: GetShopStatisticUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
@@ -59,7 +59,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
         launchCatchError(block = {
             coroutineScope{
                 val shopNotes = withContext(coroutineDispatcherProvider.io) {
-                    getShopNoteUseCase.params = GetShopNotesByShopIdUseCase.createParams(shopId)
+                    getShopNoteUseCase.params = GetShopNoteUseCase.createParams(shopId)
                     getShopNoteUseCase.isFromCacheFirst = false
 
                     try {
