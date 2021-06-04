@@ -34,7 +34,8 @@
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/tokonowSearchCategoryNavToolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

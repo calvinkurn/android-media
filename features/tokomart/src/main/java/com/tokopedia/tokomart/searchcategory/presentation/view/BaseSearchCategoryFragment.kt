@@ -132,18 +132,15 @@ abstract class BaseSearchCategoryFragment:
                 hints = getNavToolbarHint(),
                 searchbarClickCallback = ::onSearchBarClick,
         )
-        setupTopNavigation()
+        configureToolbarBackgroundInteraction()
     }
 
-    private fun setupTopNavigation() {
+    private fun configureToolbarBackgroundInteraction() {
         val context = context ?: return
 
         navToolbar?.let { toolbar ->
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
-                toolbar.apply {
-                    layoutParams?.height = NavToolbarExt.getFullToolbarHeight(context)
-                }
             }
 
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
@@ -156,12 +153,15 @@ abstract class BaseSearchCategoryFragment:
                         override fun onAlphaChanged(offsetAlpha: Float) {
 
                         }
+
                         override fun onSwitchToLightToolbar() {
 
                         }
+
                         override fun onSwitchToDarkToolbar() {
                             navToolbar?.hideShadow()
                         }
+
                         override fun onYposChanged(yOffset: Int) {
 
                         }
@@ -169,6 +169,7 @@ abstract class BaseSearchCategoryFragment:
                     fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
             ))
         }
+
         configureEmptySpace()
     }
 
