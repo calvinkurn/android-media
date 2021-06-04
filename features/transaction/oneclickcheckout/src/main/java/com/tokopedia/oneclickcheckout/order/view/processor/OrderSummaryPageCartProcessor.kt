@@ -61,7 +61,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
                         throwable = null,
                         revampData = orderData.revampData,
-                        addressState = AddressState(orderData.errorCode, orderData.preference.address.state, orderData.popUpMessage)
+                        addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage)
                 )
             } catch (t: Throwable) {
                 Timber.d(t)

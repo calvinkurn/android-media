@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
@@ -17,7 +16,6 @@ import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
@@ -374,6 +372,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
+            val newChosenAddress = logisticProcessor.setChosenAddress(addressModel)
+            if (newChosenAddress == null) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return@launch
+            }
             param = param.copy(profile = param.profile.copy(
                     addressId = addressModel.id
             ), skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart())
@@ -388,16 +391,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(AddressModel(
-                        addressId = addressModel.id.toLongOrZero(),
-                        cityId = addressModel.cityId.toLongOrZero(),
-                        districtId = addressModel.destinationDistrictId.toLongOrZero(),
-                        latitude = addressModel.latitude,
-                        longitude = addressModel.longitude,
-                        addressName = addressModel.addressName,
-                        receiverName = addressModel.recipientName,
-                        postalCode = addressModel.postalCode)
-                )
+                globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
                 clearBboIfExist()
             }
             globalEvent.value = newGlobalEvent
@@ -450,7 +444,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(preference.addressModel)
                 clearBboIfExist()
             }
             globalEvent.value = newGlobalEvent
