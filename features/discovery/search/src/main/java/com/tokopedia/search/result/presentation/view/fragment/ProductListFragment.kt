@@ -594,7 +594,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun showNetworkErrorOnEmptyList(throwable: Throwable?) {
         hideViewOnError()
         if (throwable != null) {
-            NetworkErrorHelper.showEmptyState(activity,view, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(throwable.message))) {
+            NetworkErrorHelper.showEmptyState(activity,view, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
                 refreshLayout?.visible()
                 reloadData()
             }
@@ -615,7 +615,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun showNetworkErrorOnLoadMore(throwable: Throwable?) {
         val searchParameter = searchParameter ?: return
         if (throwable!= null) {
-            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(throwable.message))) {
+            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
                 addLoading()
                 presenter?.loadMoreData(searchParameter.getSearchParameterMap())
             }
@@ -1525,9 +1525,9 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (isWishlisted)
-            Toaster.build(view, getString(R.string.msg_add_wishlist_failed), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_add_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
         else
-            Toaster.build(view, getString(R.string.msg_remove_wishlist_failed), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
     }
 
     override val isLandingPage: Boolean

@@ -261,7 +261,7 @@ internal class ShopListFragment:
     private fun showNetworkErrorOnEmptyList(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener, throwable: Throwable?) {
         hideViewOnError()
         if (throwable != null) {
-            NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(throwable.message)), retryClickedListener)
+            NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(requireContext(), throwable), retryClickedListener)
         } else {
             NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
         }
@@ -275,7 +275,7 @@ internal class ShopListFragment:
 
     private fun showNetworkErrorOnLoadMore(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener, throwable: Throwable?) {
         if (throwable != null) {
-            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(throwable.message)), retryClickedListener).showRetrySnackbar()
+            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable), retryClickedListener).showRetrySnackbar()
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
         }
@@ -290,7 +290,7 @@ internal class ShopListFragment:
     private fun handleEventGetDynamicFilter(isSuccessGetDynamicFilter: Boolean) {
         activity?.let { activity ->
             if (!isSuccessGetDynamicFilter) {
-                NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_get_dynamic_filter))
+                NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(activity.getString(R.string.error_get_dynamic_filter))))
             }
         }
     }
@@ -313,7 +313,7 @@ internal class ShopListFragment:
         }
         else {
             activity?.let { activity ->
-                NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_filter_data_not_ready))
+                NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(activity.getString(R.string.error_filter_data_not_ready))))
             }
         }
     }
