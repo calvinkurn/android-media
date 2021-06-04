@@ -109,6 +109,9 @@ object IncentiveOvoBottomSheetBuilder {
                         }
                     }
                 }
+                bottomSheet.setOnDismissListener {
+                    incentiveOvoListener.onClickCloseThankYouBottomSheet()
+                }
             }
         }
     }

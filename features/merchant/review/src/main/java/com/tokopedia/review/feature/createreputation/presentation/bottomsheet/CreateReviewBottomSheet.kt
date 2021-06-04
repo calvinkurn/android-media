@@ -386,7 +386,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun onSuccessGetOvoIncentive(ovoDomain: ProductRevIncentiveOvoDomain?) {
         if (shouldShowThankYouBottomSheet) {
             showThankYouBottomSheet(ovoDomain)
-            dismiss()
             return
         }
         ovoDomain?.productrevIncentiveOvo?.let {
@@ -557,6 +556,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun setDismissBehavior() {
         setOnDismissListener {
             CreateReviewTracking.eventDismissForm(getRating(), getReviewMessageLength(), getNumberOfPictures(), isAnonymous(), isUserEligible(), isTemplateAvailable(), templatesSelectedCount, getOrderId(), productId.toString(), getUserId())
+            if (activity?.isTaskRoot == true) {
+                activity?.finish()
+                val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+                startActivity(intent)
+                return@setOnDismissListener
+            }
             activity?.finish()
         }
     }

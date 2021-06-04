@@ -205,10 +205,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             val data = withContext(coroutineDispatcherProvider.io) {
                 getProductIncentiveOvo.getIncentiveOvo(productId, reputationId)
             }
-            if (data == null) {
+            if (data?.productrevIncentiveOvo == null) {
                 _incentiveOvo.postValue(null)
             } else {
-                thankYouBottomSheetText = data.productrevIncentiveOvo?.bottomSheetText ?: ""
+                thankYouBottomSheetText = data.productrevIncentiveOvo?.bottomSheetText ?: thankYouBottomSheetText
                 _incentiveOvo.postValue(CoroutineSuccess(data))
             }
 
