@@ -64,6 +64,7 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
+import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
@@ -475,6 +476,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         })
 
+        viewModel.verifyFingerprint.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(it){
+                is Success -> onSuccessVerifyFingerprint(it.data)
+                is Fail -> onErrorVerifyFingerprint(it.throwable)
+            }
+        })
+
         viewModel.goToActivationPageAfterRelogin.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             onGoToActivationPageAfterRelogin().invoke(it)
         })
@@ -495,6 +503,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             onGoToSecurityQuestionAfterRelogin().invoke()
         })
 
+    }
+
+    private fun onSuccessVerifyFingerprint(data: VerifyFingerprint) {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_FINGERPRINT).apply {
+            putExtras(Bundle().apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, data.validateToken)
+            })
+        }
+        startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+    }
+
+    private fun onErrorVerifyFingerprint(throwable: Throwable) {
+        dismissLoadingLogin()
+        NetworkErrorHelper.showSnackbar(activity, "Gagal")
     }
 
     private fun fetchRemoteConfig() {
