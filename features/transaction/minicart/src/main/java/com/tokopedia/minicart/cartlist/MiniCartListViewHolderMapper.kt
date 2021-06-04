@@ -5,6 +5,8 @@ import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWLESS
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWMORE
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
 
@@ -233,4 +235,34 @@ class MiniCartListViewHolderMapper @Inject constructor() {
         }
     }
 
+    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?): MiniCartSimplifiedData {
+        if (miniCartListUiModel == null) {
+            return MiniCartSimplifiedData()
+        } else {
+            return MiniCartSimplifiedData().apply {
+                miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
+                miniCartItems = mapMiniCartItems(miniCartListUiModel.visitables)
+                isShowMiniCartWidget = miniCartItems.isNotEmpty()
+            }
+        }
+    }
+
+    private fun mapMiniCartItems(visitables: List<Visitable<*>>): List<MiniCartItem> {
+        val miniCartItems = mutableListOf<MiniCartItem>()
+        visitables.forEach { visitable ->
+            if (visitable is MiniCartProductUiModel) {
+                val miniCartItem = MiniCartItem().apply {
+                    isError = visitable.isProductDisabled
+                    cartId = visitable.cartId
+                    productId = visitable.productId
+                    productParentId = visitable.parentId
+                    quantity = visitable.productQty
+                    notes = visitable.productNotes
+                }
+                miniCartItems.add(miniCartItem)
+            }
+        }
+
+        return miniCartItems
+    }
 }

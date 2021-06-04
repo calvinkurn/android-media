@@ -139,7 +139,7 @@ class MiniCartWidget @JvmOverloads constructor(
                                     }
 
                                     override fun onRefreshErrorPage() {
-                                        viewModel.updateCart(true,GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                                        viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
                                     }
                                 })
                             }
@@ -176,7 +176,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun onMiniCartBottomSheetDismissed() {
-        miniCartWidgetListener?.onCartItemsUpdated(MiniCartSimplifiedData())
+        miniCartWidgetListener?.onCartItemsUpdated(viewModel.getLatestMiniCartData())
     }
 
     private fun showToaster(message: String, type: Int, ctaText: String = "", onClickListener: View.OnClickListener? = null) {

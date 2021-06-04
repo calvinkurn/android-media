@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListViewHolderMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
@@ -431,4 +432,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         )
     }
 
+    fun getLatestMiniCartData(): MiniCartSimplifiedData {
+        return miniCartListViewHolderMapper.reverseMapUiModel(miniCartListListUiModel.value)
+    }
 }
