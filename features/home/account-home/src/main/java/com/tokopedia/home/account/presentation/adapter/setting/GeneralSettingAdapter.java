@@ -11,8 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -137,7 +135,10 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void bind(SettingItemViewModel item){
             SpannableString title = generateSpannableTitle(item);
             titleView.setText(title);
-            bodyView.setText(item.getSubtitle());
+            if(item.getSubtitle() != null && !item.getSubtitle().isEmpty()) {
+                bodyView.setVisibility(View.VISIBLE);
+                bodyView.setText(item.getSubtitle());
+            } else bodyView.setVisibility(View.GONE);
             if(item.isHideArrow()) {
                 arrowIcon.setVisibility(View.GONE);
             } else {
