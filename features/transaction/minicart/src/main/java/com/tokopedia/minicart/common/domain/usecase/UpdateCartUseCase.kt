@@ -1,7 +1,7 @@
 package com.tokopedia.minicart.common.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
@@ -69,9 +69,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
-//        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
-
-        val response = Gson().fromJson(MOCK_RESPONSE, UpdateCartGqlResponse::class.java)
+        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
         return if (response.updateCartData.status == "OK") {
             if (isFromMiniCartWidget) {
@@ -127,36 +125,3 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
     }
 
 }
-
-val MOCK_RESPONSE = """
-    {
-      "update_cart_v2": {
-        "error_message": [],
-        "status": "OK",
-        "data": {
-          "error": "Message error with out of service",
-          "status": false,
-          "message": "",
-          "toaster_action": {
-            "text": "Oke",
-            "show_cta": true
-          },
-          "out_of_service": {
-            "id": "1",
-            "code": "Maintenance",
-            "image": "https://ecs7.tokopedia.net/img/og_image_default_new.jpg",
-            "title": "Title : Maintenance",
-            "description": "Description : Maintenance",
-            "buttons": [
-              {
-                "id" : "3",
-                "code" : "",
-                "message" : "Ke Homepage",
-                "color" : ""
-              }
-            ]
-          }
-        }
-      }
-    }
-""".trimIndent()
