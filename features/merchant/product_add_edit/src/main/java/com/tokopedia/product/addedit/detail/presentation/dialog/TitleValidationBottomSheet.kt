@@ -41,7 +41,7 @@ class TitleValidationBottomSheet(
         super.onActivityCreated(savedInstanceState)
         setTitle(getString(R.string.title_product_title_validation_bottomsheet))
         titleValidationModel.apply {
-            val displayError = isBlacklistKeyword && isNegativeKeyword && isTypoDetected
+            val displayError = isBlacklistKeyword || isNegativeKeyword || isTypoDetected
             setupTitleCorrection(displayError)
             setupHeaderViews(displayError)
             setupPoints(isBlacklistKeyword, isNegativeKeyword, isTypoDetected)

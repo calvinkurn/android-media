@@ -25,6 +25,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
@@ -93,6 +94,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     val isProductNameInputError: LiveData<Boolean>
         get() = mIsProductNameInputError
     var productNameMessage: String = ""
+    var productNameValidationResult: TitleValidationModel = TitleValidationModel()
 
     var isNameRecommendationSelected = false
     private val mProductNameRecommendations = MutableLiveData<Result<List<String>>>()
@@ -269,16 +271,26 @@ class AddEditProductDetailViewModel @Inject constructor(
             if (productNameInput != productInputModel.detailInputModel.currentProductName) {
                 // remote product name validation
                 launchCatchError(block = {
-                    val validationResult = withContext(dispatchers.io) {
+                    productNameValidationResult = withContext(dispatchers.io) {
                         getProductTitleValidationUseCase.setParam(productNameInput)
                         getProductTitleValidationUseCase.getDataModelOnBackground()
                     }
 
-                    val validationMessage = ""
-                    if (validationMessage.isNotEmpty()) {
-                        productNameMessage = validationMessage
+                    productNameMessage = when {
+                        productNameValidationResult.isBlacklistKeyword -> {
+                            provider.getTitleValidationErrorBlacklisted()
+                        }
+                        productNameValidationResult.isTypoDetected -> {
+                            provider.getTitleValidationErrorTypo()
+                        }
+                        productNameValidationResult.isNegativeKeyword -> {
+                            provider.getTitleValidationErrorNegative()
+                        }
+                        else -> {
+                            ""
+                        }
                     }
-                    mIsProductNameInputError.value = validationMessage.isNotEmpty()
+                    mIsProductNameInputError.value = productNameValidationResult.isBlacklistKeyword
                 }, onError = {
                     // log error
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it)

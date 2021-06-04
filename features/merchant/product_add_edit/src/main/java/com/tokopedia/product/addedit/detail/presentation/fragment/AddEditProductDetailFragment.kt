@@ -317,6 +317,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imeOptions = EditorInfo.IME_ACTION_DONE
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
+        setupProductNameValidationBottomsheet()
 
         // add edit product category views
         productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
@@ -708,9 +709,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
         stopPerformanceMonitoring()
-
-        val titleValidationModel = TitleValidationModel("toyota honda samsung kia", listOf("kia"), listOf("honda"))
-        TitleValidationBottomSheet(titleValidationModel).show(childFragmentManager)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -1681,6 +1679,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         }
         dialog.show()
+    }
+
+    private fun setupProductNameValidationBottomsheet() {
+        productNameField?.icon2?.setOnClickListener {
+            val titleValidationModel = viewModel.productNameValidationResult
+            TitleValidationBottomSheet(titleValidationModel).show(childFragmentManager)
+        }
     }
 
     private fun showProductPriceRecommendationTips() {
