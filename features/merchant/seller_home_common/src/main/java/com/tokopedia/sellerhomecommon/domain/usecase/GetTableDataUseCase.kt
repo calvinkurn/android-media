@@ -42,7 +42,7 @@ class GetTableDataUseCase(
 
     companion object {
         private const val DATA_KEYS = "dataKeys"
-        private const val DEFAULT_POST_LIMIT = 3
+        private const val DEFAULT_POST_LIMIT = 20
 
         fun getRequestParams(
                 dataKey: List<Pair<String, String>>,
