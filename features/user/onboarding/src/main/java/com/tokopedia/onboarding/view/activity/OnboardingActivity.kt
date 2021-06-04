@@ -3,6 +3,7 @@ package com.tokopedia.onboarding.view.activity
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -18,8 +19,8 @@ import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
-import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
 import com.tokopedia.onboarding.di.OnboardingComponent
+import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.fragment.DynamicOnboardingFragment
 import com.tokopedia.onboarding.view.fragment.OnboardingFragment
@@ -29,7 +30,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -38,6 +38,10 @@ import javax.inject.Inject
  */
 
 class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponent> {
+
+    private val URI_COACHMARK = "coachmark"
+    private val URI_COACHMARK_ENABLE = "enable"
+    private val URI_COACHMARK_DISABLE = "disable"
 
     @Inject
     lateinit var onboardingAnalytics: OnboardingAnalytics
@@ -88,11 +92,24 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
+        val intent = intent
+        var uri: Uri? = null
 
-        initObserver()
-        loadTime = System.currentTimeMillis()
-        viewModel.getData()
-        fetchAbTesting()
+        var isCoachmarkApplink = false
+        if (intent != null) {
+            uri = intent.data
+            if (uri != null) {
+                isCoachmarkApplink = uri.getPathSegments().size == 3 && uri.getPathSegments().get(1) == URI_COACHMARK
+            }
+        }
+        if (isCoachmarkApplink) {
+            handleCoachmarkUri(uri)
+        } else {
+            initObserver()
+            loadTime = System.currentTimeMillis()
+            viewModel.getData()
+            fetchAbTesting()
+        }
     }
 
     override fun onBackPressed() {
@@ -111,6 +128,15 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
             winParams.flags = winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
         }
         window.attributes = winParams
+    }
+
+    private fun handleCoachmarkUri(uri: Uri?) {
+        uri?.lastPathSegment?.let {
+            if (it.startsWith(URI_COACHMARK_DISABLE)) {
+                com.tokopedia.coachmark.CoachMark2.Companion.setCoachmmarkShowAllowed(false)
+                finish()
+            }
+        }
     }
 
     private fun initObserver() {
