@@ -72,6 +72,12 @@ fun getLocale(): Locale {
     return Locale("id")
 }
 
+fun getNPastDaysTimeStamp(daysBefore: Int): Date {
+    val date = Calendar.getInstance(getLocale())
+    date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - daysBefore)
+    return date.time
+}
+
 fun getNPastMonthTimeStamp(monthBefore: Int): Date {
     val date = Calendar.getInstance(getLocale())
     date.set(Calendar.MONTH, date.get(Calendar.MONTH) - monthBefore)
