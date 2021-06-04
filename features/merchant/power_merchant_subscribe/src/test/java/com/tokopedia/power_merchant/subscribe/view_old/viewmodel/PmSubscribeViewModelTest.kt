@@ -25,7 +25,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
                 pmSetting = PowerMerchantSettingInfoUiModel(
                         tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
-                        periodeEndDate = anyString()
+                        periodeTypePmPro = TestConstant.PeriodType.COMMUNICATION_PERIOD_PM_PRO
                 )
         )
 
@@ -57,8 +57,8 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
                 shopInfo = PMShopInfoUiModel(),
                 pmSetting = PowerMerchantSettingInfoUiModel(
                         tickers = emptyList(),
-                        periodeType = TestConstant.PeriodType.TRANSITION_PERIOD,
-                        periodeEndDate = anyString()
+                        periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
+                        periodeTypePmPro = TestConstant.PeriodType.COMMUNICATION_PERIOD_PM_PRO
                 )
         )
 
@@ -101,7 +101,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
                 pmSetting = PowerMerchantSettingInfoUiModel(
                         tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
-                        periodeEndDate = anyString()
+                        periodeTypePmPro = TestConstant.PeriodType.COMMUNICATION_PERIOD_PM_PRO
                 )
         )
 
@@ -128,7 +128,7 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
                 pmSetting = PowerMerchantSettingInfoUiModel(
                         tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
-                        periodeEndDate = anyString()
+                        periodeTypePmPro = TestConstant.PeriodType.COMMUNICATION_PERIOD_PM_PRO
                 )
         )
 
