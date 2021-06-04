@@ -1023,6 +1023,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         textWatcher?.cancelJob()
         val sendMessage: String = getComposedMessage(message)
         val startTime = SendableViewModel.generateStartTime()
+        if (rvSrw?.isShowing() == true) {
+            addSrwBubbleToChat()
+        }
         presenter.sendAttachmentsAndMessage(
             messageId, sendMessage, startTime, opponentId, onSendingMessage()
         )
