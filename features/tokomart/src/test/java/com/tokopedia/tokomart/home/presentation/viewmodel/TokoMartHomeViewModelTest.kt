@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.home.presentation.viewmodel
 
 import com.tokopedia.tokomart.data.createHomeLayoutList
 import com.tokopedia.tokomart.data.createKeywordSearch
+import com.tokopedia.tokomart.data.createMiniCartSimplifier
 import com.tokopedia.tokomart.data.createTicker
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
@@ -62,4 +63,21 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         verifyGetHomeLayoutResponseFail()
     }
 
+    @Test
+    fun `when getting data for mini cart should run and give success result`(){
+        onGetMiniCart_thenReturn(createMiniCartSimplifier())
+
+        viewModel.getMiniCart()
+
+        verifyMiniCartResponseSuccess(createMiniCartSimplifier())
+    }
+
+    @Test
+    fun `when getting data for mini cart should throw mini cart exception`(){
+        onGetMiniCart_thenReturn(Exception())
+
+        viewModel.getMiniCart()
+
+        verifyMiniCartFail()
+    }
 }

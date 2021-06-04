@@ -1,5 +1,8 @@
 package com.tokopedia.tokomart.data
 
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.tokomart.home.domain.model.*
 
 fun createHomeLayoutList(): List<HomeLayoutResponse> {
@@ -39,5 +42,25 @@ fun createKeywordSearch(): KeywordSearchData {
                             placeholder = "Search tomato"
                     )
             )
+    )
+}
+
+fun createMiniCartSimplifier(): MiniCartSimplifiedData {
+    return MiniCartSimplifiedData(
+            miniCartWidgetData = MiniCartWidgetData(
+                    totalProductCount = 1,
+                    totalProductPrice = 100
+            ),
+            miniCartItems = listOf(
+                    MiniCartItem(
+                          isError = false,
+                          cartId = "123",
+                          productId = "125",
+                          productParentId = "126",
+                          quantity = 12,
+                          notes = "Hai"
+                    )
+            ),
+            isShowMiniCartWidget = true
     )
 }

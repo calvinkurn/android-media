@@ -1,6 +1,8 @@
 package com.tokopedia.tokomart.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
@@ -19,6 +21,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Before
@@ -74,6 +77,16 @@ abstract class TokoMartHomeViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
+    protected fun verifyMiniCartResponseSuccess(expectedResponse: MiniCartSimplifiedData) {
+        val actualResponse = viewModel.miniCart.getOrAwaitValue()
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    protected fun verifyMiniCartFail() {
+        val actualResponse = viewModel.miniCart.getOrAwaitValue()
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
     protected fun verifyGetHomeLayoutUseCaseCalled() {
         coVerify { getHomeLayoutListUseCase.execute() }
     }
@@ -104,6 +117,22 @@ abstract class TokoMartHomeViewModelTestFixture {
 
     protected fun onGetHomeLayout_thenReturn(errorThrowable: Throwable) {
         coEvery { getHomeLayoutListUseCase.execute() } throws errorThrowable
+    }
+
+    protected fun onGetMiniCart_thenReturn(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        every {
+            getMiniCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
+        }
+    }
+
+    protected fun onGetMiniCart_thenReturn(errorThrowable: Throwable) {
+        every {
+            getMiniCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(errorThrowable)
+        }
     }
 
 }
