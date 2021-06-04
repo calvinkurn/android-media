@@ -123,7 +123,7 @@
     <string name="review_form_dismiss_form_dialog_title">Ulasanmu nanti hilang, lho! 😢</string>
     <string name="review_form_dismiss_form_dialog_body">Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini. Yakin tetap mau keluar?</string>
     <string name="review_form_dismiss_form_dialog_stay">Tetap di Sini</string>
-    <string name="review_form_templates_formatting">%s,&#160;</string>
+    <string name="review_form_templates_formatting">%s.&#160;</string>
     <string name="review_form_neutral_title">Apa yang bikin kamu kurang puas?</string>
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>
     <string name="review_form_good_helper">Yuk, ceritain kepuasanmu tentang kualitas barang &amp; pelayanan penjual.</string>
