@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -7,6 +8,7 @@ import com.tokopedia.home.constant.AtfKey
 
 data class AtfData(
         @SerializedName("id")
+        @SuppressLint("Invalid Data Type")
         @Expose
         val id: Int = 0,
         @SerializedName("name")
