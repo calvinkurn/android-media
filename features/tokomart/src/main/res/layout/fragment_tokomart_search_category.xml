@@ -37,10 +37,10 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tokonowSearchCategoryStatusBarBackground"
+        app:layout_constraintTop_toTopOf="parent"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        app:toolbarAlwaysShowShadow="false"
+        app:toolbarAlwaysShowShadow="true"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeSearchbar"
         app:toolbarInitialFillColor="transparent"
@@ -52,7 +52,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tokonowSearchCategoryNavToolbar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 

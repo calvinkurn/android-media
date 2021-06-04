@@ -30,6 +30,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -43,6 +44,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
@@ -51,6 +53,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.*
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.unifycomponents.toDp
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -133,8 +136,15 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun setupTopNavigation() {
+        val context = context ?: return
+
         navToolbar?.let { toolbar ->
-            activity?.let { toolbar.setupToolbarWithStatusBar(it, applyPadding = false) }
+            activity?.let {
+                toolbar.setupToolbarWithStatusBar(it)
+                toolbar.apply {
+                    layoutParams?.height = NavToolbarExt.getFullToolbarHeight(context)
+                }
+            }
 
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
 
@@ -153,12 +163,19 @@ abstract class BaseSearchCategoryFragment:
                             navToolbar?.hideShadow()
                         }
                         override fun onYposChanged(yOffset: Int) {
-                            headerBackground?.y = -(yOffset.toFloat())
+
                         }
                     },
                     fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
             ))
         }
+        configureEmptySpace()
+    }
+
+    private fun configureEmptySpace() {
+        val context = context ?: return
+        val top = NavToolbarExt.getFullToolbarHeight(context)
+        recyclerView?.setMargin(0.toDp(),top, 0.toDp(), 0.toDp())
     }
 
     protected abstract fun createNavToolbarIconBuilder(): IconBuilder
