@@ -19,10 +19,8 @@ import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.common.data.response.updatecart.Data
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
-import com.tokopedia.minicart.common.widget.uimodel.MiniCartWidgetUiModel
 import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -151,8 +149,8 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun observeMiniCartWidgetUiModel(fragment: Fragment) {
-        viewModel.miniCartWidgetUiModel.observe(fragment.viewLifecycleOwner, {
-            renderWidget(it)
+        viewModel.miniCartSimplifiedData.observe(fragment.viewLifecycleOwner, {
+            renderWidget(it.miniCartWidgetData)
         })
     }
 
@@ -210,11 +208,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * This will trigger widget to update the UI with provided data
     * */
     fun updateData(miniCartWidgetData: MiniCartWidgetData) {
-        renderWidget(MiniCartWidgetUiModel(
-                state = MiniCartWidgetUiModel.STATE_NORMAL,
-                totalProductPrice = miniCartWidgetData.totalProductPrice,
-                totalProductCount = miniCartWidgetData.totalProductCount
-        ))
+        renderWidget(miniCartWidgetData)
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
@@ -226,11 +220,11 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun renderWidget(miniCartWidgetUiModel: MiniCartWidgetUiModel) {
+    private fun renderWidget(miniCartWidgetData: MiniCartWidgetData) {
         totalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
-            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetUiModel.totalProductPrice, false))
-            setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetUiModel.totalProductCount))
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
+            setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
         }
         setTotalAmountLoading(false)
     }

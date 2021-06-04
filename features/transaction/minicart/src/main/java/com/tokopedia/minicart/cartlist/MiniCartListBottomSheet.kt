@@ -32,7 +32,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
-import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -166,7 +165,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun observeMiniCartListUiModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
-        viewModel.miniCartListListUiModel.observe(lifecycleOwner, {
+        viewModel.miniCartListListBottomSheetUiModel.observe(lifecycleOwner, {
             hideLoading()
             hideProgressLoading()
             bottomSheet?.setTitle(it.title)
@@ -256,7 +255,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         chatIcon = view.findViewById(R.id.chat_icon)
         totalAmount?.let {
             it.amountChevronView.setOnClickListener {
-                viewModel?.miniCartListListUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
+                viewModel?.miniCartListListBottomSheetUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
                     summaryTransactionBottomSheet.show(it, fragmentManager, context)
                 }
             }
