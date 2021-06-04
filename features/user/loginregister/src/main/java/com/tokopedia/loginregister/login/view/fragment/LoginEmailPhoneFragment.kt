@@ -86,6 +86,7 @@ import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
@@ -206,7 +207,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun initInjector() {
-        activity?.application?.let { LoginComponentBuilder.getComponent(it).inject(this) }
+        getComponent(LoginComponent::class.java).inject(this)
     }
 
     override fun onStart() {
@@ -296,6 +297,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
+        refreshRolloutVariant()
+    }
+
+    open fun refreshRolloutVariant() {
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
     }
 
@@ -957,7 +962,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo) {
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+        refreshRolloutVariant()
         viewModel.getUserInfo()
     }
 
@@ -996,8 +1001,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             TwoFactorMluHelper.clear2FaInterval(it)
         }
 
-        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
-
+        refreshRolloutVariant()
         saveFirstInstallTime()
     }
 
@@ -1173,7 +1177,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         return isEnableEncryptConfig
     }
 
-    fun isEnableEncryption(): Boolean {
+    open fun isEnableEncryption(): Boolean {
         return isEnableEncryptRollout() && isEnableEncryptConfig()
     }
 
