@@ -182,8 +182,10 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
 
     private fun setupSwipeRefreshLayout() {
         context?.let {
+            val spaceZero = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+            val spaceEight = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8).toInt()
             swipeLayout = view?.findViewById(R.id.swipe_refresh_layout)
-            swipeLayout?.setMargin(0, NavToolbarExt.getFullToolbarHeight(it) - 8, 0, 0)
+            swipeLayout?.setMargin(spaceZero, NavToolbarExt.getFullToolbarHeight(it) - spaceEight, spaceZero, spaceZero)
             swipeLayout?.setOnRefreshListener {
                 onRefreshLayout()
             }
