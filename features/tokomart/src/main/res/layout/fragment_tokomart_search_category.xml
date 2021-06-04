@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:contentDescription="@string/tokomart_header_background_content_description"
-        app:srcCompat="@drawable/ic_header_background"
+        app:srcCompat="@drawable/tokomart_ic_header_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
