@@ -71,7 +71,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 },
                 onError = {
                     if (isFirstLoad) {
-                        _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET)
+                        _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET)
                     }
                 }
         )
@@ -325,7 +325,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     handleDelete(product)
                 },
                 onError = {
-                    _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_DELETE_CART_ITEM)
+                    _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM)
                 }
         )
     }
@@ -344,7 +344,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 miniCartListListUiModel.value?.visitables = tmpVisitables
                 _miniCartListUiModel.value = miniCartListListUiModel.value
 
-                _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM)
+                _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM)
                 break@loop
             }
         }
@@ -372,12 +372,12 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         deleteCartUseCase.setParams(unavailableCartItems)
         deleteCartUseCase.execute(
                 onSuccess = {
-                    _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_BULK_DELETE_UNAVAILABLE_ITEMS)
+                    _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_SUCCESS_BULK_DELETE_UNAVAILABLE_ITEMS)
                     getCartList()
                     calculateProduct()
                 },
                 onError = {
-                    _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_BULK_DELETE_UNAVAILABLE_ITEMS)
+                    _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_FAILED_BULK_DELETE_UNAVAILABLE_ITEMS)
                 }
         )
     }
@@ -391,14 +391,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                             getCartList()
                         },
                         onError = {
-
+                            getCartList()
                         }
                 )
             }
         }
     }
 
-    fun updateCart(isForCheckout: Boolean = false) {
+    fun updateCart(isForCheckout: Boolean = false, observer: Int = GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
         val productUiModels = mutableListOf<MiniCartProductUiModel>()
         miniCartListListUiModel.value?.visitables?.forEach {
             if (it is MiniCartProductUiModel && !it.isProductDisabled) {
@@ -410,9 +410,13 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 onSuccess = {
                     if (isForCheckout) {
                         if (it.data.status) {
-                            _globalEvent.value = GlobalEvent(GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT)
+                            _globalEvent.value = GlobalEvent(
+                                    observer = observer,
+                                    state = GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT
+                            )
                         } else {
                             _globalEvent.value = GlobalEvent(
+                                    observer = observer,
                                     state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
                                     data = it.data
                             )
@@ -421,7 +425,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 },
                 onError = {
                     if (isForCheckout) {
-                        _globalEvent.value = GlobalEvent(GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT)
+                        _globalEvent.value = GlobalEvent(
+                                observer = observer,
+                                state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT
+                        )
                     }
                 }
         )

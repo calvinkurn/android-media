@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
@@ -56,7 +59,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
              onDismiss: () -> Unit) {
         context?.let {
             initializeView(it, fragmentManager, onDismiss)
-            initializeViewModel(viewModel, lifecycleOwner)
+            initializeViewModel(fragmentManager, viewModel, lifecycleOwner)
             initializeCartData(viewModel)
         }
     }
@@ -65,13 +68,13 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         bottomSheet?.dismiss()
     }
 
-    fun initializeViewModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
+    fun initializeViewModel(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
-        observeGlobalEvent(viewModel, lifecycleOwner)
+        observeGlobalEvent(fragmentManager, viewModel, lifecycleOwner)
         observeMiniCartListUiModel(viewModel, lifecycleOwner)
     }
 
-    private fun observeGlobalEvent(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
+    private fun observeGlobalEvent(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.globalEvent.observe(lifecycleOwner, {
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
@@ -83,6 +86,55 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     viewModel.getCartList()
                     showToaster(message, Toaster.TYPE_NORMAL, ctaText) {
                         viewModel.undoDeleteCartItems()
+                    }
+                }
+                GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
+                    if (it.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                        bottomSheet?.context?.let {
+                            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
+                            intent.putExtra("EXTRA_IS_ONE_CLICK_SHIPMENT", true)
+                            it.startActivity(intent)
+                        }
+                    }
+                }
+                GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
+                    if (it.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                        bottomSheet?.context?.let { context ->
+                            val data = it.data
+                            if (data != null) {
+                                if (data is Data) {
+                                    if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
+                                        globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
+                                            override fun onGoToHome() {
+                                                RouteManager.route(context, ApplinkConst.HOME)
+                                            }
+
+                                            override fun onRefreshErrorPage() {
+                                                viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+                                            }
+                                        })
+                                    } else {
+                                        var ctaText = ""
+                                        if (data.toasterAction.showCta) {
+                                            ctaText = data.toasterAction.text
+                                        }
+                                        showToaster(data.error, Toaster.TYPE_ERROR, ctaText) {
+                                            viewModel.undoDeleteCartItems()
+                                        }
+                                    }
+                                }
+                            } else {
+                                globalErrorBottomSheet.show(fragmentManager, context, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
+                                    override fun onGoToHome() {
+                                        // No-op
+                                    }
+
+                                    override fun onRefreshErrorPage() {
+                                        viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+                                    }
+                                })
+                            }
+                        }
                     }
                 }
             }
@@ -183,6 +235,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 viewModel?.miniCartListListUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
                     summaryTransactionBottomSheet.show(it, fragmentManager, context)
                 }
+            }
+            it.amountCtaView.setOnClickListener {
+                viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
             }
             it.enableAmountChevron(true)
             setTotalAmountChatIcon()

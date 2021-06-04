@@ -1,10 +1,14 @@
 package com.tokopedia.minicart.common.widget
 
 data class GlobalEvent(
+        var observer: Int = 0,
         var state: Int = 0,
         var data: Any? = null
 ) {
     companion object {
+        const val OBSERVER_MINI_CART_WIDGET = 1
+        const val OBSERVER_MINI_CART_LIST_BOTTOM_SHEET = 2
+
         const val STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET = 1
         const val STATE_SUCCESS_DELETE_CART_ITEM = 10
         const val STATE_SUCCESS_DELETE_ALL_AVAILABLE_CART_ITEM = 11

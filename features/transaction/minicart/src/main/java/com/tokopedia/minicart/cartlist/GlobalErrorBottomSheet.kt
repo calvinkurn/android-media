@@ -15,6 +15,7 @@ class GlobalErrorBottomSheet @Inject constructor() {
 
     fun show(fragmentManager: FragmentManager,
              context: Context,
+             defaultType: Int = GlobalError.SERVER_ERROR,
              outOfService: OutOfService? = null,
              listener: GlobalErrorBottomSheetActionListener? = null) {
 
@@ -56,7 +57,7 @@ class GlobalErrorBottomSheet @Inject constructor() {
                 layoutGlobalError.errorIllustration.setImage(outOfService.image, 0f)
             }
         } else {
-            layoutGlobalError.setType(GlobalError.SERVER_ERROR)
+            layoutGlobalError.setType(defaultType)
             layoutGlobalError.setActionClickListener {
                 listener?.onRefreshErrorPage()
                 bottomSheet.dismiss()
