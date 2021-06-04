@@ -22,7 +22,7 @@ class PowerMerchantSettingInfoMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(response: PMSettingInfoModel?): PowerMerchantSettingInfoUiModel {
         return PowerMerchantSettingInfoUiModel(
                 periodeType = response?.periodeType ?: PeriodType.TRANSITION_PERIOD,
-                periodeTypePmPro = response?.periodeType ?: PeriodType.COMMUNICATION_PERIOD_PM_PRO,
+                periodeTypePmPro = response?.periodeTypePmPro ?: PeriodType.COMMUNICATION_PERIOD_PM_PRO,
                 tickers = response?.tickers?.map {
                     TickerUiModel(
                             title = it.title.orEmpty(),
