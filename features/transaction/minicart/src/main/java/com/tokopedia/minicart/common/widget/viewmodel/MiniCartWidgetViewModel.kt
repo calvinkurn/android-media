@@ -43,9 +43,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
 
     private var lastDeletedProductItem: MiniCartProductUiModel? = null
 
-    fun getLatestWidgetState(shopIds: List<String>) {
-        _currentShopIds.value = shopIds
-        getMiniCartWidgetDataUseCase.setParams(shopIds)
+    fun getLatestWidgetState(shopIds: List<String>? = null) {
+        if (shopIds != null) {
+            _currentShopIds.value = shopIds
+            getMiniCartWidgetDataUseCase.setParams(shopIds)
+        } else {
+            val tmpShopIds = currentShopIds.value ?: emptyList()
+            getMiniCartWidgetDataUseCase.setParams(tmpShopIds)
+        }
         getMiniCartWidgetDataUseCase.execute(onSuccess = {
             _miniCartWidgetUiModel.value = MiniCartWidgetUiModel(
                     state = MiniCartWidgetUiModel.STATE_NORMAL,
@@ -72,7 +77,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 },
                 onError = {
                     if (isFirstLoad) {
-                        _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET)
+                        _globalEvent.value = GlobalEvent(
+                                state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
+                                throwable = it
+                        )
                     }
                 }
         )
@@ -326,7 +334,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     handleDelete(product)
                 },
                 onError = {
-                    _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM)
+                    _globalEvent.value = GlobalEvent(
+                            state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
+                            throwable = it
+                    )
                 }
         )
     }
@@ -377,7 +388,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     calculateProduct()
                 },
                 onError = {
-                    _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_FAILED_BULK_DELETE_UNAVAILABLE_ITEMS)
+                    _globalEvent.value = GlobalEvent(
+                            state = GlobalEvent.STATE_FAILED_BULK_DELETE_UNAVAILABLE_ITEMS,
+                            throwable = it
+                    )
                 }
         )
     }
@@ -425,7 +439,8 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     if (isForCheckout) {
                         _globalEvent.value = GlobalEvent(
                                 observer = observer,
-                                state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT
+                                state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
+                                throwable = it
                         )
                     }
                 }

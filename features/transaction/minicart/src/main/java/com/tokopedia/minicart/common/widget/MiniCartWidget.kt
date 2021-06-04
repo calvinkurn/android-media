@@ -108,6 +108,8 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+                        setTotalAmountLoading(true)
+                        viewModel.getLatestWidgetState()
                         fragment.context?.let { context ->
                             val data = it.data
                             if (data != null) {
@@ -123,13 +125,11 @@ class MiniCartWidget @JvmOverloads constructor(
                                             }
                                         })
                                     } else {
-                                        var ctaText = ""
+                                        var ctaText = "Oke"
                                         if (data.toasterAction.showCta) {
                                             ctaText = data.toasterAction.text
                                         }
-                                        showToaster(data.error, Toaster.TYPE_ERROR, ctaText) {
-                                            viewModel.undoDeleteCartItems()
-                                        }
+                                        showToaster(data.error, Toaster.TYPE_ERROR, ctaText)
                                     }
                                 }
                             } else {

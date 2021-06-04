@@ -32,6 +32,9 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration,
@@ -99,11 +102,15 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                        setTotalAmountLoading(true)
+                        viewModel.getCartList()
                         bottomSheet?.context?.let { context ->
                             val data = it.data
                             if (data != null) {
+                                // Goes here if failed but get response from BE
                                 if (data is Data) {
                                     if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
+                                        // Prioritize to show out of service data
                                         globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
                                             override fun onGoToHome() {
                                                 RouteManager.route(context, ApplinkConst.HOME)
@@ -114,25 +121,42 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                                             }
                                         })
                                     } else {
-                                        var ctaText = ""
+                                        // Show toaster error if have no out of service data
+                                        var ctaText = "Oke"
                                         if (data.toasterAction.showCta) {
                                             ctaText = data.toasterAction.text
                                         }
-                                        showToaster(data.error, Toaster.TYPE_ERROR, ctaText) {
-                                            viewModel.undoDeleteCartItems()
-                                        }
+                                        showToaster(data.error, Toaster.TYPE_ERROR, ctaText)
                                     }
                                 }
                             } else {
-                                globalErrorBottomSheet.show(fragmentManager, context, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
-                                    override fun onGoToHome() {
-                                        // No-op
-                                    }
+                                // Goes here if failed and get no response from BE
+                                val throwable = it.throwable
+                                if (throwable != null) {
+                                    when (throwable) {
+                                        is UnknownHostException -> {
+                                            globalErrorBottomSheet.show(fragmentManager, context, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
+                                                override fun onGoToHome() {
+                                                    // No-op
+                                                }
 
-                                    override fun onRefreshErrorPage() {
-                                        viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+                                                override fun onRefreshErrorPage() {
+                                                    viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+                                                }
+                                            })
+                                        }
+                                        is SocketTimeoutException -> {
+                                            val ctaText = "Oke"
+                                            val message = "Yaah, waktu habis. Coba refresh & ulangi klik tombol Beli."
+                                            showToaster(message, Toaster.TYPE_ERROR, ctaText)
+                                        }
+                                        else -> {
+                                            val ctaText = "Oke"
+                                            val message = "Oops, pembelianmu gagal diproses. Coba refresh dan ulangi klik Beli."
+                                            showToaster(message, Toaster.TYPE_ERROR, ctaText)
+                                        }
                                     }
-                                })
+                                }
                             }
                         }
                     }
