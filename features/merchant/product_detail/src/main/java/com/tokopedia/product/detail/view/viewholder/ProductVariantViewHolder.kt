@@ -6,11 +6,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.views.VariantItemDecorator
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.variant_common.util.VariantItemDecorator
-import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.adapter.VariantContainerAdapter
 import kotlinx.android.synthetic.main.item_local_load_unify.view.*
 import kotlinx.android.synthetic.main.item_product_variant_view_holder.view.*
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.item_product_variant_view_holder.view.*
  * Created by Yehezkiel on 2020-02-26
  */
 class ProductVariantViewHolder(val view: View,
-                               val variantListener: ProductVariantListener,
+                               val variantListener: AtcVariantListener,
                                val pdpListener: DynamicProductDetailListener) : AbstractViewHolder<VariantDataModel>(view) {
 
     private var containerAdapter: VariantContainerAdapter? = null

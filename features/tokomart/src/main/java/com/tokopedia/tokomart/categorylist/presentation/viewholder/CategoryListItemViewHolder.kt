@@ -1,75 +1,50 @@
 package com.tokopedia.tokomart.categorylist.presentation.viewholder
 
 import android.view.View
-import android.view.animation.Animation
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapter
-import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategoryListAdapterTypeFactory
-import com.tokopedia.tokomart.categorylist.presentation.adapter.differ.TokoMartCategoryListDiffer
-import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
-import com.tokopedia.tokomart.common.base.viewholder.BaseExpandableViewHolder
+import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel
+import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel.CategoryType
 import kotlinx.android.synthetic.main.item_tokomart_category_list.view.*
 
 class CategoryListItemViewHolder(
-    itemView: View
-) : BaseExpandableViewHolder<CategoryListItemUiModel>(itemView) {
+    itemView: View,
+    private val listener: CategoryListListener
+): AbstractViewHolder<CategoryListChildUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokomart_category_list
     }
 
-    private val adapter by lazy {
-        TokoMartCategoryListAdapter(
-            TokoMartCategoryListAdapterTypeFactory(),
-            TokoMartCategoryListDiffer()
-        )
-    }
-
-    private var expandAnimationListener: Animation.AnimationListener? = null
-
-    override fun bind(data: CategoryListItemUiModel) {
-        super.bind(data)
+    override fun bind(category: CategoryListChildUiModel) {
         itemView.run {
-            textTitle.text = data.name
-            showImageCategory(data)
-            setupChildCategory()
-        }
-        createExpandListener(data)
-    }
+            textTitle.text = if(category.type == CategoryType.ALL_CATEGORY_TEXT) {
+                getString(R.string.tokomart_all_category_text_format, category.name)
+            } else {
+                category.name
+            }
+            textTitle.setWeight(category.textWeight)
+            textTitle.setTextColor(ContextCompat.getColor(context, category.textColorId))
 
-    override fun expandCollapseLayoutId() = R.id.rvChildCategory
-
-    override fun expandAnimationListener() = expandAnimationListener
-
-    private fun View.showImageCategory(category: CategoryListItemUiModel) {
-        category.imageUrl?.let {
-            imageCategory.loadImage(it)
-        }
-    }
-
-    private fun View.setupChildCategory() {
-        with(rvChildCategory) {
-            adapter = this@CategoryListItemViewHolder.adapter
-            layoutManager = LinearLayoutManager(context)
-        }
-    }
-
-    private fun createExpandListener(category: CategoryListItemUiModel) {
-        expandAnimationListener = object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {
+            category.imageUrl?.let {
+                imageCategory.loadImage(it)
+                imageCategory.show()
             }
 
-            override fun onAnimationEnd(animation: Animation?) {
-            }
-
-            override fun onAnimationStart(animation: Animation?) {
-                adapter.submitList(category.childList)
+            setOnClickListener {
+                RouteManager.route(context, category.appLink)
+                listener.onClickCategory()
             }
         }
     }
 
+    interface CategoryListListener {
+        fun onClickCategory()
+    }
 }

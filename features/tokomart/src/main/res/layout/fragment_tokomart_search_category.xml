@@ -48,14 +48,22 @@
         app:toolbarInvertSearchBarColor="true"
         app:toolbarInitialTheme="light" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tokonowSearchCategoryRecyclerView"
+    <com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
+        android:id="@+id/tokonowSearchCategoryStickyView"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tokonowSearchCategoryRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView>
+
 
     <com.tokopedia.minicart.common.widget.MiniCartWidget
         android:id="@+id/tokonowSearchCategoryMiniCart"

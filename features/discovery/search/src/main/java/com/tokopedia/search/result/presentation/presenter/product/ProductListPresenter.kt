@@ -12,7 +12,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartPar
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -186,12 +185,14 @@ class ProductListPresenter @Inject constructor(
     private var isEnableChooseAddress = false
     private var chooseAddressData: LocalCacheModel? = null
     private var bannerDataView: BannerDataView? = null
+    private var shouldShowPMProPopUp = false
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
 
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions()
         isABTestNavigationRevamp = isABTestNavigationRevamp()
+        shouldShowPMProPopUp = shouldShowPMProPopUp()
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
     }
@@ -210,6 +211,16 @@ class ProductListPresenter @Inject constructor(
         return try {
             (view.abTestRemoteConfig?.getString(SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH)
                     == SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun shouldShowPMProPopUp(): Boolean {
+        return try {
+            (view.abTestRemoteConfig?.getString(AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
+                    == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -288,6 +299,7 @@ class ProductListPresenter @Inject constructor(
 
         putRequestParamsOtherParameters(requestParams, searchParameter)
         putRequestParamsChooseAddress(requestParams)
+        putRequestParamWarehouseId(requestParams)
         requestParams.putAll(searchParameter)
 
         return requestParams
@@ -298,6 +310,11 @@ class ProductListPresenter @Inject constructor(
 
         val chooseAddressData = chooseAddressData ?: return
         requestParams.putAllString(chooseAddressData.toSearchParams())
+    }
+
+    private fun putRequestParamWarehouseId(requestParams: RequestParams) {
+        //need to get user_warehouseId from chooseAddress later
+        requestParams.putString(SearchApiConst.USER_WAREHOUSE_ID, SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
     }
 
     private fun putRequestParamsOtherParameters(requestParams: RequestParams, searchParameter: Map<String, Any>) {
@@ -966,6 +983,8 @@ class ProductListPresenter @Inject constructor(
 
         if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
+        if (shouldShowSearchPMProPopUp()) view.showPowerMerchantProPopUp()
+
         if (isABTestNavigationRevamp && !isEnableChooseAddress)
             list.add(SearchProductCountDataView(list.size, searchProduct.header.totalDataText))
 
@@ -1035,6 +1054,11 @@ class ProductListPresenter @Inject constructor(
         if (productDataView.totalData > getSearchRows().toIntOrZero())
             view.addLoading()
         view.stopTracePerformanceMonitoring()
+    }
+
+    private fun shouldShowSearchPMProPopUp(): Boolean {
+        return if (shouldShowPMProPopUp) searchCoachMarkLocalCache.shouldShowSearchPMProPopUp()
+        else shouldShowPMProPopUp
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
@@ -1865,6 +1889,7 @@ class ProductListPresenter @Inject constructor(
         val requestParams = createInitializeSearchParam(mapParameter)
 
         enrichWithRelatedSearchParam(requestParams)
+        putRequestParamWarehouseId(requestParams)
 
         requestParams.putString(SearchApiConst.ROWS, "0")
 
@@ -1912,6 +1937,7 @@ class ProductListPresenter @Inject constructor(
         val requestParams = RequestParams.create()
 
         putRequestParamsChooseAddress(requestParams)
+        putRequestParamWarehouseId(requestParams)
         requestParams.putAll(searchParameter)
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT)
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)

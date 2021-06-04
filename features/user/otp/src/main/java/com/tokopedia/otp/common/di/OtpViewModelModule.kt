@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.otp.notif.viewmodel.NotifViewModel
+import com.tokopedia.otp.qrcode.viewmodel.LoginByQrViewModel
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import dagger.Binds
 import dagger.Module
@@ -31,4 +32,9 @@ abstract class OtpViewModelModule{
     @IntoMap
     @ViewModelKey(NotifViewModel::class)
     internal abstract fun bindNotifViewModel(viewModel: NotifViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LoginByQrViewModel::class)
+    internal abstract fun bindLoginByQrViewModel(viewModel: LoginByQrViewModel): ViewModel
 }

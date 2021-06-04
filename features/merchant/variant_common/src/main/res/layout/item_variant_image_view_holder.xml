@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.tokopedia.variant_common.view.customview.ProductRoundedImageView
+            <com.tokopedia.product.detail.common.data.views.ProductRoundedImageView
                 android:id="@+id/variantImg"
                 android:layout_width="@dimen/pdp_variant_image"
                 android:layout_height="@dimen/pdp_variant_image"

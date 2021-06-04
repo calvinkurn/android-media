@@ -6,8 +6,11 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -21,12 +24,10 @@ import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.math.roundToLong
 
 /**
@@ -80,6 +81,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
+    val productSingleVariant: ProductSingleVariantDataModel?
+        get() = mapOfData[ProductDetailConstant.MINI_VARIANT_OPTIONS] as? ProductSingleVariantDataModel
+
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
 
@@ -93,7 +97,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY] as? ProductShopCredibilityDataModel
 
     val productByMeMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.KEY_BYME] as? ProductGeneralInfoDataModel
+        get() = mapOfData[ProductDetailCommonConstant.KEY_BYME] as? ProductGeneralInfoDataModel
 
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
@@ -127,6 +131,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.VARIANT_OPTIONS, loadInitialData) {
                 productNewVariantDataModel?.run {
+                    isRefreshing = false
+                }
+            }
+
+            updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS, loadInitialData) {
+                productSingleVariant?.run {
                     isRefreshing = false
                 }
             }
@@ -240,7 +250,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateByMeData(context: Context?) {
-        updateData(ProductDetailConstant.KEY_BYME) {
+        updateData(ProductDetailCommonConstant.KEY_BYME) {
             productByMeMap?.run {
                 subtitle = context?.getString(R.string.product_detail_by_me_subtitle)
                         ?: ""
@@ -528,14 +538,35 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
             productNewVariantDataModel?.listOfVariantCategory = processedVariant
         }
+
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+            productSingleVariant?.variantLevelOne = processedVariant?.firstOrNull()
+        }
     }
 
-    fun updateVariantSelected(variantId: Int, variantKey: String) {
+    fun updateVariantSelected(variantId: String, variantKey: String) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
             productNewVariantDataModel?.let {
-                val copyMap: MutableMap<String, Int> = it.mapOfSelectedVariant.toMutableMap()
+                val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
                 copyMap[variantKey] = variantId
                 it.mapOfSelectedVariant = copyMap
+            }
+        }
+
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+            productSingleVariant?.let {
+                val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
+                copyMap[variantKey] = variantId
+                it.mapOfSelectedVariant = copyMap
+            }
+        }
+    }
+
+    fun updateVariantSelected(mapOfSelectedIds: MutableMap<String, String>?) {
+        if (mapOfSelectedIds == null) return
+        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+            productSingleVariant?.let {
+                it.mapOfSelectedVariant = mapOfSelectedIds
             }
         }
     }

@@ -277,6 +277,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openNativeThankYouPage(linkSegment, defaultBundle);
                     screenName = "";
                     break;
+                case DeepLinkChecker.LOGIN_BY_QR:
+                    openLoginByQr(uriData);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -287,6 +291,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             }
         }
+    }
+
+    private void openLoginByQr(Uri uriData) {
+        RouteManager.route(context, ApplinkConst.QR_LOGIN + "?" + uriData.getQuery());
     }
 
     private void openNativeThankYouPage(List<String> linkSegment, Bundle defaultBundle) {
@@ -516,9 +524,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 if (context != null) {
                     if (shopInfo != null && shopInfo.getInfo() != null) {
-                        String shopId = shopInfo.getInfo().getShopId();
+                        String shopId = "";
+                        if(shopInfo.getInfo().getShopId() != null){
+                            shopId = shopInfo.getInfo().getShopId();
+                        }
                         String lastSegment = linkSegment.get(linkSegment.size() - 1);
-                        if (isEtalase(linkSegment)) {
+                        if (shopId.equals(ApplinkConst.TokoNow.TOKONOW_PRODUCTION_SHOP_ID)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.TokoNow.HOME);
+                        } else if (isEtalase(linkSegment)) {
                             RouteManager.route(context,
                                     bundle,
                                     ApplinkConst.SHOP_ETALASE,

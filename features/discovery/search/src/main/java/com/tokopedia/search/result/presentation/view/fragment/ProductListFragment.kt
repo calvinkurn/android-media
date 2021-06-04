@@ -29,6 +29,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -1482,6 +1483,18 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
+    override fun showPowerMerchantProPopUp() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+            dialog.setTitle(getString(R.string.search_power_merchant_pro_title))
+            dialog.setDescription(getString(R.string.search_power_merchant_pro_desc))
+            dialog.setPrimaryCTAText(getString(R.string.search_power_merchant_pro_button_text))
+            dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+            dialog.setImageUrl(SearchConstant.ImageUrl.POWER_MERCHANT_PRO_ILLUSTRATION_URL)
+            dialog.show()
+        }
+    }
+
     override val abTestRemoteConfig: RemoteConfig?
         get() = RemoteConfigInstance.getInstance().abTestPlatform
 
@@ -1888,7 +1901,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 emptyAddress
             }
         } ?: emptyAddress
-
 
     override fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean {
         return context?.let {

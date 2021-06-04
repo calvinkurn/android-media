@@ -8,7 +8,7 @@ import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail.Naviga
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.searchcategory.utils.CATEGORY_ID
-import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokomart.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams

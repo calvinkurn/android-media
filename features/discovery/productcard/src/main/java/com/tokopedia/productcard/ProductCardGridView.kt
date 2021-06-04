@@ -9,14 +9,21 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private var addToCartClickListener: ((View) -> Unit)? = null
     private var addToCartNonVariantClickListener: ATCNonVariantListener? = null
+    private var quantityEditorDebounce: QuantityEditorDebounce? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -63,9 +70,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         renderButtonAddToCart(productCardModel)
 
         renderQuantityEditorNonVariant(productCardModel)
-        setQuantityEditorNonVariantValueChangedListener()
 
-        renderVariant(productCardModel)
+        renderChooseVariant(productCardModel)
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
@@ -134,43 +140,92 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
-        buttonAddToCart?.shouldShowWithAction(productCardModel.hasAddToCartButton || productCardModel.shouldShowAddToCartNonVariantQuantity()) {
+        val shouldShowAddToCartButton =
+                productCardModel.hasAddToCartButton
+                        || productCardModel.shouldShowAddToCartNonVariantQuantity()
+
+        buttonAddToCart?.shouldShowWithAction(shouldShowAddToCartButton) {
             buttonAddToCart?.setOnClickListener {
-                if (productCardModel.shouldShowAddToCartNonVariantQuantity()) {
-                    productCardModel.nonVariant?.let { nonVariant ->
-                        val newValue = nonVariant.minQuantity
-                        addToCartNonVariantClickListener?.onQuantityChanged(newValue)
-                        quantityEditorNonVariant?.setValue(newValue)
-                        quantityEditorNonVariant?.show()
-                        buttonAddToCart?.gone()
-                    }
-                }
-                else {
+                if (productCardModel.shouldShowAddToCartNonVariantQuantity())
+                    addToCartNonVariantClick(productCardModel)
+                else
                     addToCartClickListener?.invoke(it)
+            }
+        }
+
+        if (productCardModel.shouldShowAddToCartNonVariantQuantity())
+            buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
+        else
+            buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+    }
+
+    private fun addToCartNonVariantClick(productCardModel: ProductCardModel) {
+        val nonVariant = productCardModel.nonVariant ?: return
+        val newValue = nonVariant.minQuantity
+
+        addToCartNonVariantClickListener?.onQuantityChanged(newValue)
+        quantityEditorNonVariant?.setValue(newValue)
+        quantityEditorNonVariant?.show()
+        buttonAddToCart?.gone()
+    }
+
+    private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
+        val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
+
+        quantityEditorNonVariant?.showWithCondition(shouldShowQuantityEditor)
+        quantityEditorNonVariant?.configureQuantityEditor(productCardModel)
+    }
+
+    private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {
+        val nonVariant = productCardModel.nonVariant ?: return
+
+        configureQuantityEditorDebounce()
+        configureQuantitySettings(nonVariant)
+
+        setValueChangedListener { newValue, _, _ ->
+            quantityEditorDebounce?.onQuantityChanged(newValue)
+        }
+    }
+
+    private fun configureQuantityEditorDebounce() {
+        val onSubscribe = Observable.OnSubscribe<Int> {
+            quantityEditorDebounce = object : QuantityEditorDebounce {
+                override fun onQuantityChanged(quantity: Int) {
+                    it.onNext(quantity)
                 }
             }
         }
 
-        if (productCardModel.shouldShowAddToCartNonVariantQuantity()) buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
-        else buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
-    }
+        val quantityEditorSubscriber = object : Subscriber<Int>() {
+            override fun onCompleted() {}
 
-    private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
-        productCardModel.nonVariant?.let {
-            quantityEditorNonVariant?.setValue(it.quantity)
-            quantityEditorNonVariant?.maxValue = it.maxQuantity
-            quantityEditorNonVariant?.minValue = it.minQuantity
+            override fun onError(e: Throwable) {}
+
+            override fun onNext(quantity: Int?) {
+                if (quantity != null) {
+                    addToCartNonVariantClickListener?.onQuantityChanged(quantity)
+                }
+            }
         }
-        quantityEditorNonVariant?.showWithCondition(productCardModel.shouldShowQuantityEditor())
+
+        Observable.unsafeCreate(onSubscribe)
+                .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(quantityEditorSubscriber)
     }
 
-    private fun setQuantityEditorNonVariantValueChangedListener() {
-        quantityEditorNonVariant?.setValueChangedListener { newValue, _, _ ->
-            addToCartNonVariantClickListener?.onQuantityChanged(quantity = newValue)
-        }
+    private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
+        val quantity = nonVariant.quantity
+        if (quantity > 0)
+            this.setValue(quantity)
+
+        this.maxValue = nonVariant.maxQuantity
+        this.minValue = nonVariant.minQuantity
     }
 
-    private fun renderVariant(productCardModel: ProductCardModel) {
+    private fun renderChooseVariant(productCardModel: ProductCardModel) {
         buttonAddVariant?.shouldShowWithAction(productCardModel.hasVariant()) {
             renderButtonAddVariant(productCardModel)
         }
@@ -178,8 +233,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
             productCardModel.variant?.let { renderTextVariantQuantity(it.quantity) }
         }
-
-        dividerVariantQuantity?.showWithCondition(productCardModel.hasVariantWithQuantity())
     }
 
     private fun renderButtonAddVariant(productCardModel: ProductCardModel) {
@@ -195,6 +248,12 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    override fun getShopBadgeView(): View? = imageShopBadge
+
+    private interface QuantityEditorDebounce {
+        fun onQuantityChanged(quantity: Int)
+    }
 
     interface ATCNonVariantListener {
         fun onQuantityChanged(quantity: Int)

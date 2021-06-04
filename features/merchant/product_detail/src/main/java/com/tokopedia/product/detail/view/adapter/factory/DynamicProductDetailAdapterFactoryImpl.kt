@@ -3,13 +3,13 @@ package com.tokopedia.product.detail.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
-import com.tokopedia.variant_common.view.ProductVariantListener
 
 class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
-                                             private val variantListener: ProductVariantListener)
+                                             private val variantListener: AtcVariantListener)
     : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
 
     override fun type(data: ProductRecommendationDataModel): Int {
@@ -100,6 +100,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return PdpComparisonWidgetViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductSingleVariantDataModel): Int {
+        return ProductSingleVariantViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
@@ -124,6 +128,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductShipmentViewHolder.LAYOUT -> ProductShipmentViewHolder(view, listener)
             ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(view)
             PdpComparisonWidgetViewHolder.LAYOUT -> PdpComparisonWidgetViewHolder(view, listener)
+            ProductSingleVariantViewHolder.LAYOUT -> ProductSingleVariantViewHolder(view, variantListener, listener)
             else -> super.createViewHolder(view, type)
         }
     }

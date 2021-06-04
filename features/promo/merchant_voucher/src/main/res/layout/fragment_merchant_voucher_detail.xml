@@ -33,8 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:minHeight="@dimen/dp_85"
-                    tools:src="@drawable/bg_rect_rounded_white_shadow" />
+                    android:minHeight="@dimen/dp_85" />
 
                 <TextView
                     android:id="@+id/tvVoucherTitle"

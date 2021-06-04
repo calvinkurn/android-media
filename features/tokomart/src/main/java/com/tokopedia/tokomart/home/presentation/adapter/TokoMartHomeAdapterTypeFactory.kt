@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
+import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
 import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
@@ -36,7 +37,8 @@ import com.tokopedia.tokomart.home.presentation.viewholder.*
 
 class TokoMartHomeAdapterTypeFactory(
         private val tokoMartHomeListener: TokoMartHomeView? = null,
-        private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null
+        private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
+        private val bannerComponentListener: BannerComponentListener? = null
 ): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
     // region Toko Mart Home Component
@@ -75,7 +77,7 @@ class TokoMartHomeAdapterTypeFactory(
                 val listener = TokoMartDynamicLegoBannerCallback(view.context)
                 DynamicLegoBannerViewHolder(view, listener, null)
             }
-            BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, null, null)
+            BannerComponentViewHolder.LAYOUT -> BannerComponentViewHolder(view, bannerComponentListener, null)
             // endregion
             else -> super.createViewHolder(view, type)
         }

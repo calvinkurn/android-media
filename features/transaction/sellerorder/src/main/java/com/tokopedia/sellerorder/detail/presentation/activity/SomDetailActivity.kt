@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -14,7 +12,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
-import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.common.presenter.activities.BaseSomActivity
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -58,30 +55,10 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
         return SomDetailFragment.newInstance(bundle)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.chat_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.som_action_chat -> {
-                onChatClicked()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onBackPressed() {
         val result = Intent().putExtra(SomConsts.RESULT_REFRESH_ORDER, (fragment as? SomDetailFragment)?.isDetailChanged ?: false)
         setResult(Activity.RESULT_OK, result)
         finish()
-    }
-
-    private fun onChatClicked() {
-        (fragment as? SomDetailFragment)?.doClickChat()
     }
 
     override fun getComponent(): SomDetailComponent =

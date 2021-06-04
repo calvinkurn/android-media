@@ -7,10 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_SHOP_ID_PLEASE_DELETE
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -47,7 +50,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.tokomart.searchcategory.utils.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -61,6 +64,7 @@ abstract class BaseSearchCategoryViewModel(
         protected val getFilterUseCase: UseCase<DynamicFilterModel>,
         protected val getProductCountUseCase: UseCase<String>,
         protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+        protected val addToCartUseCase: AddToCartUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseViewModel(baseDispatcher.io) {
@@ -72,6 +76,7 @@ abstract class BaseSearchCategoryViewModel(
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
+    val shopId: String = HARDCODED_SHOP_ID_PLEASE_DELETE
     var autoCompleteApplink = ""
         private set
 
@@ -101,6 +106,12 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val updatedVisitableIndicesMutableLiveData = MutableLiveData<Event<List<Int>>>(null)
     val updatedVisitableIndicesLiveData: LiveData<Event<List<Int>>> = updatedVisitableIndicesMutableLiveData
+
+    protected val isRefreshPageMutableLiveData = MutableLiveData(false)
+    val isRefreshPageLiveData: LiveData<Boolean> = isRefreshPageMutableLiveData
+
+    protected val addToCartErrorMessageMutableLiveData = MutableLiveData<String>(null)
+    val addToCartErrorMessageLiveData: LiveData<String> = addToCartErrorMessageMutableLiveData
 
     protected var totalData = 0
     protected var totalFetchedData = 0
@@ -172,6 +183,7 @@ abstract class BaseSearchCategoryViewModel(
         createVisitableListFirstPage(headerDataView, contentDataView)
         clearVisitableListLiveData()
         updateVisitableListLiveData()
+        updateIsRefreshPage()
         updateNextPageData()
     }
 
@@ -237,6 +249,7 @@ abstract class BaseSearchCategoryViewModel(
             sortFilterItem.listener = {
                 onFilterChipSelected(option, !isSelected)
             }
+
         }
         else {
             val listener = {
@@ -286,7 +299,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
             contentDataView.aceSearchProductData.productList.map(::mapToProductItemDataView)
 
-    private fun mapToProductItemDataView(product: Product): ProductItemDataView {
+    protected open fun mapToProductItemDataView(product: Product): ProductItemDataView {
         return ProductItemDataView(
                 id = product.id,
                 imageUrl300 = product.imageUrl300,
@@ -296,6 +309,9 @@ abstract class BaseSearchCategoryViewModel(
                 discountPercentage = product.discountPercentage,
                 originalPrice = product.originalPrice,
                 parentId = product.parentId,
+                shop = ProductItemDataView.Shop(
+                        id = product.shop.id,
+                ),
                 variantATC = createVariantATCDataView(product),
                 nonVariantATC = createNonVariantATCDataView(product),
                 labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
@@ -317,12 +333,12 @@ abstract class BaseSearchCategoryViewModel(
         )
     }
 
-    private fun createVariantATCDataView(product: Product) =
+    protected open fun createVariantATCDataView(product: Product) =
             if (product.childs.isNotEmpty())
                 VariantATCDataView()
             else null
 
-    private fun createNonVariantATCDataView(product: Product) =
+    protected open fun createNonVariantATCDataView(product: Product) =
             if (product.childs.isEmpty())
                 NonVariantATCDataView(
                     minQuantity = product.minOrder,
@@ -341,12 +357,16 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createFooterVisitableList() = listOf<Visitable<*>>()
 
-    private fun clearVisitableListLiveData() {
+    protected fun clearVisitableListLiveData() {
         visitableListMutableLiveData.value = listOf()
     }
 
     protected fun updateVisitableListLiveData() {
         visitableListMutableLiveData.value = visitableList
+    }
+
+    protected fun updateIsRefreshPage() {
+        isRefreshPageMutableLiveData.value = true
     }
 
     protected open fun updateNextPageData() {
@@ -566,6 +586,25 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun onGetMiniCartDataFailed(throwable: Throwable) {
 
+    }
+
+    open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+                productId = productItem.id,
+                shopId = productItem.shop.id,
+                quantity = quantity,
+        )
+
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute(::onAddToCartSuccess, ::onAddToCartFailed)
+    }
+
+    private fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel) {
+        addToCartErrorMessageMutableLiveData.value = ""
+    }
+
+    private fun onAddToCartFailed(throwable: Throwable) {
+        addToCartErrorMessageMutableLiveData.value = throwable.message
     }
 
     protected class HeaderDataView(

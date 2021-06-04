@@ -8,8 +8,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
+import com.tokopedia.tokomart.home.constant.TokoNowConstant.SHOP_ID
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
@@ -34,6 +37,7 @@ class TokoMartHomeViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
     private val getTickerUseCase: GetTickerUseCase,
+    private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -56,11 +60,14 @@ class TokoMartHomeViewModel @Inject constructor(
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
         get() = _homeLayoutList
-    val searchHint: LiveData<SearchPlaceholder>
-        get() = _searchHint
+    val keywordSearch: LiveData<SearchPlaceholder>
+        get() = _keywordSearch
+    val miniCart: LiveData<Result<MiniCartSimplifiedData>>
+        get() = _miniCart
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
-    private val _searchHint = MutableLiveData<SearchPlaceholder>()
+    private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
+    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     private var layoutList = listOf<Visitable<*>>()
 
@@ -91,9 +98,9 @@ class TokoMartHomeViewModel @Inject constructor(
                         homeLayoutResponse,
                         mapTickerData(getTickerAsync.await().orEmpty())
                 )
+                val data = HomeLayoutListUiModel(layoutList, isInitialLoad = true)
+                _homeLayoutList.postValue(Success(data))
             }
-            val data = HomeLayoutListUiModel(layoutList, isInitialLoad = true)
-            _homeLayoutList.postValue(Success(data))
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
@@ -119,12 +126,24 @@ class TokoMartHomeViewModel @Inject constructor(
         }
     }
 
-    fun getSearchHint(isFirstInstall: Boolean, deviceId: String, userId: String) {
+    fun getKeywordSearch(isFirstInstall: Boolean, deviceId: String, userId: String) {
         launchCatchError(coroutineContext, block = {
-            getKeywordSearchUseCase.params = getKeywordSearchUseCase.createParams(isFirstInstall, deviceId, userId)
-            val data = getKeywordSearchUseCase.executeOnBackground()
-            _searchHint.postValue(data.searchData)
+            val response = getKeywordSearchUseCase.execute(isFirstInstall, deviceId, userId)
+            _keywordSearch.postValue(response.searchData)
         }) {}
+    }
+
+    fun getMiniCart() {
+        launchCatchError(block = {
+            getMiniCartUseCase.setParams(listOf(SHOP_ID))
+            getMiniCartUseCase.execute({
+                _miniCart.postValue(Success(it))
+            }, {
+                _miniCart.postValue(Fail(it))
+            })
+        }) {
+            _miniCart.postValue(Fail(it))
+        }
     }
 
     private suspend fun getTicker(): List<Ticker> {

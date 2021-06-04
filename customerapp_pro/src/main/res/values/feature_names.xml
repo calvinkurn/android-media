@@ -80,7 +80,6 @@
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_title_prepaid_page">Prabayar</string>
     <string name="digital_title_postpaid_page">Pascabayar</string>
-    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
 
     <!-- Dynamic feature for Discovery-->
@@ -190,6 +189,8 @@
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
 
     <string name="title_shipping_editor">Pengiriman</string>
+
+    <string name="label_image_preview">Gambar Bukti</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>

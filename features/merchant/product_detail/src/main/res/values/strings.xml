@@ -16,12 +16,8 @@
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="template_cashback">Cashback %1$s%%</string>
     <string name="template_price">%1$s%2$s</string>
-    <string name="template_campaign_off">%1$s%%</string>
-    <string name="buy_now">Beli Sekarang</string>
-    <string name="add_product_to_cart">Tambah ke Keranjang</string>
     <string name="ticker_atc_done_some_store">Barang dikirim dari toko yang sama</string>
     <string name="ticker_atc_done_different_store">Barang dikirim dari toko yang berbeda</string>
-    <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promote_topads">Iklankan Produk</string>
@@ -110,21 +106,11 @@
     <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
 
     //Variant section
-    <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
-    <string name="add_to_cart_error_variant_builder">Oops, pilih %s dulu, ya</string>
     <string name="variant_failed_load">Varian gagal ditampilkan</string>
     <string name="variant_failed_load_description">Klik ikon di samping untuk coba lagi.</string>
     <string name="product_refresh">Refresh</string>
     <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
-
-    //Check Imei
-    <string name="ask_phone_state_rationale">Izinkan Tokopedia mengakses panggilan telepon untuk pastikan kamu adalah pengguna baru.</string>
-    <string name="ask_phone_state_title">Aktifkan akses telepon, yuk!</string>
-    <string name="check_imei_description">Untuk membeli produk ini, Tokopedia memerlukan akses perangkat untuk memastikan kamu adalah pengguna baru.</string>
-    <string name="check_imei_title">Butuh Akses ke HP-mu</string>
-    <string name="check_imei_btn_rationale">Ke Pengaturan HP</string>
-    <string name="check_imei_btn_later">Nanti Saja</string>
-    <string name="check_imei_understand_title">Berikan Akses</string>
+    <string name="variant_choose_label">Pilih varian:</string>
 
     //NotifyMe (UpComing Teaser) section
     <string name="notify_me_active">Pengingat Aktif</string>
@@ -133,12 +119,6 @@
     <string name="notify_me_title">Kejar Diskon</string>
     <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
     <string name="notify_me_success_unregistered_message">Kamu berhasil menghapus produk ini dari daftar Diskon Yang Dikejar</string>
-
-    <!-- OVO -->
-    <string name="product_detail_price__goods">Harga Barang</string>
-    <string name="product_detail_estimation_price_min">Estimasi Ongkir termurah</string>
-    <string name="product_detail_ovo_cash_points">OVO Cash + OVO Points</string>
-    <string name="product_detail_total_pay">OVO Kamu Kurang</string>
 
     <!--Social Proof-->
     <string name="bracket_formated">(%1s)</string>
@@ -226,8 +206,6 @@
     <string name="content_desc_txt_main_price">text harga %1d</string>
     <string name="content_desc_fab_detail_pdp">button wishlist</string>
     <string name="content_desc_product_name">text nama produk %1s</string>
-    <string name="content_desc_btn_buy_now">button beli</string>
-    <string name="content_desc_btn_add_to_cart">button tambah keranjang</string>
     <string name="content_desc_img_pdp_video">image produk</string>
 
     <string name="double_string_builder">%1s %2s</string>
@@ -241,13 +219,11 @@
     <string name="merchant_product_detail_success_follow_shop_npl">Kamu berhasil follow toko. Yuk, buruan beli barangnya sebelum kehabisan!</string>
     <string name="merchant_product_detail_success_follow_shop">Kamu berhasil mengikuti Toko ini!</string>
     <string name="merchant_product_detail_success_unfollow_shop">Anda berhenti mengikuti Toko ini!</string>
-    <string name="merchant_product_detail_error_default">Terjadi kesalahan. Coba lagi</string>
 
     <string name="ticker_out_of_stock_description">Wishlist barang ini untuk bisa diingatkan saat stok kembali tersedia atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
     <string name="ticker_product_inactive_title">Barang Tak Tersedia</string>
     <string name="ticker_product_inactive_description">Untuk sementara barang ini tidak dijual. Kamu bisa wishlist barang ini atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
     <string name="toaster_success_add_wishlist_from_fab">Sukses menambah ke wishlist. Kamu akan dapat notifikasi ketika barang kembali tersedia.</string>
-    <string name="toaster_success_add_wishlist_from_button">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di wishlist ya..</string>
     <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
     <string name="pdp_video_divider"> / </string>
 
