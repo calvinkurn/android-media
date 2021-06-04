@@ -22,7 +22,15 @@ data class WatermarkText(
     var position: WatermarkPosition = WatermarkPosition()
 ) {
 
-    fun setContentText(value: String) = apply {
+    fun textSize(value: Int) = apply {
+        this.size = value
+    }
+
+    fun rotation(value: Double) = apply {
+        this.position.rotation = value
+    }
+
+    fun contentText(value: String) = apply {
         this.text = value
     }
 

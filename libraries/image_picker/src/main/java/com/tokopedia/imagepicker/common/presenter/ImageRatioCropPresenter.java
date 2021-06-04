@@ -116,12 +116,14 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                         .flatMap(new Func1<Bitmap, Observable<Bitmap>>() {
                             @Override
                             public Observable<Bitmap> call(Bitmap bitmap) {
-//                                WatermarkText watermarkText = new WatermarkText()
-//                                        .setContentText("Tokopedia")
-//                                        .positionX(0.5)
-//                                        .positionY(0.5)
-//                                        .textAlpha(255)
-//                                        .textColor(Color.WHITE);
+                                WatermarkText watermarkText = new WatermarkText()
+                                        .contentText(" Tokopedia ")
+                                        .positionX(0.5)
+                                        .positionY(0.5)
+                                        .textAlpha(150)
+                                        .rotation(45)
+                                        .textSize(20)
+                                        .textColor(Color.WHITE);
 
                                 WatermarkImage watermarkImage = new WatermarkImage()
                                         .imageDrawable(R.drawable.ic_tokopedia_text);
@@ -129,8 +131,8 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
 
                                 return Observable.just(WatermarkBuilder
                                         .create(getView().getContext(), bitmap)
-//                                        .loadWatermarkText(watermarkText)
-                                        .loadWatermarkImage(watermarkImage)
+                                        .loadWatermarkText(watermarkText)
+//                                        .loadWatermarkImage(watermarkImage)
                                         .setTileMode(true)
                                         .getWatermark()
                                         .getOutputImage()
