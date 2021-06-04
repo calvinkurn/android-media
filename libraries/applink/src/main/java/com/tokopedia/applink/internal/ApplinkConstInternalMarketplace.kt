@@ -154,6 +154,8 @@ object ApplinkConstInternalMarketplace {
 
     // OnboardingActivity
     const val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
+    const val ONBOARDING_EXTRA = "$INTERNAL_MARKETPLACE/onboarding/{type}"
+
 
     // SettingFieldActivity
     const val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
