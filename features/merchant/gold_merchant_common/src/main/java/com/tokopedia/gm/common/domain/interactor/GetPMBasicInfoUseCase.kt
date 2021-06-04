@@ -26,23 +26,24 @@ class GetPMBasicInfoUseCase @Inject constructor(
             val pmSettingInfoAsync = async { getPmSettingInfo() }
             val shopScoreAsync = async { getShopScore() }
 
+            val pmSettingInfo = pmSettingInfoAsync.await()
             val pmShopInfo = pmShopInfoAsync.await()
             val shopScoreResult = shopScoreAsync.await()
             return@coroutineScope PowerMerchantBasicInfoUiModel(
                     pmStatus = pmStatusInfoAsync.await(),
                     shopInfo = pmShopInfo.copy(shopScore = shopScoreResult.shopScore.toInt()),
-                    tickers = pmSettingInfoAsync.await()
+                    tickers = pmSettingInfo.tickers,
+                    periodTypePmPro = pmSettingInfo.periodeTypePmPro
             )
         }
     }
 
-    private suspend fun getPmSettingInfo(): List<TickerUiModel> {
+    private suspend fun getPmSettingInfo(): PowerMerchantSettingInfoUiModel {
         return try {
             getPmSettingInfoUseCase.params = GetPMSettingInfoUseCase.createParams(userSession.shopId, PMConstant.PM_SETTING_INFO_SOURCE)
-            val settingInfo = getPmSettingInfoUseCase.executeOnBackground()
-            settingInfo.tickers
+            getPmSettingInfoUseCase.executeOnBackground()
         } catch (e: Exception) {
-            emptyList()
+            PowerMerchantSettingInfoUiModel()
         }
     }
 

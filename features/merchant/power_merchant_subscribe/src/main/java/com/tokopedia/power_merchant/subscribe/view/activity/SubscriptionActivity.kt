@@ -13,11 +13,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
+import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -50,6 +50,11 @@ import javax.inject.Inject
  */
 
 class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribeComponent>, SubscriptionActivityInterface {
+
+    companion object {
+        private const val PM_TAB_INDEX = 0
+        private const val PM_PRO_TAB_INDEX = 1
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -228,7 +233,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun setupViewPager(data: PowerMerchantBasicInfoUiModel) {
         when (data.pmStatus.status) {
-            PMStatusConst.INACTIVE -> setupRegistrationPage()
+            PMStatusConst.INACTIVE -> setupRegistrationPage(data)
             else -> setupActiveState(data)
         }
 
@@ -256,14 +261,21 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         })
         tabPmSubscription.setupWithViewPager(viewPagerPmSubscription)
 
-        val defaultTabIndex = if (data.shopInfo.isEligiblePmPro) 1 else 0
+        val isChargingPeriodPmPro = data.periodTypePmPro == PeriodType.CHARGING_PERIOD_PM_PRO
+        val defaultTabIndex = if (data.shopInfo.isEligiblePmPro && isChargingPeriodPmPro) {
+            PM_PRO_TAB_INDEX
+        } else {
+            PM_TAB_INDEX
+        }
         setOnTabIndexSelected(data, defaultTabIndex)
         tabPmSubscription.tabLayout.getTabAt(defaultTabIndex)?.select()
+
+        val isSingleOrEmptyTab = viewPagerAdapter.getTitles().size <= 1
+        tabPmSubscription.isVisible = !isSingleOrEmptyTab
     }
 
     private fun sendTrackerOnPMTabClicked(tabIndex: Int) {
-        val pmTabIndex = 0
-        if (tabIndex == pmTabIndex) {
+        if (tabIndex == PM_TAB_INDEX) {
             powerMerchantTracking.sendEventClickTabPowerMerchant()
         }
     }
@@ -286,11 +298,13 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
     }
 
-    private fun setupRegistrationPage() {
+    private fun setupRegistrationPage(data: PowerMerchantBasicInfoUiModel) {
         setViewForRegistrationPage()
         viewPagerAdapter.clearFragment()
         viewPagerAdapter.addFragment(pmRegistrationPage.second, pmRegistrationPage.first)
-        viewPagerAdapter.addFragment(pmProRegistrationPage.second, pmProRegistrationPage.first)
+        if (data.periodTypePmPro == PeriodType.CHARGING_PERIOD_PM_PRO) {
+            viewPagerAdapter.addFragment(pmProRegistrationPage.second, pmProRegistrationPage.first)
+        }
     }
 
     private fun setOnTabIndexSelected(data: PowerMerchantBasicInfoUiModel, tabIndex: Int) {
@@ -301,7 +315,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_PRO_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
         } else {
-            imgPmHeaderBackdrop.loadImageDrawable(R.drawable.bg_pm_registration_header)
+            imgPmHeaderBackdrop.loadImage(R.drawable.bg_pm_registration_header)
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
         }
@@ -374,14 +388,14 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun switchPMToWebView() {
         val remoteConfig = FirebaseRemoteConfigImpl(this)
-        val isSwitchPMToWebView =  remoteConfig.getBoolean(RemoteConfigKey.PM_SWITCH_TO_WEB_VIEW, false)
+        val isSwitchPMToWebView = remoteConfig.getBoolean(RemoteConfigKey.PM_SWITCH_TO_WEB_VIEW, false)
 
         if (isSwitchPMToWebView) {
             RouteManager.route(this, ApplinkConstInternalGlobal.WEBVIEW, PowerMerchantDeepLinkMapper.PM_WEBVIEW_URL)
             finish()
         }
     }
-    
+
     private fun logToCrashlytics(throwable: Throwable, message: String) {
         PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
     }
