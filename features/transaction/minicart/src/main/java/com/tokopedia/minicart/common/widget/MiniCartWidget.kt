@@ -90,22 +90,26 @@ class MiniCartWidget @JvmOverloads constructor(
                     onFailedToLoadMiniCartBottomSheet(fragment)
                 }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
-                    onSuccessUpdateCartForCheckout(fragment)
+                    if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+                        context?.let {
+                            onSuccessUpdateCartForCheckout(it)
+                        }
+                    }
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
-                    onFailedUpdateCartForCheckout(it, fragment)
+                    if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+                        onFailedUpdateCartForCheckout(it, fragment)
+                    }
                 }
             }
         })
     }
 
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
-        if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-            setTotalAmountLoading(true)
-            viewModel.getLatestWidgetState()
-            fragment.context?.let { context ->
-                handleFailedUpdateCartForCheckout(view, context, fragment.parentFragmentManager, globalEvent)
-            }
+        setTotalAmountLoading(true)
+        viewModel.getLatestWidgetState()
+        fragment.context?.let { context ->
+            handleFailedUpdateCartForCheckout(view, context, fragment.parentFragmentManager, globalEvent)
         }
     }
 
@@ -173,12 +177,10 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun onSuccessUpdateCartForCheckout(fragment: Fragment) {
-        fragment.context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
-            intent.putExtra("EXTRA_IS_ONE_CLICK_SHIPMENT", true)
-            it.startActivity(intent)
-        }
+    private fun onSuccessUpdateCartForCheckout(context: Context) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+        intent.putExtra("EXTRA_IS_ONE_CLICK_SHIPMENT", true)
+        context.startActivity(intent)
     }
 
     private fun onFailedToLoadMiniCartBottomSheet(fragment: Fragment) {
@@ -305,8 +307,16 @@ class MiniCartWidget @JvmOverloads constructor(
         miniCartWidgetListener?.onCartItemsUpdated(viewModel.getLatestMiniCartData())
     }
 
-    override fun onFailedUpdateCartForCheckout(toasterAnchorView: View, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
-        handleFailedUpdateCartForCheckout(toasterAnchorView, context, fragmentManager, globalEvent)
+    override fun onBottomSheetSuccessUpdateCartForCheckout() {
+        context?.let {
+            onSuccessUpdateCartForCheckout(it)
+        }
+    }
+
+    override fun onBottomSheetFailedUpdateCartForCheckout(toasterAnchorView: View, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
+        context?.let {
+            handleFailedUpdateCartForCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
+        }
     }
 
 }

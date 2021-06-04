@@ -85,13 +85,21 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                         viewModel.undoDeleteCartItems()
                     }
                 }
+                GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
+                    if (it.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                        bottomSheet?.context.let {
+                            bottomSheetListener.onBottomSheetSuccessUpdateCartForCheckout()
+                            bottomSheet?.dismiss()
+                        }
+                    }
+                }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                         setTotalAmountLoading(true)
                         viewModel.getCartList()
                         bottomSheet?.context?.let { context ->
                             bottomsheetContainer?.let { view ->
-                                bottomSheetListener.onFailedUpdateCartForCheckout(view, context, fragmentManager, it)
+                                bottomSheetListener.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, it)
                             }
                         }
                     }

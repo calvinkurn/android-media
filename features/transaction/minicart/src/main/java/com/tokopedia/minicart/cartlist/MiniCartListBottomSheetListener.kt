@@ -9,6 +9,8 @@ interface MiniCartListBottomSheetListener {
 
     fun onMiniCartListBottomSheetDismissed()
 
-    fun onFailedUpdateCartForCheckout(toasterAnchorView: View, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent)
+    fun onBottomSheetSuccessUpdateCartForCheckout()
+
+    fun onBottomSheetFailedUpdateCartForCheckout(toasterAnchorView: View, fragmentManager: FragmentManager, globalEvent: GlobalEvent)
 
 }
