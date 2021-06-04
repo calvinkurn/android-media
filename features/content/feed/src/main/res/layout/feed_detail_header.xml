@@ -30,14 +30,11 @@
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/shopName"
         app:layout_constraintStart_toEndOf="@+id/shopAvatar"
         app:layout_constraintTop_toTopOf="@+id/shopName"
-        app:srcCompat="@drawable/ic_official"
         tools:ignore="ContentDescription"
-        tools:src="@tools:sample/avatars"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -45,9 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_28"
-        android:layout_marginLeft="@dimen/dp_28"
         android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
         android:lines="1"

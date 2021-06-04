@@ -48,6 +48,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -301,7 +302,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 header.shopName,
                 header.shopAvatar,
                 header.shareLinkDescription))
-        seeShopButton.setOnClickListener(onGoToShopDetailFromButton(header.shopId))
+        seeShopButton.setOnClickListener(onGoToShopDetailFromButton(header.shopId.toIntOrZero()))
         pagingHandler.setHasNext(listDetail.size > 1 && hasNextPage)
         adapter.notifyDataSetChanged()
         trackImpression(listDetail)
@@ -322,8 +323,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             } else {
                 shopSlogan.text = TimeConverter.generateTime(shopSlogan.context, header.time)
             }
-            shopAvatar.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId) }
-            this.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId) }
+            shopAvatar.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId.toIntOrZero()) }
+            this.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId.toIntOrZero()) }
             show()
         }
     }
