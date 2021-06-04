@@ -60,7 +60,9 @@ class NextShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetNextShopGra
     private fun setupBenefitList(element: WidgetNextShopGradeUiModel) {
         val benefitAdapter = NextShopGradeBenefitAdapter(element.benefitList)
         with(itemView.rvPmNextGradeBenefit) {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = object : LinearLayoutManager(context) {
+                override fun canScrollVertically(): Boolean = false
+            }
             adapter = benefitAdapter
         }
     }
