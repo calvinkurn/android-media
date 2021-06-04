@@ -38,12 +38,14 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         rvTableViewPage.run {
             layoutManager = mLayoutManager
             adapter = mTablePageAdapter
-
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
                     if (position != RecyclerView.NO_POSITION) {
+                        mLayoutManager.findViewByPosition(position)?.let { view ->
+                            refreshTableHeight(view)
+                        }
                         this@TableView.tableViewPageControl.setCurrentIndicator(position)
                     }
                 }
@@ -70,5 +72,19 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
 
     fun addOnHtmlClickListener(onClick: (url: String, isEmpty: Boolean) -> Unit) {
         this.htmlClickListener = onClick
+    }
+
+    /**
+     * Dynamically set recyclerview height according to view's measured height
+     */
+    private fun refreshTableHeight(view: View) {
+        val wMeasureSpec = MeasureSpec.makeMeasureSpec(view.width, MeasureSpec.EXACTLY)
+        val hMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        view.measure(wMeasureSpec, hMeasureSpec)
+
+        if (rvTableViewPage?.layoutParams?.height != view.measuredHeight) {
+            rvTableViewPage?.layoutParams = (rvTableViewPage?.layoutParams as? LayoutParams)
+                    ?.also { lp -> lp.height = view.measuredHeight }
+        }
     }
 }
