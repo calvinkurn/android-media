@@ -1162,7 +1162,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeUpdateNetworkStatusData() {
         getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status, _, throwable) ->
             resetImpressionListener()
-            val errorString = getErrorString(throwable ?: Throwable(getString(R.string.home_error_connection)))
+            val errorString = getErrorString(throwable ?: MessageErrorException(getString(R.string.home_error_connection)))
             when {
                 status === Result.Status.SUCCESS -> {
                     hideLoading()
@@ -1291,7 +1291,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 Result.Status.SUCCESS -> if (it.data != null) showToaster(
                         if (it.data.reminded) getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
                         else getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder), TYPE_NORMAL)
-                Result.Status.ERROR -> showToaster(getErrorString(Throwable(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))), TYPE_ERROR)
+                Result.Status.ERROR -> showToaster(getErrorString(MessageErrorException(getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder))), TYPE_ERROR)
                 else -> {
                 }
             }
