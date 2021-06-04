@@ -1,13 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_address.view.*
@@ -28,15 +23,34 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<Shi
 
     private fun setupListeners() {
         itemView.icBuyerOrderDetailCopyReceiverAddress.setOnClickListener {
-            copyAwb()
+            copyReceiverAddress()
         }
     }
 
-    private fun copyAwb() {
+    private fun copyReceiverAddress() {
         element?.let {
-            Utils.copyText(itemView.context, LABEL_RECEIVER_ADDRESS, it.receiverAddress)
+            Utils.copyText(itemView.context, LABEL_RECEIVER_ADDRESS, copyAllReceiverData())
             showToaster(itemView.context.getString(R.string.message_receiver_address_copied))
         }
+    }
+
+    private fun copyAllReceiverData(): String {
+        val receiverData = StringBuilder()
+        val element = element
+        if (element != null) {
+            if (element.receiverName.isNotBlank()) {
+                receiverData.append(element.receiverName)
+            }
+            if (element.receiverPhoneNumber.isNotBlank()) {
+                if (receiverData.isNotBlank()) receiverData.appendLine()
+                receiverData.append(element.receiverPhoneNumber)
+            }
+            if (element.receiverAddress.isNotBlank()) {
+                if (receiverData.isNotBlank()) receiverData.appendLine()
+                receiverData.append(element.receiverAddress)
+            }
+        }
+        return receiverData.toString()
     }
 
     override fun bind(element: ShipmentInfoUiModel.ReceiverAddressInfoUiModel?) {
