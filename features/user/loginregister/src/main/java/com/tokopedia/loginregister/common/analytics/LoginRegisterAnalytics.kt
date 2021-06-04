@@ -275,12 +275,12 @@ class LoginRegisterAnalytics @Inject constructor(
     }
 
     //#11
-    fun trackClickOnLoginButtonSuccess() {
+    fun trackClickOnLoginButtonSuccess(isWithSq: Boolean) {
         val hashMap = TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
-                "click on button masuk",
-                "success"
+                "click on masuk dengan email",
+                if(isWithSq) "success - login - sq" else "success - login - non sq"
         )
 
         if(!hashMap.containsKey(KEY_SESSION_IRIS)){
@@ -594,11 +594,11 @@ class LoginRegisterAnalytics @Inject constructor(
     }
 
 
-    fun eventSuccessLogin(actionLoginMethod: String, isFromRegister: Boolean) {
+    fun eventSuccessLogin(actionLoginMethod: String, isFromRegister: Boolean, isWithSq: Boolean) {
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> {
                 if (!isFromRegister) {
-                    onSuccessLoginWithEmail()
+                    onSuccessLoginWithEmail(isWithSq)
                 } else {
                     onSuccessLoginWithEmailSmartRegister()
                 }
@@ -700,8 +700,8 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
-    private fun onSuccessLoginWithEmail() {
-        trackClickOnLoginButtonSuccess()
+    private fun onSuccessLoginWithEmail(isWithSq: Boolean = false) {
+        trackClickOnLoginButtonSuccess(isWithSq)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_LOGIN_SUCCESS,
                 CATEGORY_LOGIN,

@@ -186,6 +186,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var isFromRegister = false
     private var isUseHash = false
     private var validateToken = ""
+    private var isLoginAfterSq = false
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var socmedButtonsContainer: LinearLayout? = null
@@ -1003,7 +1004,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             } else {
-                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister)
+                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister, isLoginAfterSq)
             }
 
             setTrackingUserId(userSession.userId)
@@ -1492,6 +1493,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     && resultCode == Activity.RESULT_OK
                     && data != null) {
                 data.extras?.let {
+                    isLoginAfterSq = true
                     tempValidateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     viewModel.reloginAfterSQ(tempValidateToken)
                 }

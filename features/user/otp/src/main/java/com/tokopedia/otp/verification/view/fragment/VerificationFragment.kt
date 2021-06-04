@@ -153,7 +153,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     override fun onBackPressed(): Boolean {
-        analytics.trackClickBackOtpPage(otpData)
+        analytics.trackClickBackOtpPage(otpData, modeListData)
         if (otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
             analytics.trackClickBackRegisterPhoneOtp()
         } else if (otpData.otpType == OtpConstant.OtpType.REGISTER_EMAIL) {
@@ -234,6 +234,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 viewBound.containerView?.let {
                     Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 }
+
+                analytics.trackGenerateOtp(otpData, modeListData, true)
             }
             otpRequestData.errorMessage.isNotEmpty() -> {
                 onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
@@ -266,6 +268,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 }
             }
 
+            analytics.trackGenerateOtp(otpData, modeListData, false, throwable.message.toString())
             isFirstSendOtp = false
             showKeyboard()
         }
@@ -287,7 +290,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 }
                 redirectAfterValidationSuccessful(bundle)
                 // tracker auto submit success
-                analytics.trackAutoSubmitVerification(otpData,true)
+                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
             }
             otpValidateData.errorMessage.isNotEmpty() -> {
                 onFailedOtpValidate(MessageErrorException(otpValidateData.errorMessage))
@@ -338,7 +341,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 }
             }
             // tracker auto submit failed
-            analytics.trackAutoSubmitVerification(otpData,false, message)
+            analytics.trackAutoSubmitVerification(otpData, modeListData,false, message)
             viewBound.pin?.isError = true
             showKeyboard()
         }
@@ -473,7 +476,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                             }
                         }
 
-                        analytics.trackClickResendOtpButton(otpData)
+                        analytics.trackClickResendOtpButton(otpData, modeListData)
                         sendOtp()
                         viewBound.pin?.value = ""
                     }
@@ -494,7 +497,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         viewModel.done = true
-                        analytics.trackClickUseOtherMethod(otpData)
+                        analytics.trackClickUseOtherMethod(otpData, modeListData)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
 
@@ -514,7 +517,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         viewModel.done = true
-                        analytics.trackClickUseOtherMethod(otpData)
+                        analytics.trackClickUseOtherMethod(otpData, modeListData)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
 
