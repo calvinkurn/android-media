@@ -40,7 +40,7 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.MINI_SOCIAL_PROOF_2 -> {
+                ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK -> {
                     listOfComponent.add(ProductMiniSocialProofTokoNowDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.REVIEW -> {
@@ -55,6 +55,9 @@ object DynamicProductDetailMapper {
                             ?: "", content?.firstOrNull()?.subtitle
                             ?: "", content?.firstOrNull()?.icon ?: "")
                     )
+                }
+                ProductDetailConstant.MINI_SHOP_WIDGET -> {
+                    listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
                     listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))

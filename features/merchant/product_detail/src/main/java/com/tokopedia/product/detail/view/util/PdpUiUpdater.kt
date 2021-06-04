@@ -40,7 +40,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
     private val miniSocialProofTokoNowMap: ProductMiniSocialProofTokoNowDataModel?
-        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_2] as? ProductMiniSocialProofTokoNowDataModel
+        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK] as? ProductMiniSocialProofTokoNowDataModel
 
     val basicContentMap: ProductContentDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_CONTENT] as? ProductContentDataModel
@@ -98,6 +98,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val shopCredibility: ProductShopCredibilityDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY] as? ProductShopCredibilityDataModel
+
+    val miniShopWidgetMap: ProductMiniShopWidgetDataModel?
+        get() = mapOfData[ProductDetailConstant.MINI_SHOP_WIDGET] as? ProductMiniShopWidgetDataModel
 
     val productByMeMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailCommonConstant.KEY_BYME] as? ProductGeneralInfoDataModel
@@ -172,11 +175,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_2, loadInitialData) {
+            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK, loadInitialData) {
                 miniSocialProofTokoNowMap?.run {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
-                    // TODO vindo : Add stock value here
+                    //  TODO vindo : Add stock value here
                     stock = 24
                     paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
                 }
@@ -202,6 +205,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     totalRating = it.basic.stats.countReview.toIntOrZero()
                     ratingScore = it.basic.stats.rating
                 }
+            }
+
+            updateData(ProductDetailConstant.SHIPMENT, loadInitialData) {
+                shipmentData?.isTokoNow = it.basic.isTokoNow
             }
         }
     }
@@ -309,6 +316,15 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
+            updateData(ProductDetailConstant.MINI_SHOP_WIDGET) {
+                miniShopWidgetMap?.run {
+                    val shopInfo = it.shopInfo
+                    shopName = shopInfo.shopCore.name
+                    shopLocation = shopInfo.location
+                    shopAva = shopInfo.shopAssets.avatar
+                }
+            }
+
             updateData(ProductDetailConstant.ORDER_PRIORITY) {
                 orderPriorityMap?.run {
                     subtitle = it.shopCommitment.staticMessages.pdpMessage
@@ -325,7 +341,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_2) {
+            updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK) {
                 miniSocialProofTokoNowMap?.run {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()

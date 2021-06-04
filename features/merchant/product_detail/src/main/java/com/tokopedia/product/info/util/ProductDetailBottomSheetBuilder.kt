@@ -58,6 +58,21 @@ object ProductDetailBottomSheetBuilder {
         return bottomSheetUnify
     }
 
+    fun getUspTokoNowBottomSheet(context: Context): BottomSheetUnify {
+        val bottomSheetUnify = BottomSheetUnify()
+        val view = View.inflate(context, R.layout.bs_product_usp_tokonow, null)
+
+        bottomSheetUnify.apply {
+            isDragable = true
+            isHideable = true
+            isSkipCollapseState = true
+            setTitle(context.getString(R.string.pdp_usp_tokonow_static_title))
+            setChild(view)
+        }
+
+        return bottomSheetUnify
+    }
+
     fun getShippingErrorBottomSheet(context: Context, data: ErrorBottomSheet, errorCode: Int, onButtonClicked: (Int) -> Unit): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(context, R.layout.bs_product_shipping_error, null)

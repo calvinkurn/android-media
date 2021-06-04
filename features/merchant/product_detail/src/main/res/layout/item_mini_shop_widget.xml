@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mini_shop_widget_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shop_ava"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@color/Unify_G400" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@id/shop_location_online"
+            app:layout_constraintLeft_toRightOf="@id/shop_ava"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/shop_ava"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="TokoNOW! oleh Tokopedia"
+            tools:textStyle="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_location_online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="@id/shop_ava"
+            app:layout_constraintLeft_toLeftOf="@id/shop_name"
+            app:layout_constraintTop_toBottomOf="@id/shop_name"
+            app:typographyType="body_3"
+            tools:text="Jakarta Barat" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/mini_shop_widget_shimmering"
+        layout="@layout/item_shimmer_mini_shop_widget"
+        android:visibility="visible" />
+
+</LinearLayout>

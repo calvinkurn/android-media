@@ -79,7 +79,7 @@ data class ProductMiniSocialProofTokoNowDataModel(
             return
         }
         val socialProofBuilder = mutableListOf(
-                thisIsStock(ProductMiniSocialProofTokoNowItemType.ProductMiniSocialProofTextWithDivider),
+                stockData(ProductMiniSocialProofTokoNowItemType.ProductMiniSocialProofTextWithDivider),
                 firstPositionData(ProductMiniSocialProofTokoNowItemType.ProductMiniSocialProofText)
         )
         appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder, rating.toString())
@@ -104,8 +104,7 @@ data class ProductMiniSocialProofTokoNowDataModel(
         return list
     }
 
-    // TODO vindo - cari nama yang bagusan
-    private fun thisIsStock(type: ProductMiniSocialProofTokoNowItemType): ProductMiniSocialProofTokoNowItemDataModel {
+    private fun stockData(type: ProductMiniSocialProofTokoNowItemType): ProductMiniSocialProofTokoNowItemDataModel {
         return ProductMiniSocialProofTokoNowItemDataModel(STOCK, stock.productThousandFormatted(), type)
     }
 }

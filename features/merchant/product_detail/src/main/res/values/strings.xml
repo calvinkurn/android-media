@@ -259,6 +259,14 @@
     <string name="pdp_usp_static_3_2">Dapatkan Bebas Ongkir Extra sepuasnya tanpa</string>
     <string name="pdp_usp_static_3_3">batas</string>
 
+    <string name="pdp_usp_tokonow_static_title">Keuntungan pakai TokoNOW!</string>
+    <string name="pdp_usp_tokonow_static_illustration_1_title">Gratis 2 jam sampai</string>
+    <string name="pdp_usp_tokonow_static_illustration_1_subtitle">Dikirim dari penyimpanan terdekat dengan lokasimu, gratis!</string>
+    <string name="pdp_usp_tokonow_static_illustration_2_title">Pasti tersedia</string>
+    <string name="pdp_usp_tokonow_static_illustration_2_subtitle">Stok di TokoNOW! pasti tersedia, jadi bisa langsung pesan tanpa khawatir.</string>
+    <string name="pdp_usp_tokonow_static_illustration_3_title">24 jam</string>
+    <string name="pdp_usp_tokonow_static_illustration_3_subtitle">Siap melayani segala kebutuhanmu 24 jam, siang dan malam!</string>
+
     <string name="pdp_boe_coachmark_title">Pengiriman gratis &amp; cepat dengan TokoCabang</string>
     <string name="pdp_boe_coachmark_desc">Dikirim dari penyimpanan Tokopedia terdekat, dan dapatkan Bebas Ongkir Extra sepuasnya!</string>
 

@@ -2100,7 +2100,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean,
+    override fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, isTokoNow: Boolean,
                                                 componentTrackDataModel: ComponentTrackDataModel?) {
         viewModel.getDynamicProductInfoP1?.let {
             DynamicProductDetailTracking.Click.eventClickShipment(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel, title, labelShipping, isCod)
@@ -2123,7 +2123,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     shopTier = viewModel.getShopInfo().shopTier
             ))
             shouldRefreshShippingBottomSheet = false
-            val shippingBs = ProductDetailShippingBottomSheet()
+            val shippingBs = ProductDetailShippingBottomSheet(isTokoNow)
             shippingBs.show(getProductFragmentManager())
         }
     }
@@ -3017,6 +3017,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     ApplinkConst.SHOP, shopId),
                     ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
         }
+    }
+
+    override fun goToTokoNow() {
+        // TODO Vindo - please route to toko now
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
