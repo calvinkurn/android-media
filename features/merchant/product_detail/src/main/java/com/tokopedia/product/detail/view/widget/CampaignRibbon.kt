@@ -311,9 +311,14 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val campaign = onGoingData.campaign
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
-        val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
-        val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-        campaignRibbonType2View?.background = gradientDrawable
+        val backGroundColorData = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
+        val colorCount = backGroundColorData.split(",").size
+        if (colorCount == 1) {
+            campaignRibbonType2View?.setBackgroundColor(Color.parseColor(backGroundColorData))
+        } else {
+            val gradientDrawable = getGradientDrawableForBackGround(backGroundColorData)
+            campaignRibbonType2View?.background = gradientDrawable
+        }
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
             campaignLogoView2?.loadImage(thematicCampaign.icon)
