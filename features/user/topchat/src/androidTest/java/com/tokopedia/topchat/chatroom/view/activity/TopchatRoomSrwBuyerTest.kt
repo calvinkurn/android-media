@@ -57,7 +57,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO: SRW bubble should remain collapsed when user click sticker menu and click open keyboard
     // TODO: SRW bubble should remain collapsed when user open keyboard and open sticker menu
     // TODO: SRW Bubble should collapsed when preview attachment is visible other than product
-
     // TODO: SRW Bubble should expanded when preview attachment is not visible
     // TODO: SRW Bubble should remain collapsed when invoice preview visible and user toggle chat menu on then off
 
