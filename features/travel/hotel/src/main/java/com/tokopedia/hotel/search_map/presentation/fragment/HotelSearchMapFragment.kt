@@ -1173,7 +1173,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun animateInfoMaxRadius(visibility: Boolean){
-        val alphaValue: Float = if(visibility) 20f else BUTTON_RADIUS_HIDE_VALUE
+        val alphaValue: Float = if(visibility) BUTTON_RADIUS_INFO_SHOW_VALUE else BUTTON_RADIUS_HIDE_VALUE
         ObjectAnimator.ofFloat(fabHotelInfoMaxRadius, BUTTON_RADIUS_ANIMATION_Y, alphaValue).apply {
             start()
         }
