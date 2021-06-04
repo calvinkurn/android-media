@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.common.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -71,6 +72,8 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
+//        val response = Gson().fromJson(MOCK_RESPONSE, UpdateCartGqlResponse::class.java)
+
         return if (response.updateCartData.status == "OK") {
             if (isFromMiniCartWidget) {
                 response.updateCartData
@@ -125,3 +128,21 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
     }
 
 }
+
+val MOCK_RESPONSE = """
+    {
+      "update_cart_v2": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "error": "Message error with out of service",
+          "status": false,
+          "message": "",
+          "toaster_action": {
+            "text": "Oke",
+            "show_cta": true
+          }
+        }
+      }
+    }
+""".trimIndent()

@@ -4,8 +4,10 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
@@ -18,6 +20,7 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
+import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
@@ -33,7 +36,7 @@ import javax.inject.Inject
 
 class MiniCartWidget @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : BaseCustomView(context, attrs, defStyleAttr), MiniCartListBottomSheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -84,91 +87,113 @@ class MiniCartWidget @JvmOverloads constructor(
         viewModel.globalEvent.observe(fragment.viewLifecycleOwner, {
             when (it.state) {
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
-                    miniCartListBottomSheet.dismiss()
-                    fragment.context?.let {
-                        globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
-                            override fun onGoToHome() {
-                                // No-op
-                            }
-
-                            override fun onRefreshErrorPage() {
-                                showMiniCartListBottomSheet(fragment)
-                            }
-                        })
-                    }
+                    onFailedToLoadMiniCartBottomSheet(fragment)
                 }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
-                    if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        fragment.context?.let {
-                            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
-                            intent.putExtra("EXTRA_IS_ONE_CLICK_SHIPMENT", true)
-                            it.startActivity(intent)
-                        }
-                    }
+                    onSuccessUpdateCartForCheckout(fragment)
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
-                    if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        setTotalAmountLoading(true)
-                        viewModel.getLatestWidgetState()
-                        fragment.context?.let { context ->
-                            val data = it.data
-                            if (data != null) {
-                                // Goes here if failed but get response from BE
-                                if (data is Data) {
-                                    if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
-                                        // Prioritize to show out of service data
-                                        globalErrorBottomSheet.show(fragment.parentFragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
-                                            override fun onGoToHome() {
-                                                RouteManager.route(context, ApplinkConst.HOME)
-                                            }
-
-                                            override fun onRefreshErrorPage() {
-                                                viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
-                                            }
-                                        })
-                                    } else {
-                                        // Show toaster error if have no out of service data
-                                        var ctaText = "Oke"
-                                        if (data.toasterAction.showCta) {
-                                            ctaText = data.toasterAction.text
-                                        }
-                                        showToaster(data.error, Toaster.TYPE_ERROR, ctaText)
-                                    }
-                                }
-                            } else {
-                                // Goes here if failed and get no response from BE
-                                val throwable = it.throwable
-                                if (throwable != null) {
-                                    when (throwable) {
-                                        is UnknownHostException -> {
-                                            globalErrorBottomSheet.show(fragment.parentFragmentManager, context, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
-                                                override fun onGoToHome() {
-                                                    // No-op
-                                                }
-
-                                                override fun onRefreshErrorPage() {
-                                                    viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
-                                                }
-                                            })
-                                        }
-                                        is SocketTimeoutException -> {
-                                            val ctaText = "Oke"
-                                            val message = "Yaah, waktu habis. Coba refresh & ulangi klik tombol Beli."
-                                            showToaster(message, Toaster.TYPE_ERROR, ctaText)
-                                        }
-                                        else -> {
-                                            val ctaText = "Oke"
-                                            val message = "Oops, pembelianmu gagal diproses. Coba refresh dan ulangi klik Beli."
-                                            showToaster(message, Toaster.TYPE_ERROR, ctaText)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    onFailedUpdateCartForCheckout(it, fragment)
                 }
             }
         })
+    }
+
+    private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
+        if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+            setTotalAmountLoading(true)
+            viewModel.getLatestWidgetState()
+            fragment.context?.let { context ->
+                handleFailedUpdateCartForCheckout(view, context, fragment.parentFragmentManager, globalEvent)
+            }
+        }
+    }
+
+    private fun handleFailedUpdateCartForCheckout(view: View?, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
+        val data = globalEvent.data
+        if (data != null) {
+            // Goes here if failed but get response from BE
+            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context)
+        } else {
+            // Goes here if failed and get no response from BE
+            handleFailedUpdateCartWithThrowable(view, globalEvent, fragmentManager, context)
+        }
+    }
+
+    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any?, fragmentManager: FragmentManager, context: Context) {
+        if (data is Data) {
+            if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
+                // Prioritize to show out of service data
+                globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
+                    override fun onGoToHome() {
+                        RouteManager.route(context, ApplinkConst.HOME)
+                    }
+
+                    override fun onRefreshErrorPage() {
+                        viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                    }
+                })
+            } else {
+                // Show toaster error if have no out of service data
+                var ctaText = "Oke"
+                if (data.toasterAction.showCta) {
+                    ctaText = data.toasterAction.text
+                }
+                showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText)
+            }
+        }
+    }
+
+    private fun handleFailedUpdateCartWithThrowable(view: View?, globalEvent: GlobalEvent, fragmentManager: FragmentManager, context: Context) {
+        val throwable = globalEvent.throwable
+        if (throwable != null) {
+            when (throwable) {
+                is UnknownHostException -> {
+                    globalErrorBottomSheet.show(fragmentManager, context, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
+                        override fun onGoToHome() {
+                            // No-op
+                        }
+
+                        override fun onRefreshErrorPage() {
+                            viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                        }
+                    })
+                }
+                is SocketTimeoutException -> {
+                    val ctaText = "Oke"
+                    val message = "Yaah, waktu habis. Coba refresh & ulangi klik tombol Beli."
+                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText)
+                }
+                else -> {
+                    val ctaText = "Oke"
+                    val message = "Oops, pembelianmu gagal diproses. Coba refresh dan ulangi klik Beli."
+                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessUpdateCartForCheckout(fragment: Fragment) {
+        fragment.context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
+            intent.putExtra("EXTRA_IS_ONE_CLICK_SHIPMENT", true)
+            it.startActivity(intent)
+        }
+    }
+
+    private fun onFailedToLoadMiniCartBottomSheet(fragment: Fragment) {
+        miniCartListBottomSheet.dismiss()
+        fragment.context?.let {
+            globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
+                override fun onGoToHome() {
+                    // No-op
+                }
+
+                override fun onRefreshErrorPage() {
+                    showMiniCartListBottomSheet(fragment)
+                }
+            })
+        }
     }
 
     private fun observeMiniCartWidgetUiModel(fragment: Fragment) {
@@ -193,21 +218,17 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun showMiniCartListBottomSheet(fragment: Fragment) {
-        miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, ::onMiniCartBottomSheetDismissed)
+        miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, this)
     }
 
-    private fun onMiniCartBottomSheetDismissed() {
-        miniCartWidgetListener?.onCartItemsUpdated(viewModel.getLatestMiniCartData())
-    }
-
-    private fun showToaster(message: String, type: Int, ctaText: String = "", onClickListener: View.OnClickListener? = null) {
+    private fun showToaster(view: View?, message: String, type: Int, ctaText: String = "", onClickListener: OnClickListener? = null) {
         if (message.isBlank()) return
 
         view?.let {
-            Toaster.toasterCustomBottomHeight = view?.resources?.getDimensionPixelSize(R.dimen.dp_72)
+            Toaster.toasterCustomBottomHeight = view.resources?.getDimensionPixelSize(R.dimen.dp_72)
                     ?: 0
             if (ctaText.isNotBlank()) {
-                var tmpCtaClickListener = View.OnClickListener { }
+                var tmpCtaClickListener = OnClickListener { }
                 if (onClickListener != null) {
                     tmpCtaClickListener = onClickListener
                 }
@@ -278,6 +299,14 @@ class MiniCartWidget @JvmOverloads constructor(
             }
             this.chatIcon?.setImageDrawable(chatIcon)
         }
+    }
+
+    override fun onMiniCartListBottomSheetDismissed() {
+        miniCartWidgetListener?.onCartItemsUpdated(viewModel.getLatestMiniCartData())
+    }
+
+    override fun onFailedUpdateCartForCheckout(toasterAnchorView: View, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
+        handleFailedUpdateCartForCheckout(toasterAnchorView, context, fragmentManager, globalEvent)
     }
 
 }
