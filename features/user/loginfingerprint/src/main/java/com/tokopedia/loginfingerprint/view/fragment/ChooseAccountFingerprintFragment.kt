@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginfingerprint.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.loginphone.chooseaccount.data.AccountList
 import com.tokopedia.loginphone.chooseaccount.data.UserDetail
@@ -19,8 +20,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import javax.inject.Named
 
-class ChooseAccountFingerprintFragment(val validateToken: String): BaseChooseAccountFragment() {
+class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
+    var validateToken: String = ""
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -42,6 +44,17 @@ class ChooseAccountFingerprintFragment(val validateToken: String): BaseChooseAcc
 
     override fun onSelectedAccount(account: UserDetail, phone: String) {
         loginBiometric(account.email, validateToken)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        validateToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
+        if(validateToken.isEmpty()) {
+            NetworkErrorHelper.showEmptyState(context, view, "Terjadi kesalahan") {
+                showLoadingProgress()
+                activity?.finish()
+            }
+        }
     }
 
     override fun initObserver() {
@@ -146,8 +159,10 @@ class ChooseAccountFingerprintFragment(val validateToken: String): BaseChooseAcc
     }
 
     companion object {
-        fun createInstance(validateToken: String): Fragment {
-            return ChooseAccountFingerprintFragment(validateToken)
+        fun createInstance(bundle: Bundle): Fragment {
+            val fragment = ChooseAccountFingerprintFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 }
