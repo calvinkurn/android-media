@@ -251,7 +251,7 @@ public class MoneyInHomeActivity extends BaseMoneyInActivity<MoneyInHomeViewMode
                         break;
                     case MONEYIN_ERROR:
                         showDialogFragment(getString(R.string.money_in), homeResult.getDisplayMessage(),
-                                getString(R.string.money_in_kembali), getString(R.string.money_in_beri_akses));
+                                getString(R.string.money_in_beri_akses), getString(R.string.money_in_kembali));
                         errorDialogGTMLabel = homeResult.getDisplayMessage();
                     default:
                         break;
@@ -417,7 +417,7 @@ public class MoneyInHomeActivity extends BaseMoneyInActivity<MoneyInHomeViewMode
             clickAccept();
         } else {
             showDialogFragment(getString(R.string.tradein_text_request_access),
-                    getString(R.string.tradein_text_permission_description), getString(R.string.money_in_kembali), getString(R.string.money_in_beri_akses));
+                    getString(R.string.tradein_text_permission_description), getString(R.string.money_in_beri_akses), getString(R.string.money_in_kembali));
         }
     }
 
