@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.constant.ShopPageGqlQueryConstant
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import javax.inject.Inject
@@ -27,18 +28,10 @@ class GetShopFilterProductCountUseCase @Inject constructor(
 
     }
 
-    private val GQL_QUERY: String = """
-            query getShopProduct(${'$'}shopId: String!,${'$'}filter: ProductListFilter!){
-              GetShopProduct(shopID:${'$'}shopId, filter:${'$'}filter){
-                totalData
-              }
-            }
-        """.trimIndent()
-
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): Int {
-        val request = GraphqlRequest(GQL_QUERY, ShopProduct.Response::class.java, params)
+        val request = GraphqlRequest(ShopPageGqlQueryConstant.getShopFilterProductCountQuery(), ShopProduct.Response::class.java, params)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(ShopProduct.Response::class.java)
