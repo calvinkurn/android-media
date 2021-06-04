@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -13,11 +14,17 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
@@ -35,6 +42,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var saveAddressMapper: SaveAddressMapper
+
+
     private val viewModel: PinpointNewPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PinpointNewPageViewModel::class.java)
     }
@@ -43,6 +54,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var currentPlaceId: String? = ""
+    private var zipCodes: MutableList<String>? = null
+
+    private var saveAddressDataModel: SaveAddressDataModel? = null
 
     private var composite = CompositeSubscription()
 
@@ -65,27 +79,40 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         prepareMap(savedInstanceState)
         prepareLayout()
-//        setViewListener()
+        setViewListener()
 
         currentPlaceId?.let { viewModel.getDistrictLocation(it) }
 
         initObserver()
     }
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            currentPlaceId = it.getString(EXTRA_PLACE_ID)
+            saveAddressDataModel = it.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+            zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
+        }
+    }
+
     override fun onMapReady(googleMap: GoogleMap?) {
 
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
-        this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
-        this.googleMap?.uiSettings?.setAllGesturesEnabled(false)
+        this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+
         activity?.let { MapsInitializer.initialize(activity) }
+
         moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
-//        this.googleMap?.setOnCameraMoveStartedListener { _ -> showLoading() }
+        this.googleMap?.setOnCameraMoveStartedListener { _ ->
+            showLoading()
+        }
         this.googleMap?.let {
             rxPinPoint(it).subscribe(object : Subscriber<Boolean>() {
                 override fun onNext(t: Boolean?) {
-//                    getAutofill()
+                    getAutofill()
                 }
 
                 override fun onCompleted() {
@@ -132,7 +159,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.autofillDistrictData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.messageError.isEmpty()) onSuccessAutofill()
+                    if (it.data.messageError.isEmpty()) onSuccessAutofill(it.data.data)
                     else {
                         val msg = it.data.messageError[0]
                         when {
@@ -155,12 +182,35 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         })
     }
 
+    private fun showLoading() {
+        binding?.bottomsheetLocation?.run {
+            wholeLoadingContainer.visibility = View.VISIBLE
+            districtLayout.visibility = View.GONE
+        }
+    }
+
+    private fun showDistrictBottomSheet() {
+        binding?.bottomsheetLocation?.run {
+            wholeLoadingContainer.visibility = View.GONE
+            districtLayout.visibility = View.VISIBLE
+        }
+    }
+
+
+    private fun getAutofill() {
+        val target: LatLng? = this.googleMap?.cameraPosition?.target
+        val latTarget = target?.latitude ?: 0.0
+        val longTarget = target?.longitude ?: 0.0
+
+        viewModel.getDistrictData(latTarget, longTarget)
+    }
+
     private fun onSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
         if (data.postalCode.isEmpty() || data.districtId == 0) {
             currentLat = data.latitude.toDouble()
             currentLong = data.longitude.toDouble()
             moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
-//            showNotFoundLocation()
+            showNotFoundLocation()
         } else {
             doAfterSuccessPlaceGetDistrict(data)
         }
@@ -168,21 +218,33 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
 
     private fun doAfterSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
-//        showDistrictBottomSheet()
+        showDistrictBottomSheet()
 
         currentLat = data.latitude.toDouble()
         currentLong = data.longitude.toDouble()
-//        isGetDistrict = true
         moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
-/*        continueWithLocation = true
-        val savedModel = saveAddressMapper.map(getDistrictDataUiModel, zipCodes)
-        presenter.setAddress(savedModel)
-        with(getDistrictDataUiModel.errMessage) {
+        val savedModel = saveAddressMapper.map(data, zipCodes)
+        viewModel.setAddress(savedModel)
+        with(data.errMessage) {
             if (this != null && this.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE)) {
                 showLocationNotFoundCTA()
             } else updateGetDistrictBottomSheet(savedModel)
-        }*/
+        }
+    }
+
+    private fun updateGetDistrictBottomSheet(data: SaveAddressDataModel ) {
+        this.saveAddressDataModel = saveAddressDataModel
+        setDefaultResultGetDistrict(data)
+    }
+
+    private fun setDefaultResultGetDistrict(data: SaveAddressDataModel) {
+        showDistrictBottomSheet()
+
+        binding?.bottomsheetLocation?.run {
+            tvAddress.text = data.title
+            tvAddressDesc.text = data.formattedAddress
+        }
     }
 
 
@@ -196,7 +258,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     }
 
-/*
     private fun setViewListener() {
         binding?.run {
 
@@ -207,9 +268,13 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             bottomsheetLocation.btnSecondary.setOnClickListener {
                 //go-to ANA Negative
             }
+
+            chipsSearch.setOnClickListener {
+                goToSearchPage()
+            }
         }
+
     }
-*/
 
     private fun moveMap(latLng: LatLng, zoomLevel: Float) {
         val cameraPosition = CameraPosition.Builder()
@@ -220,7 +285,20 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
-    private fun onSuccessAutofill() {
+    private fun onSuccessAutofill(data: Data) {
+        doAfterSuccessAutofill(data)
+    }
+
+    private fun doAfterSuccessAutofill(data: Data) {
+        updateAfterOnSuccessAutofill(data)
+    }
+
+    private fun updateAfterOnSuccessAutofill(data: Data) {
+        showDistrictBottomSheet()
+
+        val saveAddress = saveAddressMapper.map(data, zipCodes)
+        viewModel.setAddress(saveAddress)
+        updateGetDistrictBottomSheet(saveAddress)
 
     }
 
@@ -232,6 +310,15 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     }
 
+    private fun showNotFoundLocation() {
+
+    }
+
+    private fun goToSearchPage() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        startActivity(intent)
+        activity?.finish()
+    }
 
     companion object {
         private const val ZOOM_LEVEL = 16f
@@ -245,14 +332,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
                 }
             }
-        }
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            currentPlaceId = it.getString(EXTRA_PLACE_ID)
         }
     }
 

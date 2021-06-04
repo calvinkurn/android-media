@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.KeroPlacesGetDistrict
@@ -18,6 +19,8 @@ import javax.inject.Inject
 
 class PinpointNewPageViewModel @Inject constructor(private val repo: KeroRepository,
                                                    private val getDistrictMapper: GetDistrictMapper): ViewModel() {
+
+    private var saveAddressDataModel = SaveAddressDataModel()
 
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
@@ -49,6 +52,10 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
                 _districtLocation.value = Fail(e)
             }
         }
+    }
+
+    fun setAddress(address: SaveAddressDataModel) {
+        this.saveAddressDataModel = address
     }
 
 }

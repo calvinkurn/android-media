@@ -4,46 +4,66 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/unify_space_16"
     android:id="@+id/bottomsheet_location"
+    android:background="@color/light_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_address"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        app:typographyType="body_1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="Jalan Prof Doktor"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_address_desc"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
-        app:typographyType="body_3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_address"
-        android:text="Setiabudii, blablabla"
-        android:textColor="@color/Neutral_N700_44"/>
 
     <LinearLayout
-        android:id="@+id/btn_vertical_layout"
+        android:id="@+id/whole_loading_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_8"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/tv_address_desc"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="visible">
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone">
 
+        <include
+            android:id="@+id/loading_list_1"
+            layout="@layout/partial_shimmering_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_24" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/district_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            android:text="Jalan Prof Doktor"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_address_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            app:typographyType="body_3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_address"
+            android:text="Setiabudii, blablabla"
+            android:textColor="@color/Neutral_N700_44"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_5"
-            android:layout_weight="1"
+            android:layout_marginTop="@dimen/unify_space_16"
             android:text="Pilih Lokasi"
             android:textStyle="bold"
             app:unifyButtonType="main"
@@ -53,8 +73,7 @@
             android:id="@+id/btn_secondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_5"
-            android:layout_weight="1"
+            android:layout_marginTop="@dimen/unify_space_8"
             android:text="Tidak Ketemu?"
             android:textStyle="bold"
             app:unifyButtonType="main"

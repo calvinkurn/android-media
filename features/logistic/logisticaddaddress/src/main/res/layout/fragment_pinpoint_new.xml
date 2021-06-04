@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/rl_map_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/map_views"
+        <RelativeLayout
+            android:id="@+id/rl_map_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_80">
 
-   <!--     <ImageView
-            android:id="@+id/pointer_0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/pointer" />
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_views"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        <ImageView
-            android:id="@+id/icon_pointer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/pointer_0"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/pointer"
-            app:srcCompat="@drawable/ic_green_pointer" />
--->
+            <ImageView
+                android:id="@+id/pointer_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/pointer" />
+
+            <ImageView
+                android:id="@+id/icon_pointer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/pointer_0"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/pointer"
+                app:srcCompat="@drawable/ic_green_pointer" />
+
+
+        </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/btn_horizonal_layout"
             android:layout_width="match_parent"
@@ -43,7 +49,7 @@
             android:visibility="visible">
 
             <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/filterBugs"
+                android:id="@+id/chips_current_loc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -54,7 +60,7 @@
                 app:chipType="normal" />
 
             <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/filterFeedback"
+                android:id="@+id/chips_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -67,7 +73,7 @@
 
         </LinearLayout>
 
-        <FrameLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/layout_botoomsheet_loc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,10 +81,10 @@
 
             <include
                 android:id="@+id/bottomsheet_location"
-                layout="@layout/bottomsheet_choose_location"/>
+                layout="@layout/bottomsheet_choose_location" />
 
-        </FrameLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </RelativeLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
