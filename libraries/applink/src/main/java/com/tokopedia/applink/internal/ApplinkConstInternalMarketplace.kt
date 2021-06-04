@@ -1,5 +1,7 @@
 package com.tokopedia.applink.internal
 
+import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
@@ -154,6 +156,7 @@ object ApplinkConstInternalMarketplace {
 
     // OnboardingActivity
     const val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
+    const val ONBOARDING_COACHMARK_DISABLE = "$INTERNAL_MARKETPLACE/onboarding/coachmark/disable"
 
     // SettingFieldActivity
     const val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"

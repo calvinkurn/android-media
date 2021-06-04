@@ -17,6 +17,8 @@ import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 
 object DeeplinkMapperMarketplace {
 
+    const val ONBOARDING_COACHMARK_VALUE = "coachmark"
+
     fun getRegisteredNavigationMarketplace(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
         return when {
@@ -51,5 +53,10 @@ object DeeplinkMapperMarketplace {
 
     private fun isSpecialShop(uri: Uri): Boolean {
         return (uri.pathSegments[0] == ApplinkConst.SALAM_UMRAH_SHOP_ID)
+    }
+
+    fun getOnboardingApplink(deeplink: String) : String {
+        if (deeplink.contains(ONBOARDING_COACHMARK_VALUE)) return ApplinkConstInternalMarketplace.ONBOARDING_COACHMARK_DISABLE
+        return ApplinkConstInternalMarketplace.ONBOARDING
     }
 }
