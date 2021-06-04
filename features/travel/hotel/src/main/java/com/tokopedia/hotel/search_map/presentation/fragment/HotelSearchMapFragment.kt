@@ -1173,7 +1173,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun animateInfoMaxRadius(visibility: Boolean){
-        val alphaValue: Float = if(visibility) BUTTON_RADIUS_INFO_SHOW_VALUE else BUTTON_RADIUS_HIDE_VALUE
+        val alphaValue: Float = if(visibility) BUTTON_RADIUS_INFO_SHOW_VALUE else BUTTON_RADIUS_INFO_HIDE_VALUE
         ObjectAnimator.ofFloat(fabHotelInfoMaxRadius, BUTTON_RADIUS_ANIMATION_Y, alphaValue).apply {
             start()
         }
@@ -1480,7 +1480,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val BUTTON_RADIUS_PADDING_ALL = 0
         private const val BUTTON_RADIUS_PADDING_RIGHT = 6
         private const val BUTTON_RADIUS_ANIMATION_Y = "translationY"
-        private const val FAB_MAX_RADIUS = "alpha"
 
         private const val INIT_MARKER_TAG = 0
         private const val DEFAULT_INCREMENT_PAGE = 1
@@ -1495,6 +1494,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
         const val BUTTON_RADIUS_INFO_SHOW_VALUE: Float = 20f
+        const val BUTTON_RADIUS_INFO_HIDE_VALUE: Float = -180f
 
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
         private const val MAPS_ZOOM_IN: Float = 11f
