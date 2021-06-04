@@ -97,7 +97,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, R.color.shop_score_page_dms_background))
         }
         setupAdapter()
         onSwipeRefreshShopPerformance()

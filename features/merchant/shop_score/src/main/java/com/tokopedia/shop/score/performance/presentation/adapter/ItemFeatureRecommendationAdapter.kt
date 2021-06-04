@@ -16,6 +16,7 @@ import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.item_promo_creation_shop_performance.view.*
 
 
@@ -59,8 +60,10 @@ class ItemFeatureRecommendationAdapter(private val itemRecommendationFeatureList
                         findViewById<AppCompatImageView>(R.id.ivRecommendedPromo),
                         onReady = { recommendedPromoView, resourceBitmap ->
                             val bitmapRecommended = BitmapDrawable(resources, resourceBitmap)
-                            val bgColorRecommendPromo = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                            bitmapRecommended.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(bgColorRecommendPromo, BlendModeCompat.SRC_ATOP)
+                            if (context.isDarkMode()) {
+                                val bgColorRecommendPromo = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                                bitmapRecommended.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(bgColorRecommendPromo, BlendModeCompat.SRC_ATOP)
+                            }
                             recommendedPromoView.background = bitmapRecommended
                         },
                         onFailed = { _, _ ->

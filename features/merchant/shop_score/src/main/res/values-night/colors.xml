@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="shop_score_penalty_dms_container">@color/Unify_N700</color>
+    <color name="shop_score_page_dms_background">@color/Unify_NN0</color>
+    <color name="shop_score_penalty_dms_container">@color/Unify_N75</color>
     <color name="shop_score_relief_transition_dms_container">@color/Unify_NN300</color>
+    <color name="shop_score_dms_card_level">@color/Unify_N75</color>
 </resources>

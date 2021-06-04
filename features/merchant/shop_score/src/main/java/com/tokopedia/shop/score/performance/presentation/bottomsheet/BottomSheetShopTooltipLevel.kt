@@ -69,7 +69,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let {  bottomSheetWrapper.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
         isFullpage = true
         initView(view)
         setRecyclerView()
