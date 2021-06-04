@@ -236,7 +236,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     lat = addressModel.latitude,
                     long = addressModel.longitude,
                     label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
-                    postalCode = addressModel.postalCode)
+                    postalCode = addressModel.postalCode,
+                    shopId = "",
+                    warehouseId = "")
         }
     }
 

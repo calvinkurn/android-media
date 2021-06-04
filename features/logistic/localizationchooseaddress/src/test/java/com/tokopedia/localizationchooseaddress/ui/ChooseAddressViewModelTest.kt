@@ -71,43 +71,43 @@ class ChooseAddressViewModelTest {
 
     @Test
     fun `Set Chosen Address Success`() {
-        coEvery { chooseAddressRepo.setStateChosenAddress(any(), any(), any(), any(), any(), any(), any(), any()) } returns SetStateChosenAddressQqlResponse()
-        chooseAddressViewModel.setStateChosenAddress(3, "11234", "Hutagalung", "Rumah", "-6.22119739999998", "106.81941940000002", "2270", "12950")
+        coEvery { chooseAddressRepo.setStateChosenAddress(any(), any(), any(), any(), any(), any(), any(), any(), any()) } returns SetStateChosenAddressQqlResponse()
+        chooseAddressViewModel.setStateChosenAddress(3, "11234", "Hutagalung", "Rumah", "-6.22119739999998", "106.81941940000002", "2270", "12950", false)
         verify { setChosenAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Set Chosen Address Fail`() {
-        coEvery { chooseAddressRepo.setStateChosenAddress(any(), any(), any(), any(), any(), any(), any(), any()) } throws defaultThrowable
-        chooseAddressViewModel.setStateChosenAddress(3, "11234", "Hutagalung", "Rumah", "-6.22119739999998", "106.81941940000002", "2270", "12950")
+        coEvery { chooseAddressRepo.setStateChosenAddress(any(), any(), any(), any(), any(), any(), any(), any(), any()) } throws defaultThrowable
+        chooseAddressViewModel.setStateChosenAddress(3, "11234", "Hutagalung", "Rumah", "-6.22119739999998", "106.81941940000002", "2270", "12950", false)
         verify { setChosenAddressObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get Chosen Address Success`() {
-        coEvery { chooseAddressRepo.getStateChosenAddress(any()) } returns GetStateChosenAddressQglResponse()
-        chooseAddressViewModel.getStateChosenAddress("address")
+        coEvery { chooseAddressRepo.getStateChosenAddress(any(), any()) } returns GetStateChosenAddressQglResponse()
+        chooseAddressViewModel.getStateChosenAddress("address", false)
         verify { getChosenAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Chosen Address Fail`() {
-        coEvery { chooseAddressRepo.getStateChosenAddress(any()) } throws defaultThrowable
-        chooseAddressViewModel.getStateChosenAddress("address")
+        coEvery { chooseAddressRepo.getStateChosenAddress(any(), any()) } throws defaultThrowable
+        chooseAddressViewModel.getStateChosenAddress("address", false)
         verify { getChosenAddressObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Get Default Chosen Address Success`() {
-        coEvery { chooseAddressRepo.getDefaultChosenAddress(any(), any()) } returns GetDefaultChosenAddressGqlResponse()
-        chooseAddressViewModel.getDefaultChosenAddress("-6.22119739999998,106.81941940000002", "address")
+        coEvery { chooseAddressRepo.getDefaultChosenAddress(any(), any(), any()) } returns GetDefaultChosenAddressGqlResponse()
+        chooseAddressViewModel.getDefaultChosenAddress("-6.22119739999998,106.81941940000002", "address", false)
         verify { getDefaultAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Default Chosen Address Fail`() {
-        coEvery { chooseAddressRepo.getDefaultChosenAddress(any(), any()) } throws defaultThrowable
-        chooseAddressViewModel.getDefaultChosenAddress("-6.22119739999998,106.81941940000002", "address")
+        coEvery { chooseAddressRepo.getDefaultChosenAddress(any(), any(), any()) } throws defaultThrowable
+        chooseAddressViewModel.getDefaultChosenAddress("-6.22119739999998,106.81941940000002", "address", false)
         verify { getDefaultAddressObserver.onChanged(match { it is Fail }) }
     }
 }
