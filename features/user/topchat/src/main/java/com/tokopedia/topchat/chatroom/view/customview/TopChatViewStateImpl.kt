@@ -196,6 +196,10 @@ open class TopChatViewStateImpl constructor(
         }
     }
 
+    override fun isKeyboardOpen(): Boolean {
+        return chatMenu?.isKeyboardOpened == true
+    }
+
     override fun hideChatMenu() {
         chatMenu?.hideMenu()
     }

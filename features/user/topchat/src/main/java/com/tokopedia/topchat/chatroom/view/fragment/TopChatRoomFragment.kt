@@ -329,7 +329,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun expandSrwBubble() {
         if (
-            !getViewState().hasVisibleSendablePreview()
+            !getViewState().hasVisibleSendablePreview() &&
+            chatMenu?.isVisible == false &&
+            !getViewState().isKeyboardOpen()
         ) {
             adapter.expandSrwBubble()
         }
