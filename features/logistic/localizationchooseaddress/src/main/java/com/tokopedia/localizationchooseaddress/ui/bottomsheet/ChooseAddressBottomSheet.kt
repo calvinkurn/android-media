@@ -620,11 +620,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         fun onDismissChooseAddressBottomSheet()
 
         /**
-         * To differentiate feature that need warehous loc or not
-         * host/fragment need to override this with true
+         * To differentiate feature that need warehouse loc or not
          */
         fun isSupportWarehouseLoc(): Boolean {
-            return false
+            return true
         }
     }
 }
