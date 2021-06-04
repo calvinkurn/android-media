@@ -4,5 +4,6 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/unify_space_16"
     android:layout_marginEnd="@dimen/unify_space_16"
+    android:layout_marginBottom="@dimen/unify_space_8"
     android:visibility="visible"
     xmlns:android="http://schemas.android.com/apk/res/android" />
