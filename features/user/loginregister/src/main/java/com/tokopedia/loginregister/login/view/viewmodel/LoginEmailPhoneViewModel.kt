@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
@@ -152,8 +153,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = mutableDynamicBannerResponse
 
-    private val mutableVerifyFingerprint = MutableLiveData<Result<String>>()
-    val verifyFingerprint: LiveData<Result<String>>
+    private val mutableVerifyFingerprint = MutableLiveData<Result<VerifyFingerprint>>()
+    val verifyFingerprint: LiveData<Result<VerifyFingerprint>>
         get() = mutableVerifyFingerprint
 
     fun registerCheck(id: String) {
@@ -217,7 +218,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         return {
             val data = it.data
             if (data.errorMessage.isBlank() && data.isSuccess && data.validateToken.isNotEmpty()) {
-                mutableVerifyFingerprint.value = Success(data.validateToken)
+                mutableVerifyFingerprint.value = Success(it.data)
             } else if (data.errorMessage.isNotBlank()) {
                 mutableVerifyFingerprint.value = Fail(MessageErrorException(data.errorMessage,
                     ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
