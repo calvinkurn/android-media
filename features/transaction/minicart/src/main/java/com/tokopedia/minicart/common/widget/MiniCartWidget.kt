@@ -92,12 +92,14 @@ class MiniCartWidget @JvmOverloads constructor(
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
                         context?.let {
+                            totalAmount?.amountCtaView?.isLoading = false
                             onSuccessUpdateCartForCheckout(it)
                         }
                     }
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+                        totalAmount?.amountCtaView?.isLoading = false
                         onFailedUpdateCartForCheckout(it, fragment)
                     }
                 }
@@ -134,6 +136,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     }
 
                     override fun onRefreshErrorPage() {
+                        totalAmount?.amountCtaView?.isLoading = true
                         viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
                     }
                 })
@@ -159,6 +162,7 @@ class MiniCartWidget @JvmOverloads constructor(
                         }
 
                         override fun onRefreshErrorPage() {
+                            totalAmount?.amountCtaView?.isLoading = true
                             viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
                         }
                     })
@@ -210,6 +214,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 showMiniCartListBottomSheet(fragment)
             }
             it.amountCtaView.setOnClickListener {
+                totalAmount?.amountCtaView?.isLoading = true
                 viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
         }

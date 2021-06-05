@@ -381,13 +381,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         deleteCartUseCase.setParams(unavailableCartItems)
         deleteCartUseCase.execute(
                 onSuccess = {
-                    _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_SUCCESS_BULK_DELETE_UNAVAILABLE_ITEMS)
-                    getCartList()
-                    calculateProduct()
+                    _globalEvent.value = GlobalEvent(
+                            state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
+                            data = it
+                    )
                 },
                 onError = {
                     _globalEvent.value = GlobalEvent(
-                            state = GlobalEvent.STATE_FAILED_BULK_DELETE_UNAVAILABLE_ITEMS,
+                            state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
                             throwable = it
                     )
                 }

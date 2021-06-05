@@ -86,6 +86,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                                 ?: ""
                         viewModel.getCartList()
                         showToaster(message, Toaster.TYPE_NORMAL, ctaText) {
+                            showProgressLoading()
                             viewModel.undoDeleteCartItems()
                         }
                     }
@@ -102,9 +103,16 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                         }
                     }
                 }
+                GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM -> {
+                    hideProgressLoading()
+                }
+                GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM -> {
+                    hideProgressLoading()
+                }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                         bottomSheet?.context.let {
+                            hideProgressLoading()
                             bottomSheetListener.onBottomSheetSuccessUpdateCartForCheckout()
                             bottomSheet?.dismiss()
                         }
@@ -112,6 +120,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                        hideProgressLoading()
                         setTotalAmountLoading(true)
                         viewModel.getCartList()
                         bottomSheet?.context?.let { context ->
@@ -221,6 +230,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 }
             }
             it.amountCtaView.setOnClickListener {
+                showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
             }
             it.enableAmountChevron(true)
