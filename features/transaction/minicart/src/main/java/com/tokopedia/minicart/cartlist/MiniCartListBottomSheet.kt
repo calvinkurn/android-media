@@ -20,9 +20,12 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -76,13 +79,27 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
                     hideProgressLoading()
-                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_product_already_deleted)
-                            ?: ""
-                    val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_label_cancel)
-                            ?: ""
-                    viewModel.getCartList()
-                    showToaster(message, Toaster.TYPE_NORMAL, ctaText) {
-                        viewModel.undoDeleteCartItems()
+                    val data = it.data as? RemoveFromCartData
+                    val message = data?.data?.message?.firstOrNull() ?: ""
+                    if (message.isNotBlank()) {
+                        val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_label_cancel)
+                                ?: ""
+                        viewModel.getCartList()
+                        showToaster(message, Toaster.TYPE_NORMAL, ctaText) {
+                            viewModel.undoDeleteCartItems()
+                        }
+                    }
+                }
+                GlobalEvent.STATE_FAILED_DELETE_CART_ITEM -> {
+                    hideProgressLoading()
+                    it.throwable?.let { throwable ->
+                        bottomSheet?.context?.let { context ->
+                            var message = ErrorHandler.getErrorMessage(context, throwable)
+                            if (throwable is ResponseErrorException) {
+                                message = throwable.message
+                            }
+                            showToaster(message, Toaster.TYPE_ERROR)
+                        }
                     }
                 }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
@@ -258,7 +275,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         setTotalAmountLoading(false)
     }
 
-    private fun showToaster(message: String, type: Int, ctaText: String = "", onClickListener: View.OnClickListener? = null) {
+    private fun showToaster(message: String, type: Int, ctaText: String = "Oke", onClickListener: View.OnClickListener? = null) {
         if (message.isBlank()) return
 
         bottomSheet?.context?.let {
@@ -271,8 +288,6 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                         tmpCtaClickListener = onClickListener
                     }
                     Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
-                } else {
-                    Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
                 }
             }
         }

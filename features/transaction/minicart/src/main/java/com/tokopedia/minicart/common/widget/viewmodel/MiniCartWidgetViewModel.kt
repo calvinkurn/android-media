@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListViewHolderMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.*
@@ -324,7 +325,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         deleteCartUseCase.setParams(listOf(product))
         deleteCartUseCase.execute(
                 onSuccess = {
-                    handleDelete(product)
+                    handleDelete(product, it)
                 },
                 onError = {
                     _globalEvent.value = GlobalEvent(
@@ -335,20 +336,23 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         )
     }
 
-    private fun handleDelete(product: MiniCartProductUiModel) {
+    private fun handleDelete(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData) {
         val visitables = miniCartListListBottomSheetUiModel.value?.visitables ?: mutableListOf()
         val tmpVisitables = miniCartListListBottomSheetUiModel.value?.visitables ?: mutableListOf()
         loop@ for ((index, visitable) in visitables.withIndex()) {
             if (visitable is MiniCartProductUiModel && visitable.cartId == product.cartId) {
-                tmpVisitables.removeAt(index)
-
                 val deletedItem = visitables[index] as MiniCartProductUiModel
                 lastDeletedProductItem = deletedItem
+
+                tmpVisitables.removeAt(index)
 
                 miniCartListListBottomSheetUiModel.value?.visitables = tmpVisitables
                 _miniCartListBottomSheetUiModel.value = miniCartListListBottomSheetUiModel.value
 
-                _globalEvent.value = GlobalEvent(state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM)
+                _globalEvent.value = GlobalEvent(
+                        state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
+                        data = removeFromCartData
+                )
                 break@loop
             }
         }

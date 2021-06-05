@@ -164,14 +164,12 @@ class MiniCartWidget @JvmOverloads constructor(
                     })
                 }
                 is SocketTimeoutException -> {
-                    val ctaText = "Oke"
                     val message = "Yaah, waktu habis. Coba refresh & ulangi klik tombol Beli."
-                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText)
+                    showToaster(view, message, Toaster.TYPE_ERROR)
                 }
                 else -> {
-                    val ctaText = "Oke"
                     val message = "Oops, pembelianmu gagal diproses. Coba refresh dan ulangi klik Beli."
-                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText)
+                    showToaster(view, message, Toaster.TYPE_ERROR)
                 }
             }
         }
@@ -223,7 +221,7 @@ class MiniCartWidget @JvmOverloads constructor(
         miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, this)
     }
 
-    private fun showToaster(view: View?, message: String, type: Int, ctaText: String = "", onClickListener: OnClickListener? = null) {
+    private fun showToaster(view: View?, message: String, type: Int, ctaText: String = "Oke", onClickListener: OnClickListener? = null) {
         if (message.isBlank()) return
 
         view?.let {
@@ -235,8 +233,6 @@ class MiniCartWidget @JvmOverloads constructor(
                     tmpCtaClickListener = onClickListener
                 }
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
-            } else {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
             }
         }
     }
