@@ -48,5 +48,3 @@ internal fun sendCrashlyticsLog(throwable: Throwable) {
     } catch (e: Exception) {
     }
 }
-
-class PlayBroadcasterException(message: String) : Throwable(message)

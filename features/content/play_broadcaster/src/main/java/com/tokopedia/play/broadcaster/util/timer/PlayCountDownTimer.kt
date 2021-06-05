@@ -1,8 +1,7 @@
 package com.tokopedia.play.broadcaster.util.timer
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.CountDownTimer
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import javax.inject.Inject
 import kotlin.math.max
@@ -11,10 +10,9 @@ import kotlin.math.max
 /**
  * Created by mzennis on 25/05/20.
  */
-class PlayCountDownTimer @Inject constructor(private val context: Context) {
-
-    val maxDuration: Long
-        get() = mMaxDuration
+class PlayCountDownTimer @Inject constructor(
+    private val localCacheHandler: LocalCacheHandler
+    ) {
 
     val timeElapsed: String
         get() = getTimeElapsedInMillis().convertMillisToMinuteSecond()
@@ -26,12 +24,6 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
 
     private var mListener: Listener? = null
     private var mTimeoutList = defaultCountDownTimeoutConfig()
-
-    private val localStorage: SharedPreferences
-        get() = context.getSharedPreferences(PLAY_BROADCAST_PREFERENCE, Context.MODE_PRIVATE)
-
-    private val localStorageEditor: SharedPreferences.Editor
-        get() = localStorage.edit()
 
     fun setDuration(duration: Long) {
         setupDuration(duration)
@@ -66,7 +58,7 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
     }
 
     private fun removeLastRemainingMillis() {
-        localStorageEditor.remove(KEY_REMAINING_MILLIS)?.apply()
+        localCacheHandler.remove(KEY_REMAINING_MILLIS)
     }
 
     fun restart(duration: Long) {
@@ -75,7 +67,7 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
     }
 
     fun resume() {
-        val lastMillis = localStorage.getLong(KEY_REMAINING_MILLIS, 0L)
+        val lastMillis = localCacheHandler.getLong(KEY_REMAINING_MILLIS, 0L)
         restart(lastMillis)
     }
 
@@ -118,13 +110,12 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
     )
 
     private fun saveLastRemainingMillis() {
-        localStorageEditor.putLong(KEY_REMAINING_MILLIS, mRemainingMillis)?.apply()
+        localCacheHandler.putLong(KEY_REMAINING_MILLIS, mRemainingMillis)
     }
 
     companion object {
         const val DEFAULT_INTERVAL = 1000L
 
-        const val PLAY_BROADCAST_PREFERENCE = "play_broadcast_timer"
         const val KEY_REMAINING_MILLIS = "play_broadcast_remaining_millis"
     }
 

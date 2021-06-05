@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.SurfaceHolder
-import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -12,13 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.alivc.live.pusher.SurfaceStatus
+import com.pedro.rtplibrary.view.LightOpenGlView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -45,7 +46,6 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
@@ -83,9 +83,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private lateinit var containerSetup: FrameLayout
     private lateinit var globalErrorView: GlobalError
-    private lateinit var surfaceView: SurfaceView
-
-    private var surfaceStatus = SurfaceStatus.UNINITED
+    private lateinit var lightOpenGlView: LightOpenGlView
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
@@ -108,6 +106,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
     private lateinit var loadingFragment: LoadingDialogFragment
+    private lateinit var pauseLiveDialog: DialogUnify
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -140,13 +139,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         super.onResume()
         setLayoutFullScreen()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.checkShouldContinueLiveStream()
     }
 
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.pauseLiveStream()
     }
 
     override fun onDestroy() {
@@ -175,7 +172,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     override fun onPostResume() {
         super.onPostResume()
         if (isResultAfterAskPermission) {
-            if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+            if (isRequiredPermissionGranted()) configureChannelType(channelType)
             else showPermissionPage()
         }
         isResultAfterAskPermission = false
@@ -225,26 +222,20 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun initView() {
         containerSetup = findViewById(R.id.fl_setup)
         globalErrorView = findViewById(R.id.global_error)
-        surfaceView = findViewById(R.id.surface_view)
+        lightOpenGlView = findViewById(R.id.surface_view)
     }
 
     private fun setupView() {
-        surfaceView.holder.addCallback(object: SurfaceHolder.Callback{
+        lightOpenGlView.holder.addCallback(object: SurfaceHolder.Callback{
             override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
-                surfaceStatus = SurfaceStatus.CHANGED
+                startPreview()
             }
 
             override fun surfaceDestroyed(surfaceHolder: SurfaceHolder?) {
-                surfaceStatus = SurfaceStatus.DESTROYED
+                stopPreview()
             }
 
             override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
-                if (surfaceStatus == SurfaceStatus.UNINITED) {
-                    surfaceStatus = SurfaceStatus.CREATED
-                } else if (surfaceStatus == SurfaceStatus.DESTROYED) {
-                    surfaceStatus = SurfaceStatus.RECREATED
-                }
-                startPreview()
             }
         })
     }
@@ -318,7 +309,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
                 showDialogWhenActiveOnOtherDevices()
                 analytic.viewDialogViolation(config.channelId)
             } else {
-                if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+                if (isRequiredPermissionGranted()) configureChannelType(channelType)
                 else requestPermission()
             }
         } else {
@@ -330,7 +321,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun configureChannelType(channelType: ChannelType) {
         if (isRecreated) return
         when (channelType) {
-            ChannelType.Pause -> openBroadcastActivePage()
+            ChannelType.Pause -> {
+                openBroadcastActivePage()
+                showDialogContinueLiveStreaming()
+            }
             ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
             else -> openBroadcastSetupPage()
         }
@@ -356,19 +350,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         )
     }
 
+    private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
+
     fun startPreview() {
-        if (surfaceStatus != SurfaceStatus.UNINITED &&
-                surfaceStatus != SurfaceStatus.DESTROYED) {
-            viewModel.startCameraPreview(surfaceView)
-        }
+        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) viewModel.startPreview(lightOpenGlView)
     }
 
     fun stopPreview() {
-        viewModel.stopCameraPreview()
+        viewModel.stopPreview()
     }
 
     fun checkAllPermission() {
-        if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+        if (isRequiredPermissionGranted()) configureChannelType(channelType)
         else showPermissionPage()
     }
 
@@ -450,6 +443,31 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             getLoadingFragment().show(supportFragmentManager)
         } else if (getLoadingFragment().isVisible) {
             getLoadingFragment().dismiss()
+        }
+    }
+
+    fun showDialogContinueLiveStreaming() {
+        if (!::pauseLiveDialog.isInitialized) {
+            pauseLiveDialog = getDialog(
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                title = getString(R.string.play_dialog_continue_live_title),
+                desc = getString(R.string.play_dialog_continue_live_desc),
+                primaryCta = getString(R.string.play_next),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    viewModel.continueLiveStream()
+                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
+                },
+                secondaryCta = getString(R.string.play_broadcast_end),
+                secondaryListener = { dialog ->
+                    dialog.dismiss()
+                    viewModel.stopLiveStream(shouldNavigate = true)
+                }
+            )
+        }
+        if (!pauseLiveDialog.isShowing) {
+            pauseLiveDialog.show()
+            analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
         }
     }
 

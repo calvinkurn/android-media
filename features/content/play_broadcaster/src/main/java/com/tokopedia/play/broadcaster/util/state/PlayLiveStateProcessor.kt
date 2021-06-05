@@ -1,11 +1,9 @@
 package com.tokopedia.play.broadcaster.util.state
 
-import android.content.Context
-import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
-import com.tokopedia.play.broadcaster.util.timer.PlayCountDownTimer
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import kotlinx.coroutines.CoroutineScope
@@ -19,6 +17,7 @@ import javax.inject.Inject
  */
 class PlayLiveStateProcessor(
         private val livePusherWrapper: ApsaraLivePusherWrapper,
+        private val localCacheHandler: LocalCacheHandler,
         private val dispatchers: CoroutineDispatchers,
         private val scope: CoroutineScope
 ) {
@@ -26,13 +25,15 @@ class PlayLiveStateProcessor(
     class Factory @Inject constructor() {
         fun create(
                 livePusherWrapper: ApsaraLivePusherWrapper,
+                localCacheHandler: LocalCacheHandler,
                 dispatchers: CoroutineDispatchers,
                 scope: CoroutineScope
         ): PlayLiveStateProcessor {
             return PlayLiveStateProcessor(
-                    livePusherWrapper = livePusherWrapper,
-                    dispatchers = dispatchers,
-                    scope = scope
+                livePusherWrapper = livePusherWrapper,
+                localCacheHandler = localCacheHandler,
+                dispatchers = dispatchers,
+                scope = scope
             )
         }
     }
@@ -41,11 +42,11 @@ class PlayLiveStateProcessor(
 
     private var autoReconnectJob: Job? = null
 
-    private val localStorage: SharedPreferences
-        get() = livePusherWrapper.context.getSharedPreferences(PlayCountDownTimer.PLAY_BROADCAST_PREFERENCE, Context.MODE_PRIVATE)
+//    private val localStorage: SharedPreferences
+//        get() = livePusherWrapper.context.getSharedPreferences(PlayCountDownTimer.PLAY_BROADCAST_PREFERENCE, Context.MODE_PRIVATE)
 
-    private val localStorageEditor: SharedPreferences.Editor
-        get() = localStorage.edit()
+//    private val localStorageEditor: SharedPreferences.Editor
+//        get() = localStorage.edit()
 
     private var mPauseDuration: Long? = null
     private var isLiveStarted: Boolean = false
@@ -174,15 +175,15 @@ class PlayLiveStateProcessor(
     }
 
     private fun setLastPauseMillis() {
-        localStorageEditor.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())?.apply()
+        localCacheHandler.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())
     }
 
     private fun isReachMaximumPauseDuration(): Boolean {
         val maxPauseMillis = mPauseDuration
         if (maxPauseMillis != null) {
-            val lastPauseMillis = localStorage.getLong(KEY_PAUSE_TIME, 0L)
+            val lastPauseMillis = localCacheHandler.getLong(KEY_PAUSE_TIME, 0L)
             if (lastPauseMillis > 0 && reachMaximumPauseDuration(lastPauseMillis, maxPauseMillis)) {
-                localStorageEditor.remove(KEY_PAUSE_TIME)?.apply()
+                localCacheHandler.remove(KEY_PAUSE_TIME)
                 return true
             }
         }
@@ -195,7 +196,7 @@ class PlayLiveStateProcessor(
     }
 
     private fun removeLastPauseMillis() {
-        localStorageEditor.remove(KEY_PAUSE_TIME)?.apply()
+        localCacheHandler.remove(KEY_PAUSE_TIME)
     }
 
     companion object {
