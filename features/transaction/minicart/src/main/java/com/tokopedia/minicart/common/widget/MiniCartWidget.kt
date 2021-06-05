@@ -226,7 +226,7 @@ class MiniCartWidget @JvmOverloads constructor(
         miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, viewModel, this)
     }
 
-    private fun showToaster(view: View?, message: String, type: Int, ctaText: String = "Oke", onClickListener: OnClickListener? = null) {
+    override fun showToaster(view: View?, message: String, type: Int, ctaText: String, onClickListener: OnClickListener?) {
         if (message.isBlank()) return
 
         view?.let {

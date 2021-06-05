@@ -85,9 +85,11 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                         val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_label_cancel)
                                 ?: ""
                         viewModel.getCartList()
-                        showToaster(message, Toaster.TYPE_NORMAL, ctaText) {
-                            showProgressLoading()
-                            viewModel.undoDeleteCartItems()
+                        bottomsheetContainer?.let { view ->
+                            bottomSheetListener.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
+                                showProgressLoading()
+                                viewModel.undoDeleteCartItems()
+                            }
                         }
                     }
                 }
@@ -99,7 +101,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                             if (throwable is ResponseErrorException) {
                                 message = throwable.message
                             }
-                            showToaster(message, Toaster.TYPE_ERROR)
+                            bottomsheetContainer?.let { view ->
+                                bottomSheetListener.showToaster(view, message, Toaster.TYPE_ERROR)
+                            }
                         }
                     }
                 }
@@ -283,24 +287,6 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             }
         }
         setTotalAmountLoading(false)
-    }
-
-    private fun showToaster(message: String, type: Int, ctaText: String = "Oke", onClickListener: View.OnClickListener? = null) {
-        if (message.isBlank()) return
-
-        bottomSheet?.context?.let {
-            bottomsheetContainer?.let {
-                Toaster.toasterCustomBottomHeight = bottomSheet?.resources?.getDimensionPixelSize(R.dimen.dp_72)
-                        ?: 0
-                if (ctaText.isNotBlank()) {
-                    var tmpCtaClickListener = View.OnClickListener { }
-                    if (onClickListener != null) {
-                        tmpCtaClickListener = onClickListener
-                    }
-                    Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
-                }
-            }
-        }
     }
 
     private fun showLoading() {
