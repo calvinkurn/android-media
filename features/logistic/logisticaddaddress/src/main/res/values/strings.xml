@@ -178,4 +178,7 @@
 
     <!--PinpointNew Page-->
     <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+
+    <!--Address Form-->
+    <string name="title_address_form">Detail Alamat</string>
 </resources>

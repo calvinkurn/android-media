@@ -12,7 +12,6 @@
         android:layout_height="@dimen/dp_22"
         android:layout_marginStart="@dimen/unify_space_16"
         app:icon_name="LOCATION"
-
         android:layout_alignParentTop="true"
         android:layout_marginTop="@dimen/dp_8"/>
 

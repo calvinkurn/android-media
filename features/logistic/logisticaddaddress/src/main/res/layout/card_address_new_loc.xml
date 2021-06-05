@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_address_loc"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/dp_4">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_location"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_22"
+            android:layout_marginStart="@dimen/unify_space_16"
+            app:icon_name="LOCATION"
+            app:layout_constraintTop_toTopOf="@id/address_district"
+            app:layout_constraintBottom_toBottomOf="@id/address_district"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/address_district"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ic_location"
+            app:typographyType="body_1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
+
+
