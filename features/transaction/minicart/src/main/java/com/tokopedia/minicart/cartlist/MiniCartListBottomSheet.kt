@@ -35,8 +35,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration,
-                                                  var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
-                                                  var globalErrorBottomSheet: GlobalErrorBottomSheet)
+                                                  var summaryTransactionBottomSheet: SummaryTransactionBottomSheet)
     : MiniCartListActionListener {
 
     private var viewModel: MiniCartWidgetViewModel? = null
@@ -46,7 +45,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private var chatIcon: ImageUnify? = null
     private var rvMiniCartList: RecyclerView? = null
     private var adapter: MiniCartListAdapter? = null
-    private var progressDialog: AlertDialog? = null
+    private var bottomSheetListener: MiniCartListBottomSheetListener? = null
 
     private var measureRecyclerViewPaddingDebounceJob: Job? = null
     private var updateCartDebounceJob: Job? = null
@@ -58,8 +57,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
              viewModel: MiniCartWidgetViewModel,
              bottomSheetListener: MiniCartListBottomSheetListener) {
         context?.let {
-            initializeView(it, fragmentManager, bottomSheetListener)
-            initializeViewModel(fragmentManager, viewModel, lifecycleOwner, bottomSheetListener)
+            this.bottomSheetListener = bottomSheetListener
+            initializeView(it, fragmentManager)
+            initializeViewModel(fragmentManager, viewModel, lifecycleOwner)
             initializeCartData(viewModel)
         }
     }
@@ -68,13 +68,13 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         bottomSheet?.dismiss()
     }
 
-    fun initializeViewModel(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner, bottomSheetListener: MiniCartListBottomSheetListener) {
+    fun initializeViewModel(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
-        observeGlobalEvent(fragmentManager, viewModel, lifecycleOwner, bottomSheetListener)
+        observeGlobalEvent(fragmentManager, viewModel, lifecycleOwner)
         observeMiniCartListUiModel(viewModel, lifecycleOwner)
     }
 
-    private fun observeGlobalEvent(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner, bottomSheetListener: MiniCartListBottomSheetListener) {
+    private fun observeGlobalEvent(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.globalEvent.observe(lifecycleOwner, {
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
@@ -86,7 +86,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                                 ?: ""
                         viewModel.getCartList()
                         bottomsheetContainer?.let { view ->
-                            bottomSheetListener.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
+                            bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
                                 showProgressLoading()
                                 viewModel.undoDeleteCartItems()
                             }
@@ -102,7 +102,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                                 message = throwable.message
                             }
                             bottomsheetContainer?.let { view ->
-                                bottomSheetListener.showToaster(view, message, Toaster.TYPE_ERROR)
+                                bottomSheetListener?.showToaster(view, message, Toaster.TYPE_ERROR)
                             }
                         }
                     }
@@ -117,7 +117,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                         bottomSheet?.context.let {
                             hideProgressLoading()
-                            bottomSheetListener.onBottomSheetSuccessUpdateCartForCheckout()
+                            bottomSheetListener?.onBottomSheetSuccessUpdateCartForCheckout()
                             bottomSheet?.dismiss()
                         }
                     }
@@ -129,7 +129,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                         viewModel.getCartList()
                         bottomSheet?.context?.let { context ->
                             bottomsheetContainer?.let { view ->
-                                bottomSheetListener.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, it)
+                                bottomSheetListener?.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, it)
                             }
                         }
                     }
@@ -160,17 +160,16 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         viewModel.getCartList(true)
     }
 
-    private fun initializeView(context: Context, fragmentManager: FragmentManager, bottomSheetListener: MiniCartListBottomSheetListener) {
+    private fun initializeView(context: Context, fragmentManager: FragmentManager) {
         context.let {
             val view = View.inflate(it, R.layout.layout_bottomsheet_mini_cart_list, null)
-            initializeBottomSheet(view, fragmentManager, bottomSheetListener)
-            initializeProgressDialog(it)
+            initializeBottomSheet(view, fragmentManager)
             initializeTotalAmount(view, fragmentManager, context)
             initializeRecyclerView(view)
         }
     }
 
-    private fun initializeBottomSheet(view: View, fragmentManager: FragmentManager, bottomSheetListener: MiniCartListBottomSheetListener) {
+    private fun initializeBottomSheet(view: View, fragmentManager: FragmentManager) {
         bottomsheetContainer = view.findViewById(R.id.bottomsheet_container)
         bottomSheet = BottomSheetUnify().apply {
             showCloseIcon = false
@@ -182,7 +181,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
             setOnDismissListener {
                 cancelAllDebounceJob()
-                bottomSheetListener.onMiniCartListBottomSheetDismissed()
+                bottomSheetListener?.onMiniCartListBottomSheetDismissed()
             }
             setChild(view)
             show(fragmentManager, this.javaClass.simpleName)
@@ -193,13 +192,6 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         measureRecyclerViewPaddingDebounceJob?.cancel()
         updateCartDebounceJob?.cancel()
         calculationDebounceJob?.cancel()
-    }
-
-    private fun initializeProgressDialog(context: Context) {
-        progressDialog = AlertDialog.Builder(context)
-                .setView(R.layout.mini_cart_progress_dialog_view)
-                .setCancelable(true)
-                .create()
     }
 
     private fun initializeRecyclerView(view: View) {
@@ -302,15 +294,11 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun showProgressLoading() {
-        if (progressDialog?.isShowing == false) {
-            progressDialog?.show()
-        }
+        bottomSheetListener?.showProgressLoading()
     }
 
     private fun hideProgressLoading() {
-        if (progressDialog?.isShowing == true) {
-            progressDialog?.dismiss()
-        }
+        bottomSheetListener?.hideProgressLoading()
     }
 
     private fun updateCart() {
@@ -330,7 +318,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
-        showProgressLoading()
+        bottomSheetListener?.showProgressLoading()
         viewModel?.singleDeleteCartItems(element)
     }
 

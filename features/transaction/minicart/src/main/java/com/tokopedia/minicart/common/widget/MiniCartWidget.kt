@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -51,6 +52,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private var totalAmount: TotalAmount? = null
     private var chatIcon: ImageUnify? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
+    private var progressDialog: AlertDialog? = null
 
     lateinit var viewModel: MiniCartWidgetViewModel
 
@@ -92,14 +94,14 @@ class MiniCartWidget @JvmOverloads constructor(
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
                         context?.let {
-                            totalAmount?.amountCtaView?.isLoading = false
+                            hideProgressLoading()
                             onSuccessUpdateCartForCheckout(it)
                         }
                     }
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        totalAmount?.amountCtaView?.isLoading = false
+                        hideProgressLoading()
                         onFailedUpdateCartForCheckout(it, fragment)
                     }
                 }
@@ -136,7 +138,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     }
 
                     override fun onRefreshErrorPage() {
-                        totalAmount?.amountCtaView?.isLoading = true
+                        showProgressLoading()
                         viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
                     }
                 })
@@ -162,7 +164,7 @@ class MiniCartWidget @JvmOverloads constructor(
                         }
 
                         override fun onRefreshErrorPage() {
-                            totalAmount?.amountCtaView?.isLoading = true
+                            showProgressLoading()
                             viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
                         }
                     })
@@ -214,12 +216,22 @@ class MiniCartWidget @JvmOverloads constructor(
                 showMiniCartListBottomSheet(fragment)
             }
             it.amountCtaView.setOnClickListener {
-                totalAmount?.amountCtaView?.isLoading = true
+                showProgressLoading()
                 viewModel.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
         }
         setTotalAmountLoading(true)
         setTotalAmountChatIcon()
+        initializeProgressDialog(fragment.context)
+    }
+
+    private fun initializeProgressDialog(context: Context?) {
+        context?.let {
+            progressDialog = AlertDialog.Builder(it)
+                    .setView(R.layout.mini_cart_progress_dialog_view)
+                    .setCancelable(true)
+                    .create()
+        }
     }
 
     private fun showMiniCartListBottomSheet(fragment: Fragment) {
@@ -239,6 +251,18 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
             }
+        }
+    }
+
+    override fun showProgressLoading() {
+        if (progressDialog?.isShowing == false) {
+            progressDialog?.show()
+        }
+    }
+
+    override fun hideProgressLoading() {
+        if (progressDialog?.isShowing == true) {
+            progressDialog?.dismiss()
         }
     }
 

@@ -15,5 +15,7 @@ interface MiniCartListBottomSheetListener {
 
     fun showToaster(view: View?, message: String, type: Int, ctaText: String = "Oke", onClickListener: View.OnClickListener? = null)
 
+    fun showProgressLoading()
 
+    fun hideProgressLoading()
 }
