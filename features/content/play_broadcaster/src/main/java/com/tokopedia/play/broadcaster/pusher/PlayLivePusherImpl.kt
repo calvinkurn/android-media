@@ -21,13 +21,10 @@ class PlayLivePusherImpl : PlayLivePusher, ConnectCheckerRtmp {
 
     private var bitrateAdapter: BitrateAdapter? = null
     private var rtmpUrl = ""
+    private var isPushStarted = false
 
     private fun initialize(lightOpenGlView: LightOpenGlView) {
         rtmpCamera = RtmpCamera2(lightOpenGlView, this)
-        rtmpCamera.prepareVideo(
-            mLivePusherConfig.cameraPreviewWidth,
-            mLivePusherConfig.cameraPreviewHeight,
-            mLivePusherConfig.videoBitrate)
     }
 
     override val state: PlayLivePusherState
@@ -51,7 +48,11 @@ class PlayLivePusherImpl : PlayLivePusher, ConnectCheckerRtmp {
 
     private fun safeStartPreview(cameraFacing: CameraHelper.Facing) {
         Handler().postDelayed({
-            rtmpCamera.startPreview(cameraFacing)
+            rtmpCamera.startPreview(
+                cameraFacing,
+                mLivePusherConfig.cameraPreviewWidth,
+                mLivePusherConfig.cameraPreviewHeight
+            )
         }, 500)
     }
 
@@ -108,10 +109,14 @@ class PlayLivePusherImpl : PlayLivePusher, ConnectCheckerRtmp {
     }
 
     override fun onConnectionSuccessRtmp() {
-        when (mLivePusherState) {
-            is PlayLivePusherState.Error -> broadcastState(PlayLivePusherState.Recovered)
-            PlayLivePusherState.Pause -> broadcastState(PlayLivePusherState.Resumed)
-            PlayLivePusherState.Idle -> broadcastState(PlayLivePusherState.Started)
+        val lastState = mLivePusherState
+        when {
+            lastState.isError -> broadcastState(PlayLivePusherState.Recovered)
+            isPushStarted -> broadcastState(PlayLivePusherState.Resumed)
+            else -> {
+                broadcastState(PlayLivePusherState.Started)
+                isPushStarted = true
+            }
         }
         configureAdaptiveBitrate()
     }
