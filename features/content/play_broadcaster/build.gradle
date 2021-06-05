@@ -92,10 +92,6 @@ dependencies {
 
     implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:2.0.3'
 
-    implementation files('libs/alivc-core-pusher.jar')
-    implementation files('libs/AlivcReporter-1.2.aar')
-    implementation files('libs/live-pusher-3.6.1.aar')
-
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest

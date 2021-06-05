@@ -1,10 +1,8 @@
 package com.tokopedia.play.broadcaster.pusher
 
-import android.util.Log
 import com.pedro.rtplibrary.view.LightOpenGlView
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.util.state.PlayLivePusherViewStateListener.Companion.errorStateParser
-import com.tokopedia.play.broadcaster.util.state.PlayLiveStateProcessor
 import com.tokopedia.play.broadcaster.view.state.isNetworkTrouble
 
 
@@ -45,7 +43,6 @@ class PlayLivePusherMediator(
         if (livePusher.state.isStopped) return
 
         livePusher.startPreview(lightOpenGlView)
-        Log.d("Meyta", "startPreview()")
         if (livePusher.state.isPaused) {
             if (isReachMaxPauseDuration()) broadcastReachMaxPauseDuration()
             else broadcastShouldContinueLiveStreaming()
@@ -58,7 +55,6 @@ class PlayLivePusherMediator(
             setLastPauseMillis()
         }
         livePusher.stopPreview()
-        Log.d("Meyta", "stopPreview()")
     }
 
     private fun handleErrorState(reason: String) {
@@ -83,20 +79,25 @@ class PlayLivePusherMediator(
     }
 
     private fun setLastPauseMillis() {
-        localCacheHandler.putLong(PlayLiveStateProcessor.KEY_PAUSE_TIME, System.currentTimeMillis())
+        localCacheHandler.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())
     }
 
     private fun isReachMaxPauseDuration(): Boolean {
-        val lastPauseMillis = localCacheHandler.getLong(PlayLiveStateProcessor.KEY_PAUSE_TIME, 0L)
+        val lastPauseMillis = localCacheHandler.getLong(KEY_PAUSE_TIME, 0L)
         val currentMillis = System.currentTimeMillis()
         if (lastPauseMillis > 0 && ((currentMillis - lastPauseMillis) > pauseDuration)) {
-            localCacheHandler.remove(PlayLiveStateProcessor.KEY_PAUSE_TIME)
+            localCacheHandler.remove(KEY_PAUSE_TIME)
             return true
         }
         return false
     }
 
     private fun removeLastPauseMillis() {
-        localCacheHandler.remove(PlayLiveStateProcessor.KEY_PAUSE_TIME)
+        localCacheHandler.remove(KEY_PAUSE_TIME)
+    }
+
+    companion object {
+
+        const val KEY_PAUSE_TIME = "play_broadcast_pause_time"
     }
 }

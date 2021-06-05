@@ -1,11 +1,8 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import android.os.Handler
-import android.util.Log
-import com.pedro.encoder.input.video.CameraCallbacks
 import com.pedro.encoder.input.video.CameraHelper
 import com.pedro.rtmp.utils.ConnectCheckerRtmp
-import com.pedro.rtplibrary.base.Camera2Base
 import com.pedro.rtplibrary.rtmp.RtmpCamera2
 import com.pedro.rtplibrary.util.BitrateAdapter
 import com.pedro.rtplibrary.view.LightOpenGlView
@@ -31,17 +28,6 @@ class PlayLivePusherImpl : PlayLivePusher, ConnectCheckerRtmp {
             mLivePusherConfig.cameraPreviewWidth,
             mLivePusherConfig.cameraPreviewHeight,
             mLivePusherConfig.videoBitrate)
-//        rtmpCamera.setCameraCallbacks(object : CameraCallbacks {
-//            override fun onCameraChanged(facing: CameraHelper.Facing?) {
-//            }
-//
-//            override fun onCameraError(error: String?) {
-//                if (error?.contains("Open camera failed", true) == true) {
-//                    Log.e("Meyta", "Open camera failed")
-//
-//                }
-//            }
-//        })
     }
 
     override val state: PlayLivePusherState
