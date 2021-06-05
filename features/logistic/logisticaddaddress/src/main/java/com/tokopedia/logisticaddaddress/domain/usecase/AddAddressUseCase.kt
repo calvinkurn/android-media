@@ -47,6 +47,24 @@ mutation Autofill(${'$'}input: KeroAgentAddressInput!) {
     data {
       addr_id
       is_success
+      is_state_chosen_address_changed
+      chosen_address { 
+        addr_id
+        receiver_name
+        addr_name
+        district
+        city
+        city_name
+        district_name
+        status
+        latitude
+        longitude
+        postal_code
+        }
+      tokonow {
+        shop_id
+        warehouse_id
+        }
     }
     status
     config
