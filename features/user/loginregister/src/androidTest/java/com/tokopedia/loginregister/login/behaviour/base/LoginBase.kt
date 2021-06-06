@@ -93,6 +93,7 @@ open class LoginBase {
     @Inject
     lateinit var tickerInfoUseCaseStub: TickerInfoUseCaseStub
 
+
     @Inject
     lateinit var userSessionStub: UserSessionInterface
 
