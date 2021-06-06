@@ -2,7 +2,9 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
@@ -20,6 +22,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticCommon.util.rxEditText
 import com.tokopedia.logisticCommon.util.toCompositeSubs
@@ -29,6 +33,8 @@ import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressReva
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageFragment
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -78,6 +84,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         setSearchView()
         setViewListener()
         initObserver()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == 1599 && resultCode == Activity.RESULT_OK) {
+            activity?.finish()
+        }
     }
 
     override fun onDestroy() {
@@ -166,6 +178,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
     }
 
+    private fun getLastLocationClient() {
+
+    }
+
     private fun initObserver() {
         viewModel.autoCompleteList.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -213,7 +229,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 if (data != null) {
-                    //sned to maps
+                   goToPinpointPage(null, data.latitude, data.longitude)
                 } else {
                     fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
                         createLocationCallback(), null)
@@ -238,10 +254,15 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
 
     override fun onItemClicked(placeId: String) {
+        goToPinpointPage(placeId, null, null)
+    }
+
+    private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?) {
         val bundle = Bundle()
         bundle.putString(EXTRA_PLACE_ID, placeId)
-        startActivity(context?.let { PinpointNewPageActivity.createIntent(it, bundle) })
-//        PinpointNewPageFragment.newInstance()
+        latitude?.let { bundle.putDouble(EXTRA_LATITUDE, it) }
+        longitude?.let { bundle.putDouble(EXTRA_LONGITUDE, it) }
+        startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
 
     companion object {

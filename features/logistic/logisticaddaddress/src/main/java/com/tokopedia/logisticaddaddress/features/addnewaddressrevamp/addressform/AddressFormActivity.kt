@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_BUNDLE
 
 class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
@@ -21,10 +20,10 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
     }
 
     override fun getNewFragment(): Fragment? {
-        val bundle = intent.getBundleExtra(EXTRA_BUNDLE)
         var fragment: AddressFormFragment? = null
-        if (bundle != null) {
-            fragment = AddressFormFragment.newInstance(bundle)
+        if (intent.extras != null) {
+            val bundle = intent.extras
+            fragment = AddressFormFragment.newInstance(bundle?: Bundle())
         }
         return fragment
     }
@@ -34,7 +33,4 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
             return Intent(context, AddressFormActivity::class.java).putExtra(EXTRA_BUNDLE, bundle)
         }
     }
-
-
-
 }

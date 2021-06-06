@@ -2,23 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/form_address"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/et_nama_penerima"
+        android:id="@+id/et_label"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_field_label="Label Alamat"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/et_nomor_hp"
+        android:id="@+id/et_kota_kecamatan"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
         app:text_field_label="Kota - Kecamatan"
+        android:visibility="gone"
         app:text_field_message="Isi kota dan kecamatan tujuan pengiriman"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify

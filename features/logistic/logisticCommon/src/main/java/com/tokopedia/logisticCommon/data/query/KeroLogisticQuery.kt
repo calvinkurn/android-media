@@ -142,4 +142,18 @@ object KeroLogisticQuery {
         }
     """.trimIndent()
 
+    val kero_add_address_query = """
+        mutation Autofill(${'$'}input: KeroAgentAddressInput!) {
+          kero_add_address(input: ${'$'}input) {
+            data {
+              addr_id
+              is_success
+            }
+            status
+            config
+            server_process_time
+          }
+        }
+        """.trimIndent()
+
 }

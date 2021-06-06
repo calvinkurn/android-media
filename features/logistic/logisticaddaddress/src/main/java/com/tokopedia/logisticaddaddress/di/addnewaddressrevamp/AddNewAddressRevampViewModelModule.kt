@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormViewModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageViewModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageViewModel
 import dagger.Binds
@@ -29,4 +30,10 @@ abstract class AddNewAddressRevampViewModelModule {
     @IntoMap
     @ViewModelKey(PinpointNewPageViewModel::class)
     internal abstract fun providesPinpointNewPageViewModel(viewModel: PinpointNewPageViewModel): ViewModel
+
+    @ActivityScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddressFormViewModel::class)
+    internal abstract fun providesAddressFormViewModel(viewModel: AddressFormViewModel): ViewModel
 }

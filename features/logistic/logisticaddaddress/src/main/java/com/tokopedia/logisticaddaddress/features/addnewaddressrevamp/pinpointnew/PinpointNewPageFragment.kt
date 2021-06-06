@@ -1,10 +1,11 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -18,20 +19,24 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS_NEW
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
-import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -85,19 +90,23 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
-
-        currentPlaceId?.let { viewModel.getDistrictLocation(it) }
-
+        initData()
         initObserver()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == 1599 && resultCode == Activity.RESULT_OK) {
+            val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+            finishActivity(newAddress)
+        }
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            currentPlaceId = it.getString(EXTRA_PLACE_ID)
-            saveAddressDataModel = it.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-            zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
+    private fun finishActivity(data: SaveAddressDataModel?) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(EXTRA_ADDRESS_NEW, data)
+            })
+            finish()
         }
     }
 
@@ -158,6 +167,22 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     override fun onLowMemory() {
         super.onLowMemory()
         binding?.mapViews?.onLowMemory()
+    }
+
+    private fun initData() {
+        arguments?.let {
+            currentPlaceId = it.getString(EXTRA_PLACE_ID)
+            currentLat = it.getDouble(EXTRA_LATITUDE)
+            currentLong = it.getDouble(EXTRA_LONGITUDE)
+            saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+            zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
+        }
+
+        if (!currentPlaceId.isNullOrEmpty()) {
+            currentPlaceId?.let { viewModel.getDistrictLocation(it) }
+        } else {
+            viewModel.getDistrictData(currentLat, currentLong)
+        }
     }
 
     private fun initObserver() {
@@ -272,7 +297,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
-                //go-to ANA posotive
+                goToAddressForm()
             }
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
@@ -340,7 +365,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         val saveAddress = saveAddressMapper.map(data, zipCodes)
         viewModel.setAddress(saveAddress)
         updateGetDistrictBottomSheet(saveAddress)
-
     }
 
     private fun showOutOfReachBottomSheet() {
@@ -356,9 +380,19 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToSearchPage() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        requireActivity().onBackPressed()
+   /*     val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
         startActivity(intent)
-        activity?.finish()
+        activity?.finish()*/
+    }
+
+    private fun goToAddressForm() {
+        val saveModel = viewModel.getAddress()
+        Intent(context, AddressFormActivity::class.java).apply {
+            putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
+            startActivityForResult(this, 1599)
+        }
+
     }
 
     companion object {
@@ -371,6 +405,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             return PinpointNewPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
+                    putDouble(EXTRA_LATITUDE, extra.getDouble(EXTRA_LATITUDE))
+                    putDouble(EXTRA_LONGITUDE, extra.getDouble(EXTRA_LONGITUDE))
                 }
             }
         }

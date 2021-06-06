@@ -3,12 +3,11 @@ package com.tokopedia.logisticCommon.data.repository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
-import com.tokopedia.logisticCommon.data.response.AddressResponse
-import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
-import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
-import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.request.AddAddressParam
+import com.tokopedia.logisticCommon.data.response.*
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
@@ -56,6 +55,18 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         val request = GraphqlRequest(KeroLogisticQuery.keroMapsAutofill,
                 AutoFillResponse::class.java, param)
         return gql.getResponse(request)
+    }
+
+    suspend fun saveAddress(model: SaveAddressDataModel): AddAddressResponse {
+        val param = AddAddressParam(
+                model.addressName, model.receiverName, model.address1, model.address2,
+                model.postalCode, model.phone, model.provinceId.toString(), model.cityId.toString(),
+                model.districtId.toString(), model.latitude, model.longitude, "1")
+        val gqlParam = mapOf("input" to param.toMap())
+        val request = GraphqlRequest(KeroLogisticQuery.kero_add_address_query,
+                AddAddressResponse::class.java, gqlParam)
+        return gql.getResponse(request)
+
     }
 
 

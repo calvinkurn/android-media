@@ -58,4 +58,8 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
         this.saveAddressDataModel = address
     }
 
+    fun getAddress() : SaveAddressDataModel {
+        return this.saveAddressDataModel
+    }
+
 }
