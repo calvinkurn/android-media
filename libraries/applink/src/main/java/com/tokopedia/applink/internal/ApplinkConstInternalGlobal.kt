@@ -233,6 +233,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/otp-push-notif-setting
     const val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
 
+    // FingerprintSettingActivity
+    // tokopedia-android-internal://global/biometric-setting
+    const val BIOMETRIC_SETTING = "$INTERNAL_GLOBAL/biometric-setting"
+
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     const val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
