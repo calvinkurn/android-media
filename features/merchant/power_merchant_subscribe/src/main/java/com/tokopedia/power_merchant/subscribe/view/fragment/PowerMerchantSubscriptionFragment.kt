@@ -808,7 +808,8 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
         val shopGrade = data.currentPMGrade
         val shopInfo = pmBasicInfo?.shopInfo
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val shopScoreThreshold = if (isPmPro) {
+        val isPmActive = pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
+        val shopScoreThreshold = if (isPmPro && isPmActive) {
             shopInfo?.shopScorePmProThreshold.orZero()
         } else {
             shopInfo?.shopScoreThreshold.orZero()
