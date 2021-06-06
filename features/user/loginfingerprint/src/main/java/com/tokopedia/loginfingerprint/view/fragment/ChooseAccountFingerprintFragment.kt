@@ -6,12 +6,15 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginfingerprint.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.loginphone.chooseaccount.data.AccountList
 import com.tokopedia.loginphone.chooseaccount.data.UserDetail
+import com.tokopedia.loginphone.chooseaccount.di.DaggerChooseAccountComponent
 import com.tokopedia.loginphone.chooseaccount.view.fragment.BaseChooseAccountFragment
+import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,6 +39,19 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
     private val viewModel by lazy {
         viewModelProvider.get(ChooseAccountFingerprintViewModel::class.java)
+    }
+
+    override fun initInjector() {
+        if (activity != null) {
+            val appComponent = (activity?.application as BaseMainApplication)
+                .baseAppComponent
+            val loginRegisterPhoneComponent = DaggerLoginRegisterPhoneComponent.builder()
+                .baseAppComponent(appComponent).build()
+            val daggerChooseAccountComponent = DaggerChooseAccountComponent.builder()
+                .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
+                .build() as DaggerChooseAccountComponent
+            daggerChooseAccountComponent.inject(this)
+        }
     }
 
     override fun getScreenName(): String {

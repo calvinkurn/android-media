@@ -1,5 +1,6 @@
 package com.tokopedia.loginphone.chooseaccount.view.fragment
 
+//import com.tokopedia.notifications.CMPushNotificationManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -14,7 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -24,14 +24,11 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginphone.R
-import com.tokopedia.loginphone.chooseaccount.di.DaggerChooseAccountComponent
 import com.tokopedia.loginphone.chooseaccount.view.adapter.AccountAdapter
 import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContract
-import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.url.TokopediaUrl
@@ -65,19 +62,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountCon
         adapter = AccountAdapter.createInstance(this, ArrayList(), "")
         listAccount.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         listAccount.adapter = adapter
-    }
-
-    override fun initInjector() {
-        if (activity != null) {
-            val appComponent = (activity?.application as BaseMainApplication)
-                .baseAppComponent
-            val loginRegisterPhoneComponent = DaggerLoginRegisterPhoneComponent.builder()
-                .baseAppComponent(appComponent).build()
-            val daggerChooseAccountComponent = DaggerChooseAccountComponent.builder()
-                .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
-                .build() as DaggerChooseAccountComponent
-            daggerChooseAccountComponent.inject(this)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

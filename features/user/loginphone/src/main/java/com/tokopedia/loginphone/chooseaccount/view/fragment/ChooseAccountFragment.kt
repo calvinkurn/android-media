@@ -8,6 +8,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.applink.RouteManager
@@ -20,9 +21,11 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginphone.chooseaccount.data.AccountList
 import com.tokopedia.loginphone.chooseaccount.data.UserDetail
+import com.tokopedia.loginphone.chooseaccount.di.DaggerChooseAccountComponent
 import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContract
 import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
+import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -67,6 +70,19 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
 
     override fun getScreenName(): String {
         return LoginPhoneNumberAnalytics.Screen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT
+    }
+
+    override fun initInjector() {
+        if (activity != null) {
+            val appComponent = (activity?.application as BaseMainApplication)
+                .baseAppComponent
+            val loginRegisterPhoneComponent = DaggerLoginRegisterPhoneComponent.builder()
+                .baseAppComponent(appComponent).build()
+            val daggerChooseAccountComponent = DaggerChooseAccountComponent.builder()
+                .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
+                .build() as DaggerChooseAccountComponent
+            daggerChooseAccountComponent.inject(this)
+        }
     }
 
     override fun onStart() {
