@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.loginfingerprint.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.loginfingerprint.viewmodel.RegisterOnboardingViewModel
 import com.tokopedia.loginfingerprint.viewmodel.ScanFingerprintViewModel
+import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -31,5 +32,10 @@ abstract class LoginFingerprintViewModelsModule {
     @IntoMap
     @ViewModelKey(ChooseAccountFingerprintViewModel::class)
     internal abstract fun chooseAccountFingerprintViewModel(viewModel: ChooseAccountFingerprintViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SettingFingerprintViewModel::class)
+    internal abstract fun settingFingerprintViewModel(viewModel: SettingFingerprintViewModel): ViewModel
 
 }
