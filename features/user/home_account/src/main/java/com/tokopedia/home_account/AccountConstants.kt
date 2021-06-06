@@ -56,6 +56,7 @@ object AccountConstants {
             const val EVENT_CLICK_ACCOUNT = "clickAccount"
             const val EVENT_PRODUCT_CLICK = "productClick"
             const val EVENT_PRODUCT_VIEW = "productView"
+            const val EVENT_CLICK_SETTING = "clickSetting"
         }
 
         object Category {
@@ -63,6 +64,7 @@ object AccountConstants {
             const val CATEGORY_ACCOUNT_PAGE_BUYER = "account page - buyer"
             const val CATEGORY_ACCOUNT_BUYER = "akun saya pembeli"
             const val CATEGORY_OVO_HOMEPAGE = "ovo home page"
+            const val CATEGORY_SETTING_PAGE = "setting page"
         }
 
         object Action {
@@ -79,6 +81,7 @@ object AccountConstants {
             const val ACTION_CLICK_APP_SETTING_SECTION = "click on application setting section"
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
+            const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
         }
 
         object Label {
@@ -179,6 +182,7 @@ object AccountConstants {
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_TOKOPOINTS = 48
         const val SETTING_QUALITY_SETTING = 49
+        const val SETTING_DARK_MODE = 50
     }
 
     object KEY {

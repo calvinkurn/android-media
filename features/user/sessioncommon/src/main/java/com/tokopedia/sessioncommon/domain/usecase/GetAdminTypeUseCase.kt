@@ -8,7 +8,7 @@ import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
 
-class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
+open class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase){
 
     companion object {
         private const val DEFAULT_SOURCE = "android"
@@ -41,7 +41,7 @@ class GetAdminTypeUseCase @Inject constructor(private val graphqlUseCase: Graphq
                 }
     }
 
-    fun execute(subscriber: Subscriber<GraphqlResponse>, source: String = DEFAULT_SOURCE) {
+    open fun execute(subscriber: Subscriber<GraphqlResponse>, source: String = DEFAULT_SOURCE) {
         val requestParams = RequestParams().apply { putString(PARAM_SOURCE, source) }.parameters
         GraphqlRequest(QUERY, AdminTypeResponse::class.java, requestParams).let { request ->
             graphqlUseCase.clearRequest()

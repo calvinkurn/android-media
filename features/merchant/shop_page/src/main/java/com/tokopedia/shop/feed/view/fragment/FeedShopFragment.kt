@@ -305,7 +305,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId, isForceRefresh)
+                presenter.getFeedFirstPage(
+                    shopId,
+                    isForceRefresh,
+                    whitelistDomain.authors.isEmpty()
+                )
             } else {
                 presenter.getFeed(shopId)
             }
@@ -316,7 +320,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         hideSnackBarRetry()
         presenter.clearCache()
         isLoadingInitialData = true
-        presenter.getFeedFirstPage(shopId, true)
+        presenter.getFeedFirstPage(shopId, true,whitelistDomain.authors.isEmpty())
         recyclerView.scrollToPosition(0)
     }
 
