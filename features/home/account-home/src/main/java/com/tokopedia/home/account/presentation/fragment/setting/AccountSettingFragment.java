@@ -15,8 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -64,6 +64,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View personalDataMenu;
     private View addressMenu;
     private View passwordMenu;
+    private View biometricMenu;
     private View pinMenu;
     private View pushNotifMenu;
     private View kycSeparator;
@@ -102,6 +103,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         personalDataMenu = view.findViewById(R.id.label_view_identity);
         addressMenu = view.findViewById(R.id.label_view_address);
         passwordMenu = view.findViewById(R.id.label_view_password);
+        biometricMenu = view.findViewById(R.id.label_view_biometric);
         pinMenu = view.findViewById(R.id.label_view_pin);
         pushNotifMenu = view.findViewById(R.id.label_view_push_notif);
         kycMenu = view.findViewById(R.id.label_view_kyc);
@@ -206,6 +208,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_BANK_ACCOUNT_ID));
         sampaiMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_SAMPAI_ID));
+        biometricMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_BIOMETRIC));
     }
 
     @Override
@@ -235,6 +239,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             case SettingConstant.SETTING_PUSH_NOTIF:
                 accountAnalytics.eventClickSignInByPushNotifSetting();
                 onPushNotifClicked();
+                break;
+            case SettingConstant.SETTING_BIOMETRIC:
+                onBiometricSettingClicked();
                 break;
             case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                 accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
@@ -379,6 +386,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
             dialog.show();
         }
+    }
+
+    private void onBiometricSettingClicked() {
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.BIOMETRIC_SETTING);
     }
 
     private void onPushNotifClicked() {
