@@ -23,9 +23,9 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
         val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
                 shopInfo = PMShopInfoUiModel(),
                 pmSetting = PowerMerchantSettingInfoUiModel(
-                        shopId = anyString(),
+                        tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
-                        periodeEndDate = anyString()
+                        periodeTypePmPro = TestConstant.PeriodType.COMMUNICATION_PERIOD_PM_PRO
                 )
         )
 
@@ -52,33 +52,6 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
     }
 
     @Test
-    fun `when getPmStatusInfo returns success and period type is not Communication Period set result success and shop info should null`() {
-        val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
-                shopInfo = PMShopInfoUiModel(),
-                pmSetting = PowerMerchantSettingInfoUiModel(
-                        shopId = anyString(),
-                        periodeType = TestConstant.PeriodType.TRANSITION_PERIOD,
-                        periodeEndDate = anyString()
-                )
-        )
-
-        onGetSettingAndShopInfo_thenReturn(pmSettingAndShopInfo)
-
-        viewModel.getPmStatusInfo()
-
-        val result = PMStatusAndSettingUiModel(
-                pmStatus = null,
-                pmSettingAndShopInfo = pmSettingAndShopInfo
-        )
-        val expectedResult = Success(result)
-
-        viewModel.getPmStatusInfoResult
-                .verifySuccessEquals(expectedResult)
-
-        verifyHideLoading()
-    }
-
-    @Test
     fun `when getPmStatusInfo then settingAndShopInfo returns error should set failed`() {
         val error = Exception()
 
@@ -99,9 +72,9 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
         val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
                 shopInfo = PMShopInfoUiModel(),
                 pmSetting = PowerMerchantSettingInfoUiModel(
-                        shopId = anyString(),
+                        tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
-                        periodeEndDate = anyString()
+                        periodeTypePmPro = TestConstant.PeriodType.COMMUNICATION_PERIOD_PM_PRO
                 )
         )
 
@@ -126,9 +99,9 @@ class PmSubscribeViewModelTest: PmSubscribeViewModelTestFixture() {
         val pmSettingAndShopInfo = PMSettingAndShopInfoUiModel(
                 shopInfo = PMShopInfoUiModel(),
                 pmSetting = PowerMerchantSettingInfoUiModel(
-                        shopId = anyString(),
+                        tickers = emptyList(),
                         periodeType = TestConstant.PeriodType.COMMUNICATION_PERIOD,
-                        periodeEndDate = anyString()
+                        periodeTypePmPro = TestConstant.PeriodType.COMMUNICATION_PERIOD_PM_PRO
                 )
         )
 

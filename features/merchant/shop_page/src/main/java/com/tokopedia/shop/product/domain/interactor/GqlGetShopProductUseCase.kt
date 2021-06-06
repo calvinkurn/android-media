@@ -1,10 +1,10 @@
 package com.tokopedia.shop.product.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.usecase.coroutines.UseCase
@@ -43,13 +43,17 @@ class GqlGetShopProductUseCase @Inject constructor (
                   stats{
                     reviewCount
                     rating
+                    viewCount
                   }
                   campaign{
+                    hide_gimmick
                     original_price
                     original_price_fmt
                     discounted_price_fmt
                     discounted_percentage
                     discounted_price
+                    is_upcoming
+                    stock_sold_percentage
                   }
                   primary_image{
                     original

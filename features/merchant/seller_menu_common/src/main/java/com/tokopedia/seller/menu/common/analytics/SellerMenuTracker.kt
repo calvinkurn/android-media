@@ -394,12 +394,10 @@ class SellerMenuTracker(
     }
 
     private fun getShopStatus(shopInfo: SettingShopInfoUiModel): String {
-        return when(shopInfo.shopStatusUiModel?.shopType) {
+        return when(shopInfo.shopStatusUiModel?.userShopInfoWrapper?.shopType) {
             is PowerMerchantStatus.Active -> SHOP_STATUS_ACTIVE
             is PowerMerchantStatus.NotActive -> SHOP_STATUS_NOT_ACTIVE
             is RegularMerchant.NeedUpgrade -> SHOP_STATUS_UPGRADE
-            is RegularMerchant.NeedVerification -> SHOP_STATUS_VERIFICATION
-            is PowerMerchantStatus.OnVerification -> SHOP_STATUS_ON_VERIFICATION
             is ShopType.OfficialStore -> SHOP_STATUS_OS
             else -> UNDEFINED
         }

@@ -104,6 +104,7 @@
     <string name="card_courier_notes_example">Batas waktu penjemputan 24 jam</string>
     <string name="card_courier_count_example">Jumlah: 1</string>
     <string name="courier_notes_example">Tidak perlu memberikan ongkir ke kurir</string>
+    <string name="courier_option_schedule">Oleh kurir: %1$s</string>
 
     <string name="cancel_order_batal">Batal</string>
     <string name="btn_konfirmasi">Konfirmasi</string>
@@ -267,4 +268,5 @@
     <string name="som_error_validate_order">Gagal memeriksa status pesanan, silahkan coba lagi</string>
 
     <string name="som_request_pickup_bottomsheet_title">Jadwal Pickup</string>
+    <string name="label_welcome_to_som_page">Selamat datang di halaman penjualan</string>
 </resources>

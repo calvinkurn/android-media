@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,8 @@ import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginfingerprint.viewmodel.RegisterOnboardingViewModel
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_register_fingerprint_onboarding.*
@@ -29,6 +32,8 @@ import javax.inject.Inject
 class RegisterFingerprintOnboardingFragment : BaseDaggerFragment(), ScanFingerprintInterface {
 
     private var scanFingerprintDialog: ScanFingerprintDialog? = null
+
+    private var mainImage: ImageUnify? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -83,10 +88,18 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment(), ScanFingerpr
             viewModel.unregisterFP()
             activity?.finish()
         }
+
+        setMainImage()
+
+    }
+
+    private fun setMainImage() {
+        mainImage = activity?.findViewById(R.id.imageView2)
+        (mainImage as ImageView).loadImage(imageUrl)
     }
 
     private fun setupObserver(){
-        viewModel.verifyRegisterFingerprintResult.observe(this, Observer {
+        viewModel.verifyRegisterFingerprintResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessRegisterFP()
                 is Fail -> onErrorRegisterFP(it.throwable)
@@ -142,6 +155,7 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment(), ScanFingerpr
     }
 
     companion object {
+        private val imageUrl = "https://images.tokopedia.net/img/android/user/login_fingerprint_onboarding.png"
         fun newInstance(): RegisterFingerprintOnboardingFragment = RegisterFingerprintOnboardingFragment()
     }
 }
