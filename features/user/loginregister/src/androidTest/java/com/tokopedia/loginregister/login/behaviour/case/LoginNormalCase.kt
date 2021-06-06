@@ -6,13 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressKey
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -20,64 +18,45 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
+import com.tokopedia.loginregister.login.behaviour.activity.ChangeNameActivityStub
+import com.tokopedia.loginregister.login.behaviour.activity.ChooseAccountActivityStub
+import com.tokopedia.loginregister.login.behaviour.activity.VerificationActivityStub
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.managepassword.forgotpassword.view.activity.ForgotPasswordActivity
-import com.tokopedia.otp.verification.view.activity.VerificationActivity
-import junit.framework.TestCase.assertEquals
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.data.LoginToken
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 
 class LoginNormalCase : LoginBase() {
 
-//    @Test
-//    /* Go to verification page if phone exist */
-//    fun gotoVerificationFragment_IfPhoneExist() {
-//        isDefaultRegisterCheck = false
-//        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "phone", view = "082242454504")
-//        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
-//
-//        runTest {
-//            LoginEmailPhoneFragment.REQUEST_LOGIN_PHONE
-//            inputEmailOrPhone("082242454504")
-//
-//            val mockVerificationResult = Intent().apply {
-//                 putExtras(Bundle().apply {
-//                    putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-//                    putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-//                    putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "082242454504")
-//                })
-//            }
-//            intending(hasComponent(VerificationActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(
-//                    Activity.RESULT_OK,
-//                    mockVerificationResult
-//            ))
-//
-//            val mockChooseAccountFragment = Intent().apply {
-//                putExtras(Bundle().apply {
-//                    putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-//                    putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-//                    putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "082242454504")
-//                })
-//            }
-//            intending(hasComponent("com.tokopedia.loginphone.ChooseAccountActivity")).respondWith(Instrumentation.ActivityResult(
-//                    Activity.RESULT_OK,
-//                    mockChooseAccountFragment
-//            ))
-//
-//            clickSubmit()
-//        }
-//    }
+    @Test
+    /* Go to verification page if phone exist */
+    fun gotoVerificationFragment_IfPhoneExist() {
+        isDefaultRegisterCheck = false
+        val data = RegisterCheckData(isExist = true, userID = "123456", registerType = "phone", view = "082242454504")
+        registerCheckUseCaseStub.response = RegisterCheckPojo(data = data)
+
+        runTest {
+            inputEmailOrPhone("082242454504")
+            clickSubmit()
+            intended(hasComponent(VerificationActivityStub::class.java.name))
+        }
+    }
 
     @Test
     /* Show password input field when user click on submit button */
@@ -153,9 +132,23 @@ class LoginNormalCase : LoginBase() {
                 putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
             })
         }
-        intending(hasComponent(VerificationActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(
+        intending(hasComponent(VerificationActivityStub::class.java.name)).respondWith(Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
                 mockVerificationResult
+        ))
+    }
+
+    private fun mockChooseAccountSuccess() {
+//        val mockVerificationResult = Intent().apply {
+//            putExtras(Bundle().apply {
+//                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
+//                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
+//                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
+//            })
+//        }
+        intending(hasComponent(ChooseAccountActivityStub::class.java.name)).respondWith(Instrumentation.ActivityResult(
+            Activity.RESULT_OK,
+            null
         ))
     }
 
@@ -177,6 +170,37 @@ class LoginNormalCase : LoginBase() {
                     .perform(click())
             intended(hasComponent(RegisterInitialActivity::class.java.name))
             intended(hasComponent(RegisterEmailActivity::class.java.name))
+        }
+    }
+
+    @Test
+    fun gotoChangeNameIfLoginSuccess() {
+        isDefaultRegisterCheck = false
+        val regCheck = RegisterCheckData(isExist = true, userID = "123456", registerType = "email", view = "yoris.prayogo@tokopedia.com", isPending = false)
+        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
+
+        val loginToken = LoginToken(accessToken = "abc123")
+        val loginPojo = LoginTokenPojo(loginToken)
+        loginTokenUseCaseStub.response = loginPojo
+
+        val keyData = KeyData(key = "abc1234", hash = "1234")
+        val keyResponse = GenerateKeyPojo(keyData = keyData)
+        generatePublicKeyUseCaseStub.response = keyResponse
+
+        val profileInfo = ProfileInfo(userId = "123456", fullName = "CHARACTER_NOT_ALLOWED")
+        val profilePojo = ProfilePojo(profileInfo)
+        getProfileUseCaseStub.response = profilePojo
+
+
+        runTest {
+            mockVerificationSuccess()
+            mockChooseAccountSuccess()
+
+            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
+            clickSubmit()
+            inputPassword("test123")
+            clickSubmit()
+            intended(hasComponent(ChangeNameActivityStub::class.java.name))
         }
     }
 
@@ -248,14 +272,18 @@ class LoginNormalCase : LoginBase() {
             }
         }
     }
-//
-//    @Test
-//    fun checkOnlyLoading(){
-//        launchDefaultFragment()
-//        val parent : ConstraintLayout = activityTestRule.activity.findViewById<View>(R.id.parent_container) as ConstraintLayout
-//
-//        assertEquals(parent.childCount, 4)
-//    }
+
+    @Test
+    fun gotoVerification_true() {
+        runTest {
+            val viewDevOpts = onView(withText("Developer Options"))
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                viewDevOpts.check(matches(isDisplayed()))
+            } else {
+                viewDevOpts.check(matches(not(isDisplayed())))
+            }
+        }
+    }
 
     private fun clickOnViewChild(viewId: Int) = object : ViewAction {
         override fun getConstraints() = null
