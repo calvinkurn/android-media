@@ -17,12 +17,15 @@ class CheckFingerprintToggleStatusUseCase @Inject constructor(
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
-    fun checkFingerprint(onSuccess: (CheckFingerprintPojo) -> Unit,
+    fun checkFingerprint(userId: String, onSuccess: (CheckFingerprintPojo) -> Unit,
                          onError: (Throwable) -> Unit) {
         launchCatchError(dispatchers.io, {
             val data =
                 graphqlUseCase.apply {
                     setTypeClass(CheckFingerprintPojo::class.java)
+                    setRequestParams(mapOf(
+                        PARAM_USER_ID to userId
+                    ))
                     setGraphqlQuery(RegisterFingerprintUseCase.query)
                 }.executeOnBackground()
             withContext(dispatchers.main) {
@@ -36,10 +39,13 @@ class CheckFingerprintToggleStatusUseCase @Inject constructor(
     }
 
     companion object {
+        const val PARAM_USER_ID = "userID"
+
         val query: String = """
-            query check_otp_toggle {
-                OTPBiometricCheckRegistered {
-                    Registered
+            query check_otp_toggle(${'$'}userID: String!) {
+                OTPBiometricCheckToggleStatus(userID: ${'$'}userID) {
+                    is_active
+                    is_success
                     errorMessage
                }
             }""".trimIndent()

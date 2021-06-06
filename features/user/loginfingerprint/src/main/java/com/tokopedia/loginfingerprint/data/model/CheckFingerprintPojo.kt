@@ -8,8 +8,11 @@ data class CheckFingerprintPojo(
 )
 
 data class CheckFingerprintResult(
-    @SerializedName("Registered")
+    @SerializedName("is_active")
     var isRegistered: Boolean = false,
+
+    @SerializedName("is_success")
+    var isSuccess: Boolean = false,
 
     @SerializedName("errorMessage")
     var errorMessage: String = ""
