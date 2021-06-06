@@ -506,6 +506,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun onSuccessVerifyFingerprint(data: VerifyFingerprint) {
+        dismissLoadingLogin()
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.CHOOSE_ACCOUNT_FINGERPRINT).apply {
             putExtras(Bundle().apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, data.validateToken)
@@ -685,17 +686,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         fingerprint_btn.setOnClickListener {
             activity?.let { act ->
                 showBiometricPrompt()
-//                ScanFingerprintDialog(act, this@LoginEmailPhoneFragment).showWithMode(
-//                    ScanFingerprintDialog.MODE_VERIFY)
             }
         }
     }
 
     private fun showBiometricPrompt() {
+        showLoadingLogin()
         BiometricPromptHelper.showBiometricPrompt(this,
-            onSuccess = {
-                viewModel.verifyFingerprint(DeviceInfo.getAdsId(requireContext()))
-            }, onFailed = {}, onError = {})
+            onSuccess = { verifyFingerprint() }, onFailed = {}, onError = {})
+    }
+
+    private fun verifyFingerprint() {
+        viewModel.verifyFingerprint(DeviceInfo.getAdsId(requireContext()))
     }
 
     private fun setupSpannableText(){
