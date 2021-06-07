@@ -2,16 +2,19 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.error
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.shouldNotContain
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
+import java.util.HashMap
 
 internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestFixtures() {
 
@@ -233,5 +236,26 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
             getDynamicFilterUseCase.execute(any(), any())
             productListView.setDynamicFilter(dynamicFilterModel)
         }
+    }
+
+    @Test
+    fun `Open filter page for the first time with get dynamic filter API success and no warehouseId`() {
+        val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val getDynamicFilterRequestParamSlot = slot<RequestParams>()
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
+
+        `Setup choose address`(LocalCacheModel())
+        `Given get dynamic filter model API will success`(getDynamicFilterRequestParamSlot, dynamicFilterModel)
+
+        `When open filter page`(mapParameter)
+
+        val getDynamicFilterRequestParams = getDynamicFilterRequestParamSlot.captured.parameters
+        `Then verify view interactions for open filter page first time`(dynamicFilterModel)
+        `Then assert Get Dynamic Filter Request Params`(getDynamicFilterRequestParams, mapParameter)
+        `Then verify warehouseId is not sent`(getDynamicFilterRequestParams)
+    }
+
+    private fun `Then verify warehouseId is not sent`(params: HashMap<String, Any>) {
+        params.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 }

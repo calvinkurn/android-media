@@ -3,12 +3,14 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.error
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.shouldNotContain
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
@@ -202,5 +204,43 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             verifyHideLoading(productListView)
         }
+    }
+
+    @Test
+    fun `Load Data Success with empty warehouseId`() {
+        val searchProductModel = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
+        val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = "samsung"
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+        }
+
+        `Setup choose address`(LocalCacheModel())
+        setUp()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given View getQueryKey will return the keyword`(searchParameter[SearchApiConst.Q].toString())
+
+        `When Load Data`(searchParameter)
+
+        `Then verify use case request params without warehouseId`()
+        `Then verify view interaction when load data success`(searchProductModel)
+        `Then verify start from is incremented`()
+        `Then verify visitable list with product items`(visitableListSlot, searchProductModel)
+    }
+
+    private fun `Then verify use case request params without warehouseId`() {
+        val requestParams = requestParamsSlot.captured
+
+        val params = requestParams.getSearchProductParams()
+        params.getOrDefault(SearchApiConst.START, null) shouldBe "0"
+        params.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
+
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, false) shouldBe false
+        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, false) shouldBe false
     }
 }

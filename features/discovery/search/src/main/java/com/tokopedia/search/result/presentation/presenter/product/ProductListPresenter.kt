@@ -314,7 +314,8 @@ class ProductListPresenter @Inject constructor(
 
     private fun putRequestParamWarehouseId(requestParams: RequestParams) {
         val chooseAddressData = chooseAddressData ?: return
-        requestParams.putString(SearchApiConst.USER_WAREHOUSE_ID, chooseAddressData.warehouse_id)
+
+        if (chooseAddressData.warehouse_id.isNotEmpty()) requestParams.putString(SearchApiConst.USER_WAREHOUSE_ID, chooseAddressData.warehouse_id)
     }
 
     private fun putRequestParamsOtherParameters(requestParams: RequestParams, searchParameter: Map<String, Any>) {

@@ -1,9 +1,11 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.TestException
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.error
+import com.tokopedia.search.shouldNotContain
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
@@ -87,5 +89,27 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
         every { getProductCountUseCase.execute(capture(requestParamsSlot), any()) }.answers {
             secondArg<Subscriber<String>>().error(TestException())
         }
+    }
+
+    @Test
+    fun `Get product count with parameter should call get product count use case with parameters, size = 0, and no warehouseId`() {
+        `Setup choose address`(LocalCacheModel())
+
+        val successfulProductCountText = "10rb Produk"
+        `Given Get Product Count Use Case will be successful`(successfulProductCountText)
+
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true.toString())
+        `When get product count`(mapParameter)
+
+        `Then assert request params contains map parameters`(mapParameter)
+        `Then verify warehouseId is not sent`()
+        `Then assert request params has key ROWS with value 0`()
+        `Then assert view set product count`(successfulProductCountText)
+    }
+
+    private fun `Then verify warehouseId is not sent`() {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 }
