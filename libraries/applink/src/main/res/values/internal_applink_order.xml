@@ -22,7 +22,7 @@
     <string name="path_delivered" translatable="false">/delivered</string>
     <string name="path_history" translatable="false">/history</string>
     <string name="path_order" translatable="false">/order</string>
-    <string name="path_order_revamped" translatable="false">/revamped-order</string>
+    <string name="path_order_old" translatable="false">/order-old</string>
     <string name="path_orderlist" translatable="false">/orderlist</string>
     <string name="path_track" translatable="false">/track</string>
     <string name="path_cancellation_request" translatable="false">/cancellationrequest</string>
