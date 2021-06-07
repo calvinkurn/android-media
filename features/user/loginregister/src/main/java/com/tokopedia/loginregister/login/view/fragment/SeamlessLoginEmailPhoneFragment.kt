@@ -47,7 +47,6 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isEnableSmartLock = false
         isAutoLogin = false
         redirectAppLinks = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
     }

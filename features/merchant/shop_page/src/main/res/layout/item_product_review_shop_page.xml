@@ -7,7 +7,7 @@
     android:layout_marginLeft="@dimen/dp_16"
     android:divider="@drawable/line_divider"
     app:layout_insetEdge="bottom"
-    app:cardBackgroundColor="@color/Unify_N0"
+    app:cardBackgroundColor="@color/cardview_dms_background_color"
     app:cardElevation="@dimen/dp_3"
     app:cardMaxElevation="@dimen/dp_6"
     android:orientation="vertical"

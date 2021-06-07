@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    android:background="@drawable/bg_badge_circular"
+<com.tokopedia.unifyprinciples.Typography android:background="@drawable/bg_badge_circular"
     android:id="@+id/notification_badge"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textColor="@color/Unify_N0"
-    android:textSize="10sp"
-    android:paddingLeft="@dimen/dp_5"
-    android:paddingRight="@dimen/dp_5"
+    app:typographyType="small"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
     android:paddingTop="1dp"
     android:paddingBottom="1dp"
     tools:text="99"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" />
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />
 
     <!--    android:background="@drawable/circlebackground"-->
