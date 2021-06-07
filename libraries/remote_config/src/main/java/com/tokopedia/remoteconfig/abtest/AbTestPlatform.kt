@@ -239,6 +239,9 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
         const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"
 
+        const val KEY_NEW_NOTFICENTER = "NotifCenter_New"
+        const val VARIANT_NEW_NOTFICENTER = "NotifCenter_New"
+        const val VARIANT_OLD_NOTFICENTER = "NotifCenter_Old"
 
         const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
     }
