@@ -24,7 +24,7 @@ class GoogleAuthVerificationFragment : VerificationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         analytics.trackViewVerificationGoogleAuth(otpData.otpType.toString())
-        analytics.trackClickMethodOtpButton(otpData.otpType, otpData.otpMode)
+        analytics.trackClickMethodOtpButton(otpData.otpType, modeListData.modeText)
     }
 
     override fun trackSuccess() {
