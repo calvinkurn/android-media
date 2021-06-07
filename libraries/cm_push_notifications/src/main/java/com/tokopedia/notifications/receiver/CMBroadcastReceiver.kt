@@ -436,11 +436,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
         var (appLink) = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
         val carousel = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLink
-                ?: ApplinkConst.HOME)
-        intent.extras?.let { bundle ->
-            appLinkIntent.putExtras(bundle)
-        }
         startActivity(context, appLink, intent)
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
@@ -472,6 +467,10 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     appLinkIntent.putExtra(CMConstant.EXTRA_BASE_MODEL, true)
                     appLinkIntent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID,
                         dataIntent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID))
+                    appLinkIntent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID,
+                        dataIntent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID,0))
+                    appLinkIntent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID,
+                        dataIntent.getLongExtra(CMConstant.EXTRA_CAMPAIGN_ID,0))
                 }
             }
         }catch (e : Exception){}
