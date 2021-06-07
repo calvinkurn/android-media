@@ -1,6 +1,5 @@
 package com.tokopedia.loginphone.chooseaccount.view.fragment
 
-//import com.tokopedia.notifications.CMPushNotificationManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -29,6 +28,7 @@ import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContrac
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.url.TokopediaUrl
