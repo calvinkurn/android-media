@@ -5,14 +5,10 @@ import com.google.gson.annotations.SerializedName
 data class CartDetail(
         @SerializedName("cart_id")
         val cartId: String = "",
-        @SerializedName("checkbox_state")
-        val checkboxState: Boolean = false,
+        @SerializedName("selected_unavailable_action_link")
+        val selectedUnavailableActionLink: String = "",
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
-        @SerializedName("messages")
-        val messages: List<String> = emptyList(),
         @SerializedName("product")
-        val product: Product = Product(),
-        @SerializedName("selected_unavailable_action_link")
-        val selectedUnavailableActionLink: String = ""
+        val product: Product = Product()
 )

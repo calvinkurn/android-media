@@ -19,8 +19,9 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartV2Data>() {
 
     private var params: Map<String, Any?>? = null
+    private var isFromMiniCartWidget: Boolean = false
 
-    fun setParams(miniCartItemList: List<MiniCartItem>) {
+    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false) {
         val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
         miniCartItemList.forEach {
@@ -34,6 +35,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         mapParams(updateCartRequestList)
+        this.isFromMiniCartWidget = isFromMiniCartWidget
     }
 
     fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>) {
@@ -50,6 +52,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         mapParams(updateCartRequestList)
+        isFromMiniCartWidget = true
     }
 
     private fun mapParams(updateCartRequestList: MutableList<UpdateCartRequest>) {
@@ -68,8 +71,16 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
-        if (response.updateCartData.status == "OK" && response.updateCartData.data.status) {
-            return response.updateCartData
+        return if (response.updateCartData.status == "OK") {
+            if (isFromMiniCartWidget) {
+                response.updateCartData
+            } else {
+                if (response.updateCartData.data.status) {
+                    response.updateCartData
+                } else {
+                    throw ResponseErrorException(response.updateCartData.error.joinToString(", "))
+                }
+            }
         } else {
             throw ResponseErrorException(response.updateCartData.error.joinToString(", "))
         }
@@ -89,6 +100,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                 data {
                     error
                     status 
+                    message
                     toaster_action {
                         text
                         show_cta
