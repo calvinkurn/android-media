@@ -41,7 +41,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK -> {
-                    listOfComponent.add(ProductMiniSocialProofTokoNowDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductMiniSocialProofStockDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))

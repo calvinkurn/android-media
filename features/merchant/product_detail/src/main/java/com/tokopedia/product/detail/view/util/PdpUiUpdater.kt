@@ -39,8 +39,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     private val miniSocialProofMap: ProductMiniSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF] as? ProductMiniSocialProofDataModel
 
-    private val miniSocialProofTokoNowMap: ProductMiniSocialProofTokoNowDataModel?
-        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK] as? ProductMiniSocialProofTokoNowDataModel
+    private val miniSocialProofStockMap: ProductMiniSocialProofStockDataModel?
+        get() = mapOfData[ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK] as? ProductMiniSocialProofStockDataModel
 
     val basicContentMap: ProductContentDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_CONTENT] as? ProductContentDataModel
@@ -176,7 +176,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK, loadInitialData) {
-                miniSocialProofTokoNowMap?.run {
+                miniSocialProofStockMap?.run {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
                     //  TODO vindo : should update data source for stock after BE up
@@ -342,7 +342,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
 
             updateData(ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK) {
-                miniSocialProofTokoNowMap?.run {
+                miniSocialProofStockMap?.run {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true

@@ -29,6 +29,10 @@ class ProductDetailSharedViewModel : ViewModel() {
         get() = _isAddressChanged
     private val _isAddressChanged = MutableLiveData<Boolean>()
 
+    val isTokoNow: LiveData<Boolean>
+        get() = _isTokoNow
+    private val _isTokoNow = MutableLiveData<Boolean>()
+
     //Give video data from pdp fragment to video detail
     fun updateVideoDetailData(currentVideoData: ProductVideoDetailDataModel) {
         _productVideoDetailData.value = currentVideoData
@@ -46,5 +50,9 @@ class ProductDetailSharedViewModel : ViewModel() {
 
     fun setAddressChanged(shouldChanged:Boolean) {
         _isAddressChanged.value = shouldChanged
+    }
+
+    fun setTokoNow(isTokoNow: Boolean) {
+        _isTokoNow.value = isTokoNow
     }
 }

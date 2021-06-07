@@ -4,4 +4,5 @@ sealed class ProductMiniSocialProofItemType {
     object ProductMiniSocialProofChip: ProductMiniSocialProofItemType()
     object ProductMiniSocialProofText: ProductMiniSocialProofItemType()
     object ProductMiniSocialProofSingleText: ProductMiniSocialProofItemType()
+    object ProductMiniSocialProofTextDivider: ProductMiniSocialProofItemType()
 }

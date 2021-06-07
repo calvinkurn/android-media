@@ -2,10 +2,10 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.data.util.productThousandFormatted
+import com.tokopedia.product.detail.common.productThousandFormatted
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
-data class ProductMiniSocialProofTokoNowDataModel(
+data class ProductMiniSocialProofStockDataModel(
         val type: String = "",
         val name: String = "",
         var stock: Int = 0,
@@ -54,12 +54,12 @@ data class ProductMiniSocialProofTokoNowDataModel(
         return null
     }
 
-    private fun firstPositionData(type: ProductMiniSocialProofTokoNowItemType): ProductMiniSocialProofTokoNowItemDataModel {
+    private fun firstPositionData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
         return when {
-            paymentVerifiedCount != 0 -> ProductMiniSocialProofTokoNowItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount.productThousandFormatted(), type)
-            wishlistCount != 0 -> ProductMiniSocialProofTokoNowItemDataModel(WISHLIST, wishlistCount.productThousandFormatted(), type)
-            viewCount != 0 -> ProductMiniSocialProofTokoNowItemDataModel(VIEW_COUNT, viewCount.productThousandFormatted(), type)
-            else -> ProductMiniSocialProofTokoNowItemDataModel(type = type)
+            paymentVerifiedCount != 0 -> ProductMiniSocialProofItemDataModel(PAYMENT_VERIFIED, paymentVerifiedCount.productThousandFormatted(), type)
+            wishlistCount != 0 -> ProductMiniSocialProofItemDataModel(WISHLIST, wishlistCount.productThousandFormatted(), type)
+            viewCount != 0 -> ProductMiniSocialProofItemDataModel(VIEW_COUNT, viewCount.productThousandFormatted(), type)
+            else -> ProductMiniSocialProofItemDataModel(type = type)
         }
     }
 
@@ -67,7 +67,7 @@ data class ProductMiniSocialProofTokoNowDataModel(
      * Social proof mini should only show 4 of this, with hierarchy
      * When it only contains 1 data, it will show single line social proof
      */
-    private var socialProofData: List<ProductMiniSocialProofTokoNowItemDataModel> = emptyList()
+    private var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
 
     fun shouldShowSingleViewSocialProof(): Boolean {
         return ratingCount == 0 && buyerPhotosCount == 0 && stock == 0
@@ -75,36 +75,36 @@ data class ProductMiniSocialProofTokoNowDataModel(
 
     fun setSocialProofData() {
         if (shouldShowSingleViewSocialProof()) {
-            socialProofData = listOf(firstPositionData(ProductMiniSocialProofTokoNowItemType.ProductMiniSocialProofSingleText))
+            socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText))
             return
         }
         val socialProofBuilder = mutableListOf(
-                stockData(ProductMiniSocialProofTokoNowItemType.ProductMiniSocialProofTextWithDivider),
-                firstPositionData(ProductMiniSocialProofTokoNowItemType.ProductMiniSocialProofText)
+                stockData(ProductMiniSocialProofItemType.ProductMiniSocialProofTextDivider),
+                firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText)
         )
         appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder, rating.toString())
         appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
         socialProofData = socialProofBuilder.take(4)
     }
 
-    fun getSocialProofData(): List<ProductMiniSocialProofTokoNowItemDataModel> {
+    fun getSocialProofData(): List<ProductMiniSocialProofItemDataModel> {
         return socialProofData
     }
 
-    private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofTokoNowItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofTokoNowItemDataModel> {
+    private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {
         if (count != 0F) {
             if (type == RATING) {
-                list.add(ProductMiniSocialProofTokoNowItemDataModel(type, count?.productThousandFormatted()
-                        ?: "", ProductMiniSocialProofTokoNowItemType.ProductMiniSocialProofChip, ratingTitle))
+                list.add(ProductMiniSocialProofItemDataModel(type, count?.productThousandFormatted()
+                        ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip, ratingTitle))
             } else {
-                list.add(ProductMiniSocialProofTokoNowItemDataModel(type, count?.productThousandFormatted()
-                        ?: "", ProductMiniSocialProofTokoNowItemType.ProductMiniSocialProofChip))
+                list.add(ProductMiniSocialProofItemDataModel(type, count?.productThousandFormatted()
+                        ?: "", ProductMiniSocialProofItemType.ProductMiniSocialProofChip))
             }
         }
         return list
     }
 
-    private fun stockData(type: ProductMiniSocialProofTokoNowItemType): ProductMiniSocialProofTokoNowItemDataModel {
-        return ProductMiniSocialProofTokoNowItemDataModel(STOCK, stock.productThousandFormatted(), type)
+    private fun stockData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
+        return ProductMiniSocialProofItemDataModel(STOCK, stock.productThousandFormatted(), type)
     }
 }

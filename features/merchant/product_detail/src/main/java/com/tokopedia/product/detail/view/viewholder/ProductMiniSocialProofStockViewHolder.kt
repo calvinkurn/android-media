@@ -9,16 +9,19 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofTokoNowDataModel
-import com.tokopedia.product.detail.view.adapter.MiniSocialProofTokoNowAdapter
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
+import com.tokopedia.product.detail.view.adapter.MiniSocialProofAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.shimmering_social_proof.view.*
 
-class ProductMiniSocialProofTokoNowViewHolder(private val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductMiniSocialProofTokoNowDataModel>(view) {
+class ProductMiniSocialProofStockViewHolder(
+        private val view: View,
+        private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductMiniSocialProofStockDataModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_hierarchycal_social_proof_toko_now
+        val LAYOUT = R.layout.item_hierarchycal_social_proof_stock
     }
 
     init {
@@ -26,10 +29,10 @@ class ProductMiniSocialProofTokoNowViewHolder(private val view: View, private va
         initAdapter()
     }
 
-    private var miniSocialProofAdapter: MiniSocialProofTokoNowAdapter? = null
+    private var miniSocialProofAdapter: MiniSocialProofAdapter? = null
     private var miniSocialProofRecyclerView: RecyclerView? = null
 
-    override fun bind(element: ProductMiniSocialProofTokoNowDataModel) {
+    override fun bind(element: ProductMiniSocialProofStockDataModel) {
         if (!element.shouldRenderSocialProof) {
             setupLoading(element.shouldShowSingleViewSocialProof())
             showLoading()
@@ -65,7 +68,7 @@ class ProductMiniSocialProofTokoNowViewHolder(private val view: View, private va
             pdp_shimmering_social_proof.setPadding(16.toPx(), 8.toPx(), 16.toPx(), 20.toPx())
     }
 
-    private fun getComponentTrackData(element: ProductMiniSocialProofTokoNowDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
+    private fun getComponentTrackData(element: ProductMiniSocialProofStockDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 
     private fun initRecyclerView() {
         miniSocialProofRecyclerView = view.findViewById(R.id.mini_social_proof_recycler_view)
@@ -73,14 +76,14 @@ class ProductMiniSocialProofTokoNowViewHolder(private val view: View, private va
     }
 
     private fun initAdapter() {
-        miniSocialProofAdapter = MiniSocialProofTokoNowAdapter(listener)
+        miniSocialProofAdapter = MiniSocialProofAdapter(listener)
         miniSocialProofRecyclerView?.apply {
             adapter = miniSocialProofAdapter
             layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
         }
     }
 
-    private fun setAdapterData(element: ProductMiniSocialProofTokoNowDataModel) {
+    private fun setAdapterData(element: ProductMiniSocialProofStockDataModel) {
         miniSocialProofAdapter?.setData(element.getSocialProofData().toMutableList(), getComponentTrackData(element))
     }
 }

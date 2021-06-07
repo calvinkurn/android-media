@@ -43,7 +43,7 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 25/01/21
  */
-class ProductDetailShippingBottomSheet(private val isTokoNow: Boolean) : BottomSheetDialogFragment(), ProductDetailShippingListener, ChooseAddressWidget.ChooseAddressWidgetListener {
+class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDetailShippingListener, ChooseAddressWidget.ChooseAddressWidgetListener {
 
     companion object {
         const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
@@ -171,7 +171,7 @@ class ProductDetailShippingBottomSheet(private val isTokoNow: Boolean) : BottomS
         context?.let {
             ProductDetailShippingTracking.onPelajariTokoCabangClicked(sharedViewModel.rateEstimateRequest.value?.userId
                     ?: "")
-            val bottomSheet = if (isTokoNow) {
+            val bottomSheet = if (sharedViewModel.isTokoNow.value == true) {
                 ProductDetailBottomSheetBuilder.getUspTokoNowBottomSheet(it)
             } else {
                 ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)

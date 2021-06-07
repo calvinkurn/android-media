@@ -2105,25 +2105,28 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.getDynamicProductInfoP1?.let {
             DynamicProductDetailTracking.Click.eventClickShipment(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel, title, labelShipping, isCod)
             val boData = viewModel.getBebasOngkirDataByProductId()
-            sharedViewModel?.setRequestData(RatesEstimateRequest(
-                    productWeight = it.basic.weight.toFloat(),
-                    shopDomain = viewModel.getShopInfo().shopCore.domain,
-                    origin = viewModel.getMultiOriginByProductId().getOrigin(),
-                    shopId = it.basic.shopID,
-                    productId = it.basic.productID,
-                    productWeightUnit = it.basic.weightUnit,
-                    isFulfillment = viewModel.getMultiOriginByProductId().isFulfillment,
-                    destination = generateUserLocationRequestRates(viewModel.getUserLocationCache()),
-                    boType = boData.boType,
-                    freeOngkirUrl = boData.imageURL,
-                    poTime = it.data.preOrder.preorderInDays,
-                    uspImageUrl = viewModel.p2Data.value?.uspImageUrl ?: "",
-                    userId = viewModel.userId,
-                    forceRefresh = shouldRefreshShippingBottomSheet,
-                    shopTier = viewModel.getShopInfo().shopTier
-            ))
+            sharedViewModel?.apply {
+                setRequestData(RatesEstimateRequest(
+                        productWeight = it.basic.weight.toFloat(),
+                        shopDomain = viewModel.getShopInfo().shopCore.domain,
+                        origin = viewModel.getMultiOriginByProductId().getOrigin(),
+                        shopId = it.basic.shopID,
+                        productId = it.basic.productID,
+                        productWeightUnit = it.basic.weightUnit,
+                        isFulfillment = viewModel.getMultiOriginByProductId().isFulfillment,
+                        destination = generateUserLocationRequestRates(viewModel.getUserLocationCache()),
+                        boType = boData.boType,
+                        freeOngkirUrl = boData.imageURL,
+                        poTime = it.data.preOrder.preorderInDays,
+                        uspImageUrl = viewModel.p2Data.value?.uspImageUrl ?: "",
+                        userId = viewModel.userId,
+                        forceRefresh = shouldRefreshShippingBottomSheet,
+                        shopTier = viewModel.getShopInfo().shopTier
+                ))
+                setTokoNow(it.basic.isTokoNow)
+            }
             shouldRefreshShippingBottomSheet = false
-            val shippingBs = ProductDetailShippingBottomSheet(isTokoNow)
+            val shippingBs = ProductDetailShippingBottomSheet()
             shippingBs.show(getProductFragmentManager())
         }
     }
