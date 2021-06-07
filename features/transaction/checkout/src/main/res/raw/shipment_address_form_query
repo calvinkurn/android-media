@@ -17,7 +17,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       open_prerequisite_site
       eligible_new_shipping_experience
       pop_up_message
-      #error_ticker
+      error_ticker
       group_address {
         errors
         user_address {
