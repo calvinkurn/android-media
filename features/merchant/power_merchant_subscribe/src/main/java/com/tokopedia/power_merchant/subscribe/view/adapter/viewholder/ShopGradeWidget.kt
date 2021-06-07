@@ -79,18 +79,8 @@ class ShopGradeWidget(
 
         tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), getShopScoreFmt(element.shopScore)).parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
-        val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-        val thresholdInfo = if (element.pmStatus == PMStatusConst.ACTIVE) {
-            if (element.isNewSeller) {
-                val endOfTenure = ""
-                context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active_new_seller, endOfTenure)
-            } else {
-                context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.threshold, getPmTireLabel(element.pmTierType))
-            }
-        } else {
-            context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.threshold, getPmTireLabel(element.pmTierType))
-        }
-        tvPmShopGradeThreshold.text = thresholdInfo.parseAsHtml()
+        val shopGradeInfo = getPmShopGradeInfo(element)
+        tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
 
         val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
         tvPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
@@ -98,6 +88,20 @@ class ShopGradeWidget(
         tvPmShopScoreTips.setOnClickListener {
             RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
             powerMerchantTracking.sendEventClickTipsToImproveShopScore(element.shopScore.toString())
+        }
+    }
+
+    private fun getPmShopGradeInfo(element: WidgetShopGradeUiModel): String {
+        val textColor = PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        return if (element.pmStatus == PMStatusConst.ACTIVE) {
+            if (element.isNewSeller) {
+                val endOfTenure = ""
+                itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active_new_seller, endOfTenure)
+            } else {
+                itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+            }
+        } else {
+            itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.threshold, getPmTireLabel(element.pmTierType))
         }
     }
 
