@@ -161,7 +161,9 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     override fun onRemoveChooseAddressWidget() {
-        adapter.removeHomeChooseAddressWidget()
+        if(rvHome?.isComputingLayout == false) {
+            adapter.removeHomeChooseAddressWidget()
+        }
     }
 
     override fun isMainViewVisible(): Boolean {

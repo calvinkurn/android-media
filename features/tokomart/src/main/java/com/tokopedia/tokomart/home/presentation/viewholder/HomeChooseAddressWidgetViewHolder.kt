@@ -37,6 +37,7 @@ class HomeChooseAddressWidgetViewHolder(
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
                     chooseAddressWidget?.updateWidget()
+                    homeChooseAddressWidgetListener?.onRefresh()
                 }
 
                 override fun onLocalizingAddressServerDown() {
