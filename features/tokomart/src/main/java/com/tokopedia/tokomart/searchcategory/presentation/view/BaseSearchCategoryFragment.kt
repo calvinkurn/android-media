@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -193,6 +194,8 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun configureRecyclerView() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, VERTICAL)
+        staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
+
         endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
