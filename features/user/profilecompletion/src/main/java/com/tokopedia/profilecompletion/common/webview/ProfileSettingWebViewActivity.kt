@@ -20,7 +20,7 @@ class ProfileSettingWebViewActivity : BaseSimpleWebViewActivity() {
 
     companion object {
         const val KEY_QUERY_PARAM = "ld"
-        const val VALUE_QUERY_PARAM = "tokopedia-android-internal://success-change-emal"
+        const val VALUE_QUERY_PARAM = "tokopedia-android-internal://success-change-email"
 
         fun createIntent(context: Context, url: String, titleBar: Boolean = true): Intent {
             val intent = Intent(context, ProfileSettingWebViewFragment::class.java)
