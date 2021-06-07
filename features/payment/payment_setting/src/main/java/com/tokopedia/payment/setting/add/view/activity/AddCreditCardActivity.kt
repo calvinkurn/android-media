@@ -1,5 +1,6 @@
 package com.tokopedia.payment.setting.add.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,10 +13,7 @@ import com.tokopedia.payment.setting.list.model.PaymentSignature
 
 class AddCreditCardActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment? {
-        return AddCreditCardFragment.createInstance(intent.extras)
-    }
-
+    override fun getNewFragment() = AddCreditCardFragment.createInstance(intent.extras)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         validateBundleData()
@@ -29,6 +27,11 @@ class AddCreditCardActivity : BaseSimpleActivity() {
                 window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
             }
         }
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK)
+        super.onBackPressed()
     }
 
     private fun validateBundleData() {
