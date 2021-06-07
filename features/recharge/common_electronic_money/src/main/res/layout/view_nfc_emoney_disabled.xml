@@ -8,6 +8,7 @@
     android:padding="@dimen/spacing_lvl4">
 
     <ImageView
+        android:contentDescription="null"
         android:id="@+id/img_inactive_nfc"
         android:layout_width="@dimen/nfc_common_dp_local_360"
         android:layout_height="@dimen/nfc_common_dp_local_230" />
