@@ -37,7 +37,7 @@ class ReportTalkViewModel @Inject constructor(
 
     fun reportTalk(questionId: String, reason: String, reportType: Int) {
         launchCatchError(block = {
-            talkReportTalkUseCase.setParams(questionId.toIntOrZero(), if(reportType == INDEX_OF_OTHER_REPORT) reason else "", reportType)
+            talkReportTalkUseCase.setParams(questionId.toIntOrZero(), if(reportType == INDEX_OF_OTHER_REPORT) reason else "", reportType + 1)
             val response = talkReportTalkUseCase.executeOnBackground()
             if (response.talkReportTalk.data.isSuccess == MUTATION_SUCCESS) {
                 _reportTalkResult.postValue(Success(response))
@@ -51,7 +51,7 @@ class ReportTalkViewModel @Inject constructor(
 
     fun reportComment(commentId: String, reason: String, reportType: Int) {
         launchCatchError(block = {
-            talkReportCommentUseCase.setParams(commentId.toIntOrZero(), if(reportType == INDEX_OF_OTHER_REPORT) reason else "", reportType)
+            talkReportCommentUseCase.setParams(commentId.toIntOrZero(), if(reportType == INDEX_OF_OTHER_REPORT) reason else "", reportType + 1)
             val response = talkReportCommentUseCase.executeOnBackground()
             if (response.talkReportComment.data.isSuccess == MUTATION_SUCCESS) {
                 _reportCommentResult.postValue(Success(response))
