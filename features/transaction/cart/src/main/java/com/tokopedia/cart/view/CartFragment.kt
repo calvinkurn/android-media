@@ -57,6 +57,8 @@ import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_MA
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_OVERLOAD
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TIMEOUT
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
+import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
+import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
@@ -413,7 +415,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 showToastMessageRed(message ?: "")
             }
             else -> {
-                refreshCartWithProgressDialog()
+                refreshCartWithProgressDialog(GET_CART_STATE_DEFAULT)
             }
         }
     }
@@ -1152,7 +1154,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
-        refreshCartWithProgressDialog()
+        refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
     }
 
     override fun onClickShopNow() {
@@ -1860,7 +1862,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun validateShowPopUpMessage(cartListData: CartListData) {
-        if (cartListData.popUpMessage.isNotBlank()) {
+        if (cartListData.popupErrorMessage.isNotBlank()) {
+            showToastMessageRed(cartListData.popupErrorMessage)
+        } else if (cartListData.popUpMessage.isNotBlank()) {
             showToastMessageGreen(cartListData.popUpMessage)
         }
     }
@@ -3092,13 +3096,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun refreshCartWithProgressDialog() {
+    private fun refreshCartWithProgressDialog(getCartState: Int) {
         resetRecentViewList()
         if (dPresenter.dataHasChanged()) {
             showMainContainer()
-            dPresenter.processToUpdateAndReloadCartData(getCartId())
+            dPresenter.processToUpdateAndReloadCartData(getCartId(), getCartState)
         } else {
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
+            dPresenter.processInitialGetCartData(getCartId(), false, false, getCartState)
         }
     }
 

@@ -68,6 +68,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
         cartListData.localizationChooseAddressData = mapLocalizationChooseAddressData(cartDataListResponse.localizationChooseAddress)
         cartListData.popUpMessage = cartDataListResponse.popUpMessage
+        cartListData.popupErrorMessage = cartDataListResponse.popupErrorMessage
 
         mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 

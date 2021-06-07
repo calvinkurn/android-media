@@ -30,17 +30,19 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
         const val PARAM_KEY_LANG = "lang"
         const val PARAM_KEY_SELECTED_CART_ID = "selected_cart_id"
         const val PARAM_KEY_ADDITIONAL = "additional_params"
+        const val PARAM_KEY_STATE = "state"
 
         const val PARAM_VALUE_ID = "id"
     }
 
-    fun buildParams(cartId: String): Map<String, Any?> {
+    fun buildParams(cartId: String, state: Int): Map<String, Any?> {
         return mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_SELECTED_CART_ID to cartId,
                 PARAM_KEY_ADDITIONAL to mapOf(
                         KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
-                )
+                ),
+                PARAM_KEY_STATE to state
         )
     }
 

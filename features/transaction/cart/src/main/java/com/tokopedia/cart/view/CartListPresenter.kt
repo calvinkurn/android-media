@@ -121,7 +121,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         this.cartListData = cartListData
     }
 
-    override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean) {
+    override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int) {
         view?.let {
             if (initialLoad) {
                 it.renderLoadGetCartData()
@@ -129,7 +129,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 it.showProgressLoading()
             }
 
-            val params = getCartListSimplifiedUseCase?.buildParams(cartId)
+            val params = getCartListSimplifiedUseCase?.buildParams(cartId, getCartState)
             val requestParams = RequestParams.create()
             requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, params)
             compositeSubscription.add(getCartListSimplifiedUseCase?.createObservable(requestParams)
@@ -218,7 +218,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processToUpdateAndReloadCartData(cartId: String) {
+    override fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int) {
         view?.let {
             val cartItemDataList = ArrayList<CartItemData>()
             for (data in it.getAllAvailableCartDataList()) {
@@ -232,7 +232,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
-                val cartParams = getCartListSimplifiedUseCase?.buildParams(cartId)
+                val cartParams = getCartListSimplifiedUseCase?.buildParams(cartId, getCartState)
                 requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, cartParams)
 
                 compositeSubscription.add(

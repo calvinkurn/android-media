@@ -54,5 +54,7 @@ data class CartDataListResponse(
         @SerializedName("localization_choose_address")
         val localizationChooseAddress: LocalizationChooseAddress = LocalizationChooseAddress(),
         @SerializedName("pop_up_message")
-        val popUpMessage: String = ""
+        val popUpMessage: String = "",
+        @SerializedName("popup_error_message")
+        val popupErrorMessage: String = ""
 )

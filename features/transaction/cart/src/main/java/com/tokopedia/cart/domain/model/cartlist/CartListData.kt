@@ -32,5 +32,6 @@ data class CartListData(
         var showLessUnavailableDataWording: String = "",
         var showMoreUnavailableDataWording: String = "",
         var localizationChooseAddressData: LocalizationChooseAddressData = LocalizationChooseAddressData(),
-        var popUpMessage: String = ""
+        var popUpMessage: String = "",
+        var popupErrorMessage: String = ""
 ) : Parcelable
