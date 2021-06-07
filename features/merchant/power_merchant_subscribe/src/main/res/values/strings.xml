@@ -42,7 +42,7 @@
     <string name="pm_registration_header_pm">Seller yang ingin meningkatkan penjualan &amp; kepercayaan pembeli</string>
     <string name="pm_registration_header_pm_pro">Seller terbaik dengan lebih banyak keuntungan eksklusif dari Tokopedia</string>
     <string name="pm_registration_terms">Syarat Pendaftaran</string>
-    <string name="pm_registration_potential_description"><![CDATA[Dari data di 2020, dengan biaya layanan <b>%1$s</b> saja dari setiap produk terjual, tokomu berpotensi:]]></string>
+    <string name="pm_registration_potential_description"><![CDATA[Tingkatkan penjualan dengan biaya layanan <b>%1$s</b> setelah 14 Juni (sebelum 14 Juni biaya layanan <b>%2$s</b>).]]></string>
     <string name="pm_tnc_agreement_text">Saya setuju dengan <font color="#03AC0E"><b>S&amp;K</b></font> yang berlaku.</string>
     <string name="pm_grade_benefit_widget_title_pm">Keuntungan yang bisa kamu dapatkan:</string>
     <string name="pm_grade_benefit_widget_title_pm_pro">Dengan biaya layanan %1$s saja, dapatkan paket keuntungan %2$s sesuai level tokomu!</string>

@@ -336,7 +336,7 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getTableWidgetData(dataKeys: List<String>) {
+    fun getTableWidgetData(dataKeys: List<Pair<String, String>>) {
         launchCatchError(block = {
             val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
@@ -700,7 +700,11 @@ class SellerHomeViewModel @Inject constructor(
 
     private suspend fun getTableData(widgets: List<BaseWidgetUiModel<*>>): List<TableDataUiModel> {
         widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<TableWidgetUiModel>().map {
+            val postFilter = it.tableFilters.find { filter -> filter.isSelected }
+            val postFilters = postFilter?.value.orEmpty()
+            return@map Pair(it.dataKey, postFilters)
+        }
         val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getTableDataUseCase.get().params = params
         withContext(dispatcher.main) {

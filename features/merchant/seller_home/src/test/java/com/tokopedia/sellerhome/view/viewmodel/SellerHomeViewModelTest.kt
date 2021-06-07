@@ -760,7 +760,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get carousel widget data then returns success results`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val carouselList = listOf(CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel())
 
         getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
@@ -784,7 +784,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get carousel widget data then returns failed results`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val throwable = MessageErrorException("error")
 
         getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
@@ -805,7 +805,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get table widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -829,7 +829,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get table widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -850,7 +850,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get pie chart widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
 
         getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -874,7 +874,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get pie chart widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -895,7 +895,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get bar chart widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
 
         getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -919,7 +919,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get bar chart widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -940,7 +940,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get multi line graph widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
         val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
 
         getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -967,7 +967,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get multi line graph widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -988,7 +988,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get announcement widget data`() = runBlocking {
-        val dataKeys = listOf(anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString())
         val result = listOf(AnnouncementDataUiModel())
 
         getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
@@ -1015,7 +1015,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get announcement widget data`() = runBlocking {
-        val dataKeys = listOf(anyString(), anyString())
+        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
 
         getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
 
@@ -1462,7 +1462,7 @@ class SellerHomeViewModelTest {
                         isFromCache = false,
                         isNeedToBeRemoved = false,
                         emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf(PostFilterUiModel("", "", true))),
+                        postFilter = listOf(WidgetFilterUiModel("", "", true))),
                 SectionWidgetUiModel(
                         id = "section_other2",
                         widgetType = WidgetType.SECTION,
@@ -1816,7 +1816,7 @@ class SellerHomeViewModelTest {
                         isFromCache = false,
                         isNeedToBeRemoved = false,
                         emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf(PostFilterUiModel("", "", false)))
+                        postFilter = listOf(WidgetFilterUiModel("", "", false)))
         )
 
         val postData = PostListDataUiModel(DATA_KEY_POST_LIST, items = listOf(PostUiModel()), showWidget = true)
@@ -2007,7 +2007,8 @@ class SellerHomeViewModelTest {
                         isLoading = false,
                         isFromCache = false,
                         isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                        tableFilters = listOf()),
                 PieChartWidgetUiModel(
                         id = DATA_KEY_PIE_CHART,
                         widgetType = WidgetType.PIE_CHART,

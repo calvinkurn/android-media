@@ -36,8 +36,7 @@ data class ShopStatus(
                 STATUS_ACTIVE -> PowerMerchantStatus.Active
                 STATUS_INACTIVE -> RegularMerchant.NeedUpgrade
                 STATUS_IDLE -> PowerMerchantStatus.NotActive
-                STATUS_PENDING -> PowerMerchantStatus.OnVerification
-                else -> RegularMerchant.NeedVerification
+                else -> RegularMerchant.NeedUpgrade
             }
         }
     }

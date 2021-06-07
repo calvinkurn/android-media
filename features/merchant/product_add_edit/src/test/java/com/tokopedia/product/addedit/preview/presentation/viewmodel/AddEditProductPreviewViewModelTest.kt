@@ -220,6 +220,46 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun `When check shouldShowMultiLocationTicker Expect should return expected result`() {
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(true)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(false)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(false)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(false)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(true)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("12")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(false)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+    }
+
+    @Test
     fun `When check product input model Expect should return expected result`() {
         val product = MediatorLiveData<ProductInputModel>()
         product.value = ProductInputModel()
@@ -688,6 +728,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetShopId_thenReturnDefault() {
         coEvery { userSession.shopId } returns defaultShopId
+    }
+
+    private fun onGetIsMultiLocationShop_thenReturn(isMultiLocationShop: Boolean) {
+        coEvery { userSession.isMultiLocationShop } returns isMultiLocationShop
     }
 
     private fun onSaveProductDraft_thenFailed() {

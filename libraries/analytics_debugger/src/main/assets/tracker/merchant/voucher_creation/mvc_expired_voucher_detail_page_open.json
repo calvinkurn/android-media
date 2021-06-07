@@ -1,0 +1,14 @@
+{
+  "readme": "open ended voucher detail page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "openScreen",
+      "screenName" : "/voucherdetailpage - berakhir",
+      "isLoggedInStatus" : ".+",
+      "currentSite" : "tokopediaseller",
+      "userId" : ".+",
+      "businessUnit" : "physical goods"
+    }
+  ]
+}
