@@ -407,7 +407,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
         onBoardingCoachMark?.onFinishListener = {
             viewModel.markFinishedSellerOnBoarding()
             switcher?.setShowListener { }
-            analytic.trackClickOnBoardingCta(role, 2, "selesai")
+            analytic.trackClickOnBoardingCta(role, anchors.lastIndex, "selesai")
         }
         onBoardingCoachMark?.onDismissListener = {
             viewModel.markFinishedSellerOnBoarding()
@@ -428,26 +428,28 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     }
 
     private fun onChangeOnBoardingStep(currentIndex: Int, anchors: ArrayList<CoachMark2Item>) {
-        if (currentIndex == 2) {
+        val coachMarkItem = anchors.getOrNull(currentIndex) ?: return
+        val delayMillis = 250L
+        if (coachMarkItem.title == getString(R.string.inbox_title_onboarding_3)) {
             onBoardingCoachMark?.isDismissed = true
             switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
             switcher?.setShowListener {
                 switcher?.let {
                     anchors.last().anchorView = it.bottomSheetWrapper
                     Handler().postDelayed({
-                        showDelayedOnBoarding(anchors, 2)
-                    }, 250)
+                        showDelayedOnBoarding(anchors, currentIndex)
+                    }, delayMillis)
                 }
             }
-        } else if (currentIndex == 1) {
+        } else if (coachMarkItem.title == getString(R.string.inbox_title_onboarding_2)) {
             switcher?.dialog?.let {
                 onBoardingCoachMark?.isDismissed = true
                 if (it.isShowing) {
                     switcher?.dismiss()
                 }
                 Handler().postDelayed({
-                    showDelayedOnBoarding(anchors, 1)
-                }, 250)
+                    showDelayedOnBoarding(anchors, currentIndex)
+                }, delayMillis)
             }
         }
     }
