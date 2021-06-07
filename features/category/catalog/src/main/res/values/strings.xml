@@ -14,4 +14,6 @@
     <string name="catalog_search_product_zero_count_text">Tidak ada produk yang sesuai</string>
     <string name="catalog_no_products_title">Produk tidak ditemukan</string>
     <string name="catalog_no_products_body">Coba ubah atau kurangi filter yang sedang aktif di ini:</string>
+    <string name="catalog_product_comparasion">Perbandingan produk</string>
+    <string name="catalog_feature_not_available">tidak tersedia</string>
 </resources>
