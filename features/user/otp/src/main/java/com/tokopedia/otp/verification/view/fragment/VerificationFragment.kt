@@ -71,7 +71,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     protected lateinit var otpData: OtpData
-    private lateinit var modeListData: ModeListData
+    protected lateinit var modeListData: ModeListData
     private lateinit var countDownTimer: CountDownTimer
 
     private var isRunningCountDown = false

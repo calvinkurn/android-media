@@ -36,7 +36,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                String.format("click %s - %s", otpType.toString(), modeName)))
+                String.format("click - %s - %s", otpType.toString(), modeName)))
     }
 
     fun trackClickInactivePhoneNumber(otpType: String) {

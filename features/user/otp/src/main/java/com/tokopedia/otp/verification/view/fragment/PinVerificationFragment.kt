@@ -21,6 +21,10 @@ class PinVerificationFragment : VerificationFragment() {
     override fun initView() {
         super.initView()
         viewBound.pin?.type = PinUnify.TYPE_HIDDEN
+
+        if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE) {
+            analytics.trackGenerateOtp(otpData, modeListData, true)
+        }
     }
 
     override fun setFooterText(spannable: Spannable?) {
