@@ -19,16 +19,28 @@ data class WatermarkImage(
     var position: WatermarkPosition = WatermarkPosition()
 ) {
 
-    fun positionX(x: Double) {
+    fun setImageBitmap(value: Bitmap) = apply {
+        this.image = value
+    }
+
+    fun positionX(x: Double) = apply {
         position.positionX = x
     }
 
-    fun positionY(y: Double) {
+    fun positionY(y: Double) = apply {
         position.positionX = y
     }
 
-    fun setRotation(rotation: Double) {
+    fun rotation(rotation: Double) = apply {
         position.rotation = rotation
+    }
+
+    fun imageAlpha(value: Int) = apply {
+        this.alpha = value
+    }
+
+    fun imageSize(value: Double) = apply {
+        this.size = value
     }
 
     fun imageDrawable(value: Int) = apply {

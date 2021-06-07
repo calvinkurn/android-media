@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.common.presenter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.ExifInterface;
 
@@ -106,16 +107,22 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                 }
                             }
                         })
-                        .flatMap(new Func1<String, Observable<Bitmap>>() {
+                        .flatMap(new Func1<String, Observable<Pair<Bitmap, Bitmap>>>() {
                             @Override
-                            public Observable<Bitmap> call(String path) {
-                                Bitmap bitmap = ImageProcessingUtil.getBitmapFromPath(path);
-                                return Observable.just(bitmap);
+                            public Observable<Pair<Bitmap, Bitmap>> call(String path) {
+                                Bitmap mainBitmap = ImageProcessingUtil.getBitmapFromPath(path);
+
+                                Bitmap logoBitmap = BitmapFactory.decodeResource(
+                                        getView().getContext().getResources(),
+                                        R.drawable.ic_tokopedia_text
+                                );
+
+                                return Observable.just(new Pair<>(mainBitmap, logoBitmap));
                             }
                         })
-                        .flatMap(new Func1<Bitmap, Observable<Bitmap>>() {
+                        .flatMap(new Func1<Pair<Bitmap, Bitmap>, Observable<Bitmap>>() {
                             @Override
-                            public Observable<Bitmap> call(Bitmap bitmap) {
+                            public Observable<Bitmap> call(Pair<Bitmap, Bitmap> bitmaps) {
                                 WatermarkText watermarkText = new WatermarkText()
                                         .contentText(" Tokopedia ")
                                         .positionX(0.5)
@@ -125,9 +132,18 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                         .textSize(20)
                                         .textColor(Color.WHITE);
 
+                                WatermarkImage watermarkImage = new WatermarkImage()
+                                        .setImageBitmap(bitmaps.getSecond())
+                                        .positionX(0.5)
+                                        .positionY(0.5)
+                                        .rotation(45)
+                                        .imageAlpha(150)
+                                        .imageSize(20);
+
                                 return Observable.just(WatermarkBuilder
-                                        .create(getView().getContext(), bitmap)
-                                        .loadWatermarkText(watermarkText)
+                                        .create(getView().getContext(), bitmaps.getFirst())
+//                                        .loadWatermarkText(watermarkText)
+                                        .loadWatermarkImage(watermarkImage)
                                         .setTileMode(true)
                                         .getWatermark()
                                         .getOutputImage()
