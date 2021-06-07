@@ -37,7 +37,7 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
     }
 
     override fun onItemClick(item: WidgetFilterUiModel) {

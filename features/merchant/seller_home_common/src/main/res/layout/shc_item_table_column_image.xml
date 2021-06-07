@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl2">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgTableColumn"
         android:maxWidth="@dimen/shc_dimen_46dp"
         android:layout_width="match_parent"
