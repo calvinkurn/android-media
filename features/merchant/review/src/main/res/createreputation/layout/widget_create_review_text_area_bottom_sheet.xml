@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -14,6 +13,19 @@
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl2"
         android:layout_above="@id/incentiveHelperTypography" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/review_text_area_bottomsheet_templates_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_12"
+        android:visibility="gone"
+        android:paddingBottom="@dimen/dp_12"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/incentiveHelperTypography"

@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.domain.usecase
+package com.tokopedia.review.feature.ovoincentive.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -28,6 +28,7 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
                     numbered_list
                     cta_text
                     amount
+                    bottom_sheet
                   }
                 }
             """

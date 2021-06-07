@@ -9,7 +9,7 @@ import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIncentiveOvo
+import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevMarkAsSeenUseCase
 import com.tokopedia.review.feature.inbox.pending.domain.usecase.ProductrevWaitForFeedbackUseCase
@@ -23,11 +23,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewPendingViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers,
-    private val userSession: UserSessionInterface,
-    private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
-    private val getProductIncentiveOvo: GetProductIncentiveOvo,
-    private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase
+        private val dispatchers: CoroutineDispatchers,
+        private val userSession: UserSessionInterface,
+        private val productrevWaitForFeedbackUseCase: ProductrevWaitForFeedbackUseCase,
+        private val getProductIncentiveOvo: GetProductIncentiveOvo,
+        private val markAsSeenUseCase: ProductrevMarkAsSeenUseCase
 ) : BaseViewModel(dispatchers.io) {
 
     private val _reviewList = MutableLiveData<ReviewViewState<ProductrevWaitForFeedbackResponse>>()
