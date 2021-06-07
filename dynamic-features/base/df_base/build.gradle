@@ -80,6 +80,7 @@ dependencies {
     implementation project(rootProject.ext.features.recharge_slice)
     implementation project(rootProject.ext.features.travel_slice)
     implementation project(rootProject.ext.features.digitalCheckout)
+    implementation project(rootProject.ext.features.rechargePdpEmoney)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
