@@ -11,7 +11,7 @@ import kotlin.math.max
  * Created by mzennis on 25/05/20.
  */
 class PlayCountDownTimer @Inject constructor(
-    private val localCacheHandler: LocalCacheHandler
+    private val cacheHandler: LocalCacheHandler
     ) {
 
     val timeElapsed: String
@@ -58,7 +58,7 @@ class PlayCountDownTimer @Inject constructor(
     }
 
     private fun removeLastRemainingMillis() {
-        localCacheHandler.remove(KEY_REMAINING_MILLIS)
+        cacheHandler.remove(KEY_REMAINING_MILLIS)
     }
 
     fun restart(duration: Long) {
@@ -67,7 +67,7 @@ class PlayCountDownTimer @Inject constructor(
     }
 
     fun resume() {
-        val lastMillis = localCacheHandler.getLong(KEY_REMAINING_MILLIS, 0L)
+        val lastMillis = cacheHandler.getLong(KEY_REMAINING_MILLIS, 0L)
         restart(lastMillis)
     }
 
@@ -110,7 +110,8 @@ class PlayCountDownTimer @Inject constructor(
     )
 
     private fun saveLastRemainingMillis() {
-        localCacheHandler.putLong(KEY_REMAINING_MILLIS, mRemainingMillis)
+        cacheHandler.putLong(KEY_REMAINING_MILLIS, mRemainingMillis)
+        cacheHandler.applyEditor()
     }
 
     companion object {

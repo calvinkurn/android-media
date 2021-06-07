@@ -11,7 +11,7 @@ import com.tokopedia.play.broadcaster.view.state.isNetworkTrouble
  */
 class PlayLivePusherMediator(
     private val livePusher: PlayLivePusher,
-    private val localCacheHandler: LocalCacheHandler
+    private val cacheHandler: LocalCacheHandler
 ) : PlayLivePusher by livePusher {
 
     private var pauseDuration = 0L
@@ -79,21 +79,22 @@ class PlayLivePusherMediator(
     }
 
     private fun setLastPauseMillis() {
-        localCacheHandler.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())
+        cacheHandler.putLong(KEY_PAUSE_TIME, System.currentTimeMillis())
+        cacheHandler.applyEditor()
     }
 
     private fun isReachMaxPauseDuration(): Boolean {
-        val lastPauseMillis = localCacheHandler.getLong(KEY_PAUSE_TIME, 0L)
+        val lastPauseMillis = cacheHandler.getLong(KEY_PAUSE_TIME, 0L)
         val currentMillis = System.currentTimeMillis()
         if (lastPauseMillis > 0 && ((currentMillis - lastPauseMillis) > pauseDuration)) {
-            localCacheHandler.remove(KEY_PAUSE_TIME)
+            cacheHandler.remove(KEY_PAUSE_TIME)
             return true
         }
         return false
     }
 
     private fun removeLastPauseMillis() {
-        localCacheHandler.remove(KEY_PAUSE_TIME)
+        cacheHandler.remove(KEY_PAUSE_TIME)
     }
 
     companion object {

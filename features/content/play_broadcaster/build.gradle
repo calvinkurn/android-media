@@ -90,7 +90,10 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.icons
 
-    implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:2.0.3'
+    implementation files('libs/rtplibrary-release.aar')
+    implementation files('libs/encoder-release.aar')
+    implementation files('libs/rtmp-release.aar')
+    //implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:2.0.3'
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
