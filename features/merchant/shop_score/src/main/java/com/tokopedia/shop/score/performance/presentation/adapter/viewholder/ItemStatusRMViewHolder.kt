@@ -43,7 +43,7 @@ class ItemStatusRMViewHolder(view: View,
 
     private fun setupBackgroundColor() {
         with(itemView) {
-            containerEligiblePowerMerchant?.setBackgroundColor(ContextCompat.getColor(context, R.color.Unify_N0))
+            containerEligiblePowerMerchant?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             iv_bg_eligible_rm?.showWithCondition(!context.isDarkMode())
         }
     }

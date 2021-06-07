@@ -35,7 +35,14 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     private val penaltyDetailStepperAdapter by lazy { PenaltyDetailStepperAdapter() }
 
+    private var itemPenalty: ItemPenaltyUiModel? = null
+    private var keyCacheManagerId = ""
+
     override fun getScreenName(): String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun initInjector() {
         getComponent(PenaltyComponent::class.java).inject(this)
@@ -47,13 +54,18 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.intent?.let {
+            keyCacheManagerId = it.getStringExtra(KEY_CACHE_MANAGE_ID) ?: ""
+        }
+        context?.let {
+            val cacheManager = SaveInstanceCacheManager(it, keyCacheManagerId)
+            itemPenalty = cacheManager.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
+                    ?: ItemPenaltyUiModel()
+        }
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
-        val cacheManager = context?.let { SaveInstanceCacheManager(it, activity?.intent?.getStringExtra(KEY_CACHE_MANAGE_ID)) }
-        val itemPenalty = cacheManager?.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
-                ?: ItemPenaltyUiModel()
-        getPenaltyDetail(itemPenalty)
+        itemPenalty?.let { getPenaltyDetail(it) }
         observePenaltyDetailData()
     }
 
@@ -97,7 +109,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         val gridLayoutManager = GridLayoutManager(context, 5)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (stepperList.size == position+1) {
+                return if (stepperList.size == position + 1) {
                     SPAN_WIDTH_LAST_ITEM
                 } else SPAN_WIDTH_DEFAULT
             }
