@@ -4,22 +4,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:animateLayoutChanges="true"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tokonowSearchCategoryBackgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/tokomart_header_background_content_description"
+        app:srcCompat="@drawable/tokomart_ic_header_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:id="@+id/tokonowSearchCategoryStatusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_25"
+        android:layout_gravity="top"
+        android:background="@color/Unify_G500"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/tokonowSearchCategoryNavToolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/Unify_N0"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        app:toolbarAlwaysShowShadow="false"
+        app:toolbarAlwaysShowShadow="true"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeSearchbar"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInvertSearchBarColor="true"
         app:toolbarInitialTheme="light" />
 
     <com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
@@ -27,7 +53,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tokonowSearchCategoryNavToolbar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 

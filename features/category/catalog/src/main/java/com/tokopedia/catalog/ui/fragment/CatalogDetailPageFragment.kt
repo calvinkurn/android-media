@@ -21,6 +21,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailAdapter
 import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
@@ -127,11 +128,11 @@ class CatalogDetailPageFragment : Fragment(),
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
         activity?.let { observer ->
+            userSession = UserSession(observer)
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
-            catalogDetailPageViewModel.getProductCatalog(catalogId)
+            catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
             showShimmer()
-            userSession = UserSession(observer)
         }
 
         setupRecyclerView(view)
@@ -222,7 +223,7 @@ class CatalogDetailPageFragment : Fragment(),
             shimmerLayout?.show()
             bottom_sheet_fragment_container.show()
             global_error.hide()
-            catalogDetailPageViewModel.getProductCatalog(catalogId)
+            catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
         }
     }
 
@@ -363,6 +364,17 @@ class CatalogDetailPageFragment : Fragment(),
                 } catch (e: Throwable) {
                 }
             }
+        }
+    }
+
+    override fun comparisionCatalogClicked(comparisionCatalogId: String) {
+        context?.let {
+            CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
+                    "origin: $catalogId - destination: $comparisionCatalogId",userSession.userId)
+            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisionCatalogId}")
         }
     }
 
