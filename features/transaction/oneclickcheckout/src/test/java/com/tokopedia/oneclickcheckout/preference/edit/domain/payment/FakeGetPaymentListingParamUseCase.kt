@@ -1,7 +1,8 @@
 package com.tokopedia.oneclickcheckout.preference.edit.domain.payment
 
-import com.tokopedia.oneclickcheckout.preference.edit.data.payment.ListingParam
-import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
+import com.tokopedia.oneclickcheckout.payment.domain.GetPaymentListingParamUseCase
+import com.tokopedia.oneclickcheckout.payment.list.data.ListingParam
+import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamRequest
 
 class FakeGetPaymentListingParamUseCase: GetPaymentListingParamUseCase {
 

@@ -22,29 +22,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".preference.edit.view.PreferenceEditActivity"
-            android:label="@string/title_one_click_checkout_preference"
+            android:name=".payment.list.view.PaymentListingActivity"
+            android:label="@string/title_one_click_checkout_choose_payment_method"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_preference_edit"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".preference.edit.view.payment.creditcard.CreditCardPickerActivity"
+            android:name=".payment.creditcard.CreditCardPickerActivity"
             android:label="@string/title_one_click_checkout_credit_card_and_debit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".preference.edit.view.payment.topup.OvoTopUpWebViewActivity"
+            android:name=".payment.topup.view.OvoTopUpWebViewActivity"
             android:label="@string/title_one_click_checkout_top_up_ovo"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />

@@ -22,7 +22,7 @@ open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSu
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        orderSummaryAnalytics = OrderSummaryAnalytics()
+        component.inject(this)
     }
 
     override fun getComponent(): OrderSummaryPageComponent {
