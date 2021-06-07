@@ -1,0 +1,104 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 123,
+          "name": "angsuran-kredit",
+          "label": "Angsuran Kredit",
+          "icon": ""
+        },
+        "recommendations": [
+          {
+            "iconUrl": "https://ecs7.tokopedia.net/img/recharge/operator/multifinance-radana.png",
+            "title": "Radana Finance",
+            "clientNumber": "191111424111",
+            "appLink": "tokopedia://digital/form?category_id=7&client_number=191111424111&product_id=407&operator_id=88&is_from_widget=true",
+            "webLink": "https://pulsa.tokopedia.com/?action=init_data&operator_id=88&product_id=407&client_number=191111424111",
+            "type": "history",
+            "categoryId": 7,
+            "productId": 407,
+            "isATC": true,
+            "description": "",
+            "operatorID": 88
+          }
+        ],
+        "promos": [
+          {
+            "id": 2300,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/4/7/22885574/22885574_de60a0e2-37db-4082-b66c-c0b7843efe86.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-2/",
+            "status": 1,
+            "title": "Top Up, Tagihan, Travel, Entertainment cashback hingga Rp400rb.",
+            "subtitle": "Kode Promo: {DGTOPED}",
+            "promo_code": "DGTOPED"
+          },
+          {
+            "id": 2978,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-5/",
+            "status": 1,
+            "title": "[Pengguna Baru] Top Up Pulsa & Token Listrik Diskon Rp15rb",
+            "subtitle": "kode promo : {DISKON15}",
+            "promo_code": "DISKON15"
+          },
+          {
+            "id": 2897,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/18/144156949/144156949_ad533a35-5890-4f34-9718-d1ba140cd64f.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-10",
+            "status": 1,
+            "title": "[DGELECTRO]. Bayar Tagihan Dapat Kupon Cashback Belanja Elektronik",
+            "subtitle": "Kode Promo: {DGELECTRO}",
+            "promo_code": "DGELECTRO"
+          },
+          {
+            "id": 2476,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-8",
+            "status": 1,
+            "title": "[FASHDG] Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+            "subtitle": "kode promo : {FASHDG}",
+            "promo_code": "FASHDG"
+          },
+          {
+            "id": 2930,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "tokopedia://digital/form?category_id=7&menu_id=123&template=general",
+            "status": 1,
+            "title": "Cobain Yuk! Bayar Angsuran KTA DBS Cashback hingga Rp30rb",
+            "subtitle": "Kode Promo {BAYARDBSKTA}",
+            "promo_code": "BAYARDBSKTA"
+          },
+          {
+            "id": 2796,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/8/132674561/132674561_9f232584-32f6-425e-90f3-93aa9cfbd43b.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-angsuran-5/",
+            "status": 1,
+            "title": "[Angsuran Kredivo] Bayar Cicilan Kredivo, Dapat Kupon Diskon Belanja 10rb",
+            "subtitle": "Kode Promo: {KREDIVOHEMAT}",
+            "promo_code": "KREDIVOHEMAT"
+          }
+        ],
+        "tickers": [
+          {
+            "ID": 132,
+            "Name": "Sudah Tersedia Pembayaran KTA Bank DBS",
+            "Content": "Sekarang kamu sudah bisa membayarkan KTA Bank DBS mu disini!",
+            "Type": "info",
+            "Environment": "all",
+            "ActionText": "Bayar Sekarang",
+            "ActionLink": ""
+          }
+        ],
+        "banners": [],
+        "express_checkout": false
+      }
+    }
+  }
+]
