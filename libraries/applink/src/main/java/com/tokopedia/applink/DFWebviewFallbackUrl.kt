@@ -29,7 +29,9 @@ object DFWebviewFallbackUrl {
     const val ENTERTAINMENT_EVENT = "https://www.tokopedia.com/events"
     const val ENTERTAINMENT_DEALS = "https://www.tokopedia.com/deals"
 
+    //Travel
     const val TRAVEL_FLIGHT = "https://www.tokopedia.com/flight"
+    const val TRAVEL_HOTEL = "https://www.tokopedia.com/hotel"
 
     // User Profile
     const val USER_PROFILE_SETTINGS = "https://m.tokopedia.com/user/profile/edit"
