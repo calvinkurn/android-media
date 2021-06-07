@@ -2,6 +2,7 @@ package com.tokopedia.notifications.receiver
 
 import android.app.Activity
 import android.content.*
+import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
@@ -208,12 +209,12 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
         val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink
+       /* val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink
                 ?: ApplinkConst.HOME)
         intent.extras?.let { bundle ->
             appLinkIntent.putExtras(bundle)
-        }
-        startActivity(context, appLinkIntent, baseNotificationModel.appLink)
+        }*/
+        startActivity(context, baseNotificationModel.appLink, intent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
@@ -247,14 +248,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 ProductAnalytics.clickProductCard(userSession.userId, it, productInfo)
             }
         }
-
-        val appLinkIntent = RouteManager.getIntent(
-                context.applicationContext,
-                productInfo.appLink ?: ApplinkConst.HOME
-        )
-
-        intent.extras?.let { appLinkIntent.putExtras(it) }
-        startActivity(context, appLinkIntent, productInfo.appLink)
+        startActivity(context, productInfo.appLink, intent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
         clearProductImages(context.applicationContext)
@@ -299,12 +293,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         val grid: Grid = intent.getParcelableExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA)
         sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,
                 baseNotificationModel, CMConstant.NotificationType.GRID_NOTIFICATION, grid.element_id)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, grid.appLink
-                ?: ApplinkConst.HOME)
-        intent.extras?.let {
-            appLinkIntent.putExtras(it)
-        }
-        startActivity(context, appLinkIntent, grid.appLink)
+        startActivity(context, grid.appLink, intent)
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
@@ -326,12 +315,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 CMEvents.postGAEvent(PersistentEvent.EVENT, PersistentEvent.EVENT_CATEGORY,
                         persistentButton.text ?: "", persistentButton.appLink ?: "")
             }
-            val appLinkIntent = RouteManager.getIntent(context.applicationContext, persistentButton.appLink
-                    ?: ApplinkConst.HOME)
-            intent.extras?.let {
-                appLinkIntent.putExtras(it)
-            }
-            startActivity(context, appLinkIntent, persistentButton.appLink)
+            startActivity(context, persistentButton.appLink, intent)
             sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.PERSISTENT, persistentButton.element_id)
 
         }
@@ -381,14 +365,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 }
 
                 // applink handler for action button
-                val appLinkIntent = RouteManager.getIntent(
-                        context.applicationContext,
-                        it.appLink ?: ApplinkConst.HOME
-                )
-                intent.extras?.let { bundle ->
-                    appLinkIntent.putExtras(bundle)
-                }
-                startActivity(context, appLinkIntent, it.appLink)
+                startActivity(context, it.appLink, intent)
                 sendElementClickPushEvent(
                         context,
                         notificationData,
@@ -430,9 +407,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         }
 
         actionButton.let {
-            val intent = RouteManager.getIntent(context.applicationContext, it.appLink)
-            startActivity(context, intent, it.appLink)
-
+            startActivity(context,it.appLink, null)
             sendElementClickPushEvent(
                     context,
                     notificationData,
@@ -471,7 +446,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         intent.extras?.let { bundle ->
             appLinkIntent.putExtras(bundle)
         }
-        startActivity(context, appLinkIntent, appLink)
+        startActivity(context, appLink, intent)
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
 
@@ -484,13 +459,32 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 })
     }
 
-    private fun startActivity(context: Context, intent: Intent, appLink: String?) {
+    private fun startActivity(context: Context, appLink: String?, dataIntent : Intent?) {
         try {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            context.applicationContext.startActivity(intent)
+            val appLinkIntent = getAppLinkIntent(context, appLink)
+            copyDataIntentToAppLinkIntent(appLinkIntent, dataIntent)
+            appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            context.applicationContext.startActivity(appLinkIntent)
             CMNotificationUtils.sendUTMParamsInGTM(appLink)
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
         }
+    }
+
+    private fun copyDataIntentToAppLinkIntent(appLinkIntent: Intent, dataIntent: Intent?){
+        try {
+            dataIntent?.let { dataIntent->
+                if(dataIntent.hasExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID)){
+                    appLinkIntent.putExtra(CMConstant.EXTRA_BASE_MODEL, true)
+                    appLinkIntent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID,
+                        dataIntent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID))
+                }
+            }
+        }catch (e : Exception){}
+
+    }
+
+    private fun getAppLinkIntent(context: Context, appLink: String?) : Intent{
+        return RouteManager.getIntent(context.applicationContext, appLink ?: ApplinkConst.HOME)
     }
 
     private fun sendClickPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel?, pushType: String) {
