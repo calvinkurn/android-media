@@ -83,6 +83,8 @@ data class DynamicHomeChannel(
             val widgetParam: String = "",
             @SerializedName("token")
             var token: String = "",
+            @SerializedName("dividerType")
+            val dividerType: Int = DIVIDER_NO_DIVIDER,
             var timestamp: String = "",
             var isCache: Boolean = true
     ) : ImpressHolder() {
@@ -343,6 +345,10 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
+            const val DIVIDER_NO_DIVIDER = 0
+            const val DIVIDER_TOP = 1
+            const val DIVIDER_BOTTOM = 2
+            const val DIVIDER_TOP_AND_BOTTOM = 3
         }
     }
 
