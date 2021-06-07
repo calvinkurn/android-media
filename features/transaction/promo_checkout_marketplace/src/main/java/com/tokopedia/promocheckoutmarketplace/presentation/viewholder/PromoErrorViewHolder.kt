@@ -25,7 +25,7 @@ class PromoErrorViewHolder(private val view: View,
             setDescription(element.uiData.description)
             setPrimaryCTAText(element.uiData.buttonText)
             setPrimaryCTAClickListener {
-                listener.onClickErrorStateButton()
+                listener.onClickErrorStateButton(element.uiData.buttonDestination)
             }
         }
     }

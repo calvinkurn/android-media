@@ -22,5 +22,5 @@ interface PromoCheckoutActionListener {
 
     fun onClickEmptyStateButton(element: PromoEmptyStateUiModel)
 
-    fun onClickErrorStateButton()
+    fun onClickErrorStateButton(destination: String)
 }

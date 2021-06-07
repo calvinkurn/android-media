@@ -156,6 +156,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         private const val PREFERENCES_NAME = "promo_coachmark_preferences"
 
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
+        private const val DESTINATION_BACK = "back"
+        private const val DESTINATION_REFRESH = "refresh"
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
@@ -1081,10 +1083,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
-    override fun onClickErrorStateButton() {
-        val intent = Intent()
-        setResultErrorPromo(intent)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+    override fun onClickErrorStateButton(destination: String) {
+        if (destination.equals(DESTINATION_BACK, true)) {
+            val intent = Intent()
+            setResultErrorPromo(intent)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else if (destination.equals(DESTINATION_REFRESH, true)) {
+            reloadData()
+        }
     }
 }

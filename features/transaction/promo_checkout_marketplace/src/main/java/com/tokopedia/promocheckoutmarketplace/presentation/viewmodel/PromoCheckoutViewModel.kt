@@ -333,6 +333,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     private fun handleShowErrorPage(errorPage: ErrorPage) {
+        setFragmentStateStopLoading()
         val errorState = uiModelMapper.mapErrorState(errorPage)
         _promoErrorStateUiModel.value = errorState
     }
