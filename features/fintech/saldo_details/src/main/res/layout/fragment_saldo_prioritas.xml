@@ -35,7 +35,6 @@
             app:labelTitle="@string/sp_label_new"
             app:labelType="general_dark_orange" />
 
-        <!--@Todo Check UI-->
         <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
             android:id="@+id/sp_enable_switch"
             android:layout_width="wrap_content"
@@ -140,7 +139,6 @@
             android:layout_marginTop="@dimen/unify_space_4"
             android:layout_marginBottom="@dimen/unify_space_4" />
 
-        <!--@Todo check?-->
         <LinearLayout
             android:id="@+id/sp_action_list"
             android:layout_width="match_parent"

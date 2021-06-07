@@ -57,7 +57,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         val bundle = arguments
         val saveInstanceCachemanagerId = bundle?.getString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID)
                 ?: ""
-        saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), saveInstanceCachemanagerId)
+        saveInstanceCacheManager = context?.let {SaveInstanceCacheManager(it, saveInstanceCachemanagerId) }
         merchantCreditDetails = saveInstanceCacheManager!!.get<GqlMerchantCreditResponse>(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS, GqlMerchantCreditResponse::class.java)
         initViews(view)
         if (merchantCreditDetails != null) {

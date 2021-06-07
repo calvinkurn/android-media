@@ -2,7 +2,6 @@ package com.tokopedia.saldodetails.utils
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.content.DialogInterface
 import android.view.Window
 import android.widget.DatePicker
 import java.util.*

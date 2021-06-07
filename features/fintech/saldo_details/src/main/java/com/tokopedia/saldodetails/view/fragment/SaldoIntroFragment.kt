@@ -42,27 +42,36 @@ class SaldoIntroFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            val text = it.getString(com.tokopedia.saldodetails.R.string.saldo_intro_help)
 
-        val text = resources.getString(com.tokopedia.saldodetails.R.string.saldo_intro_help)
+            val spannableString = SpannableString(text)
+            val indexOfString = getString(com.tokopedia.saldodetails.R.string.saldo_help_text)
+            val startIndexOfLink = text.indexOf(indexOfString)
+            val color = ContextCompat.getColor(
+                it,
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
+            )
+            if (startIndexOfLink != -1) {
+                spannableString.setSpan(
+                    object : ClickableSpan() {
+                        override fun onClick(view: View) {
+                            startWebView(SaldoDetailsConstants.SALDO_HELP_URL)
+                        }
 
-        val spannableString = SpannableString(text)
-        val indexOfString = getString(com.tokopedia.saldodetails.R.string.saldo_help_text)
-        val startIndexOfLink = text.indexOf(indexOfString)
-        val color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
-        if (startIndexOfLink != -1) {
-            spannableString.setSpan(object : ClickableSpan() {
-                override fun onClick(view: View) {
-                    startWebView(SaldoDetailsConstants.SALDO_HELP_URL)
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.color = color
-                }
-            }, startIndexOfLink, startIndexOfLink + resources.getString(com.tokopedia.saldodetails.R.string.saldo_help_text).length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            viewMore!!.movementMethod = LinkMovementMethod.getInstance()
-            viewMore!!.text = spannableString
+                        override fun updateDrawState(ds: TextPaint) {
+                            super.updateDrawState(ds)
+                            ds.isUnderlineText = false
+                            ds.color = color
+                        }
+                    },
+                    startIndexOfLink,
+                    startIndexOfLink + it.getString(com.tokopedia.saldodetails.R.string.saldo_help_text).length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                viewMore!!.movementMethod = LinkMovementMethod.getInstance()
+                viewMore!!.text = spannableString
+            }
         }
 
         gotoSaldoPage!!.setOnClickListener {

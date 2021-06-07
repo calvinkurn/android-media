@@ -80,7 +80,6 @@
                 app:typographyType="body_3"
                 tools:visibility="visible" />
 
-            <!--@todo need?-->
             <LinearLayout
                 android:id="@+id/mcl_info_list"
                 android:layout_width="match_parent"

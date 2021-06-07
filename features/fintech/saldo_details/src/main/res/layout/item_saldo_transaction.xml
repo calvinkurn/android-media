@@ -51,7 +51,6 @@
             app:typographyType="body_2"
             tools:text="- Rp5.000"/>
 
-        <!--@Todo background? -->
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/note"
             android:layout_width="match_parent"
