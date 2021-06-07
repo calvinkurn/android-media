@@ -45,7 +45,7 @@ class InboxFragmentFactoryImpl(
     }
 
     override fun createReviewInboxFragment(): Fragment {
-        return if (eligibleToOpen(InboxFragmentType.DISCUSSION)) {
+        return if (eligibleToOpen(InboxFragmentType.REVIEW)) {
             ReviewInboxContainerFragment.createNewInstance()
         } else {
             Fragment()
