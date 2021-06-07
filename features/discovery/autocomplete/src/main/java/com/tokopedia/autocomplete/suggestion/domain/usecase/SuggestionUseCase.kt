@@ -93,7 +93,7 @@ class SuggestionUseCase(
             params.putString(DEVICE_ID, registrationId)
             params.putBoolean(IS_TYPING, isTyping)
 
-            params.putString(SearchApiConst.USER_WAREHOUSE_ID, warehouseId)
+            if (warehouseId.isNotEmpty()) params.putString(SearchApiConst.USER_WAREHOUSE_ID, warehouseId)
 
             return params
         }

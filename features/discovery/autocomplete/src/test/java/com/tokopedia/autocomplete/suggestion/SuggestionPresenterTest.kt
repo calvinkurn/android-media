@@ -1,8 +1,7 @@
 package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocomplete.complete
-import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.*
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
@@ -299,5 +298,21 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
         assertVisitableListData(visitableList, suggestionUniverse)
+    }
+
+    @Test
+    fun `Test suggestion presenter has set parameter and no warehouseId`() {
+        `Given chosen address data`(LocalCacheModel())
+        `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
+
+        `when presenter get suggestion data (search)`()
+
+        `Then verify search parameter has no warehouseId`()
+    }
+
+    private fun `Then verify search parameter has no warehouseId`() {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 }

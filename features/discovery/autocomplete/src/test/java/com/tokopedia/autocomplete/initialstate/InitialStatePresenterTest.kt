@@ -16,6 +16,7 @@ import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataVie
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
+import com.tokopedia.autocomplete.shouldNotContain
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
@@ -160,5 +161,21 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
             secondArg<Subscriber<List<InitialStateData>>>().onStart()
             secondArg<Subscriber<List<InitialStateData>>>().onError(testException)
         }
+    }
+
+    @Test
+    fun `Test initial state presenter has set parameter and no warehouseId`() {
+        `Given chosen address data`(LocalCacheModel())
+        `Given getInitialStateUseCase will be successful`(initialStateCommonData)
+
+        `When presenter get initial state data`()
+
+        `Then verify search parameter has no warehouseId`()
+    }
+
+    private fun `Then verify search parameter has no warehouseId`() {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 }

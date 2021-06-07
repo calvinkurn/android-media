@@ -74,7 +74,7 @@ class InitialStateUseCase(
             params.putString(KEY_UNIQUE_ID, uniqueId)
             params.putString(DEVICE_ID, registrationId)
 
-            params.putString(SearchApiConst.USER_WAREHOUSE_ID, warehouseId)
+            if (warehouseId.isNotEmpty()) params.putString(SearchApiConst.USER_WAREHOUSE_ID, warehouseId)
 
             return params
         }
