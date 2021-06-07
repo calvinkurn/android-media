@@ -2101,7 +2101,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, isTokoNow: Boolean,
+    override fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean,
                                                 componentTrackDataModel: ComponentTrackDataModel?) {
         viewModel.getDynamicProductInfoP1?.let {
             DynamicProductDetailTracking.Click.eventClickShipment(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel, title, labelShipping, isCod)
