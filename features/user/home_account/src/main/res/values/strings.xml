@@ -45,6 +45,7 @@
     <string name="menu_account_title_shake">Shake Shake</string>
     <string name="menu_account_title_geolocation">Geolokasi</string>
     <string name="menu_account_title_safe_mode">Safe Mode</string>
+    <string name="menu_account_title_dark_mode">Dark Mode</string>
     <string name="menu_account_title_quality_setting">Kualitas Gambar</string>
     <string name="menu_account_title_clear_cache">Bersihkan Cache</string>
     <string name="menu_account_title_about_us">Kenali Tokopedia</string>
@@ -67,6 +68,7 @@
     <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
     <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>
     <string name="menu_account_desc_safe_mode">Hasil pencarian aman untuk segala usia</string>
+    <string name="menu_account_desc_dark_mode">Aktifkan dark mode di Tokopedia</string>
     <string name="menu_account_desc_quality_setting">Atur kualitas gambar yang kamu lihat</string>
     <string name="menu_account_desc_clear_cache">Solusi cepat untuk atasi masalah aplikasi</string>
 
@@ -96,4 +98,5 @@
     <string name="new_home_account_local_load_desc">Klik ikon di samping buat coba lagi.</string>
 
     <string name="default_member_title">Rewards</string>
+    <string name="new_home_account_label_beta">BETA</string>
 </resources>

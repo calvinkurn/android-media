@@ -88,7 +88,8 @@ object DigitalCartDummyData {
                 defaultPromo = "voucher",
                 crossSellingType = 3,
                 crossSellingConfig = crossSellingConfig,
-                fintechProduct = listOf(fintechProduct)
+                fintechProduct = listOf(fintechProduct),
+                adminFee = 3000
         )
     }
 
@@ -252,7 +253,8 @@ object DigitalCartDummyData {
                 defaultPromo = "voucher",
                 crossSellingType = 0,
                 crossSellingConfig = crossSellingConfig,
-                fintechProduct = listOf(fintechProduct)
+                fintechProduct = listOf(fintechProduct),
+                adminFee = 5000
         )
     }
 
