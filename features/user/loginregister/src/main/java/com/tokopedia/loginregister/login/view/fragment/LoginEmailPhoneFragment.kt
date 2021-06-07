@@ -385,6 +385,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         })
 
+        viewModel.registerCheckFingerprint.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(it){
+                is Success -> enableFingerprint()
+                is Fail -> disableFingerprint()
+            }
+        })
+
         viewModel.discoverResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when(it){
                 is Success -> onSuccessDiscoverLogin(it.data.providers)
@@ -624,6 +631,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         }
 
+//        viewModel.registerCheckFingerprint()
         enableFingerprint()
 //        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity) && fingerprintPreferenceHelper.isFingerprintRegistered()) {
 //            enableFingerprint()
@@ -679,6 +687,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         context?.run {
             viewModel.discoverLogin()
         }
+    }
+
+    fun disableFingerprint() {
+        fingerprint_btn.hide()
     }
 
     fun enableFingerprint() {

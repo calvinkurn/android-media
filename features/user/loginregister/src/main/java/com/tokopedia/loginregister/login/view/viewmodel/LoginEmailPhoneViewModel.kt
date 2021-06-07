@@ -10,9 +10,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.data.model.RegisterCheckFingerprint
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
+import com.tokopedia.loginfingerprint.domain.usecase.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.common.data.ResponseConverter
@@ -68,6 +70,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val verifyFingerprintUseCase: VerifyFingerprintUseCase,
         private val cryptographyUtils: Cryptography?,
         private val fingerprintSetting: FingerprintSetting,
+        private val registerCheckFingerprintUseCase: RegisterCheckFingerprintUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers
@@ -157,6 +160,11 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val verifyFingerprint: LiveData<Result<VerifyFingerprint>>
         get() = mutableVerifyFingerprint
 
+    private val mutableRegisterCheckFingerprint = MutableLiveData<Result<RegisterCheckFingerprint>>()
+    val registerCheckFingerprint: LiveData<Result<RegisterCheckFingerprint>>
+        get() = mutableRegisterCheckFingerprint
+
+
     fun registerCheck(id: String) {
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
@@ -170,6 +178,18 @@ class LoginEmailPhoneViewModel @Inject constructor(
                 mutableRegisterCheckResponse.value = Fail(it)
             })
         }
+    }
+
+    fun registerCheckFingerprint() {
+        registerCheckFingerprintUseCase.checkRegisteredFingerprint(onSuccess = {
+            if(it.data.isSuccess && it.data.errorMessage.isEmpty()) {
+                mutableRegisterCheckFingerprint.postValue(Success(it))
+            } else {
+                mutableRegisterCheckFingerprint.postValue(Fail(MessageErrorException(it.data.errorMessage)))
+            }
+        }, onError = {
+            mutableRegisterCheckFingerprint.postValue(Fail(it))
+        })
     }
 
     fun discoverLogin() {
