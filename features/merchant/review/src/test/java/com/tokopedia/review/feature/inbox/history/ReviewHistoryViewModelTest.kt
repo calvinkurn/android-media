@@ -4,8 +4,8 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistoryResponse
 import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistoryResponseWrapper
-import com.tokopedia.review.utils.verifyErrorEquals
-import com.tokopedia.review.utils.verifySuccessEquals
+import com.tokopedia.review.utils.verifyReviewErrorEquals
+import com.tokopedia.review.utils.verifyReviewSuccessEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert
@@ -80,11 +80,11 @@ class ReviewHistoryViewModelTest : ReviewHistoryViewModelTestFixture() {
     }
 
     private fun verifyReviewListSuccessEquals(response: Success<ProductrevFeedbackHistoryResponse>) {
-        viewModel.reviewList.verifySuccessEquals(response)
+        viewModel.reviewList.verifyReviewSuccessEquals(response)
     }
 
     private fun verifyReviewListErrorEquals(response: Fail<ProductrevFeedbackHistoryResponse>) {
-        viewModel.reviewList.verifyErrorEquals(response)
+        viewModel.reviewList.verifyReviewErrorEquals(response)
     }
 
     private fun verifyGetReviewHistoryUseCaseExecuted() {

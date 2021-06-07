@@ -14,7 +14,7 @@ import javax.inject.Inject
 class GqlGetShopProductUseCase @Inject constructor (
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<ShopProduct.GetShopProduct>() {
-
+  
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ShopProduct.GetShopProduct {

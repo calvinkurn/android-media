@@ -676,4 +676,20 @@ public class AccountAnalytics {
         trackerMap.put(EVENT_LABEL, "");
         return trackerMap;
     }
+
+    public void eventClickThemeSetting(boolean isDarkMode) {
+        String label;
+        if(isDarkMode) {
+            label = "dark";
+        } else {
+            label = "light";
+        }
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_SETTING,
+                AccountConstants.Analytics.CATEGORY_SETTING_PAGE,
+                AccountConstants.Analytics.ACTION_SIMPAN_THEME_SELECTION,
+                label
+        ));
+    }
 }

@@ -27,7 +27,7 @@ import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.DateUtil
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
 import com.tokopedia.logisticorder.view.imagepreview.ImagePreviewLogisticActivity
-import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity.Companion.createIntent
+import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
@@ -347,7 +347,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (trackingUrl?.isEmpty() == true) {
             trackingUrl = model.detail.trackingUrl
         }
-        val intent = context?.let { context -> trackingUrl?.let { createIntent(context, it) } }
+        val intent = context?.let { LiveTrackingActivity.createIntent(it, trackingUrl) }
         startActivityForResult(intent, LIVE_TRACKING_VIEW_REQ)
     }
 
