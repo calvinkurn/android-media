@@ -46,7 +46,7 @@ class CheckFingerprintToggleStatusUseCase @Inject constructor(
                 OTPBiometricCheckToggleStatus(userID: ${'$'}userID) {
                     is_active
                     is_success
-                    errorMessage
+                    error_message
                }
             }""".trimIndent()
     }

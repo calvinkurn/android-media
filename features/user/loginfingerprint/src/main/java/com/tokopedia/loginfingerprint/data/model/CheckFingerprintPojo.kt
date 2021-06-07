@@ -14,6 +14,6 @@ data class CheckFingerprintResult(
     @SerializedName("is_success")
     var isSuccess: Boolean = false,
 
-    @SerializedName("errorMessage")
+    @SerializedName("error_message")
     var errorMessage: String = ""
 )
