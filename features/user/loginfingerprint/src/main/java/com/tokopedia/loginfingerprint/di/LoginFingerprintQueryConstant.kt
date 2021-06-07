@@ -19,6 +19,6 @@ object LoginFingerprintQueryConstant {
     const val PARAM_DATETIME = "datetime"
     const val PARAM_TIME_UNIX = "time_unix"
 
-    const val VALIDATE_OTP_TYPE = "145"
+    const val VALIDATE_OTP_TYPE = 145
     const val VALIDATE_MODE = "fingerprint"
 }

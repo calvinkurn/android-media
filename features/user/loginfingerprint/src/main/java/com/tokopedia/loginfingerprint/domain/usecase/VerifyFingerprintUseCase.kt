@@ -44,14 +44,14 @@ class VerifyFingerprintUseCase @Inject constructor(
         return mapOf(
             LoginFingerprintQueryConstant.PARAM_OTP_TYPE to LoginFingerprintQueryConstant.VALIDATE_OTP_TYPE,
             LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
-            LoginFingerprintQueryConstant.PARAM_TIME_UNIX to signature.datetime
+            LoginFingerprintQueryConstant.PARAM_DATETIME to signature.datetime
         )
     }
 
     companion object {
         val query: String = """
             query validate_fingerprint(${'$'}otpType: String!, ${'$'}signature: String!, ${'$'}datetime: String){
-                OtpVerifyBiometric(otpType: ${'$'}otpType, signature: ${'$'}signature, datetime: ${'$'}datetime) {
+                OTPVerifyBiometric(otpType: ${'$'}otpType, signature: ${'$'}signature, datetime: ${'$'}datetime) {
                         isSuccess
                         status
                         validateToken
