@@ -1,9 +1,13 @@
 package com.tokopedia.applink.powermerchant
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 /**
  * Created By @ilhamsuaib on 11/05/21
@@ -15,6 +19,7 @@ object PowerMerchantDeepLinkMapper {
     const val VALUE_STATE_APPROVED = "approved"
     const val VALUE_STATE_STAY = "stay"
     const val VALUE_STATE_AGREED = "agreed"
+    const val PM_WEBVIEW_URL = "https://www.tokopedia.com/myshop/power-merchant"
 
     /**
      * `state` query param possible values : {approved/stay/skip/agreed}
@@ -34,5 +39,22 @@ object PowerMerchantDeepLinkMapper {
         }
 
         return UriUtil.buildUriAppendParams(applink, params)
+    }
+
+    /**
+     * if pm pro switch to webview from remote config is true, then redirect to webview
+     * else redirect to power merchant page (native)
+     */
+    fun getPowerMerchantAppLink(context: Context): String {
+        return if (isEnablePMSwitchToWebView(context)) {
+            PM_WEBVIEW_URL
+        } else {
+            ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+        }
+    }
+
+    fun isEnablePMSwitchToWebView(context: Context): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return remoteConfig.getBoolean(RemoteConfigKey.PM_SWITCH_TO_WEB_VIEW, false)
     }
 }

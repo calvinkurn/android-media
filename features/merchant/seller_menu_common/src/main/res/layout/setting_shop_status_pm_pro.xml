@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/setting_status_padding_top"
+    android:paddingBottom="@dimen/setting_status_padding_bottom">
+
+    <FrameLayout
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/setting_card_height"
+        android:background="@drawable/bg_other_rounded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.925">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_bg_pm_pro"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/statusCard"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/setting_card_height">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/powerMerchantProText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/power_merchant_pro_status"
+                android:textColor="@color/Unify_N700_96"
+                app:layout_constraintStart_toStartOf="@id/middleGuideline"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/powerMerchantProStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintStart_toEndOf="@id/powerMerchantProText"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:text="Advanced" />
+
+            <View
+                android:id="@+id/badgeBorder"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/setting_image_circular"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="@id/middleGuideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.07" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/powerMerchantProIcon"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="@dimen/setting_shop_badge_border_pm_margin"
+                app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
+                app:layout_constraintEnd_toEndOf="@id/badgeBorder"
+                app:layout_constraintStart_toStartOf="@id/badgeBorder"
+                app:layout_constraintTop_toTopOf="@id/badgeBorder"
+                app:srcCompat="@drawable/ic_power_merchant" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/leftGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="@dimen/sah_dimen_14dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/middleGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
