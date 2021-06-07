@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.data
+package com.tokopedia.common.topupbills.data.prefix_select
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -48,7 +48,7 @@ data class RechargePrefix(
 data class RechargeValidation(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "0",
         @SerializedName("title")
         @Expose
         val title: String = "",
