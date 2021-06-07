@@ -570,7 +570,7 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun refreshProductQuantityFromMiniCart() {
         getMiniCartListSimplifiedUseCase.cancelJobs()
-        getMiniCartListSimplifiedUseCase.setParams(listOf(HARDCODED_SHOP_ID_PLEASE_DELETE))
+        getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
         getMiniCartListSimplifiedUseCase.execute(
                 ::onGetMiniCartDataSuccess,
                 ::onGetMiniCartDataFailed,
