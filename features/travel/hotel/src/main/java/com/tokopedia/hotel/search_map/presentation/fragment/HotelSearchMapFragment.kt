@@ -833,7 +833,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun addMyLocation(latLong: LatLng) {
-        if(::googleMap.isInitialized){
+        if(::googleMap.isInitialized) {
             googleMap.addMarker(MarkerOptions().position(latLong)
                     .icon(bitmapDescriptorFromVector(requireContext(), getPin(MY_LOCATION_PIN)))
                     .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)

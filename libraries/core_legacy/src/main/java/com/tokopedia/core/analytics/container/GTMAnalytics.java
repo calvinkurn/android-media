@@ -2,8 +2,10 @@ package com.tokopedia.core.analytics.container;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
@@ -12,6 +14,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
@@ -85,6 +88,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private TetraDebugger tetraDebugger;
     private String clientIdString = "";
     private final UserSessionInterface userSession;
+    private final SharedPreferences sharedPreferences;
     private String connectionTypeString = "";
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
@@ -101,6 +105,7 @@ public class GTMAnalytics extends ContextAnalytics {
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         userSession = new UserSession(context);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public static String bruteForceCastToString(Object object) {
@@ -802,6 +807,7 @@ public class GTMAnalytics extends ContextAnalytics {
         } else {
             bundle.putString("shopId", "");
         }
+        putDarkModeValue(bundle);
         putNetworkSpeed(bundle);
 
         if (customDimension != null) {
@@ -814,6 +820,15 @@ public class GTMAnalytics extends ContextAnalytics {
 
         pushEventV5("openScreen", wrapWithSessionIris(bundle), context);
         iris.saveEvent(bundleToMap(bundle));
+    }
+
+    private void putDarkModeValue(Bundle bundle) {
+        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
+        if(isDarkMode) {
+            bundle.putString("theme", "dark");
+        } else {
+            bundle.putString("theme", "light");
+        }
     }
 
     public void putNetworkSpeed(Bundle bundle) {
