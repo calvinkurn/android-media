@@ -270,6 +270,12 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+    
+        <activity
+            android:theme="@style/Theme.White"
+            android:name=".common.webview.ProfileSettingWebViewActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
     </application>
 
 </manifest>
