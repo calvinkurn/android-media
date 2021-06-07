@@ -132,7 +132,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     private fun getTags() {
         viewModelScope.launch {
             val recommendedTags = getRecommendedTags().toSet()
-            val addedNotRecommendedTags = withContext(dispatcher.computation) { addedTags - getRecommendedTags() }
+            val addedNotRecommendedTags = withContext(dispatcher.computation) { addedTags - recommendedTags }
             _observableRecommendedTags.value = addedNotRecommendedTags + recommendedTags
         }
     }
@@ -141,16 +141,6 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
         val recommendedTags = getRecommendedChannelTagsUseCase.apply {
             setChannelId(hydraConfigStore.getChannelId())
         }.executeOnBackground()
-
-//        listOf(
-//                "Baju",
-//                "Review",
-//                "Tas",
-//                "Hiburan",
-//                "Produk",
-//                "Fashion",
-//                "Topi",
-//        )
 
         return@withContext recommendedTags.recommendedTags.tags
     }
