@@ -587,8 +587,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     long = addressModel.longitude,
                     label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
                     postalCode = addressModel.postalCode,
-                    shopId = "",
-                    warehouseId = "")
+                    shopId = addressModel.shopId.toString(),
+                    warehouseId = addressModel.warehouseId.toString())
         }
     }
 
