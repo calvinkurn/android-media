@@ -56,6 +56,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/osDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintTop_toBottomOf="@+id/view_widget_choose_address"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
     <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
@@ -67,7 +75,7 @@
         app:tabIndicatorColor="@color/Unify_P600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_widget_choose_address"/>
+        app:layout_constraintTop_toBottomOf="@+id/osDivider"/>
 
 
     <include

@@ -74,15 +74,15 @@ class OSChooseAddressWidgetView : FrameLayout {
         }
     }
 
-    fun forceExpandView() {
-        expandView()
+    fun forceExpandView(whenWidgetShow: () -> Unit) {
+        expandView(whenWidgetShow)
     }
 
     fun updateChooseAddressInitializedState(state: Boolean) {
         chooseAddressWidgetInitialized = state
     }
 
-    fun adjustViewCollapseOnScrolled(dy: Int) {
+    fun adjustViewCollapseOnScrolled(dy: Int, whenWidgetShow: () -> Unit = {}, whenWidgetGone: () -> Unit = {}) {
         if (dy == 0) {
             return
         }
@@ -93,19 +93,19 @@ class OSChooseAddressWidgetView : FrameLayout {
             totalScrollUp = 0
         }
 
-        adjustCollapseExpandView(totalScrollUp in 0..10)
+        adjustCollapseExpandView(totalScrollUp in 0..10, whenWidgetShow, whenWidgetGone)
     }
 
 
-    private fun adjustCollapseExpandView(isCollapse: Boolean) {
+    private fun adjustCollapseExpandView(isCollapse: Boolean, whenWidgetShow: () -> Unit = {}, whenWidgetGone: () -> Unit = {}) {
         if (isCollapse) {
-            collapseView()
+            collapseView(whenWidgetGone)
         } else {
-            expandView()
+            expandView(whenWidgetShow)
         }
     }
 
-    private fun expandView() {
+    private fun expandView(whenWidgetShow: () -> Unit = {}) {
         if(animationExpand == null)
             animationExpand = getValueAnimator(0f, viewMaxHeight.toFloat(), 300, AccelerateDecelerateInterpolator()) {
                 if (this.layoutParams != null) {
@@ -114,6 +114,7 @@ class OSChooseAddressWidgetView : FrameLayout {
                     requestLayout()
                 }
             }
+        whenWidgetShow.invoke()
         if (itemContext.isDeviceAnimationDisabled()) {
             this.show()
         } else {
@@ -139,7 +140,7 @@ class OSChooseAddressWidgetView : FrameLayout {
 
     }
 
-    private fun collapseView() {
+    private fun collapseView(whenWidgetGone: () -> Unit = {}) {
         if(animationCollapse == null) animationCollapse =
                 getValueAnimator(viewMaxHeight.toFloat(), 0f, 300, AccelerateDecelerateInterpolator()) {
                     if (this.layoutParams != null) {
@@ -148,6 +149,7 @@ class OSChooseAddressWidgetView : FrameLayout {
                         requestLayout()
                     }
                 }
+        whenWidgetGone.invoke()
         if (itemContext.isDeviceAnimationDisabled()) {
             this.gone()
         } else {
