@@ -15,6 +15,10 @@
     <string name="host_setting" translatable="false">setting</string>
     <string name="path_dev_opt" translatable="false">/dev-opts</string>
 
+    <!--Coachmark Disabler-->
+    <string name="host_coachmark_disable" translatable="false">coachmark</string>
+    <string name="path_disable" translatable="false">disable</string>
+
     <!--Feedback Form-->
     <string name="internal_feedback" translatable="false">internal-feedback</string>
 

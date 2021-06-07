@@ -20,6 +20,19 @@
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".presentation.activity.CoachmarkDisableActivity">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_coachmark_disable"
+                    android:pathPrefix="@string/path_disable"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".remote_config.RemoteConfigFragmentActivity"
             android:label="@string/remote_config_title"

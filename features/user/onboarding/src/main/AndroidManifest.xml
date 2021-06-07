@@ -19,7 +19,7 @@
                 <data
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_onboarding"
-                    android:scheme="@string/internal_scheme" />
+                    android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
     </application>
