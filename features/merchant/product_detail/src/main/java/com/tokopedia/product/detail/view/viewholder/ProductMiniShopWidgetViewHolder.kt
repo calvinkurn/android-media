@@ -10,8 +10,8 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.renderHtmlBold
-import kotlinx.android.synthetic.main.item_mini_shop_widget.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class ProductMiniShopWidgetViewHolder(
         private val view: View,
@@ -26,29 +26,47 @@ class ProductMiniShopWidgetViewHolder(
         showLoading()
     }
 
-    override fun bind(element: ProductMiniShopWidgetDataModel) = with(view) {
-        shop_ava.loadImageCircle(element.shopAva)
-        shop_name.text = MethodChecker.fromHtml(element.shopName)
-        shop_location_online.text = element.shopLocation
+    private var shopAva: ImageUnify? = null
+    private var shopName: Typography? = null
+    private var shopLocation: Typography? = null
+    private var container: View? = null
+    private var shimmering: View? = null
 
-        shop_ava.setOnClickListener { listener.goToTokoNow() }
-        shop_name.setOnClickListener { listener.goToTokoNow() }
+    override fun bind(element: ProductMiniShopWidgetDataModel) = with(view) {
+
+        shopAva = view.findViewById(R.id.shop_ava)
+        shopName = view.findViewById(R.id.shop_name)
+        shopLocation = view.findViewById(R.id.shop_location_online)
+        container = view.findViewById(R.id.mini_shop_widget_container)
+        shimmering = view.findViewById(R.id.mini_shop_widget_shimmering)
+
+        val componentTracker = getComponentTrackData(element)
+
+        shopAva?.apply {
+            loadImageCircle(element.shopAva)
+            setOnClickListener { listener.gotoShopDetail(componentTracker) }
+        }
+        shopName?.apply {
+            text = MethodChecker.fromHtml(element.shopName)
+            setOnClickListener { listener.gotoShopDetail(componentTracker) }
+        }
+        shopLocation?.text = element.shopLocation
 
         hideLoading()
     }
 
 
     private fun hideLoading() = with(view) {
-        mini_shop_widget_container.show()
-        mini_shop_widget_shimmering.hide()
+        container?.show()
+        shimmering?.hide()
+        return@with
     }
 
     private fun showLoading() = with(view) {
-        mini_shop_widget_container.hide()
-        mini_shop_widget_shimmering.show()
+        container?.hide()
+        shimmering?.show()
+        return@with
     }
 
-    // TODO Vindo - Remove if not used for later
     private fun getComponentTrackData(element: ProductMiniShopWidgetDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
-
 }

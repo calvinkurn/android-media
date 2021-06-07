@@ -169,9 +169,4 @@ interface DynamicProductDetailListener {
     fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, isTokoNow: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun showCoachmark(view: Typography?, isBoeType: Boolean)
-
-    /**
-     * ProductMiniShopWidgetViewHolder
-     */
-    fun goToTokoNow()
 }

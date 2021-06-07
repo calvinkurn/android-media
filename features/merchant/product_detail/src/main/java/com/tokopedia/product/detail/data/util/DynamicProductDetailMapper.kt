@@ -249,7 +249,7 @@ object DynamicProductDetailMapper {
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
                 ?: "", data?.name ?: "", data?.getProductImageUrl()
                 ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
-                ?: listOf(), productInfoContent, forceRefresh)
+                ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
     }
 
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {

@@ -62,6 +62,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         ViewModelProvider(requireActivity()).get(ProductDetailSharedViewModel::class.java)
     }
     private var shouldRefresh: Boolean = false
+    private var isTokoNow: Boolean = false
 
     @SuppressLint("RestrictedApi")
     override fun setupDialog(dialog: Dialog, style: Int) {
@@ -123,6 +124,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
     private fun observeData() {
         sharedViewModel.rateEstimateRequest.observeOnce(this) {
             viewModel?.setRatesRequest(it)
+            isTokoNow = it.isTokoNow
         }
 
         viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) {
@@ -171,7 +173,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         context?.let {
             ProductDetailShippingTracking.onPelajariTokoCabangClicked(sharedViewModel.rateEstimateRequest.value?.userId
                     ?: "")
-            val bottomSheet = if (sharedViewModel.isTokoNow.value == true) {
+            val bottomSheet = if (isTokoNow) {
                 ProductDetailBottomSheetBuilder.getUspTokoNowBottomSheet(it)
             } else {
                 ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)
