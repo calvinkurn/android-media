@@ -138,6 +138,8 @@ class PlayLivePusherImpl : PlayLivePusher, ConnectCheckerRtmp {
             mLivePusherConfig.audioNoiseSuppressor
         )
         val prepareVideo = rtmpCamera.prepareVideo(
+            rtmpCamera.streamWidth,
+            rtmpCamera.streamWidth,
             mLivePusherConfig.fps,
             mLivePusherConfig.videoBitrate,
             mLivePusherConfig.videoOrientation
