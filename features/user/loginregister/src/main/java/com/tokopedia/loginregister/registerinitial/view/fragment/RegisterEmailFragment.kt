@@ -39,6 +39,7 @@ import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialCompo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -152,7 +153,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             if (registerRequestDataResult is Success) {
                 val data = (registerRequestDataResult).data
                 userSession?.clearToken()
-                userSession?.setToken(data.accessToken, data.tokenType, data.refreshToken)
+                userSession?.setToken(data.accessToken, data.tokenType, EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
                 onSuccessRegister()
                 if (activity != null) {
                     val intent = Intent()
@@ -164,19 +165,19 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
                 dismissLoadingProgress()
+                val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                 if(throwable is MessageErrorException){
                     throwable.message?.run {
                         if(this.contains(ALREADY_REGISTERED)){
                             showInfo()
                         } else {
-                            onErrorRegister(throwable.message)
+                            onErrorRegister(errorMessage)
                         }
                     }
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
                                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (errorMessage == forbiddenMessage) {
                             onForbidden()
                         } else {

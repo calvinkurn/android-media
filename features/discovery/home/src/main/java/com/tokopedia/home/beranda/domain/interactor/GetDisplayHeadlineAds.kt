@@ -50,6 +50,7 @@ class GetDisplayHeadlineAds @Inject constructor(
                 "          gold_shop\n" +
                 "          gold_shop_badge\n" +
                 "          shop_is_official\n" +
+                "          pm_pro_shop\n" +
                 "          is_followed\n" +
                 "          image_shop {\n" +
                 "            s_url\n" +

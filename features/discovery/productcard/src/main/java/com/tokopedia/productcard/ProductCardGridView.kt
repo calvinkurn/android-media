@@ -34,9 +34,16 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+                isShowCampaign,
+                labelCampaignBackground,
+                textViewLabelCampaign,
+                productCardModel
+        )
 
-        renderLabelBestSeller(labelBestSeller, productCardModel)
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        renderLabelBestSeller(isShowBestSeller, labelBestSeller, productCardModel)
 
         renderOutOfStockView(productCardModel)
 
@@ -114,5 +121,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    override fun getShopBadgeView(): View? = imageShopBadge
 
 }

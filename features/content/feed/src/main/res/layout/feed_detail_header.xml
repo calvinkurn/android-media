@@ -5,7 +5,6 @@
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:elevation="@dimen/dp_8"
     android:paddingStart="@dimen/dp_16"
     android:paddingTop="@dimen/dp_10"
@@ -26,31 +25,16 @@
         tools:src="@tools:sample/avatars"
         tools:visibility="visible" />
 
-    <com.tokopedia.gm.common.widget.GMImageView
-        android:id="@+id/goldMerchant"
-        android:layout_width="@dimen/dp_14"
-        android:layout_height="@dimen/dp_14"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/shopName"
-        app:layout_constraintStart_toEndOf="@+id/shopAvatar"
-        app:layout_constraintTop_toTopOf="@+id/shopName"
-        tools:visibility="gone" />
-
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/officialStore"
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/shopName"
         app:layout_constraintStart_toEndOf="@+id/shopAvatar"
         app:layout_constraintTop_toTopOf="@+id/shopName"
-        app:srcCompat="@drawable/ic_official"
         tools:ignore="ContentDescription"
-        tools:src="@tools:sample/avatars"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -58,9 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_28"
-        android:layout_marginLeft="@dimen/dp_28"
         android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
         android:ellipsize="end"
         android:fontFamily="sans-serif"
         android:lines="1"

@@ -16,7 +16,7 @@ class SearchProductLoadMoreGqlUseCase(
 ): UseCase<SearchProductModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, Any>
+        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
 
         val graphqlRequestList = graphqlRequests {

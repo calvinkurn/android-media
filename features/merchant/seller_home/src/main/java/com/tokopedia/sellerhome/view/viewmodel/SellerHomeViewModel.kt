@@ -45,6 +45,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
         private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
         private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
+        private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
         private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
@@ -82,6 +83,7 @@ class SellerHomeViewModel @Inject constructor(
     private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
     private val _startWidgetCustomMetricTag = MutableLiveData<String>()
     private val _stopWidgetType = MutableLiveData<String>()
+    private val _recommendationWidgetData = MutableLiveData<Result<List<RecommendationDataUiModel>>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
@@ -113,6 +115,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _startWidgetCustomMetricTag
     val stopWidgetType: LiveData<String>
         get() = _stopWidgetType
+    val recommendationWidgetData: LiveData<Result<List<RecommendationDataUiModel>>>
+        get() = _recommendationWidgetData
 
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
@@ -237,7 +241,7 @@ class SellerHomeViewModel @Inject constructor(
                     getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout)
                 } else {
                     getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout) {
-                        getInitialWidget(it, heightDp)
+                        getInitialWidget(it, heightDp).flowOn(dispatcher.io)
                     }
                 }
             }
@@ -332,7 +336,7 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getTableWidgetData(dataKeys: List<String>) {
+    fun getTableWidgetData(dataKeys: List<Pair<String, String>>) {
         launchCatchError(block = {
             val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
@@ -420,6 +424,18 @@ class SellerHomeViewModel @Inject constructor(
             }
         }, onError = {
             _announcementWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getRecommendationWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<RecommendationDataUiModel>> = Success(withContext(dispatcher.io) {
+                getRecommendationUseCase.get().params = GetRecommendationDataUseCase.createParams(dataKeys)
+                return@withContext getRecommendationUseCase.get().executeOnBackground()
+            })
+            _recommendationWidgetData.value = result
+        }, onError = {
+            _recommendationWidgetData.value = Fail(it)
         })
     }
 
@@ -684,7 +700,11 @@ class SellerHomeViewModel @Inject constructor(
 
     private suspend fun getTableData(widgets: List<BaseWidgetUiModel<*>>): List<TableDataUiModel> {
         widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<TableWidgetUiModel>().map {
+            val postFilter = it.tableFilters.find { filter -> filter.isSelected }
+            val postFilters = postFilter?.value.orEmpty()
+            return@map Pair(it.dataKey, postFilters)
+        }
         val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
         getTableDataUseCase.get().params = params
         withContext(dispatcher.main) {

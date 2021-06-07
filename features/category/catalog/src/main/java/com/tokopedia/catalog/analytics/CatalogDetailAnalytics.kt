@@ -147,6 +147,8 @@ object CatalogDetailAnalytics {
             const val CLICK_MORE_SPECIFICATIONS = "click lihat selengkapnya spesifikasi"
             const val CLICK_TAB_SPECIFICATIONS = "click tab spesifikasi lihat selengkapnya"
             const val CLICK_TAB_DESCRIPTION = "click tab deskripsi lihat selengkapnya"
+            const val CLICK_VIDEO_WIDGET = "click video widget"
+            const val CLICK_COMPARISION_CATALOG = "click compared catalog on perbandingan preview"
         }
     }
 

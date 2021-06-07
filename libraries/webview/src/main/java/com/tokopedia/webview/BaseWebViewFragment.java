@@ -51,11 +51,11 @@ import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.URLGenerator;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
@@ -76,6 +76,7 @@ import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
 import static com.tokopedia.webview.ConstantKt.KEY_NEED_LOGIN;
 import static com.tokopedia.webview.ConstantKt.KEY_PULL_TO_REFRESH;
 import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
@@ -115,7 +116,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String SCHEME_INTENT = "intent";
-    private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
@@ -508,13 +508,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
     }
-
 
     class MyWebViewClient extends WebViewClient {
         @Override
@@ -533,6 +531,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         activity.setWebViewTitle(title);
                         activity.updateTitle(title);
                     }
+                }
+                if (url.startsWith(BaseWebViewFragment.this.url)) {
+                    activity.setOnWebViewPageFinished();
+                } else {
+                    activity.enableBackButton();
                 }
             } else if (activityInstance != null && !activityInstance.isFinishing() && activityInstance instanceof BaseSimpleActivity) {
                 ActionBar actionBar = ((AppCompatActivity) activityInstance).getSupportActionBar();
@@ -669,6 +672,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (getActivity() == null) {
             return false;
         }
+        if ("".equals(url)) {
+            return false;
+        }
         Uri uri = Uri.parse(url);
         if (uri.isOpaque()) {
             return false;
@@ -732,11 +738,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
         }
 
-        if (url.contains(PARAM_EXTERNAL)) {
+        if (url.contains(PARAM_EXTERNAL_TRUE)) {
             try {
-                Intent destination = new Intent(Intent.ACTION_VIEW);
-                destination.setData(Uri.parse(url));
-                startActivity(destination);
+                routeToNativeBrowser(url);
                 hasMoveToNativePage = true;
                 return true;
             } catch (ActivityNotFoundException e) {
@@ -767,6 +771,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 try {
                     hasMoveToNativePage = true;
                     startActivity(intent);
+                    finishActivityIfBackPressedDisabled(hasMoveToNativePage);
                 } catch (Exception ignored) {
                 }
                 return true;
@@ -778,7 +783,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
+        finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private void routeToNativeBrowser(String browserUrl){
+        RouteManager.route(getContext(), ApplinkConst.BROWSER + "?url=" + browserUrl);
     }
 
     private void logApplinkErrorOpen(String url) {
@@ -861,6 +871,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     }
 
+    // If back pressed is disabled and the webview has moved to a native page,
+    // finish the webview activity to avoid user not being able to get out of the webview.
+    private void finishActivityIfBackPressedDisabled(boolean hasMoveToNativePage) {
+        if (hasMoveToNativePage && getActivity() != null
+                && getActivity() instanceof BaseSimpleWebViewActivity
+                && !((BaseSimpleWebViewActivity) getActivity()).getBackPressedEnabled()) {
+            getActivity().finish();
+        }
+    }
 
     public TkpdWebView getWebView() {
         return webView;

@@ -1,0 +1,197 @@
+[
+  {
+    "data": {
+      "rechargeCatalogOperatorSelectGroup": {
+        "text": "Wilayah",
+        "style": "select_dropdown",
+        "operatorGroup": [
+          {
+            "name": "Aceh",
+            "operators": [
+              {
+                "type": "",
+                "id": 2529,
+                "attributes": {
+                  "name": "KAB ACEH UTARA",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2490,
+                "attributes": {
+                  "name": "KOTA SABANG",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2489,
+                "attributes": {
+                  "name": "KAB. ACEH JAYA",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2488,
+                "attributes": {
+                  "name": "KOTA LANGSA (TIRTA KEUMUENENG)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 189,
+                "attributes": {
+                  "name": "ACEH TIMUR",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 193,
+                "attributes": {
+                  "name": "KAB PIDIE",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 183,
+                "attributes": {
+                  "name": "KOTA BANDA ACEH",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              }
+            ]
+          },
+          {
+            "name": "Bali",
+            "operators": [
+              {
+                "type": "",
+                "id": 2437,
+                "attributes": {
+                  "name": "KAB GIANYAR",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2531,
+                "attributes": {
+                  "name": "KAB BANGLI",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 279,
+                "attributes": {
+                  "name": "KAB BADUNG (BALI)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 82,
+                "attributes": {
+                  "name": "PERUMDA Air Minum Tirta Sewakadarma",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              }
+            ]
+          },
+          {
+            "name": "Sumatera Utara",
+            "operators": [
+              {
+                "type": "",
+                "id": 2327,
+                "attributes": {
+                  "name": "KOTA PEMATANG SIANTAR (TIRTAULI)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2337,
+                "attributes": {
+                  "name": "KAB. LABUHAN BATU (TIRTABINA RANTAUPRAPAT)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2340,
+                "attributes": {
+                  "name": "KAB TAPANULI UTARA (MUAL NATIO TARUTUNG)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2334,
+                "attributes": {
+                  "name": "KOTA TEBING TINGGI (TIRTA BULIAN)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2338,
+                "attributes": {
+                  "name": "KOTA TANJUNG BALAI (TIRTA KUALO)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 83,
+                "attributes": {
+                  "name": "KOTA MEDAN (SUMUT)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

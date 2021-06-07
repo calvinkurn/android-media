@@ -19,7 +19,7 @@ class NegKeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> 
 
     override fun bind(item: NegKeywordEmptyModel, selectMode: Boolean, fromSearch: Boolean, fromHeadline: Boolean) {
         item.let {
-            view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.topads_empty_keyword))
+            view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_empty_keyword))
 
             if (!fromSearch) {
                 view.btn_submit.visibility = View.VISIBLE

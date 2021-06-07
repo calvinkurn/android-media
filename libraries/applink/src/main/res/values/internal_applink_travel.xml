@@ -12,7 +12,8 @@
     <string name="host_flight" translatable="false">pesawat</string>
 
     <string name="path_hotel_dashboard" translatable="false">/dashboard</string>
-    <string name="path_hotel_search_result" translatable="false">/result</string>
+    <string name="path_hotel_search_result_old_srp" translatable="false">/result/oldsrp</string>
+    <string name="path_hotel_search_result_map" translatable="false">/result/map</string>
     <string name="path_hotel_detail" translatable="false">/detail/.*\</string>
     <string name="path_hotel_booking" translatable="false">/booking/.*\</string>
     <string name="path_hotel_order" translatable="false">/order</string>

@@ -163,6 +163,8 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
                 containerListener?.showReviewCounter()
             }
             RoleType.SELLER -> {
+                setBuyerReviewFragment()
+                attachBuyerReviewFragment()
                 updateInboxUnifiedSellerView()
                 containerListener?.hideReviewCounter()
             }
@@ -282,18 +284,23 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun initToolbar() {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            headerReviewInboxContainer?.hide()
+            return
+        }
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
                 setSupportActionBar(headerReviewInboxContainer)
-                headerReviewInboxContainer?.title = getString(R.string.title_activity_reputation_review)
+                headerReviewInboxContainer?.apply {
+                    title = getString(R.string.title_activity_reputation_review)
+                    show()
+                }
             }
         }
     }
 
     private fun updateInboxUnifiedSellerView() {
-        setBuyerReviewFragment()
-        attachBuyerReviewFragment()
         reviewInboxTabs?.hide()
         reviewSellerInboxFragment?.show()
         reviewInboxViewPager?.hide()
@@ -323,7 +330,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             buyerReviewFragment?.let {
                 childFragmentManager.beginTransaction()
                         .replace(R.id.reviewSellerInboxFragment, it)
-                        .commit()
+                        .commitAllowingStateLoss()
             }
             shouldCommitBuyerReviewFragment = false
         }
@@ -350,8 +357,11 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun adjustViewBasedOnRole() {
         if(containerListener?.role == RoleType.BUYER) {
+            updateInboxUnifiedBuyerView()
             return
         }
         updateInboxUnifiedSellerView()
+        setBuyerReviewFragment()
+        attachBuyerReviewFragment()
     }
 }

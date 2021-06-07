@@ -15,12 +15,12 @@
         <item name="android:paddingBottom">@dimen/common_travel_dp_10</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:textColor">@color/text_color_travel_trip_button</item>
+        <item name="android:textColor">@color/common_travel_dms_text_trip_button_color</item>
         <item name="android:background">@drawable/bg_travel_round_button</item>
     </style>
 
     <style name="TravelWidgetSelectPassengerView">
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/Unify_N0</item>
         <item name="android:paddingLeft">@dimen/common_travel_dp_10</item>
         <item name="android:paddingRight">@dimen/common_travel_dp_10</item>
         <item name="android:paddingTop">@dimen/common_travel_dp_20</item>
@@ -33,8 +33,8 @@
     </style>
 
     <style name="TravelInputLabel">
-        <item name="android:textColor">@color/Neutral_N700_68</item>
-        <item name="android:textSize">12dp</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
     </style>

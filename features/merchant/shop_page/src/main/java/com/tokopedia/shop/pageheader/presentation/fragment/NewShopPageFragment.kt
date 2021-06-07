@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.graphics.*
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -48,6 +49,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -70,7 +72,7 @@ import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
@@ -101,6 +103,7 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -136,9 +139,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.new_shop_page_main.*
-import kotlinx.android.synthetic.main.shop_page_tab_view.view.*
 import java.io.File
 import javax.inject.Inject
 
@@ -249,6 +252,8 @@ class NewShopPageFragment :
         get() = R.drawable.ic_shop_tab_showcase_inactive.takeIf {
             isUsingNewNavigation()
         } ?: R.drawable.ic_shop_tab_showcase_inactive_old
+    private val iconTabShowcaseWithLabelInactive: Int
+        get() = R.drawable.ic_shop_tab_showcase_with_label_inactive
     private val iconTabShowcaseActive: Int
         get() = R.drawable.ic_shop_tab_showcase_active
     private val iconTabFeedInactive: Int
@@ -371,10 +376,10 @@ class NewShopPageFragment :
         initToolbar()
         initAdapter()
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            swipeToRefresh.isEnabled = (verticalOffset == 0)
+            swipeToRefresh?.isEnabled = (verticalOffset == 0)
         })
         initViewPager()
-        swipeToRefresh.setOnRefreshListener {
+        swipeToRefresh?.setOnRefreshListener {
             refreshData()
         }
         mainLayout.requestFocus()
@@ -450,15 +455,16 @@ class NewShopPageFragment :
                 is Fail -> {
                     val throwable = result.throwable
                     if (!isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_HEADER_BUYER_FLOW_TAG,
-                                this::observeLiveData.name,
-                                NewShopPageViewModel::shopPageP1Data.name,
-                                userId,
-                                shopId,
-                                shopName,
-                                ErrorHandler.getErrorMessage(context, throwable),
-                                Log.getStackTraceString(throwable)
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeLiveData.name,
+                                liveDataName = NewShopPageViewModel::shopPageP1Data.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
                     }
                     onErrorGetShopPageTabData(throwable)
@@ -510,15 +516,16 @@ class NewShopPageFragment :
                 is Fail -> {
                     val throwable = result.throwable
                     if (!isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_HEADER_BUYER_FLOW_TAG,
-                                this::observeLiveData.name,
-                                NewShopPageViewModel::shopIdFromDomainData.name,
-                                userId,
-                                shopId,
-                                shopName,
-                                ErrorHandler.getErrorMessage(context, throwable),
-                                Log.getStackTraceString(throwable)
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeLiveData.name,
+                                liveDataName = NewShopPageViewModel::shopIdFromDomainData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
                     }
                     onErrorGetShopPageTabData(throwable)
@@ -547,7 +554,8 @@ class NewShopPageFragment :
                                     Toaster.TYPE_NORMAL
                             )
                         } else {
-                            showToasterShopUnmoderate(moderateShop.message, Toaster.TYPE_ERROR)
+                            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(moderateShop.message))
+                            showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -566,7 +574,8 @@ class NewShopPageFragment :
                     if (moderateStatusRequestResponse.error.message.isEmpty()) {
                         onCompleteCheckRequestModerateStatus(moderateStatusRequestResponse.result)
                     } else {
-                        showToasterShopUnmoderate(moderateStatusRequestResponse.error.message, Toaster.TYPE_ERROR)
+                        val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(moderateStatusRequestResponse.error.message))
+                        showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -633,7 +642,8 @@ class NewShopPageFragment :
                         isSuccess = followShop.success == true
                 )
             }
-            ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(followShop.message))
+            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(followShop.message))
+            ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(errorMessage))
         }
     }
 
@@ -647,7 +657,8 @@ class NewShopPageFragment :
         }
 
         activity?.run {
-            showErrorUpdateFollowToaster(getString(R.string.shop_follow_error_toaster), !isFollowing, false)
+            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.shop_follow_error_toaster)))
+            showErrorUpdateFollowToaster(errorMessage, !isFollowing, false)
             ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, e)
         }
     }
@@ -817,7 +828,7 @@ class NewShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
-            if (!swipeToRefresh.isRefreshing) {
+            if (swipeToRefresh?.isRefreshing == false) {
                 setViewState(VIEW_LOADING)
             }
             initViews(view)
@@ -930,11 +941,27 @@ class NewShopPageFragment :
     private fun initToolbar() {
         if (isMyShop) {
             initOldToolbar()
+            updateBackButtonColorOldToolbar()
         } else {
             if (isUsingNewNavigation()) {
                 initNewToolbar()
             } else {
                 initOldToolbar()
+                updateBackButtonColorOldToolbar()
+            }
+        }
+    }
+
+    private fun updateBackButtonColorOldToolbar() {
+        context?.let { context ->
+            var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
+            if (context.isDarkMode()) {
+                color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                toolbar.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            }else{
+                toolbar.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
             }
         }
     }
@@ -1127,7 +1154,7 @@ class NewShopPageFragment :
             shopPageTracking?.clickShareButton(customDimensionShopPage)
         }
         removeTemporaryShopImage(shopImageFilePath)
-        getWriteReadStoragePermission()
+        saveShopImage()
     }
 
     private fun clickSearch() {
@@ -1181,25 +1208,6 @@ class NewShopPageFragment :
         }
     }
 
-    private fun getWriteReadStoragePermission() = activity?.let {
-        permissionChecker.checkPermissions(it, arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
-        ), object : PermissionCheckerHelper.PermissionCheckListener {
-            override fun onPermissionDenied(permissionText: String) {
-                permissionChecker.onPermissionDenied(it, permissionText)
-            }
-
-            override fun onNeverAskAgain(permissionText: String) {
-                permissionChecker.onNeverAskAgain(it, permissionText)
-            }
-
-            override fun onPermissionGranted() {
-                saveShopImage()
-            }
-        })
-    }
-
     private fun onSuccessGetShopPageP1Data(shopPageP1Data: NewShopPageP1HeaderData) {
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
@@ -1237,7 +1245,7 @@ class NewShopPageFragment :
         }
         shopPageTracking?.sendScreenShopPage(shopId, shopType)
         setViewState(VIEW_CONTENT)
-        swipeToRefresh.isRefreshing = false
+        swipeToRefresh?.isRefreshing = false
         shopPageFragmentHeaderViewHolder?.setShopHeaderWidgetData(shopPageP1Data.listShopHeaderWidget)
         remoteConfig?.let{
             shopPageFragmentHeaderViewHolder?.setupChooseAddressWidget(it, isMyShop)
@@ -1273,7 +1281,7 @@ class NewShopPageFragment :
     }
 
     private fun setupTabs() {
-        listShopPageTabModel = createListShopPageTabModel()
+        listShopPageTabModel = (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
         viewPagerAdapter?.setTabData(listShopPageTabModel)
         val selectedPosition = getSelectedTabPosition()
         tabLayout.removeAllTabs()
@@ -1289,13 +1297,7 @@ class NewShopPageFragment :
         viewPagerAdapter?.notifyDataSetChanged()
         tabLayout?.apply {
             for (i in 0 until tabCount) {
-                val tabCustomView = viewPagerAdapter?.getTabView(i, selectedPosition)
-                if (listShopPageTabModel[i].tabFragment is ShopPageShowcaseFragment && isFirstTimeShowTabLabel() == false) {
-                    // temporary show label "BARU" for new showcase tab
-                    tabCustomView?.icon_tab_label?.visible()
-                    saveFirstShowTabLabel()
-                }
-                getTabAt(i)?.customView = tabCustomView
+                getTabAt(i)?.customView = viewPagerAdapter?.getTabView(i, selectedPosition)
             }
         }
         viewPager.setCurrentItem(selectedPosition, false)
@@ -1309,40 +1311,46 @@ class NewShopPageFragment :
                 viewPagerAdapter?.handleSelectedTab(tab, false)
             }
 
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    val position = tab.position
-                    viewPager.setCurrentItem(position, false)
-                    tabLayout.getTabAt(position)?.let{
-                        viewPagerAdapter?.handleSelectedTab(it, true)
-                    }
-                    if(isTabClickByUser) {
-                        shopPageTracking?.clickTab(
-                                shopViewModel?.isMyShop(shopId) == true,
-                                listShopPageTabModel[position].tabTitle,
-                                CustomDimensionShopPage.create(
-                                        shopId,
-                                        shopPageHeaderDataModel?.isOfficial ?: false,
-                                        shopPageHeaderDataModel?.isGoldMerchant ?: false
-                                )
-                        )
-                    }
-                    if (isSellerMigrationEnabled(context)) {
-                        if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
-                            val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
-                            if (position == tabFeedPosition) {
-                                showBottomSheetSellerMigration()
-                            } else {
-                                hideBottomSheetSellerMigration()
-                            }
-                        }else{
-                            hideBottomSheetSellerMigration()
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val position = tab.position
+                viewPager.setCurrentItem(position, false)
+                tabLayout.getTabAt(position)?.let{
+                    viewPagerAdapter?.handleSelectedTab(it, true)
+                    listShopPageTabModel[tab.position].apply {
+                        if (tabFragment is ShopPageShowcaseFragment && isUsingNewNavigation()) {
+                            tabIconInactive = iconTabShowcaseInactive
+                            saveFirstShowTabLabel()
                         }
                     }
-                    viewPager?.post {
-                        checkIfShouldShowOrHideScrollToTopButton(position)
-                    }
-                    isTabClickByUser = false
                 }
+                if(isTabClickByUser) {
+                    shopPageTracking?.clickTab(
+                            shopViewModel?.isMyShop(shopId) == true,
+                            listShopPageTabModel[position].tabTitle,
+                            CustomDimensionShopPage.create(
+                                    shopId,
+                                    shopPageHeaderDataModel?.isOfficial ?: false,
+                                    shopPageHeaderDataModel?.isGoldMerchant ?: false
+                            )
+                    )
+                }
+                if (isSellerMigrationEnabled(context)) {
+                    if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
+                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
+                        if (position == tabFeedPosition) {
+                            showBottomSheetSellerMigration()
+                        } else {
+                            hideBottomSheetSellerMigration()
+                        }
+                    }else{
+                        hideBottomSheetSellerMigration()
+                    }
+                }
+                viewPager?.post {
+                    checkIfShouldShowOrHideScrollToTopButton(position)
+                }
+                isTabClickByUser = false
+            }
         })
     }
 
@@ -1395,55 +1403,45 @@ class NewShopPageFragment :
     }
 
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
-        return mutableListOf<ShopPageTabModel>().apply {
-            if (isShowHomeTab()) {
-                getHomeFragment()?.let { homeFragment ->
-                    add(ShopPageTabModel(
-                            getString(R.string.shop_info_title_tab_home),
-                            iconTabHomeInactive,
-                            iconTabHomeActive,
-                            homeFragment
-                    ))
-                }
+        val listShopPageTabModel  = mutableListOf<ShopPageTabModel>()
+        if (isShowHomeTab()) {
+            getHomeFragment()?.let { homeFragment ->
+                listShopPageTabModel.add(ShopPageTabModel(
+                        getString(R.string.shop_info_title_tab_home),
+                        iconTabHomeInactive,
+                        iconTabHomeActive,
+                        homeFragment
+                ))
             }
-            val shopPageProductFragment = ShopPageProductListFragment.createInstance(
-                    shopId,
-                    shopPageHeaderDataModel?.shopName.orEmpty(),
-                    shopPageHeaderDataModel?.isOfficial ?: false,
-                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    shopPageHeaderDataModel?.shopHomeType.orEmpty(),
-                    shopAttribution,
-                    shopRef
-            )
-            shopViewModel?.productListData?.let {
-                shopPageProductFragment.setInitialProductListData(it)
-            }
-            add(ShopPageTabModel(
-                    getString(R.string.new_shop_info_title_tab_product),
-                    iconTabProductInactive,
-                    iconTabProductActive,
-                    shopPageProductFragment
-            ))
+        }
+        val shopPageProductFragment = ShopPageProductListFragment.createInstance(
+                shopId,
+                shopPageHeaderDataModel?.shopName.orEmpty(),
+                shopPageHeaderDataModel?.isOfficial ?: false,
+                shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                shopPageHeaderDataModel?.shopHomeType.orEmpty(),
+                shopAttribution,
+                shopRef
+        )
+        shopViewModel?.productListData?.let {
+            shopPageProductFragment.setInitialProductListData(it)
+        }
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.new_shop_info_title_tab_product),
+                iconTabProductInactive,
+                iconTabProductActive,
+                shopPageProductFragment
+        ))
 
-            if (isShouldCheckShopType()) {
-                if (isNotRegularMerchant(shopPageHeaderDataModel)) {
-                    add(ShopPageTabModel(
-                            getString(R.string.shop_info_title_tab_showcase),
-                            iconTabShowcaseInactive,
-                            iconTabShowcaseActive,
-                            ShopPageShowcaseFragment.createInstance(
-                                    shopId,
-                                    shopRef,
-                                    shopAttribution,
-                                    shopPageHeaderDataModel?.isOfficial ?: false,
-                                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                            )
-                    ))
-                }
-            } else {
-                add(ShopPageTabModel(
+        if (isShouldCheckShopType()) {
+            if (isNotRegularMerchant(shopPageHeaderDataModel)) {
+                listShopPageTabModel.add(ShopPageTabModel(
                         getString(R.string.shop_info_title_tab_showcase),
-                        iconTabShowcaseInactive,
+                        if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
+                            iconTabShowcaseWithLabelInactive
+                        } else {
+                            iconTabShowcaseInactive
+                        },
                         iconTabShowcaseActive,
                         ShopPageShowcaseFragment.createInstance(
                                 shopId,
@@ -1454,30 +1452,48 @@ class NewShopPageFragment :
                         )
                 ))
             }
-
-            if (isShowFeed) {
-                val feedFragment = FeedShopFragment.createInstance(
-                        shopId,
-                        createPostUrl
-                )
-                add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_feed),
-                        iconTabFeedInactive,
-                        iconTabFeedActive,
-                        feedFragment
-                ))
-            }
-            val shopReviewFragment = ReviewShopFragment.createInstance(
-                    shopId,
-                    shopDomain
-            )
-            add(ShopPageTabModel(
-                    getString(R.string.shop_info_title_tab_review),
-                    iconTabReviewInactive,
-                    iconTabReviewActive,
-                    shopReviewFragment
+        } else {
+            listShopPageTabModel.add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_showcase),
+                    if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
+                        iconTabShowcaseWithLabelInactive
+                    } else {
+                        iconTabShowcaseInactive
+                    },
+                    iconTabShowcaseActive,
+                    ShopPageShowcaseFragment.createInstance(
+                            shopId,
+                            shopRef,
+                            shopAttribution,
+                            shopPageHeaderDataModel?.isOfficial ?: false,
+                            shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                    )
             ))
         }
+
+        if (isShowFeed) {
+            val feedFragment = FeedShopFragment.createInstance(
+                    shopId,
+                    createPostUrl
+            )
+            listShopPageTabModel.add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_feed),
+                    iconTabFeedInactive,
+                    iconTabFeedActive,
+                    feedFragment
+            ))
+        }
+        val shopReviewFragment = ReviewShopFragment.createInstance(
+                shopId,
+                shopDomain
+        )
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.shop_info_title_tab_review),
+                iconTabReviewInactive,
+                iconTabReviewActive,
+                shopReviewFragment
+        ))
+        return listShopPageTabModel
     }
 
     private fun isShowHomeTab(): Boolean {
@@ -1510,10 +1526,10 @@ class NewShopPageFragment :
             errorButton?.setOnClickListener {
                 isRefresh = true
                 getInitialData()
-                if (!swipeToRefresh.isRefreshing)
+                if (swipeToRefresh?.isRefreshing == false)
                     setViewState(VIEW_LOADING)
             }
-            swipeToRefresh.isRefreshing = false
+            swipeToRefresh?.isRefreshing = false
         }
     }
 
@@ -1563,9 +1579,9 @@ class NewShopPageFragment :
         }
         isRefresh = true
         getInitialData()
-        if (!swipeToRefresh.isRefreshing)
+        if (swipeToRefresh?.isRefreshing == false)
             setViewState(VIEW_LOADING)
-        swipeToRefresh.isRefreshing = true
+        swipeToRefresh?.isRefreshing = true
 
         stickyLoginView?.loadContent()
     }

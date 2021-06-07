@@ -1,7 +1,6 @@
 package com.tokopedia.review.common.util
 
 import android.content.Context
-import android.text.Spanned
 import android.util.TypedValue
 import android.widget.ListView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker

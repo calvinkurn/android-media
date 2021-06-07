@@ -12,9 +12,7 @@ object AppUtil {
     val alreadyLoggedList = mutableSetOf<String>()
 
     fun isSellerInstalled(context: Context?): Boolean {
-        val topadsIntent = context?.let {
-            it.getPackageManager().getLaunchIntentForPackage("com.tokopedia.sellerapp")
-        }
+        val topadsIntent = context?.packageManager?.getLaunchIntentForPackage("com.tokopedia.sellerapp")
         return topadsIntent != null
     }
 

@@ -320,7 +320,7 @@ class DealsSelectLocationFragment(
     }
 
     private fun getCurrentLocation() {
-        permissionCheckerHelper.checkPermission(this@DealsSelectLocationFragment, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+        permissionCheckerHelper.checkPermission(activity as Activity, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onNeverAskAgain(permissionText: String) {}
                     override fun onPermissionDenied(permissionText: String) {}

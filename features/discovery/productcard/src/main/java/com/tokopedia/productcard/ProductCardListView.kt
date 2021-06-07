@@ -35,9 +35,23 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
-        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+                isShowCampaign,
+                labelCampaignBackground,
+                textViewLabelCampaign,
+                productCardModel
+        )
 
-        renderLabelBestSeller(labelBestSeller, productCardModel)
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        renderLabelBestSeller(
+                isShowBestSeller,
+                labelBestSeller,
+                productCardModel
+        )
+
+        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
+        spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
@@ -129,6 +143,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    override fun getShopBadgeView(): View? = imageShopBadge
 
     /**
      * Special cases for specific pages

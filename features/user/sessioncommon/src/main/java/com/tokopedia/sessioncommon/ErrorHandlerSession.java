@@ -3,10 +3,9 @@ package com.tokopedia.sessioncommon;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
-import com.tokopedia.sessioncommon.R;
+import com.tokopedia.network.exception.MessageErrorException;
+import com.tokopedia.network.utils.ErrorHandler;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 
 /**
  * @author by nisie on 10/2/18.
@@ -59,9 +58,6 @@ public class ErrorHandlerSession extends ErrorHandler {
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
             return showErrorCode ? formatString(e.getLocalizedMessage(), ((MessageErrorException)
                     e).getErrorCode()) : e.getLocalizedMessage();
-        } else if (e instanceof com.tokopedia.network.exception.MessageErrorException
-                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
-            return  e.getLocalizedMessage();
         } else {
             return ErrorHandler.getErrorMessage(context, e);
         }

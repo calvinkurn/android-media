@@ -10,8 +10,10 @@ import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_ADMIN_FEE
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_ADMIN_FEE_POSITION
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_PROMO_CODE_POSITION
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_TOTAL_PAYMENT_POSITION
 import com.tokopedia.digital_checkout.data.PaymentSummary
@@ -174,9 +176,12 @@ class DigitalCartViewModel @Inject constructor(
         } else {
 
             val pricePlain = mappedCartData.attributes.pricePlain
-            _totalPrice.postValue(pricePlain)
+            _totalPrice.postValue(pricePlain + mappedCartData.attributes.adminFee)
             paymentSummary.summaries.clear()
             paymentSummary.addToSummary(SUMMARY_TOTAL_PAYMENT_POSITION, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
+            if (mappedCartData.attributes.adminFee > 0) {
+                paymentSummary.addToSummary(SUMMARY_ADMIN_FEE_POSITION, Payment(STRING_ADMIN_FEE, getStringIdrFormat(mappedCartData.attributes.adminFee.toDouble())))
+            }
             _payment.postValue(paymentSummary)
 
             requestCheckoutParam.transactionAmount = pricePlain
@@ -272,7 +277,7 @@ class DigitalCartViewModel @Inject constructor(
             requestCheckoutParam.fintechProducts.forEach { fintech ->
                 totalPrice += fintech.value.fintechAmount
             }
-            _totalPrice.postValue(totalPrice)
+            _totalPrice.postValue(totalPrice + attributes.adminFee)
         }
     }
 
@@ -328,6 +333,8 @@ class DigitalCartViewModel @Inject constructor(
                             fintech.values.forEach {
                                 if (it.info.iconUrl.isNotEmpty()) {
                                     analytics.eventProceedCheckoutTebusMurah(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
+                                } else {
+                                    analytics.eventProceedCheckoutCrossell(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
                                 }
                             }
                         }
@@ -362,16 +369,10 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     fun applyPromoData(promoData: PromoData) {
-        when (promoData.state) {
-            TickerCheckoutView.State.FAILED,
-            TickerCheckoutView.State.EMPTY -> {
-                resetCheckoutSummaryPromoAndTotalPrice()
-            }
-            TickerCheckoutView.State.ACTIVE -> {
-                onReceivedPromoCode()
-            }
-            else -> {
-            }
+        if (promoData.state == TickerCheckoutView.State.FAILED || promoData.state == TickerCheckoutView.State.EMPTY) {
+            resetCheckoutSummaryPromoAndTotalPrice()
+        } else if (promoData.state == TickerCheckoutView.State.ACTIVE) {
+            onReceivedPromoCode()
         }
     }
 

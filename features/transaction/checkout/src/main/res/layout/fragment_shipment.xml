@@ -7,8 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/Unify_N50">
+        android:layout_height="wrap_content">
 
         <include
             android:id="@+id/partial_countdown"

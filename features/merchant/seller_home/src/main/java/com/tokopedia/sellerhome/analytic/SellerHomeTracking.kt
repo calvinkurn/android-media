@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.analytic
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
 
@@ -10,6 +11,7 @@ import com.tokopedia.track.TrackApp
 /**
  * Seller Home Revamp Tracker
  * Data Layer : https://docs.google.com/spreadsheets/d/13WEeOReKimxp9ugeVMew6T-ma9gNQHaWJxYN6DK-1x0/edit?ts=5e395338#gid=389108416
+ * Data Tracker for Recommendation Widget : https://mynakama.tokopedia.com/datatracker/requestdetail/781
  * */
 
 object SellerHomeTracking {
@@ -257,6 +259,19 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendTableFilterClick(model: TableWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.dataSet.isNullOrEmpty()
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_SELLER_WIDGET,
+                arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                arrayOf(TrackingConstant.CLICK_WIDGET_SIMPLE_TABLE, model.dataKey, TrackingConstant.FILTER).joinToString(" - "),
+                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        )
+        map[TrackingConstant.USER_ID] = userId
+
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
     fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
 
@@ -370,8 +385,95 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
+    fun sendRecommendationCtaClickEvent(element: RecommendationWidgetUiModel) {
+        val scoreLevel = element.data?.progressLevel?.bar?.value.orZero()
+        val numOfNegativeRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NEGATIVE)
+        val numOfPositiveRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_POSITIVE)
+        val numOfNoDataRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NO_DATA)
+        val tickerStatus = if (element.data?.ticker?.text.isNullOrBlank()) "off" else "on"
+        val tickerLabel = "ticker $tickerStatus"
+        val eventLabel = arrayOf(scoreLevel, numOfNegativeRecommendation, numOfPositiveRecommendation,
+                numOfNoDataRecommendation, tickerLabel).joinToString(" - ")
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SELLER_DASHBOARD,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.CLICK_RECOMMENDATION_WIDGET, element.dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
+                label = eventLabel
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendRecommendationImpressionEvent(element: RecommendationWidgetUiModel) {
+        val scoreLevel = element.data?.progressLevel?.bar?.value.orZero()
+        val numOfNegativeRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NEGATIVE)
+        val numOfPositiveRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_POSITIVE)
+        val numOfNoDataRecommendation = getNumberOfRecommendationByType(element.data?.recommendation?.recommendations, RecommendationItemUiModel.TYPE_NO_DATA)
+        val tickerStatus = if (element.data?.ticker?.text.isNullOrBlank()) "off" else "on"
+        val tickerLabel = "ticker $tickerStatus"
+        val eventLabel = arrayOf(scoreLevel, numOfNegativeRecommendation, numOfPositiveRecommendation,
+                numOfNoDataRecommendation, tickerLabel).joinToString(" - ")
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.VIEW_SELLER_DASHBOARD,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.IMPRESSION_RECOMMENDATION_WIDGET, element.dataKey).joinToString(" - "),
+                label = eventLabel
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendRecommendationItemClickEvent(dataKey: String, item: RecommendationItemUiModel) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SELLER_DASHBOARD,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.CLICK_RECOMMENDATION_WIDGET, dataKey, TrackingConstant.CLICK_RECOMMENDATION).joinToString(" - "),
+                label = arrayOf(item.type, item.text).joinToString(" - ")
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendHomeTickerCtaClickEvent(shopType: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SHOP_SCORE,
+                category = TrackingConstant.ACTION_CLICK_LEARN_MORE,
+                action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
+                label = shopType
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendHomeTickerImpressionEvent(shopType: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.VIEW_SHOP_SCORE_IRIS,
+                category = TrackingConstant.IMPRESS_LEARN_MORE,
+                action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
+                label = shopType
+        )
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
+
+    private fun getNumberOfRecommendationByType(recommendations: List<RecommendationItemUiModel>?, type: String): Int {
+        return recommendations?.filter { it.type == type }?.size.orZero()
     }
 
     private fun getBannerPromotions(items: List<CarouselItemUiModel>, position: Int): List<Map<String, String>> {
