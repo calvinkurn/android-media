@@ -111,9 +111,9 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
     private void setUnreadNotification(InboxReputationItemUiModel element) {
         if(InboxUnifiedRemoteConfig.INSTANCE.isInboxUnified()) {
-            unreadNotification.setNotification("", NotificationUnify.Companion.getNONE_TYPE(), NotificationUnify.Companion.getCOLOR_SECONDARY());
+            unreadNotification.setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.Companion.getCOLOR_SECONDARY());
         } else {
-            unreadNotification.setNotification("", NotificationUnify.Companion.getNONE_TYPE(), NotificationUnify.Companion.getCOLOR_PRIMARY());
+            unreadNotification.setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.Companion.getCOLOR_PRIMARY());
         }
         if (element.getReputationDataUiModel().isShowBookmark()) {
             unreadNotification.setVisibility(View.VISIBLE);

@@ -96,7 +96,7 @@
 
     <string name="go_to_wishlist" tools:ignore="ExtraTranslation">Lihat Wishlist</string>
 
-    <string name="review_create_success_toaster">Terima kasih %s sudah bantu pembeli lain lewat ulasanmu</string>
+    <string name="review_create_success_toaster">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
     <string name="review_oke">Oke</string>
 
     <string name="content_desc_title">text title kategori</string>
