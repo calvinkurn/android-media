@@ -102,5 +102,5 @@ class ImageViewPager @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun getIndicatorFocus(): Int = R.drawable.widget_image_view_indicator_focus
-    private fun getIndicator(): Int = R.drawable.widget_image_view_indicator
+    private fun getIndicator(): Int = R.drawable.hotel_widget_image_view_indicator
 }
