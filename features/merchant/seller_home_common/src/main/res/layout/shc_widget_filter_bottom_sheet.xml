@@ -5,13 +5,13 @@
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvShcPostFilter"
+        android:id="@+id/rvShcWidgetFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/Unify_N50" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnShcPostFilterApply"
+        android:id="@+id/btnShcWidgetFilterApply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/layout_lvl2"

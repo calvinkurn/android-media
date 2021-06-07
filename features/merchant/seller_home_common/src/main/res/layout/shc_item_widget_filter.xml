@@ -6,21 +6,21 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvShcPostFilterName"
+        android:id="@+id/tvShcWidgetFilterName"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:textColor="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/radShcPostFilter"
+        app:layout_constraintEnd_toStartOf="@+id/radShcWidgetFilter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyWeight="bold"
         tools:text="Ilham Suaib" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-        android:id="@+id/radShcPostFilter"
+        android:id="@+id/radShcWidgetFilter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
