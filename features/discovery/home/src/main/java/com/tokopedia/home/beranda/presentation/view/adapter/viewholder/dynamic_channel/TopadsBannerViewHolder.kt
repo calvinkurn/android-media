@@ -9,12 +9,15 @@ import com.tokopedia.home.analytics.v2.BannerAdsTracking
 import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMapper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeTopAdsBannerDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import kotlinx.android.synthetic.main.home_dc_topads_banner.view.*
+import kotlinx.android.synthetic.main.home_dc_topads_banner.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_dc_topads_banner.view.home_component_divider_header
 
 class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryListener) :
         AbstractViewHolder<HomeTopAdsBannerDataModel>(view) {
@@ -97,10 +100,20 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                 categoryListener.onSectionItemClicked(applink?:"")
             }
         })
+
+        setChannelDivider(element)
     }
 
     override fun bind(element: HomeTopAdsBannerDataModel, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         bind(element)
+    }
+
+    private fun setChannelDivider(element: HomeTopAdsBannerDataModel) {
+        HomeChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 }
