@@ -9,9 +9,7 @@ import dagger.Component
  * @author by nisie on 8/30/18.
  */
 @ReportTalkScope
-@Component(dependencies = arrayOf(TalkComponent::class))
+@Component(modules = [ReportTalkViewModelModule::class], dependencies = [TalkComponent::class])
 interface ReportTalkComponent {
-
     fun inject(reportTalkFragment: ReportTalkFragment)
-
 }
