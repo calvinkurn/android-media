@@ -96,7 +96,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     }
 
     fun loading() {
-        fragment_fingerprint_setting_container?.alpha = 0.5F
+        fragment_fingerprint_setting_container?.alpha = 0.4F
         fragment_fingerprint_setting_loader.show()
     }
 
