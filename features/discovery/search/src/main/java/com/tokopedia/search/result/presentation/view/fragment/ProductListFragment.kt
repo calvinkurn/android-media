@@ -58,6 +58,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -581,21 +583,27 @@ class ProductListFragment: BaseDaggerFragment(),
         return if (pageTitle.isEmpty()) keyword else pageTitle
     }
 
-    override fun showNetworkError(startRow: Int) {
+    override fun showNetworkError(startRow: Int, throwable: Throwable?) {
         val productListAdapter = productListAdapter ?: return
 
         if (productListAdapter.isListEmpty())
-            showNetworkErrorOnEmptyList()
+            showNetworkErrorOnEmptyList(throwable)
         else
-            showNetworkErrorOnLoadMore()
+            showNetworkErrorOnLoadMore(throwable)
     }
 
-    private fun showNetworkErrorOnEmptyList() {
+    private fun showNetworkErrorOnEmptyList(throwable: Throwable?) {
         hideViewOnError()
-
-        NetworkErrorHelper.showEmptyState(activity, view) {
-            refreshLayout?.visible()
-            reloadData()
+        if (throwable != null) {
+            NetworkErrorHelper.showEmptyState(activity,view, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
+                refreshLayout?.visible()
+                reloadData()
+            }
+        } else {
+            NetworkErrorHelper.showEmptyState(activity, view) {
+                refreshLayout?.visible()
+                reloadData()
+            }
         }
     }
 
@@ -605,13 +613,19 @@ class ProductListFragment: BaseDaggerFragment(),
         refreshLayout?.gone()
     }
 
-    private fun showNetworkErrorOnLoadMore() {
+    private fun showNetworkErrorOnLoadMore(throwable: Throwable?) {
         val searchParameter = searchParameter ?: return
-
-        NetworkErrorHelper.createSnackbarWithAction(activity) {
-            addLoading()
-            presenter?.loadMoreData(searchParameter.getSearchParameterMap())
-        }.showRetrySnackbar()
+        if (throwable!= null) {
+            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
+                addLoading()
+                presenter?.loadMoreData(searchParameter.getSearchParameterMap())
+            }
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity) {
+                addLoading()
+                presenter?.loadMoreData(searchParameter.getSearchParameterMap())
+            }.showRetrySnackbar()
+        }
     }
 
     private fun getScreenNameId() = SCREEN_SEARCH_PAGE_PRODUCT_TAB
@@ -1527,9 +1541,9 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (isWishlisted)
-            Toaster.build(view, getString(R.string.msg_add_wishlist_failed), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_add_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
         else
-            Toaster.build(view, getString(R.string.msg_remove_wishlist_failed), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
     }
 
     override val isLandingPage: Boolean

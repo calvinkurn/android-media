@@ -26,7 +26,18 @@ data class ComponentData(
         @SerializedName("title")
         val title : String?,
         @SerializedName("author")
-        val author : String?
+        val author : String?,
+
+        @SerializedName( "id")
+        val id: String?,
+        @SerializedName( "brand")
+        val brand: String?,
+        @SerializedName( "catalogImage")
+        val catalogImage: ArrayList<CatalogImage>?,
+        @SerializedName( "marketPrice")
+        val marketPrice: List<CatalogResponseData.CatalogGetDetailModular.BasicInfo.MarketPrice>?,
+        @SerializedName("topSpec")
+        val topSpecifications : List<SpecificationsRow>?
 
 ){
     @Parcelize
@@ -60,3 +71,14 @@ data class VideoComponentData(
         val thumbnail : String?,
         val title : String?,
         val author : String?) : Parcelable
+
+@Parcelize
+data class ComparisionModel(
+        val id : String?,
+        val brand : String?,
+        val name : String?,
+        val price : String?,
+        val url : String?,
+
+        val key : String?,
+        val value : String?) : Parcelable
