@@ -6,13 +6,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BankAccount
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.BannerData
 import com.tokopedia.withdraw.saldowithdrawal.domain.model.ValidatePopUpWithdrawal
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GQLValidateWithdrawalUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetBankListUseCase
 import com.tokopedia.withdraw.saldowithdrawal.domain.usecase.GetWDBannerUseCase
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.util.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
