@@ -461,7 +461,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     }
 
     private fun showOnBoardingBuyer() {
-        if (bottomNav == null) return
+        if (bottomNav == null || !isShowBottomNav) return
         val anchors = ArrayList<CoachMark2Item>()
         anchors.add(
             CoachMark2Item(
