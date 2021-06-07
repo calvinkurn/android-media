@@ -2,6 +2,7 @@
 <resources>
     <dimen name="pm_spacing_28dp">28dp</dimen>
     <dimen name="pm_spacing_100dp">100dp</dimen>
+    <dimen name="pm_spacing_140dp">140dp</dimen>
     <dimen name="pm_spacing_180dp">180dp</dimen>
     <dimen name="power_merchant_back_btn_margin">10dp</dimen>
 </resources>

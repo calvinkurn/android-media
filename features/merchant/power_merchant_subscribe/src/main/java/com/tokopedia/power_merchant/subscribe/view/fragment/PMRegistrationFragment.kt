@@ -6,6 +6,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
@@ -16,6 +20,7 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -187,7 +192,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             return
         }
 
-        powerMerchantTracking.sendEventClickUpgradePowerMerchant()
         submitPmRegistration(nextShopTireType)
     }
 
@@ -200,11 +204,27 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
 
         showNotificationBottomSheet(title, description, primaryCtaText, imageUrl, secondaryCtaText,
                 onPrimaryCtaClicked = {
-                    RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
+                    openCentralizedPromoPage()
                 }
         )
 
+        powerMerchantTracking.sendEventClickLearnPopUpImproveNumberOfOrder()
         powerMerchantTracking.sendEventClickInterestedToRegister()
+    }
+
+    private fun openCentralizedPromoPage() {
+        context?.run {
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(requireContext(), ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
+            } else {
+                val appLinks = arrayListOf(
+                        ApplinkConstInternalSellerapp.SELLER_HOME,
+                        ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+                )
+                val intent = SellerMigrationActivity.createIntent(this, SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO, GMParamTracker.ScreenName.PM_SUBSCRIBE, appLinks)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun showNivTermBottomSheet(nivThreshold: Long) {
@@ -217,10 +237,11 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
 
         showNotificationBottomSheet(title, description, primaryCtaText, imageUrl, secondaryCtaText,
                 onPrimaryCtaClicked = {
-                    RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
+                    openCentralizedPromoPage()
                 }
         )
 
+        powerMerchantTracking.sendEventClickLearnPopUpImproveNiv()
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 

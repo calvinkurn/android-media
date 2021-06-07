@@ -14,11 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.iconunify.IconUnify
@@ -38,11 +33,9 @@ import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelp
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
-import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.*
 import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
 import java.net.UnknownHostException
@@ -58,7 +51,6 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
 
     companion object {
         private const val KEY_PM_TIER_TYPE = "key_pm_tier_type"
-        private const val SCREEN_NAME = "MA - Power Merchant"
 
         fun createInstance(pmTireType: Int): PowerMerchantSubscriptionFragment {
             return PowerMerchantSubscriptionFragment().apply {
@@ -88,7 +80,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         ViewModelProvider(requireActivity(), viewModelFactory).get(PowerMerchantSharedViewModel::class.java)
     }
 
-    override fun getScreenName(): String = GMParamTracker.ScreenName.PM_UPGRADE_SHOP
+    override fun getScreenName(): String = GMParamTracker.ScreenName.PM_SUBSCRIBE
 
     override fun initInjector() {
         getComponent(PowerMerchantSubscribeComponent::class.java).inject(this)
@@ -234,6 +226,8 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         showActivationProgress()
         observePmActivationStatus()
         mViewModel.submitPMActivation(currentShopTireType, nextShopTireType)
+
+        powerMerchantTracking.sendEventClickUpgradePowerMerchantPro()
     }
 
     private fun showPmProDeactivationBottomSheet() {

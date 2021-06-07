@@ -8,21 +8,21 @@
         android:pathData="M8,0L320,0A8,8 0,0 1,328 8L328,186A8,8 0,0 1,320 194L8,194A8,8 0,0 1,0 186L0,8A8,8 0,0 1,8 0z"/>
     <path
         android:pathData="M8,0L320,0A8,8 0,0 1,328 8L328,186A8,8 0,0 1,320 194L8,194A8,8 0,0 1,0 186L0,8A8,8 0,0 1,8 0z"
-        android:fillColor="#E4EBF5"/>
+        android:fillColor="@color/Unify_NN100"/>
     <path
         android:pathData="M209,-32.105l22.369,-20.895l147.506,157.91l-22.369,20.895z"
         android:strokeAlpha="0.5"
-        android:fillColor="#ffffff"
+        android:fillColor="@color/Unify_N0"
         android:fillAlpha="0.5"/>
     <path
         android:pathData="M168,-38.301l18.948,-17.699l211.003,225.887l-18.948,17.699z"
         android:strokeAlpha="0.3"
-        android:fillColor="#ffffff"
+        android:fillColor="@color/Unify_N0"
         android:fillAlpha="0.3"/>
     <path
         android:pathData="M246.484,-36.465l25.195,-23.535l82.546,88.369l-25.195,23.535z"
         android:strokeAlpha="0.7"
-        android:fillColor="#ffffff"
+        android:fillColor="@color/Unify_N0"
         android:fillAlpha="0.7"/>
   </group>
 </vector>

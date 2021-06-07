@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbarPmSubscription"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_title="@string/pm_title_activity"
         tools:layout_height="60dp" />
 
     <RelativeLayout
