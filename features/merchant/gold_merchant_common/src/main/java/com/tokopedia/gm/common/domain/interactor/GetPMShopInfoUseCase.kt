@@ -45,7 +45,6 @@ class GetPMShopInfoUseCase @Inject constructor(
               is_new_seller
               is_kyc
               kyc_status_id
-              shop_score_sum
               shop_score_threshold
               shop_score_pm_pro_threshold
               is_has_active_product

@@ -20,15 +20,12 @@ import rx.functions.Action1;
 
 public class CloudDiscoverDataSource {
 
-    private final CacheManager cacheManager;
     private LoginRegisterApi loginRegisterApi;
     private DiscoverMapper discoverMapper;
 
     @Inject
-    public CloudDiscoverDataSource(CacheManager cacheManager,
-                                   LoginRegisterApi loginRegisterApi,
+    public CloudDiscoverDataSource(LoginRegisterApi loginRegisterApi,
                                    DiscoverMapper discoverMapper) {
-        this.cacheManager = cacheManager;
         this.loginRegisterApi = loginRegisterApi;
         this.discoverMapper = discoverMapper;
     }
@@ -43,10 +40,6 @@ public class CloudDiscoverDataSource {
     private Action1<DiscoverDataModel> saveToCache(final String source) {
         return discoverDataModel -> {
             if (discoverDataModel != null) {
-                cacheManager.put(LocalDiscoverDataSource.KEY_DISCOVER + source,
-                        CacheUtil.convertModelToString(discoverDataModel,
-                                new TypeToken<DiscoverDataModel>() {
-                                }.getType()), LocalDiscoverDataSource.CACHE_DURATION);
             }
         };
     }

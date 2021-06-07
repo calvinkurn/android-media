@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -305,7 +304,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId, isForceRefresh)
+                presenter.getFeedFirstPage(
+                    shopId,
+                    isForceRefresh,
+                    whitelistDomain.authors.isEmpty()
+                )
             } else {
                 presenter.getFeed(shopId)
             }
@@ -316,7 +319,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         hideSnackBarRetry()
         presenter.clearCache()
         isLoadingInitialData = true
-        presenter.getFeedFirstPage(shopId, true)
+        presenter.getFeedFirstPage(shopId, true,whitelistDomain.authors.isEmpty())
         recyclerView.scrollToPosition(0)
     }
 
@@ -409,6 +412,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onErrorFollowKol(errorMessage: String) {
+
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
@@ -878,9 +882,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun onErrorReportContent(errorMsg: String) {
+    private fun onErrorReportContent(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMsg,
+            Toaster.make(it, errorMessage,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(R.string.label_close), View.OnClickListener { })
         }
@@ -904,9 +908,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         showError(message, null)
     }
 
-    private fun showError(message: String, listener: View.OnClickListener?) {
+    private fun showError(errorMessage: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(requireView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.make(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }

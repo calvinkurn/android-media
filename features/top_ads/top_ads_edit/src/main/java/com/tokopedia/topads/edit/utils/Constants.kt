@@ -6,6 +6,7 @@ object Constants {
     const val PRODUCT_ID = "product"
     const val MIN_SUGGESTION = "minSuggestedBid"
     const val GROUP_ID = "groupId"
+    const val GROUP_STRATEGY = "groupStrategy"
     const val SELECTED_KEYWORD = "selectKeywords"
     const val RESTORED_DATA = "restoreData"
     const val CURRENTLIST = "currentKeywords"
@@ -25,6 +26,7 @@ object Constants {
     const val NEGATIVE_KEYWORD_ALL = "editedAllNegativeKeyword"
     const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
     const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
+    const val STRATEGIES = "strategies"
     const val GROUP_NAME = "group_name"
     const val PRICE_BID = "price_bid"
     const val DAILY_BUDGET = "daily_budget"
@@ -74,5 +76,6 @@ object Constants {
     const val PRODUK_NAME = " Produk"
     const val KATA_KUNCI = " Kata Kunci"
     const val ATUR_NAME = " Atur"
+    const val LAINNYA_NAME = " Lainnya"
 
 }

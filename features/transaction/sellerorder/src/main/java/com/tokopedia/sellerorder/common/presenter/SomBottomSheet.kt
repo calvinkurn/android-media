@@ -158,7 +158,7 @@ abstract class SomBottomSheet(
                 (childViews?.parent as? ViewGroup)?.removeView(childViews)
             }
             addView(childViews)
-            val bottomSheetBehavior = bottomSheetBehavior ?: BottomSheetBehavior.from(requireNotNull(this)).apply {
+            val bottomSheetBehavior = bottomSheetBehavior ?: BottomSheetBehavior.from(this).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
             val bottomSheetCallback = bottomSheetCallback ?: createBottomSheetCallback()
@@ -184,7 +184,9 @@ abstract class SomBottomSheet(
     }
 
     fun setTitle(title: String) {
-        BottomSheetUnify.bottomSheetBehaviorTitle(requireNotNull(bottomSheetLayout), title)
+        bottomSheetLayout?.let {
+            BottomSheetUnify.bottomSheetBehaviorTitle(it, title)
+        }
     }
 
     fun showCloseButton() {

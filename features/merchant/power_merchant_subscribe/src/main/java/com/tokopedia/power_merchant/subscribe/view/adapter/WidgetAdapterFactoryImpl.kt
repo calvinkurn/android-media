@@ -46,7 +46,7 @@ class WidgetAdapterFactoryImpl(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(parent, widgetListener, powerMerchantTracking)
-            CancelDeactivationSubmissionWidget.RES_LAYOUT -> CancelDeactivationSubmissionWidget(parent, widgetListener, powerMerchantTracking)
+            CancelDeactivationSubmissionWidget.RES_LAYOUT -> CancelDeactivationSubmissionWidget(parent, widgetListener)
             NextUpdateInfoWidget.RES_LAYOUT -> NextUpdateInfoWidget(parent)
             NextShopGradeWidget.RES_LAYOUT -> NextShopGradeWidget(parent)
             GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)

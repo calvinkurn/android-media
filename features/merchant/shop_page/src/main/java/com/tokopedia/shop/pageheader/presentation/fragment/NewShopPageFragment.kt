@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.graphics.*
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -48,6 +49,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.mvcwidget.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -101,7 +103,6 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
@@ -122,7 +123,6 @@ import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.shop.search.view.viewmodel.ShopSearchProductViewModel
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
@@ -139,6 +139,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.new_shop_page_fragment_content_layout.*
 import kotlinx.android.synthetic.main.new_shop_page_main.*
 import java.io.File
@@ -454,7 +455,7 @@ class NewShopPageFragment :
                 is Fail -> {
                     val throwable = result.throwable
                     if (!isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = NewShopPageViewModel::shopPageP1Data.name,
@@ -515,7 +516,7 @@ class NewShopPageFragment :
                 is Fail -> {
                     val throwable = result.throwable
                     if (!isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = NewShopPageViewModel::shopIdFromDomainData.name,
@@ -553,7 +554,8 @@ class NewShopPageFragment :
                                     Toaster.TYPE_NORMAL
                             )
                         } else {
-                            showToasterShopUnmoderate(moderateShop.message, Toaster.TYPE_ERROR)
+                            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(moderateShop.message))
+                            showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -572,7 +574,8 @@ class NewShopPageFragment :
                     if (moderateStatusRequestResponse.error.message.isEmpty()) {
                         onCompleteCheckRequestModerateStatus(moderateStatusRequestResponse.result)
                     } else {
-                        showToasterShopUnmoderate(moderateStatusRequestResponse.error.message, Toaster.TYPE_ERROR)
+                        val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(moderateStatusRequestResponse.error.message))
+                        showToasterShopUnmoderate(errorMessage, Toaster.TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -639,7 +642,8 @@ class NewShopPageFragment :
                         isSuccess = followShop.success == true
                 )
             }
-            ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(followShop.message))
+            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(followShop.message))
+            ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, Throwable(errorMessage))
         }
     }
 
@@ -653,7 +657,8 @@ class NewShopPageFragment :
         }
 
         activity?.run {
-            showErrorUpdateFollowToaster(getString(R.string.shop_follow_error_toaster), !isFollowing, false)
+            val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.shop_follow_error_toaster)))
+            showErrorUpdateFollowToaster(errorMessage, !isFollowing, false)
             ShopPageExceptionHandler.logExceptionToCrashlytics(ShopPageExceptionHandler.ERROR_WHEN_UPDATE_FOLLOW_SHOP_DATA, e)
         }
     }
@@ -936,11 +941,27 @@ class NewShopPageFragment :
     private fun initToolbar() {
         if (isMyShop) {
             initOldToolbar()
+            updateBackButtonColorOldToolbar()
         } else {
             if (isUsingNewNavigation()) {
                 initNewToolbar()
             } else {
                 initOldToolbar()
+                updateBackButtonColorOldToolbar()
+            }
+        }
+    }
+
+    private fun updateBackButtonColorOldToolbar() {
+        context?.let { context ->
+            var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
+            if (context.isDarkMode()) {
+                color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                toolbar.navigationIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            }else{
+                toolbar.navigationIcon?.setColorFilter(color, PorterDuff.Mode.SRC_IN)
             }
         }
     }

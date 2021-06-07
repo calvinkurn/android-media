@@ -16,6 +16,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.iconunify.IconUnify
@@ -35,6 +38,7 @@ import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelp
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscriptionViewModel
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -54,6 +58,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
 
     companion object {
         private const val KEY_PM_TIER_TYPE = "key_pm_tier_type"
+        private const val SCREEN_NAME = "MA - Power Merchant"
 
         fun createInstance(pmTireType: Int): PowerMerchantSubscriptionFragment {
             return PowerMerchantSubscriptionFragment().apply {
@@ -117,6 +122,8 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
             showPmProDeactivationBottomSheet()
         } else {
             showRegularPmDeactivationBottomSheet()
+
+            powerMerchantTracking.sendEventClickStopPmBecomeRm()
         }
 
         powerMerchantTracking.sendEventClickStopPowerMerchant()
@@ -127,6 +134,9 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.NA
         val shopTier = getShopTireByPmTire(currentPmTireType)
         mViewModel.cancelPmDeactivationSubmission(shopTier)
+
+        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        powerMerchantTracking.sendEventClickCancelOptOutPowerMerchant(isPmPro)
     }
 
     override fun setOnTickerWidgetRemoved(position: Int) {
@@ -508,6 +518,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
 
     private fun renderPmActiveState(data: PMActiveDataUiModel) {
         showUpgradePmProStickyView()
+        val isChargingPeriod = pmBasicInfo?.periodTypePmPro == PeriodType.CHARGING_PERIOD_PM_PRO
         val isAutoExtendEnabled = getAutoExtendEnabled()
         val isPmActive = pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
         val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
@@ -522,7 +533,9 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         widgets.add(getShopGradeWidgetData(data))
         widgets.add(WidgetDividerUiModel)
         widgets.add(getCurrentShopGradeBenefit(data))
-        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue() && isPmActive
+        val shouldShowUpgradePmProWidget = isAutoExtendEnabled && !isPmPro
+                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue()
+                && isPmActive && isChargingPeriod
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
             getUpgradePmProWidget()?.let {
@@ -561,9 +574,10 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
 
     private fun showUpgradePmProStickyView() {
         val isAutoExtendEnabled = getAutoExtendEnabled()
+        val isChargingPeriod = pmBasicInfo?.periodTypePmPro == PeriodType.CHARGING_PERIOD_PM_PRO
         val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
                 && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
-                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue() && isAutoExtendEnabled
+                && !pmBasicInfo?.shopInfo?.isNewSeller.orTrue() && isAutoExtendEnabled && isChargingPeriod
         view?.viewPmUpgradePmPro?.isVisible = shouldShowView
     }
 
@@ -621,17 +635,11 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
     private fun getShopGradeWidgetData(data: PMActiveDataUiModel): WidgetShopGradeUiModel {
         val shopGrade = data.currentPMGrade
         val shopInfo = pmBasicInfo?.shopInfo
-        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val shopScoreThreshold = if (isPmPro) {
-            shopInfo?.shopScorePmProThreshold.orZero()
-        } else {
-            shopInfo?.shopScoreThreshold.orZero()
-        }
         return WidgetShopGradeUiModel(
                 isNewSeller = shopInfo?.isNewSeller.orTrue(),
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 shopScore = shopInfo?.shopScore.orZero(),
-                threshold = shopScoreThreshold,
+                threshold = shopInfo?.shopScoreThreshold.orZero(),
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
                 pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE
@@ -640,7 +648,8 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
 
     private fun showDeactivationQuestionnaire(pmTireType: Int) {
         val pmExpirationDate = pmBasicInfo?.pmStatus?.expiredTime.orEmpty()
-        val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT
+        val currentPmTireType = pmBasicInfo?.pmStatus?.pmTier
+                ?: PMConstant.PMTierType.POWER_MERCHANT
         val bottomSheet = DeactivationQuestionnaireBottomSheet.createInstance(pmExpirationDate, currentPmTireType, pmTireType)
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
 

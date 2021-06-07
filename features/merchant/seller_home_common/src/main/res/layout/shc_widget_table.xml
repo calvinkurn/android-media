@@ -30,6 +30,25 @@
             app:typographyWeight="bold"
             tools:text="Total Pendapatan" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/filterShcTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:background="@drawable/shc_filter_view_background"
+            android:drawablePadding="@dimen/shc_dimen_10dp"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingTop="@dimen/shc_dimen_6dp"
+            android:paddingEnd="@dimen/shc_dimen_12dp"
+            android:paddingBottom="@dimen/shc_dimen_6dp"
+            android:textColor="@color/Unify_N700"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTableWidgetTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvTableWidgetTitle"
+            app:typographyType="body_2"
+            tools:text="Pilih Kategori" />
+
         <com.tokopedia.sellerhomecommon.presentation.view.customview.tableview.TableView
             android:id="@+id/shcTableView"
             android:layout_width="match_parent"
