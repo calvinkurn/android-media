@@ -69,9 +69,9 @@ object ApplinkConstInternalOrder {
 
     const val HOST_ORDER = "order"
 
-    const val HOST_ORDER_OLD = "order-old"
-
     const val HOST_ORDERLIST = "orderlist"
+
+    const val HOST_ORDER_REVAMPED = "revamped-order"
 
     const val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
 
@@ -151,6 +151,8 @@ object ApplinkConstInternalOrder {
 
     const val UNIFY_ORDER_TRAVEL_ENTERTAINMENT = "$INTERNAL_ORDER/$UNIFIED?$FILTER=$PARAM_TRAVEL_ENTERTAINMENT"
 
+    const val MARKETPLACE_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
+
     const val DIGITAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDER"
 
     const val DIGITAL_ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_DIGITAL/$HOST_ORDERLIST"
@@ -177,7 +179,7 @@ object ApplinkConstInternalOrder {
 
     const val MARKETPLACE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
 
-    const val MARKETPLACE_INTERNAL_ORDER_OLD = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER_OLD"
+    const val MARKETPLACE_INTERNAL_ORDER_REVAMPED = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER_REVAMPED"
 
     const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
 
