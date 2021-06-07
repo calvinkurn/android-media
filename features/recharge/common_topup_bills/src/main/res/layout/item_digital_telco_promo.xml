@@ -42,7 +42,8 @@
                 android:layout_alignBottom="@id/btn_copy_promo"
                 android:layout_marginLeft="@dimen/unify_space_12"
                 android:gravity="center_vertical"
-                app:srcCompat="@drawable/common_topup_ic_voucher" />
+                app:srcCompat="@drawable/common_topup_ic_voucher"
+                android:contentDescription="null" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_promo_code"
