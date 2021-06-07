@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -92,6 +93,13 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.size == requiredPermissions.size) {
+            getLocation()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         compositeSubs.clear()
@@ -101,11 +109,13 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         autoCompleteAdapter = AutoCompleteListAdapter(this)
         binding.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvAddressList.adapter = autoCompleteAdapter
+
     }
 
     private fun showInitialLoadMessage() {
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
+            Toast.makeText(context, "This feature is under development", Toast.LENGTH_SHORT).show()
             //go to ANA form negative
         }
     }
