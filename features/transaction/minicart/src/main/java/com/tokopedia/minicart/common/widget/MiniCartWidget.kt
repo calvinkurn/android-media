@@ -170,11 +170,11 @@ class MiniCartWidget @JvmOverloads constructor(
                     })
                 }
                 is SocketTimeoutException -> {
-                    val message = "Yaah, waktu habis. Coba refresh & ulangi klik tombol Beli."
+                    val message = context.getString(R.string.mini_cart_message_error_checkout_timeout)
                     showToaster(view, message, Toaster.TYPE_ERROR)
                 }
                 else -> {
-                    val message = "Oops, pembelianmu gagal diproses. Coba refresh dan ulangi klik Beli."
+                    val message = context.getString(R.string.mini_cart_message_error_checkout_failed)
                     showToaster(view, message, Toaster.TYPE_ERROR)
                 }
             }

@@ -26,7 +26,8 @@ class MiniCartTickerErrorViewHolder(private val view: View,
     }
 
     override fun bind(element: MiniCartTickerErrorUiModel) {
-        tickerError?.setHtmlDescription("Yaah, ada ${element.unavailableItemCount} barang tidak bisa diproses.")
+        val message = tickerError?.context?.getString(R.string.mini_cart_message_ticker_error, element.unavailableItemCount) ?: ""
+        tickerError?.setHtmlDescription(message)
         if (element.isShowErrorActionLabel) {
             textShow?.show()
         } else {

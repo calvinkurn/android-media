@@ -8,4 +8,10 @@
     <string name="mini_cart_label_dialog_action_delete">Hapus Barang</string>
     <string name="mini_cart_label_dialog_action_cancel">Kembali</string>
     <string name="mini_cart_label_cancel">Batalkan</string>
+    <string name="mini_cart_title_summary_transaction">Ringkasan belanja</string>
+    <string name="mini_cart_message_error_checkout_timeout"><![CDATA[Yaah, waktu habis. Coba refresh & ulangi klik tombol Beli.]]></string>
+    <string name="mini_cart_message_error_checkout_failed">Oops, pembelianmu gagal diproses. Coba refresh dan ulangi klik Beli.</string>
+    <string name="mini_cart_label_wholesale_price">Harga Grosir</string>
+    <string name="mini_cart_message_ticker_error">Yaah, ada %d barang tidak bisa diproses.</string>
+    <string name="mini_cart_title_unavailable_header">Tidak bisa diproses (%d)</string>
 </resources>
