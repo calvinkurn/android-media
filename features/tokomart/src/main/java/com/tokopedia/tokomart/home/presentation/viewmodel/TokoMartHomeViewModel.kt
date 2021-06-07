@@ -69,7 +69,7 @@ class TokoMartHomeViewModel @Inject constructor(
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
-    private var layoutList = listOf<Visitable<*>>()
+    var layoutList = listOf<Visitable<*>>()
 
     fun getHomeLayout() {
         launchCatchError(block = {

@@ -27,6 +27,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.mockito.ArgumentMatchers.*
+import java.util.*
 
 abstract class TokoMartHomeViewModelTestFixture {
 
@@ -97,6 +98,10 @@ abstract class TokoMartHomeViewModelTestFixture {
 
     protected fun verifyGetKeywordSearchUseCaseCalled() {
         coVerify { getKeywordSearchUseCase.execute(anyBoolean(), anyString(), anyString()) }
+    }
+
+    protected fun verifyGetDataFromTokoMartCalled(){
+        coVerify { getCategoryListUseCase.execute("1", 1) }
     }
 
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {

@@ -6,7 +6,9 @@ import com.tokopedia.tokomart.data.createMiniCartSimplifier
 import com.tokopedia.tokomart.data.createTicker
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokomart.home.presentation.uimodel.*
+import io.mockk.coEvery
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
