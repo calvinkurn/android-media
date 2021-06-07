@@ -1,7 +1,7 @@
 package com.tokopedia.shop.note.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.shop.info.domain.usecase.GetShopNotesByShopIdUseCase
+import com.tokopedia.shop.common.domain.GetShopNoteUseCase
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -25,7 +25,7 @@ class ShopNoteBottomSheetViewModelTest {
     val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
-    lateinit var getShopNotesByShopIdUseCase: GetShopNotesByShopIdUseCase
+    lateinit var getShopNoteUseCase: GetShopNoteUseCase
 
     private lateinit var shopEditBasicInfoViewModel: ShopNoteBottomSheetViewModel
 
@@ -34,7 +34,7 @@ class ShopNoteBottomSheetViewModelTest {
         MockKAnnotations.init(this)
         shopEditBasicInfoViewModel = ShopNoteBottomSheetViewModel(
                 coroutineTestRule.dispatchers,
-                getShopNotesByShopIdUseCase
+                getShopNoteUseCase
         )
     }
 
@@ -69,15 +69,15 @@ class ShopNoteBottomSheetViewModelTest {
     }
 
     private fun onCheckGetShopNotesSuccess_thenReturn() {
-        coEvery { getShopNotesByShopIdUseCase.executeOnBackground() } returns listOf()
+        coEvery { getShopNoteUseCase.executeOnBackground() } returns listOf()
     }
 
     private fun onCheckGetShopNotesFail_thenReturn() {
-        coEvery { getShopNotesByShopIdUseCase.executeOnBackground() } throws  Exception()
+        coEvery { getShopNoteUseCase.executeOnBackground() } throws  Exception()
     }
 
     private fun verifyGetShopNotesCalled() {
-        coVerify { getShopNotesByShopIdUseCase.executeOnBackground() }
+        coVerify { getShopNoteUseCase.executeOnBackground() }
     }
 
 }

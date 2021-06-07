@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
@@ -26,11 +27,13 @@ import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.di.NfcCheckBalanceInstance
 import com.tokopedia.common_electronic_money.util.EmoneyAnalytics
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import okhttp3.Route
 import javax.inject.Inject
 
 open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -115,21 +118,24 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             override fun tryAgainTopup(issuerId: Int) {
                 emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, userSession.userId, irisSessionId)
             }
-        })
 
-        nfcDisabledView.setListener(object : NFCDisabledView.OnActivateNFCClickListener {
-            override fun onClick() {
-                emoneyAnalytics.onClickActivateNFC()
-                navigateToNFCSettings()
+            override fun goToHome() {
+                RouteManager.route(context, ApplinkConst.HOME)
             }
         })
+
+        nfcDisabledView.buttonActivateNFC.setOnClickListener {
+            emoneyAnalytics.onClickActivateNFC()
+            navigateToNFCSettings()
+        }
 
         emoneyAnalytics.openScreenNFC(operatorName, userSession.userId, irisSessionId)
     }
 
     protected fun onProcessTopupNow(passData: DigitalCategoryDetailPassData) {
         activity?.let {
-            if (it.intent != null && it.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
+            if (it.intent != null && !it.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD).isNullOrEmpty()) {
+                //todo check
                 if (it.intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) == DigitalExtraParam.EXTRA_NFC) {
                     navigatePageToDigitalProduct(passData)
                 } else {
@@ -173,25 +179,38 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     protected abstract fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData
 
-    protected fun showError(errorMessage: String) {
+    protected fun showError(errorMessage: String, errorMessageLabel: String = "",
+                            imageUrl: String = "",
+                            isButtonShow: Boolean = true,
+                            isGlobalErrorShow: Boolean = false,
+                            mandiriGetSocketTimeout: Boolean = false
+    ) {
         statusCloseBtn = FAILED_CLOSE_BTN
-        emoneyAnalytics.onShowErrorTracking()
+        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
 
         val updatedErrorMessage = if (errorMessage.contains(getString(R.string.emoney_nfc_grpc_timeout), true)) {
             getString(R.string.emoney_nfc_grpc_label_error)
         } else errorMessage
 
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
-            eTollUpdateBalanceResultView.showError(updatedErrorMessage)
-        } else {
-            tapETollCardView.visibility = View.VISIBLE
-            tapETollCardView.showInitialState()
-            tapETollCardView.showErrorState(updatedErrorMessage)
+            eTollUpdateBalanceResultView.hide()
         }
+
+        tapETollCardView.visibility = View.VISIBLE
+
+        if(isGlobalErrorShow){
+            tapETollCardView.showGlobalError(updatedErrorMessage, errorMessageLabel)
+        } else {
+            tapETollCardView.showInitialState()
+            tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,
+                    imageUrl, isButtonShow, mandiriGetSocketTimeout)
+        }
+
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
     }
 
     protected fun showErrorDeviceUnsupported(errorMessage: String) {
+        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
         statusCloseBtn = FAILED_CLOSE_BTN
         tapETollCardView.visibility = View.VISIBLE
         tapETollCardView.showErrorDeviceUnsupportedState(errorMessage)
@@ -205,7 +224,9 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         eTollUpdateBalanceResultView.showCardInfoFromApi(emoneyInquiry)
 
         statusCloseBtn = SUCCESS_CLOSE_BTN
-        emoneyAnalytics.onShowLastBalance()
+        emoneyAnalytics.onShowLastBalance(emoneyInquiry.attributesEmoneyInquiry?.cardNumber,
+                emoneyInquiry.attributesEmoneyInquiry?.lastBalance,
+                userSession.userId, irisSessionId)
         emoneyAnalytics.openScreenSuccessReadCardNFC(operatorName, userSession.userId, irisSessionId)
 
         emoneyInquiry.error?.let { eMoneyInquiryError ->
@@ -233,7 +254,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showLoading()
-            emoneyAnalytics.onTapEmoneyCardShowLoading()
+            emoneyAnalytics.onTapEmoneyCardShowLoading(userSession.userId, irisSessionId)
         }
     }
 
@@ -265,7 +286,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         activity?.let {
             val bundle = Bundle()
             bundle.putParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
-            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM)
+            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.PRODUCT_TEMPLATE_WITH_CATEGORY_ID,
+                    DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY,
+                    DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY,
+                    DeeplinkMapperDigitalConst.TEMPLATE_ID_ELECTRONIC_MONEY)
             intent.putExtras(bundle)
             startActivity(intent)
         }
@@ -286,6 +310,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         }
+    }
+
+    protected fun showInitialState(){
+        tapETollCardView.showInitialState()
     }
 
     companion object {

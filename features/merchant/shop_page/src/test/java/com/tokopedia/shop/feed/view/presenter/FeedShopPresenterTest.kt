@@ -89,7 +89,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
             view.userSession.userId
         } returns "10000"
 
-        presenter.getFeedFirstPage("123", false)
+        presenter.getFeedFirstPage("123", false, false)
 
         verify {
             getDynamicFeedFirstUseCase.execute(any(), any())
@@ -106,7 +106,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
             secondArg<Subscriber<DynamicFeedDomainModel>>().onNext(DynamicFeedDomainModel())
         }
 
-        presenter.getFeedFirstPage("123", false)
+        presenter.getFeedFirstPage("123", false, false)
 
         verify {
             getDynamicFeedUseCase.execute(any(), any())

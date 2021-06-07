@@ -7,27 +7,36 @@
     android:orientation="vertical"
     android:padding="@dimen/spacing_lvl4">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <ImageView
+        android:contentDescription="null"
+        android:id="@+id/img_inactive_nfc"
+        android:layout_width="@dimen/nfc_common_dp_local_360"
+        android:layout_height="@dimen/nfc_common_dp_local_230" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl6"
-        app:srcCompat="@drawable/emoney_ic_nfc_need_activation" />
+        android:gravity="center"
+        android:text="@string/emoney_nfc_is_not_activated_title"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:gravity="center"
         android:text="@string/emoney_nfc_is_not_activated_label"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_activate_nfc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/emoney_activate_nfc"
-        app:unifyButtonSize="medium"
+        android:text="@string/emoney_nfc_activate_nfc"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
 

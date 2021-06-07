@@ -108,6 +108,7 @@ sealed class DateFilterItem(
             override var endDate: Date? = null,
             override var isSelected: Boolean = false,
             override val type: Int,
+            val calendarPickerMinDate: Date? = null,
             val calendarPickerMaxDate: Date? = null
     ) : DateFilterItem(label, startDate, endDate, isSelected, type) {
 
@@ -138,6 +139,7 @@ sealed class DateFilterItem(
             override var startDate: Date? = null,
             override var endDate: Date? = null,
             override var isSelected: Boolean = false,
+            val monthPickerMinDate: Date? = null,
             val monthPickerMaxDate: Date? = null
     ) : DateFilterItem(type = TYPE_PER_MONTH) {
 
