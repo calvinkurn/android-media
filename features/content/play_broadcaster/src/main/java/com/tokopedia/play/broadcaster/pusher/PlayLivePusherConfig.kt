@@ -5,8 +5,6 @@ package com.tokopedia.play.broadcaster.pusher
  * Created by mzennis on 03/06/21.
  */
 data class PlayLivePusherConfig(
-    val cameraPreviewWidth: Int = 1280,
-    val cameraPreviewHeight: Int = 720,
     val fps: Int = 30,
     val videoBitrate: Int = 900 * 1024,
     val videoOrientation: Int = 90,

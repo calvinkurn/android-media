@@ -25,6 +25,11 @@ class PlayLivePusherImpl : PlayLivePusher, ConnectCheckerRtmp {
 
     private fun initialize(lightOpenGlView: LightOpenGlView) {
         rtmpCamera = RtmpCamera2(lightOpenGlView, this)
+        rtmpCamera.prepareVideo(
+            lightOpenGlView.height,
+            lightOpenGlView.width,
+            mLivePusherConfig.videoBitrate
+        )
     }
 
     override val state: PlayLivePusherState
@@ -48,11 +53,7 @@ class PlayLivePusherImpl : PlayLivePusher, ConnectCheckerRtmp {
 
     private fun safeStartPreview(cameraFacing: CameraHelper.Facing) {
         Handler().postDelayed({
-            rtmpCamera.startPreview(
-                cameraFacing,
-                mLivePusherConfig.cameraPreviewWidth,
-                mLivePusherConfig.cameraPreviewHeight
-            )
+            rtmpCamera.startPreview(cameraFacing)
         }, 500)
     }
 
@@ -137,8 +138,6 @@ class PlayLivePusherImpl : PlayLivePusher, ConnectCheckerRtmp {
             mLivePusherConfig.audioNoiseSuppressor
         )
         val prepareVideo = rtmpCamera.prepareVideo(
-            mLivePusherConfig.cameraPreviewWidth,
-            mLivePusherConfig.cameraPreviewHeight,
             mLivePusherConfig.fps,
             mLivePusherConfig.videoBitrate,
             mLivePusherConfig.videoOrientation
