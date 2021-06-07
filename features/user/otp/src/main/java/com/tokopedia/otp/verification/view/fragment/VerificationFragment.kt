@@ -476,7 +476,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                             }
                         }
 
-                        analytics.trackClickResendOtpButton(otpData, modeListData)
                         sendOtp()
                         viewBound.pin?.value = ""
                     }
