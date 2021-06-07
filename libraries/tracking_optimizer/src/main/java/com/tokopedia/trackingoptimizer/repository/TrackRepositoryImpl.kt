@@ -3,7 +3,7 @@ package com.tokopedia.trackingoptimizer.repository
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
 
-interface NewITrackingRepository<T, U, V, W> {
+interface TrackRepositoryImpl<T, U, V, W> {
 
     fun putScreenName(screenName: String?)
     fun putScreenName(screenName: String?, customModel: ScreenCustomModel)
