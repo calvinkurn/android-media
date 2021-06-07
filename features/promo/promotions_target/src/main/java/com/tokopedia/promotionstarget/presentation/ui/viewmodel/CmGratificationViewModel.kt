@@ -7,9 +7,9 @@ import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
 import com.tokopedia.promotionstarget.domain.usecase.AutoApplyUseCase
 import com.tokopedia.promotionstarget.domain.usecase.UpdateGratifNotification
-import com.tokopedia.promotionstarget.presentation.SingleLiveEvent
 import com.tokopedia.promotionstarget.presentation.launchCatchError
 import com.tokopedia.promotionstarget.presentation.ui.Locks
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext

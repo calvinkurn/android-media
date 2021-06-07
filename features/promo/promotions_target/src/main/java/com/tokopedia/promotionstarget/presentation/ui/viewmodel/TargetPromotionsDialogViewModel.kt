@@ -12,12 +12,12 @@ import com.tokopedia.promotionstarget.data.di.MAIN
 import com.tokopedia.promotionstarget.domain.usecase.AutoApplyUseCase
 import com.tokopedia.promotionstarget.domain.usecase.ClaimPopGratificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.GetCouponDetailUseCase
-import com.tokopedia.promotionstarget.presentation.SingleLiveEvent
 import com.tokopedia.promotionstarget.presentation.TargetedPromotionAnalytics
 import com.tokopedia.promotionstarget.presentation.launchCatchError
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationData
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
