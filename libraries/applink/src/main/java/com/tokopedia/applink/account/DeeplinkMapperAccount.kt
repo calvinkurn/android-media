@@ -23,7 +23,5 @@ object DeeplinkMapperAccount {
         return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_USING_OLD_ACCOUNT))
     }
 
-    fun getLoginByQrNavigationFromHttp(): String = "${TokopediaUrl.getInstance().WEB}qrcode-login"
-
     fun getLoginByQr(uri: Uri): String = "${ApplinkConstInternalGlobal.QR_LOGIN}?${uri.query}"
 }
