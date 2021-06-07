@@ -31,6 +31,7 @@
             app:layout_constraintTop_toBottomOf="@+id/inbox_nav_toolbar" />
 
         <View
+            android:id="@+id/bottom_nav_top_shadow"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/dp_inbox_1"
             android:background="@drawable/inbox_bottom_nav_shadow"

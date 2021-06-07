@@ -628,6 +628,7 @@ public interface ApplinkConst {
         String VALUE_ROLE_SELLER = "seller";
 
         String PARAM_SOURCE = "source";
+        String PARAM_SHOW_BOTTOM_NAV = "show_bottom_nav";
     }
 
     interface GeneralInfo {
