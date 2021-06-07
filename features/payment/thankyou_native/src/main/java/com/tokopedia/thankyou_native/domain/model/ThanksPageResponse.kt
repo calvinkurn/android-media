@@ -114,21 +114,29 @@ data class PaymentDetail(
         @SerializedName("gateway_name")
         val gatewayName: String,
         @SerializedName("amount")
-        val amount: Float,
+        val amount: Double,
         @SerializedName("amount_str")
-        val amountStr: String
+        val amountStr: String,
+        @SerializedName("amount_combine")
+        val amountCombine: Double,
+        @SerializedName("amount_combine_str")
+        val amountCombineStr: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readString() ?: "")
+            parcel.readDouble(),
+            parcel.readString() ?: "",
+            parcel.readDouble(),
+        parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(gatewayCode)
         parcel.writeString(gatewayName)
-        parcel.writeFloat(amount)
+        parcel.writeDouble(amount)
         parcel.writeString(amountStr)
+        parcel.writeDouble(amountCombine)
+        parcel.writeString(amountCombineStr)
     }
 
     override fun describeContents(): Int {

@@ -36,6 +36,8 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        gateway_name
        amount
        amount_str
+       amount_combine
+       amount_combine_str
     }
     promo_data {
         promo_code

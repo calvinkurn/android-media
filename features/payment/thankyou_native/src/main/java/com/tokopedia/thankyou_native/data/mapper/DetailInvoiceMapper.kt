@@ -67,14 +67,15 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun getPreviousVAOrderAmount(totalFee: Long): FeeDetail? {
-        return if (thanksPageData.combinedAmount > 0) {
+         if (thanksPageData.combinedAmount > 0) {
             val previousAmount = thanksPageData.combinedAmount - thanksPageData.orderAmount - totalFee
-            val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(previousAmount,
+            if(previousAmount>0){
+                val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(previousAmount,
                     false)
-            FeeDetail(PREV_ORDER_AMOUNT_VA, formattedAmountStr)
-        } else {
-            null
+                return FeeDetail(PREV_ORDER_AMOUNT_VA, formattedAmountStr)
+            }
         }
+        return null
     }
 
     private fun addPaymentInfo() {
@@ -87,8 +88,11 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             }
         }
         thanksPageData.paymentDetails?.forEach { paymentDetail ->
+            val amountStr = if(paymentDetail.amountCombine > 0)
+                                paymentDetail.amountCombineStr
+                            else paymentDetail.amountStr
             paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName,
-                    paymentDetail.amountStr, paymentDetail.gatewayCode))
+                    amountStr, paymentDetail.gatewayCode))
         }
 
         val totalPayment: String = if (thanksPageData.combinedAmount > 0)
