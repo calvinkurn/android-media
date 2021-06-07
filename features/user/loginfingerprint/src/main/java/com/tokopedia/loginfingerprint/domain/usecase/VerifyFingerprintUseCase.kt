@@ -50,7 +50,7 @@ class VerifyFingerprintUseCase @Inject constructor(
 
     companion object {
         val query: String = """
-            query validate_fingerprint(${'$'}otpType: Int!, ${'$'}signature: String!, ${'$'}datetime: String){
+            query validate_fingerprint(${'$'}otpType: Int!, ${'$'}signature: String!, ${'$'}datetime: String!){
                 OTPVerifyBiometric(otpType: ${'$'}otpType, signature: ${'$'}signature, datetime: ${'$'}datetime) {
                         isSuccess
                         status
