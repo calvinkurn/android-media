@@ -26,6 +26,7 @@
                 android:layout_height="@dimen/layout_lvl6"
                 android:layout_weight="1"
                 android:padding="@dimen/spacing_lvl2"
+                android:contentDescription="@string/emoney_nfc_button_topup"
                 tools:src="@drawable/digital_ic_emoney" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
