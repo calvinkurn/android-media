@@ -9,13 +9,13 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.common.view.TokoMartHomeView
+import com.tokopedia.tokomart.common.view.TokoNowView
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.SOURCE
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
 class HomeChooseAddressWidgetViewHolder(
         itemView: View,
-        private val tokoMartHomeListener: TokoMartHomeView? = null,
+        private val tokoNowListener: TokoNowView? = null,
         private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetListener? = null
 ): AbstractViewHolder<HomeChooseAddressWidgetUiModel>(itemView) {
 
@@ -33,11 +33,10 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        tokoMartHomeListener?.getFragment()?.let { fragment ->
+        tokoNowListener?.getTokoNowFragment()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
-                    chooseAddressWidget?.updateWidget()
-                    homeChooseAddressWidgetListener?.onRefresh()
+                    homeChooseAddressWidgetListener?.onRefreshLayoutFromChooseAddressWidget()
                 }
 
                 override fun onLocalizingAddressServerDown() {
@@ -45,7 +44,7 @@ class HomeChooseAddressWidgetViewHolder(
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {
-                    homeChooseAddressWidgetListener?.onRefresh()
+                    homeChooseAddressWidgetListener?.onRefreshLayoutFromChooseAddressWidget()
                 }
 
                 override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
@@ -96,7 +95,7 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     interface HomeChooseAddressWidgetListener {
-        fun onRefresh()
+        fun onRefreshLayoutFromChooseAddressWidget()
         fun onRemoveChooseAddressWidget()
     }
 }

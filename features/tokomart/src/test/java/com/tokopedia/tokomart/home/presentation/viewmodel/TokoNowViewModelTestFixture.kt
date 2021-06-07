@@ -25,7 +25,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.mockito.ArgumentMatchers.*
 
-abstract class TokoMartHomeViewModelTestFixture {
+abstract class TokoNowViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getHomeLayoutListUseCase: GetHomeLayoutListUseCase

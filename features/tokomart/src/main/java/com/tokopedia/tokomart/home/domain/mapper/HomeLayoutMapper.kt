@@ -5,7 +5,6 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.home.constant.HomeLayoutType
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
-import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
@@ -34,8 +33,10 @@ object HomeLayoutMapper {
         return layoutList
     }
 
-    fun addEmptyStateIntoList(layoutList: MutableList<Visitable<*>>): List<Visitable<*>> {
-        layoutList.add(HomeEmptyStateUiModel(id = EMPTY_STATE))
+    fun addEmptyStateIntoList(id: String): List<Visitable<*>> {
+        val layoutList = mutableListOf<Visitable<*>>()
+        layoutList.add(HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID))
+        layoutList.add(HomeEmptyStateUiModel(id = id))
         return layoutList
     }
 

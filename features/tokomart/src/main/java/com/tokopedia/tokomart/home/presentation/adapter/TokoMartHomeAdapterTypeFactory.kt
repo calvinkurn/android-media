@@ -30,15 +30,16 @@ import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.tokomart.common.view.TokoMartHomeView
+import com.tokopedia.tokomart.common.view.TokoNowView
 import com.tokopedia.tokomart.home.presentation.uimodel.*
 import com.tokopedia.tokomart.home.presentation.view.listener.TokoMartDynamicLegoBannerCallback
 import com.tokopedia.tokomart.home.presentation.viewholder.*
 
 class TokoMartHomeAdapterTypeFactory(
-        private val tokoMartHomeListener: TokoMartHomeView? = null,
+        private val tokoNowListener: TokoNowView? = null,
         private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
         private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener? = null,
+        private val homeEmptyStateListener: HomeEmptyStateViewHolder.HomeEmptyStateListener? = null,
         private val bannerComponentListener: BannerComponentListener? = null
 ): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
@@ -70,9 +71,9 @@ class TokoMartHomeAdapterTypeFactory(
             // region Toko Mart Home Component
             HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
-            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoMartHomeListener, homeChooseAddressWidgetListener)
+            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoNowListener, homeChooseAddressWidgetListener)
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
-            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view)
+            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowListener, homeEmptyStateListener)
             // endregion
 
             // region Global Home Component

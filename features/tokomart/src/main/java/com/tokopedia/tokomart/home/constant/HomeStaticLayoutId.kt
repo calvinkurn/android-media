@@ -18,6 +18,7 @@ annotation class HomeStaticLayoutId {
     companion object {
         const val CHOOSE_ADDRESS_WIDGET_ID = "0"
         const val TICKER_WIDGET_ID = "1"
-        const val EMPTY_STATE = "2"
+        const val EMPTY_STATE_NO_ADDRESS = "2"
+        const val EMPTY_STATE_FAILED_TO_FETCH_DATA = "3"
     }
 }

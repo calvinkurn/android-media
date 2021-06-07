@@ -53,7 +53,8 @@ class TokoMartHomeViewModel @Inject constructor(
         private val STATIC_LAYOUT_ID = listOf(
             HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
             HomeStaticLayoutId.TICKER_WIDGET_ID,
-            HomeStaticLayoutId.EMPTY_STATE
+            HomeStaticLayoutId.EMPTY_STATE_NO_ADDRESS,
+            HomeStaticLayoutId.EMPTY_STATE_FAILED_TO_FETCH_DATA
         )
 
         // Temp hardcoded wh_id
@@ -81,7 +82,13 @@ class TokoMartHomeViewModel @Inject constructor(
     }
 
     fun getEmptyStateNoAddress() {
-        layoutList = addEmptyStateIntoList(layoutList.toMutableList())
+        layoutList = addEmptyStateIntoList(HomeStaticLayoutId.EMPTY_STATE_NO_ADDRESS)
+        val data = HomeLayoutListUiModel(layoutList)
+        _homeLayoutList.value = Success(data)
+    }
+
+    fun getEmptyStateFailedToFetchData() {
+        layoutList = addEmptyStateIntoList(HomeStaticLayoutId.EMPTY_STATE_FAILED_TO_FETCH_DATA)
         val data = HomeLayoutListUiModel(layoutList)
         _homeLayoutList.value = Success(data)
     }
