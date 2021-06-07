@@ -13,8 +13,10 @@ object DigitalCheckoutConst {
     object SummaryInfo {
         const val STRING_SUBTOTAL_TAGIHAN = "Subtotal Tagihan"
         const val STRING_KODE_PROMO = "Kode Promo"
+        const val STRING_ADMIN_FEE = "Biaya Admin"
 
         const val SUMMARY_TOTAL_PAYMENT_POSITION = 0
-        const val SUMMARY_PROMO_CODE_POSITION = 1
+        const val SUMMARY_ADMIN_FEE_POSITION = 1
+        const val SUMMARY_PROMO_CODE_POSITION = 2
     }
 }

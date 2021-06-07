@@ -15,7 +15,7 @@
             android:value="true" />
 
         <activity
-            android:name="com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub"
+            android:name=".login.behaviour.activity.LoginActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity

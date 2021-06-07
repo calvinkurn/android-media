@@ -5,7 +5,7 @@ import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
 private const val EVENT_NAME = "viewWithdrawalIris"
-private const val EVENT_NAME_CLICK_WITHDRAWAL = "viewWithdrawalIris"
+private const val EVENT_NAME_CLICK_WITHDRAWAL = "clickWithdrawal"
 
 private const val EVENT_CAT_AUTO_WD_PAGE = "autowd page"
 
