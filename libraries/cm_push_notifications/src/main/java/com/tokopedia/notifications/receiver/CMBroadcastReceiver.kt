@@ -209,11 +209,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
         val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
-       /* val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink
-                ?: ApplinkConst.HOME)
-        intent.extras?.let { bundle ->
-            appLinkIntent.putExtras(bundle)
-        }*/
         startActivity(context, baseNotificationModel.appLink, intent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
