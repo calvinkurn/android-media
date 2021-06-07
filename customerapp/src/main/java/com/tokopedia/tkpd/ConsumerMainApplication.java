@@ -1,5 +1,11 @@
 package com.tokopedia.tkpd;
 
+import android.content.SharedPreferences;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
+
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
@@ -92,6 +98,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     @Override
     public void onCreate() {
+        setupAppScreenMode();
         super.onCreate();
         setGrantPermissionSlice();
     }
@@ -106,5 +113,17 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     private Boolean getSliceRemoteConfig() {
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, false);
+    }
+
+    private void setupAppScreenMode() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
+        int screenMode;
+        if (isDarkMode) {
+            screenMode = AppCompatDelegate.MODE_NIGHT_YES;
+        } else {
+            screenMode = AppCompatDelegate.MODE_NIGHT_NO;
+        }
+        AppCompatDelegate.setDefaultNightMode(screenMode);
     }
 }

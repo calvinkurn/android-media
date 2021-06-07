@@ -80,8 +80,8 @@
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_title_prepaid_page">Prabayar</string>
     <string name="digital_title_postpaid_page">Pascabayar</string>
-    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
+    <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
@@ -163,6 +163,8 @@
     <string name="wallet_title">Ovo</string>
     <string name="wallet_title_header_ovo">TokoCash to OVO</string>
     <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
+
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
 
     <!-- Digital-Deals-->
     <string name="digital_deals">digital_deals</string>
@@ -315,6 +317,9 @@
     <string name="title_buyer_order_list">Daftar Transaksi</string>
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
+
+    <!-- Dynamic feature for cart -->
+    <string name="checkout_module_title_activity_cart">Keranjang</string>
 
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>

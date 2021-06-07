@@ -18,7 +18,7 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
     : BaseViewModel(dispatcher) {
 
     val resultDataOcr = MutableLiveData<String>()
-    val errorActionOcr = MutableLiveData<String>()
+    val errorActionOcr = MutableLiveData<Throwable>()
 
     fun uploadImageRecharge(pathFile: String, rawQuery: String) {
         launchCatchError(block = {
@@ -42,7 +42,7 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
 
             resultDataOcr.postValue(dataOcr.rechargeOcr.result)
         }) {
-            errorActionOcr.postValue(it.message)
+            errorActionOcr.postValue(it)
         }
     }
 

@@ -1,0 +1,86 @@
+{
+  "readme": "Emoney Pdp Login Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "viewDigitalIris",
+      "userId": ".+",
+      "eventAction": "view pdp page",
+      "sessionIris": ".+",
+      "eventLabel": "Uang Elektronik"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".+",
+      "eventAction": "click update saldo",
+      "sessionIris": ".+",
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - Uang Elektronik",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickEmoney",
+      "userId": ".+",
+      "eventAction": "click lihat detail",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - Uang Elektronik",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickEmoney",
+      "userId": ".+",
+      "eventAction": "click x button card number",
+      "sessionIris": ".+",
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - native",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickDigitalNative",
+      "userId": ".+",
+      "eventAction": "click camera icon",
+      "sessionIris": ".+",
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - Uang Elektronik",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickEmoney",
+      "userId": ".+",
+      "eventAction": "input card number",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - native",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickDigitalNative",
+      "userId": ".+",
+      "eventAction": "click order list section",
+      "sessionIris": ".+",
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - native",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "clickDigitalNative",
+      "userId": ".+",
+      "eventAction": "click promo section",
+      "sessionIris": ".+",
+      "eventLabel": ""
+    }
+  ]
+}

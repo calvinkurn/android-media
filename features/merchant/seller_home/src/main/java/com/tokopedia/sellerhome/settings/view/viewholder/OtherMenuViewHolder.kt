@@ -26,7 +26,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
-import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
@@ -447,9 +446,9 @@ class OtherMenuViewHolder(private val itemView: View,
                     txTotalStatsRM.hide()
                 } else {
                     if (userShopInfo.isBeforeOnDate) {
-                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
-                    } else {
                         txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+                    } else {
+                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
                     }
                     txTotalStatsRM.show()
                     txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
@@ -492,7 +491,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 .toBuilder()
                 .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
                 .build()
-        powerMerchantProIcon.loadImage(goldOS?.badge)
+        powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
     }
 
