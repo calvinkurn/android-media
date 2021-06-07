@@ -26,6 +26,9 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
     fun `Load More Data Success`() {
         val searchProductModelFirstPage = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
         val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
+        `Setup choose address`(dummyChooseAddressData)
+        setUp()
+
         `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
         `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
         `Given Mechanism to save and get product position from cache`()
@@ -188,6 +191,9 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         val searchProductModelFirstPage = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
         val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
         val searchProductModelThirdPage = searchProductThirdPageJSON.jsonToObject<SearchProductModel>()
+        `Setup choose address`(dummyChooseAddressData)
+        setUp()
+
         `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
 
         every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {

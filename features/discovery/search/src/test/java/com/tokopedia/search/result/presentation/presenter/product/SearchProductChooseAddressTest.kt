@@ -27,14 +27,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     private val requestParams by lazy { requestParamsSlot.captured }
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
-    private val dummyChooseAddressData = LocalCacheModel(
-            address_id = "123",
-            city_id = "45",
-            district_id = "123",
-            lat = "10.2131",
-            long = "12.01324",
-            postal_code = "12345",
-    )
 
     @Test
     fun `Test Show choose address widget in first page`() {
@@ -51,19 +43,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
                 dummyChooseAddressData,
         )
         `Then verify top of visitable list is choose address widget`()
-    }
-
-    private fun `Setup choose address`(chooseAddressModel: LocalCacheModel?) {
-        `Given choose address is enabled`()
-        `Given chosen address data`(chooseAddressModel)
-    }
-
-    private fun `Given choose address is enabled`() {
-        every { productListView.isChooseAddressWidgetEnabled } returns true
-    }
-
-    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
-        every { productListView.chooseAddressData } returns chooseAddressModel
     }
 
     private fun `Given search product API will return data`() {

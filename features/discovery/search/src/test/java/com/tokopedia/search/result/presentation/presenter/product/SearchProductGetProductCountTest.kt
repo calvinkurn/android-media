@@ -34,6 +34,8 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
 
     @Test
     fun `Get product count with parameter should call get product count use case with parameters and size = 0`() {
+        `Setup choose address`(dummyChooseAddressData)
+
         val successfulProductCountText = "10rb Produk"
         `Given Get Product Count Use Case will be successful`(successfulProductCountText)
 

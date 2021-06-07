@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
@@ -30,6 +29,9 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             it[SearchApiConst.UNIQUE_ID] = "unique_id"
             it[SearchApiConst.USER_ID] = productListPresenter.userId
         }
+
+        `Setup choose address`(dummyChooseAddressData)
+        setUp()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View getQueryKey will return the keyword`(searchParameter[SearchApiConst.Q].toString())
@@ -145,6 +147,9 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Load Data Success Is First Time Load`() {
+        `Setup choose address`(dummyChooseAddressData)
+        setUp()
+
         val searchProductModel = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View is first active tab`()
