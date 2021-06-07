@@ -3,7 +3,7 @@ package com.tokopedia.loginfingerprint.data.model
 import com.google.gson.annotations.SerializedName
 
 data class CheckFingerprintPojo(
-    @SerializedName("OTPBiometricCheckRegistered")
+    @SerializedName("OTPBiometricCheckToggleStatus")
     var data: CheckFingerprintResult = CheckFingerprintResult()
 )
 
