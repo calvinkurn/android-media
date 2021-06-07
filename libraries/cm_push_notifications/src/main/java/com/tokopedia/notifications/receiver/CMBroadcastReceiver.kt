@@ -463,14 +463,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun copyDataIntentToAppLinkIntent(appLinkIntent: Intent, dataIntent: Intent?){
         try {
             dataIntent?.let { dataIntent->
+                //this extra data is added to support gratification
                 if(dataIntent.hasExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID)){
                     appLinkIntent.putExtra(CMConstant.EXTRA_BASE_MODEL, true)
                     appLinkIntent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID,
                         dataIntent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID))
-                    appLinkIntent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID,
-                        dataIntent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID,0))
-                    appLinkIntent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID,
-                        dataIntent.getLongExtra(CMConstant.EXTRA_CAMPAIGN_ID,0))
                 }
             }
         }catch (e : Exception){}
