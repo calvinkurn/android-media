@@ -17,7 +17,7 @@ import com.tokopedia.trackingoptimizer.gson.HashMapJsonUtil
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
 
-class NewTrackingRepository(val context: Context, val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)) : NewITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
+class TrackRepository(val context: Context, val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)) : TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
         TrackingEEFullDbModel, TrackingScreenNameDbModel> {
 
     val trackingEEDataSource by lazy {
