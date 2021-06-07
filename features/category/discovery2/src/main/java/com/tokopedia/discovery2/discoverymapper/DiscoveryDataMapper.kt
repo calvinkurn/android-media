@@ -2,8 +2,6 @@ package com.tokopedia.discovery2.discoverymapper
 
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.discovery2.ComponentNames
-import com.tokopedia.discovery2.Constant.BADGE_URL.OFFICIAL_STORE_URL
-import com.tokopedia.discovery2.Constant.BADGE_URL.POWER_MERCHANT_URL
 import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
 import com.tokopedia.discovery2.Constant.ProductCardModel.PRODUCT_STOCK
 import com.tokopedia.discovery2.Constant.ProductCardModel.SALE_PRODUCT_STOCK
@@ -16,6 +14,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.categorynavigationresponse.ChildItem
+import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -220,7 +219,7 @@ class DiscoveryDataMapper {
                     }
                 },
                 shopLocation = getShopLocation(dataItem),
-                shopBadgeList = getShopBadgeList(dataItem),
+                shopBadgeList = getShopBadgeList(dataItem.badges),
                 stockBarPercentage = setStockProgress(dataItem),
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
@@ -278,16 +277,10 @@ class DiscoveryDataMapper {
         }
     }
 
-    private fun getShopBadgeList(dataItem: DataItem): List<ProductCardModel.ShopBadge> {
+    private fun getShopBadgeList(showBadges: List<Badges?>?): List<ProductCardModel.ShopBadge> {
         return ArrayList<ProductCardModel.ShopBadge>().apply {
-            when {
-                dataItem.goldMerchant == true && dataItem.officialStore == true ->
-                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
-                dataItem.goldMerchant == true ->
-                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = POWER_MERCHANT_URL))
-                dataItem.officialStore == true ->
-                    add(ProductCardModel.ShopBadge(isShown = true, imageUrl = OFFICIAL_STORE_URL))
-                else -> add(ProductCardModel.ShopBadge(isShown = false, imageUrl = ""))
+            showBadges?.firstOrNull()?.let {
+                add(ProductCardModel.ShopBadge(isShown = true, imageUrl = it.image_url))
             }
         }
     }
