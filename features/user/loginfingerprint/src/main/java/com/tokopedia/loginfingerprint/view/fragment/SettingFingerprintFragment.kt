@@ -33,6 +33,8 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
 
     override fun getScreenName(): String = TAG
 
+    private var isAfterRegister = false
+
     override fun initInjector() {
         getComponent(LoginFingerprintComponent::class.java).inject(this)
     }
@@ -49,7 +51,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
         viewModel.getFingerprintStatus()
 
         fragment_fingerprint_setting_switch?.setOnCheckedChangeListener { switch, isEnable ->
-            if(isEnable) {
+            if(isEnable && !isAfterRegister) {
                 switch.isChecked = false
                 showBiometricPrompt()
             } else {
@@ -71,6 +73,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     fragment_fingerprint_setting_switch?.isChecked = true
+                    isAfterRegister = true
 //                    activity?.finish()
                 }
                 is Fail -> {
