@@ -40,7 +40,9 @@ data class AttributesDigitalData(
 
         var postPaidPopupAttribute: PostPaidPopupAttribute = PostPaidPopupAttribute(),
 
-        var fintechProduct: List<FintechProduct> = listOf()
+        var fintechProduct: List<FintechProduct> = listOf(),
+
+        var adminFee: Float = 0.0f
 ) : Parcelable {
 
     @Parcelize

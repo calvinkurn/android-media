@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.domain.interactor
 
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMCurrentAndNextShopGradeUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMCurrentAndNextShopGradeUseCase
@@ -17,20 +18,15 @@ import javax.inject.Inject
  */
 
 class GetPMActiveDataUseCase @Inject constructor(
-        private val getPMStatusUseCase: GetPMStatusUseCase,
         private val getPMCurrentAndNextShopGradeUseCase: GetPMCurrentAndNextShopGradeUseCase,
         private val userSession: UserSessionInterface
 ) : UseCase<PMActiveDataUiModel>() {
 
     override suspend fun executeOnBackground(): PMActiveDataUiModel {
         return coroutineScope {
-            val shopStatusAsync = async { getPMShopStatus() }
             val currentAndNextPMGradeAsync = async { getCurrentAndNextPMGrade() }
-            val shopStatus = shopStatusAsync.await()
             val currentAndNextPMGrade = currentAndNextPMGradeAsync.await()
             return@coroutineScope PMActiveDataUiModel(
-                    pmStatus = shopStatus.status,
-                    expiredTime = shopStatus.expiredTime,
                     nextMonthlyRefreshDate = currentAndNextPMGrade.nextMonthlyRefreshDate,
                     nextQuarterlyCalibrationRefreshDate = currentAndNextPMGrade.nextQuarterlyCalibrationRefreshDate,
                     currentPMGrade = currentAndNextPMGrade.currentPMGrade,
@@ -41,15 +37,10 @@ class GetPMActiveDataUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getPMShopStatus(): PMStatusUiModel {
-        getPMStatusUseCase.params = GetPMStatusUseCase.createParams(userSession.shopId)
-        return getPMStatusUseCase.executeOnBackground()
-    }
-
     private suspend fun getCurrentAndNextPMGrade(): PMCurrentAndNextShopGradeUiModel {
         getPMCurrentAndNextShopGradeUseCase.params = GetPMCurrentAndNextShopGradeUseCase.createParams(
                 shopId = userSession.shopId,
-                source = Constant.PM_SETTING_INFO_SOURCE
+                source = PMConstant.PM_SETTING_INFO_SOURCE
         )
         return getPMCurrentAndNextShopGradeUseCase.executeOnBackground()
     }

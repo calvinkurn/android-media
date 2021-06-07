@@ -276,6 +276,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.promoGamificationCommon)
+    implementation project(rootProject.ext.features.promoMvcWidget)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.linker)
@@ -354,12 +355,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
-    // Warning: removing imageCropper lib might cause youtube library crash
-    // when load recommendation at the end of video
-    // Need to recheck
-    implementation(rootProject.ext.miscDependencies.imagecropper) {
-        exclude group: "com.android.support"
-    }
+    implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
@@ -453,6 +449,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
 
     implementation rootProject.ext.unifyDependencies.empty_state
+    implementation rootProject.ext.unifyDependencies.accordion
 }
 
 apply plugin: 'com.google.gms.google-services'

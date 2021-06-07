@@ -53,6 +53,7 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -168,9 +169,9 @@ open class HomeRevampViewModel @Inject constructor(
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
-    val errorEventLiveData: LiveData<Event<String>>
+    val errorEventLiveData: LiveData<Event<Throwable>>
         get() = _errorEventLiveData
-    private val _errorEventLiveData = MutableLiveData<Event<String>>()
+    private val _errorEventLiveData = MutableLiveData<Event<Throwable>>()
 
     val isViewModelInitialized: LiveData<Event<Boolean>>
         get() = _isViewModelInitialized
@@ -188,6 +189,9 @@ open class HomeRevampViewModel @Inject constructor(
 
     private val _isNeedRefresh = MutableLiveData<Event<Boolean>>()
     val isNeedRefresh: LiveData<Event<Boolean>> get() = _isNeedRefresh
+
+    private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
+    val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
 
     /**
      * Variable list
@@ -432,10 +436,10 @@ open class HomeRevampViewModel @Inject constructor(
                 if(closeChannel.success){
                     deleteWidget(dynamicChannelDataModel, position)
                 } else {
-                    _errorEventLiveData.postValue(Event(""))
+                    _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }){
-                _errorEventLiveData.postValue(Event(it.message ?: ""))
+                _errorEventLiveData.postValue(Event(it))
                 Timber.tag(this::class.java.simpleName).e(it)
             }
         }
@@ -447,11 +451,11 @@ open class HomeRevampViewModel @Inject constructor(
                 if(closeChannel.success){
                     deleteWidget(recommendationListHomeComponentModel, position)
                 } else {
-                    _errorEventLiveData.postValue(Event(""))
+                    _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }){
                 it.printStackTrace()
-                _errorEventLiveData.postValue(Event(it.message ?: ""))
+                _errorEventLiveData.postValue(Event(it))
             }
         }
     }
@@ -543,7 +547,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(it, null))
 
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_error_refresh",
@@ -723,28 +727,39 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getFeedTabData() {
         if (getTabRecommendationJob?.isActive == true) return
-        addWidget(HomeLoadingMoreModel())
+        if (!widgetIsAvailable<HomeRecommendationFeedDataModel>()) {
+            addWidget(HomeLoadingMoreModel())
+        }
         getTabRecommendationJob = launchCatchError(coroutineContext, block={
             getRecommendationTabUseCase.get().setParams(getHomeLocationDataParam())
             val homeRecommendationTabs = getRecommendationTabUseCase.get().executeOnBackground()
             val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
             }
-            val findRecommendationModel = homeDataModel.list.find {
-                data -> data is HomeRecommendationFeedDataModel
-            }
+
             val findLoadingModel = homeDataModel.list.withIndex().find {
                 data -> data.value is HomeLoadingMoreModel
             }
 
-            if (findRecommendationModel != null) return@launchCatchError
+            findWidget<HomeRecommendationFeedDataModel> { model, index ->
+                val newModel = model.copy(
+                    recommendationTabDataModel = homeRecommendationTabs,
+                    homeChooseAddressData = homeDataModel.homeChooseAddressData.copy()
+                )
+                if (findLoadingModel == null) {
+                    updateWidget(visitable = newModel, position = index)
+                } else {
+                    updateWidget(visitable = newModel, visitableToChange = findLoadingModel.value, position = index)
+                }
+                _resetNestedScrolling.postValue(Event(true))
+                return@launchCatchError
+            }
 
             val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel(homeDataModel.homeChooseAddressData)
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
 
             findLoadingModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel.index?:-1, it) }
-            findRetryModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findLoadingModel?.index?:-1, it) }
-
+            findRetryModel?.value?.let { updateWidget(homeRecommendationFeedViewModel, findRetryModel?.index?:-1, it) }
         }){
             val findRetryModel = homeDataModel.list.withIndex().find { data -> data.value is HomeRetryModel
             }
@@ -862,7 +877,7 @@ open class HomeRevampViewModel @Inject constructor(
         injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
             _injectCouponTimeBasedResult.value = Result.success(injectCouponTimeBasedUseCase.get().executeOnBackground().data)
         }){
-            _injectCouponTimeBasedResult.postValue(Result.error(it))
+            _injectCouponTimeBasedResult.postValue(Result.error(error = it))
         }
     }
 
@@ -921,7 +936,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
-        refresh(isFirstInstall = false, forceRefresh = true)
     }
 
     fun getAddressData(): HomeChooseAddressData {
@@ -984,18 +998,20 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun updateHomeData(homeNewDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
+        homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
         this.homeDataModel = homeNewDataModel
+
         if (!homeNewDataModel.isProcessingDynamicChannle) {
             homeNewDataModel.evaluateHomeFlagData(
                     onNewBalanceWidgetSelected = { setNewBalanceWidget(it) },
                     onNeedToGetBalanceData = { getBalanceWidgetData() }
             )
-            homeNewDataModel.copyStaticWidgetDataFrom(homeDataModel)
             homeNewDataModel.evaluateRecommendationSection(
                     onNeedTabLoad = { getFeedTabData() }
             )
         }
         _homeLiveData.postValue(homeDataModel)
+        _resetNestedScrolling.postValue(Event(true))
     }
 
     private fun logChannelUpdate(message: String){
@@ -1108,14 +1124,14 @@ open class HomeRevampViewModel @Inject constructor(
                     updateCarouselPlayWidget {
                         it.copy(widgetUiModel = playWidgetTools.get().updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
                     }
-                    _playWidgetReminderObservable.postValue(Result.error(Throwable()))
+                    _playWidgetReminderObservable.postValue(Result.error(error = Throwable()))
                 }
             }
         }) { throwable ->
             updateCarouselPlayWidget {
                 it.copy(widgetUiModel = playWidgetTools.get().updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
             }
-            _playWidgetReminderObservable.postValue(Result.error(throwable))
+            _playWidgetReminderObservable.postValue(Result.error(error = throwable))
         }
     }
 
@@ -1503,7 +1519,7 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         }) {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(error = it, data = null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_error_init_flow",
@@ -1511,7 +1527,7 @@ open class HomeRevampViewModel @Inject constructor(
                             "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
                     ))
         }.invokeOnCompletion {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(error = Throwable(), data = null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_cancelled_init_flow",

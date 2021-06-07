@@ -2,6 +2,7 @@
 <resources>
     <color name="pm_cb_color">#bfbfbf</color>
 
+    <color name="pm_color_grey">#10000000</color>
     <color name="pm_color_green_d1ffdd">#D1FFDD</color>
     <color name="pm_color_green_24d37f">#24D37F</color>
     <color name="pm_color_blue_12b6cc">#12B6CC</color>
