@@ -78,7 +78,6 @@ class IrisSession(val context: Context) : Session {
         val domainHash = generateDomainHash()
 
         setInitialVisit(timestamp)
-        setUuid(uuid)
 
         val generatedSessionIdResult = "$domainHash:$uuid:$timestamp"
         setPrefSessionId(generatedSessionIdResult)
@@ -121,11 +120,6 @@ class IrisSession(val context: Context) : Session {
             editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
             editor.apply()
         }
-    }
-
-    private fun setUuid(uuid: String?) {
-        editor.putString(KEY_SESSION_ID, uuid)
-        editor.apply()
     }
 
     private fun setInitialVisit(initialVisit: Long) {
