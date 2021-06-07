@@ -26,7 +26,7 @@ class CheckFingerprintToggleStatusUseCase @Inject constructor(
                     setRequestParams(mapOf(
                         PARAM_USER_ID to userId
                     ))
-                    setGraphqlQuery(RegisterFingerprintUseCase.query)
+                    setGraphqlQuery(query)
                 }.executeOnBackground()
             withContext(dispatchers.main) {
                 onSuccess(data)
