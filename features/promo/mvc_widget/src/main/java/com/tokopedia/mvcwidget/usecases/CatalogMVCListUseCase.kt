@@ -17,7 +17,7 @@ class CatalogMVCListUseCase @Inject constructor(var gqlWrapper: GqlUseCaseWrappe
 
     fun getQueryParams(shopId: String): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
-        variables[TokopointsCatalogMVCParams.SHOP_ID] = "6551825"
+        variables[TokopointsCatalogMVCParams.SHOP_ID] = "480136"
         return variables
     }
 

@@ -3,11 +3,11 @@ package com.tokopedia.mvcwidget.views
 import android.view.View
 import com.tokopedia.promoui.common.dpToPx
 
-fun View.slideUpFromMiddle(duration: Long = 850, visibility: Int = View.VISIBLE, completion: (() -> Unit)? = null) {
+fun View.slideUpFromMiddle(duration: Long = 500, visibility: Int = View.VISIBLE, completion: (() -> Unit)? = null) {
         animate()
             .alpha(1f)
             .translationY(-height.toFloat() - dpToPx(10))
-            .setStartDelay(300L)
+            .setStartDelay(100L)
             .setDuration(duration)
             .withEndAction {
                 completion?.let {
@@ -16,7 +16,7 @@ fun View.slideUpFromMiddle(duration: Long = 850, visibility: Int = View.VISIBLE,
             }
     }
 
-    fun View.slideUpFromBottom(duration: Long = 850, completion: (() -> Unit)? = null) {
+    fun View.slideUpFromBottom(duration: Long = 500, completion: (() -> Unit)? = null) {
         y = height.toFloat()
         animate()
             .alpha(1f)

@@ -267,10 +267,6 @@ class MvcDetailView @JvmOverloads constructor(
         viewModel.registerMembership()
     }
 
-    override fun handleCollapseExpand(adapterPosition: Int) {
-       adapter?.notifyItemChanged(adapterPosition)
-    }
-
     private fun setToastBottomMargin() {
         if (addBottomMarginOnToast) {
             Toaster.toasterCustomBottomHeight = dpToPx(48).toInt()

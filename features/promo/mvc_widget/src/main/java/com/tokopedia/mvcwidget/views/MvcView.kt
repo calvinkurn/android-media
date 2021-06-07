@@ -88,7 +88,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
         iconListRunnable = object : Runnable {
             var currentIndex = 0
-            var updateInterval = 2000L
+            var updateInterval = 1100L
 
             override fun run() {
                 val title = iconList[currentIndex].title ?: ""

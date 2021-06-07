@@ -47,7 +47,6 @@ class FollowViewHolder (itemView: View,val mvcDetailViewContract: MvcDetailViewC
                 mvcFollowContainer.twoActionView.tvList.text = itemView.context.resources.getString(R.string.mvc_text_collapse)
                 followWidget.isCollapsed = !followWidget.isCollapsed
             }
-           // mvcDetailViewContract.handleCollapseExpand(adapterPosition)
         }
     }
 

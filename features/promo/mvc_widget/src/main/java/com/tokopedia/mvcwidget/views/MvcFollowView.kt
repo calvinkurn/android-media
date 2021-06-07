@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.promoui.common.dpToPx
@@ -194,6 +195,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             FollowWidgetType.MEMBERSHIP_OPEN -> {
                 collapsableContainer.visibility = View.GONE
                 containerContent.visibility = View.VISIBLE
+                setBottomMarginContainerContent()
                 btnSecond.text = context.resources.getString(R.string.mvc_jadi_member)
             }
             FollowWidgetType.MEMBERSHIP_CLOSE -> {
@@ -254,11 +256,28 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             }
         }
         val caroRef = child.findViewById<CarouselUnify>(R.id.carousel)
-        val cta = child.findViewById<View>(R.id.btn)
-        cta.setOnClickListener {
-            Tracker.clickDaftarJadiMember(shopId,UserSession(context).userId,mvcSource)
-            bottomsheet.dismiss()
+        val cta = child.findViewById<UnifyButton>(R.id.btn)
+
+        when (followWidget.type) {
+            FollowWidgetType.MEMBERSHIP_OPEN -> {
+                cta.setOnClickListener {
+                    Tracker.clickDaftarJadiMember(shopId, UserSession(context).userId, mvcSource)
+                    bottomsheet.dismiss()
+                }
+            }
+            FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                if (mvcSource == MvcSource.PDP) {
+                    cta.visibility = View.GONE
+                } else {
+                    cta.text = context.resources.getString(R.string.mvc_mulai_belanja)
+                }
+                cta.setOnClickListener {
+                    RouteManager.route(context, "tokopedia://shop/$shopId/product")
+                    Tracker.clickDaftarJadiMember(shopId, UserSession(context).userId, mvcSource)
+                }
+            }
         }
+
         caroRef.apply {
             slideToShow = 1f
             indicatorPosition = CarouselUnify.INDICATOR_BC
@@ -284,5 +303,12 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         } else {
             Html.fromHtml(t).trim()
         }
+    }
+
+    private fun setBottomMarginContainerContent() {
+        val marginLayoutParams = collapsableContainer.layoutParams as ViewGroup.MarginLayoutParams
+                marginLayoutParams.bottomMargin =
+                    containerContent.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+        containerContent.layoutParams = marginLayoutParams
     }
 }
