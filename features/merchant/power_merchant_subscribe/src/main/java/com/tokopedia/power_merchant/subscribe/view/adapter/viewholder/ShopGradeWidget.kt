@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
@@ -16,6 +17,8 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 03/03/21
@@ -95,13 +98,28 @@ class ShopGradeWidget(
         val textColor = PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         return if (element.pmStatus == PMStatusConst.ACTIVE) {
             if (element.isNewSeller) {
-                val endOfTenure = ""
+                val endOfTenure = getEndOfTenureDate(element)
                 itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active_new_seller, endOfTenure)
             } else {
                 itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.threshold, getPmTireLabel(element.pmTierType))
             }
         } else {
             itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+        }
+    }
+
+    private fun getEndOfTenureDate(element: WidgetShopGradeUiModel): String {
+        val dateFormat = "dd MMM yyyy"
+        val endOfTenureDays = 90
+        val shopAge = element.shopAge
+        val nowMillis = Date().time
+        val remainingDays = endOfTenureDays.minus(shopAge)
+        return if (remainingDays < endOfTenureDays) {
+            val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays.toLong())
+            val endOfTenureMillis = nowMillis.plus(remainingDaysMillis)
+            DateFormatUtils.getFormattedDate(endOfTenureMillis, dateFormat)
+        } else {
+            DateFormatUtils.getFormattedDate(nowMillis, dateFormat)
         }
     }
 

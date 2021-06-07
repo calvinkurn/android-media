@@ -11,6 +11,7 @@ class WidgetShopGradeUiModel(
         val pmTierType: Int = 0,
         val shopScore: Int = 0,
         val threshold: Int = 0,
+        val shopAge: Int = 0,
         val gradeBadgeImgUrl: String = "",
         val gradeBackgroundUrl: String = "",
         val pmStatus: String = ""

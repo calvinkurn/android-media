@@ -9,6 +9,7 @@ data class PMShopInfoUiModel(
         val isKyc: Boolean = false,
         val kycStatusId: Int = 0, //pls refer https://tokopedia.atlassian.net/wiki/spaces/AUT/pages/452132984/KYC+-+Know+Your+Customer
         val shopScore: Int = 0,
+        val shopAge: Int = 0,
         val shopScoreThreshold: Int = DEFAULT_PM_SHOP_SCORE_THRESHOLD,
         val shopScorePmProThreshold: Int = DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD,
         val hasActiveProduct: Boolean = false,
