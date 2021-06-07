@@ -58,7 +58,7 @@ class InitialStateUseCase(
         private const val DEFAULT_COUNT = "5"
         private const val DEVICE_ID = "device_id"
 
-        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String): RequestParams {
+        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String, warehouseId: String): RequestParams {
             val params = RequestParams.create()
 
             params.putAll(searchParameter)
@@ -74,8 +74,7 @@ class InitialStateUseCase(
             params.putString(KEY_UNIQUE_ID, uniqueId)
             params.putString(DEVICE_ID, registrationId)
 
-            //need to get user_warehouseId from chooseAddress later
-            params.putString(SearchApiConst.USER_WAREHOUSE_ID, SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
+            params.putString(SearchApiConst.USER_WAREHOUSE_ID, warehouseId)
 
             return params
         }

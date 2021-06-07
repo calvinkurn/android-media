@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 interface SuggestionContract {
     interface View : CustomerView {
@@ -32,6 +33,8 @@ interface SuggestionContract {
         fun route(applink: String, searchParameter: Map<String, String>)
 
         fun finish()
+
+        val chooseAddressData: LocalCacheModel?
     }
 
     interface Presenter : CustomerPresenter<View> {

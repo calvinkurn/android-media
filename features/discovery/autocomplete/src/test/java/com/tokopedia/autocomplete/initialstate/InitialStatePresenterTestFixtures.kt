@@ -81,6 +81,7 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected fun `Then verify initial state view behavior is correct`() {
         verifyOrder {
+            initialStateView.chooseAddressData
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
@@ -90,7 +91,10 @@ internal open class InitialStatePresenterTestFixtures {
         confirmVerified(initialStateView)
     }
 
-    protected fun `Then verify initial state view do nothing behavior`() {
+    protected fun `Then verify view interaction for load data failed with exception`() {
+        verify {
+            initialStateView.chooseAddressData
+        }
         confirmVerified(initialStateView)
     }
 

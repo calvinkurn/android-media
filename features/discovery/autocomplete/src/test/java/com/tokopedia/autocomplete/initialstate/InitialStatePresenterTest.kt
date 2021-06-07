@@ -17,6 +17,7 @@ import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
@@ -33,11 +34,26 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
     @Test
     fun `Test initial state presenter has set parameter`() {
+        val warehouseId = "2216"
+        val dummyChooseAddressData = LocalCacheModel(
+                address_id = "123",
+                city_id = "45",
+                district_id = "123",
+                lat = "10.2131",
+                long = "12.01324",
+                postal_code = "12345",
+                warehouse_id = warehouseId
+        )
+        `Given chosen address data`(dummyChooseAddressData)
         `Given getInitialStateUseCase will be successful`(initialStateCommonData)
 
         `When presenter get initial state data`()
 
-        `Then verify search parameter has warehouseId`(SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
+        `Then verify search parameter has warehouseId`(warehouseId)
+    }
+
+    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
+        every { initialStateView.chooseAddressData } returns chooseAddressModel
     }
 
     private fun `Given getInitialStateUseCase will be successful`(list: List<InitialStateData>) {
@@ -136,7 +152,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         `Given initial state API will return error`()
         `When presenter get initial state data`()
         `Then verify initial state API is called`()
-        `Then verify initial state view do nothing behavior`()
+        `Then verify view interaction for load data failed with exception`()
     }
 
     private fun `Given initial state API will return error`() {
