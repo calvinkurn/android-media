@@ -50,6 +50,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.empty_state
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.miscDependencies.chips
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
