@@ -7,10 +7,12 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
 class ShopPerformanceYoutubeActivity : AppCompatActivity(), YouTubePlayer.OnInitializedListener {
@@ -18,30 +20,30 @@ class ShopPerformanceYoutubeActivity : AppCompatActivity(), YouTubePlayer.OnInit
     companion object {
         private const val EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE = "EXTRA_YOUTUBE_VIDEO_ID_SHOP_PERFORMANCE"
         private const val FULL_SCREEN_CONTROL_FLAGS_LANDSCAPE = 1
-
-        fun createIntent(context: Context, videoUrl: String) = Intent(context, ShopPerformanceYoutubeActivity::class.java).apply {
-            putExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE, videoUrl)
+        fun createIntent(context: Context, videoId: String) = Intent(context, ShopPerformanceYoutubeActivity::class.java).apply {
+            putExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE, videoId)
         }
     }
 
     private var toolbar: Toolbar? = null
     private var isFullScreen = false
-    private var videoUrl: String? = null
+    private var videoUrl: String = ""
     private var youtubePlayerScreen: YouTubePlayer? = null
+    private var youTubePlayerSupportFragment: YouTubePlayerSupportFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_performance_page_youtube_player)
         window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700))
 
-        toolbar = findViewById(R.id.toolbarVideo)
+        toolbar = findViewById(R.id.toolbarVideoShopScore)
 
         setupActionBar()
 
-        videoUrl = intent?.getStringExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE)
+        videoUrl = intent?.getStringExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE) ?: ShopScoreConstant.VIDEO_YOUTUBE_ID
 
-        val youtubePlayerFragment = supportFragmentManager.findFragmentById(R.id.youtube_player_fragment) as? YouTubePlayerSupportFragment
-        youtubePlayerFragment?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
+        youTubePlayerSupportFragment = supportFragmentManager.findFragmentById(R.id.youtube_player_fragment) as? YouTubePlayerSupportFragment
+        youTubePlayerSupportFragment?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
@@ -74,6 +76,11 @@ class ShopPerformanceYoutubeActivity : AppCompatActivity(), YouTubePlayer.OnInit
     override fun onDestroy() {
         youtubePlayerScreen?.release()
         super.onDestroy()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     private fun setupActionBar() {

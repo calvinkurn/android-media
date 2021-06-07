@@ -6,13 +6,12 @@ import kotlin.collections.HashMap
 
 class EmoneyAnalytics {
 
-    private fun addComponentClickNFC(mapEvent: MutableMap<String, Any>, screenName: String, userId: String, irisSessionId: String) {
+    private fun addComponentClickNFC(mapEvent: MutableMap<String, Any>, userId: String, irisSessionId: String) {
         mapEvent[Param.LOGGED_IN_STATUS] = if (userId.isNotEmpty()) "true" else "false"
         mapEvent[Param.CURRENT_SITE] = Param.CURRENT_SITE_EMONEY
         mapEvent[Param.BUSINESS_UNIT] = Param.BUSINESS_UNIT_EMONEY
         mapEvent[Param.SESSION_IRIS] = irisSessionId
         mapEvent[Param.USER_ID] = userId
-        mapEvent[Param.SCREEN_NAME] = screenName
         mapEvent[Param.CLIENT_ID] = "none"
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -55,8 +54,8 @@ class EmoneyAnalytics {
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 action,
-                "$category - $operator")
-        addComponentClickNFC(map,"${screenName}-${operator}", userId, irisSessionId)
+                "")
+        addComponentClickNFC(map,userId, irisSessionId)
     }
 
     fun clickTopupEmoney(category: String, operator:String, userId: String, irisSessionId: String) {
@@ -64,8 +63,8 @@ class EmoneyAnalytics {
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_TOPUP,
-                "$category - $operator")
-        addComponentClickNFC(map, "${Screen.SUCCESS_NFC}-$operator", userId, irisSessionId)
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
     }
 
     fun clickTryAgainTapEmoney(category: String, userId: String, irisSessionId: String) {
@@ -73,8 +72,35 @@ class EmoneyAnalytics {
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_TRY_AGAIN,
-                "$category")
-        addComponentClickNFC(map, "${Screen.FAILED_NFC}", userId, irisSessionId)
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
+    }
+
+    fun onTapEmoneyCardShowLoading(userId: String, irisSessionId: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_NFC,
+                Category.DIGITAL_NFC,
+                Action.CHECK_STEP_2,
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
+    }
+
+    fun onShowLastBalance(cardNumber:String?, balance:Int?, userId: String, irisSessionId: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_NFC,
+                Category.DIGITAL_NFC,
+                Action.SUCCESS_CHECK_BALANCE,
+                "$cardNumber - $balance")
+        addComponentClickNFC(map, userId, irisSessionId)
+    }
+
+    fun onShowErrorTracking(userId: String, irisSessionId: String) {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_NFC,
+                Category.DIGITAL_NFC,
+                Action.FAILED_UPDATE_BALANCE,
+                "")
+        addComponentClickNFC(map, userId, irisSessionId)
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -120,33 +146,6 @@ class EmoneyAnalytics {
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_ACTIVATE,
-                Label.EMONEY
-        ))
-    }
-
-    fun onTapEmoneyCardShowLoading() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
-                Category.DIGITAL_NFC,
-                Action.CHECK_STEP_2,
-                Label.EMONEY
-        ))
-    }
-
-    fun onShowErrorTracking() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
-                Category.DIGITAL_NFC,
-                Action.FAILED_UPDATE_BALANCE,
-                Label.EMONEY
-        ))
-    }
-
-    fun onShowLastBalance() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
-                Category.DIGITAL_NFC,
-                Action.SUCCESS_CHECK_BALANCE,
                 Label.EMONEY
         ))
     }
