@@ -185,7 +185,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     private fun setWhiteTheme() {
-        setTheme(R.style.Theme_White)
+        setTheme(com.tokopedia.abstraction.R.style.Theme_WhiteUnify)
     }
 
     private fun hideToolbar() {
