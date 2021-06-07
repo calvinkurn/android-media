@@ -124,4 +124,7 @@ class InboxActivityApplinkTest {
         assertThat(intent, isPointingTo(inbox))
         assertThat(intent, hasQueryParameter(PARAM_SOURCE, source))
     }
+
+    // TODO: applink should redirected to notifcenter on new inbox if user use new Notifcenter
+    // TODO: add new optional parameter, `showBottomNav`
 }
