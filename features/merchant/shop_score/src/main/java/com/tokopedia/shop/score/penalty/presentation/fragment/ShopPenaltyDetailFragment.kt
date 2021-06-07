@@ -37,11 +37,15 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     private var itemPenalty: ItemPenaltyUiModel? = null
     private var keyCacheManagerId = ""
+    private var cacheManager: SaveInstanceCacheManager? = null
 
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.intent?.let {
+            keyCacheManagerId = it.getStringExtra(KEY_CACHE_MANAGE_ID) ?: ""
+        }
     }
 
     override fun initInjector() {
@@ -52,18 +56,20 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_penalty_detail, container, false)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        cacheManager?.onSave(outState)
+        cacheManager?.put(KEY_ITEM_PENALTY_DETAIL, itemPenalty)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.intent?.let {
-            keyCacheManagerId = it.getStringExtra(KEY_CACHE_MANAGE_ID) ?: ""
-        }
-        context?.let {
-            val cacheManager = SaveInstanceCacheManager(it, keyCacheManagerId)
-            itemPenalty = cacheManager.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
-                    ?: ItemPenaltyUiModel()
-        }
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            cacheManager = SaveInstanceCacheManager(it, keyCacheManagerId)
+        }
+        if (itemPenalty == null) {
+            itemPenalty = cacheManager?.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
         }
         itemPenalty?.let { getPenaltyDetail(it) }
         observePenaltyDetailData()
