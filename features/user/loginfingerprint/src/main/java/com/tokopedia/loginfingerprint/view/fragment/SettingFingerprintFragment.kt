@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
+import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -46,6 +47,15 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
         initObserver()
         loading()
         viewModel.getFingerprintStatus()
+
+        fragment_fingerprint_setting_switch?.setOnCheckedChangeListener { switch, isEnable ->
+            if(isEnable) {
+                switch.isChecked = false
+                showBiometricPrompt()
+            } else {
+                // remove fingerprint api
+            }
+        }
     }
 
     fun initObserver() {
@@ -53,6 +63,20 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
             when(it) {
                 is Success -> onSuccessGetFingerprintStatus(it.data)
                 is Fail -> onFailedGetFingerprintStatus(it.throwable)
+            }
+            hideLoading()
+        })
+
+        viewModel.registerFingerprintResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    fragment_fingerprint_setting_switch?.isChecked = true
+//                    activity?.finish()
+                }
+                is Fail -> {
+                    fragment_fingerprint_setting_switch?.isChecked = false
+                    NetworkErrorHelper.showRedSnackbar(activity, it.throwable.message)
+                }
             }
             hideLoading()
         })
@@ -76,6 +100,15 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     fun hideLoading() {
         fragment_fingerprint_setting_container?.alpha = 1.0F
         fragment_fingerprint_setting_loader.hide()
+    }
+
+    fun showBiometricPrompt () {
+        BiometricPromptHelper.showBiometricPrompt(this,
+            onSuccess = {
+                loading()
+                viewModel.registerFingerprint()
+            },
+            onFailed = {}, onError = {})
     }
 
     companion object {
