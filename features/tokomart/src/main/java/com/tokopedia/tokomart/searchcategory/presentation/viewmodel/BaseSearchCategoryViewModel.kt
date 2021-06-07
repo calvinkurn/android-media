@@ -51,6 +51,14 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataVi
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LAT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -73,6 +81,11 @@ abstract class BaseSearchCategoryViewModel(
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
     protected val queryParamMutable = queryParamMap.toMutableMap()
+    protected var totalData = 0
+    protected var totalFetchedData = 0
+    protected var nextPage = 1
+    protected var chooseAddressData: LocalCacheModel? = null
+    protected var isRefreshMiniCartAfterReload = false
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -113,14 +126,15 @@ abstract class BaseSearchCategoryViewModel(
     protected val addToCartErrorMessageMutableLiveData = MutableLiveData<String>(null)
     val addToCartErrorMessageLiveData: LiveData<String> = addToCartErrorMessageMutableLiveData
 
-    protected var totalData = 0
-    protected var totalFetchedData = 0
-    protected var nextPage = 1
-
     init {
         updateQueryParamWithDefaultSort()
 
         hasGlobalMenu = isABTestNavigationRevamp()
+        chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+    }
+
+    private fun updateQueryParamWithDefaultSort() {
+        queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
     }
 
     private fun isABTestNavigationRevamp() =
@@ -130,10 +144,6 @@ abstract class BaseSearchCategoryViewModel(
             abTestPlatformWrapper
                     .getABTestRemoteConfig()
                     ?.getString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_VARIANT_OLD)
-
-    private fun updateQueryParamWithDefaultSort() {
-        queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
-    }
 
     abstract fun onViewCreated()
 
@@ -146,24 +156,51 @@ abstract class BaseSearchCategoryViewModel(
         return requestParams
     }
 
-    private fun createTokonowQueryParams(): MutableMap<String, Any> {
+    protected open fun createTokonowQueryParams(): MutableMap<String, Any> {
         val tokonowQueryParam = mutableMapOf<String, Any>()
 
         appendMandatoryParams(tokonowQueryParam)
         appendPaginationParam(tokonowQueryParam)
-        tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
+        appendQueryParam(tokonowQueryParam)
 
         return tokonowQueryParam
     }
 
     protected open fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
+        appendDeviceParam(tokonowQueryParam)
+        appendChooseAddressParams(tokonowQueryParam)
+    }
+
+    private fun appendDeviceParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam[SearchApiConst.DEVICE] = DEFAULT_VALUE_OF_PARAMETER_DEVICE
-        tokonowQueryParam[SearchApiConst.USER_WAREHOUSE_ID] = HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+    }
+
+    private fun appendChooseAddressParams(tokonowQueryParam: MutableMap<String, Any>) {
+        val chooseAddressData = this.chooseAddressData ?: return
+
+        if (chooseAddressData.city_id.isNotEmpty())
+            tokonowQueryParam[USER_CITY_ID] = chooseAddressData.city_id
+        if (chooseAddressData.address_id.isNotEmpty())
+            tokonowQueryParam[USER_ADDRESS_ID] = chooseAddressData.address_id
+        if (chooseAddressData.district_id.isNotEmpty())
+            tokonowQueryParam[USER_DISTRICT_ID] = chooseAddressData.district_id
+        if (chooseAddressData.lat.isNotEmpty())
+            tokonowQueryParam[USER_LAT] = chooseAddressData.lat
+        if (chooseAddressData.long.isNotEmpty())
+            tokonowQueryParam[USER_LONG] = chooseAddressData.long
+        if (chooseAddressData.postal_code.isNotEmpty())
+            tokonowQueryParam[USER_POST_CODE] = chooseAddressData.postal_code
+
+        tokonowQueryParam[USER_WAREHOUSE_ID] = HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
     }
 
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
         tokonowQueryParam[SearchApiConst.PAGE] = nextPage
         tokonowQueryParam[SearchApiConst.USE_PAGE] = true
+    }
+
+    private fun appendQueryParam(tokonowQueryParam: MutableMap<String, Any>) {
+        tokonowQueryParam.putAll(FilterHelper.createParamsWithoutExcludes(queryParam))
     }
 
     protected fun onGetFirstPageSuccess(
@@ -185,6 +222,7 @@ abstract class BaseSearchCategoryViewModel(
         updateVisitableListLiveData()
         updateIsRefreshPage()
         updateNextPageData()
+        processMiniCartUpdate()
     }
 
     private fun createVisitableListFirstPage(
@@ -286,6 +324,7 @@ abstract class BaseSearchCategoryViewModel(
         totalData = 0
         totalFetchedData = 0
         nextPage = 1
+        chooseAddressData = chooseAddressWrapper.getChooseAddressData()
 
         onViewCreated()
     }
@@ -377,6 +416,13 @@ abstract class BaseSearchCategoryViewModel(
         if (hasNextPage) nextPage++
     }
 
+    protected open fun processMiniCartUpdate() {
+        if (!isRefreshMiniCartAfterReload) return
+
+        refreshProductQuantityFromMiniCart()
+        isRefreshMiniCartAfterReload = false
+    }
+
     open fun onLoadMore() {
         if (hasLoadedAllData()) return
 
@@ -432,7 +478,7 @@ abstract class BaseSearchCategoryViewModel(
         isFilterPageOpenMutableLiveData.value = false
     }
 
-    fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
+    open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
         queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(option))
         queryParamMutable.remove(option.key)
         filterController.refreshMapParameter(queryParam)
@@ -440,14 +486,14 @@ abstract class BaseSearchCategoryViewModel(
         onFilterChipSelected(option, isSelected)
     }
 
-    fun onViewApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
+    open fun onViewApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
         filterController.refreshMapParameter(applySortFilterModel.mapParameter)
         refreshQueryParamFromFilterController()
 
         onViewReloadPage()
     }
 
-    fun onViewGetProductCount(mapParameter: Map<String, String>) {
+    open fun onViewGetProductCount(mapParameter: Map<String, String>) {
         getProductCountUseCase.cancelJobs()
         getProductCountUseCase.execute(
                 ::onGetProductCountSuccess,
@@ -478,12 +524,12 @@ abstract class BaseSearchCategoryViewModel(
         onGetProductCountSuccess("0")
     }
 
-    fun onViewGetProductCount(option: Option) {
+    open fun onViewGetProductCount(option: Option) {
         val mapParameter = queryParam + mapOf(option.key to option.value)
         onViewGetProductCount(mapParameter)
     }
 
-    fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
+    open fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
         filterController.setFilter(
                 option = chosenCategoryFilter,
                 isFilterApplied = true,
@@ -497,14 +543,38 @@ abstract class BaseSearchCategoryViewModel(
         onViewReloadPage()
     }
 
-    fun onViewDismissL3FilterPage() {
+    open fun onViewDismissL3FilterPage() {
         isL3FilterPageOpenMutableLiveData.value = null
     }
 
     open fun onViewResumed() {
+        val isChooseAddressUpdated = getIsChooseAddressUpdated()
+
+        if (isChooseAddressUpdated)
+            reloadPageWithMiniCartUpdate()
+        else
+            refreshProductQuantityFromMiniCart()
+    }
+
+    private fun getIsChooseAddressUpdated(): Boolean {
+        return chooseAddressData?.let {
+            chooseAddressWrapper.isChooseAddressUpdated(it)
+        } ?: false
+    }
+
+    private fun reloadPageWithMiniCartUpdate() {
+        isRefreshMiniCartAfterReload = true
+
+        onViewReloadPage()
+    }
+
+    private fun refreshProductQuantityFromMiniCart() {
         getMiniCartListSimplifiedUseCase.cancelJobs()
-        getMiniCartListSimplifiedUseCase.setParams(listOf()) // Add shop id
-        getMiniCartListSimplifiedUseCase.execute(::onGetMiniCartDataSuccess, ::onGetMiniCartDataFailed)
+        getMiniCartListSimplifiedUseCase.setParams(listOf(HARDCODED_SHOP_ID_PLEASE_DELETE))
+        getMiniCartListSimplifiedUseCase.execute(
+                ::onGetMiniCartDataSuccess,
+                ::onGetMiniCartDataFailed,
+        )
     }
 
     private fun onGetMiniCartDataSuccess(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -605,6 +675,10 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun onAddToCartFailed(throwable: Throwable) {
         addToCartErrorMessageMutableLiveData.value = throwable.message
+    }
+
+    fun onLocalizingAddressSelected() {
+        onViewReloadPage()
     }
 
     protected class HeaderDataView(
