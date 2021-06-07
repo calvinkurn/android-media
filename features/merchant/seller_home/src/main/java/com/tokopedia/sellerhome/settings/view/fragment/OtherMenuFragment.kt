@@ -27,7 +27,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
 import com.tokopedia.gm.common.constant.END_PERIOD
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
@@ -73,7 +72,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     companion object {
         private const val APPLINK_FORMAT = "%s?url=%s"
-        private const val APPLINK_FORMAT_DISALLOW_OVERRIDE = "%s?${KEY_ALLOW_OVERRIDE}=false&url=%s"
+        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?${KEY_ALLOW_OVERRIDE}=%b&url=%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
@@ -616,7 +615,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun goToPrintingPage() {
         val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
-        val applink = String.format(APPLINK_FORMAT_DISALLOW_OVERRIDE, ApplinkConst.WEBVIEW, url)
+        val applink = String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
         RouteManager.getIntent(context, applink)?.let {
             context?.startActivity(it)
         }
