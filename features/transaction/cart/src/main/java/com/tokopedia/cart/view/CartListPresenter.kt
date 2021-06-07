@@ -201,6 +201,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
                 if (fireAndForget) {
+                    // Trigger use case without composite subscription, because this should continue even after view destroyed
                     updateCartUseCase?.createObservable(requestParams)?.subscribe({/* no-op */ }, {/* no-op */})
                     return@let
                 } else {
