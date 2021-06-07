@@ -14,8 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -31,10 +30,14 @@ import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * @author by jessica on 16/04/21
@@ -44,8 +47,10 @@ class EmoneyPdpActivityLoginTest {
     var mActivityRule = ActivityTestRule(EmoneyPdpActivity::class.java,
             false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private lateinit var localCacheHandler: LocalCacheHandler
 
     @Before
@@ -67,8 +72,7 @@ class EmoneyPdpActivityLoginTest {
         clickOnFavNumberOnInputView()
         clickProductAndSeeProductDetail()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_DIGITAL_EMONEY_LOGIN),
-                hasAllSuccess())
+        MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_DIGITAL_EMONEY_LOGIN), hasAllSuccess())
     }
 
     private fun setUpLaunchActivity() {

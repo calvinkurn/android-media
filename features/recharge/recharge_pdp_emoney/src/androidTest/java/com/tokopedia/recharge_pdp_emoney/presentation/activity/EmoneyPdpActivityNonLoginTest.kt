@@ -14,8 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -30,10 +29,14 @@ import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * @author by jessica on 16/04/21
@@ -44,8 +47,10 @@ class EmoneyPdpActivityNonLoginTest {
             false, false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private lateinit var localCacheHandler: LocalCacheHandler
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     @Before
     fun stubAllIntent() {
@@ -60,15 +65,13 @@ class EmoneyPdpActivityNonLoginTest {
         setupGraphqlMockResponse(EmoneyPdpResponseConfig(isLogin = false))
         setUpLaunchActivity()
 
-
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(not(isDisplayed())))
         clickPromoTabAndSalinPromo()
         scanEmoneyCard()
         clickOnFavNumberOnInputView()
         clickProductAndSeeProductDetail()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_DIGITAL_EMONEY_NON_LOGIN),
-                hasAllSuccess())
+        MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_DIGITAL_EMONEY_NON_LOGIN), hasAllSuccess())
     }
 
     private fun setUpLaunchActivity() {
@@ -158,11 +161,11 @@ class EmoneyPdpActivityNonLoginTest {
 
     private fun createDummyCardResponse(): Instrumentation.ActivityResult {
         val dummyCardData = DigitalCategoryDetailPassData.Builder()
-        dummyCardData.clientNumber("8768567891012345")
-        dummyCardData.productId("1010")
-        dummyCardData.operatorId("1010")
-        dummyCardData.categoryId("1010")
-        dummyCardData.additionalETollLastBalance("Rp130.000")
+                .clientNumber("8768567891012345")
+                .productId("1010")
+                .operatorId("1010")
+                .categoryId("1010")
+                .additionalETollLastBalance("Rp130.000")
         val resultData = Intent()
         resultData.putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, dummyCardData.build())
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
