@@ -20,6 +20,7 @@ import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getAttributesCheckout
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponse
+import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponseWithDefaultCrossSellType
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
 import com.tokopedia.digital_checkout.usecase.DigitalCheckoutUseCase
@@ -146,7 +147,7 @@ class DigitalCartViewModelTest {
 
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
-        assert(digitalCartViewModel.totalPrice.value == dummyResponse.price)
+        assert(digitalCartViewModel.totalPrice.value == dummyResponse.price + getDummyGetCartResponseWithDefaultCrossSellType().adminFee)
     }
 
     @Test
@@ -232,7 +233,7 @@ class DigitalCartViewModelTest {
 
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
-        assert(digitalCartViewModel.totalPrice.value == dummyResponse.price)
+        assert(digitalCartViewModel.totalPrice.value == dummyResponse.price + dummyResponse.adminFee)
     }
 
     @Test
@@ -598,7 +599,7 @@ class DigitalCartViewModelTest {
         // if amount == 0, then expected if total price not updated and no changes on additional info
         assert(digitalCartViewModel.promoData.value?.amount == 0)
         assert(digitalCartViewModel.promoData.value?.promoCode == "")
-        assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price)
+        assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price + getDummyGetCartResponse().adminFee)
     }
 
 
@@ -617,7 +618,7 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.resetCheckoutSummaryPromoAndTotalPrice()
 
         // then
-        assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price)
+        assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponseWithDefaultCrossSellType().adminFee + getDummyGetCartResponse().price)
     }
 
     @Test
@@ -746,7 +747,7 @@ class DigitalCartViewModelTest {
                 ?: 0.0
         val fintechPrice = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
                 ?: 0.0
-        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice)
+        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }
 
     @Test
@@ -759,9 +760,10 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.onFintechProductChecked(fintechProduct, false, null)
 
         // then
-        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain ?: 0
+        val oldTotalPrice = digitalCartViewModel.cartDigitalInfoData.value?.attributes?.pricePlain
+                ?: 0.0
         assert(digitalCartViewModel.requestCheckoutParam.fintechProducts.isEmpty())
-        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice)
+        assert(digitalCartViewModel.totalPrice.value == oldTotalPrice + getDummyGetCartResponse().adminFee)
     }
 
     @Test
@@ -778,7 +780,7 @@ class DigitalCartViewModelTest {
         // if fintech product checked, update total price
         val fintechPrice = digitalCartViewModel.requestCheckoutParam.fintechProducts["3"]?.fintechAmount
                 ?: 0.0
-        assert(digitalCartViewModel.totalPrice.value == userInputPrice + fintechPrice)
+        assert(digitalCartViewModel.totalPrice.value == userInputPrice + fintechPrice + getDummyGetCartResponse().adminFee)
     }
 
     @Test
@@ -794,7 +796,7 @@ class DigitalCartViewModelTest {
 
         // then
         // if fintech product checked, update total price
-        assert(digitalCartViewModel.totalPrice.value == userInputPrice)
+        assert(digitalCartViewModel.totalPrice.value == userInputPrice + getDummyGetCartResponse().adminFee)
     }
 
     @Test
@@ -807,7 +809,7 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.setTotalPriceBasedOnUserInput(userInput)
 
         // then
-        assert(digitalCartViewModel.totalPrice.value == userInput)
+        assert(digitalCartViewModel.totalPrice.value == userInput + getDummyGetCartResponse().adminFee)
     }
 
     @Test
