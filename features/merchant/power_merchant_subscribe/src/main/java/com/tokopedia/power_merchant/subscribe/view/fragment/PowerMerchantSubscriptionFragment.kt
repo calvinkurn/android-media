@@ -535,17 +535,17 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         showNotificationBottomSheet(title, description, primaryCtaText, imageUrl, secondaryCtaText,
                 onPrimaryCtaClicked = {
-                    openCentralizedPro()
+                    openCentralizedPromoPage()
                 }
         )
 
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
-    private fun openCentralizedPro() {
+    private fun openCentralizedPromoPage() {
         context?.run {
             if (GlobalConfig.isSellerApp()) {
-                RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
+                RouteManager.route(requireContext(), ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
             } else {
                 val appLinks = arrayListOf(
                         ApplinkConstInternalSellerapp.SELLER_HOME,
