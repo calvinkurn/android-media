@@ -108,7 +108,7 @@ class IrisSession(val context: Context) : Session {
 
     private fun setPrefSessionId(id: String) {
         editor.putString(KEY_SESSION_ID, id)
-        editor.commit()
+        editor.apply()
     }
 
     /**
@@ -125,13 +125,13 @@ class IrisSession(val context: Context) : Session {
 
     private fun setUuid(uuid: String?) {
         editor.putString(KEY_SESSION_ID, uuid)
-        editor.commit()
+        editor.apply()
     }
 
     private fun setInitialVisit(initialVisit: Long) {
         this.initialVisit = initialVisit
         timestampOfDayChanged = generateNextDayGMT7(initialVisit)
         editor.putLong(KEY_INITIAL_VISIT, initialVisit)
-        editor.commit()
+        editor.apply()
     }
 }
