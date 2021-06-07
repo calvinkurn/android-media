@@ -381,13 +381,15 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     private fun showOnBoardingSeller() {
         if (bottomNav == null || navHeaderContainer == null || switcher == null) return
         val anchors = ArrayList<CoachMark2Item>()
-        anchors.add(
-            CoachMark2Item(
-                bottomNav!!,
-                getString(R.string.inbox_title_onboarding_1),
-                getString(R.string.inbox_desc_onboarding_1)
+        if (isShowBottomNav) {
+            anchors.add(
+                CoachMark2Item(
+                    bottomNav!!,
+                    getString(R.string.inbox_title_onboarding_1),
+                    getString(R.string.inbox_desc_onboarding_1)
+                )
             )
-        )
+        }
         anchors.add(
             CoachMark2Item(
                 navHeaderContainer!!,
