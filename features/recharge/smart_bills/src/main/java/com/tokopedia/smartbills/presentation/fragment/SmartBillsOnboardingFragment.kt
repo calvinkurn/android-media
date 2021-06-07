@@ -50,19 +50,11 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
 
             // Request login from user
             smart_bills_onboarding_button.setOnClickListener {
-                val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-                startActivityForResult(intent, REQUEST_CODE_LOGIN)
+                RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // If user has logged in, redirect to smart bills page
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
-            activity?.finish()
-        }
-    }
 
     private fun dpToPx(dp: Float): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()

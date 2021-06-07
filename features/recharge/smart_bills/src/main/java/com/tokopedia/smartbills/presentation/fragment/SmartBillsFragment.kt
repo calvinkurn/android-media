@@ -580,6 +580,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun showGlobalError(throwable: Throwable){
         checkout_loading_view.show()
+        smart_bills_checkout_view.setVisibilityLayout(false)
         sbm_global_error.apply {
             show()
             errorTitle.text = getErrorHandling(throwable)
@@ -587,6 +588,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             setActionClickListener {
                 this.gone()
                 checkout_loading_view.hide()
+                smart_bills_checkout_view.setVisibilityLayout(true)
                 showLoading()
                 loadInitialData()
             }
