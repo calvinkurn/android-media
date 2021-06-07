@@ -38,6 +38,7 @@ import com.tokopedia.tokomart.home.presentation.viewholder.*
 class TokoMartHomeAdapterTypeFactory(
         private val tokoMartHomeListener: TokoMartHomeView? = null,
         private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
+        private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener? = null,
         private val bannerComponentListener: BannerComponentListener? = null
 ): BaseAdapterTypeFactory(), TokoMartHomeTypeFactory, HomeComponentTypeFactory {
 
@@ -46,6 +47,7 @@ class TokoMartHomeAdapterTypeFactory(
     override fun type(uiModel: HomeCategoryItemUiModel): Int = HomeCategoryItemViewHolder.LAYOUT
     override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
+    override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -68,8 +70,9 @@ class TokoMartHomeAdapterTypeFactory(
             // region Toko Mart Home Component
             HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view)
-            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoMartHomeListener)
+            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoMartHomeListener, homeChooseAddressWidgetListener)
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
+            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view)
             // endregion
 
             // region Global Home Component

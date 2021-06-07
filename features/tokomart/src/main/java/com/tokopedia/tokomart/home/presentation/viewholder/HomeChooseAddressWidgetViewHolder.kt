@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokomart.R
@@ -16,7 +15,8 @@ import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetU
 
 class HomeChooseAddressWidgetViewHolder(
         itemView: View,
-        private val listener: TokoMartHomeView? = null,
+        private val tokoMartHomeListener: TokoMartHomeView? = null,
+        private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetListener? = null
 ): AbstractViewHolder<HomeChooseAddressWidgetUiModel>(itemView) {
 
     companion object {
@@ -33,21 +33,23 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        listener?.getFragment()?.let { fragment ->
+        tokoMartHomeListener?.getFragment()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
                     chooseAddressWidget?.updateWidget()
                 }
 
                 override fun onLocalizingAddressServerDown() {
-                    chooseAddressWidget?.hide()
+                    homeChooseAddressWidgetListener?.onRemoveChooseAddressWidget()
+                }
+
+                override fun onLocalizingAddressLoginSuccess() {
+                    homeChooseAddressWidgetListener?.onRefresh()
                 }
 
                 override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
 
                 override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
-
-                override fun onLocalizingAddressLoginSuccess() { /* to do : refresh page */ }
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment
 
@@ -90,5 +92,10 @@ class HomeChooseAddressWidgetViewHolder(
         } else {
             null
         }
+    }
+
+    interface HomeChooseAddressWidgetListener {
+        fun onRefresh()
+        fun onRemoveChooseAddressWidget()
     }
 }

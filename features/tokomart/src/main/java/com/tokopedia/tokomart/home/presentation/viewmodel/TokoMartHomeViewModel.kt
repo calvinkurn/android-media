@@ -13,6 +13,8 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokomart.home.constant.TokoNowConstant.SHOP_ID
+import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addChooseAddressIntoList
+import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
@@ -50,7 +52,8 @@ class TokoMartHomeViewModel @Inject constructor(
          */
         private val STATIC_LAYOUT_ID = listOf(
             HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
-            HomeStaticLayoutId.TICKER_WIDGET_ID
+            HomeStaticLayoutId.TICKER_WIDGET_ID,
+            HomeStaticLayoutId.EMPTY_STATE
         )
 
         // Temp hardcoded wh_id
@@ -70,6 +73,18 @@ class TokoMartHomeViewModel @Inject constructor(
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
     private var layoutList = listOf<Visitable<*>>()
+
+    fun getChooseAddress() {
+        layoutList = addChooseAddressIntoList()
+        val data = HomeLayoutListUiModel(layoutList, isChooseAddressWidgetDisplayed = true)
+        _homeLayoutList.value = Success(data)
+    }
+
+    fun getEmptyStateNoAddress() {
+        layoutList = addEmptyStateIntoList(layoutList.toMutableList())
+        val data = HomeLayoutListUiModel(layoutList)
+        _homeLayoutList.value = Success(data)
+    }
 
     fun getHomeLayout() {
         launchCatchError(block = {
@@ -113,7 +128,7 @@ class TokoMartHomeViewModel @Inject constructor(
             val getDataForEachLayout = layoutItems.filter { it.isNotStaticLayout() }.map {
                 asyncCatchError(block = {
                     val layoutList = getHomeComponentData(it)
-                    val data = HomeLayoutListUiModel(layoutList, isInitialLoad = false)
+                    val data = HomeLayoutListUiModel(layoutList)
                     _homeLayoutList.postValue(Success(data))
                 }) {
                     _homeLayoutList.postValue(Fail(it))

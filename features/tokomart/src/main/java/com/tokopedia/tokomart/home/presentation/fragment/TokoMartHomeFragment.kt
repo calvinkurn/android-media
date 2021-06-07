@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -47,6 +46,7 @@ import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRS
 import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
+import com.tokopedia.tokomart.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokomart.common.view.TokoMartHomeView
 import com.tokopedia.tokomart.home.constant.TokoNowConstant.SHOP_ID
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
@@ -65,8 +65,13 @@ import kotlinx.android.synthetic.main.fragment_tokomart_home.*
 import java.util.*
 import javax.inject.Inject
 
-class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.HomeTickerListener,
-        MiniCartWidgetListener, BannerComponentListener {
+class TokoMartHomeFragment: Fragment(),
+        TokoMartHomeView,
+        HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
+        HomeTickerViewHolder.HomeTickerListener,
+        MiniCartWidgetListener,
+        BannerComponentListener
+{
 
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
@@ -82,7 +87,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
     @Inject
     lateinit var viewModel: TokoMartHomeViewModel
 
-    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this, this, this), TokoMartHomeListDiffer()) }
+    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(this, this, this, this), TokoMartHomeListDiffer()) }
 
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
@@ -90,17 +95,16 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
     private var ivHeaderBackground: ImageView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
+    private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var isRefreshChooseAddressWidget = false
     private var movingPosition = 0
 
     private val homeMainToolbarHeight: Int
-        get() {
-            var height = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-            height += resources.getDimensionPixelSize(R.dimen.dp_8)
-            return height
-        }
+        get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+    private val spaceZero: Int
+        get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,8 +128,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
 
-        getHomeLayout()
-        getMiniCart()
+        getChooseAddress()
     }
 
     override fun onAttach(context: Context) {
@@ -153,7 +156,19 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
         }
     }
 
+    override fun onRefresh() {
+        onRefreshLayout()
+    }
+
+    override fun onRemoveChooseAddressWidget() {
+        adapter.removeHomeChooseAddressWidget()
+    }
+
     override fun isMainViewVisible(): Boolean {
+        return true
+    }
+
+    override fun isBannerImpressed(id: String): Boolean {
         return true
     }
 
@@ -166,10 +181,6 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
     override fun onPromoAllClick(channelModel: ChannelModel) {
     }
 
-    override fun isBannerImpressed(id: String): Boolean {
-        return true
-    }
-
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
     }
 
@@ -180,12 +191,48 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
             .inject(this)
     }
 
+    private fun checkStateNotInServiceArea() {
+        context?.let {
+            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+            if (localCacheModel?.shop_id.toIntOrZero() == 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
+                checkIfChooseAddressWidgetDataUpdated()
+                // after this then what to do?
+            } else if (localCacheModel?.shop_id.toIntOrZero() != 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
+                showEmptyState()
+            } else {
+                showLayout()
+            }
+        }
+    }
+
+    private fun showEmptyState() {
+        hideHeaderBackground()
+        rvLayoutManager?.setScrollEnabled(false)
+        viewModel.getEmptyStateNoAddress()
+    }
+
+    private fun showLayout() {
+        showHeaderBackground()
+        getHomeLayout()
+        getMiniCart()
+    }
+
+    private fun hideHeaderBackground() {
+        if (ivHeaderBackground?.isVisible == true) {
+            ivHeaderBackground?.hide()
+        }
+    }
+
+    private fun showHeaderBackground() {
+        if (ivHeaderBackground?.isVisible == false) {
+            ivHeaderBackground?.show()
+        }
+    }
+
     private fun setupSwipeRefreshLayout() {
         context?.let {
-            val spaceZero = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
-            val spaceEight = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8).toInt()
             swipeLayout = view?.findViewById(R.id.swipe_refresh_layout)
-            swipeLayout?.setMargin(spaceZero, NavToolbarExt.getFullToolbarHeight(it) - spaceEight, spaceZero, spaceZero)
+            swipeLayout?.setMargin(spaceZero, NavToolbarExt.getFullToolbarHeight(it), spaceZero, spaceZero)
             swipeLayout?.setOnRefreshListener {
                 onRefreshLayout()
             }
@@ -193,9 +240,9 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
     }
 
     private fun onRefreshLayout() {
+        rvLayoutManager?.setScrollEnabled(true)
         adapter.clearAllElements()
-        getHomeLayout()
-        getMiniCart()
+        getChooseAddress()
     }
 
     private fun setupNavToolbar() {
@@ -305,12 +352,13 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
     }
 
     private fun setupRecyclerView() {
-        with(rvHome) {
-            adapter = this@TokoMartHomeFragment.adapter
-            layoutManager = LinearLayoutManager(requireContext())
-        }
-
         context?.let {
+            with(rvHome) {
+                adapter = this@TokoMartHomeFragment.adapter
+                rvLayoutManager = CustomLinearLayoutManager(it)
+                layoutManager = rvLayoutManager
+            }
+
             rvHome?.setItemViewCacheSize(20)
             rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -339,6 +387,7 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
     private fun resetSwipeLayout() {
         swipeLayout?.isEnabled = true
         swipeLayout?.isRefreshing = false
+        rvLayoutManager?.scrollToPosition(0)
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
@@ -353,7 +402,10 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
         data.run {
-            if (isInitialLoad) {
+            if (isChooseAddressWidgetDisplayed) {
+                adapter.submitList(result)
+                checkStateNotInServiceArea()
+            } else if (isInitialLoad) {
                 adapter.submitList(result)
                 // TO-DO: Lazy Load Data
                 viewModel.getLayoutData()
@@ -373,6 +425,10 @@ class TokoMartHomeFragment: Fragment(), TokoMartHomeView, HomeTickerViewHolder.H
 
     private fun getMiniCart()  {
         viewModel.getMiniCart()
+    }
+
+    private fun getChooseAddress() {
+        viewModel.getChooseAddress()
     }
 
     //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
