@@ -301,7 +301,7 @@
     <string name="topads_insight_add_bid">Biaya untuk [%d] kata kunci rekomendasi berhasil diterapkan ke grup iklanmu.</string>
     <string name="topads_insight_invalid_key_tag_pos">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci negatif di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
     <string name="topads_insight_invalid_key_tag_neg">1 atau lebih kata kunci yang kamu pilih sedang aktif di kata kunci di grup kamu, silahkan hapus terlebih dahulu bila ingin menggunakan kata kunci</string>
-    <string name="topads_auto_topup_widget">Dapatkan bonus kredit 10% dengan Tambah Kredit Otomatis</string>
+    <string name="topads_auto_topup_widget">Dapatkan bonus kredit %.1f dengan Tambah Kredit Otomatis</string>
     <string name="topads_dash_reload_btn">Muat Ulang Halaman</string>
     <string name="topads_dash_reload_title">Sedang diproses</string>
     <string name="topads_dash_auto_ads_enable_msg">Iklanmu sedang dibuat. Setelah 5-10 menit, coba muat ulang halaman.</string>
