@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableItemDivider
@@ -21,7 +22,7 @@ import kotlinx.android.synthetic.main.shc_item_table_page.view.*
 
 class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHolder>() {
 
-    private var itemImpressionListener: ((position: Int, isEmpty: Boolean) -> Unit)? = null
+    private var itemImpressionListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? = null
     private var itemClickHtmlListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
     private var items: List<TablePageUiModel> = emptyList()
 
@@ -30,7 +31,7 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
         notifyDataSetChanged()
     }
 
-    fun addOnImpressionListener(onView: (position: Int, isEmpty: Boolean) -> Unit) {
+    fun addOnImpressionListener(onView: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
         this.itemImpressionListener = onView
     }
 
@@ -48,7 +49,7 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
     override fun onBindViewHolder(holder: TablePageViewHolder, position: Int) {
         val item = items[position]
         holder.bind(item, onView = {
-            itemImpressionListener?.invoke(position, item.rows.isNullOrEmpty())
+            itemImpressionListener?.invoke(position, items.size.orZero(), item.rows.isNullOrEmpty())
         }, onClickHtml = { url ->
             itemClickHtmlListener?.invoke(url, item.rows.isNullOrEmpty())
         })

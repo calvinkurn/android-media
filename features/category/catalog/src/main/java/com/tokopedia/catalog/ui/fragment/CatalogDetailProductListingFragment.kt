@@ -29,6 +29,7 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
+import com.tokopedia.catalog.model.util.CatalogSearchApiConst
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
@@ -38,7 +39,6 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DataValue
@@ -626,8 +626,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun addDefaultSelectedSort() {
-        if (searchParameter.get(SearchApiConst.OB).isEmpty()) {
-            searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+        if (searchParameter.get(CatalogSearchApiConst.OB).isEmpty()) {
+            searchParameter.set(CatalogSearchApiConst.OB, CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
         }
         viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
     }

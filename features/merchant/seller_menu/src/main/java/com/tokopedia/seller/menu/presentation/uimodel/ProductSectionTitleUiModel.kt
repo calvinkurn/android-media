@@ -3,13 +3,16 @@ package com.tokopedia.seller.menu.presentation.uimodel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
 
-class ProductSectionTitleUiModel(private val isShopOwner: Boolean): SectionTitleUiModel(
-        R.string.seller_menu_product_section,
-        R.string.seller_menu_product_cta,
+class ProductSectionTitleUiModel(
+        title: String? = null,
+        ctaText: String? = null,
+        private val isShopOwner: Boolean)
+    : SectionTitleUiModel(
+        title,
+        ctaText,
         SectionTitleType.PRODUCT_SECTION_TITLE
 ) {
 
