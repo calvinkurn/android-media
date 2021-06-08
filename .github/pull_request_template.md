@@ -44,7 +44,7 @@ https://phab.tokopedia.com/XXXXX
 - **/check instrument** - run TopAds Checker instrumentation test
 - **/check datatest** - run data tracking test (Cassava)
 - **/check performance** - run performance check
-- **/check smoketest <MA_APK_LINK> <SA_APK_LINK>** - run auto mention smoke test request to slack due to changed libs version, with MainApp and SellerApp apk google drive link to test (the changed libraries version will be listed automatically)
+- **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
 
 ## Gatekeeper Spells
 - **approved for app-size** - send along with the approval to cast the magic 
