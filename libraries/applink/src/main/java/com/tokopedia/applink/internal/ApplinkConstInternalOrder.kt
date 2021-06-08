@@ -71,7 +71,7 @@ object ApplinkConstInternalOrder {
 
     const val HOST_ORDERLIST = "orderlist"
 
-    const val HOST_ORDER_OLD = "order-old"
+    const val PATH_BUYER_ORDER_DETAIL = "buyer-order-detail"
 
     const val INTERNAL_SELLER = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_SELLER"
 
@@ -177,7 +177,7 @@ object ApplinkConstInternalOrder {
 
     const val MARKETPLACE_INTERNAL_ORDER = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER"
 
-    const val MARKETPLACE_INTERNAL_ORDER_OLD = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$HOST_ORDER_OLD"
+    const val MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_MARKETPLACE/$PATH_BUYER_ORDER_DETAIL"
 
     const val ORDER_LIST_INTERNAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$PARAM_ORDER_LIST"
 

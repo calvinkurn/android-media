@@ -1803,9 +1803,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check marketplace order detail appLink then should return tokopedia internal marketplace order detail in customerapp`() {
+    fun `check marketplace order detail appLink then should return revamped tokopedia internal marketplace order detail in customerapp`() {
         val orderId = "123456789"
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/order?order_id=$orderId"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-detail?order_id=$orderId"
         every {
             DeeplinkMapperUohOrder.useRevampedBuyerOrderDetail()
         } returns true
@@ -1815,7 +1815,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check marketplace order detail appLink then should return old tokopedia internal marketplace order detail in customerapp`() {
         val orderId = "123456789"
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/order-old?order_id=$orderId"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/order?order_id=$orderId"
         every {
             DeeplinkMapperUohOrder.useRevampedBuyerOrderDetail()
         } returns false
