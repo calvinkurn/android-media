@@ -28,7 +28,7 @@ object DeeplinkMapperInbox {
 
     private fun useNewNotifcenterOnInbox(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AbTestPlatform.VARIANT_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
-        ) == AbTestPlatform.VARIANT_NEW_INBOX
+            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
+        ) == AbTestPlatform.VARIANT_NEW_NOTFICENTER
     }
 }
