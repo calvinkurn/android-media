@@ -73,7 +73,8 @@ sealed class TableRowsUiModel(
     data class RowColumnHtml(
             override val valueStr: String = "",
             override val width: Int = 0,
-            val isLeftAlign: Boolean = false
+            val isLeftAlign: Boolean = false,
+            var colorInt: Int? = null
     ) : TableRowsUiModel(valueStr, width) {
 
         override fun type(typeFactory: TableItemFactory): Int {

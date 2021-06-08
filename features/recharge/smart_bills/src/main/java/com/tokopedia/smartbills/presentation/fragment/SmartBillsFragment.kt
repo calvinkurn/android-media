@@ -462,7 +462,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     private fun updateCheckoutView() {
         if (totalPrice >= 0) {
             val totalPriceString = if (totalPrice > 0) {
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true)
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, false)
             } else {
                 getString(R.string.smart_bills_no_item_price)
             }

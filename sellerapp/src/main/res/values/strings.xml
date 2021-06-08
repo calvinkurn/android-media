@@ -116,6 +116,7 @@
 
     <!-- Product Detail -->
     <string name="title_activity_product_detail">Rincian Produk</string>
+    <string name="title_activity_atc_variant">Varian Barang</string>
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
     <string name="label_product_installment">Cicilan</string>

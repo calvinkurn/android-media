@@ -33,7 +33,7 @@ class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
     }
 
     override fun `Then assert first page use case is called twice`(
-            requestParamsSlot: CapturingSlot<RequestParams>
+            requestParamsSlot: MutableList<RequestParams>
     ) {
         verify (exactly = 2) {
             getCategoryFirstPageUseCase.cancelJobs()

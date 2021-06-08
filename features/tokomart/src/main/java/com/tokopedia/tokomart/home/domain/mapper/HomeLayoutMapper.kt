@@ -14,6 +14,7 @@ import com.tokopedia.tokomart.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeEmptyStateUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -25,6 +26,19 @@ object HomeLayoutMapper {
         HomeLayoutType.LEGO_6_IMAGE,
         HomeLayoutType.BANNER_CAROUSEL
     )
+
+    fun addChooseAddressIntoList(): List<Visitable<*>> {
+        val layoutList = mutableListOf<Visitable<*>>()
+        layoutList.add(HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID))
+        return layoutList
+    }
+
+    fun addEmptyStateIntoList(id: String): List<Visitable<*>> {
+        val layoutList = mutableListOf<Visitable<*>>()
+        layoutList.add(HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID))
+        layoutList.add(HomeEmptyStateUiModel(id = id))
+        return layoutList
+    }
 
     fun mapHomeLayoutList(response: List<HomeLayoutResponse>, tickers: List<TickerData>): List<Visitable<*>> {
         val layoutList = mutableListOf<Visitable<*>>()

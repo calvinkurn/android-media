@@ -5,16 +5,35 @@ import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWLESS
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWMORE
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
 
 class MiniCartListViewHolderMapper @Inject constructor() {
 
-    fun mapUiModel(miniCartData: MiniCartData): MiniCartUiModel {
-        return MiniCartUiModel().apply {
+    fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
+        return MiniCartListUiModel().apply {
             title = miniCartData.data.headerTitle
-            miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
+            miniCartWidgetUiModel = mapMiniCartWidgetData(miniCartData)
+            miniCartSummaryTransactionUiModel = mapMiniCartSummaryTransactionUiModel(miniCartData)
             visitables = mapVisitables(miniCartData)
+            if (miniCartData.data.availableSection.availableGroup.isNotEmpty()) {
+                maximumShippingWeight = miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight
+                maximumShippingWeightErrorMessage = miniCartData.data.availableSection.availableGroup[0].shop.maximumWeightWording
+            }
+        }
+    }
+
+    private fun mapMiniCartSummaryTransactionUiModel(miniCartData: MiniCartData): MiniCartSummaryTransactionUiModel {
+        return MiniCartSummaryTransactionUiModel().apply {
+            qty = miniCartData.data.totalProductCount
+            totalWording = miniCartData.data.shoppingSummary.totalWording
+            totalValue = miniCartData.data.shoppingSummary.totalValue
+            discountTotalWording = miniCartData.data.shoppingSummary.discountTotalWording
+            discountValue = miniCartData.data.shoppingSummary.discountValue
+            paymentTotalWording = miniCartData.data.shoppingSummary.paymentTotalWording
+            paymentTotal = miniCartData.data.shoppingSummary.paymentTotalValue
         }
     }
 
@@ -47,18 +66,14 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                 availableGroup.cartDetails.forEach { cartDetail ->
                     weightTotal += cartDetail.product.productWeight * cartDetail.product.productQuantity
-                    val miniCartProductUiModel = mapProductUiModel(cartDetail, availableSection.action)
+                    val miniCartProductUiModel = mapProductUiModel(
+                            cartDetail = cartDetail,
+                            action = availableSection.action,
+                            notesLength = miniCartData.data.maxCharNote)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
             }
-        }
-
-        // Add warning ticker
-        if (weightTotal > 0 && weightTotal > miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight) {
-            val shop = miniCartData.data.availableSection.availableGroup[0].shop
-            val overWeight = (weightTotal - shop.maximumShippingWeight) / 1000.0F
-            miniCartTickerWarningUiModel = mapTickerWarningUiModel(overWeight, shop.maximumWeightWording)
         }
 
         // Add unavailable separator
@@ -81,7 +96,11 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                 // Add unavailable product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                 unavailableGroup.cartDetails.forEach { cartDetail ->
-                    val miniCartProductUiModel = mapProductUiModel(cartDetail, unavailableSection.action)
+                    val miniCartProductUiModel = mapProductUiModel(
+                            cartDetail = cartDetail,
+                            action = unavailableSection.action,
+                            isDisabled = true,
+                            unavailableActionId = unavailableSection.selectedUnavailableActionId)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartUnavailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -134,20 +153,24 @@ class MiniCartListViewHolderMapper @Inject constructor() {
 
     private fun mapAccordionUiModel(wordingShowLess: String, wordingShowMore: String): MiniCartAccordionUiModel {
         return MiniCartAccordionUiModel().apply {
-            isCollapsed = true
+            isCollapsed = false
             showLessWording = wordingShowLess
             showMoreWording = wordingShowMore
         }
     }
 
-    private fun mapProductUiModel(cartDetail: CartDetail, action: List<Action>, isDisabled: Boolean = false, unavailableActionId: Int = 0): MiniCartProductUiModel {
+    private fun mapProductUiModel(cartDetail: CartDetail,
+                                  action: List<Action>,
+                                  isDisabled: Boolean = false,
+                                  unavailableActionId: String = "",
+                                  notesLength: Int = 0): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
             productId = cartDetail.product.productId
-            productImageUrl = cartDetail.product.productImage.imageSrc
+            parentId = cartDetail.product.parentId
+            productImageUrl = cartDetail.product.productImage.imageSrc100Square
             productName = cartDetail.product.productName
             productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
-            productQtyLeft = cartDetail.product.productWarningMessage
             productSlashPriceLabel = cartDetail.product.slashPriceLabel
             productOriginalPrice = cartDetail.product.productOriginalPrice
             productWholeSalePrice = 0
@@ -156,13 +179,18 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             productInformation = cartDetail.product.productInformation
             productNotes = cartDetail.product.productNotes
             productQty = cartDetail.product.productQuantity
+            productWeight = cartDetail.product.productWeight
             productMinOrder = cartDetail.product.productMinOrder
             productMaxOrder = cartDetail.product.productMaxOrder
-            productAction = action
+            productActions = action
+            wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
+            maxNotesLength = notesLength
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
                 selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
+            } else {
+                productQtyLeft = cartDetail.product.productWarningMessage
             }
         }
     }
@@ -189,7 +217,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
         }
     }
 
-    private fun mapTickerWarningUiModel(overWeight: Float, warningWording: String): MiniCartTickerWarningUiModel {
+    fun mapTickerWarningUiModel(overWeight: Float, warningWording: String): MiniCartTickerWarningUiModel {
         return MiniCartTickerWarningUiModel().apply {
             warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
         }
@@ -207,4 +235,34 @@ class MiniCartListViewHolderMapper @Inject constructor() {
         }
     }
 
+    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?): MiniCartSimplifiedData {
+        if (miniCartListUiModel == null) {
+            return MiniCartSimplifiedData()
+        } else {
+            return MiniCartSimplifiedData().apply {
+                miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
+                miniCartItems = mapMiniCartItems(miniCartListUiModel.visitables)
+                isShowMiniCartWidget = miniCartItems.isNotEmpty()
+            }
+        }
+    }
+
+    private fun mapMiniCartItems(visitables: List<Visitable<*>>): List<MiniCartItem> {
+        val miniCartItems = mutableListOf<MiniCartItem>()
+        visitables.forEach { visitable ->
+            if (visitable is MiniCartProductUiModel) {
+                val miniCartItem = MiniCartItem().apply {
+                    isError = visitable.isProductDisabled
+                    cartId = visitable.cartId
+                    productId = visitable.productId
+                    productParentId = visitable.parentId
+                    quantity = visitable.productQty
+                    notes = visitable.productNotes
+                }
+                miniCartItems.add(miniCartItem)
+            }
+        }
+
+        return miniCartItems
+    }
 }

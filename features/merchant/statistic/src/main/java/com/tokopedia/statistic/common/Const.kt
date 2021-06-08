@@ -13,17 +13,22 @@ object Const {
     const val DAYS_29 = 29
     const val DAYS_30 = 30
     const val DAYS_91 = 91
+    const val DAYS_365 = 365
 
-    const val WHITE_LIST_KEY_BUYER_INSIGHT = "buyer-insight-apps"
+    const val WHITE_LIST_KEY_STATISTIC_PRODUCTS = "statistic-products"
+
+    const val SHOW_PRODUCT_INSIGHT_COACHMARK_KEY = "show_product_insight_coachmark"
 
     object PageSource {
         const val SHOP_INSIGHT = "shop-insight"
         const val BUYER_INSIGHT = "buyer-insight"
+        const val PRODUCT_INSIGHT = "product-landing-insight"
     }
 
     object TickerPageName {
         const val SHOP_INSIGHT = "seller-statistic"
         const val BUYER_INSIGHT = "wawasan-pembeli"
+        const val PRODUCT_INSIGHT = "seller-statistic#wawasan-produk"
     }
 
     object BottomSheet {
@@ -35,5 +40,7 @@ object Const {
         const val SHOP_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
         const val BUYER_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-wawasan-pembeli?source=sapp-wawasan-pembeli"
         const val BUYER_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1g16aH6t8n6k-jMqOZpDK4QVgaxIXNodclNpwhS9KdkU/edit"
+        const val PRODUCT_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-wawasan-produk?source=sapp-wawasan-produk"
+        const val PRODUCT_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
     }
 }

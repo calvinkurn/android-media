@@ -25,7 +25,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
@@ -51,6 +53,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumnV
 import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.recommendation.SectionRecomViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
@@ -89,6 +92,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private val viewBinders = mutableMapOf<String, SectionItemBinder>()
     private val sectionList: ArrayList<Any> = ArrayList()
     lateinit var sectionListViewBinder: SectionHorizontalViewBinder
+    var listener: RewardsRecomListener? = null
     lateinit var mUsersession: UserSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -224,7 +228,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    renderRewardUi(it.data.topSectionResponse, it.data.sectionList)
+                    renderRewardUi(it.data.topSectionResponse, it.data.sectionList,it.data.recomData )
                 }
             }
         }
@@ -237,6 +241,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
     }
     private fun initViews(view: View) {
+        listener = getRecommendationListener()
         coordinatorLayout = view.findViewById(R.id.container)
         mContainerMain = view.findViewById(R.id.container_main)
         mPagerPromos = view.findViewById(R.id.view_pager_promos)
@@ -300,7 +305,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         adapter?.notifyItemChanged(0)
     }
 
-    override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent>) {
+    override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent> , recommList : RewardsRecommendation?) {
 
         if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
                 topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
@@ -366,6 +371,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
 
                     }
+
                     if (sectionContent.layoutMerchantCouponAttr != null && !sectionContent.layoutMerchantCouponAttr.catalogMVCWithProductsList.isNullOrEmpty()) {
 
                         val merchantVoucherViewBinder = MerchantVoucherViewBinder()
@@ -430,7 +436,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
 
-
+            if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
+                val sectionRecomViewBinder =
+                    recommList?.let { SectionRecomViewBinder(it, listener!!) }
+                @Suppress("UNCHECKED_CAST")
+                viewBinders.put(
+                    CommonConstant.SectionLayoutType.RECOMM,
+                    sectionRecomViewBinder as SectionItemBinder
+                )
+                recommList?.let { sectionList.add(it) }
+            }
 
             adapter = SectionAdapter(viewBinders)
             adapter?.addItem(sectionList)
@@ -460,6 +475,77 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
+
+    private fun getRecommendationListener(): RewardsRecomListener {
+
+        return object : RewardsRecomListener {
+
+            override fun onProductImpression(item: RecommendationItem, position: Int) {
+                val productIdString: String = if (item.productId != null) {
+                    item.productId.toString()
+                } else {
+                    ""
+                }
+                AnalyticsTrackerUtil.impressionProductRecomItem(
+                    productIdString,
+                    item.recommendationType,
+                    position,
+                    "none / other",
+                    item.categoryBreadcrumbs,
+                    item.name,
+                    "none / other",
+                    item.price,
+                    item.isTopAds
+                )
+            }
+
+            override fun onProductClick(
+                item: RecommendationItem,
+                layoutType: String?,
+                vararg position: Int
+            ) {
+
+                val productIdString: String = if (item.productId != null) {
+                    item.productId.toString()
+                } else {
+                    ""
+                }
+                AnalyticsTrackerUtil.clickProductRecomItem(
+                    item.productId.toString(),
+                    item.recommendationType,
+                    position[0],
+                    "none / other",
+                    item.categoryBreadcrumbs,
+                    item.name,
+                    "none / other",
+                    item.price,
+                    item.isTopAds
+                )
+
+                val intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    item.productId.toString()
+                )
+                if (position.isNotEmpty()) intent.putExtra(
+                    PDP_EXTRA_UPDATED_POSITION,
+                    position[0]
+                )
+                this@TokoPointsHomeFragmentNew.startActivity(intent)
+            }
+
+            override fun onProductImpression(item: RecommendationItem) {
+
+            }
+
+            override fun onWishlistClick(
+                item: RecommendationItem,
+                isAddWishlist: Boolean,
+                callback: (Boolean, Throwable?) -> Unit
+            ) {
+            }
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -519,6 +605,9 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         private const val CONTAINER_MAIN = 1
         private const val CONTAINER_ERROR = 2
         private const val SHOW_ERROR_TOOLBAR = 1
+        const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+        const val REQUEST_FROM_PDP = 138
 
         fun newInstance(): TokoPointsHomeFragmentNew {
             return TokoPointsHomeFragmentNew()

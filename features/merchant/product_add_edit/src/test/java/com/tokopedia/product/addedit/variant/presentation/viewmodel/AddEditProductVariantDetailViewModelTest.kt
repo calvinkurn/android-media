@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
@@ -73,6 +74,9 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.expandHeader(3, 3)
         assert(viewModel.getCurrentHeaderPosition(0) == 0)
         assert(viewModel.getCurrentHeaderPosition(3) == 3)
+
+        // test overflowed element
+        assert(viewModel.getCurrentHeaderPosition(999999) == 0)
     }
 
     @Test
@@ -326,6 +330,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.expandHeader(1, 1)
         Assert.assertFalse(viewModel.isEditMode)
         Assert.assertTrue(viewModel.hasVariantCombination(MAX_SELECTED_VARIANT_TYPE))
+        Assert.assertFalse(viewModel.hasVariantCombination(99999))
 
         val updateSwitchStatusResult = viewModel.updateSwitchStatus(false, 999)
         val updateVariantSkuInputResult = viewModel.updateVariantSkuInput("KK", 999)
@@ -369,6 +374,13 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.setupMultiLocationValue()
 
         assert(!viewModel.isMultiLocationShop)
+    }
+
+    @Test
+    fun `When updateProductStatus with all variant is inactive, then set all product status to inactive`() {
+        viewModel.productInputModel.value = productInputModel
+        viewModel.callPrivateFunc("updateProductStatus", hashMapOf(0 to VariantDetailInputLayoutModel(isActive = false)))
+        assert(viewModel.productInputModel.value?.detailInputModel?.status == ProductStatus.STATUS_INACTIVE)
     }
 
 }
