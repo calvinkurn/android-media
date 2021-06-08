@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
@@ -28,12 +27,12 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
+            mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, { needResync ->
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
             })
-            mProductRevampComponentViewModel.getProductCarouselHeaderData().observe(it, Observer { component ->
+            mProductRevampComponentViewModel.getProductCarouselHeaderData().observe(it, { component ->
                 addCardHeader(component)
             })
         }

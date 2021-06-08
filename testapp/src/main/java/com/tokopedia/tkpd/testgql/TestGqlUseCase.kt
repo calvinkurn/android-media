@@ -271,6 +271,7 @@ internal class TestGqlUseCase {
                 "                owner_id\n" +
                 "                is_owner\n" +
                 "                shop_is_official\n" +
+                "                pm_pro_shop\n" +
                 "                badges {\n" +
                 "                    title\n" +
                 "                    image_url\n" +

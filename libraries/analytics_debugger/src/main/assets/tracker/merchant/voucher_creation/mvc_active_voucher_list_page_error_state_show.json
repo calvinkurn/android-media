@@ -1,0 +1,16 @@
+{
+  "readme": "show error state on active voucher list page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "viewVoucherListIris",
+      "eventCategory" : "voucher list active",
+      "eventAction" : "impression error state",
+      "eventLabel" : ".*",
+      "screenName" : "/voucherlistactive",
+      "currentSite" : "tokopediaseller",
+      "userId" : ".+",
+      "businessUnit": "physical goods"
+    }
+  ]
+}

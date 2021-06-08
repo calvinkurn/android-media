@@ -11,10 +11,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Irfan Khoirul on 23/04/18.
- */
-
 public class ShipmentCartItemModel implements Parcelable {
 
     private boolean allItemError;
@@ -29,15 +25,13 @@ public class ShipmentCartItemModel implements Parcelable {
     // Shop data
     private long shopId;
     private String shopName;
-    private boolean isGoldMerchant;
-    private boolean isOfficialStore;
-    private String shopBadge;
     private int orderNumber;
     private String preOrderInfo;
     private boolean isFreeShippingExtra;
     private String freeShippingBadgeUrl;
     private String shopLocation;
     private String shopAlertMessage;
+    private ShopTypeInfoData shopTypeInfoData;
 
     // Cart item state
     private String cartString;
@@ -115,9 +109,7 @@ public class ShipmentCartItemModel implements Parcelable {
         freeShippingBadgeUrl = in.readString();
         shopLocation = in.readString();
         shopAlertMessage = in.readString();
-        isGoldMerchant = in.readByte() != 0;
-        isOfficialStore = in.readByte() != 0;
-        shopBadge = in.readString();
+        shopTypeInfoData = in.readParcelable(ShopTypeInfoData.class.getClassLoader());
         cartString = in.readString();
         shippingId = in.readInt();
         spId = in.readInt();
@@ -171,9 +163,7 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeString(freeShippingBadgeUrl);
         dest.writeString(shopLocation);
         dest.writeString(shopAlertMessage);
-        dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
-        dest.writeByte((byte) (isOfficialStore ? 1 : 0));
-        dest.writeString(shopBadge);
+        dest.writeParcelable(shopTypeInfoData, flags);
         dest.writeString(cartString);
         dest.writeInt(shippingId);
         dest.writeInt(spId);
@@ -245,8 +235,6 @@ public class ShipmentCartItemModel implements Parcelable {
         newShipmentCartItemModel.setProductIsPreorder(shipmentCartItemModel.isProductIsPreorder());
         newShipmentCartItemModel.setProductFinsurance(shipmentCartItemModel.isProductFinsurance());
         newShipmentCartItemModel.setProductFcancelPartial(shipmentCartItemModel.isProductFcancelPartial());
-        newShipmentCartItemModel.setOfficialStore(shipmentCartItemModel.isOfficialStore());
-        newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
         newShipmentCartItemModel.setOrderNumber(shipmentCartItemModel.getOrderNumber());
         newShipmentCartItemModel.setHidingCourier(shipmentCartItemModel.isHidingCourier());
@@ -260,17 +248,17 @@ public class ShipmentCartItemModel implements Parcelable {
         newShipmentCartItemModel.setStateLoadingCourierState(shipmentCartItemModel.isStateLoadingCourierState());
         newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
         newShipmentCartItemModel.setStateHasExtraMarginTop(shipmentCartItemModel.isStateHasExtraMarginTop());
-        newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
-        newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment);
-        newShipmentCartItemModel.setFulfillmentBadgeUrl(shipmentCartItemModel.fulfillmentBadgeUrl);
+        newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment());
+        newShipmentCartItemModel.setFulfillmentBadgeUrl(shipmentCartItemModel.getFulfillmentBadgeUrl());
         newShipmentCartItemModel.setFulfillmentId(shipmentCartItemModel.getFulfillmentId());
         newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
         newShipmentCartItemModel.setIsLeasingProduct(shipmentCartItemModel.getIsLeasingProduct());
         newShipmentCartItemModel.setListPromoCodes(shipmentCartItemModel.getListPromoCodes());
+        newShipmentCartItemModel.setShopTypeInfoData(shipmentCartItemModel.getShopTypeInfoData());
         return newShipmentCartItemModel;
     }
 
@@ -410,22 +398,6 @@ public class ShipmentCartItemModel implements Parcelable {
         this.cartItemModels = cartItemModels;
     }
 
-    public boolean isGoldMerchant() {
-        return isGoldMerchant;
-    }
-
-    public void setGoldMerchant(boolean goldMerchant) {
-        isGoldMerchant = goldMerchant;
-    }
-
-    public boolean isOfficialStore() {
-        return isOfficialStore;
-    }
-
-    public void setOfficialStore(boolean officialStore) {
-        isOfficialStore = officialStore;
-    }
-
     public List<ShopShipment> getShopShipmentList() {
         return shopShipmentList;
     }
@@ -520,14 +492,6 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setStateHasExtraMarginTop(boolean stateHasExtraMarginTop) {
         this.stateHasExtraMarginTop = stateHasExtraMarginTop;
-    }
-
-    public String getShopBadge() {
-        return shopBadge;
-    }
-
-    public void setShopBadge(String shopBadge) {
-        this.shopBadge = shopBadge;
     }
 
     public boolean getIsBlackbox() {
@@ -722,6 +686,14 @@ public class ShipmentCartItemModel implements Parcelable {
         this.shopAlertMessage = shopAlertMessage;
     }
 
+    public ShopTypeInfoData getShopTypeInfoData() {
+        return shopTypeInfoData;
+    }
+
+    public void setShopTypeInfoData(ShopTypeInfoData shopTypeInfoData) {
+        this.shopTypeInfoData = shopTypeInfoData;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -734,8 +706,6 @@ public class ShipmentCartItemModel implements Parcelable {
                 .append(isAllItemError(), that.isAllItemError())
                 .append(isError(), that.isError())
                 .append(getShopId(), that.getShopId())
-                .append(isGoldMerchant(), that.isGoldMerchant())
-                .append(isOfficialStore(), that.isOfficialStore())
                 .append(getWeightUnit(), that.getWeightUnit())
                 .append(isProductFinsurance(), that.isProductFinsurance())
                 .append(isProductFcancelPartial(), that.isProductFcancelPartial())
@@ -758,8 +728,6 @@ public class ShipmentCartItemModel implements Parcelable {
                 .append(getErrorDescription())
                 .append(getShopId())
                 .append(getShopName())
-                .append(isGoldMerchant())
-                .append(isOfficialStore())
                 .append(getWeightUnit())
                 .append(isProductFinsurance())
                 .append(isProductFcancelPartial())

@@ -234,10 +234,8 @@ public class ShipmentDataConverter {
         Shop shop = groupShop.getShop();
         shipmentCartItemModel.setShopId(shop.getShopId());
         shipmentCartItemModel.setShopName(shop.getShopName());
-        shipmentCartItemModel.setOfficialStore(shop.isOfficial());
-        shipmentCartItemModel.setGoldMerchant(shop.isGold());
-        shipmentCartItemModel.setShopBadge(shop.getShopBadge());
         shipmentCartItemModel.setShopAlertMessage(shop.getShopAlertMessage());
+        shipmentCartItemModel.setShopTypeInfoData(shop.getShopTypeInfoData());
 
         shipmentCartItemModel.setCartString(groupShop.getCartString());
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());
@@ -300,6 +298,7 @@ public class ShipmentDataConverter {
         cartItemModel.setPreOrderInfo(product.getProductPreOrderInfo());
         cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
+        cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!UtilsKt.isNullOrEmpty(product.getProductCashback()));
         cartItemModel.setFInsurance(product.isProductFcancelPartial());
         cartItemModel.setFCancelPartial(product.isProductFinsurance());

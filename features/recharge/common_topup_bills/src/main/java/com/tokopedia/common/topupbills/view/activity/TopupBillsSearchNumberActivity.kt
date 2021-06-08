@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.header.HeaderUnify
 import java.util.*
 
 /**
@@ -46,6 +47,12 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_title_fav_number))
+
+        //draw background without overdraw GPU
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+
+        toolbar.elevation = 0f
+        (toolbar as HeaderUnify).transparentMode = false
     }
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {

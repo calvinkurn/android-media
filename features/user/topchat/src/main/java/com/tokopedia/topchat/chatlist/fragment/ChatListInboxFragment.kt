@@ -78,7 +78,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         ChatListItemListener, LifecycleOwner, InboxFragment {
 
     @Inject
@@ -581,12 +581,14 @@ class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFact
     }
 
     override fun initInjector() {
-        DaggerChatListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .chatListContextModule(context?.let { ChatListContextModule(it) })
-                .build()
+        generateChatListComponent()
                 .inject(this)
     }
+
+    protected open fun generateChatListComponent() = DaggerChatListComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .chatListContextModule(context?.let { ChatListContextModule(it) })
+            .build()
 
     override fun loadData(page: Int) {
         viewModel.getChatListMessage(page, role)

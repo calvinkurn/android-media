@@ -35,6 +35,8 @@ interface SearchEventTracking {
 
     interface Action {
         companion object {
+            const val CLICK_PRODUCT = "click - product"
+            const val IMPRESSION_PRODUCT = "impression - product"
             const val QUICK_FILTER = "quick filter"
             const val CLICK_CHANGE_GRID = "click - "
             const val CLICK_CATALOG = "click - catalog"

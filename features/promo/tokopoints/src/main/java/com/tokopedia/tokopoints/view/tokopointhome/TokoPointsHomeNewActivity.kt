@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -9,8 +10,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -24,20 +23,14 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
     private var mUserSession: UserSessionInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        mUserSession = UserSession(this)
+        mUserSession = UserSession(applicationContext)
         super.onCreate(savedInstanceState)
         toolbar.visibility = View.GONE
         updateTitle(getString(R.string.tp_title_tokopoints))
     }
 
     override fun getNewFragment(): Fragment? {
-        val tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance()
-        return if (mUserSession?.isLoggedIn == true) {
-            tokoPointsHomeFragmentNew
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-            null
-        }
+        return TokoPointsHomeFragmentNew.newInstance()
     }
 
     override fun getComponent(): TokopointBundleComponent {
@@ -65,9 +58,10 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             inflateFragment()
         }
+        else finish()
     }
 
     companion object {

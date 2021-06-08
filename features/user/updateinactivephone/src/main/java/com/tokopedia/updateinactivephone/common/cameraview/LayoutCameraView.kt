@@ -6,6 +6,7 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.updateinactivephone.R
 
 class LayoutCameraView @JvmOverloads constructor(
@@ -48,7 +49,7 @@ class LayoutCameraView @JvmOverloads constructor(
             }
 
             canvas?.clipPath(path)
-            canvas?.drawColor(ContextCompat.getColor(context, R.color.overlay_color))
+            canvas?.drawColor(MethodChecker.getColor(context, R.color.updateinactivephone_dms_overlay_color))
         }
     }
 
@@ -56,19 +57,9 @@ class LayoutCameraView @JvmOverloads constructor(
      * Draw layout for capture id card
      * */
     private fun drawIdCardLayout(canvas: Canvas?) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            path.addRect(createIdCardRect(), Path.Direction.CW)
-        } else {
-            path.addRoundRect(createIdCardRect(), RADIUS, RADIUS, Path.Direction.CW)
-        }
-
+        path.addRoundRect(createIdCardRect(), RADIUS, RADIUS, Path.Direction.CW)
         path.fillType = Path.FillType.INVERSE_EVEN_ODD
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas?.drawRect(createIdCardRect(), paintWhite)
-        } else {
-            canvas?.drawRoundRect(createIdCardRect(), RADIUS, RADIUS, paintWhite)
-        }
+        canvas?.drawRoundRect(createIdCardRect(), RADIUS, RADIUS, paintWhite)
     }
 
     private fun createIdCardRect(): RectF {
@@ -84,21 +75,13 @@ class LayoutCameraView @JvmOverloads constructor(
      * Draw layout for capture selfie
      * */
     private fun drawSelfieLayout(canvas: Canvas?) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            path.addRect(createRectSelfie(), Path.Direction.CW)
-        } else {
-            path.addOval(createOvalSelfie(), Path.Direction.CW)
-            path.addRoundRect(createRoundRectSelfie(), RADIUS, RADIUS, Path.Direction.CW)
-        }
+        path.addOval(createOvalSelfie(), Path.Direction.CW)
+        path.addRoundRect(createRoundRectSelfie(), RADIUS, RADIUS, Path.Direction.CW)
 
         path.fillType = Path.FillType.INVERSE_EVEN_ODD
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas?.drawRect(createRectSelfie(), paintWhite)
-        } else {
-            canvas?.drawOval(createOvalSelfie(), paintWhite)
-            canvas?.drawRoundRect(createRoundRectSelfie(), RADIUS, RADIUS, paintWhite)
-        }
+        canvas?.drawOval(createOvalSelfie(), paintWhite)
+        canvas?.drawRoundRect(createRoundRectSelfie(), RADIUS, RADIUS, paintWhite)
     }
 
     private fun createRectSelfie(): RectF {

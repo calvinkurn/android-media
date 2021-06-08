@@ -18,7 +18,7 @@ import javax.inject.Named
  * @author by nisie on 28/05/19.
  */
 
-class LoginTokenUseCase @Inject constructor(val resources: Resources,
+open class LoginTokenUseCase @Inject constructor(val resources: Resources,
                                             private val graphqlUseCase: GraphqlUseCase,
                                             @Named(SessionModule.SESSION_MODULE)
                                             private val userSession: UserSessionInterface
@@ -66,7 +66,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
         execute(requestParams, subscriber, R.raw.mutation_login_token_seamless)
     }
 
-    fun execute(requestParams: Map<String, Any>, subscriber:
+    open fun execute(requestParams: Map<String, Any>, subscriber:
     Subscriber<GraphqlResponse>, resId : Int) {
         val query = GraphqlHelper.loadRawString(resources, resId)
         val graphqlRequest = GraphqlRequest(query,

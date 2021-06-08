@@ -2,11 +2,9 @@ package com.tokopedia.sellerorder.list.presentation.dialogs
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -22,6 +20,9 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
     fun init() {
         childViews = View.inflate(context, com.tokopedia.sellerorder.R.layout.som_list_bulk_action_dialog, null)
         dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+            if (DeviceScreenInfo.isTablet(context)) {
+                dialogMaxWidth = getScreenWidth() / 2
+            }
             dialogPrimaryCTA.gone()
             dialogSecondaryCTA.gone()
             setOverlayClose(false)

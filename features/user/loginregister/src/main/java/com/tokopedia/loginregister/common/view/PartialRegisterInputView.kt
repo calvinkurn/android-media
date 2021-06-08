@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -208,13 +209,21 @@ class PartialRegisterInputView : BaseCustomView {
     }
 
     private fun validateValue(value: String) {
-        when (getType(value)) {
-            PartialRegisterInputUtils.PHONE_TYPE -> {
-                if (isValidPhone(value)) onValidValue() else if (!value.isEmpty()) onInvalidValue()
+        if(value.isNotEmpty()) {
+            when (getType(value)) {
+                PartialRegisterInputUtils.PHONE_TYPE -> {
+                    if (isValidPhone(value)) {
+                        onValidValue()
+                    } else { onInvalidValue() }
+                }
+                PartialRegisterInputUtils.EMAIL_TYPE -> {
+                    if (isValidEmail(value)) {
+                        onValidValue()
+                    } else { onInvalidValue() }
+                }
             }
-            PartialRegisterInputUtils.EMAIL_TYPE -> {
-                if (isValidEmail(value)) onValidValue() else if (!value.isEmpty()) onInvalidValue()
-            }
+        }else {
+            onInvalidValue()
         }
     }
 

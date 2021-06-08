@@ -30,7 +30,7 @@ data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingRes
     }
     val shopStatusUiModel by lazy {
         (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
-            ShopStatusUiModel(it.shopStatusType, userSession)
+            ShopStatusUiModel(it.userShopInfoWrapper, userSession)
         }
     }
 

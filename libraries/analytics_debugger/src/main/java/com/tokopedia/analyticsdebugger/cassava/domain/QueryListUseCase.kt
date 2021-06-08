@@ -22,7 +22,10 @@ class QueryListUseCase @Inject constructor(
         return if (source == CassavaSource.LOCAL) {
             Utils.getJsonDataFromAsset(context, filePath)?.toCassavaQuery()
         } else {
-            repository.getNetworkQueryList(filePath).let {
+            repository.getNetworkQueryList(
+                    filePath,
+                    context.getString(com.tokopedia.keys.R.string.thanos_token_key)
+            ).let {
                 val cassavaRegexList: MutableList<Pair<Int, Map<String, Any>>> = arrayListOf()
 
                 it.regexData.map { regex ->

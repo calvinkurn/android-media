@@ -402,6 +402,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void logRefreshTokenException(String error, String type, String path, String accessToken) {
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", type);
+        messageMap.put("path", path);
+        messageMap.put("error", error);
+        if(!accessToken.isEmpty()) {
+            messageMap.put("oldToken", accessToken);
+        }
+        ServerLogger.log(Priority.P2, "USER_AUTHENTICATOR", messageMap);
+    }
+
+    @Override
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
         if (omsComponent == null) {
             omsComponent = DaggerOmsComponent.builder()

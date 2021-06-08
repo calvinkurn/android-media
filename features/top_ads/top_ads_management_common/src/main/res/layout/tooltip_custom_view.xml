@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:textAllCaps="false"
-        android:textColor="@color/Unify_G400"
+        android:textColor="@color/light_G500"
         app:layout_constraintBottom_toBottomOf="@id/tooltip_icon"
         app:layout_constraintStart_toEndOf="@id/tooltip_icon"
         app:layout_constraintTop_toTopOf="@id/tooltip_icon"

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.flight.detail.util.FlightAmenityIconUtil;
-import com.tokopedia.flight.searchV4.data.cloud.single.Amenity;
+import com.tokopedia.flight.search.data.cloud.single.Amenity;
 
 /**
  * Created by zulfikarrahman on 10/31/17.
