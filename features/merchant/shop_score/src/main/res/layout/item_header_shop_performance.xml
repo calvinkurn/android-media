@@ -12,11 +12,14 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/containerHeaderShopPerformance"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        app:layout_constrainedHeight="true"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:srcCompat="@drawable/bg_performance_headline" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -114,10 +117,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/dp_6"
         android:textColor="@color/Unify_N0"
-        app:layout_constraintBottom_toBottomOf="@id/barrierProgressBar"
-        app:layout_constraintStart_toEndOf="@id/barrierProgressBar"
         app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
+        app:layout_constraintStart_toEndOf="@id/barrierProgressBar"
         app:typographyType="heading_1"
         app:typographyWeight="bold"
         tools:text="@string/example_score_performance" />
@@ -127,11 +130,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/dp_14"
         android:text="@string/maximum_score_performance"
         android:textColor="@color/Unify_N0"
-        app:layout_constraintBottom_toBottomOf="@id/tvShopScoreValue"
+        app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
         app:layout_constraintStart_toEndOf="@id/tvShopScoreValue"
-        app:layout_constraintTop_toTopOf="@id/tvShopScoreValue"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -172,6 +175,8 @@
         android:id="@+id/cardDescNewSeller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:cardBackgroundColor="@color/Unify_N0_20"
@@ -228,6 +233,7 @@
         android:layout_height="wrap_content"
         app:barrierDirection="top"
         app:constraint_referenced_ids="tickerShopHasPenalty"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tickerShopHasPenalty"
         app:layout_constraintStart_toStartOf="@id/tvPerformanceLevel" />
 
@@ -236,11 +242,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tvDescShopService"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
