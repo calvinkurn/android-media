@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Point
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -867,7 +868,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
                     allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
                     if (cardListPosition == SELECTED_POSITION_INIT) {
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                        val newLatLng = getMapCenter(searchPropertiesMap[position])
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(newLatLng))
                     } else {
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
                     }
@@ -875,6 +878,23 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         } catch (t: Throwable) {
             t.printStackTrace()
+        }
+    }
+
+    fun getMapCenter(latLng: LatLng): LatLng{
+        return try{
+            val mapCenterPoint = googleMap.projection.toScreenLocation(googleMap.cameraPosition.target)
+            val pointOffsetFromCenter = googleMap.projection.fromScreenLocation(
+                    Point(
+                            mapCenterPoint.x,
+                            mapCenterPoint.y + resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7).toInt()
+                    )
+            )
+            val latDelta = pointOffsetFromCenter.latitude - googleMap.cameraPosition.target.latitude
+            val lngDelta = pointOffsetFromCenter.longitude - googleMap.cameraPosition.target.longitude
+            LatLng(latLng.latitude + latDelta, latLng.longitude + lngDelta)
+        }catch (t: Throwable) {
+            latLng
         }
     }
 
