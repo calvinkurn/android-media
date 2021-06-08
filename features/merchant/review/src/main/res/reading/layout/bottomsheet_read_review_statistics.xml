@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bottom_sheet_review_statistic_satisfaction_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold"
+        tools:text="90% pembeli merasa puas" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bottom_sheet_review_statistic_satisfaction_rate_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:text="@string/review_reading_bottom_sheet_statistics_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_satisfaction_rate"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/bottom_sheet_review_statistic_five_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_satisfaction_rate_description"
+        app:rating="5"/>
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/bottom_sheet_review_statistic_four_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_five_progress_bar"
+        app:rating="4"/>
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/bottom_sheet_review_statistic_three_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_four_progress_bar"
+        app:rating="3"/>
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/bottom_sheet_review_statistic_two_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_three_progress_bar"
+        app:rating="2"/>
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/bottom_sheet_review_statistic_one_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_two_progress_bar"
+        app:rating="1"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

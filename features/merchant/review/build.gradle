@@ -28,6 +28,7 @@ android {
                     pathSources + 'reviewlist',
                     pathSources + 'reviewreply',
                     pathSources + 'createreputation',
+                    pathSources + 'reading',
             ]
         }
     }

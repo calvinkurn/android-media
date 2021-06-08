@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/review_reading_star_image"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_rating_star_item" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_reading_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/review_reading_star_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="5" />
+
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/review_reading_progress_bar"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/review_reading_rating"
+        app:layout_constraintEnd_toStartOf="@id/review_reading_rating_count"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/review_reading_rating_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        tools:text="5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

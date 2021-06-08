@@ -355,4 +355,7 @@
     <string name="kejar_ulasan_label">Kejar Ulasan</string>
     <string name="kejar_ulasan_coach_mark_title">Cek ulasan yang ditandai</string>
     <string name="kejar_ulasan_coach_mark_subtitle">Ulasan yang masuk lewat Kejar Ulasan akan disertai dengan tanda khusus seperti ini, ya!</string>
+
+    <!-- Reading   -->
+    <string name="review_reading_bottom_sheet_statistics_description">Dihitung dari presentase jumlah rating positif (bintang 4 &amp; 5) terhadap total rating.</string>
 </resources>
