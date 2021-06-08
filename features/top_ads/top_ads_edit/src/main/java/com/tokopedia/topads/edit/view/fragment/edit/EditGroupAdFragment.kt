@@ -33,10 +33,7 @@ import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_edit_activity_edit_form_ad.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -68,6 +65,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
     }
     private var initialDailyBudget = 0
+    val job = SupervisorJob()
+    val coroutineScope = CoroutineScope(Dispatchers.Main + job)
+
 
     companion object {
 
@@ -195,12 +195,16 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val coroutineScope = CoroutineScope(Dispatchers.Main)
                 s?.let {
                     coroutineScope.launch {
                         delay(DEBOUNCE_CONST)
-                        val text = s.toString().trim()
-                        viewModel.validateGroup(text, this@EditGroupAdFragment::onSuccessGroupName)
+                        if (activity != null && isAdded) {
+                            val text = s.toString().trim()
+                            viewModel.validateGroup(
+                                text,
+                                this@EditGroupAdFragment::onSuccessGroupName
+                            )
+                        }
 
                     }
                 }
@@ -303,6 +307,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     private fun checkDataChanged(): Boolean {
         return initialDailyBudget != getCurrentDailyBudget() || groupName != getCurrentTitle() || initialToggleState != toggle?.isChecked
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
     override fun onDetach() {

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
@@ -249,7 +249,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun getCurrentBid(): Int {
-        return if(budgetInput.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
+        return if (budgetInput.textFieldInput.text.toString().removeCommaRawString().isNotEmpty())
             budgetInput.textFieldInput.text.toString().removeCommaRawString().toInt()
         else
             0
@@ -332,7 +332,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun checkForCommonData() {
-        if(!receivedKeywords || !receivedRecom)
+        if (!receivedKeywords || !receivedRecom)
             return
         val listItem: MutableList<KeySharedModel> = mutableListOf()
         var commonToRecommendation: Boolean
@@ -426,10 +426,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(
-                    String.format(
-                        getString(R.string.topads_edit_delete_keyword_conf_dialog_title),
-                        (adapter.items[position] as EditKeywordItemViewModel).data.name
-                    )
+                String.format(
+                    getString(R.string.topads_edit_delete_keyword_conf_dialog_title),
+                    (adapter.items[position] as EditKeywordItemViewModel).data.name
+                )
             )
             dialog.setDescription(
                 MethodChecker.fromHtml(
@@ -504,7 +504,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         adapter.notifyDataSetChanged()
         setCount()
-        ticker.visibility = View.GONE
+        adapter.getBidData(initialBudget, isnewlyAddded)
+        ticker.gone()
         updateString()
         view?.let {
             Toaster.build(
@@ -582,7 +583,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyView() {
-        adapter.items.clear()
+        adapter.clearList()
         adapter.items.add(EditKeywordEmptyViewModel())
         setVisibilityOperation(View.GONE)
         adapter.notifyDataSetChanged()
@@ -612,7 +613,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun updateKeywords(selectedKeywords: ArrayList<KeywordDataItem>?) {
         if (adapter.items.isNotEmpty() && adapter.items[0] is EditKeywordEmptyViewModel) {
-            adapter.items.clear()
+            adapter.clearList()
         }
         selectedKeywords?.forEach {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.name } == null) {
@@ -659,7 +660,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
         if (adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
-                if ((item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
+                if (index < adapter.data.size && (item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
                     if (isExistsOriginal(item.data.name))
                         editedKeywords?.add(item.data)
                 }
