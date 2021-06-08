@@ -7,9 +7,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
-import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -18,6 +18,7 @@ import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 22/04/20.
@@ -25,6 +26,9 @@ import com.tokopedia.utils.permission.request
  */
 
 class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
+
+    @Inject
+    lateinit var analytics: TrackingOtpUtil
 
     private lateinit var otpData: OtpData
     private lateinit var modeListData: ModeListData
@@ -70,6 +74,7 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun initView() {
         startAnimation()
+        analytics.trackClickMethodOtpButton(otpData.otpType, modeListData.modeText)
         viewBound.btnCallMe?.setOnClickListener {
             (activity as VerificationActivity).goToVerificationPage(modeListData)
         }

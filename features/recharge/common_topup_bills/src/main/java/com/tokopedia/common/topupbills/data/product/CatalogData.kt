@@ -19,7 +19,7 @@ class CatalogData(
         val enquiryFields: List<CatalogProductInput> = listOf(),
         @SerializedName("product")
         @Expose
-        val product: CatalogProduct = CatalogProduct()
+        val product: CatalogProductData = CatalogProductData()
 
 ) {
         class Response(

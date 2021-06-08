@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_lvl2"
-    app:cardCornerRadius="@dimen/spacing_lvl2"
-    app:cardElevation="@dimen/spacing_lvl1">
+    app:cardCornerRadius="@dimen/spacing_lvl3">
 
     <LinearLayout
         android:id="@+id/promo_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/unify_space_12">
+        android:paddingHorizontal="@dimen/spacing_lvl2"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingBottom="@dimen/spacing_lvl4">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_promo"
@@ -41,7 +42,8 @@
                 android:layout_alignBottom="@id/btn_copy_promo"
                 android:layout_marginLeft="@dimen/unify_space_12"
                 android:gravity="center_vertical"
-                app:srcCompat="@drawable/common_topup_ic_voucher" />
+                app:srcCompat="@drawable/common_topup_ic_voucher"
+                android:contentDescription="null" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_promo_code"
@@ -70,15 +72,15 @@
                 app:typographyWeight="bold"
                 tools:text="TOPED" />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_copy_promo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/promo_code"
-                android:layout_marginLeft="@dimen/unify_space_12"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginRight="@dimen/unify_space_12"
-                android:lineHeight="@dimen/fontSize_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                app:unifyButtonSize="micro"
                 android:paddingLeft="@dimen/spacing_lvl3"
                 android:paddingTop="@dimen/spacing_lvl2"
                 android:paddingRight="@dimen/spacing_lvl3"
@@ -86,7 +88,9 @@
                 app:typographyType="heading_6"
                 tools:background="@drawable/digital_bg_green_rounded"
                 tools:text="Disalin"
-                tools:textColor="@color/Unify_N0" />
+                tools:textColor="@color/Unify_N0"
+                android:minWidth="@dimen/telco_promo_item_min_width"
+                android:gravity="center" />
 
         </RelativeLayout>
 

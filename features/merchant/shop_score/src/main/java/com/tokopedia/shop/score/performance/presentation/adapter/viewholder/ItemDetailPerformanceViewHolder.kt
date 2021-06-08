@@ -7,12 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreColorUtils
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_detail_shop_performance.view.*
 
 class ItemDetailPerformanceViewHolder(view: View,
@@ -63,7 +65,7 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
-            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            cardItemDetailShopPerformance?.setBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_penalty_dms_container))
             separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
 
             if (element?.isDividerHide == true) {
@@ -83,9 +85,23 @@ class ItemDetailPerformanceViewHolder(view: View,
                             StringBuilder("${element?.valueDetailPerformance} ${element?.parameterValueDetailPerformance}")
                     }
             if (element?.colorValueDetailPerformance?.isNotBlank() == true && element.valueDetailPerformance != MINUS_SIGN) {
-                tvPerformanceValue.setTextColor(Color.parseColor(element.colorValueDetailPerformance))
+                tvPerformanceValue.setTextColorUnifyParameterDetail(element.colorValueDetailPerformance)
             }
             tvPerformanceTarget?.text = getString(R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
+        }
+    }
+
+    private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
+        when (colorValueDetailPerformance) {
+            ShopScoreColorUtils.RED -> {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            }
+            ShopScoreColorUtils.GREY -> {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            }
+            ShopScoreColorUtils.GREEN -> {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            }
         }
     }
 }

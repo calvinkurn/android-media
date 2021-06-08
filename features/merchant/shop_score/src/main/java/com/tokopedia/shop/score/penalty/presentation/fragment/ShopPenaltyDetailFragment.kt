@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -23,6 +24,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
 import kotlinx.android.synthetic.main.fragment_penalty_detail.*
+import kotlinx.android.synthetic.main.fragment_penalty_page.*
 import javax.inject.Inject
 
 class ShopPenaltyDetailFragment : BaseDaggerFragment() {
@@ -35,7 +37,18 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     private val penaltyDetailStepperAdapter by lazy { PenaltyDetailStepperAdapter() }
 
+    private var itemPenalty: ItemPenaltyUiModel? = null
+    private var keyCacheManagerId = ""
+    private var cacheManager: SaveInstanceCacheManager? = null
+
     override fun getScreenName(): String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.intent?.let {
+            keyCacheManagerId = it.getStringExtra(KEY_CACHE_MANAGE_ID) ?: ""
+        }
+    }
 
     override fun initInjector() {
         getComponent(PenaltyComponent::class.java).inject(this)
@@ -45,15 +58,23 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_penalty_detail, container, false)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        cacheManager?.onSave(outState)
+        cacheManager?.put(KEY_ITEM_PENALTY_DETAIL, itemPenalty)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            cacheManager = SaveInstanceCacheManager(it, keyCacheManagerId)
         }
-        val cacheManager = context?.let { SaveInstanceCacheManager(it, activity?.intent?.getStringExtra(KEY_CACHE_MANAGE_ID)) }
-        val itemPenalty = cacheManager?.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
-                ?: ItemPenaltyUiModel()
-        getPenaltyDetail(itemPenalty)
+        setupActionBar()
+        if (itemPenalty == null) {
+            itemPenalty = cacheManager?.get(KEY_ITEM_PENALTY_DETAIL, ItemPenaltyUiModel::class.java)
+        }
+        itemPenalty?.let { getPenaltyDetail(it) }
         observePenaltyDetailData()
     }
 
@@ -97,7 +118,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         val gridLayoutManager = GridLayoutManager(context, 5)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return if (stepperList.size == position+1) {
+                return if (stepperList.size == position + 1) {
                     SPAN_WIDTH_LAST_ITEM
                 } else SPAN_WIDTH_DEFAULT
             }
@@ -112,6 +133,16 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     private fun showStatusPenaltyBottomSheet() {
         val bottomSheet = PenaltyStatusBottomSheet.newInstance()
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun setupActionBar() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(penalty_detail_toolbar)
+            supportActionBar?.apply {
+                title = getString(R.string.title_penalty_detail_shop_score)
+            }
+        }
     }
 
     companion object {

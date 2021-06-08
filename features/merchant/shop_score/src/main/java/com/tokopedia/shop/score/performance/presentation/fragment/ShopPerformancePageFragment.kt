@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -40,6 +42,7 @@ import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerforman
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import kotlinx.android.synthetic.main.fragment_shop_performance.*
 import javax.inject.Inject
 
@@ -95,6 +98,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, R.color.shop_score_page_dms_background))
+        }
+        setupActionBar()
         setupAdapter()
         onSwipeRefreshShopPerformance()
         observeShopPeriod()
@@ -148,7 +155,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 shopIncome = shopLevelData?.niv?.toString().orEmpty(),
                 productSold = shopLevelData?.itemSold.toString(),
                 period = shopLevelData?.period.orEmpty(),
-                nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-" else shopLevelData?.nextUpdate ?: "-")
+                nextUpdate = if (shopLevelData?.nextUpdate?.isBlank() == true) "-" else shopLevelData?.nextUpdate
+                        ?: "-")
         bottomSheetShopTooltipLevel.show(childFragmentManager)
     }
 
@@ -250,7 +258,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onBtnShopPerformanceToInterruptClicked(infoPageUrl: String) {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, infoPageUrl)
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, infoPageUrl)
+        }
         shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
     }
 
@@ -287,14 +297,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun goToFaqSection() {
         val faqData = shopPerformanceAdapter.list.find { it is SectionFaqUiModel }
         if (faqData != null) {
-            val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
+            context?.let {
+                val positionFaqSection = shopPerformanceAdapter.list.indexOf(faqData)
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_END
+                    }
                 }
+                smoothScroller.targetPosition = positionFaqSection
+                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
-            smoothScroller.targetPosition = positionFaqSection
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
         shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
     }
@@ -441,7 +453,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun scrollToLastItemCoachMark() {
         getPositionLastItemCoachMark()?.let {
-            if (it != RecyclerView.NO_POSITION) {
+            context?.let { context ->
                 val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
                     override fun getVerticalSnapPreference(): Int {
                         return SNAP_TO_END
@@ -455,40 +467,46 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun scrollToItemHeaderCoachMark() {
         val positionItemHeader = shopPerformanceAdapter.list.indexOfFirst { it is HeaderShopPerformanceUiModel }
-        if (positionItemHeader != RecyclerView.NO_POSITION) {
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_START
+        context?.let {
+            if (positionItemHeader != RecyclerView.NO_POSITION) {
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
                 }
+                smoothScroller.targetPosition = positionItemHeader
+                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
-            smoothScroller.targetPosition = positionItemHeader
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
     private fun scrollToItemDetailCoachMark() {
         val positionItemDetail = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
-        if (positionItemDetail != RecyclerView.NO_POSITION) {
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
+        context?.let {
+            if (positionItemDetail != RecyclerView.NO_POSITION) {
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_END
+                    }
                 }
+                smoothScroller.targetPosition = positionItemDetail
+                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
-            smoothScroller.targetPosition = positionItemDetail
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
     private fun scrollToItemParameterDetailCoachMark() {
         val positionItemDetail = shopPerformanceAdapter.list.indexOfLast { it is ItemDetailPerformanceUiModel }
-        if (positionItemDetail != RecyclerView.NO_POSITION) {
-            val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
+        context?.let {
+            if (positionItemDetail != RecyclerView.NO_POSITION) {
+                val smoothScroller: RecyclerView.SmoothScroller = object : LinearSmoothScroller(it) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_END
+                    }
                 }
+                smoothScroller.targetPosition = positionItemDetail
+                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
-            smoothScroller.targetPosition = positionItemDetail
-            rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
@@ -638,6 +656,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun hideLoading() {
         shopPerformanceAdapter.hideLoading()
     }
+
+    private fun setupActionBar() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(shop_performance_toolbar)
+            supportActionBar?.apply {
+                title = getString(R.string.title_shop_performance)
+            }
+        }
+    }
+
 
     companion object {
 

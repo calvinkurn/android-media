@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="separator_size">1dp</dimen>
+    <dimen name="digital_search_number_toolbar_seperator_top_margin">-2dp</dimen>
     <dimen name="input_dropdown_item_height">56dp</dimen>
     <dimen name="input_field_info_icon_size">14dp</dimen>
+
+    <dimen name="telco_promo_item_min_width">56dp</dimen>
 </resources>

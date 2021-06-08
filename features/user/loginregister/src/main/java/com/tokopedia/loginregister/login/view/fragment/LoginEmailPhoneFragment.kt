@@ -185,6 +185,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private var isFromRegister = false
     private var isUseHash = false
     private var validateToken = ""
+    private var isLoginAfterSq = false
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var socmedButtonsContainer: LinearLayout? = null
@@ -348,6 +349,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
 
+        autoFillWithDataFromLatestLoggedIn()
+
         setupToolbar()
     }
 
@@ -421,7 +424,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         viewModel.profileResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when(it){
-                is Success -> onSuccessGetUserInfo().invoke(it.data)
+                is Success -> onSuccessGetUserInfo(it.data)
                 is Fail -> onErrorGetUserInfo().invoke(it.throwable)
             }
         })
@@ -764,9 +767,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     }
 
-    private fun setDiscoverListener(discoverItemDataModel: DiscoverItemDataModel,
-                                    tv: LoginTextView) {
-
+    private fun setDiscoverListener(discoverItemDataModel: DiscoverItemDataModel, tv: LoginTextView) {
         if (discoverItemDataModel.id.equals(FACEBOOK, ignoreCase = true)) {
             tv.setOnClickListener { onLoginFacebookClick() }
         } else if (discoverItemDataModel.id.equals(GPLUS, ignoreCase = true)) {
@@ -990,7 +991,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             } else {
-                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister)
+                analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister, isLoginAfterSq)
             }
 
             setTrackingUserId(userSession.userId)
@@ -1269,15 +1270,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         ForbiddenActivity.startActivity(activity)
     }
 
-    override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
-        return {
-            if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
-                onGoToChangeName()
-            } else {
-                onSuccessLogin()
-            }
-            getDefaultChosenAddress()
+    override fun onSuccessGetUserInfo(profilePojo: ProfilePojo) {
+        if (profilePojo.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+            onGoToChangeName()
+        } else {
+            onSuccessLogin()
         }
+        getDefaultChosenAddress()
     }
 
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
@@ -1455,6 +1454,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     && resultCode == Activity.RESULT_OK
                     && data != null) {
                 data.extras?.let {
+                    isLoginAfterSq = true
                     tempValidateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     viewModel.reloginAfterSQ(tempValidateToken)
                 }
@@ -1547,6 +1547,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
         val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
+        analytics.trackerSuccessRegisterFromLogin(userSession.loginMethod)
+
         if (enable2FA) {
             goToAddPin2FA(enableSkip2FA)
         } else {
@@ -1731,6 +1733,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 if (it.isExist) {
                     goToLoginPhoneVerifyPage(it.view.replace("-", ""))
                 } else {
+                    analytics.trackerOnPhoneNumberNotExist()
                     goToRegisterPhoneVerifyPage(it.view.replace("-", ""))
                 }
             }
@@ -1746,6 +1749,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                         showNotRegisteredEmailDialog(it.view, true)
                     }
                 } else {
+                    analytics.trackerOnEmailNotExist()
                     showNotRegisteredEmailDialog(it.view, false)
                 }
             }
@@ -1891,6 +1895,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 , "throwable" to Log.getStackTraceString(throwable)))
     }
 
+    private fun autoFillWithDataFromLatestLoggedIn() {
+        if(!userSession.autofillUserData.isNullOrEmpty() && emailPhoneEditText?.text?.isEmpty() == true) {
+            emailPhoneEditText?.let {
+                it.setText(userSession.autofillUserData)
+                it.setSelection(it.text.length)
+            }
+        }
+    }
+
     companion object {
 
         const val IS_AUTO_LOGIN = "auto_login"
@@ -1927,6 +1940,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
+        private const val GOOGLE_TYPE = "google"
+        private const val GPLUS_TYPE = "gplus"
+        private const val FACEBOOK_TYPE = "facebook"
 
         private const val OTP_SECURITY_QUESTION = 134
         private const val OTP_LOGIN_PHONE_NUMBER = 112

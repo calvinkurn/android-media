@@ -8,7 +8,6 @@
     android:paddingBottom="@dimen/spacing_lvl2">
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/cardContent"
         android:layout_width="@dimen/width_card_recommendation_feature"
         android:layout_height="@dimen/height_card_recommendation_feature"
         android:layout_marginTop="@dimen/promo_promo_creation_card_top_margin"
@@ -20,8 +19,9 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingStart="@dimen/layout_lvl1"
             android:paddingEnd="@dimen/layout_lvl1"

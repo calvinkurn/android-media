@@ -118,11 +118,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         }
     }
 
-    @Override
-    public void logRefreshTokenException(String error, String type, String path, String accessToken) {
-
-    }
-
     public void setDarkMode(Boolean isDarkMode) {
         if (isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

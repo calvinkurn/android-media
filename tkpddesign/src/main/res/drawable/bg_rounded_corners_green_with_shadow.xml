@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape android:shape="rectangle"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/Unify_Background" />
     <padding
         android:top="0.5dp"
         android:left="0.5dp"

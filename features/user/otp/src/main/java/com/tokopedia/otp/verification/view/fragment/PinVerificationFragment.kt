@@ -1,6 +1,5 @@
 package com.tokopedia.otp.verification.view.fragment
 
-import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -9,8 +8,6 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.otp.R
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
@@ -21,6 +18,12 @@ class PinVerificationFragment : VerificationFragment() {
     override fun initView() {
         super.initView()
         viewBound.pin?.type = PinUnify.TYPE_HIDDEN
+
+        if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE) {
+            analytics.trackGenerateOtp(otpData, modeListData, true)
+        } else {
+            analytics.trackClickMethodOtpButton(otpData.otpType, modeListData.modeText)
+        }
     }
 
     override fun setFooterText(spannable: Spannable?) {
