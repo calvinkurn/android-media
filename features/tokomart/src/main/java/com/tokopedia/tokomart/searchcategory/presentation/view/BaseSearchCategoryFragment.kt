@@ -23,7 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
@@ -49,7 +48,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
@@ -95,9 +93,13 @@ abstract class BaseSearchCategoryFragment:
 
     private val searchCategoryToolbarHeight: Int
         get() {
-            var height = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
-            height += resources.getDimensionPixelSize(R.dimen.dp_8)
-            return height
+            val defaultHeight = resources
+                    .getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
+
+            val height = (navToolbar?.height ?: defaultHeight)
+            val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
+
+            return height + padding
         }
 
     override fun onCreateView(
@@ -105,7 +107,11 @@ abstract class BaseSearchCategoryFragment:
             container: ViewGroup?,
             savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_tokomart_search_category, container, false)
+        return inflater.inflate(
+                R.layout.fragment_tokomart_search_category,
+                container,
+                false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,6 +120,7 @@ abstract class BaseSearchCategoryFragment:
         findViews(view)
 
         configureNavToolbar()
+        configureStickyView()
         configureStatusBar()
         configureMiniCart()
         configureRecyclerView()
@@ -141,51 +148,57 @@ abstract class BaseSearchCategoryFragment:
                 hints = getNavToolbarHint(),
                 searchbarClickCallback = ::onSearchBarClick,
         )
+
         configureToolbarBackgroundInteraction()
     }
 
-    private fun configureToolbarBackgroundInteraction() {
-        val context = context ?: return
+    protected open fun configureToolbarBackgroundInteraction() {
+        val navToolbar = navToolbar ?: return
 
-        navToolbar?.let { toolbar ->
-            activity?.let {
-                toolbar.setupToolbarWithStatusBar(it)
-            }
-
-            viewLifecycleOwner.lifecycle.addObserver(toolbar)
-
-            recyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
-                    navToolbar = toolbar,
-                    startTransitionPixel = searchCategoryToolbarHeight,
-                    toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range),
-                    navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                        override fun onAlphaChanged(offsetAlpha: Float) {
-
-                        }
-
-                        override fun onSwitchToLightToolbar() {
-
-                        }
-
-                        override fun onSwitchToDarkToolbar() {
-                            navToolbar?.hideShadow()
-                        }
-
-                        override fun onYposChanged(yOffset: Int) {
-
-                        }
-                    },
-                    fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
-            ))
+        activity?.let {
+            navToolbar.setupToolbarWithStatusBar(it)
         }
 
-        configureEmptySpace()
+        viewLifecycleOwner.lifecycle.addObserver(navToolbar)
+
+        recyclerView?.addOnScrollListener(createNavRecyclerViewOnScrollListener(navToolbar))
     }
 
-    private fun configureEmptySpace() {
+    private fun createNavRecyclerViewOnScrollListener(
+            navToolbar: NavToolbar,
+    ): NavRecyclerViewScrollListener {
+        val toolbarTransitionRangePixel =
+                resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range)
+
+        return NavRecyclerViewScrollListener(
+                navToolbar = navToolbar,
+                startTransitionPixel = searchCategoryToolbarHeight,
+                toolbarTransitionRangePixel = toolbarTransitionRangePixel,
+                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                    override fun onAlphaChanged(offsetAlpha: Float) {
+
+                    }
+
+                    override fun onSwitchToLightToolbar() {
+
+                    }
+
+                    override fun onSwitchToDarkToolbar() {
+                        navToolbar.hideShadow()
+                    }
+
+                    override fun onYposChanged(yOffset: Int) {
+
+                    }
+                },
+                fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+        )
+    }
+
+    protected open fun configureStickyView() {
         val context = context ?: return
         val top = NavToolbarExt.getFullToolbarHeight(context)
-        stickyView?.setMargin(0.toDp(),top, 0.toDp(), 0.toDp())
+        stickyView?.setMargin(0.toDp(), top, 0.toDp(), 0.toDp())
     }
 
     protected abstract fun createNavToolbarIconBuilder(): IconBuilder
@@ -248,13 +261,21 @@ abstract class BaseSearchCategoryFragment:
             In that version, status bar can't be forced to dark mode
             We must set background to keep status bar icon visible
         */
-        activity?.let {
-            statusBarBackground?.apply {
-                layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
-                visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
-            }
-            setStatusBarAlpha()
+
+        val activity = activity ?: return
+
+        val statusBarBackgroundVisibility =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    View.INVISIBLE
+                else
+                    View.VISIBLE
+
+        statusBarBackground?.apply {
+            layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
+            visibility = statusBarBackgroundVisibility
         }
+
+        setStatusBarAlpha()
     }
 
     private fun setStatusBarAlpha() {
@@ -288,7 +309,7 @@ abstract class BaseSearchCategoryFragment:
         endlessScrollListener?.let {
             recyclerView?.addOnScrollListener(it)
         }
-        recyclerView?.addOnScrollListener(createScrollListener())
+        recyclerView?.addOnScrollListener(createNavToolbarShadowOnScrollListener())
     }
 
     private fun createEndlessScrollListener(layoutManager: StaggeredGridLayoutManager) =
@@ -298,15 +319,15 @@ abstract class BaseSearchCategoryFragment:
                 }
             }
 
-    private fun createScrollListener() =
+    private fun createNavToolbarShadowOnScrollListener() =
             object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    evaluateSearchCategoryComponentOnScroll(recyclerView, dy)
+                    evaluateNavToolbarShadow(recyclerView, dy)
                 }
             }
 
-    private fun evaluateSearchCategoryComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
+    private fun evaluateNavToolbarShadow(recyclerView: RecyclerView, dy: Int) {
         movingPosition += dy
         headerBackground?.y = -(movingPosition.toFloat())
         if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
@@ -346,7 +367,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
         getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
-        getViewModel().addToCartErrorMessageLiveData.observe(this::showAddToCartMessage)
+        getViewModel().addToCartEventMessageLiveData.observeEvent(this::showAddToCartMessage)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel

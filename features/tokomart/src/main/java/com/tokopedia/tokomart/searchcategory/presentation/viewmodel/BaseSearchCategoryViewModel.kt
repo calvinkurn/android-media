@@ -123,8 +123,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val isRefreshPageMutableLiveData = MutableLiveData(false)
     val isRefreshPageLiveData: LiveData<Boolean> = isRefreshPageMutableLiveData
 
-    protected val addToCartErrorMessageMutableLiveData = MutableLiveData<String>(null)
-    val addToCartErrorMessageLiveData: LiveData<String> = addToCartErrorMessageMutableLiveData
+    protected val addToCartEventMessageMutableLiveData = MutableLiveData<Event<String>>(null)
+    val addToCartEventMessageLiveData: LiveData<Event<String>> = addToCartEventMessageMutableLiveData
 
     init {
         updateQueryParamWithDefaultSort()
@@ -670,11 +670,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel) {
-        addToCartErrorMessageMutableLiveData.value = ""
+        addToCartEventMessageMutableLiveData.value = Event("")
     }
 
     private fun onAddToCartFailed(throwable: Throwable) {
-        addToCartErrorMessageMutableLiveData.value = throwable.message
+        addToCartEventMessageMutableLiveData.value = Event(throwable.message ?: "")
     }
 
     fun onLocalizingAddressSelected() {
