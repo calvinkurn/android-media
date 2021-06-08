@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -30,7 +32,13 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
     }
 
     override fun getNewFragment(): Fragment? {
-        return TokoPointsHomeFragmentNew.newInstance()
+        val tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance()
+        return if (mUserSession?.isLoggedIn == true) {
+            tokoPointsHomeFragmentNew
+        } else {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            null
+        }
     }
 
     override fun getComponent(): TokopointBundleComponent {
