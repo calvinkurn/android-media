@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.domain.model.KeywordSearchData
@@ -89,6 +90,11 @@ abstract class TokoMartHomeViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
+    protected fun verifyDataLayoutFail() {
+        val actualResponse = viewModel.homeLayoutList.getOrAwaitValue()
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
     protected fun verifyGetHomeLayoutUseCaseCalled() {
         coVerify { getHomeLayoutListUseCase.execute() }
     }
@@ -141,4 +147,19 @@ abstract class TokoMartHomeViewModelTestFixture {
         }
     }
 
+    protected fun onGetDataFromTokoMart_thenReturn(listCategoryResponse: List<CategoryResponse>){
+        coEvery { getCategoryListUseCase.execute("1", 1) } returns listCategoryResponse
+    }
+
+    protected fun onGetDataFromTokoMart_thenReturn(errorThrowable: Throwable){
+        coEvery { getCategoryListUseCase.execute("1", 1) } throws  errorThrowable
+    }
+
+    protected fun onGetHomeLayoutData_thenReturn(homeLayoutResponse: HomeLayoutResponse){
+        coEvery { getHomeLayoutDataUseCase.execute( any()) } returns homeLayoutResponse
+    }
+
+    protected fun onGetHomeLayoutData_thenReturn(errorThrowable: Throwable){
+        coEvery { getHomeLayoutDataUseCase.execute(any()) } throws  errorThrowable
+    }
 }

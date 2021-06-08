@@ -1,9 +1,6 @@
 package com.tokopedia.tokomart.home.presentation.viewmodel
 
-import com.tokopedia.tokomart.data.createHomeLayoutList
-import com.tokopedia.tokomart.data.createKeywordSearch
-import com.tokopedia.tokomart.data.createMiniCartSimplifier
-import com.tokopedia.tokomart.data.createTicker
+import com.tokopedia.tokomart.data.*
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
@@ -81,5 +78,39 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         viewModel.getMiniCart()
 
         verifyMiniCartFail()
+    }
+
+    @Test
+    fun `when getting layout home should run and give success result`(){
+        onGetDataFromTokoMart_thenReturn(createCategoryListData())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutListwithBanner())
+        onGetTicker_thenReturn(createTicker())
+        onGetHomeLayout_thenReturn(createHomeLayoutListwithHome())
+
+        viewModel.getHomeLayout()
+
+        viewModel.getLayoutData()
+
+        verifyGetTickerUseCaseCalled()
+        verifyGetHomeLayoutUseCaseCalled()
+        verifyGetDataFromTokoMartCalled()
+        verifyGetHomeLayoutResponseSuccess(createHomeLayoutListWithCategory())
+    }
+
+    @Test
+    fun `when getting layout home should run throw exception`(){
+        onGetDataFromTokoMart_thenReturn(Exception())
+        onGetHomeLayoutData_thenReturn(Exception())
+        onGetTicker_thenReturn(createTicker())
+        onGetHomeLayout_thenReturn(createHomeLayoutListwithHome())
+
+        viewModel.getHomeLayout()
+
+        viewModel.getLayoutData()
+
+        verifyGetTickerUseCaseCalled()
+        verifyGetHomeLayoutUseCaseCalled()
+        verifyGetDataFromTokoMartCalled()
+        verifyDataLayoutFail()
     }
 }
