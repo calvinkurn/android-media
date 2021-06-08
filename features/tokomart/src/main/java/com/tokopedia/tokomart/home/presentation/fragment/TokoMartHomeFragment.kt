@@ -51,7 +51,6 @@ import com.tokopedia.tokomart.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokomart.common.view.TokoNowView
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
-import com.tokopedia.tokomart.home.constant.TokoNowConstant.SHOP_ID
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.domain.model.Data
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
@@ -194,17 +193,18 @@ class TokoMartHomeFragment: Fragment(),
             .inject(this)
     }
 
-    private fun checkStateNotInServiceArea() {
+    private fun checkStateNotInServiceArea(shopId: Long, warehouseId: Long) {
         context?.let {
-            checkIfChooseAddressWidgetDataUpdated()
-//          need to do something
-//            if (localCacheModel?.shop_id.toIntOrZero() == 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
-//                // after this then what to do?
-//            } else
-            if (localCacheModel?.shop_id.toIntOrZero() != 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
-                showEmptyState(EMPTY_STATE_NO_ADDRESS)
-            } else {
-                showLayout()
+            when {
+                shopId == 0L -> {
+                    viewModel.getChosenAddress(SOURCE)
+                }
+                warehouseId == 0L -> {
+                    showEmptyState(EMPTY_STATE_NO_ADDRESS)
+                }
+                else -> {
+                    showLayout()
+                }
             }
         }
     }
@@ -386,6 +386,17 @@ class TokoMartHomeFragment: Fragment(),
                 setupMiniCart(it.data)
             }
         }
+
+        observe(viewModel.chooseAddress) {
+            if (it is Success) {
+                checkStateNotInServiceArea(
+                        shopId = it.data.tokonow.shopId,
+                        warehouseId = it.data.tokonow.warehouseId
+                )
+            } else {
+                showEmptyState(EMPTY_STATE_NO_ADDRESS)
+            }
+        }
     }
 
     private fun resetSwipeLayout() {
@@ -396,7 +407,7 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
         if(data.isShowMiniCartWidget) {
-            val shopIds = listOf(SHOP_ID)
+            val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
             miniCartWidget.initialize(shopIds, this, this)
             miniCartWidget.show()
         } else {
@@ -408,7 +419,11 @@ class TokoMartHomeFragment: Fragment(),
         data.run {
             if (isChooseAddressWidgetDisplayed) {
                 adapter.submitList(result)
-                checkStateNotInServiceArea()
+                checkIfChooseAddressWidgetDataUpdated()
+                checkStateNotInServiceArea(
+                        shopId = localCacheModel?.shop_id.toLongOrZero(),
+                        warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
+                )
             } else if (isInitialLoad) {
                 needToShowHeaderBackground(isHeaderBackgroundShowed)
                 adapter.submitList(result)
@@ -438,7 +453,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun getMiniCart()  {
-        viewModel.getMiniCart()
+        viewModel.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
     }
 
     private fun getChooseAddress() {
