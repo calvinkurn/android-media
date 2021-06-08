@@ -17,12 +17,12 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFe
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_header_view
 import kotlinx.android.synthetic.main.home_featured_shop.view.*
 
 /**
@@ -47,6 +47,7 @@ class FeaturedShopViewHolder(
         } else {
             itemView.content_container?.show()
             setHeaderComponent(element)
+            setChannelDivider(element)
             initView(element)
         }
     }
@@ -57,6 +58,14 @@ class FeaturedShopViewHolder(
 
     private fun initView(element: FeaturedShopDataModel) {
         initItems(element)
+    }
+
+    private fun setChannelDivider(element: FeaturedShopDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun initItems(element: FeaturedShopDataModel)

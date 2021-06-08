@@ -333,12 +333,12 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             stringBuilder.append(
                     when (transitEnum) {
                         TransitEnum.DIRECT -> "FlightJourneyTable.totalTransit = 0 AND FlightRouteTable.stops = 0 "
-                        TransitEnum.ONE -> "FlightJourneyTable.totalTransit = 1  OR FlightRouteTable.stops = 1"
-                        TransitEnum.TWO -> "FlightJourneyTable.totalTransit > 1 OR FlightRouteTable.stops > 1"
+                        TransitEnum.ONE -> "FlightJourneyTable.totalTransit = 1 OR FlightRouteTable.stops = 1 "
+                        TransitEnum.TWO -> "FlightJourneyTable.totalTransit > 1 OR FlightRouteTable.stops > 1 "
                     }
             )
             if (i < transitList.size - 1) {
-                stringBuilder.append("OR ")
+                stringBuilder.append(" OR ")
             }
         }
         stringBuilder.append(") AND ")

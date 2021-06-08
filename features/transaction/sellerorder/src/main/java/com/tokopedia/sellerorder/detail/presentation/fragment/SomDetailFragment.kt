@@ -910,7 +910,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         }
                     })
                     init(it)
-                    setTitle(SomConsts.TITLE_UBAH_RESI)
                     hideKnob()
                     showCloseButton()
                     show()
@@ -989,7 +988,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
             })
             init(popUp, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()), detailResponse?.statusCode.orZero())
-            setTitle(view.context.getString(R.string.som_request_cancel_bottomsheet_title))
             hideKnob()
             showCloseButton()
         }
