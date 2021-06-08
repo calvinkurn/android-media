@@ -41,7 +41,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
     val tokenNeedRefresh = SingleLiveEvent<Boolean>()
     val cardIsNotBrizzi = SingleLiveEvent<Boolean>()
-    val errorCardMessage = SingleLiveEvent<String>()
+    val errorCardMessage = SingleLiveEvent<Throwable>()
     val errorCommonBrizzi = SingleLiveEvent<Throwable>()
 
     fun processBrizziTagIntent(intent: Intent, brizziInstance: Brizzi,
