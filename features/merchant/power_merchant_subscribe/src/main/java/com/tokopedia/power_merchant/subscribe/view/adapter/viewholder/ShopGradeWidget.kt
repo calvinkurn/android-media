@@ -110,12 +110,12 @@ class ShopGradeWidget(
     }
 
     private fun getEndOfTenureDate(element: WidgetShopGradeUiModel): String {
-        val endOfTenureDays = 90
+        val endOfTenureDays = 90L
         val shopAge = element.shopAge
         val nowMillis = Date().time
         val remainingDays = endOfTenureDays.minus(shopAge)
         return if (remainingDays < endOfTenureDays) {
-            val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays.toLong())
+            val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays)
             val endOfTenureMillis = nowMillis.plus(remainingDaysMillis)
             DateFormatUtils.getFormattedDate(endOfTenureMillis, DATE_FORMAT)
         } else {
