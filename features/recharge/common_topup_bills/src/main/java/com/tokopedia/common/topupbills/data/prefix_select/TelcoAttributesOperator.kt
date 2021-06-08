@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.data
+package com.tokopedia.common.topupbills.data.prefix_select
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -15,5 +15,5 @@ data class TelcoAttributesOperator(
         val imageUrl: String = "",
         @SerializedName("default_product_id")
         @Expose
-        val defaultProductId: Int = 0
+        val defaultProductId: String = "0"
 )
