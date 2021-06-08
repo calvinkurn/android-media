@@ -670,5 +670,49 @@
                 android:text="ALWAYS_NEW_BALANCE_WIDGET" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:id="@+id/btn_always_old_inbox"
+                android:text="Always Old Inbox" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:id="@+id/btn_always_new_inbox"
+                android:text="Always New Inbox" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:id="@+id/btn_always_old_notifcenter"
+                android:text="Always Old Notifcenter" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:id="@+id/btn_always_new_notifcenter"
+                android:text="Always New Notifcenter" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
