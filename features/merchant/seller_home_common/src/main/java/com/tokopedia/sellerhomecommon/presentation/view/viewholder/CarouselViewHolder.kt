@@ -87,12 +87,15 @@ class CarouselViewHolder(
             tvCarouselBannerTitle.text = element.title
             tvCarouselBannerTitle.visible()
         }
-        if (element.isEmpty()) {
-            setupEmptyState(element)
+        if (element.data?.items.isNullOrEmpty()) {
+            if (element.shouldShowEmptyStateIfEmpty()) {
+                setupEmptyState(element)
+            } else {
+                itemView.gone()
+                listener.removeWidget(adapterPosition, element)
+            }
         } else {
             setupCarousel(element)
-            itemView.gone()
-            listener.removeWidget(adapterPosition, element)
         }
     }
 
@@ -186,10 +189,9 @@ class CarouselViewHolder(
         }
     }
 
-    private fun CarouselWidgetUiModel.isEmpty(): Boolean =
-            data?.items.isNullOrEmpty() && isShowEmpty && emptyState.title.isNotBlank()
-                    && emptyState.description.isNotBlank() && emptyState.ctaText.isNotBlank()
-                    && emptyState.appLink.isNotBlank()
+    private fun CarouselWidgetUiModel.shouldShowEmptyStateIfEmpty(): Boolean =
+            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
+                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
 
     interface Listener : BaseViewHolderListener {
 
