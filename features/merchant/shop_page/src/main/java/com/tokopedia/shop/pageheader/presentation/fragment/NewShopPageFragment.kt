@@ -1086,9 +1086,7 @@ class NewShopPageFragment :
     override fun onPrepareOptionsMenu(menu: Menu) {
         context?.let {
             val userSession = UserSession(it)
-            if (GlobalConfig.isSellerApp() || (remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true) == false)) {
-                menu.removeItem(R.id.action_cart)
-            } else if (userSession.isLoggedIn) {
+            if (userSession.isLoggedIn) {
                 showCartBadge(menu)
             }
         }
