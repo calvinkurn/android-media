@@ -18,7 +18,7 @@ class PeriodDetailPerformanceViewHolder(view: View) :
 
     override fun bind(element: PeriodDetailPerformanceUiModel?) {
         with(itemView) {
-            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            containerSectionDetailPerformance?.setBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_penalty_dms_container))
             tvPerformanceDetailLabel?.text = getString(R.string.title_detail_performa, element?.period.orEmpty())
             tvPerformanceDetailDate?.text = getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
 

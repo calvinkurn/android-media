@@ -7,7 +7,7 @@
         <activity
             android:name="com.tokopedia.shop.score.detail_old.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shopscore"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -23,7 +23,7 @@
         <activity
             android:name=".performance.presentation.activity.ShopPerformancePageActivity"
             android:label="@string/title_shop_performance"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -38,12 +38,12 @@
         </activity>
 
         <activity android:name=".performance.presentation.activity.ShopPerformanceYoutubeActivity"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.WhiteUnify"/>
 
         <activity
             android:name=".penalty.presentation.activity.ShopPenaltyPageActivity"
             android:label="@string/title_penalty_shop_score"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -60,7 +60,7 @@
         <activity
             android:name=".penalty.presentation.activity.ShopPenaltyDetailPageActivity"
             android:label="@string/title_penalty_detail_shop_score"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
