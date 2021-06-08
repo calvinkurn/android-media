@@ -79,14 +79,8 @@ class TokoMartHomeViewModel @Inject constructor(
         _homeLayoutList.value = Success(data)
     }
 
-    fun getEmptyStateNoAddress() {
-        layoutList = addEmptyStateIntoList(HomeStaticLayoutId.EMPTY_STATE_NO_ADDRESS)
-        val data = HomeLayoutListUiModel(layoutList)
-        _homeLayoutList.value = Success(data)
-    }
-
-    fun getEmptyStateFailedToFetchData() {
-        layoutList = addEmptyStateIntoList(HomeStaticLayoutId.EMPTY_STATE_FAILED_TO_FETCH_DATA)
+    fun getEmptyState(id: String) {
+        layoutList = addEmptyStateIntoList(id)
         val data = HomeLayoutListUiModel(layoutList)
         _homeLayoutList.value = Success(data)
     }

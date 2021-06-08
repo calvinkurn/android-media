@@ -49,6 +49,8 @@ import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokomart.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokomart.common.view.TokoNowView
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokomart.home.constant.TokoNowConstant.SHOP_ID
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
 import com.tokopedia.tokomart.home.domain.model.Data
@@ -109,7 +111,6 @@ class TokoMartHomeFragment: Fragment(),
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
-    private var isRefreshChooseAddressWidget = false
     private var movingPosition = 0
 
     private val homeMainToolbarHeight: Int
@@ -147,7 +148,6 @@ class TokoMartHomeFragment: Fragment(),
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
 
     override fun refreshLayoutPage() = onRefreshLayout()
-
 
     override fun onAttach(context: Context) {
         initInjector()
@@ -196,27 +196,21 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun checkStateNotInServiceArea() {
         context?.let {
+            checkIfChooseAddressWidgetDataUpdated()
             if (localCacheModel?.shop_id.toIntOrZero() == 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
-                checkIfChooseAddressWidgetDataUpdated()
                 // after this then what to do?
             } else if (localCacheModel?.shop_id.toIntOrZero() != 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
-                showEmptyStateNoAddress()
+                showEmptyState(EMPTY_STATE_NO_ADDRESS)
             } else {
                 showLayout()
             }
         }
     }
 
-    private fun showEmptyStateNoAddress() {
+    private fun showEmptyState(id: String) {
         hideHeaderBackground()
         rvLayoutManager?.setScrollEnabled(false)
-        viewModel.getEmptyStateNoAddress()
-    }
-
-    private fun showEmptyStateFailedToFetchData() {
-        hideHeaderBackground()
-        rvLayoutManager?.setScrollEnabled(false)
-        viewModel.getEmptyStateFailedToFetchData()
+        viewModel.getEmptyState(id)
     }
 
     private fun showLayout() {
@@ -382,7 +376,7 @@ class TokoMartHomeFragment: Fragment(),
             if (it is Success) {
                 loadHomeLayout(it.data)
             } else {
-                showEmptyStateFailedToFetchData()
+                showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
             }
             resetSwipeLayout()
         }
@@ -454,8 +448,7 @@ class TokoMartHomeFragment: Fragment(),
                         it
                 )
                 if (isUpdated) {
-                    isRefreshChooseAddressWidget = !isRefreshChooseAddressWidget
-                    adapter.updateHomeChooseAddressWidget(isRefreshChooseAddressWidget)
+                    updateCurrentPageLocalCacheModelData()
                 }
             }
         }
@@ -472,12 +465,8 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
-        localCacheModel = getWidgetUserAddressLocalData(context)
-    }
-
-    private fun getWidgetUserAddressLocalData(context: Context?): LocalCacheModel? {
-        return context?.let{
-            ChooseAddressUtils.getLocalizingAddressData(it)
+        context?.let {
+            localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
 
