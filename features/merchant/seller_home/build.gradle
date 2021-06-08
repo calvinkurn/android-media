@@ -54,7 +54,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.pocNewRelic)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.webview)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)

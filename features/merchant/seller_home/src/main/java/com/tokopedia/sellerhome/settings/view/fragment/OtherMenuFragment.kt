@@ -64,7 +64,6 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.webview.KEY_ALLOW_OVERRIDE
 import kotlinx.android.synthetic.main.fragment_other_menu.*
 import javax.inject.Inject
 
@@ -72,7 +71,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     companion object {
         private const val APPLINK_FORMAT = "%s?url=%s"
-        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?${KEY_ALLOW_OVERRIDE}=%b&url=%s"
+        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
