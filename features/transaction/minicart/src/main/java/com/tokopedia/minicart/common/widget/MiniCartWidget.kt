@@ -335,6 +335,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     override fun onMiniCartListBottomSheetDismissed() {
         viewModel?.getLatestMiniCartData()?.let {
+            updateData(it.miniCartWidgetData)
             miniCartWidgetListener?.onCartItemsUpdated(it)
         }
     }
