@@ -1,6 +1,5 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
-import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
