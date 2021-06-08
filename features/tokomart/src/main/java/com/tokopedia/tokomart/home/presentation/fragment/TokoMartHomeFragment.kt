@@ -193,7 +193,7 @@ class TokoMartHomeFragment: Fragment(),
             .inject(this)
     }
 
-    private fun checkStateNotInServiceArea(shopId: Long, warehouseId: Long) {
+    private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
         context?.let {
             when {
                 shopId == 0L -> {
@@ -390,7 +390,6 @@ class TokoMartHomeFragment: Fragment(),
         observe(viewModel.chooseAddress) {
             if (it is Success) {
                 checkStateNotInServiceArea(
-                        shopId = it.data.tokonow.shopId,
                         warehouseId = it.data.tokonow.warehouseId
                 )
             } else {
