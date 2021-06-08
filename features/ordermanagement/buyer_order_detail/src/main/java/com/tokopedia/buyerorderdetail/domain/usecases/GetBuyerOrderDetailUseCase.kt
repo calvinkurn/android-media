@@ -78,6 +78,8 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   total_price
                   total_price_text
                   notes
+                  category
+                  category_id
                   button {
                     key
                     display_name

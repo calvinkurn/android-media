@@ -164,11 +164,11 @@ class BuyerOrderDetailViewModel @Inject constructor(
         } else ""
     }
 
-    fun getShopType(): String {
+    fun getShopType(): Int {
         val buyerOrderDetailResult = _buyerOrderDetailResult.value
         return if (buyerOrderDetailResult is Success) {
             buyerOrderDetailResult.data.productListUiModel.productListHeaderUiModel.shopType
-        } else ""
+        } else 0
     }
 
     fun getCurrencyCode(): String {

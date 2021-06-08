@@ -214,7 +214,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 orderId = orderId,
                 shopBadgeUrl = shop.badgeUrl,
                 shopName = shop.shopName,
-                shopType = orderShopType.shopTypeName,
+                shopType = orderShopType.shopType,
                 shopId = shop.shopId,
                 orderStatusId = orderStatusId
         )

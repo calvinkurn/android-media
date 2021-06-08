@@ -46,7 +46,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     val userId = "10001"
     val shopId = "10002"
     val shopName = "Test Toko"
-    val shopType = "Shop Type Test"
+    val shopType = 10
     val rupiahCurrencyCode = "Rp"
 
     val product = ProductListUiModel.ProductUiModel(
@@ -63,7 +63,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     url = ""
             ),
             category = "Pakaian Atas",
-            categoryId = "10",
+            categoryId = 10,
             orderDetailId = "20531238",
             orderStatusId = "220",
             orderId = "166835036",

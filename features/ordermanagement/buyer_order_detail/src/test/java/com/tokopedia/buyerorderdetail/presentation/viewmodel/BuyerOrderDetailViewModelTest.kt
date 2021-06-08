@@ -4,7 +4,6 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -254,10 +253,10 @@ class BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
     }
 
     @Test
-    fun `getShopType should return empty shop type when getBuyerOrderDetail result is fail`() {
+    fun `getShopType should return 0 shop type when getBuyerOrderDetail result is fail`() {
         createFailedBuyerOrderDetailResult()
         val returnedShopType = viewModel.getShopType()
-        assert(returnedShopType.isBlank())
+        assert(returnedShopType == 0)
     }
 
     @Test
