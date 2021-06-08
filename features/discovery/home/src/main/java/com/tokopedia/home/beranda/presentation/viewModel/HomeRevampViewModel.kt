@@ -962,10 +962,18 @@ open class HomeRevampViewModel @Inject constructor(
 
     }
 
-    private inline fun <reified T> findWidgetList(actionOnFound: (List<T>) -> Unit) {
-        homeDataModel.list.withIndex().filterIsInstance<T>().let {
-            actionOnFound.invoke(it)
+    private inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
+        val listFound = mutableListOf<IndexedValue<T>>()
+        homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            it.forEach { indexedValue ->
+                if (indexedValue.value is T) {
+                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
+                        listFound.add(findValue)
+                    }
+                }
+            }
         }
+        actionOnFound.invoke(listFound)
     }
 
     private inline fun <reified T> widgetIsAvailable(predicate: (T) -> Boolean = {true}): Boolean {
@@ -1310,20 +1318,25 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getDisplayTopAdsHeader(){
-        findWidget<FeaturedShopDataModel> { featuredShopDataModel, index ->
-            launchCatchError(coroutineContext, block={
-                getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
-                val data = getDisplayHeadlineAds.get().executeOnBackground()
-                if(data.isEmpty()){
-                    deleteWidget(featuredShopDataModel, index)
-                } else {
-                    updateWidget(featuredShopDataModel.copy(
+        findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
+            indexedFeaturedShopModelList.forEach { model ->
+                val featuredShopDataModel = model.value
+                val index = model.index
+
+                launchCatchError(coroutineContext, block={
+                    getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
+                    val data = getDisplayHeadlineAds.get().executeOnBackground()
+                    if(data.isEmpty()){
+                        deleteWidget(featuredShopDataModel, index)
+                    } else {
+                        updateWidget(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
-                                    channelGrids = mappingTopAdsHeaderToChannelGrid(data)
+                                channelGrids = mappingTopAdsHeaderToChannelGrid(data)
                             )), index)
+                    }
+                }){
+                    deleteWidget(featuredShopDataModel, index)
                 }
-            }){
-                deleteWidget(featuredShopDataModel, index)
             }
         }
     }
