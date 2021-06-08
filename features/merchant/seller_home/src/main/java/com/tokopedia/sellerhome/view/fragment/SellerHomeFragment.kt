@@ -335,9 +335,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickCarouselCtaEvent(dataKey)
     }
 
-    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {
-        // TODO: Add tracking
-    }
+    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
 
     override fun sendDescriptionImpressionEvent(descriptionTitle: String) {
         SellerHomeTracking.sendImpressionDescriptionEvent(descriptionTitle)
@@ -661,7 +659,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
-        // TODO: Add tracking
+        SellerHomeTracking.sendPieChartEmptyStateCtaClickEvent(model)
     }
 
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {

@@ -82,6 +82,7 @@ object TrackingConstant {
     const val CLICK_WIDGET_ADVANCE_TABLE = "click widget advance table"
     const val CLICK_WIDGET_SIMPLE_TABLE = "click widget simple table"
     const val CLICK_WIDGET_BAR_CHART = "click widget bar chart"
+    const val CLICK_WIDGET_PIE_CHART = "click widget pie chart"
 
     //search
     const val CLICK_SEARCH = "clickSearch"
