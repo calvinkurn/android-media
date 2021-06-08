@@ -57,7 +57,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private fun getFinishOrderActionStatus(): String {
         val statusId = getOrderStatusId()
-        return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < 600) BuyerOrderDetailConst.ACTION_FINISH_ORDER else ""
+        return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < BuyerOrderDetailConst.STATUS_CODE_ORDER_DELIVERED) BuyerOrderDetailConst.ACTION_FINISH_ORDER else ""
     }
 
     private fun getOrderStatusId(): String {
