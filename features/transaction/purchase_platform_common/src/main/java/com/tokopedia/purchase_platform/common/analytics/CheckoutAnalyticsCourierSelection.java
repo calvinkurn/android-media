@@ -658,6 +658,18 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendGeneralEvent(gtmMap);
     }
 
+    public void eventViewTickerPaymentLevelErrorInCheckoutPage(String errorMessage) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_TICKER_PAYMENT_LEVEL_ERROR_IN_CHECKOUT_PAGE,
+                errorMessage
+        );
+        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        sendGeneralEvent(gtmMap);
+    }
+
     public void eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(String shopId, String errorMessage) {
         Map<String, Object> gtmMap = TrackAppUtils.gtmData(
                 EventName.CLICK_COURIER,

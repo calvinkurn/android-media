@@ -3,12 +3,13 @@ package com.tokopedia.checkout.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
 
-class ShipmentTickerErrorViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class ShipmentTickerErrorViewHolder(itemView: View, val listener: ShipmentAdapterActionListener): RecyclerView.ViewHolder(itemView) {
 
     internal var data: ShipmentTickerErrorModel = ShipmentTickerErrorModel()
     private val ticker: Ticker? = itemView.findViewById(R.id.shipment_ticker_error)
@@ -25,7 +26,10 @@ class ShipmentTickerErrorViewHolder(itemView: View): RecyclerView.ViewHolder(ite
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
                 ticker?.requestLayout()
             }
-            // todo analytics
+            if (!shipmentTickerErrorModel.hasShown) {
+                listener.onViewTickerPaymentError(shipmentTickerErrorModel.errorMessage)
+                shipmentTickerErrorModel.hasShown = true
+            }
         }
     }
 

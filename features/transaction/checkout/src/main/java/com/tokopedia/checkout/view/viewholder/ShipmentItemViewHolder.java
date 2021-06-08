@@ -476,7 +476,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             final String errorMessage = itemView.getContext().getString(R.string.checkout_disabled_items_description, shipmentCartItemModel.getProductErrorCount());
             customTickerDescription.setText(errorMessage);
             customTickerAction.setOnClickListener(v -> {
-                // todo analytics
                 mActionListener.onClickLihatOnTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
                 if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
                     shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
@@ -489,7 +488,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
                 scrollToErrorProduct(shipmentCartItemModel);
             }
-            // todo analytics
             if (!shipmentCartItemModel.isHasShownErrorTicker()) {
                 mActionListener.onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
                 shipmentCartItemModel.setHasShownErrorTicker(true);
@@ -987,7 +985,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSingleShippingMessage.setText(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));
             labelSingleShippingMessage.setVisibility(View.VISIBLE);
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() == null && !shipmentCartItemModel.isHasShownCourierError()) {
-                // todo analytics
                 mActionListener.onViewErrorInCourierSection(selectedCourierItemData.getLogPromoDesc());
                 shipmentCartItemModel.setHasShownErrorTicker(true);
             }
@@ -1053,7 +1050,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 loadCourierStateData(shipmentCartItemModel, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE, tmpShipmentDetailData, position);
-                //todo analytics
                 mActionListener.onClickRefreshErrorLoadCourier();
             }
         });

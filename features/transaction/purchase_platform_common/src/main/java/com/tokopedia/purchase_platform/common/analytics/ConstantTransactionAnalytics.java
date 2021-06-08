@@ -524,6 +524,7 @@ public interface ConstantTransactionAnalytics {
         // Checkout TokoNow
         String VIEW_TICKER_PRODUCT_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker product level error in checkout page";
         String VIEW_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker order level error in checkout page";
+        String VIEW_TICKER_PAYMENT_LEVEL_ERROR_IN_CHECKOUT_PAGE = "view ticker payment level error in checkout page";
         String CLICK_LIHAT_ON_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE = "click lihat on ticker order level error in checkout page";
         String CLICK_REFRESH_WHEN_ERROR_LOAD_COURIER = "click refresh when error load courier";
         String VIEW_ERROR_IN_COURIER_SECTION = "view error in courier section";

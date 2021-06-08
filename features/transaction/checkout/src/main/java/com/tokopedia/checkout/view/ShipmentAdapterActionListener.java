@@ -117,6 +117,8 @@ public interface ShipmentAdapterActionListener {
 
     void onViewTickerOrderError(String shopId, String errorMessage);
 
+    void onViewTickerPaymentError(String errorMessage);
+
     void onClickLihatOnTickerOrderError(String shopId, String errorMessage);
 
     void onClickRefreshErrorLoadCourier();
