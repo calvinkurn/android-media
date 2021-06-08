@@ -15,11 +15,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressbarPm"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginTop="-6dp"
         android:max="100"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +50,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <CheckBox
+            <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,13 +59,13 @@
                 android:theme="@style/PmCheckbox"
                 android:checked="false" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pm_terms_agree" />
         </LinearLayout>
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/activateBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

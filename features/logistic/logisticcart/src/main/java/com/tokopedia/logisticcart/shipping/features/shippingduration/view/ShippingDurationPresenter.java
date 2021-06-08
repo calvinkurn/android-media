@@ -149,7 +149,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                                 }
                                             }
                                         }
-                                        view.showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
+                                        view.showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo(), shippingRecommendationData.getPreOrderModel());
                                         view.stopTrace();
                                     } else {
                                         view.showNoCourierAvailable(view.getActivity().getString(R.string.label_no_courier_bottomsheet_message));

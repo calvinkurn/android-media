@@ -73,7 +73,7 @@ fun Typography?.setTextOrGone(text: String) {
 }
 
 // Action listener for edittext inside the recyclerView
-// https://stackoverflow.com/questions/13614101/fatal-crash-focus-search-returned-a-view-that-wasnt-able-to-take-focus/49433332#49433332
+// https://stackoverflow.com/questions/13614101/fatal-crash-focus-search-returned-a-view-that-wasnt-able-to-take-focus/49433332
 fun TextFieldUnify?.setRecyclerViewEditorActionListener() {
     this?.textFieldInput?.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, event ->
         if (actionId == EditorInfo.IME_ACTION_NEXT) {

@@ -63,6 +63,7 @@ class SrwLinearLayout : FrameLayout {
     interface Listener {
         fun onRetrySrw()
         fun trackViewSrw()
+        fun onExpandStateChanged(isExpanded: Boolean)
     }
 
     constructor(context: Context) : super(context)
@@ -162,6 +163,7 @@ class SrwLinearLayout : FrameLayout {
         titleContainer?.setOnClickListener {
             isExpanded = !isExpanded
             updateState()
+            listener?.onExpandStateChanged(isExpanded)
         }
     }
 

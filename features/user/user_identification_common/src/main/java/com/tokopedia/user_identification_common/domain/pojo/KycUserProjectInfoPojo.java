@@ -46,6 +46,10 @@ public class KycUserProjectInfoPojo {
         @SerializedName("TypeList")
         private ArrayList<TypeList> typeLists;
 
+        @Expose
+        @SerializedName("IsSelfie")
+        private Boolean isSelfie;
+
         public Integer getStatus() {
             return status;
         }
@@ -93,6 +97,8 @@ public class KycUserProjectInfoPojo {
         public void setTypeLists(ArrayList<TypeList> typeLists) {
             this.typeLists = typeLists;
         }
+
+        public boolean isSelfie() { return isSelfie; }
     }
 
     public class TypeList {

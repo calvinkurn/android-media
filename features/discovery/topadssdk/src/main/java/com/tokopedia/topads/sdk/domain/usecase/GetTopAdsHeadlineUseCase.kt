@@ -43,6 +43,9 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
           city
           domain
           is_followed
+          gold_shop
+          shop_is_official
+          pm_pro_shop
           merchant_vouchers
           product {
             id

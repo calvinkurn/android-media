@@ -44,6 +44,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAtta
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
+import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
@@ -54,6 +55,7 @@ import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.websocket.WebSocketResponse
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -452,6 +454,21 @@ abstract class TopchatRoomTest {
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
                 position, R.id.img_sr_blue_dot
         )).check(matches(visibilityMatcher))
+    }
+
+    protected fun assertKeyboardIsVisible() {
+        val isKeyboardOpened = isKeyboardOpened()
+        assertThat(isKeyboardOpened, `is`(true))
+    }
+
+    protected fun assertKeyboardIsNotVisible() {
+        val isKeyboardOpened = isKeyboardOpened()
+        assertThat(isKeyboardOpened, `is`(false))
+    }
+
+    protected fun isKeyboardOpened(): Boolean {
+        val rootView = activity.findViewById<View>(R.id.main)
+        return isKeyboardOpened(rootView)
     }
 
     protected fun generateTemplateResponse(

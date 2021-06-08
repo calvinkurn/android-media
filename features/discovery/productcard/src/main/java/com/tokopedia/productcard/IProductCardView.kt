@@ -16,4 +16,6 @@ interface IProductCardView {
     fun getThreeDotsButton(): View?
 
     fun getNotifyMeButton(): UnifyButton?
+
+    fun getShopBadgeView(): View?
 }

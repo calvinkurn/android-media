@@ -29,6 +29,7 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -57,6 +58,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -580,21 +583,27 @@ class ProductListFragment: BaseDaggerFragment(),
         return if (pageTitle.isEmpty()) keyword else pageTitle
     }
 
-    override fun showNetworkError(startRow: Int) {
+    override fun showNetworkError(startRow: Int, throwable: Throwable?) {
         val productListAdapter = productListAdapter ?: return
 
         if (productListAdapter.isListEmpty())
-            showNetworkErrorOnEmptyList()
+            showNetworkErrorOnEmptyList(throwable)
         else
-            showNetworkErrorOnLoadMore()
+            showNetworkErrorOnLoadMore(throwable)
     }
 
-    private fun showNetworkErrorOnEmptyList() {
+    private fun showNetworkErrorOnEmptyList(throwable: Throwable?) {
         hideViewOnError()
-
-        NetworkErrorHelper.showEmptyState(activity, view) {
-            refreshLayout?.visible()
-            reloadData()
+        if (throwable != null) {
+            NetworkErrorHelper.showEmptyState(activity,view, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
+                refreshLayout?.visible()
+                reloadData()
+            }
+        } else {
+            NetworkErrorHelper.showEmptyState(activity, view) {
+                refreshLayout?.visible()
+                reloadData()
+            }
         }
     }
 
@@ -604,13 +613,19 @@ class ProductListFragment: BaseDaggerFragment(),
         refreshLayout?.gone()
     }
 
-    private fun showNetworkErrorOnLoadMore() {
+    private fun showNetworkErrorOnLoadMore(throwable: Throwable?) {
         val searchParameter = searchParameter ?: return
-
-        NetworkErrorHelper.createSnackbarWithAction(activity) {
-            addLoading()
-            presenter?.loadMoreData(searchParameter.getSearchParameterMap())
-        }.showRetrySnackbar()
+        if (throwable!= null) {
+            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
+                addLoading()
+                presenter?.loadMoreData(searchParameter.getSearchParameterMap())
+            }
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity) {
+                addLoading()
+                presenter?.loadMoreData(searchParameter.getSearchParameterMap())
+            }.showRetrySnackbar()
+        }
     }
 
     private fun getScreenNameId() = SCREEN_SEARCH_PAGE_PRODUCT_TAB
@@ -1482,6 +1497,18 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
+    override fun showPowerMerchantProPopUp() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
+            dialog.setTitle(getString(R.string.search_power_merchant_pro_title))
+            dialog.setDescription(getString(R.string.search_power_merchant_pro_desc))
+            dialog.setPrimaryCTAText(getString(R.string.search_power_merchant_pro_button_text))
+            dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+            dialog.setImageUrl(SearchConstant.ImageUrl.POWER_MERCHANT_PRO_ILLUSTRATION_URL)
+            dialog.show()
+        }
+    }
+
     override val abTestRemoteConfig: RemoteConfig?
         get() = RemoteConfigInstance.getInstance().abTestPlatform
 
@@ -1514,9 +1541,9 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (isWishlisted)
-            Toaster.build(view, getString(R.string.msg_add_wishlist_failed), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_add_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
         else
-            Toaster.build(view, getString(R.string.msg_remove_wishlist_failed), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
     }
 
     override val isLandingPage: Boolean

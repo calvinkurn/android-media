@@ -256,6 +256,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_flight_cancellation_navigation</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_customer_hotel_show_promo</key>
         <value>true</value>
     </entry>
