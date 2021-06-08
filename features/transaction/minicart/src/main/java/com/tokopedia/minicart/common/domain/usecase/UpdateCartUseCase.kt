@@ -19,9 +19,9 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartV2Data>() {
 
     private var params: Map<String, Any?>? = null
-    private var isFromMiniCartBottomSheet: Boolean = false
+    private var isFromMiniCartWidget: Boolean = false
 
-    fun setParams(miniCartItemList: List<MiniCartItem>) {
+    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false) {
         val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
         miniCartItemList.forEach {
@@ -35,7 +35,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         mapParams(updateCartRequestList)
-        isFromMiniCartBottomSheet = false
+        this.isFromMiniCartWidget = isFromMiniCartWidget
     }
 
     fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>) {
@@ -52,7 +52,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         mapParams(updateCartRequestList)
-        isFromMiniCartBottomSheet = true
+        isFromMiniCartWidget = true
     }
 
     private fun mapParams(updateCartRequestList: MutableList<UpdateCartRequest>) {
@@ -72,7 +72,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
         return if (response.updateCartData.status == "OK") {
-            if (isFromMiniCartBottomSheet) {
+            if (isFromMiniCartWidget) {
                 response.updateCartData
             } else {
                 if (response.updateCartData.data.status) {

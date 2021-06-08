@@ -215,7 +215,7 @@ class MiniCartProductViewHolder(private val view: View,
     private fun renderProductInformation(element: MiniCartProductUiModel) {
         val tmpProductInformation = element.productInformation.toMutableList()
         if (element.productWholeSalePrice > 0) {
-            val wholesaleLabel = "Harga Grosir"
+            val wholesaleLabel = layoutProductInfo?.context?.getString(R.string.mini_cart_label_wholesale_price) ?: ""
             tmpProductInformation.add(wholesaleLabel)
         }
         if (tmpProductInformation.isNotEmpty()) {

@@ -40,7 +40,7 @@ class MiniCartListDiffUtilCallback(private val oldList: List<Any>,
             oldItem is MiniCartTickerWarningUiModel && newItem is MiniCartTickerWarningUiModel -> oldItem == newItem
             oldItem is MiniCartUnavailableHeaderUiModel && newItem is MiniCartUnavailableHeaderUiModel -> oldItem == newItem
             oldItem is MiniCartUnavailableReasonUiModel && newItem is MiniCartUnavailableReasonUiModel -> oldItem == newItem
-            else -> oldItem == newItem
+            else -> false
         }
     }
 

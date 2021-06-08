@@ -24,7 +24,7 @@ class SummaryTransactionBottomSheet @Inject constructor() {
         bottomSheet.showKnob = true
         bottomSheet.showCloseIcon = false
         bottomSheet.showHeader = true
-        bottomSheet.setTitle("Ringkasan belanja")
+        bottomSheet.setTitle(context.getString(R.string.mini_cart_title_summary_transaction))
 
         val view = View.inflate(context, R.layout.layout_bottomsheet_mini_cart_summary_transaction, null)
         textPriceTotalTitle = view.findViewById(R.id.text_price_total_title)

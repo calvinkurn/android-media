@@ -23,7 +23,8 @@ class MiniCartUnavailableHeaderViewHolder(private val view: View,
     }
 
     override fun bind(element: MiniCartUnavailableHeaderUiModel) {
-        textDisabledItemCount?.text = "Tidak bisa diproses (${element.unavailableItemCount})"
+        val message = textDisabledItemCount?.context?.getString(R.string.mini_cart_title_unavailable_header, element.unavailableItemCount) ?: ""
+        textDisabledItemCount?.text = message
         textDelete?.setOnClickListener {
             listener.onBulkDeleteUnavailableItems()
         }
