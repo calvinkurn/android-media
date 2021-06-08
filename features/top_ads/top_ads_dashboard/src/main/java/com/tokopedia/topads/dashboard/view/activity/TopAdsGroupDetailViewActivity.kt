@@ -56,7 +56,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
     private var groupId: Int? = 0
-    private var priceSpent: String? = ""
+    private var priceSpent: String? = "0"
     private var groupStatus: String? = ""
     private var groupName: String? = ""
     private var autoBidStatus: String = ""
@@ -202,13 +202,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily)
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
-            try {
-                priceSpent = null
-                Utils.convertMoneyToValue(priceSpent ?: "0").let {
-                    progress_bar.setValue(it, false)
-                }
-            } catch (e: NumberFormatException) {
-                e.printStackTrace()
+            Utils.convertMoneyToValue(priceSpent ?: "0").let {
+                progress_bar.setValue(it, false)
             }
         }
         renderTabAndViewPager()

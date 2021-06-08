@@ -27,6 +27,7 @@ android {
                     pathSources + 'reviewdetail',
                     pathSources + 'reviewlist',
                     pathSources + 'reviewreply',
+                    pathSources + 'createreputation',
             ]
         }
     }
@@ -43,6 +44,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.inboxCommon)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.mediauploader)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.sellerMigrationCommon)

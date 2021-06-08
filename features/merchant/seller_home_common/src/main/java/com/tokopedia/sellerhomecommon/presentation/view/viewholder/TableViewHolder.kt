@@ -6,14 +6,18 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
 import kotlinx.android.synthetic.main.shc_widget_table.view.*
 
@@ -31,7 +35,10 @@ class TableViewHolder(
         val RES_LAYOUT = R.layout.shc_widget_table
     }
 
+    private val tableFilter: Typography? = itemView?.findViewById(R.id.filterShcTable)
+
     override fun bind(element: TableWidgetUiModel) {
+        itemView.visible()
         itemView.tvTableWidgetTitle.text = element.title
         itemView.tvTableWidgetTitle.visible()
         itemView.commonWidgetErrorState.gone()
@@ -56,6 +63,7 @@ class TableViewHolder(
 
             val dataSet = element.data?.dataSet.orEmpty()
             if (dataSet.isNotEmpty()) {
+                setupTableFilter(element)
                 if (dataSet[0].rows.isEmpty()) {
                     setOnTableEmpty(element)
                 } else {
@@ -66,8 +74,8 @@ class TableViewHolder(
                     btnShcTableEmpty.gone()
                     shcTableView.visible()
                     shcTableView.showTable(element.data?.dataSet.orEmpty())
-                    shcTableView.addOnSlideImpressionListener { position, isEmpty ->
-                        listener.sendTableImpressionEvent(element, position, isEmpty)
+                    shcTableView.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
+                        listener.sendTableImpressionEvent(element, position, maxPosition, isEmpty)
                     }
                     shcTableView?.addOnHtmlClickListener { url, isEmpty ->
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
@@ -77,6 +85,7 @@ class TableViewHolder(
                 if (element.isShowEmpty) {
                     setOnTableEmpty(element)
                 } else {
+                    hide()
                     listener.removeWidget(adapterPosition, element)
                 }
             }
@@ -115,7 +124,7 @@ class TableViewHolder(
             tvShcTableOnEmpty.visible()
         }
         shcTableView.gone()
-        listener.sendTableImpressionEvent(element, 0, true)
+        listener.sendTableImpressionEvent(element, 0, 0, true)
     }
 
     private fun showLoadingState() = with(itemView) {
@@ -161,6 +170,33 @@ class TableViewHolder(
         }
     }
 
+    private fun setupTableFilter(element: TableWidgetUiModel) {
+        val isFilterAvailable = element.tableFilters.isNotEmpty()
+        if (isFilterAvailable) {
+            val selectedFilter = element.tableFilters.find { it.isSelected }
+            tableFilter?.run {
+                visible()
+                setupTableFilterImpressionListener(element)
+                text = selectedFilter?.name.orEmpty()
+                setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
+                setOnClickListener {
+                    listener.showTableFilter(element, adapterPosition)
+                    listener.sendTableFilterClick(element)
+                }
+            }
+        } else {
+            tableFilter?.gone()
+        }
+    }
+
+    private fun setupTableFilterImpressionListener(element: TableWidgetUiModel) {
+        // We are using the widget impress holder as it is not used for any impression tracking purposes,
+        // while in fact, we are tracking the impression of filter options
+        itemView.addOnImpressionListener(element.impressHolder) {
+            listener.sendTableFilterImpression(element)
+        }
+    }
+
     private fun openAppLink(appLink: String, dataKey: String) {
         RouteManager.route(itemView.context, appLink)
     }
@@ -180,9 +216,12 @@ class TableViewHolder(
 
     interface Listener : BaseViewHolderListener {
 
-        fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {}
+        fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {}
         fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
         fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {}
+        fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {}
+        fun sendTableFilterClick(element: TableWidgetUiModel) {}
+        fun sendTableFilterImpression(element: TableWidgetUiModel) {}
 
     }
 }
