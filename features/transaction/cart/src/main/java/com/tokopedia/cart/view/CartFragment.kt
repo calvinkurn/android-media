@@ -1864,10 +1864,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun validateShowPopUpMessage(cartListData: CartListData) {
         if (cartListData.popupErrorMessage.isNotBlank()) {
             showToastMessageRed(cartListData.popupErrorMessage)
+            // todo analytics -> shopId?
+            cartPageAnalytics.eventViewToasterErrorInCartPage(cartListData.popupErrorMessage)
         } else if (cartListData.popUpMessage.isNotBlank()) {
             showToastMessageGreen(cartListData.popUpMessage)
         }
-        // todo analytics -> shopId?
     }
 
     private fun setInitialCheckboxGlobalState(cartListData: CartListData) {

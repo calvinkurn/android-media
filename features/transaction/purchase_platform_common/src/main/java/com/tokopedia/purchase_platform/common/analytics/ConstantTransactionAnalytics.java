@@ -49,6 +49,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
         String VIEW_CART = "viewCart";
+        String VIEW_CART_IRIS = "viewCartIris";
         String CLICK_REGISTER = "clickRegister";
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
@@ -528,6 +529,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_LIHAT_ON_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE = "click lihat on ticker order level error in checkout page";
         String CLICK_REFRESH_WHEN_ERROR_LOAD_COURIER = "click refresh when error load courier";
         String VIEW_ERROR_IN_COURIER_SECTION = "view error in courier section";
+
+        // Cart TokoNow
+        String VIEW_TOASTER_ERROR_IN_CART_PAGE = "view toaster error in cart page";
     }
 
     interface EventLabel {

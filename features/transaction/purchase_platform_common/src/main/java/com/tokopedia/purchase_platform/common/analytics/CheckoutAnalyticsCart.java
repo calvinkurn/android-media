@@ -1261,4 +1261,16 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    // TokoNow
+
+    public void eventViewToasterErrorInCartPage(String errorMessage) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_CART_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_TOASTER_ERROR_IN_CART_PAGE,
+                errorMessage
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+    }
 }
