@@ -75,6 +75,7 @@ class LineGraphViewHolder(
      * */
     private fun observeState(element: LineGraphWidgetUiModel) {
         val data: LineGraphDataUiModel? = element.data
+        itemView.show()
         when {
             null == data -> {
                 showViewComponent(false, element)
@@ -146,9 +147,13 @@ class LineGraphViewHolder(
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendLineGraphImpressionEvent(element)
             }
-            if (showEmptyState) {
-                showEmptyState = true
-                setupEmptyState(element.emptyState)
+            if (element.isEmpty()) {
+                if (element.shouldShowEmptyStateIfEmpty()) {
+                    setupEmptyState(element.emptyState)
+                } else {
+                    itemView.gone()
+                    listener.removeWidget(adapterPosition, element)
+                }
             } else {
                 animateHideEmptyState()
             }
@@ -156,10 +161,15 @@ class LineGraphViewHolder(
     }
 
     private fun showEmpty(element: LineGraphWidgetUiModel): Boolean {
-        return element.isShowEmpty && element.data?.list?.all { it.yVal == 0f } == true &&
-                element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
-                element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
+        return element.isEmpty() && element.shouldShowEmptyStateIfEmpty()
     }
+
+    private fun LineGraphWidgetUiModel.isEmpty(): Boolean =
+            isShowEmpty && data?.list?.all { it.yVal == 0f } == true
+
+    private fun LineGraphWidgetUiModel.shouldShowEmptyStateIfEmpty(): Boolean =
+            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
+                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
 
     private fun setupEmptyState(emptyState: WidgetEmptyStateUiModel) {
         with(emptyState) {

@@ -56,6 +56,7 @@ class BarChartViewHolder(
         showAnimation?.end()
         hideAnimation?.end()
         with(itemView) {
+            show()
             tvShcBarChartTitle.text = element.title
         }
 
@@ -106,8 +107,13 @@ class BarChartViewHolder(
 
             showBarChart(element)
 
-            if (showEmptyState) {
-                setupEmptyState(element)
+            if (element.isEmpty()) {
+                if (element.shouldShowEmptyStateIfEmpty()) {
+                    setupEmptyState(element)
+                } else {
+                    itemView.gone()
+                    listener.removeWidget(adapterPosition, element)
+                }
             } else {
                 animateHideEmptyState()
             }
@@ -240,10 +246,16 @@ class BarChartViewHolder(
         }
     }
 
-    private fun showEmpty(element: BarChartWidgetUiModel?): Boolean {
-        return element != null && element.isShowEmpty && element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
-                element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
+    private fun showEmpty(element: BarChartWidgetUiModel): Boolean {
+        return element.isEmpty() && element.shouldShowEmptyStateIfEmpty()
     }
+
+    private fun BarChartWidgetUiModel.isEmpty(): Boolean = data == null || data?.shouldRemove() == true
+
+    private fun BarChartWidgetUiModel.shouldShowEmptyStateIfEmpty(): Boolean =
+            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
+                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
+
 
     private fun setupEmptyState(element: BarChartWidgetUiModel) {
         with(element.emptyState) {

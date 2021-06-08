@@ -55,6 +55,8 @@ class PieChartViewHolder(
     private fun observeState(element: PieChartWidgetUiModel) {
         val data = element.data
 
+        itemView.visible()
+
         when {
             data == null -> setOnLoading()
             data.error.isNotBlank() -> {
@@ -85,7 +87,12 @@ class PieChartViewHolder(
         emptyState?.gone()
 
         if (element.isEmpty()) {
-            showEmptyState(element)
+            if (element.shouldShowEmptyStateIfEmpty()) {
+                showEmptyState(element)
+            } else {
+                itemView.gone()
+                listener.removeWidget(adapterPosition, element)
+            }
         } else {
             setupPieChart(element)
         }
@@ -144,9 +151,11 @@ class PieChartViewHolder(
     }
 
     private fun PieChartWidgetUiModel.isEmpty(): Boolean =
-            data?.data?.item.isNullOrEmpty() && isShowEmpty && emptyState.title.isNotBlank()
-                    && emptyState.description.isNotBlank() && emptyState.ctaText.isNotBlank()
-                    && emptyState.appLink.isNotBlank()
+            data?.data?.item.isNullOrEmpty()
+
+    private fun PieChartWidgetUiModel.shouldShowEmptyStateIfEmpty(): Boolean =
+            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
+                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
 
     private fun showEmptyState(element: PieChartWidgetUiModel) {
         with(itemView) {
