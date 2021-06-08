@@ -8,7 +8,7 @@ import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.flight.common.constant.FlightUrl
+import com.tokopedia.flight.common.constant_kotlin.FlightUrl.FLIGHT_PASSENGER_HELP_URL
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
@@ -34,14 +34,10 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
         super.onCreate(savedInstanceState)
     }
 
-    fun updateActivityTitle(title: String) {
-        updateTitle(title)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putParcelable(EXTRA_PASSENGER, passengerModel)
-        outState?.putString(EXTRA_SELECTED_PASSENGER_ID, selectedPassengerId)
+        outState.putParcelable(EXTRA_PASSENGER, passengerModel)
+        outState.putString(EXTRA_SELECTED_PASSENGER_ID, selectedPassengerId)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean = true
@@ -53,11 +49,11 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
                 luggageModels = intent.getParcelableArrayListExtra(EXTRA_LUGGAGES),
                 mealModels = intent.getParcelableArrayListExtra(EXTRA_MEALS),
                 isAirAsiaAirlines = intent.getBooleanExtra(EXTRA_IS_AIRASIA, false),
-                depatureDate = intent.getStringExtra(EXTRA_DEPARTURE_DATE),
-                requestId = intent.getStringExtra(EXTRA_REQUEST_ID),
+                depatureDate = intent.getStringExtra(EXTRA_DEPARTURE_DATE) ?: "",
+                requestId = intent.getStringExtra(EXTRA_REQUEST_ID) ?: "",
                 isDomestic = intent.getBooleanExtra(EXTRA_IS_DOMESTIC, false),
                 returnId = intent.getStringExtra(EXTRA_RETURN),
-                autofillName = intent.getStringExtra(EXTRA_AUTOFILL_NAME))
+                autofillName = intent.getStringExtra(EXTRA_AUTOFILL_NAME) ?: "")
     }
 
     override fun getComponent(): FlightPassengerComponent {
@@ -67,7 +63,7 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
     }
 
     override fun navigateToHelpPage() {
-        RouteManager.route(this, FlightUrl.FLIGHT_PASSENGER_HELP_URL)
+        RouteManager.route(this, FLIGHT_PASSENGER_HELP_URL)
     }
 
     companion object {

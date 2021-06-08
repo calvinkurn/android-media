@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.flight.cancellation.data.FlightCancellationCloudDataSource;
-import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight.common.constant_kotlin.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
@@ -102,7 +102,7 @@ public class FlightModule {
     @FlightQualifier
     public Retrofit provideFlightRetrofit(OkHttpClient okHttpClient,
                                           @FlightQualifier Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(FlightUrl.BASE_URL).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(FlightUrl.INSTANCE.getBASE_URL()).client(okHttpClient).build();
     }
 
     @FlightScope

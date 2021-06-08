@@ -14,14 +14,12 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.travel.widget.TravelMenuBottomSheet;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.constant_kotlin.FlightUrl;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.flight.common.constant.FlightUrl.CONTACT_US_FLIGHT;
-import static com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLINK;
 
 /**
  * Created by alvarisi on 12/5/17.
@@ -81,11 +79,11 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity implements T
     }
 
     protected void navigateToAllPromoPage() {
-        RouteManager.route(this, FLIGHT_PROMO_APPLINK);
+        RouteManager.route(this, FlightUrl.FLIGHT_PROMO_APPLINK);
     }
 
     protected void navigateToHelpPage() {
-        RouteManager.route(this, CONTACT_US_FLIGHT);
+        RouteManager.route(this, FlightUrl.INSTANCE.getCONTACT_US_FLIGHT());
     }
 
     @Override
