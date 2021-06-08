@@ -314,7 +314,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val backGroundColorData = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
         val colorCount = backGroundColorData.split(",").size
         if (colorCount == 1) {
-            campaignRibbonType2View?.setBackgroundColor(Color.parseColor(backGroundColorData))
+            val backgroundColor = getBackgroundColor(backGroundColorData)
+            campaignRibbonType2View?.setBackgroundColor(backgroundColor)
         } else {
             val gradientDrawable = getGradientDrawableForBackGround(backGroundColorData)
             campaignRibbonType2View?.background = gradientDrawable
@@ -395,6 +396,14 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             timerView?.show()
         } catch (ex: Exception) {
             this.hide()
+        }
+    }
+
+    private fun getBackgroundColor(colorString: String): Int {
+        return try {
+            Color.parseColor(colorString)
+        } catch (ex: Exception) {
+            ContextCompat.getColor(context, R.color.product_detail_dms_default_green_bg_start_gradient_color)
         }
     }
 
