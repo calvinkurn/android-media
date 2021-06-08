@@ -27,6 +27,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     private val requestParams by lazy { requestParamsSlot.captured }
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
+    private val warehouseId = "2216"
     private val dummyChooseAddressData = LocalCacheModel(
             address_id = "123",
             city_id = "45",
@@ -34,6 +35,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
             lat = "10.2131",
             long = "12.01324",
             postal_code = "12345",
+            warehouse_id = warehouseId,
     )
 
     @Test
@@ -93,6 +95,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         parameters[SearchApiConst.USER_CITY_ID] shouldBe expectedChooseAddressData.city_id
         parameters[SearchApiConst.USER_DISTRICT_ID] shouldBe expectedChooseAddressData.district_id
         parameters[SearchApiConst.USER_POST_CODE] shouldBe expectedChooseAddressData.postal_code
+        parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe expectedChooseAddressData.warehouse_id
     }
 
     private fun `Then verify top of visitable list is choose address widget`() {
@@ -119,6 +122,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         parameters.shouldNotContain(SearchApiConst.USER_CITY_ID)
         parameters.shouldNotContain(SearchApiConst.USER_DISTRICT_ID)
         parameters.shouldNotContain(SearchApiConst.USER_POST_CODE)
+        parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 
     @Test
@@ -199,6 +203,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
                 lat = "19.2167",
                 long = "17.01374",
                 postal_code = "53241",
+                warehouse_id = warehouseId,
         )
 
         `Setup choose address`(dummyChooseAddressData)
@@ -245,6 +250,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
                 lat = "19.2167",
                 long = "17.01374",
                 postal_code = "53241",
+                warehouse_id = warehouseId,
         )
 
         `Setup choose address`(dummyChooseAddressData)
@@ -290,6 +296,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
                 lat = "19.2167",
                 long = "17.01374",
                 postal_code = "53241",
+                warehouse_id = warehouseId,
         )
 
         `Setup choose address`(dummyChooseAddressData)

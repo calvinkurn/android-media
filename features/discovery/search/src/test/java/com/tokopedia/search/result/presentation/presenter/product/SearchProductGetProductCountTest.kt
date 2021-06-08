@@ -37,7 +37,7 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
         val successfulProductCountText = "10rb Produk"
         `Given Get Product Count Use Case will be successful`(successfulProductCountText)
 
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true.toString(), SearchApiConst.USER_WAREHOUSE_ID to warehouseId)
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true.toString())
         `When get product count`(mapParameter)
 
         `Then assert request params contains map parameters`(mapParameter)

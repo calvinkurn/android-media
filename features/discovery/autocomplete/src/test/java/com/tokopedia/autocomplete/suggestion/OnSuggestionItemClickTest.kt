@@ -99,8 +99,6 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
             suggestionView.trackEventClickKeyword(expectedEventLabel)
             suggestionView.onClickSuggestion(item.applink)
         }
-
-        confirmVerified(suggestionView)
     }
 
     @Test
@@ -126,8 +124,6 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
             suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode)
             suggestionView.onClickSuggestion(item.applink)
         }
-
-        confirmVerified(suggestionView)
     }
 
     @Test
@@ -152,8 +148,6 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
             suggestionView.trackEventClickShop(expectedEventLabel)
             suggestionView.onClickSuggestion(item.applink)
         }
-
-        confirmVerified(suggestionView)
     }
 
     @Test
@@ -218,7 +212,5 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
             suggestionView.trackEventClickRecentKeyword(expectedEventLabel)
             suggestionView.onClickSuggestion(item.applink)
         }
-
-        confirmVerified(suggestionView)
     }
 }

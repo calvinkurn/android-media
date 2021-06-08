@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 interface InitialStateContract {
     interface View : CustomerView {
@@ -42,6 +43,8 @@ interface InitialStateContract {
         fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String)
 
         fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
+
+        val chooseAddressData: LocalCacheModel?
     }
 
     interface Presenter : CustomerPresenter<View> {

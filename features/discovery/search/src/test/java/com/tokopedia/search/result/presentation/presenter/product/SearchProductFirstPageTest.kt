@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
@@ -61,7 +60,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         val params = requestParams.getSearchProductParams()
         params.getOrDefault(SearchApiConst.START, null) shouldBe "0"
-        params.getOrDefault(SearchApiConst.USER_WAREHOUSE_ID, null) shouldBe warehouseId
 
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe false
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, false) shouldBe false
