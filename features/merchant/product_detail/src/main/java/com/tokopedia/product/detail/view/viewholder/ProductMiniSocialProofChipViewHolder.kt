@@ -12,12 +12,13 @@ class ProductMiniSocialProofChipViewHolder(
         private val listener: DynamicProductDetailListener
 ) : ProductMiniSocialProofTypeBaseViewHolder(view) {
 
+    private val firstSocialProofTxt: Typography? = view.findViewById(R.id.chip_social_proof_title)
+    private val firstSocialProofValue: Typography? = view.findViewById(R.id.chip_social_proof_value)
+
     override fun bind(socialProof: ProductMiniSocialProofItemDataModel, componentTrackDataModel: ComponentTrackDataModel?) {
 
-        if(socialProof.type != ProductMiniSocialProofItemType.ProductMiniSocialProofChip) return
+        if (socialProof.type != ProductMiniSocialProofItemType.ProductMiniSocialProofChip) return
 
-        val firstSocialProofTxt = view.findViewById<Typography>(R.id.chip_social_proof_title)
-        val firstSocialProofValue = view.findViewById<Typography>(R.id.chip_social_proof_value)
         when (socialProof.key) {
             ProductMiniSocialProofDataModel.RATING -> {
                 view.isClickable = true

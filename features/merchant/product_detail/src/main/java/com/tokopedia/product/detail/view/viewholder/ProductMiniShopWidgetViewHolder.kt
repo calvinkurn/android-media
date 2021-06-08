@@ -26,19 +26,13 @@ class ProductMiniShopWidgetViewHolder(
         showLoading()
     }
 
-    private var shopAva: ImageUnify? = null
-    private var shopName: Typography? = null
-    private var shopLocation: Typography? = null
-    private var container: View? = null
-    private var shimmering: View? = null
+    private val shopAva: ImageUnify? = view.findViewById(R.id.shop_ava)
+    private val shopName: Typography? =  view.findViewById(R.id.shop_name)
+    private val shopLocation: Typography? = view.findViewById(R.id.shop_location_online)
+    private val container: View? = view.findViewById(R.id.mini_shop_widget_container)
+    private val shimmering: View? =  view.findViewById(R.id.mini_shop_widget_shimmering)
 
     override fun bind(element: ProductMiniShopWidgetDataModel) = with(view) {
-
-        shopAva = view.findViewById(R.id.shop_ava)
-        shopName = view.findViewById(R.id.shop_name)
-        shopLocation = view.findViewById(R.id.shop_location_online)
-        container = view.findViewById(R.id.mini_shop_widget_container)
-        shimmering = view.findViewById(R.id.mini_shop_widget_shimmering)
 
         val componentTracker = getComponentTrackData(element)
 

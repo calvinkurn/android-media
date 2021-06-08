@@ -10,18 +10,18 @@ class ProductMiniSocialProofTextViewHolder(
         private val view: View,
 ) : ProductMiniSocialProofTypeBaseViewHolder(view) {
 
+    private val firstSocialProofTxt:Typography? = view.findViewById(R.id.social_proof_first_text)
+
     override fun bind(socialProof: ProductMiniSocialProofItemDataModel, componentTrackDataModel: ComponentTrackDataModel?) {
         when (socialProof.type) {
             ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText -> {
-                val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
-                firstSocialProofTxt.apply {
+                firstSocialProofTxt?.apply {
                     text = generateSingleView(socialProof)
                     setPadding(8.toPx(), 0, 16.toPx(), 0)
                 }
             }
             ProductMiniSocialProofItemType.ProductMiniSocialProofText -> {
-                val firstSocialProofTxt = view.findViewById<Typography>(R.id.social_proof_first_text)
-                firstSocialProofTxt.apply {
+                firstSocialProofTxt?.apply {
                     text = generateFirstSocialProofText(socialProof)
                     setPadding(8.toPx(), 7.toPx(), 8.toPx(), 7.toPx())
                 }
@@ -57,9 +57,6 @@ class ProductMiniSocialProofTextViewHolder(
             }
             ProductMiniSocialProofDataModel.VIEW_COUNT -> {
                 view.context.getString(R.string.label_view_builder, socialProof.formattedCount)
-            }
-            ProductMiniSocialProofStockDataModel.STOCK -> {
-                view.context.getString(R.string.label_stock_builder, socialProof.formattedCount)
             }
             else -> {
                 ""
