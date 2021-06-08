@@ -88,7 +88,7 @@ import javax.inject.Inject
  *
  * How to construct the applink with query parameters:
  * ```
- * val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+ * val applinkUri = Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
  *      appendQueryParameter(
  *          ApplinkConst.Inbox.PARAM_PAGE,
  *          ApplinkConst.Inbox.VALUE_PAGE_CHAT
