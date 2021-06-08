@@ -197,9 +197,11 @@ class TokoMartHomeFragment: Fragment(),
     private fun checkStateNotInServiceArea() {
         context?.let {
             checkIfChooseAddressWidgetDataUpdated()
-            if (localCacheModel?.shop_id.toIntOrZero() == 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
-                // after this then what to do?
-            } else if (localCacheModel?.shop_id.toIntOrZero() != 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
+//          need to do something
+//            if (localCacheModel?.shop_id.toIntOrZero() == 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
+//                // after this then what to do?
+//            } else
+            if (localCacheModel?.shop_id.toIntOrZero() != 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
                 showEmptyState(EMPTY_STATE_NO_ADDRESS)
             } else {
                 showLayout()
@@ -208,13 +210,11 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun showEmptyState(id: String) {
-        hideHeaderBackground()
         rvLayoutManager?.setScrollEnabled(false)
         viewModel.getEmptyState(id)
     }
 
     private fun showLayout() {
-        showHeaderBackground()
         getHomeLayout()
         getMiniCart()
     }
@@ -410,6 +410,7 @@ class TokoMartHomeFragment: Fragment(),
                 adapter.submitList(result)
                 checkStateNotInServiceArea()
             } else if (isInitialLoad) {
+                needToShowHeaderBackground(isHeaderBackgroundShowed)
                 adapter.submitList(result)
                 // TO-DO: Lazy Load Data
                 viewModel.getLayoutData(localCacheModel?.warehouse_id.orEmpty())
@@ -418,8 +419,17 @@ class TokoMartHomeFragment: Fragment(),
                 if (!isChooseAddressWidgetShowed(false))
                     adapter.removeHomeChooseAddressWidget()
             } else {
+                needToShowHeaderBackground(isHeaderBackgroundShowed)
                 adapter.submitList(result)
             }
+        }
+    }
+
+    private fun needToShowHeaderBackground(isShowed: Boolean) {
+        if (isShowed) {
+            showHeaderBackground()
+        } else {
+            hideHeaderBackground()
         }
     }
 

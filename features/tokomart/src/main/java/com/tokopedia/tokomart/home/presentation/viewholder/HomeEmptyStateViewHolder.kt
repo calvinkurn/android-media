@@ -3,8 +3,6 @@ package com.tokopedia.tokomart.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,6 +12,7 @@ import com.tokopedia.tokomart.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokomart.common.view.TokoNowView
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokomart.home.presentation.activity.TokoMartHomeActivity
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.SOURCE
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeEmptyStateUiModel
 
@@ -53,7 +52,7 @@ class HomeEmptyStateViewHolder(
             }
 
             override fun onReturnClick() {
-                RouteManager.route(itemView.context, ApplinkConst.HOME)
+                (itemView.context as? TokoMartHomeActivity)?.finish()
             }
         }
     }
