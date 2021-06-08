@@ -1,6 +1,8 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -40,7 +42,7 @@ import javax.inject.Named
  * Created by jegul on 29/11/19
  */
 @Module
-class PlayModule(val mContext: Context) {
+class PlayModule {
 
     @PlayScope
     @Provides
@@ -52,7 +54,7 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providePlayVideoPlayerLifecycleObserver(): PlayVideoPlayerObserver = PlayVideoPlayerObserver(mContext)
+    fun providePlayVideoPlayerLifecycleObserver(context: Context): PlayVideoPlayerObserver = PlayVideoPlayerObserver(context)
 
     @PlayScope
     @Provides
@@ -75,22 +77,22 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
-    fun provideUpdateCartCounterMutation(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
+    fun provideUpdateCartCounterMutation(context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
     }
 
     @Provides
     @PlayScope
     @Named(VariantConstant.QUERY_VARIANT)
-    internal fun provideQueryVariant(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
+    internal fun provideQueryVariant(context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
     }
 
     @Provides
     @PlayScope
     @Named(AtcConstant.MUTATION_ADD_TO_CART)
-    internal fun provideAddToCartMutation(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
+    internal fun provideAddToCartMutation(context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
     @Provides
@@ -104,8 +106,8 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    fun provideTrackingQueue(): TrackingQueue {
-        return TrackingQueue(mContext)
+    fun provideTrackingQueue(context: Context): TrackingQueue {
+        return TrackingQueue(context)
     }
 
     @Provides
@@ -116,8 +118,8 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun provideRemoteConfig(): RemoteConfig {
-        return FirebaseRemoteConfigImpl(mContext)
+    fun provideRemoteConfig(context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 
     @PlayScope
@@ -152,4 +154,10 @@ class PlayModule(val mContext: Context) {
                 dispatchers
         )
     }
+
+    @Provides
+    fun provideCastContext(@ApplicationContext context: Context) = CastContext.getSharedInstance(context)
+
+    @Provides
+    fun provideCastPlayer(castContext: CastContext) = CastPlayer(castContext)
 }

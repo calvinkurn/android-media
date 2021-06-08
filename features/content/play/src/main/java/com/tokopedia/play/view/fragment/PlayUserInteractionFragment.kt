@@ -12,6 +12,7 @@ import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -84,7 +85,8 @@ class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val castPlayer: CastPlayer
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -122,6 +124,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
+    private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -1116,7 +1119,7 @@ class PlayUserInteractionFragment @Inject constructor(
             videoControlView.setPlayer(null)
             videoControlView.hide()
         }
-        else if (channelType.isVod && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoControlView.show()
+        else if (channelType.isVod && videoPlayer.isGeneral() && !bottomInsets.isAnyShown) videoControlView.show()
         else videoControlView.hide()
     }
 
@@ -1134,7 +1137,7 @@ class PlayUserInteractionFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) videoSettingsView.hide()
-        else if (videoOrientation.isHorizontal && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoSettingsView.show()
+        else if (videoOrientation.isHorizontal && videoPlayer.isGeneral() && !bottomInsets.isAnyShown) videoSettingsView.show()
         else videoSettingsView.hide()
     }
 
@@ -1300,7 +1303,7 @@ class PlayUserInteractionFragment @Inject constructor(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral || isFreezeOrBanned) {
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned) {
             pipView?.hide()
             return
         }

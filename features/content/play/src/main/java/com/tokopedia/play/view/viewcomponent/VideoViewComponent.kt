@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -35,7 +36,7 @@ class VideoViewComponent(
     private val pvVideo = findViewById<PlayerView>(R.id.pv_video)
     private val ivThumbnail = findViewById<ImageView>(R.id.iv_thumbnail)
 
-    fun setPlayer(exoPlayer: ExoPlayer?) {
+    fun setPlayer(exoPlayer: Player?) {
         pvVideo.player = exoPlayer
     }
 

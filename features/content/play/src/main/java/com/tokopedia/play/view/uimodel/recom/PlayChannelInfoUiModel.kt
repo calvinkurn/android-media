@@ -7,5 +7,6 @@ import com.tokopedia.play.view.type.PlayChannelType
  */
 data class PlayChannelInfoUiModel(
         val channelType: PlayChannelType,
-        val backgroundUrl: String
+        val backgroundUrl: String,
+        val coverUrl: String,
 )

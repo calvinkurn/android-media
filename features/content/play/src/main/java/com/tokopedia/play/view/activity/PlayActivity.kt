@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -113,6 +115,8 @@ class PlayActivity : BaseActivity(),
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
 
+        CastContext.getSharedInstance(applicationContext)
+
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
@@ -208,7 +212,7 @@ class PlayActivity : BaseActivity(),
                 .baseAppComponent(
                         (applicationContext as BaseMainApplication).baseAppComponent
                 )
-                .playModule(PlayModule(this))
+                .context(this)
                 .build()
                 .inject(this)
     }

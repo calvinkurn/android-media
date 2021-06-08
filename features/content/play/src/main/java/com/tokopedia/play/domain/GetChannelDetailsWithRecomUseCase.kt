@@ -29,6 +29,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                 data {
                   id
                   title
+                  cover_url
                   is_live
                   partner {
                     id

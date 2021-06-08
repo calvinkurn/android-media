@@ -34,6 +34,9 @@ data class ChannelDetailsWithRecomResponse(
             @SerializedName("title")
             val title: String = "",
 
+            @SerializedName("cover_url")
+            val coverUrl: String = "",
+
             @SerializedName("is_live")
             val isLive: Boolean = false,
 

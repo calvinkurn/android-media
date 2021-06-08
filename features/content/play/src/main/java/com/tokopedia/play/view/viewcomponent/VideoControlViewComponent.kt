@@ -5,6 +5,7 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.TimeBar
@@ -47,7 +48,7 @@ class VideoControlViewComponent(
         pcvVideo.hide()
     }
 
-    fun setPlayer(exoPlayer: ExoPlayer?) {
+    fun setPlayer(exoPlayer: Player?) {
         pcvVideo.player = exoPlayer
     }
 

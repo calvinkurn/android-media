@@ -3,6 +3,13 @@ package com.tokopedia.play.view.viewmodel
 import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.exoplayer2.ext.cast.MediaItem
+import com.google.android.exoplayer2.util.MimeTypes
+import com.google.android.gms.cast.MediaInfo
+import com.google.android.gms.cast.MediaMetadata
+import com.google.android.gms.cast.MediaQueueItem
+import com.google.android.gms.common.images.WebImage
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -74,6 +81,7 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
+        private val castPlayer: CastPlayer
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -564,8 +572,18 @@ class PlayViewModel @Inject constructor(
     private fun focusVideoPlayer(channelData: PlayChannelData) {
         if (channelData.statusInfo.statusType.isFreeze) return
 
-        playVideoPlayer.addListener(videoManagerListener)
-        playVideoPlayer.resume()
+        if (castPlayer.isCastSessionAvailable && channelData.videoMetaInfo.videoPlayer.isGeneral()) {
+            val params = channelData.videoMetaInfo.videoPlayer.params
+            val videoStream = channelData.videoMetaInfo.videoStream
+            val mediaItem = getCastMediaItem(params, videoStream, channelData.partnerInfo, channelData.channelInfo.coverUrl)
+            castPlayer.loadItem(mediaItem, playVideoPlayer.getCurrentPosition())
+            _observableVideoMeta.value = channelData.videoMetaInfo.copy(
+                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayer)
+            )
+        } else {
+            playVideoPlayer.addListener(videoManagerListener)
+            playVideoPlayer.resume()
+        }
     }
 
     private fun defocusVideoPlayer(shouldPauseVideo: Boolean) {
@@ -1079,6 +1097,24 @@ class PlayViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun getCastMediaItem(
+            params: PlayGeneralVideoPlayerParams,
+            videoStream: PlayVideoStreamUiModel,
+            partnerInfo: PlayPartnerInfoUiModel,
+            coverUrl: String,
+    ): MediaQueueItem {
+        val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, videoStream.title)
+        movieMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, partnerInfo.basicInfo.name)
+        movieMetadata.addImage(WebImage(Uri.parse(coverUrl)))
+        val mediaInfo = MediaInfo.Builder(params.videoUrl)
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setContentType(MimeTypes.VIDEO_UNKNOWN)
+                .setMetadata(movieMetadata).build()
+
+        return MediaQueueItem.Builder(mediaInfo).build()
     }
 
     companion object {
