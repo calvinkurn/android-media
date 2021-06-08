@@ -16,8 +16,8 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
-import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.constant_kotlin.FlightFlowConstant
+import com.tokopedia.flight.common.constant_kotlin.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
@@ -78,7 +78,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         when (requestCode) {
             REQUEST_CODE_RETURN, REQUEST_CODE_BOOKING -> {
                 if (data != null) {
-                    when (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)) {
+                    when (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA.value, 0)) {
                         FlightFlowConstant.PRICE_CHANGE.value -> {
                             if (fragment is FlightSearchFragment) {
                                 (fragment as FlightSearchFragment).resetDateAndReload(true)

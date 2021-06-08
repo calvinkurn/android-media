@@ -3,7 +3,7 @@ package com.tokopedia.flight.common.util;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
+import com.tokopedia.flight.common.constant_kotlin.FlightFlowExtraConstant;
 
 /**
  * Created by alvarisi on 12/5/17.
@@ -11,7 +11,7 @@ import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 
 public class FlightFlowUtil {
     public static void actionSetResultAndClose(Activity activity, Intent intent, int status) {
-        intent.putExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, status);
+        intent.putExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA.getValue(), status);
         activity.setResult(Activity.RESULT_CANCELED, intent);
         activity.finish();
     }
