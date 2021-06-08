@@ -35,7 +35,7 @@ import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 class SellerHomeViewModelTest {
-    
+
     companion object {
         private const val DATA_KEY_CARD = "CARD"
         private const val DATA_KEY_LINE_GRAPH = "LINE_GRAPH"
@@ -805,7 +805,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get table widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -829,7 +829,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get table widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -1462,7 +1462,7 @@ class SellerHomeViewModelTest {
                         isFromCache = false,
                         isNeedToBeRemoved = false,
                         emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf(PostFilterUiModel("", "", true))),
+                        postFilter = listOf(WidgetFilterUiModel("", "", true))),
                 SectionWidgetUiModel(
                         id = "section_other2",
                         widgetType = WidgetType.SECTION,
@@ -1816,7 +1816,7 @@ class SellerHomeViewModelTest {
                         isFromCache = false,
                         isNeedToBeRemoved = false,
                         emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf(PostFilterUiModel("", "", false)))
+                        postFilter = listOf(WidgetFilterUiModel("", "", false)))
         )
 
         val postData = PostListDataUiModel(DATA_KEY_POST_LIST, items = listOf(PostUiModel()), showWidget = true)
@@ -2007,7 +2007,8 @@ class SellerHomeViewModelTest {
                         isLoading = false,
                         isFromCache = false,
                         isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                        tableFilters = listOf()),
                 PieChartWidgetUiModel(
                         id = DATA_KEY_PIE_CHART,
                         widgetType = WidgetType.PIE_CHART,
