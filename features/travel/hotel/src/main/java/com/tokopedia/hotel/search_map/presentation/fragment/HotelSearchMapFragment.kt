@@ -887,7 +887,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val pointOffsetFromCenter = googleMap.projection.fromScreenLocation(
                     Point(
                             mapCenterPoint.x,
-                            mapCenterPoint.y + resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl7).toInt()
+                            mapCenterPoint.y + resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5).toInt()
                     )
             )
             val latDelta = pointOffsetFromCenter.latitude - googleMap.cameraPosition.target.latitude
