@@ -393,7 +393,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                                         || itemRMIndex in firstVisiblePosition..lastVisiblePosition
                                         || itemRMNonEligibleIndex in firstVisiblePosition..lastVisiblePosition
                                         || itemPotentialPMProIndex in firstVisiblePosition..lastVisiblePosition
-                                        || itemPMProIndex in firstVisiblePosition in lastVisiblePosition
+                                        || itemPMProIndex in firstVisiblePosition..lastVisiblePosition
                                 ) {
                                     coachMark?.animateShow()
                                 } else {

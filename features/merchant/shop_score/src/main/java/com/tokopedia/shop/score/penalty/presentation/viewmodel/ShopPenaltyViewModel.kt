@@ -57,6 +57,7 @@ class ShopPenaltyViewModel @Inject constructor(
 
     private val _typeFilterData = MutableLiveData<Int>()
     private val _sortTypeFilterData = MutableLiveData<Pair<Int, Int>>()
+    private val _dateFilterData = MutableLiveData<Pair<String, String>>()
 
     private var startDate = format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var endDate = format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
@@ -74,8 +75,7 @@ class ShopPenaltyViewModel @Inject constructor(
     }
 
     fun setDateFilterData(dateFilter: Pair<String, String>) {
-        startDate = dateFilter.first
-        endDate = dateFilter.second
+        _dateFilterData.value = Pair(dateFilter.first, dateFilter.second)
     }
 
     fun setTypeFilterData(typeId: Int) {
@@ -141,6 +141,12 @@ class ShopPenaltyViewModel @Inject constructor(
 
         shopPenaltyDetailMediator.addSource(_typeFilterData) {
             typeId = it
+            getPenaltyDetailListNext()
+        }
+
+        shopPenaltyDetailMediator.addSource(_dateFilterData) {
+            startDate = it.first
+            endDate = it.second
             getPenaltyDetailListNext()
         }
     }
