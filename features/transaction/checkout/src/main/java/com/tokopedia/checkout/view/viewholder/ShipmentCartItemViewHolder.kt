@@ -150,6 +150,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                 tickerError.setTextDescription(cartItemModel.errorMessage)
             }
             tickerError.visible()
+            // todo analytics
         } else {
             tickerError.gone()
         }

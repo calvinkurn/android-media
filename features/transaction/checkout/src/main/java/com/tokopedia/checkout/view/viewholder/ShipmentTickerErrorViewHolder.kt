@@ -25,6 +25,7 @@ class ShipmentTickerErrorViewHolder(itemView: View): RecyclerView.ViewHolder(ite
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
                 ticker?.requestLayout()
             }
+            // todo analytics
         }
     }
 

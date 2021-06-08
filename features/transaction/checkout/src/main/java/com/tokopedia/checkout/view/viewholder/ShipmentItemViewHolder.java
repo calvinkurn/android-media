@@ -468,6 +468,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getProductErrorCount() > 0 && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
             customTickerDescription.setText(itemView.getContext().getString(R.string.checkout_disabled_items_description, shipmentCartItemModel.getProductErrorCount()));
             customTickerAction.setOnClickListener(v -> {
+                // todo analytics
                 if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
                     shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
                     showAllProductListener(shipmentCartItemModel).onClick(tickerError);
@@ -971,6 +972,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (selectedCourierItemData.getLogPromoDesc() != null && !selectedCourierItemData.getLogPromoDesc().isEmpty()) {
             labelSingleShippingMessage.setText(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));
             labelSingleShippingMessage.setVisibility(View.VISIBLE);
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() == null) {
+                // todo analytics
+            }
         } else {
             labelSingleShippingMessage.setVisibility(View.GONE);
         }
@@ -1033,6 +1037,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 loadCourierStateData(shipmentCartItemModel, SHIPPING_SAVE_STATE_TYPE_SHIPPING_EXPERIENCE, tmpShipmentDetailData, position);
+                //todo analytics
             }
         });
     }
@@ -1671,6 +1676,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             textInputLayoutShipperPhone.getTextFieldInput().setClickable(false);
             textInputLayoutShipperPhone.getTextFieldInput().setFocusable(false);
             textInputLayoutShipperPhone.getTextFieldInput().setFocusableInTouchMode(false);
+            //todo analytics
         } else {
             layoutError.setVisibility(View.GONE);
             tickerError.setVisibility(View.GONE);

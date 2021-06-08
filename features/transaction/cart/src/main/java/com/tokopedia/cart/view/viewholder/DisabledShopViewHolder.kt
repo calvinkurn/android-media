@@ -23,6 +23,10 @@ class DisabledShopViewHolder(private val binding: ItemCartDisabledShopBinding, v
         renderShopName(data)
         renderDivider(data)
         renderShopBadge(data)
+        if (!data.hasShown) {
+            // todo analytics
+            data.hasShown = true
+        }
     }
 
     private fun renderShopName(data: DisabledShopHolderData) {

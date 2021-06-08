@@ -1867,6 +1867,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else if (cartListData.popUpMessage.isNotBlank()) {
             showToastMessageGreen(cartListData.popUpMessage)
         }
+        // todo analytics -> shopId?
     }
 
     private fun setInitialCheckboxGlobalState(cartListData: CartListData) {
