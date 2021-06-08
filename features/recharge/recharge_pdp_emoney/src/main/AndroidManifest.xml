@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.recharge_pdp_emoney">
+
+    <application>
+        <activity
+            android:name=".presentation.activity.EmoneyPdpActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/recharge_pdp_emoney_toolbar_title"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter android:autoVerify="true">
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_digital"
+                    android:path="@string/path_electronicmoney"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

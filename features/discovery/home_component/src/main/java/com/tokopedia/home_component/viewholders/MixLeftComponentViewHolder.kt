@@ -83,6 +83,7 @@ class MixLeftComponentViewHolder (itemView: View,
         setupList(element.channelModel)
         setSnapEffect()
         setHeaderComponent(element)
+        setChannelDivider(element)
 
         itemView.addOnImpressionListener(element.channelModel)  {
             if (!isCacheData)
@@ -109,6 +110,14 @@ class MixLeftComponentViewHolder (itemView: View,
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
         mixLeftComponentListener?.onEmptyCardClicked(channel, applink, parentPos)
+    }
+
+    private fun setChannelDivider(element: MixLeftDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun initVar() {

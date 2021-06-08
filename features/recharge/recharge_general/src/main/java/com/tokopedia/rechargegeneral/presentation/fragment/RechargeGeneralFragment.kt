@@ -794,7 +794,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun getProductList(menuId: Int, operator: Int) {
         viewModel.getProductList(
-                com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogProductInput,
+                com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogDynamicProductInput,
                 viewModel.createProductListParams(menuId, operator),
                 recharge_general_swipe_refresh_layout.isRefreshing
         )

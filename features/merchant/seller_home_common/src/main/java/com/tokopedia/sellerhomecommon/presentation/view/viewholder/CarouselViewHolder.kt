@@ -46,6 +46,7 @@ class CarouselViewHolder(
 
     override fun bind(element: CarouselWidgetUiModel) {
         itemView.rvCarouselBanner.isNestedScrollingEnabled = false
+        itemView.visible()
         observeState(element)
     }
 
@@ -90,6 +91,8 @@ class CarouselViewHolder(
             setupEmptyState(element)
         } else {
             setupCarousel(element)
+            itemView.gone()
+            listener.removeWidget(adapterPosition, element)
         }
     }
 

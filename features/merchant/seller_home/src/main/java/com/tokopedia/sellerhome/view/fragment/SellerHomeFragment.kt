@@ -64,7 +64,7 @@ import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
-import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostFilterBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -571,7 +571,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<TableWidgetUiModel>().map {
+            val postFilter = it.tableFilters.find { filter -> filter.isSelected }?.value.orEmpty()
+            return@map Pair(it.dataKey, postFilter)
+        }
         startCustomMetric(SELLER_HOME_TABLE_TRACE)
         sellerHomeViewModel.getTableWidgetData(dataKeys)
     }
@@ -635,7 +638,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickProgressBarEvent(dataKey, stateColor, valueScore)
     }
 
-    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {
+    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
     }
@@ -646,6 +649,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendTableEmptyStateCtaClickEvent(element: TableWidgetUiModel) {
         SellerHomeTracking.sendTableEmptyStateCtaClick(element, userSession.userId)
+    }
+
+    override fun sendTableFilterClick(element: TableWidgetUiModel) {
+        SellerHomeTracking.sendTableFilterClick(element, userSession.userId)
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -689,15 +696,29 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
         if (!isAdded || context == null) return
 
-        val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
-                ?: PostFilterBottomSheet.newInstance()
-        postFilterBottomSheet.init(requireContext(), element.postFilter) {
+        val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.POST_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        postFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_category, element.postFilter) {
             recyclerView?.post {
                 val copiedWidget = element.copy().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getPostData(listOf(element))
             }
-        }.show(childFragmentManager)
+        }.show(childFragmentManager, WidgetFilterBottomSheet.POST_FILTER_TAG)
+    }
+
+    override fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {
+        if (!isAdded || context == null) return
+
+        val tableFilterBottomSheet = (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.TABLE_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        tableFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data, element.tableFilters) {
+            recyclerView?.post {
+                val copiedWidget = element.copy().apply { data = null }
+                notifyWidgetChanged(copiedWidget)
+                getTableData(listOf(element))
+            }
+        }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {

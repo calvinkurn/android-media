@@ -157,7 +157,7 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:layout_below="@id/lbl_otd_available"
+        android:layout_below="@id/lbl_dynamic_pricing"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/Unify_N100" />
 
