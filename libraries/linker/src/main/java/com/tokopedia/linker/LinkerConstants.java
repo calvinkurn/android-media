@@ -128,5 +128,7 @@ public interface LinkerConstants {
     String LEVEL3_ID = "level3_id";
     String SKU = "sku";
     String CONTENT_ID = "content_id";
-    String BRANCH_LINK_DOMAIN="tokopedia.link/";
+    String BRANCH_LINK_DOMAIN_1="tokopedia.link";
+    String BRANCH_LINK_DOMAIN_2="tokopedia-alternate.app.link";
+    String BRANCH_LINK_DOMAIN_3="tokopedia.app.link";
 }

@@ -567,7 +567,7 @@
     </entry>
     <entry>
         <key>app_enable_branch_utm_only_branch_link</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>android_branch_callback_timeout_key</key>
