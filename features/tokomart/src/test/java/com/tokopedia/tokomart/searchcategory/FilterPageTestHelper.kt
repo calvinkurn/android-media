@@ -135,8 +135,8 @@ class FilterPageTestHelper(
     }
 
     fun `test apply filter from filter page`() {
-        val requestParamsSlot = slot<RequestParams>()
-        val requestParams by lazy { requestParamsSlot.captured }
+        val requestParamsSlot = mutableListOf<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.last() }
 
         `Given view setup from created until open filter page`()
 
@@ -259,6 +259,8 @@ class FilterPageTestHelper(
 
     interface Callback {
         fun `Given first page API will be successful`()
-        fun `Then assert first page use case is called twice`(requestParamsSlot: CapturingSlot<RequestParams>)
+        fun `Then assert first page use case is called twice`(
+                requestParamsSlot: MutableList<RequestParams>
+        )
     }
 }
