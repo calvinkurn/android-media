@@ -5,7 +5,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import com.tokopedia.otp.R
 
-class GoogleAuthVerificationFragment : VerificationFragment() {
+open class GoogleAuthVerificationFragment : VerificationFragment() {
 
     override fun setFooterText(spannable: Spannable?) {
         context?.let {

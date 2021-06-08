@@ -1,0 +1,42 @@
+{
+  "readme": "Verification with sms method",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": "{{.+}}",
+      "clientId": "{{.+}}",
+      "isLoggedInStatus": "{{.+}}",
+      "appsflyerId": "{{.+}}",
+      "shopId": "{{.*}}",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickOtp",
+      "eventCategory": "choose otp page",
+      "eventAction": "click on otp method",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "networkSpeed": "{{.+}}",
+      "clientId": "{{.+}}",
+      "isLoggedInStatus": "{{.+}}",
+      "appsflyerId": "{{.+}}",
+      "shopId": "{{.*}}",
+      "screenName": "Input OTP {{.+}}",
+      "event": "openScreen",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.+}}"
+    },
+    {
+      "event": "clickConfirm",
+      "eventCategory": "input otp page",
+      "eventAction": "click on verifikasi",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

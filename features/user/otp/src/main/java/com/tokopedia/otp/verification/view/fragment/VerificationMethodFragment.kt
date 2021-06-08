@@ -50,7 +50,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
+open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil

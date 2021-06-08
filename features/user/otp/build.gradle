@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply from: "../../../compile-unit-test.gradle"
@@ -52,6 +50,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -85,24 +84,13 @@ dependencies {
 
     androidTestImplementation project(rootProject.ext.libraries.analytics)
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation rootProject.ext.miscDependencies.dagger
-    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
-    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
-
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    implementation rootProject.ext.testDependencies.espressoIdlingResource
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.playServicesDependencies.phone
     api (rootProject.ext.firebase.crashlytics) {

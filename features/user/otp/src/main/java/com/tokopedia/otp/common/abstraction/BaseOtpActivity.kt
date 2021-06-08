@@ -17,11 +17,18 @@ import com.tokopedia.otp.common.di.OtpComponentBuilder
 
 abstract class BaseOtpActivity : BaseSimpleActivity(), HasComponent<OtpComponent> {
 
+    private var otpComponent: OtpComponent? = null
+
     override fun getLayoutRes(): Int {
         return R.layout.activity_otp
     }
 
-    override fun getComponent(): OtpComponent = OtpComponentBuilder.getComponent(application as BaseMainApplication, this)
+    override fun getComponent(): OtpComponent = otpComponent ?: initializeOtpComponent()
+
+    protected open fun initializeOtpComponent(): OtpComponent =
+            OtpComponentBuilder.getComponent(application as BaseMainApplication, this).also {
+                otpComponent = it
+            }
 
     @SuppressLint("InlinedApi")
     override fun setupStatusBar() {

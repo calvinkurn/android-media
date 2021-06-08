@@ -10,12 +10,8 @@
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:debuggable,android:label">
 
-        <meta-data
-            android:name="firebase_performance_collection_deactivated"
-            android:value="true" />
-
         <activity
-            android:name="com.tokopedia.otp.verification.email.stub.VerificationActivityStub"
+            android:name=".stub.verification.view.activity.VerificationActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

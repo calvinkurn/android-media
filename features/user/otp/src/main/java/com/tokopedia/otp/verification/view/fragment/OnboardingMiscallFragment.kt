@@ -24,7 +24,7 @@ import com.tokopedia.utils.permission.request
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
+open class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private lateinit var otpData: OtpData
     private lateinit var modeListData: ModeListData
