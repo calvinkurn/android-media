@@ -24,6 +24,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyLong
 
 /**
@@ -68,23 +69,24 @@ class PowerMerchantSharedViewModelTest {
                 PeriodType.COMMUNICATION_PERIOD_PM_PRO,
                 true
         )
+        val isFirstLoad = anyBoolean()
 
         coEvery {
             powerMerchantRemoteConfig.isFreeShippingEnabled()
         } returns true
 
         coEvery {
-            getPmBasicInfo.executeOnBackground()
+            getPmBasicInfo.executeOnBackground(isFirstLoad)
         } returns result
 
-        viewModel.getPowerMerchantBasicInfo()
+        viewModel.getPowerMerchantBasicInfo(isFirstLoad)
 
         coVerify {
             powerMerchantRemoteConfig.isFreeShippingEnabled()
         }
 
         coVerify {
-            getPmBasicInfo.executeOnBackground()
+            getPmBasicInfo.executeOnBackground(isFirstLoad)
         }
 
         val expected = Success(result)
@@ -95,19 +97,20 @@ class PowerMerchantSharedViewModelTest {
     @Test
     fun `when get pm basic info should return failed`() = runBlockingTest {
         val throwable = Throwable()
+        val isFirstLoad = anyBoolean()
 
         coEvery {
-            getPmBasicInfo.executeOnBackground()
+            getPmBasicInfo.executeOnBackground(isFirstLoad)
         } throws throwable
 
-        viewModel.getPowerMerchantBasicInfo()
+        viewModel.getPowerMerchantBasicInfo(isFirstLoad)
 
         coVerify {
             powerMerchantRemoteConfig.isFreeShippingEnabled()
         }
 
         coVerify {
-            getPmBasicInfo.executeOnBackground()
+            getPmBasicInfo.executeOnBackground(isFirstLoad)
         }
 
         val expected = Fail(throwable)

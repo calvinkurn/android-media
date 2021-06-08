@@ -36,11 +36,11 @@ class PowerMerchantSharedViewModel @Inject constructor(
     private val _powerMerchantBasicInfo: MutableLiveData<Result<PowerMerchantBasicInfoUiModel>> = MutableLiveData()
     private val _shopModerationStatus: MutableLiveData<Result<ModerationShopStatusUiModel>> = MutableLiveData()
 
-    fun getPowerMerchantBasicInfo() {
+    fun getPowerMerchantBasicInfo(isFirstLoad: Boolean) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val isFreeShippingEnabled = remoteConfig.get().isFreeShippingEnabled()
-                val data = getPmBasicInfo.get().executeOnBackground()
+                val data = getPmBasicInfo.get().executeOnBackground(isFirstLoad)
                 return@withContext data.copy(isFreeShippingEnabled = isFreeShippingEnabled)
             }
             _powerMerchantBasicInfo.value = Success(result)

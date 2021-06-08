@@ -4,6 +4,8 @@ import com.tokopedia.gm.common.data.source.cloud.model.PMGradeBenefitInfoRespons
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.domain.mapper.PMGradeBenefitInfoMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -15,7 +17,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 10/03/21
  */
 
-class GetPMGradeBenefitUseCase @Inject constructor(
+class GetPMGradeBenefitListUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PMGradeBenefitInfoMapper
 ) : BaseGqlUseCase<List<PMGradeWithBenefitsUiModel>>() {
@@ -37,13 +39,6 @@ class GetPMGradeBenefitUseCase @Inject constructor(
         private const val KEY_SHOP_ID = "shop_id"
         private const val KEY_SOURCE = "source"
 
-        fun createParams(shopId: String, source: String): RequestParams {
-            return RequestParams.create().apply {
-                putLong(KEY_SHOP_ID, shopId.toLongOrZero())
-                putString(KEY_SOURCE, source)
-            }
-        }
-
         private val QUERY = """
             query goldGetPMGradeBenefitInfo(${'$'}shop_id: Int!, ${'$'}source: String!) {
               goldGetPMGradeBenefitInfo(shop_id: ${'$'}shop_id, source: ${'$'}source) {
@@ -62,5 +57,21 @@ class GetPMGradeBenefitUseCase @Inject constructor(
               }
             }
         """.trimIndent()
+
+        fun createParams(shopId: String, source: String): RequestParams {
+            return RequestParams.create().apply {
+                putLong(KEY_SHOP_ID, shopId.toLongOrZero())
+                putString(KEY_SOURCE, source)
+            }
+        }
+
+        fun getCacheStrategy(shouldFromCache: Boolean): GraphqlCacheStrategy {
+            val cacheType = if (shouldFromCache) {
+                CacheType.CACHE_FIRST
+            } else {
+                CacheType.ALWAYS_CLOUD
+            }
+            return GraphqlCacheStrategy.Builder(cacheType).build()
+        }
     }
 }

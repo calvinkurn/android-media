@@ -93,7 +93,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         setContentView(R.layout.activity_pm_subsription)
         window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
-        fetchPmBasicInfo()
+        fetchPmBasicInfo(true)
         setupView()
         observePmBasicInfo()
         observeShopModerationStatus()
@@ -111,10 +111,6 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun fetchPowerMerchantBasicInfo() {
-        sharedViewModel.getPowerMerchantBasicInfo()
     }
 
     override fun setViewForPmSuccessState() {
@@ -156,7 +152,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         viewPagerPmSubscription.gone()
         globalErrorPmSubscription.visible()
         globalErrorPmSubscription.setActionClickListener {
-            fetchPmBasicInfo()
+            fetchPmBasicInfo(false)
         }
     }
 
@@ -220,9 +216,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         setWhiteStatusBar()
     }
 
-    private fun fetchPmBasicInfo() {
+    private fun fetchPmBasicInfo(isFirstLoad: Boolean) {
         showLoadingState()
-        sharedViewModel.getPowerMerchantBasicInfo()
+        sharedViewModel.getPowerMerchantBasicInfo(isFirstLoad)
     }
 
     private fun setWhiteStatusBar() {
@@ -235,7 +231,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     private fun setupViewPager(data: PowerMerchantBasicInfoUiModel) {
         when (data.pmStatus.status) {
             PMStatusConst.INACTIVE -> setupRegistrationPage(data)
-            else -> setupActiveState(data)
+            else -> setupActiveState()
         }
 
         viewPagerPmSubscription.adapter = viewPagerAdapter
@@ -281,18 +277,12 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
     }
 
-    private fun setupActiveState(data: PowerMerchantBasicInfoUiModel) {
+    private fun setupActiveState() {
         pmRegistrationFooterView.gone()
         setViewForPmSuccessState()
         viewPagerAdapter.clearFragment()
-        val isPmPro = data.pmStatus.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val pmTire = if (isPmPro) {
-            PMConstant.PMTierType.POWER_MERCHANT_PRO
-        } else {
-            PMConstant.PMTierType.POWER_MERCHANT
-        }
         if (pmActiveStatePage == null) {
-            pmActiveStatePage = PowerMerchantSubscriptionFragment.createInstance(pmTire)
+            pmActiveStatePage = PowerMerchantSubscriptionFragment.createInstance()
         }
         pmActiveStatePage?.let {
             viewPagerAdapter.addFragment(it, getString(R.string.pm_power_merchant))

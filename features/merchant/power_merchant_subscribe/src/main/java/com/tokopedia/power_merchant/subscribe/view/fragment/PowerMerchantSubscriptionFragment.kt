@@ -50,14 +50,8 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         PMWidgetListener {
 
     companion object {
-        private const val KEY_PM_TIER_TYPE = "key_pm_tier_type"
-
-        fun createInstance(pmTireType: Int): PowerMerchantSubscriptionFragment {
-            return PowerMerchantSubscriptionFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(KEY_PM_TIER_TYPE, pmTireType)
-                }
-            }
+        fun createInstance(): PowerMerchantSubscriptionFragment {
+            return PowerMerchantSubscriptionFragment()
         }
     }
 
@@ -329,7 +323,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         sharedViewModel.powerMerchantBasicInfo.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
                 initBasicInfo(it.data)
-                fetchPageContent()
+                fetchPageContent(true)
             }
         })
     }
@@ -407,28 +401,31 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
             fetchPowerMerchantBasicInfo()
         } else {
             view?.swipeRefreshPm?.isRefreshing = true
-            fetchPageContent()
+            fetchPageContent(false)
         }
     }
 
     private fun fetchPowerMerchantBasicInfo() {
-        sharedViewModel.getPowerMerchantBasicInfo()
+        sharedViewModel.getPowerMerchantBasicInfo(false)
     }
 
-    private fun fetchPageContent() {
+    private fun fetchPageContent(isFirstLoad: Boolean) {
         if (pmBasicInfo == null) {
             showErrorState(RuntimeException())
             return
         }
 
         when (pmBasicInfo?.pmStatus?.status) {
-            PMStatusConst.INACTIVE -> fetchPmRegistrationData()
-            else -> fetchPmActiveState()
+            PMStatusConst.INACTIVE -> fetchPmRegistrationData(isFirstLoad)
+            else -> {
+                val pmTire = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT
+                fetchPmActiveState(pmTire)
+            }
         }
     }
 
-    private fun fetchPmRegistrationData() {
-        mViewModel.getPmRegistrationData()
+    private fun fetchPmRegistrationData(isFirstLoad: Boolean) {
+        mViewModel.getPmRegistrationData(isFirstLoad)
     }
 
     private fun initBasicInfo(data: PowerMerchantBasicInfoUiModel) {
@@ -506,11 +503,11 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         })
     }
 
-    private fun fetchPmActiveState() {
-        mViewModel.getPmActiveStateData()
+    private fun fetchPmActiveState(pmTire: Int) {
+        mViewModel.getPmActiveStateData(pmTire)
     }
 
-    private fun renderPmActiveState(data: PMActiveDataUiModel) {
+    private fun renderPmActiveState(data: PMGradeBenefitInfoUiModel) {
         showUpgradePmProStickyView()
         val isChargingPeriod = pmBasicInfo?.periodTypePmPro == PeriodType.CHARGING_PERIOD_PM_PRO
         val isAutoExtendEnabled = getAutoExtendEnabled()
@@ -593,7 +590,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         return !expiredTime.isNullOrBlank() && autoExtendEnabled
     }
 
-    private fun getNextShopGradeWidgetData(data: PMActiveDataUiModel): WidgetNextShopGradeUiModel {
+    private fun getNextShopGradeWidgetData(data: PMGradeBenefitInfoUiModel): WidgetNextShopGradeUiModel {
         val nextGrade = data.nextPMGrade
         return WidgetNextShopGradeUiModel(
                 shopLevel = nextGrade?.shopLevel.orZero(),
@@ -604,7 +601,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         )
     }
 
-    private fun getCurrentShopGradeBenefit(data: PMActiveDataUiModel): WidgetExpandableUiModel {
+    private fun getCurrentShopGradeBenefit(data: PMGradeBenefitInfoUiModel): WidgetExpandableUiModel {
         val grade = data.currentPMGrade
         val benefits = mutableListOf<BaseExpandableItemUiModel>()
         data.currentPMBenefits?.forEach { benefit ->
@@ -626,7 +623,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         )
     }
 
-    private fun getShopGradeWidgetData(data: PMActiveDataUiModel): WidgetShopGradeUiModel {
+    private fun getShopGradeWidgetData(data: PMGradeBenefitInfoUiModel): WidgetShopGradeUiModel {
         val shopGrade = data.currentPMGrade
         val shopInfo = pmBasicInfo?.shopInfo
         return WidgetShopGradeUiModel(

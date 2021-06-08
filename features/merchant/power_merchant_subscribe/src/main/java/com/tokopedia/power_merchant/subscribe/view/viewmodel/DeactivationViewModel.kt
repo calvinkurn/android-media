@@ -43,8 +43,9 @@ class DeactivationViewModel @Inject constructor(
         _isSuccessDeactivate
     }
 
-    fun getPMCancellationQuestionnaireData(pmTireType: Int) {
+    fun getPMCancellationQuestionnaireData(pmTireType: Int, isFirstLoad: Boolean) {
         launchCatchError(block = {
+            getPMDeactivationQuestionnaireUseCase.get().setCacheStrategy(GetPMDeactivationQuestionnaireUseCase.getCacheStrategy(isFirstLoad))
             getPMDeactivationQuestionnaireUseCase.get().params = GetPMDeactivationQuestionnaireUseCase.createParams(PMConstant.PM_SETTING_INFO_SOURCE, pmTireType)
             val result = withContext(dispatchers.io) {
                 getPMDeactivationQuestionnaireUseCase.get().executeOnBackground()

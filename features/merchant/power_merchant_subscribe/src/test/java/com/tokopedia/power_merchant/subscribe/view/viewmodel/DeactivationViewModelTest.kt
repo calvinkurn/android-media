@@ -21,6 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.anyBoolean
 
 /**
  * Created By @ilhamsuaib on 21/04/21
@@ -62,7 +63,7 @@ class DeactivationViewModelTest {
             getPmDeactivationQuestionnaireUseCase.executeOnBackground()
         } returns result
 
-        viewModel.getPMCancellationQuestionnaireData(pmTire)
+        viewModel.getPMCancellationQuestionnaireData(pmTire, anyBoolean())
 
         val expected = Success(result)
 
@@ -80,7 +81,7 @@ class DeactivationViewModelTest {
             getPmDeactivationQuestionnaireUseCase.executeOnBackground()
         } throws exception
 
-        viewModel.getPMCancellationQuestionnaireData(pmTire)
+        viewModel.getPMCancellationQuestionnaireData(pmTire, anyBoolean())
 
         val expected = Fail(exception)
 

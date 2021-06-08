@@ -2,6 +2,8 @@ package com.tokopedia.power_merchant.subscribe.domain.interactor
 
 import com.tokopedia.gm.common.domain.interactor.BaseGqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaire
@@ -61,6 +63,15 @@ class GetPMDeactivationQuestionnaireUseCase @Inject constructor(
                 putString(KEY_SOURCE, source)
                 putInt(KEY_PM_TIER, pmTire)
             }
+        }
+
+        fun getCacheStrategy(shouldFromCache: Boolean): GraphqlCacheStrategy {
+            val cacheType = if (shouldFromCache) {
+                CacheType.CACHE_FIRST
+            } else {
+                CacheType.ALWAYS_CLOUD
+            }
+            return GraphqlCacheStrategy.Builder(cacheType).build()
         }
     }
 }
