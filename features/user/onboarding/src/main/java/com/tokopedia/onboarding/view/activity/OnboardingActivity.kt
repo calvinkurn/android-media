@@ -40,9 +40,8 @@ import javax.inject.Inject
 
 class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponent> {
 
-    private val URI_COACHMARK = "coachmark"
-    private val URI_COACHMARK_ENABLE = "enable"
-    private val URI_COACHMARK_DISABLE = "disable"
+    private val EXTRAS_COACHMARK_KEY = "coachmark"
+    private val EXTRAS_COACHMARK_DISABLE = "disable"
 
     @Inject
     lateinit var onboardingAnalytics: OnboardingAnalytics
@@ -94,17 +93,15 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         super.onCreate(savedInstanceState)
         component.inject(this)
         val intent = intent
-        var uri: Uri? = null
 
         var isCoachmarkApplink = false
         if (intent != null) {
-            uri = intent.data
-            if (uri != null) {
-                isCoachmarkApplink = uri.getPathSegments().size == 3 && uri.getPathSegments().get(1) == URI_COACHMARK
+            intent.extras?.let {
+                isCoachmarkApplink = it.getString(EXTRAS_COACHMARK_KEY) == EXTRAS_COACHMARK_DISABLE
             }
         }
         if (isCoachmarkApplink) {
-            handleCoachmarkUri(uri)
+            handleCoachmarkUri(EXTRAS_COACHMARK_DISABLE)
         } else {
             initObserver()
             loadTime = System.currentTimeMillis()
@@ -131,12 +128,10 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         window.attributes = winParams
     }
 
-    private fun handleCoachmarkUri(uri: Uri?) {
-        uri?.lastPathSegment?.let {
-            if (it.startsWith(URI_COACHMARK_DISABLE)) {
-                CoachMark2.isCoachmmarkShowAllowed = false
-                finish()
-            }
+    private fun handleCoachmarkUri(key: String) {
+        if (key == EXTRAS_COACHMARK_DISABLE) {
+            CoachMark2.isCoachmmarkShowAllowed = false
+            finish()
         }
     }
 
