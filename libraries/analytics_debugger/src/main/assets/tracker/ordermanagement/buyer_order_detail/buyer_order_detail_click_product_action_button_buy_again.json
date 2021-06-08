@@ -1,0 +1,36 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on product action button \"Beli Lagi\"",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "addToCart",
+      "eventAction": "click on beli lagi",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "\\d{1,}",
+      "businessUnit": "Seller Order Management",
+      "currentSite": "tokopediamarketplace",
+      "ecommerce": {
+        "add": {
+          "products": [
+            {
+              "category": ".{1,}",
+              "category_id": "\\d{1,}",
+              "dimension45": ".*",
+              "id": "\\d{1,}",
+              "name": ".{1,}",
+              "price": "\\d{1,}",
+              "quantity": "\\d{1,}",
+              "shop_id": "\\d{1,}",
+              "shop_name": ".{1,}",
+              "shop_type": "\\d{1,}"
+            }
+          ]
+        },
+        "currencyCode": ".{1,}"
+      },
+      "productId": ".{1,}",
+      "userId": "\\d{1,}",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}
