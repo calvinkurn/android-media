@@ -13,7 +13,6 @@ import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationsItem;
-import com.tokopedia.buyerorder.detail.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.buyerorder.list.data.Order;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -454,7 +453,7 @@ public class OrderListAnalytics {
     }
 
     public static void eventWidgetListView(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem contentItemTab, int position) {
-
+        String price = (contentItemTab.getTrackingData().getItemType().equals("recommendation")) ? contentItemTab.getSubtitle() : "";
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
                 EVENT_CATEGORY, "my purchase list - " + contentItemTab.getTitle(),
@@ -464,8 +463,8 @@ public class OrderListAnalytics {
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
                                 NAME, contentItemTab.getTitle(),
-                                ID, contentItemTab.getId(),
-                                PRICE, "", // TODO: [Misael] ini ngga ada harga jg
+                                ID, contentItemTab.getTrackingData().getProductID(),
+                                PRICE, price,
                                 LIST, contentItemTab.getTitle(),
                                 POSITION, position + 1
                                 )
@@ -477,7 +476,7 @@ public class OrderListAnalytics {
     }
 
     public static void eventWidgetClick(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem item, int position) {
-
+        String price = (item.getTrackingData().getItemType().equals("recommendation")) ? item.getSubtitle() : "";
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
@@ -491,8 +490,8 @@ public class OrderListAnalytics {
                                 PRODUCTS, DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 NAME, item.getTitle(),
-                                                ID, item.getId(),
-                                                PRICE, "", // item.getPrice(), // TODO: [Misael] ini response baru ngga ada harga
+                                                ID, item.getTrackingData().getProductID(),
+                                                PRICE, price,
                                                 BRAND, "none",
                                                 CATEGORY, item.getTitle(),
                                                 VARIANT, "none",

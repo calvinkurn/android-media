@@ -29,6 +29,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -214,10 +215,7 @@ class OrderListDetailPresenterTest {
     @Test
     fun orderDetail_shouldReturnSuccess() {
         //given
-        mockkConstructor(OrderListAnalytics::class)
-
         val result = HashMap<Type, Any>()
-        result[DetailsData::class.java] = DetailsData(getOrderDetail())
         result[RecommendationDigiPersoResponse::class.java] = RecommendationDigiPersoResponse(null)
 
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
@@ -230,41 +228,11 @@ class OrderListDetailPresenterTest {
             firstArg<Subscriber<GraphqlResponse>>().onNext(gqlResponse)
         }
 
-        every { anyConstructed<OrderListAnalytics>().sendOrderDetailImpression(any(), any(), any()) } returns Unit
-
         //when
         orderListDetailPresenter.setOrderDetailsContent("", "", "", "", "", "")
 
         //then
         verify { orderDetailsUseCase.execute(any()) }
-        verify { view.setRecommendation(any()) }
-    }
-
-    private fun getOrderDetail(): OrderDetails {
-        return OrderDetails(
-                null,
-                null,
-                mutableListOf(Title(
-                        "Tokopedia", "...", "...", "...", "..."
-                )),
-                null,
-                null,
-                mutableListOf(Detail(
-                        "Tokopedia", "...", "...", "...", "..."
-                )),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null)
+        verify { view.setRecommendation(RecommendationDigiPersoResponse(null)) }
     }
 }
