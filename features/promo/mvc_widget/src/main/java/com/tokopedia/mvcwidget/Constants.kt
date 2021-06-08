@@ -3,19 +3,20 @@ package com.tokopedia.mvcwidget
 const val IO = "IO"
 
 const val TOKOPOINTS_CATALOG_MVC_SUMMARY_QUERY = """
-query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int! , ${'$'}apiVersion : String!){
-    tokopointsCatalogMVCSummary(shopID: ${'$'}shopID,limit: ${'$'}limit , apiVersion: ${'$'}apiVersion) {
+query mvcCatalogSummaryQuery(${'$'}shopID: String!,${'$'}limit: Int!){
+    tokopointsCatalogMVCSummary(shopID: ${'$'}shopID,limit: ${'$'}limit) {
        resultStatus {
           code
           status
           message
         }
         isShown
-        animatedInfos {
-          title
-          subTitle
-          iconURL
+        titles {
+          text
+          icon
         }
+        subTitle
+        imageURL
     }
 }
 """

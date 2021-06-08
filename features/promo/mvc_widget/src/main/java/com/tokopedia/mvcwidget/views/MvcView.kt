@@ -3,6 +3,7 @@ package com.tokopedia.mvcwidget.views
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.os.Handler
 import android.text.Html
 import android.util.AttributeSet
 import android.view.View
@@ -30,8 +31,6 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     lateinit var imageChevron: AppCompatImageView
     lateinit var imageCoupon: AppCompatImageView
     lateinit var mvcContainer: View
-    lateinit var mvcAnimContainer: ConstraintLayout
-    lateinit var bgOriginal: AppCompatImageView
     var shopId: String = ""
     var isMainContainerSetFitsSystemWindows = false
     @MvcSource
@@ -50,8 +49,6 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         imageChevron = this.findViewById(R.id.image_chevron)
         imageCoupon = this.findViewById(R.id.image_coupon)
         mvcContainer = this.findViewById(R.id.mvc_container)
-        mvcAnimContainer = this.findViewById(R.id.mvcAnimViewContainer)
-        bgOriginal = this.findViewById(R.id.bgOriginal)
     }
 
     private fun setClicks() {
@@ -65,57 +62,10 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         this.source = source
         this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         this.shopId = shopId
-
-        if (source == MvcSource.PDP) {
-            setPdpStyleMvcView()
-            setMVCData(mvcData.title, mvcData.subTitle, mvcData.imageUrl)
-        }
-        else {
-            val iconList = mvcData.animatedInfos
-            if (iconList.size > 1) {
-                animateView(iconList)
-            } else {
-                setMVCData(
-                    iconList[0].title ?: "",
-                    iconList[0].subTitle ?: "",
-                    iconList[0].iconURL ?: ""
-                )
-            }
-        }
+        setMVCData(mvcData.title, mvcData.subTitle, mvcData.imageUrl)
     }
 
-    private fun animateView(iconList: List<AnimatedInfos>) {
-
-        iconListRunnable = object : Runnable {
-            var currentIndex = 0
-            var updateInterval = 1100L
-
-            override fun run() {
-                val title = iconList[currentIndex].title ?: ""
-                val subTitle = iconList[currentIndex].subTitle ?: ""
-                val iconUrl = iconList[currentIndex].iconURL ?: ""
-
-                setMVCData(title, subTitle, iconUrl)
-                translateView(mvcAnimContainer)
-                currentIndex += 1
-                if (currentIndex == iconList.size) {
-                    currentIndex = 0
-                }
-
-                imageCoupon.postDelayed(this, updateInterval)
-            }
-        }
-
-        iconListRunnable?.run()
-    }
-
-    private fun translateView(view: View){
-        view.slideUpFromBottom(completion = {
-            view.slideUpFromMiddle()
-        })
-    }
-
-    private fun setMVCData(titles:String, subTitle:String,imageUrl:String){
+    private fun setMVCData(titles:String, subTitle:String,imageUrl:String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             tvTitle.text = HtmlUtil.fromHtml(titles).trim()
         } else {
@@ -129,21 +79,6 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 .dontAnimate()
                 .into(imageCoupon)
         }
-    }
-
-    private fun setPdpStyleMvcView(){
-        bgOriginal.visibility = View.GONE
-        val marginLayoutParams = imageCoupon.layoutParams as ViewGroup.MarginLayoutParams
-        marginLayoutParams.setMargins(0, 0, 0, 0)
-        marginLayoutParams.marginStart = 0
-        imageCoupon.layoutParams = marginLayoutParams
-        val couponLayoutParams = imageCoupon.layoutParams
-        couponLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-        couponLayoutParams.width =
-            imageCoupon.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)
-        imageCoupon.layoutParams = couponLayoutParams
-
-        imageCoupon.requestLayout()
     }
 
     override fun onDetachedFromWindow() {
