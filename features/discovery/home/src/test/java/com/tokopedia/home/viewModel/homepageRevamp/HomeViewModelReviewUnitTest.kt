@@ -78,7 +78,6 @@ class HomeViewModelReviewUnitTest {
 
         // home viewModel
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase, userSessionInterface = userSessionInterface).apply {
-            setNeedToShowGeolocationComponent(false)
         }
         homeViewModel.homeLiveData.observeForever(observerHome)
 
@@ -117,7 +116,6 @@ class HomeViewModelReviewUnitTest {
 
             // home viewModel
             homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase).also {
-                it.setNeedToShowGeolocationComponent(true)
                 launch {
                     channel.send(homeData2)
                 }
@@ -154,17 +152,7 @@ class HomeViewModelReviewUnitTest {
         homeViewModel.homeLiveData.observeForever(observerHome)
         Thread.sleep(300)
         homeViewModel.dismissReview()
-        // Expect Review widget will show on user screen
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find { it is ReviewDataModel } != null
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find { it is ReviewDataModel } == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(homeViewModel.homeDataModel.list.find { it is ReviewDataModel } == null)
     }
 
     @Test
@@ -292,7 +280,6 @@ class HomeViewModelReviewUnitTest {
             )
             // home viewModel
             homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase, getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase).also {
-                it.setNeedToShowGeolocationComponent(true)
             }
 
 

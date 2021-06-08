@@ -13,14 +13,21 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.inboxcommon.InboxFragment
+import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent
@@ -32,7 +39,7 @@ import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.fragment_review_inbox_container.*
 import javax.inject.Inject
 
-class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener, ReviewPerformanceMonitoringContract, ReviewInboxListener {
+class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewInboxContainerComponent>, OnBackPressedListener, ReviewPerformanceMonitoringContract, ReviewInboxListener, InboxFragment {
 
     companion object {
         const val PENDING_TAB_INDEX = 0
@@ -40,7 +47,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         const val SELLER_TAB_INDEX = 2
         const val HIDE_TAB_COUNTER = -1
 
-        fun createNewInstance(tab: String, source: String) : ReviewInboxContainerFragment{
+        fun createNewInstance(tab: String = "", source: String = "") : ReviewInboxContainerFragment{
             return ReviewInboxContainerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewInboxConstants.PARAM_TAB, tab)
@@ -57,6 +64,11 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var tab = ""
     private var source = ""
+
+    private var counter = 0
+    private var buyerReviewFragment: InboxReputationFragment? = null
+    private var containerListener: InboxFragmentContainer? = null
+    private var shouldCommitBuyerReviewFragment: Boolean = false
 
     override fun getScreenName(): String {
         return ""
@@ -120,15 +132,12 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_N0))
         initToolbar()
-        if (GlobalConfig.isSellerApp()) {
-            val reviewSellerBundle = Bundle()
-            setupSellerAdapter(reviewSellerBundle)
-            setupViewPager(listOf(getString(R.string.title_review_rating_product), getString(R.string.title_review_inbox), getString(R.string.title_reputation_history)))
-        } else {
-            observeReviewTabs()
-            getCounterData()
-        }
+        observeReviewTabs()
+        getCounterData()
         setupTabLayout()
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            adjustViewBasedOnRole()
+        }
     }
 
     override fun onDestroy() {
@@ -147,13 +156,33 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         getCounterData()
     }
 
-    private fun getCounterData() {
-        viewModel.getTabCounter()
+    override fun onRoleChanged(role: Int) {
+        when (role) {
+            RoleType.BUYER -> {
+                updateInboxUnifiedBuyerView()
+                containerListener?.showReviewCounter()
+            }
+            RoleType.SELLER -> {
+                setBuyerReviewFragment()
+                attachBuyerReviewFragment()
+                updateInboxUnifiedSellerView()
+                containerListener?.hideReviewCounter()
+            }
+        }
     }
 
-    private fun setupSellerAdapter(bundle: Bundle) {
-        val tabs: List<ReviewInboxTabs> = listOf(ReviewInboxTabs.ReviewRatingProduct, ReviewInboxTabs.ReviewBuyer, ReviewInboxTabs.ReviewPenaltyAndReward)
-        reviewInboxViewPager.adapter = ReviewInboxContainerAdapter(tabs, this, this, bundle)
+    override fun onPageClickedAgain() {
+        // No Op
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is InboxFragmentContainer) {
+            containerListener = context
+        }
+    }
+
+    private fun getCounterData() {
+        viewModel.getTabCounter()
     }
 
     private fun setupBuyerAdapter() {
@@ -161,6 +190,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun setupViewPager(tabTitles: List<String>) {
+        reviewInboxTabs.tabLayout.removeAllTabs()
         tabTitles.forEach {
             reviewInboxTabs.addNewTab(it)
         }
@@ -229,38 +259,24 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun observeReviewTabs() {
         viewModel.reviewTabs.observe(viewLifecycleOwner, Observer { tabs ->
-            val tabTitles = mutableListOf<String>()
-            var counter = 0
-            tabs.forEach { tab ->
-                when (tab) {
-                    is ReviewInboxTabs.ReviewInboxPending -> {
-                        tabTitles.add(getString(R.string.review_pending_tab_title))
-                        counter = (if (tab.counter.isNotBlank() && tab.counter.toIntOrZero() != 0) tab.counter.toIntOrZero() else HIDE_TAB_COUNTER)
-                    }
-                    is ReviewInboxTabs.ReviewInboxHistory -> {
-                        tabTitles.add(getString(R.string.review_history_tab_title))
-                    }
-                    is ReviewInboxTabs.ReviewInboxSeller -> {
-                        tabTitles.add(getString(R.string.review_seller_tab_title))
-                    }
-                }
-            }
-            if(reviewInboxTabs.tabLayout.tabCount == 0) {
-                setupBuyerAdapter()
-                setupViewPager(tabTitles)
-                selectTab()
-            }
+            updateInboxUnifiedBuyerView(getTabTitles(tabs))
             updateCounter(counter)
         })
     }
 
     private fun updateCounter(counter: Int) {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            return
+        }
         reviewInboxTabs.tabLayout.getTabAt(PENDING_TAB_INDEX)?.setCounter(counter)
     }
 
     private fun getDataFromArguments() {
         tab = arguments?.getString(ReviewInboxConstants.PARAM_TAB, "") ?: ""
         source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
+        if(source.isEmpty()) {
+            source = ReviewInboxConstants.DEFAULT_SOURCE
+        }
     }
 
     private fun getSourceBundle(): Bundle {
@@ -268,12 +284,84 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun initToolbar() {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            headerReviewInboxContainer?.hide()
+            return
+        }
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
                 setSupportActionBar(headerReviewInboxContainer)
-                headerReviewInboxContainer?.title = getString(R.string.title_activity_reputation_review)
+                headerReviewInboxContainer?.apply {
+                    title = getString(R.string.title_activity_reputation_review)
+                    show()
+                }
             }
         }
+    }
+
+    private fun updateInboxUnifiedSellerView() {
+        reviewInboxTabs?.hide()
+        reviewSellerInboxFragment?.show()
+        reviewInboxViewPager?.hide()
+    }
+
+    private fun updateInboxUnifiedBuyerView() {
+        reviewInboxTabs?.show()
+        reviewSellerInboxFragment?.hide()
+        reviewInboxViewPager?.show()
+    }
+
+    private fun updateInboxUnifiedBuyerView(tabTitles: List<String>) {
+        setupBuyerAdapter()
+        setupViewPager(tabTitles)
+        selectTab()
+    }
+
+    private fun setBuyerReviewFragment() {
+        if(buyerReviewFragment == null) {
+            buyerReviewFragment = InboxReputationFragment.createInstance(ReviewInboxContainerAdapter.TAB_BUYER_REVIEW) as? InboxReputationFragment?
+            shouldCommitBuyerReviewFragment = true
+        }
+    }
+
+    private fun attachBuyerReviewFragment() {
+        if(shouldCommitBuyerReviewFragment) {
+            buyerReviewFragment?.let {
+                childFragmentManager.beginTransaction()
+                        .replace(R.id.reviewSellerInboxFragment, it)
+                        .commitAllowingStateLoss()
+            }
+            shouldCommitBuyerReviewFragment = false
+        }
+    }
+
+    private fun getTabTitles(tabs: MutableList<ReviewInboxTabs>): MutableList<String> {
+        val tabTitles = mutableListOf<String>()
+        tabs.forEach { tab ->
+            when (tab) {
+                is ReviewInboxTabs.ReviewInboxPending -> {
+                    tabTitles.add(getString(R.string.review_pending_tab_title))
+                    counter = (if (tab.counter.isNotBlank() && tab.counter.toIntOrZero() != 0) tab.counter.toIntOrZero() else HIDE_TAB_COUNTER)
+                }
+                is ReviewInboxTabs.ReviewInboxHistory -> {
+                    tabTitles.add(getString(R.string.review_history_tab_title))
+                }
+                is ReviewInboxTabs.ReviewInboxSeller -> {
+                    tabTitles.add(getString(R.string.review_seller_tab_title))
+                }
+            }
+        }
+        return tabTitles
+    }
+
+    private fun adjustViewBasedOnRole() {
+        if(containerListener?.role == RoleType.BUYER) {
+            updateInboxUnifiedBuyerView()
+            return
+        }
+        updateInboxUnifiedSellerView()
+        setBuyerReviewFragment()
+        attachBuyerReviewFragment()
     }
 }

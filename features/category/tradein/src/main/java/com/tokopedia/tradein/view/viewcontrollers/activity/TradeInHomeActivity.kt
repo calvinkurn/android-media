@@ -51,7 +51,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
+class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -157,7 +157,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         })
 
         viewModel.tradeInHomeStateLiveData.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is GoToCheckout -> {
                     goToCheckout(it.deviceId, it.price)
                 }
@@ -168,7 +168,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         })
     }
 
-    private fun setNotElligible(message: String){
+    private fun setNotElligible(message: String) {
         isEligibleForTradein = false
         maxPrice = "-"
         notEligibleMessage = message
@@ -225,7 +225,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                                 .commit()
                     }
                     else -> {
-                        if(currentFragment is TradeInInitialPriceFragment){
+                        if (currentFragment is TradeInInitialPriceFragment) {
                             (currentFragment as TradeInInitialPriceFragment).handleEligibility(maxPrice, isEligibleForTradein, notEligibleMessage)
                         } else {
                             currentFragment = TradeInInitialPriceFragment
@@ -300,6 +300,9 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
             if (it == TRADEIN_SELLER_CHECK)
                 tradeInAnalytics.clickEducationalTradeIn()
         }
+
+        //init sessionid
+        viewModel.initSessionId(laku6TradeIn)
     }
 
     private fun getTradeInParams() {
@@ -429,7 +432,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
-            if(currentFragment is TradeInInitialPriceFragment)
+            if (currentFragment is TradeInInitialPriceFragment)
                 tradeInAnalytics.initialPricePageBackButtonClick(viewModel.tradeInParams.productId.toString())
             else if (currentFragment is TradeInFinalPriceFragment)
                 tradeInAnalytics.clickFinalPriceBack()

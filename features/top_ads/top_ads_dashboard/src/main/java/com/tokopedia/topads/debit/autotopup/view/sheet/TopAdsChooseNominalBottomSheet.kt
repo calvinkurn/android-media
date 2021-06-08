@@ -72,6 +72,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         contentView = View.inflate(context, R.layout.topads_dash_topup_nominal_sheet, null)
         showCloseIcon = false
         clearContentPadding = true
+        isDragable = true
         setChild(contentView)
     }
 

@@ -2,11 +2,11 @@ package com.tokopedia.shop.pageheader.presentation.holder
 
 import android.content.Context
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -18,17 +18,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetChatButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopActionButtonWidgetFollowButtonComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
@@ -38,7 +34,6 @@ import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.*
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.choose_address_widget
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.choosee_address_widget_bottom_shadow
 import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.tickerShopStatus
-import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
 
 class NewShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
                                           private val shopPageTracking: ShopPageTrackingBuyer?,
@@ -49,6 +44,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetChatButtonComponentListener: ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
+                                          private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
                                           private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
                                           private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener
 ) {
@@ -63,14 +59,18 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         chooseAddressWidget?.updateWidget()
     }
 
-    fun setupChooseAddressWidget(remoteConfig: RemoteConfig) {
+    fun hideChooseAddressWidget(){
+        chooseAddressWidget?.hide()
+    }
+
+    fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
             val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
             )
-            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled) {
+            if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
                 view.choosee_address_widget_bottom_shadow?.show()
@@ -88,6 +88,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                 shopPerformanceWidgetImageOnlyListener,
                 shopActionButtonWidgetChatButtonComponentListener,
                 shopActionButtonWidgetFollowButtonComponentListener,
+                shopActionButtonWidgetNoteButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,
                 shopPlayWidgetListener
         ))
@@ -141,7 +142,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
         view.tickerShopStatus.show()
         view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
         view.tickerShopStatus.setHtmlDescription(
-                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED) {
+                if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED && isMyShop) {
                     generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
                 } else {
                     shopPageHeaderDataModel.statusMessage
@@ -309,7 +310,8 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
     }
 
     fun updateShopName(shopName: String) {
-        shopPageHeaderAdapter?.setShopName(MethodChecker.fromHtml(shopName).toString())
+        if(shopName.isNotEmpty())
+            shopPageHeaderAdapter?.setShopName(MethodChecker.fromHtml(shopName).toString())
     }
 
 }

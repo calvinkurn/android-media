@@ -1,7 +1,7 @@
 package com.tokopedia.sessioncommon.domain.subscriber
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -12,7 +12,8 @@ class LoginTokenFacebookSubscriber(val userSession: UserSessionInterface,
                                    val onSuccessLoginToken: (pojo: LoginTokenPojo) -> Unit,
                                    val onErrorLoginToken: (e: Throwable) -> Unit,
                                    val onShowPopupError: (pojo: LoginTokenPojo)  -> Unit,
-                                   val onGoToSecurityQuestion : () -> Unit ) :
+                                   val onGoToSecurityQuestion : () -> Unit,
+                                   val onFinished : () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -52,7 +53,7 @@ class LoginTokenFacebookSubscriber(val userSession: UserSessionInterface,
     }
 
     override fun onCompleted() {
-
+        onFinished()
     }
 
     override fun onError(e: Throwable?) {

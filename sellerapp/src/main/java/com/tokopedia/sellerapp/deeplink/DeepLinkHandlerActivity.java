@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -17,11 +18,10 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
-import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.sellerapp.BuildConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
-import com.tokopedia.sellerapp.applink.SellerappAplinkModule;
-import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
@@ -31,7 +31,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
-import timber.log.Timber;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -40,8 +41,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
  */
 @DeepLinkHandler({
         TopAdsApplinkModule.class,
-        SellerappAplinkModule.class,
-        LoginRegisterApplinkModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
@@ -52,7 +51,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 @Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
-    private static final String APPLINK_LOG_FORMAT = "P1#WEBVIEW_OPENED#applink;domain='%s';url='%s'";
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
     private static final String URL_QUERY_PARAM = "url";
 
@@ -60,8 +58,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
                 new TopAdsApplinkModuleLoader(),
-                new SellerappAplinkModuleLoader(),
-                new LoginRegisterApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
         );
@@ -88,7 +84,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         finish();
     }
 
-    private void processApplink(DeepLinkDelegate deepLinkDelegate, DeepLinkAnalyticsImpl presenter) {
+    private void processApplink(DeepLinkDelegate deepLinkDelegate,
+                                DeepLinkAnalyticsImpl presenter) {
         Uri applink = getIntent().getData();
         presenter.processUTM(this, applink);
 
@@ -110,13 +107,18 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     private void routeToApplink(DeepLinkDelegate deepLinkDelegate, String applinkString) {
         if (deepLinkDelegate.supportsUri(applinkString)) {
-            getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            deepLinkDelegate.dispatchFrom(this, getIntent());
-            if (getIntent().getExtras() != null) {
-                Bundle bundle = getIntent().getExtras();
-                eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+            try {
+                getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                deepLinkDelegate.dispatchFrom(this, getIntent());
+                if (getIntent().getExtras() != null) {
+                    Bundle bundle = getIntent().getExtras();
+                    eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                }
+                AppUtil.logAirBnbUsage(applinkString);
+            } catch (Exception exception) {
+                String message = String.format("Unable to handle applink: %s - %s", applinkString, exception.getLocalizedMessage());
+                logExceptionToCrashlytics(exception, message);
             }
-            AppUtil.logAirBnbUsage(applinkString);
         } else {
             Intent intent = RouteManager.getIntent(this, applinkString);
             startActivity(intent);
@@ -137,20 +139,24 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         if (context == null)
             return null;
 
-        Intent intent = RouteManager.getIntent(context,OPEN_SHOP);
+        Intent intent = RouteManager.getIntent(context, OPEN_SHOP);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }
 
     private void logWebViewApplink(Uri uri) {
-        if(uri.toString().contains(ApplinkConst.SellerApp.WEBVIEW)) {
+        if (uri.toString().contains(ApplinkConst.SellerApp.WEBVIEW)) {
             Uri urlToLoad = getUrlToLoad(uri);
-            if(urlToLoad != null) {
+            if (urlToLoad != null) {
                 String domain = urlToLoad.getHost();
-                if(domain != null) {
+                if (domain != null) {
                     if (!getBaseDomain(domain).equalsIgnoreCase(TOKOPEDIA_DOMAIN)) {
-                        Timber.w(APPLINK_LOG_FORMAT, domain, uri);
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "applink");
+                        messageMap.put("domain", domain);
+                        messageMap.put("url", String.valueOf(uri));
+                        ServerLogger.log(Priority.P1, "WEBVIEW_OPENED", messageMap);
                     }
                 }
             }
@@ -158,7 +164,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     }
 
     private String getBaseDomain(String host) {
-        if(host == null) {
+        if (host == null) {
             return "";
         }
         String[] split = host.split("\\.");
@@ -177,4 +183,12 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         }
     }
 
+    private void logExceptionToCrashlytics(Exception exception, String message) {
+        if (!BuildConfig.DEBUG) {
+            RuntimeException recordException = new RuntimeException(message, exception);
+            FirebaseCrashlytics.getInstance().recordException(recordException);
+        } else {
+            exception.printStackTrace();
+        }
+    }
 }

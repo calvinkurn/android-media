@@ -287,7 +287,7 @@
     <string name="email_not_registered_info">Lanjut daftar dengan email ini %1$s?</string>
     <string name="not_registered_yes">Ya, Daftar</string>
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
-    <string name="social_media">Akun Media Sosial</string>
+    <string name="another_method">Metode lain</string>
     <string name="fingerprint_login">Sidik Jari</string>
 
     <string name="choose_social_media">Pilih akun untuk masuk</string>
@@ -416,4 +416,10 @@
     <string name="ovo_register_account_title">Mau sekalian daftar OVO?</string>
     <string name="content_desc_ovo_success">OvoSuccess</string>
     <string name="external_account_success_btn_text">Mulai Belanja</string>
+    <string name="desc_banner_register">banner_register</string>
+  
+    <string name="text_term_and_privacy_1">Dengan mendaftar, saya menyetujui </string>
+    <string name="text_term_and_privacy_2"> serta </string>
+    <string name="text_term_condition">Syarat dan Ketentuan</string>
+    <string name="text_privacy_policy">Kebijakan Privasi</string>
 </resources>

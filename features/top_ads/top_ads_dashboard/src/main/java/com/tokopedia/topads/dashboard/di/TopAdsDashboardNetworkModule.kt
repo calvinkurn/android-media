@@ -1,15 +1,12 @@
 package com.tokopedia.topads.dashboard.di
 
 import android.content.Context
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.interceptor.TopAdsAuthInterceptor
 import com.tokopedia.topads.common.data.interceptor.TopAdsResponseError
-import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -28,12 +25,6 @@ class TopAdsDashboardNetworkModule {
         return TopAdsAuthInterceptor(context, userSession as UserSession?, abstractionRouter)
     }
 
-    @TopAdsDashboardScope
-    @Provides
-    fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
-        return CacheApiInterceptor(context, CacheApiTKPDResponseValidator(TopAdsResponseError::class.java))
-    }
-
     @TopAdsDashboardQualifier
     @TopAdsDashboardScope
     @Provides
@@ -44,10 +35,8 @@ class TopAdsDashboardNetworkModule {
     @TopAdsDashboardQualifier
     @Provides
     fun provideOkHttpClient(topAdsAuthInterceptor: TopAdsAuthInterceptor,
-                            @TopAdsDashboardQualifier errorResponseInterceptor: ErrorResponseInterceptor,
-                            cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
+                            @TopAdsDashboardQualifier errorResponseInterceptor: ErrorResponseInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
-                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(topAdsAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .build()

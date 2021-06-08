@@ -22,7 +22,8 @@ object SellerReviewProductListMapper {
                     productImageUrl = it.product.productImageURL,
                     productName = it.product.productName,
                     rating = it.rating,
-                    reviewCount = it.reviewCount
+                    reviewCount = it.reviewCount,
+                    isKejarUlasan = it.isKejarUlasan
             ))
         }
         return productReviewListUiModel

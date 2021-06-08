@@ -8,12 +8,12 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
-import com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.common.view.uimodel.*
-import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
+import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.OTHER_SECTION_TITLE
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoLoadingUiModel
+import com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity
 import com.tokopedia.seller.menu.presentation.uimodel.OrderSectionTitleUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.ProductSectionTitleUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,10 +31,18 @@ object SellerMenuList {
         val helpAndOtherMenu = createOtherInfoMenu(context, isShopOwner, mapper)
 
         menuList.add(ShopInfoLoadingUiModel)
-        menuList.add(OrderSectionTitleUiModel(isShopOwner))
+        menuList.add(OrderSectionTitleUiModel(
+                context.getString(com.tokopedia.seller.menu.R.string.seller_menu_order_section),
+                context.getString(com.tokopedia.seller.menu.R.string.seller_menu_order_cta),
+                isShopOwner
+        ))
         menuList.add(ShopOrderUiModel(isShopOwner = isShopOwner))
         menuList.add(DividerUiModel(DividerType.THIN_PARTIAL))
-        menuList.add(ProductSectionTitleUiModel(isShopOwner))
+        menuList.add(ProductSectionTitleUiModel(
+                context.getString(com.tokopedia.seller.menu.R.string.seller_menu_product_section),
+                context.getString(com.tokopedia.seller.menu.R.string.seller_menu_product_cta),
+                isShopOwner
+        ))
         menuList.add(ShopProductUiModel(isShopOwner = isShopOwner))
         menuList.add(DividerUiModel(DividerType.THIN_PARTIAL))
         menuList.addAll(buyerInfoMenu)
@@ -76,7 +84,8 @@ object SellerMenuList {
     }
 
     private fun createOtherInfoMenu(context: Context, isShopOwner: Boolean, mapper: AdminPermissionMapper): List<SettingUiModel> {
-        val sectionTitle = SectionTitleUiModel(title = R.string.setting_menu_other_info, type = OTHER_SECTION_TITLE)
+        val titleText = context.getString(R.string.setting_menu_other_info)
+        val sectionTitle = SectionTitleUiModel(title = titleText, type = OTHER_SECTION_TITLE)
         val sellerEduApplink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW,
             SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
 
@@ -113,7 +122,7 @@ object SellerMenuList {
                 if (isShopOwner) {
                     mapper.mapFeatureToDestination(context, feature)
                 } else {
-                    AdminRoleAuthorizeActivity.createIntent(context, AdminFeature.REVIEW)
+                    AdminRoleAuthorizeActivity.createIntent(context, feature)
                 }
         context.startActivity(intent)
     }

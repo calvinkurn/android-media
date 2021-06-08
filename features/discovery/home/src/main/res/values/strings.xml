@@ -96,7 +96,7 @@
 
     <string name="go_to_wishlist" tools:ignore="ExtraTranslation">Lihat Wishlist</string>
 
-    <string name="review_create_success_toaster">Terima kasih %s sudah bantu pembeli lain lewat ulasanmu</string>
+    <string name="review_create_success_toaster">Terima kasih, %s. Ulasanmu akan membantu penjual &amp; calon pembeli lain!</string>
     <string name="review_oke">Oke</string>
 
     <string name="content_desc_title">text title kategori</string>
@@ -117,9 +117,11 @@
     <string name="onboarding_coachmark_inbox_title">Temukan Inbox &amp; Notifikasi di sini!</string>
     <string name="onboarding_coachmark_inbox_description">Sekarang kamu bisa cek chat, diskusi &amp; notifikasi dengan lebih mudah di halaman ini.</string>
 
-    <string name="onboarding_coachmark_wallet_title">Kenalan sama Tokopoints, yuk! </string>
+    <string name="onboarding_coachmark_wallet_title">Kenalan sama TokoPoints, yuk! </string>
     <string name="onboarding_coachmark_wallet_description">Points ini bisa ditukar buat belanja. Transaksi pakai kupon cashback buat nambah points-mu, ya!</string>
 
+    <string name="home_pmpro_coachmark_title">Yuk, kenalan sama Power Merchant PRO!</string>
+    <string name="home_pmpro_coachmark_description">Belanja dengan layanan memuaskan dari penjual terbaik di Tokopedia.</string>
 
     <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
     <string name="cta_dialog_success_reset_password">Masuk</string>
@@ -134,6 +136,7 @@
     <string name="content_desc_error_state_icon">Image error</string>
     <string name="content_desc_error_state_channel">Content error</string>
     <string name="content_desc_home_background">Home background</string>
+    <string name="content_desc_home_category_widget">Category widget</string>
 
     <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
     <string name="sprint_card_item">Sprint Card Item</string>

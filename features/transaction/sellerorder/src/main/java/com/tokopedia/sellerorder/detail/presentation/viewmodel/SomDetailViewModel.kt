@@ -15,8 +15,8 @@ import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 /**
@@ -27,6 +27,7 @@ class SomDetailViewModel @Inject constructor(
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+        somValidateOrderUseCase: SomValidateOrderUseCase,
         userSession: UserSessionInterface,
         dispatcher: CoroutineDispatchers,
         private val somGetOrderDetailUseCase: SomGetOrderDetailUseCase,
@@ -35,7 +36,8 @@ class SomDetailViewModel @Inject constructor(
         authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase,
         authorizeReplyChatAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, authorizeSomDetailAccessUseCase, authorizeReplyChatAccessUseCase) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest, somValidateOrderUseCase,
+        authorizeSomDetailAccessUseCase, authorizeReplyChatAccessUseCase) {
 
     private val _orderDetailResult = MutableLiveData<Result<GetSomDetailResponse>>()
     val orderDetailResult: LiveData<Result<GetSomDetailResponse>>
@@ -53,8 +55,11 @@ class SomDetailViewModel @Inject constructor(
     val somDetailChatEligibility: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _somDetailChatEligibility
 
+    private var loadDetailJob: Job? = null
+
     fun loadDetailOrder(orderId: String) {
-        launchCatchError(block = {
+        loadDetailJob?.cancel()
+        loadDetailJob = launchCatchError(block = {
             val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toLongOrZero())
             somGetOrderDetailUseCase.setParamDynamicPrice(dynamicPriceParam)
             val somGetOrderDetail = somGetOrderDetailUseCase.execute(orderId)

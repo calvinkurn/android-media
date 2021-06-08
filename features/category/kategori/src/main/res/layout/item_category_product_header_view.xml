@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dp_12"
-    tools:background="@color/black">
+    tools:background="@color/Unify_N700">
 
     <ImageView
         android:id="@+id/product_image"

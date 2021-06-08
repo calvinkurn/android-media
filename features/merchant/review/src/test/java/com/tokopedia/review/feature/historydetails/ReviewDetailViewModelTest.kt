@@ -3,8 +3,8 @@ package com.tokopedia.review.feature.historydetails
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputation
 import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputationResponseWrapper
-import com.tokopedia.review.utils.verifyErrorEquals
-import com.tokopedia.review.utils.verifySuccessEquals
+import com.tokopedia.review.utils.verifyReviewErrorEquals
+import com.tokopedia.review.utils.verifyReviewSuccessEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert
@@ -163,18 +163,18 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
     }
 
     private fun verifyInboxReviewInsertReputationSuccess(viewState: Success<Int>) {
-        viewModel.submitReputationResult.verifySuccessEquals(viewState)
+        viewModel.submitReputationResult.verifyReviewSuccessEquals(viewState)
     }
 
     private fun verifyInboxReviewInsertReputationError(viewState: Fail<Int>) {
-        viewModel.submitReputationResult.verifyErrorEquals(viewState)
+        viewModel.submitReputationResult.verifyReviewErrorEquals(viewState)
     }
 
     private fun verifyReviewDetailsSuccess(viewState: Success<ProductrevGetReviewDetail>) {
-        viewModel.reviewDetails.verifySuccessEquals(viewState)
+        viewModel.reviewDetails.verifyReviewSuccessEquals(viewState)
     }
 
     private fun verifyReviewDetailsError(viewState: Fail<ProductrevGetReviewDetail>) {
-        viewModel.reviewDetails.verifyErrorEquals(viewState)
+        viewModel.reviewDetails.verifyReviewErrorEquals(viewState)
     }
 }

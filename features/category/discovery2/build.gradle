@@ -23,73 +23,81 @@ android {
     }
 }
 dependencies {
+
+    // Features Dependency
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.searchbar)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.basemvvm)
+    implementation project(rootProject.ext.libraries.circularViewPager)
+    implementation project(rootProject.ext.features.categoryNavBottomSheet)
+    implementation project(rootProject.ext.features.playWidget)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.filter)
+    implementation project(rootProject.ext.features.discoveryCommon)
+    api project(rootProject.ext.features.localizationchooseaddress)
+
+    // Libraries Dependency
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.circularViewPager)
     implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.features.categoryNavBottomSheet)
-
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+
+    // UnifyDependencies Dependency
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.unifyDependencies.coach_mark
-
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sortFilter
-    implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.discoveryCommon)
+
+    // tkpdInternalLibDependencies Dependency
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.firebase.crashlytics
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.productCard)
-    api project(rootProject.ext.features.localizationchooseaddress)
-    implementation project(rootProject.ext.features.playWidget)
 
-
-    androidTestImplementation rootProject.ext.testDependencies.assertJCore
+    // miscDependencies Dependency
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
     androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    // testDependencies Dependency
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.assertJCore
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
-
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.firebase.crashlytics
 
 }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewdetail.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductFeedbackDetailResponse(
@@ -46,7 +47,10 @@ data class ProductFeedbackDetailResponse(
                 @SerializedName("reviewerName")
                 val reviewerName: String? = "",
                 @SerializedName("variantName")
-                val variantName: String? = ""
+                val variantName: String? = "",
+                @SerializedName("isKejarUlasan")
+                @Expose
+                val isKejarUlasan: Boolean = false
         ) {
             data class Attachment(
                     @SerializedName("thumbnailURL")

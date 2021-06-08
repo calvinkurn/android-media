@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.adapter.viewholder
 
-import android.graphics.Typeface.*
+import android.graphics.Typeface.BOLD
+import android.graphics.Typeface.NORMAL
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -15,7 +16,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -25,6 +25,8 @@ import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -84,6 +86,7 @@ class ChatItemListViewHolder constructor(
         bindLabel(element)
         bindPin(element)
         bindSmartReplyIndicator(element)
+        ImageUtil.setTypingAnimation(typingImage)
     }
 
     private fun bindSmartReplyIndicator(element: ItemChatListPojo) {
@@ -152,7 +155,7 @@ class ChatItemListViewHolder constructor(
         }.show(listener.getSupportChildFragmentManager(), LongClickMenu.TAG)
     }
 
-    private fun handleChatMenuClick(itemMenus: Menus.ItemMenus, element: ItemChatListPojo) {
+    private fun handleChatMenuClick(itemMenus: TopchatItemMenu, element: ItemChatListPojo) {
         with(itemView.context) {
             when (itemMenus.title) {
                 getString(R.string.menu_delete_chat) -> delete(element)
@@ -241,9 +244,9 @@ class ChatItemListViewHolder constructor(
         }
     }
 
-    private fun createChatLongClickMenu(element: ItemChatListPojo): MutableList<Menus.ItemMenus> {
+    private fun createChatLongClickMenu(element: ItemChatListPojo): MutableList<TopchatItemMenu> {
         with(itemView.context) {
-            val menus = arrayListOf<Menus.ItemMenus>()
+            val menus = arrayListOf<TopchatItemMenu>()
             val delete = getString(R.string.menu_delete_chat)
             val markAsRead = getString(R.string.menu_mark_as_read)
             val markAsUnread = getString(R.string.menu_mark_as_unread)
@@ -258,14 +261,14 @@ class ChatItemListViewHolder constructor(
                 pinText = getString(R.string.menu_pin_chat)
                 pinDrawable = R.drawable.ic_topchat_pin_chat
             }
-            menus.add(Menus.ItemMenus(pinText, pinDrawable))
+            menus.add(TopchatItemMenu(pinText, pinDrawable))
 
             if (element.hasUnreadItem()) {
-                menus.add(Menus.ItemMenus(markAsRead, R.drawable.ic_chat_read_filled_grey))
+                menus.add(TopchatItemMenu(markAsRead, R.drawable.ic_chat_read_filled_grey))
             } else {
-                menus.add(Menus.ItemMenus(markAsUnread, R.drawable.ic_chat_unread_filled_grey))
+                menus.add(TopchatItemMenu(markAsUnread, R.drawable.ic_chat_unread_filled_grey))
             }
-            menus.add(Menus.ItemMenus(delete, R.drawable.ic_trash_filled_grey))
+            menus.add(TopchatItemMenu(delete, R.drawable.ic_trash_filled_grey))
 
             return menus
         }
@@ -273,13 +276,9 @@ class ChatItemListViewHolder constructor(
 
     private fun bindTypingState() {
         typingImage.show()
-        MethodChecker.animateVectorDrawable(true, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
-        setMessageTyping()
-    }
-
-    private fun setMessageTyping() {
         message.hide()
         typingText.show()
+        ImageUtil.startAVDTypingAnimation(typingImage)
     }
 
     private fun bindMessageState(chat: ItemChatListPojo) {
@@ -302,7 +301,7 @@ class ChatItemListViewHolder constructor(
         message.show()
         typingImage.hide()
         typingText.hide()
-        MethodChecker.animateVectorDrawable(false, typingImage.drawable, itemView.context, typingImage, com.tokopedia.chat_common.R.drawable.topchat_typing_motion)
+        ImageUtil.stopAVDTypingAnimation(typingImage)
     }
 
     private fun createLabelSpan(chat: ItemChatListPojo): SpannableString {

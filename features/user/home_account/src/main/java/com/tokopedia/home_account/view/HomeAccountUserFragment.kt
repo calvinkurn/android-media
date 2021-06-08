@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.view
 
 import android.Manifest
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -15,6 +16,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -24,9 +26,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
@@ -67,11 +71,12 @@ import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.home_account.view.viewholder.CommonViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialItemViewHolder
 import com.tokopedia.home_account.view.viewholder.ErrorFinancialViewHolder
-import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_KUPON_SAYA
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOKOMEMBER
 import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder.Companion.TYPE_TOPQUEST
+import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -80,22 +85,21 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LocalLoad
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.internal_review.factory.createReviewHelper
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -137,6 +141,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private var trackingQueue: TrackingQueue? = null
     private var widgetTitle: String = ""
     private var isShowHomeAccountTokopoints = false
+    private var isShowDarkModeToggle = false
 
     var adapter: HomeAccountUserAdapter? = null
     var financialAdapter: HomeAccountFinancialAdapter? = null
@@ -160,6 +165,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!userSession.isLoggedIn) {
+            goToApplink(ApplinkConst.LOGIN)
+            activity?.finish()
+        }
         fetchRemoteConfig()
         fpmBuyer = PerformanceMonitoring.start(FPM_BUYER)
         context?.let {
@@ -180,18 +189,19 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
+            isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
         }
     }
 
     private fun setupObserver() {
-        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, {
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetBuyerAccount(it.data)
                 is Fail -> onFailGetData()
             }
         })
 
-        viewModel.firstRecommendationData.observe(viewLifecycleOwner, {
+        viewModel.firstRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when (it) {
                 is Success -> onSuccessGetFirstRecommendationData(it.data)
@@ -202,7 +212,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.getRecommendationData.observe(viewLifecycleOwner, {
+        viewModel.getRecommendationData.observe(viewLifecycleOwner, Observer {
             removeLoadMoreLoading()
             when (it) {
                 is Success -> addRecommendationItem(it.data)
@@ -213,7 +223,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.ovoBalance.observe(viewLifecycleOwner, {
+        viewModel.ovoBalance.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetOvoBalance(it.data)
@@ -224,14 +234,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         })
 
-        viewModel.shortcutData.observe(viewLifecycleOwner, {
+        viewModel.shortcutData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     memberLocalLoad?.hide()
                     memberCardView?.show()
 
                     val leftMargin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6f, resources.displayMetrics)
-                    memberTitle?.setMargin(leftMargin.toInt(), 0, 0,  0)
+                    memberTitle?.setMargin(leftMargin.toInt(), 0, 0, 0)
                     memberTitle?.text = it.data.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
                     memberIcon?.show()
                     memberIcon?.setImageUrl(it.data.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
@@ -481,9 +491,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         home_account_user_toolbar?.let {
-            it.setIcon(IconBuilder()
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+            it.setIcon(IconBuilder(
+                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
+            ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {})
+            viewLifecycleOwner.lifecycle.addObserver(it)
         }
 
         setupStatusBar()
@@ -542,7 +553,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         viewModel.getShortcutData()
     }
 
-    private fun showHomeAccountTokopoints() : Boolean {
+    private fun showHomeAccountTokopoints(): Boolean {
         return isShowHomeAccountTokopoints
     }
 
@@ -592,7 +603,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     private fun setupSettingList() {
         addItem(menuGenerator.generateUserSettingMenu(), addSeparator = true)
-        addItem(menuGenerator.generateApplicationSettingMenu(accountPref, permissionChecker), addSeparator = true)
+        addItem(menuGenerator.generateApplicationSettingMenu(
+                accountPref, permissionChecker, isShowDarkModeToggle),
+                addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
         if (GlobalConfig.isAllowDebuggingTools()) {
             addItem(menuGenerator.generateDeveloperOptionsSettingMenu(), addSeparator = true)
@@ -622,6 +635,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     override fun onProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
+    }
+
+    override fun onIconWarningClicked(profile: ProfileDataView) {
+        showBottomSheetAddName(profile)
     }
 
     override fun onEditProfileClicked() {
@@ -676,8 +693,35 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     createAndShowSafeModeAlertDialog(isActive)
                 }
             }
+            AccountConstants.SettingCode.SETTING_DARK_MODE -> {
+                setupDarkMode(isActive)
+            }
             else -> {
             }
+        }
+    }
+
+    private fun setupDarkMode(isDarkMode: Boolean) {
+        setAppCompatMode(isDarkMode)
+        saveDarkModeToSharefPreference(isDarkMode)
+        homeAccountAnalytic.eventClickThemeSetting(isDarkMode)
+        recreateView()
+    }
+
+    private fun setAppCompatMode(isDarkMode: Boolean) {
+        val screenMode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        AppCompatDelegate.setDefaultNightMode(screenMode)
+    }
+
+    private fun saveDarkModeToSharefPreference(isDarkMode: Boolean) {
+        accountPref.saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
+    }
+
+    private fun recreateView() {
+        activity?.run {
+            finish()
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            startActivity(Intent(this, this.javaClass))
         }
     }
 
@@ -784,6 +828,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 }
             }
 
+            AccountConstants.SettingCode.SETTING_IP -> {
+                homeAccountAnalytic.eventClickIpAboutTokopedia()
+                RouteManager.route(activity, AccountConstants.Url.BASE_WEBVIEW_APPLINK + AccountConstants.Url.BASE_MOBILE + AccountConstants.Url.PATH_IP)
+            }
+
             AccountConstants.SettingCode.SETTING_PRIVACY_ID -> {
                 homeAccountAnalytic.eventClickSetting(PRIVACY_POLICY)
                 homeAccountAnalytic.eventClickPrivacyPolicyAboutTokopedia()
@@ -810,6 +859,9 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
                 showDialogLogout()
+            }
+            AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
             }
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()
@@ -1156,6 +1208,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             }
         }
 
+        if (requestCode == REQUEST_CODE_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
+            gotoSettingProfile()
+        }
+
+        if (requestCode == REQUEST_CODE_PROFILE_SETTING) {
+            getData()
+        }
+
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
@@ -1209,6 +1269,44 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         }
     }
 
+    private fun showBottomSheetAddName(profile: ProfileDataView) {
+        activity?.let {
+            val addNameLayout = View.inflate(context, R.layout.layout_bottom_sheet_add_name, null)
+            val btnAddName: UnifyButton = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_button)
+            val iconAddName: ImageUnify = addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
+            val bottomSheet = BottomSheetUnify()
+
+            ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
+            iconAddName.setOnClickListener {
+                gotoChangeName(profile)
+                bottomSheet.dismiss()
+            }
+            btnAddName.setOnClickListener {
+                gotoChangeName(profile)
+                bottomSheet.dismiss()
+            }
+
+            bottomSheet.setChild(addNameLayout)
+            bottomSheet.clearAction()
+            bottomSheet.setCloseClickListener {
+                bottomSheet.dismiss()
+            }
+            childFragmentManager.run {
+                bottomSheet.show(this, "bottom sheet add name")
+            }
+        }
+    }
+
+    private fun gotoChangeName(profile: ProfileDataView) {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.CHANGE_NAME, profile.name, "")
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_NAME)
+    }
+
+    private fun gotoSettingProfile() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+        startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
+    }
+
     private fun showSuccessRemoveWishlist() {
         view?.let {
             Toaster.make(
@@ -1250,6 +1348,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     companion object {
+        private const val REQUEST_CODE_CHANGE_NAME = 300
+        private const val REQUEST_CODE_PROFILE_SETTING = 301
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -1257,6 +1357,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val REQUEST_FROM_PDP = 394
         private val FPM_BUYER = "mp_account_buyer"
+        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
 
         private const val OVO_ASSET_TYPE = "ovo"
         private const val TOKOPOINT_ASSET_TYPE = "tokopoint"

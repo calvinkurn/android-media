@@ -1,9 +1,11 @@
 package com.tokopedia.common.topupbills.utils
 
 object CommonTopupBillsGqlQuery {
-    val rechargeCatalogProductInput = """
+    private const val RECHARGE_PARAM_ANDROID_DEVICE_ID = 5
+
+    val rechargeCatalogDynamicProductInput = """
         query rechargeCatalogDynamicInput(${'$'}menuID: Int!,${'$'}operator: String!) {
-          rechargeCatalogDynamicInput(menuID:${'$'}menuID, platformID: 5, operator:${'$'}operator) {
+          rechargeCatalogDynamicInput(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID, operator:${'$'}operator) {
             needEnquiry
             isShowingProduct
             dynamicFields {
@@ -46,23 +48,49 @@ object CommonTopupBillsGqlQuery {
         }
     """.trimIndent()
 
-    val enquiryDigital = """
-        query enquiry (${'$'}clientNumber: String!,${'$'}productId: String!) {
-          status
-          enquiry(
-            clientNumber:${'$'}clientNumber,
-            productId:${'$'}productId,
-            requestType: NEW) {
-            attributes: Attributes {
-              UserID
-              ProductID
-              ClientNumber
-              Title
-              Price
-              PricePlain
-              mainInfo: MainInfo {
-                label: Label
-                value: Value
+    val rechargeCatalogProductInput = """
+        query rechargeCatalogProductInput(${'$'}menuID: Int!,${'$'}operator: String!){
+          rechargeCatalogProductInput(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID, operator:${'$'}operator) {
+            needEnquiry
+            isShowingProduct
+            enquiryFields {
+              id
+              param_name
+              name
+              style
+              text
+              placeholder
+              help
+              data_collections {
+                value
+              }
+              validations {
+                rule
+                title
+              }
+            }
+            product {
+              name
+              text
+              dataCollections {
+                name
+                products {
+                  id
+                  attributes {
+                    desc
+                    price
+                    price_plain
+                    promo {
+                      id
+                      new_price
+                    }
+                    product_labels
+                    detail
+                    detail_compact
+                    detail_url
+                    detail_url_text
+                  }
+                }
               }
             }
           }
@@ -71,7 +99,7 @@ object CommonTopupBillsGqlQuery {
 
     val catalogMenuDetail = """
         query catalogMenuDetail(${'$'}menuID: Int!){
-          rechargeCatalogMenuDetail(menuID:${'$'}menuID, platformID: 5) {
+          rechargeCatalogMenuDetail(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID) {
             catalog {
               id
               name
@@ -171,5 +199,37 @@ object CommonTopupBillsGqlQuery {
             }
           }
         }
+    """.trimIndent()
+
+    val prefixSelectTelco = """
+        query telcoPrefixSelect(${'$'}menuID: Int!) {
+          rechargeCatalogPrefixSelect(menuID:${'$'}menuID, platformID: $RECHARGE_PARAM_ANDROID_DEVICE_ID) {
+            componentID
+            name
+            paramName
+            text
+            help
+            placeholder
+            validations {
+              id
+              title
+              message
+              rule
+            }
+            prefixes {
+              key
+              value
+              operator {
+                id
+                attributes {
+                  name
+                  default_product_id
+                  image_url
+                }
+              }
+            }
+          }
+        }
+
     """.trimIndent()
 }

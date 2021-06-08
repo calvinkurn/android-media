@@ -22,8 +22,9 @@ class PostListWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel,
-        val postFilter: List<PostFilterUiModel>
+        val postFilter: List<WidgetFilterUiModel>
 ) : BaseWidgetUiModel<PostListDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
@@ -31,7 +32,7 @@ class PostListWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<PostListDataUiModel> {
-        return PostListWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState, postFilter)
+        return PostListWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState, postFilter)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<PostListDataUiModel>): Boolean {

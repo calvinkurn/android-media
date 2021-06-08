@@ -4,12 +4,12 @@
     <application>
         <activity
             android:name=".view.activity.EmoneyCheckBalanceActivity"
-            android:label="@string/emoney_toolbar_title_etoll_check_balance"
+            android:label="@string/emoney_nfc_toolbar_title_etoll_check_balance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateAlwaysHidden">
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />

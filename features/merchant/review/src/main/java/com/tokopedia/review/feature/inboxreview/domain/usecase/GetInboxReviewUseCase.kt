@@ -49,6 +49,7 @@ class GetInboxReviewUseCase @Inject constructor(
                     replyText
                     replyTime
                     isAutoReply
+                    isKejarUlasan
                 }
                 filterBy
                 remainder

@@ -29,6 +29,7 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogProductCardListener
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.util.CatalogConstant
+import com.tokopedia.catalog.model.util.CatalogSearchApiConst
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.common_category.adapter.BaseCategoryAdapter
@@ -38,7 +39,6 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DataValue
@@ -81,6 +81,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private lateinit var catalogComponent: CatalogComponent
 
     private var catalogId: String = ""
+    private var catalogUrl: String = ""
     private var departmentId: String = ""
 
     var productNavListAdapter: CatalogProductNavListAdapter? = null
@@ -96,15 +97,17 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
 
         private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
-        fun newInstance(catalogId: String): BaseCategorySectionFragment {
+        fun newInstance(catalogId: String, catalogUrl : String?): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
             fragment.arguments = bundle
             return fragment
         }
@@ -122,6 +125,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         arguments?.let {
             if (it.containsKey(ARG_EXTRA_CATALOG_ID)) {
                 catalogId = it.getString(ARG_EXTRA_CATALOG_ID, "")
+                catalogUrl = it.getString(ARG_EXTRA_CATALOG_URL, "")
             }
         }
         initView()
@@ -143,6 +147,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
             fetchProductData(getProductListParams(getPage()))
             viewModel.fetchQuickFilters(getQuickFilterParams())
+            viewModel.catalogUrl = catalogUrl
         }
     }
 
@@ -418,18 +423,18 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onItemClicked(item: CatalogProductItem, adapterPosition: Int) {
-        val intent = getProductIntent(item.id, item.categoryId.toString())
+        val intent = getProductIntent(item.id, "")
 
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
-            CatalogDetailAnalytics.trackProductCardClick(catalogId,userSession.userId,
+            CatalogDetailAnalytics.trackProductCardClick(catalogId,viewModel.catalogUrl,userSession.userId,
                     item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
         }
     }
 
     override fun onProductImpressed(item: CatalogProductItem, adapterPosition: Int) {
-        CatalogDetailAnalytics.trackEventImpressionProductCard(catalogId,userSession.userId,
+        CatalogDetailAnalytics.trackEventImpressionProductCard(catalogId,viewModel.catalogUrl,userSession.userId,
                 item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
     }
 
@@ -468,8 +473,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                "${CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS} - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",
-                catalogId,userSession.userId)
+                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId)
         removeWishlistActionUseCase.createObservable(productId,
                 userId, this)
     }
@@ -478,8 +483,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                "${CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS} - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",
-                catalogId,userSession.userId)
+                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+                "$catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId)
         addWishlistActionUseCase.createObservable(productId, userId,
                 this)
     }
@@ -621,8 +626,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun addDefaultSelectedSort() {
-        if (searchParameter.get(SearchApiConst.OB).isEmpty()) {
-            searchParameter.set(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+        if (searchParameter.get(CatalogSearchApiConst.OB).isEmpty()) {
+            searchParameter.set(CatalogSearchApiConst.OB, CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
         }
         viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
     }

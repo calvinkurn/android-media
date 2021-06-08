@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
             android:drawablePadding="@dimen/layout_lvl1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,6 +29,25 @@
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Total Pendapatan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/filterShcTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:background="@drawable/shc_filter_view_background"
+            android:drawablePadding="@dimen/shc_dimen_10dp"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingTop="@dimen/shc_dimen_6dp"
+            android:paddingEnd="@dimen/shc_dimen_12dp"
+            android:paddingBottom="@dimen/shc_dimen_6dp"
+            android:textColor="@color/Unify_N700"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTableWidgetTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvTableWidgetTitle"
+            app:typographyType="body_2"
+            tools:text="Pilih Kategori" />
 
         <com.tokopedia.sellerhomecommon.presentation.view.customview.tableview.TableView
             android:id="@+id/shcTableView"
@@ -60,7 +79,7 @@
             android:gravity="center"
             android:text="@string/shc_table_widget_on_empty_message"
             android:textAlignment="center"
-            android:textColor="@color/light_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,7 +100,7 @@
             android:paddingLeft="@dimen/layout_lvl0"
             android:paddingEnd="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2"
-            android:textColor="@color/Green_G500"
+            android:textColor="@color/Unify_G500"
             android:textSize="@dimen/fontSize_lvl3"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -102,7 +121,8 @@
             app:layout_constraintBottom_toBottomOf="@id/btnTableCta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/btnTableCta"
-            app:srcCompat="@drawable/ic_arrow_right_default" />
+            app:srcCompat="@drawable/ic_arrow_right_default"
+            android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
 
         <include
             layout="@layout/shc_partial_common_widget_state_error"
@@ -135,7 +155,8 @@
             app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
             app:layout_constraintVertical_chainStyle="packed"
             tools:src="@drawable/unify_globalerrors_connection"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:contentDescription="@string/shc_content_desc_image_table_empty" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcTableEmptyTitle"
@@ -145,7 +166,7 @@
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl3"
             android:gravity="center_horizontal"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/tvShcTableEmptyDescription"

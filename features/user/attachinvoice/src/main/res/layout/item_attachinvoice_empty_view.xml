@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl6"
-        app:srcCompat="@drawable/invoice_empty_state" />
+        app:remoteFileName="ic_smartbills_emptystate.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpText"

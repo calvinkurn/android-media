@@ -80,6 +80,7 @@ dependencies {
     implementation project(rootProject.ext.features.recharge_slice)
     implementation project(rootProject.ext.features.travel_slice)
     implementation project(rootProject.ext.features.digitalCheckout)
+    implementation project(rootProject.ext.features.rechargePdpEmoney)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
@@ -145,6 +146,7 @@ dependencies {
     implementation project(rootProject.ext.features.inbox)
 
     //Transaction
+    implementation project(rootProject.ext.features.cart)
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
@@ -153,4 +155,7 @@ dependencies {
 
     //Order Management
     implementation project(rootProject.ext.features.ordermanagementhistory)
+
+    //Library
+    implementation project(rootProject.ext.libraries.imagePicker)
 }

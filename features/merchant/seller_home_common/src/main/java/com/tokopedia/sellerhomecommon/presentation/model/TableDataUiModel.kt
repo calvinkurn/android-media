@@ -9,7 +9,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.factory.TableItemFact
  */
 
 data class TableDataUiModel(
-        override val dataKey: String = "",
+        override var dataKey: String = "",
         override var error: String = "",
         val dataSet: List<TablePageUiModel> = emptyList(),
         override var isFromCache: Boolean = false,
@@ -73,7 +73,8 @@ sealed class TableRowsUiModel(
     data class RowColumnHtml(
             override val valueStr: String = "",
             override val width: Int = 0,
-            val isLeftAlign: Boolean = false
+            val isLeftAlign: Boolean = false,
+            var colorInt: Int? = null
     ) : TableRowsUiModel(valueStr, width) {
 
         override fun type(typeFactory: TableItemFactory): Int {

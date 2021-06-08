@@ -45,12 +45,16 @@
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_shop_page_feed"
                     android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_page_note"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".note.view.activity.ShopNoteDetailActivity"
-            android:exported="true"
             android:label="@string/note_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
@@ -77,7 +81,6 @@
 
         <activity
             android:name=".sort.view.activity.ShopProductSortActivity"
-            android:exported="true"
             android:label="@string/shop_sort_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

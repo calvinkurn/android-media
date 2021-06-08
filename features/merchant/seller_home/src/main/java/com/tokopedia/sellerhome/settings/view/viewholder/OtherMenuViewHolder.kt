@@ -1,8 +1,7 @@
 package com.tokopedia.sellerhome.settings.view.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -10,43 +9,53 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.gm.common.constant.PMProURL
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
+import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
+import java.lang.StringBuilder
+import java.util.*
 
 class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
                           private val listener: Listener,
                           private val trackingListener: SettingTrackingListener,
                           private val freeShippingTracker: SettingFreeShippingTracker,
+                          private val shopOperationalTracker: SettingShopOperationalTracker,
                           private val userSession: UserSessionInterface) {
 
     companion object {
-        private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
-        private val GREEN_TEXT_COLOR = R.color.setting_green
-        private val GREY_TIP = R.drawable.setting_tip_bar_disabled
-        private val GREY_TEXT_COLOR = R.color.setting_grey_text
-        private val RED_TEXT_COLOR = R.color.setting_red_text
-        private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
-        private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
+        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+
+        private val TEAL_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_T500
+        private val YELLOW_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_Y400
+
+        private const val TAB_PM_PARAM = "tab"
+        private const val TAB_PM = "pm"
+        private const val TAB_PM_PRO = "pm_pro"
     }
 
     fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
@@ -141,13 +150,12 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    @SuppressLint("SetTextI18n")
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
         val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
         itemView.shopInfoLayout.findViewById<Typography>(R.id.shopFollowers)?.run {
             visibility = followersVisibility
-            text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
+            text = StringBuilder("${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}")
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
                 listener.onFollowersCountClicked()
@@ -169,6 +177,35 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun hideFreeShippingLayout() {
         itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
+    }
+
+    fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
+        itemView.findViewById<View>(R.id.shopOperationalHour)?.run {
+            val timeLabel = shopOperational.timeLabel
+            val shopOperationalStatus = itemView.context.getString(shopOperational.status)
+
+            findViewById<Typography>(R.id.textOperationalHour)?.text = if(timeLabel != null) {
+                context.getString(timeLabel)
+            } else {
+                shopOperational.time
+            }
+            findViewById<Label>(R.id.labelShopStatus)?.apply {
+                text = shopOperationalStatus
+                setLabelType(shopOperational.labelType)
+            }
+            findViewById<ImageView>(R.id.imageOperationalHour)?.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
+            }
+
+            if (shopOperational.hasShopSettingsAccess) {
+                setOnClickListener {
+                    shopOperationalTracker.trackClickShopOperationalHour(shopOperationalStatus)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                }
+            }
+
+            visibility = View.VISIBLE
+        }
     }
 
     private fun setDotVisibility(shopFollowers: Long) {
@@ -250,38 +287,74 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
-        val shopType = shopStatusUiModel.shopType
-        showShopStatusHeader(shopType, shopStatusUiModel.thematicIllustrationUrl)
-        val layoutInflater = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
-        val shopStatusLayout: View = when(shopType) {
+        val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
+        showShopStatusHeader(shopType)
+        val layoutInflater = shopType?.shopTypeLayoutRes?.let { LayoutInflater.from(context).inflate(it, null, false) }
+        val shopStatusLayout: View? = when(shopType) {
             is RegularMerchant -> {
                 listener.onStatusBarNeedDarkColor(true)
-                layoutInflater.apply {
-                    setRegularMerchantShopStatus(shopType)
+                layoutInflater?.apply {
+                    setRegularMerchantShopStatus(shopType, shopStatusUiModel)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    findViewById<AppCompatImageView>(R.id.rightRectangle).setOnClickListener {
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-                        shopStatusUiModel.sendSettingShopInfoClickTracking()
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM)
                     }
                 }
             }
             is PowerMerchantStatus -> {
                 listener.onStatusBarNeedDarkColor(false)
-                layoutInflater.apply {
-                    setPowerMerchantShopStatus(shopType)
+                layoutInflater?.apply {
+                    setPowerMerchantShopStatus(shopType, shopStatusUiModel)
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-                        shopStatusUiModel.sendSettingShopInfoClickTracking()
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
                     }
                 }
             }
             is ShopType.OfficialStore -> {
                 listener.onStatusBarNeedDarkColor(false)
-                layoutInflater.apply {
+                layoutInflater?.apply {
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                 }
             }
+            is PowerMerchantProStatus.Advanced -> {
+                layoutInflater?.apply {
+                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
+                    }
+                }
+
+            }
+            is PowerMerchantProStatus.Expert -> {
+                layoutInflater?.apply {
+                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
+                    }
+                }
+            }
+            is PowerMerchantProStatus.Ultimate -> {
+                layoutInflater?.apply {
+                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
+                    }
+                }
+            }
+            is PowerMerchantProStatus.InActive -> {
+                layoutInflater?.apply {
+                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        goToPowerMerchantSubscribe(TAB_PM_PRO)
+                    }
+                }
+            }
+            else -> null
         }
         (itemView.findViewById(R.id.shopStatus) as LinearLayout).run {
             removeAllViews()
@@ -289,53 +362,136 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun showShopStatusHeader(shopType: ShopType, thematicIllustrationUrl: String = "") {
-        itemView.shopStatusHeader?.setImageResource(shopType.shopTypeHeaderRes)
+    private fun goToPowerMerchantSubscribe(tab: String) {
+        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+        val appLinkPMTab = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build().toString()
+        context.let { RouteManager.route(context, appLinkPMTab) }
+    }
 
-        itemView.findViewById<AppCompatImageView>(R.id.iv_other_menu_thematic)?.let { thematicIv ->
-            ImageHandler.loadImageWithoutPlaceholderAndError(thematicIv, thematicIllustrationUrl)
+    private fun View.hideTransactionSection() {
+        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.hide()
+        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)?.hide()
+        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)?.hide()
+    }
+
+    private fun View.showTransactionSection() {
+        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.show()
+        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.setBackgroundResource(com.tokopedia.seller.menu.common.R.drawable.ic_divider_stats_rm)
+        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)?.show()
+        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)?.show()
+    }
+
+    private fun showShopStatusHeader(shopType: ShopType?) {
+        shopType?.let { itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, it.shopTypeHeaderRes)) }
+        itemView.shopStatusHeaderIcon?.run {
+            if (shopType !is RegularMerchant) {
+                visibility = View.VISIBLE
+                shopType?.shopTypeHeaderIconRes?.let { iconRes ->
+                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
+                }
+            } else {
+                visibility = View.GONE
+            }
         }
     }
 
-    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
-        findViewById<Typography>(R.id.regularMerchantStatus).run {
-            text = when(regularMerchant) {
-                is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
-                is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)
+    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus, statusUiModel: ShopStatusUiModel): View {
+        val upgradePMTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.upgradePMText)
+        val powerMerchantStatusTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantStatusText)
+        val powerMerchantText: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantText)
+        val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
+        when (powerMerchantStatus) {
+            is PowerMerchantStatus.Active -> {
+                if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
+                    upgradePMTextView.show()
+                } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
+                    upgradePMTextView.hide()
+                }
+                powerMerchantStatusTextView.hide()
+                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
+            }
+            is PowerMerchantStatus.NotActive -> {
+                powerMerchantStatusTextView.show()
+                upgradePMTextView.hide()
+                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_status)
+                powerMerchantStatusTextView.setOnClickListener {
+                    goToPowerMerchantSubscribe(TAB_PM_PRO)
+                }
             }
         }
-
         return this
     }
 
-    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus) : View {
-        var statusText = context.resources.getString(R.string.setting_on_verification)
-        var textColor = GREY_TEXT_COLOR
-        var statusDrawable = GREY_TIP
-        var powerMerchantDrawableIcon = GREY_POWER_MERCHANT_ICON
-        when(powerMerchantStatus) {
-            is PowerMerchantStatus.Active -> {
-                statusText = context.resources.getString(R.string.setting_active)
-                textColor = GREEN_TEXT_COLOR
-                powerMerchantDrawableIcon = GREEN_POWER_MERCHANT_ICON
-                statusDrawable = GREEN_TIP }
-            is PowerMerchantStatus.NotActive -> {
-                statusText = context.resources.getString(R.string.setting_not_active)
-                textColor = RED_TEXT_COLOR }
-            is PowerMerchantStatus.OnVerification -> {
-                findViewById<Typography>(R.id.powerMerchantText)?.text = context.resources.getString(R.string.regular_merchant)
+    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant, shopStatusUiModel: ShopStatusUiModel): View {
+        val userShopInfo = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+        val txStatsRM = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)
+        val txTotalStatsRM = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)
+        val regularMerchantStatus = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.regularMerchantStatus)
+        regularMerchantStatus.run {
+            text = when (regularMerchant) {
+                is RegularMerchant.NeedUpgrade -> context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_upgrade)
             }
         }
-        findViewById<Typography>(R.id.powerMerchantStatusText)?.text = statusText
-        findViewById<Typography>(R.id.powerMerchantStatusText)?.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            findViewById<AppCompatImageView>(R.id.powerMerchantLeftStatus)?.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
+
+        val thresholdTransaction  = 110
+        val maxTransaction = 100
+        val totalTransaction = userShopInfo?.totalTransaction ?: 0
+        if (totalTransaction >= thresholdTransaction) {
+            hideTransactionSection()
         } else {
-            findViewById<AppCompatImageView>(R.id.powerMerchantLeftStatus)?.let {
-                (it as? ImageView)?.setImageDrawable(ResourcesCompat.getDrawable(resources, statusDrawable, null))
+            if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
+                showTransactionSection()
+                if (totalTransaction > maxTransaction) {
+                    txStatsRM.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
+                    txTotalStatsRM.hide()
+                } else {
+                    if (userShopInfo.isBeforeOnDate) {
+                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+                    } else {
+                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
+                    }
+                    txTotalStatsRM.show()
+                    txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
+                }
+            } else {
+                hideTransactionSection()
             }
         }
-        findViewById<AppCompatImageView>(R.id.powerMerchantIcon)?.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
+        return this
+    }
+
+    private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
+        val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
+        val ivBgPMPro = findViewById<ShapeableImageView>(com.tokopedia.seller.menu.common.R.id.iv_bg_pm_pro)
+        val powerMerchantProIcon = findViewById<IconUnify>(com.tokopedia.seller.menu.common.R.id.powerMerchantProIcon)
+        val powerMerchantProStatusText = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.powerMerchantProStatusText)
+        when (powerMerchantStatus) {
+            is PowerMerchantProStatus.Advanced -> {
+                ivBgPMPro.loadImage(PMProURL.BG_ADVANCE)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
+                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
+            }
+            is PowerMerchantProStatus.Expert -> {
+                ivBgPMPro.loadImage(PMProURL.BG_EXPERT)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
+                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
+            }
+            is PowerMerchantProStatus.Ultimate -> {
+                ivBgPMPro.loadImage(PMProURL.BG_ULTIMATE)
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
+                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
+            }
+            is PowerMerchantProStatus.InActive -> {
+                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                powerMerchantProStatusText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_not_active)
+            }
+        }
+        val roundedRadius = 16F
+        ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
+                .toBuilder()
+                .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                .build()
+        powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
     }
 

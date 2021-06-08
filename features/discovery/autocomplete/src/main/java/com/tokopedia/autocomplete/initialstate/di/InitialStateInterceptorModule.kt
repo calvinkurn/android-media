@@ -5,7 +5,6 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
@@ -23,12 +22,6 @@ class InitialStateInterceptorModule {
     @Provides
     fun provideDebugInterceptor(): DebugInterceptor {
         return DebugInterceptor()
-    }
-
-    @InitialStateScope
-    @Provides
-    fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
-        return CacheApiInterceptor(context)
     }
 
     @InitialStateScope

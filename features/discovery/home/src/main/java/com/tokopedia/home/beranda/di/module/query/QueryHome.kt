@@ -5,6 +5,7 @@ object QueryHome {
             "    dynamicHomeChannel {\n" +
             "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token, param: \$param, location: \$location){\n" +
             "          id\n" +
+            "          dividerType\n" +
             "          group_id\n" +
             "          galaxy_attribution\n" +
             "          persona\n" +
@@ -64,6 +65,7 @@ object QueryHome {
             "              recommendationType\n" +
             "              shop{\n" +
             "                shopID\n" +
+            "                city\n" +
             "               }\n" +
             "              labelGroup {\n" +
             "                title\n" +
@@ -80,6 +82,10 @@ object QueryHome {
             "                 value\n" +
             "              }\n" +
             "              textColor\n" +
+            "              badges {\n" +
+            "                 title\n" +
+            "                 image_url\n" +
+            "              }\n" +
             "          }\n" +
             "          banner {\n" +
             "            id\n" +

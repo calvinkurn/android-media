@@ -37,9 +37,10 @@ import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
+import com.tokopedia.digital_checkout.presentation.adapter.DigitalMyBillsAdapter
+import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
-import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
@@ -70,7 +71,8 @@ import javax.inject.Inject
  * @author by jessica on 07/01/21
  */
 
-class DigitalCartFragment : BaseDaggerFragment() {
+class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
+        DigitalCartInputPriceWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -91,6 +93,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private var cartPassData: DigitalCheckoutPassData? = null
     private var digitalSubscriptionParams: DigitalSubscriptionParams = DigitalSubscriptionParams()
     lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
+    lateinit var myBillsAdapter: DigitalMyBillsAdapter
 
     override fun getScreenName(): String = ""
 
@@ -130,6 +133,9 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        //save userInputView value for don't keep activities
+        viewModel.requestCheckoutParam.userInputPriceValue = inputPriceHolderView.getPriceInput()
+
         outState.putParcelable(EXTRA_STATE_PROMO_DATA, viewModel.promoData.value)
         outState.putParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER, viewModel.requestCheckoutParam)
         super.onSaveInstanceState(outState)
@@ -167,11 +173,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
             renderCartDigitalInfoData(it)
-        })
-
-        viewModel.cartAdditionalInfoList.observe(viewLifecycleOwner, Observer {
-            cartDetailInfoAdapter.setAdditionalInfoItems(it)
-            containerSeeDetailToggle.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+            renderCartBasedOnParamState()
         })
 
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
@@ -183,7 +185,9 @@ class DigitalCartFragment : BaseDaggerFragment() {
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
-            if (it != null) tvTotalPayment.text = getStringIdrFormat((it - getPromoData().amount))
+            it?.let { totalPrice ->
+                checkoutBottomViewWidget.totalPayment = getStringIdrFormat((totalPrice - getPromoData().amount))
+            }
         })
 
         viewModel.showContentCheckout.observe(viewLifecycleOwner, Observer { showContent ->
@@ -203,24 +207,28 @@ class DigitalCartFragment : BaseDaggerFragment() {
             redirectToTopPayActivity(it)
         })
 
+        viewModel.payment.observe(viewLifecycleOwner, Observer { payment ->
+            checkoutSummaryWidget.setSummaries(payment)
+        })
+
         observePromoData()
     }
 
     private fun observePromoData() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
             viewModel.applyPromoData(it)
-            digitalPromoBtnView.desc = getPromoData().description
+            checkoutBottomViewWidget.promoButtonDescription = getPromoData().description
             if (getPromoData().description.isEmpty()) {
                 renderDefaultEmptyPromoView()
             } else {
-                digitalPromoBtnView.title = getPromoData().title
+                checkoutBottomViewWidget.promoButtonTitle = getPromoData().title
             }
-            digitalPromoBtnView.state = getPromoData().state.mapToStatePromoCheckout()
+            checkoutBottomViewWidget.promoButtonState = getPromoData().state.mapToStatePromoCheckout()
 
             when (getPromoData().state) {
                 TickerCheckoutView.State.ACTIVE -> {
                     cartDetailInfoAdapter.isExpanded = true
-                    digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
+                    checkoutBottomViewWidget.promoButtonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
                 }
                 TickerCheckoutView.State.FAILED -> cartDetailInfoAdapter.isExpanded = true
                 else -> {
@@ -230,13 +238,13 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun renderDefaultEmptyPromoView() {
-        digitalPromoBtnView.title = getString(R.string.digital_checkout_promo_title)
-        digitalPromoBtnView.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
+        checkoutBottomViewWidget.promoButtonTitle = getString(R.string.digital_checkout_promo_title)
+        checkoutBottomViewWidget.promoButtonChevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
     }
 
     private fun showContent() {
         contentCheckout.visibility = View.VISIBLE
-        layout_digital_checkout_bottom_view.visibility = View.VISIBLE
+        checkoutBottomViewWidget.visibility = View.VISIBLE
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
@@ -249,23 +257,38 @@ class DigitalCartFragment : BaseDaggerFragment() {
             }
         }
 
-        if (cartInfo.showSubscriptionsView) renderCrossSellingMyBillsWidget(cartInfo.crossSellingConfig)
-        renderFintechProductWidget(cartInfo.attributes.fintechProduct.getOrNull(0))
+        renderMyBillsLayout(cartInfo)
 
         cartInfo.attributes.icon.let { iconCheckout.loadImage(it) }
         productTitle.text = cartInfo.attributes.categoryName
         cartDetailInfoAdapter.setInfoItems(cartInfo.mainInfo)
+        cartDetailInfoAdapter.setAdditionalInfoItems(cartInfo.additionalInfos)
+        containerSeeDetailToggle.visibility = if (cartInfo.additionalInfos.isEmpty()) View.GONE else View.VISIBLE
 
         if (cartInfo.attributes.isEnableVoucher) {
-            digitalPromoBtnView.visibility = View.VISIBLE
-        } else digitalPromoBtnView.visibility = View.GONE
+            checkoutBottomViewWidget.promoButtonVisibility = View.VISIBLE
+        } else checkoutBottomViewWidget.promoButtonVisibility = View.GONE
 
         if (!digitalSubscriptionParams.isSubscribed) {
             renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
         }
     }
 
+    private fun renderCartBasedOnParamState() {
+        viewModel.requestCheckoutParam.let { param ->
+            //render input user
+            if (param.userInputPriceValue != null) {
+                inputPriceHolderView?.setPriceInput(param.userInputPriceValue)
+            }
+
+            //render fintechProduct & subscription
+            if (param.isSubscriptionChecked) myBillsAdapter.setActiveSubscriptions()
+            if (param.fintechProducts.isNotEmpty()) myBillsAdapter.setActiveFintechProducts(param.fintechProducts)
+        }
+    }
+
     private fun getDigitalIdentifierParam(): RequestBodyIdentifier = DeviceUtil.getDigitalIdentifierParam(requireActivity())
+
 
     private fun initViews() {
         // init recyclerview
@@ -289,7 +312,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
         showPromoTicker()
 
-        btnCheckout.setOnClickListener {
+        checkoutBottomViewWidget.setCheckoutButtonListener {
             viewModel.proceedToCheckout(getDigitalIdentifierParam())
         }
     }
@@ -324,19 +347,17 @@ class DigitalCartFragment : BaseDaggerFragment() {
     private fun showPromoTicker() {
         renderDefaultEmptyPromoView()
 
-        digitalPromoBtnView.setOnClickListener {
-            onClickUsePromo()
-        }
+        checkoutBottomViewWidget.setDigitalPromoButtonListener { onClickUsePromo() }
 
-        digitalPromoBtnView.setListenerChevronIcon {
-            if (digitalPromoBtnView.desc.isNotEmpty()) {
-                digitalPromoBtnView.state = ButtonPromoCheckoutView.State.LOADING
+        checkoutBottomViewWidget.setButtonChevronIconListener {
+            if (checkoutBottomViewWidget.promoButtonDescription.isNotEmpty()) {
+                checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.LOADING
                 onResetPromoDiscount()
             } else {
                 onClickUsePromo()
             }
         }
-        digitalPromoBtnView.visibility = View.VISIBLE
+        checkoutBottomViewWidget.promoButtonVisibility = View.VISIBLE
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
@@ -414,79 +435,48 @@ class DigitalCartFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderCrossSellingMyBillsWidget(crossSellingConfig: CartDigitalInfoData.CrossSellingConfig) {
-        if ((crossSellingConfig.bodyTitle).isNotEmpty()) {
-            subscriptionWidget.visibility = View.VISIBLE
+    private fun renderMyBillsLayout(cartInfo: CartDigitalInfoData) {
+        myBillsAdapter = DigitalMyBillsAdapter(cartInfo.crossSellingType, this)
 
-            btnCheckout.text = crossSellingConfig.checkoutButtonText
+        rvMyBills.layoutManager = LinearLayoutManager(context)
+        rvMyBills.isNestedScrollingEnabled = false
+        rvMyBills.adapter = myBillsAdapter
 
-            //if user has subscribe, hide subscriptionWidget's checkbox
-            if (digitalSubscriptionParams.isSubscribed) {
-                subscriptionWidget.disableCheckBox()
-            }
-            subscriptionWidget.setTitle(crossSellingConfig.bodyTitle)
-
-            if (crossSellingConfig.isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter)
-            else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore)
-            subscriptionWidget.hasMoreInfo(false)
-
-            if (viewModel.requestCheckoutParam.isSubscriptionChecked) {
-                subscriptionWidget.setChecked(true)
-            } else if (!subscriptionWidget.isChecked()) {
-                subscriptionWidget.setChecked(crossSellingConfig.isChecked)
-            }
-
-            viewModel.onSubscriptionChecked(subscriptionWidget.isChecked())
-
-            subscriptionWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                override fun onMoreInfoClicked() {}
-
-                override fun onCheckChanged(isChecked: Boolean) {
-                    digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-                    if (isChecked) subscriptionWidget.setDescription(crossSellingConfig.bodyContentAfter)
-                    else subscriptionWidget.setDescription(crossSellingConfig.bodyContentBefore)
-
-                    viewModel.onSubscriptionChecked(isChecked)
-                }
-            }
-        }
+        myBillsAdapter.setItems(if (cartInfo.showSubscriptionsView) listOf(cartInfo.crossSellingConfig) else listOf(),
+                cartInfo.attributes.fintechProduct)
     }
 
-    private fun renderFintechProductWidget(fintechProduct: FintechProduct?) {
-        fintechProduct?.let {
-            if (fintechProduct.info.title.isNotEmpty()) {
-                fintechProductWidget.setTitle(fintechProduct.info.title)
-                fintechProductWidget.setDescription(fintechProduct.info.subtitle)
-                fintechProductWidget.hasMoreInfo(true)
-                fintechProductWidget.visibility = View.VISIBLE
+    override fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean) {
+        digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
 
-                if (fintechProduct.checkBoxDisabled) fintechProductWidget.disableCheckBox() else {
+        viewModel.onSubscriptionChecked(isChecked)
+    }
 
-                    if (viewModel.requestCheckoutParam.isFintechProductChecked) {
-                        fintechProductWidget.setChecked(true)
-                    } else if (!fintechProductWidget.isChecked()) {
-                        fintechProductWidget.setChecked(fintechProduct.optIn)
-                    }
+    override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
+        digitalAnalytics.eventTebusMurahImpression(fintechProduct, getCategoryName(), position, userSession.userId)
+    }
 
-                    viewModel.updateTotalPriceWithFintechProduct(fintechProductWidget.isChecked(), getPriceInput())
-                }
+    override fun onCrossellImpression(fintechProduct: FintechProduct, position: Int) {
+        digitalAnalytics.eventImpressionCrossSell(fintechProduct, getCategoryName(), position, userSession.userId)
+    }
 
-                fintechProductWidget.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                    override fun onMoreInfoClicked() {
-                        renderFintechProductMoreInfo(fintechProduct.info)
-                    }
+    override fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean) {
+        if (isChecked) digitalAnalytics.eventTebusMurahChecked(fintechProduct, getCategoryName(), position, userSession.userId)
+        else digitalAnalytics.eventTebusMurahUnchecked(fintechProduct, getCategoryName(), userSession.userId)
+        viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
+    }
 
-                    override fun onCheckChanged(isChecked: Boolean) {
-                        if (fintechProduct.transactionType == TRANSACTION_TYPE_PROTECTION) {
-                            digitalAnalytics.eventClickProtection(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-                        } else {
-                            digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-                        }
-                        viewModel.updateTotalPriceWithFintechProduct(isChecked, getPriceInput())
-                    }
-                }
-            }
+    override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int) {
+        if (isChecked) {
+            digitalAnalytics.eventClickCrossSell(fintechProduct, getCategoryName(), position, userSession.userId)
+        } else {
+            digitalAnalytics.eventUnclickCrossSell(fintechProduct, userSession.userId)
         }
+        viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
+    }
+
+    override fun onFintechMoreInfoChecked(info: FintechProduct.FintechProductInfo) {
+        renderFintechProductMoreInfo(info)
     }
 
     private fun renderFintechProductMoreInfo(fintechProductInfo: FintechProduct.FintechProductInfo) {
@@ -515,28 +505,28 @@ class DigitalCartFragment : BaseDaggerFragment() {
             inputPriceContainer.visibility = View.VISIBLE
 
             if (!userInputPriceDigital.minPayment.isNullOrEmpty())
-                inputPriceHolderView.actionListener = object : DigitalCartInputPriceWidget.ActionListener {
-                    override fun onInputPriceByUserFilled(paymentAmount: Long?) {
-                        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0,
-                                fintechProductWidget.isChecked())
-                    }
-
-                    override fun enableCheckoutButton() {
-                        btnCheckout.isEnabled = true
-                    }
-
-                    override fun disableCheckoutButton() {
-                        btnCheckout.isEnabled = false
-                    }
-                }
+                inputPriceHolderView.actionListener = this
 
             inputPriceHolderView.setMinMaxPayment(
-                    total,
                     userInputPriceDigital.minPaymentPlain.toLong(),
                     userInputPriceDigital.maxPaymentPlain.toLong(),
                     userInputPriceDigital.minPayment ?: "",
                     userInputPriceDigital.maxPayment ?: "")
+            inputPriceHolderView.setPriceInput(total)
         }
+    }
+
+    override fun onInputPriceByUserFilled(paymentAmount: Long?) {
+        viewModel.setTotalPriceBasedOnUserInput(paymentAmount?.toDouble() ?: 0.0)
+        viewModel.setSubtotalPaymentSummaryOnUserInput(paymentAmount?.toDouble() ?: 0.0)
+    }
+
+    override fun enableCheckoutButton() {
+        checkoutBottomViewWidget.isCheckoutButtonEnabled = true
+    }
+
+    override fun disableCheckoutButton() {
+        checkoutBottomViewWidget.isCheckoutButtonEnabled = false
     }
 
     private fun interruptRequestTokenVerification(phoneNumber: String?) {
@@ -552,7 +542,8 @@ class DigitalCartFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToTopPayActivity(paymentPassData: PaymentPassData) {
-        digitalAnalytics.eventProceedToPayment(getCartDigitalInfoData(), getPromoData().promoCode, userSession.userId)
+        digitalAnalytics.eventProceedToPayment(getCartDigitalInfoData(), getPromoData().promoCode, userSession.userId,
+                cartPassData?.categoryId ?: "")
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
@@ -588,7 +579,7 @@ class DigitalCartFragment : BaseDaggerFragment() {
 
     private fun hideContent() {
         contentCheckout.hide()
-        layout_digital_checkout_bottom_view.hide()
+        checkoutBottomViewWidget.hide()
     }
 
     private fun getPromoDigitalModel(): PromoDigitalModel = viewModel.getPromoDigitalModel(cartPassData, getPriceInput())
@@ -606,7 +597,6 @@ class DigitalCartFragment : BaseDaggerFragment() {
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"
         private const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
-        private const val TRANSACTION_TYPE_PROTECTION = "purchase-protection"
 
         private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"

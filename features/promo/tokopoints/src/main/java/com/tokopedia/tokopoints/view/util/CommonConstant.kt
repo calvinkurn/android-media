@@ -16,6 +16,7 @@ interface CommonConstant {
             const val PAGE_SIZE = "limit"
             const val SORT_ID = "sortID"
             const val CATEGORY_ID = "categoryID"
+            const val CATEGORY_ROOTID = "categoryRootID"
             const val SUB_CATEGORY_ID = "subCategoryID"
             const val POINTS_RANGE = "pointRange"
             const val CATALOG_ID = "catalog_id"
@@ -37,6 +38,7 @@ interface CommonConstant {
             const val SAVING_YEAR = "year"
             const val SAVING_MONTH = "month"
             const val SAVING_TYPE = "type"
+            const val PAGESIZE = "pageSize"
         }
     }
 
@@ -80,6 +82,8 @@ interface CommonConstant {
             const val BANNER = "banner"
             const val TOPADS = "topads"
             const val TOPHEADER = "topheader"
+            const val RECOMM = "recomm"
+
         }
     }
 
@@ -168,7 +172,8 @@ interface CommonConstant {
         const val BUNDLE_ARGS_USER_IS_LOGGED_IN = "USER_IS_LOGGEDIN"
         const val APIVERSION = "2.0.0"
         const val IMPRESSION_LIST = "/tokopoints - p{x} - promo list"
-        const val TIMER_RED_BACKGROUND_HEX = "#EF144A"
+        const val TIMER_RED_BACKGROUND_HEX = "EF144A"
+        const val HASH = "#"
         const val USERSAVING_COLORSTR= "color:"
         const val CATALOG_CLAIM_MESSAGE = "CATALOG_CLAIM_MESSAGE"
     }

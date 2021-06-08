@@ -64,10 +64,10 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     override fun setUp() {
         super.setUp()
         viewModel = spyk(SomListViewModel(somAcceptOrderUseCase,
-                somRejectOrderUseCase, somRejectCancelOrderUseCase, somEditRefNumUseCase, userSessionInterface,
-                dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase, somListGetWaitingPaymentUseCase,
-                somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase, bulkAcceptOrderStatusUseCase,
-                bulkAcceptOrderUseCase, authorizeAccessUseCase, authorizeMultiAcceptAccessUseCase))
+                somRejectOrderUseCase, somRejectCancelOrderUseCase, somEditRefNumUseCase, somValidateOrderUseCase,
+                userSessionInterface, dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase,
+                somListGetWaitingPaymentUseCase, somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase,
+                bulkAcceptOrderStatusUseCase, bulkAcceptOrderUseCase, authorizeAccessUseCase, authorizeMultiAcceptAccessUseCase))
 
         somGetOrderListJobField = viewModel::class.java.getDeclaredField("getOrderListJob").apply {
             isAccessible = true
@@ -141,7 +141,12 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         verify(inverse = !shouldRefresh) {
             viewModel.getFilters(false)
-            viewModel.refreshSelectedOrder(orderId, invoice)
+        }
+
+        if (shouldRefresh) {
+            val refreshOrderRequest = viewModel.refreshOrderRequest.observeAwaitValue()
+            assert(refreshOrderRequest?.first == orderId)
+            assert(refreshOrderRequest?.second == invoice)
         }
     }
 

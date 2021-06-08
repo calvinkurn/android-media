@@ -17,15 +17,14 @@ import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
-import com.tokopedia.topads.edit.data.response.KeywordDataModel
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ADDED_PRODUCTS
-import com.tokopedia.topads.edit.utils.Constants.ATUR_NAME
 import com.tokopedia.topads.edit.utils.Constants.DELETED_PRODUCTS
 import com.tokopedia.topads.edit.utils.Constants.KATA_KUNCI
+import com.tokopedia.topads.edit.utils.Constants.LAINNYA_NAME
 import com.tokopedia.topads.edit.utils.Constants.PRODUK_NAME
 import com.tokopedia.topads.edit.utils.Constants.TAB_POSITION
 import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
@@ -34,7 +33,6 @@ import com.tokopedia.topads.edit.view.fragment.edit.EditProductFragment
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_base_edit_activity_layout.*
-import kotlinx.android.synthetic.main.topads_edit_keyword_search_layout.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -94,15 +92,15 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
                 ::onSuccessGroupEdited, ::onErrorEdit)
     }
 
-    private fun sendSaveDataEvent(items: ArrayList<KeywordDataModel>?) {
+    private fun sendSaveDataEvent(items: MutableList<Map<String, Any>>) {
 
         val map = mutableListOf<MutableMap<String, String>>()
 
-        items?.forEach {
+        items.forEach {
             val keywordModel = DataLayer.mapOf(
-                    Constants.KEYWORD_NAME, it.keywordName,
-                    Constants.KEYWORD_ID, it.keywordId,
-                    Constants.KEYWORD_TYPE, it.keywordType
+                    Constants.KEYWORD_NAME, it["name"],
+                    Constants.KEYWORD_ID, it["id"],
+                    Constants.KEYWORD_TYPE, it["type"]
             )
             map.add(keywordModel as MutableMap<String, String>)
         }
@@ -118,11 +116,13 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
     }
 
     private fun onErrorEdit(error: String?) {
-        val errorMessage = Utils.getErrorMessage(this, error?:"")
-        Toaster.build(rootView, errorMessage,
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+        val errorMessage = Utils.getErrorMessage(this, error ?: "")
+        root?.let {
+            Toaster.build(it, errorMessage,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+        }
         btn_submit?.isEnabled = true
     }
 
@@ -136,9 +136,9 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         view_pager.offscreenPageLimit = 3
         tab_layout?.addNewTab(PRODUK_NAME)
         tab_layout?.addNewTab(KATA_KUNCI)
-        tab_layout?.addNewTab(ATUR_NAME)
-        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 2) ?: 2)?.select()
-        view_pager.currentItem = bundle?.getInt(TAB_POSITION, 2) ?: 2
+        tab_layout?.addNewTab(LAINNYA_NAME)
+        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 1) ?: 2)?.select()
+        view_pager.currentItem = bundle?.getInt(TAB_POSITION, 1) ?: 2
         tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {
                 //do nothing
@@ -166,7 +166,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         list.add(EditProductFragment.newInstance(bundle))
         list.add(BaseEditKeywordFragment.newInstance(bundle))
         list.add(EditGroupAdFragment.newInstance(bundle))
-        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, ATUR_NAME), supportFragmentManager, 0)
+        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, LAINNYA_NAME), supportFragmentManager, 0)
         adapter.setData(list)
         return adapter
     }

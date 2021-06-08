@@ -1,15 +1,17 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.assertion.hasTotalItemOf
-import com.tokopedia.topchat.matchers.isKeyboardShown
+import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers.`is`
 import org.junit.Test
 
 class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
@@ -72,10 +74,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // When
         clickPlusIconMenu()
         clickComposeArea()
-        waitForIt(KEYBOARD_DELAY)
 
         // Then
-        assertThat(isKeyboardShown(), `is`(true))
+        assertKeyboardIsVisible()
         onView(withId(R.id.fl_chat_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -98,10 +99,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // When
         clickStickerIconMenu()
         clickComposeArea()
-        waitForIt(KEYBOARD_DELAY)
 
         // Then
-        assertThat(isKeyboardShown(), `is`(true))
+        assertKeyboardIsVisible()
         onView(withId(R.id.fl_chat_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -151,10 +151,9 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // WHen
         clickStickerIconMenu()
         clickStickerIconMenu()
-        waitForIt(KEYBOARD_DELAY)
 
         // Then
-        assertThat(isKeyboardShown(), `is`(true))
+        assertKeyboardIsVisible()
         onView(withId(R.id.fl_chat_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -229,7 +228,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                 matches(isDisplayed())
         )
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                hasTotalItemOf(3)
+                matches(withTotalItem(3))
         )
     }
 
@@ -249,8 +248,65 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
                 matches(isDisplayed())
         )
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                hasTotalItemOf(4)
+                matches(withTotalItem(4))
         )
+    }
+
+    @Test
+    fun should_able_to_send_msg_after_typing_msg() {
+        //Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        //When
+        val count = activityTestRule.activity
+                .findViewById<RecyclerView>(R.id.recycler_view)
+                .adapter?.itemCount ?: 0
+
+        onView(withId(R.id.new_comment)).perform(typeText("Test"))
+        clickSendBtn()
+
+        //Then
+        onView(
+                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                        0, R.id.tvMessage
+                ))
+                .check(matches(withText("Test")))
+        onView(withId(R.id.recycler_view)).check(matches(withTotalItem(count + 1)))
+        onView(withId(R.id.new_comment)).check(matches(withText("")))
+    }
+
+    @Test
+    fun should_not_be_able_to_send_msg_when_msg_is_empty() {
+        //Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        //When
+        onView(withId(R.id.new_comment)).perform(typeText("Test"))
+        onView(withId(R.id.new_comment)).perform(clearText())
+
+        //Then
+        DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn_disabled)
+    }
+
+    @Test
+    fun test_msg_sent_error_empty_text_click() {
+        //Given
+        setupChatRoomActivity()
+        getChatUseCase.response = firstPageChatAsSeller
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        inflateTestFragment()
+
+        //When
+        onView(withId(R.id.send_but)).perform(click())
+
+        //Then
+        assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
     }
 
 }

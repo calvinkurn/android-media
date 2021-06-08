@@ -1,23 +1,22 @@
 package com.tokopedia.loginregister.shopcreation.domain.usecase
 
 import android.text.TextUtils
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.loginregister.shopcreation.di.ShopCreationQueryConstant
 import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
 import com.tokopedia.profilecommon.domain.usecase.BaseUseCaseWithParam
+import com.tokopedia.sessioncommon.domain.query.LoginQueries
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-12-27.
@@ -25,20 +24,17 @@ import javax.inject.Named
  */
 
 class RegisterCheckUseCase @Inject constructor(
-        @Named(ShopCreationQueryConstant.MUTATION_REGISTER_CHECK)
-        private val query: String,
         private val graphqlRepository: GraphqlRepository,
-        @Named(ShopCreationQueryConstant.DISPATCHERS_IO)
-        private val dispatcher: CoroutineDispatcher
+        private val dispatcherProvider: CoroutineDispatchers
 ) : BaseUseCaseWithParam<RegisterCheckParam, Result<RegisterCheckData>>() {
 
     override suspend fun getData(parameter: RegisterCheckParam): Result<RegisterCheckData> {
-        val response = withContext(dispatcher) {
+        val response = withContext(dispatcherProvider.io) {
             val cacheStrategy =
                     GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
             val request = GraphqlRequest(
-                    query,
+                    LoginQueries.registerCheckQuery,
                     RegisterCheckPojo::class.java,
                     parameter.toMap()
             )

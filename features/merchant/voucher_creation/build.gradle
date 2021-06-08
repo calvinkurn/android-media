@@ -24,6 +24,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -45,8 +46,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     testImplementation rootProject.ext.testDependencies.mockk
@@ -55,11 +54,18 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation project(rootProject.ext.libraries.unitTest)
 
+    // UI test
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 }
-
 
 project.ext {
     artifactId = 'voucher_creation'
@@ -71,3 +77,4 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
+apply from: '../../../compile-instrument-test.gradle'

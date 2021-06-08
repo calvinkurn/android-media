@@ -15,9 +15,7 @@
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
 /features/discovery/home_recom/                     	@tokopedia/android-miniondave-dev
-/features/discovery/home_wishlist/                     	@tokopedia/android-miniondave-dev
 /features/discovery/recentview/                     	@tokopedia/android-miniondave-dev
-/features/discovery/wishlist_common/                	@tokopedia/android-miniondave-dev
 /features/discovery/productcard/                    	@tokopedia/android-miniondave-dev
 /features/discovery/shopwidget/                    	    @tokopedia/android-miniondave-dev
 /features/discovery/search/                         	@tokopedia/android-miniondave-dev
@@ -72,6 +70,7 @@
 /features/merchant/seller_search/                       @tokopedia/android-minionstuart-dev
 /features/merchant/seller_action/                       @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
+/features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
 /features/merchant/product_add_edit/                    @tokopedia/android-minionken-dev
@@ -79,7 +78,6 @@
 /features/merchant/shop_open/                           @tokopedia/android-minionken-dev
 /features/merchant/shop_showcase/                       @tokopedia/android-minionken-dev
 /features/merchant/shop_page/                           @tokopedia/android-minionken-dev
-/features/merchant/shop_score/                          @tokopedia/android-minionken-dev
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/shop_settings/                       @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
@@ -161,8 +159,12 @@
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
+/features/discovery/home_wishlist/                     	@tokopedia/android-minionbob-dev
+/features/discovery/wishlist_common/                	@tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
+/features/media/media-common/			                @tokopedia/android-minionkevin-dev
+/features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -300,7 +302,6 @@
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
 /libraries/product_photo_adapter/                       @tokopedia/android-minionken-dev
 /libraries/push_notification/							@tokopedia/android-core-dev
-/libraries/react_native/								@tokopedia/android-core-dev
 /libraries/remote_config/								@tokopedia/android-core-dev
 /libraries/remoteresourcerequest/						@tokopedia/android-core-dev
 /libraries/shake_detect/					            @tokopedia/android-core-dev
@@ -312,14 +313,12 @@
 /libraries/twitter_share/								@tokopedia/android-core-dev
 /libraries/unit_test                                    @tokopedia/android-core-dev
 /libraries/utils                                        @tokopedia/android-core-dev
-/libraries/video_recorder/								@tokopedia/android-core-dev
 /libraries/videoplayer/									@tokopedia/android-core-dev
 /libraries/videouploader/								@tokopedia/android-core-dev
 /libraries/weaver/									    @tokopedia/android-core-dev
 /libraries/websocket/									@tokopedia/android-core-dev
 /libraries/webview/										@tokopedia/android-core-dev
 /libraries/williamchart/								@tokopedia/android-core-dev
-/libraries/work_manager_util/					        @tokopedia/android-core-dev
 /libraries/youtubeutil/									@tokopedia/android-core-dev
 /libraries/imagepreviewslider                           @tokopedia/android-core-dev
 /libraries/blockcanary                                  @tokopedia/android-core-dev

@@ -1,10 +1,12 @@
 package com.tokopedia.play.view.type
 
+import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
+
 /**
  * Created by jegul on 02/12/20
  */
-enum class PiPMode {
+sealed class PiPMode {
 
-    WatchInPip,
-    BrowsingOtherPage,
+    object WatchInPiP : PiPMode()
+    data class BrowsingOtherPage(val applinkModel: OpenApplinkUiModel) : PiPMode()
 }

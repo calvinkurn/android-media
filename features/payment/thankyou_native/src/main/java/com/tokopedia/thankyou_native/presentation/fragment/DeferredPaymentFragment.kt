@@ -1,13 +1,16 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,6 +24,7 @@ import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.htmltags.HtmlUtil
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 
 class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.ThankTimerViewListener {
@@ -74,7 +78,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             val spannable = SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
             if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
                 val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
-                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_Y500)),
+                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_G500)),
                         startIndex, spannable.length,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
@@ -85,6 +89,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun inflateWaitingUI(numberTypeTitle: String?, isCopyVisible: Boolean, highlightAmountDigits: Boolean) {
         tvPaymentGatewayName.text = thanksPageData.gatewayName
         ivPaymentGatewayImage.loadImage(thanksPageData.gatewayImage)
+        ivPaymentGatewayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
         numberTypeTitle?.let {
             tvAccountNumberTypeTag.text = numberTypeTitle
             tvAccountNumber.text = thanksPageData.additionalInfo.accountDest
@@ -97,11 +102,21 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         else
             tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
 
+        icCopyAmount.tag = thanksPageData.amount.toString()
+        icCopyAmount.setOnClickListener {
+            val amountStr: String? = icCopyAmount.tag?.toString()
+            copyTotalAmountToClipboard(amountStr)
+        }
         if (isCopyVisible) {
             tvAccountNumberCopy.visible()
             tvAccountNumberCopy.tag = thanksPageData.additionalInfo.accountDest
+            icCopyAccountNumber.tag = thanksPageData.additionalInfo.accountDest
             tvAccountNumberCopy.setOnClickListener {
                 val accountNumberStr: String? = tvAccountNumberCopy.tag?.toString()
+                copyAccountNumberToClipboard(accountNumberStr)
+            }
+            icCopyAccountNumber.setOnClickListener {
+                val accountNumberStr: String? = icCopyAccountNumber.tag?.toString()
                 copyAccountNumberToClipboard(accountNumberStr)
             }
         } else {
@@ -128,8 +143,14 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun showDigitAnnouncementTicker() {
         tickerAnnouncementExactDigits.visible()
-        tickerAnnouncementExactDigits
-                .setTextDescription(getString(R.string.thank_exact_transfer_upto_3_digits))
+        tickerAnnouncementExactDigits.tickerTitle = getString(R.string.thank_pending)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            tickerAnnouncementExactDigits.setTextDescription(HtmlUtil
+                    .fromHtml(getString(R.string.thank_exact_transfer_upto_3_digits)).trim())
+        } else {
+            tickerAnnouncementExactDigits
+                    .setHtmlDescription(getString(R.string.thank_exact_transfer_upto_3_digits))
+        }
         view_divider_3.gone()
     }
 
@@ -143,6 +164,18 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         thankYouPageAnalytics.get()
                 .sendSalinButtonClickEvent(thanksPageData.profileCode, thanksPageData.gatewayName,
                         thanksPageData.paymentID.toString())
+    }
+
+    private fun copyTotalAmountToClipboard(amountStr: String?) {
+        amountStr?.let { str ->
+            context?.let { context ->
+                copyTOClipBoard(context, str)
+                view?.let {
+                    Toaster.build(it, getString(R.string.thank_you_amount_copy_success),
+                            Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+                }
+            }
+        }
     }
 
     private fun showToastCopySuccessFully(context: Context) {

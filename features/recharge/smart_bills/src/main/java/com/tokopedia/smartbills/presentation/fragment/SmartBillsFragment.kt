@@ -1,9 +1,7 @@
 package com.tokopedia.smartbills.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,14 +43,12 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHo
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.bottomsheet_smartbills_tooltip.*
 import kotlinx.android.synthetic.main.fragment_smart_bills.*
 import java.util.*
 import javax.inject.Inject
@@ -320,6 +316,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun onSwipeRefresh() {
         toggleAllItems(false)
+        updateCheckAll()
         super.onSwipeRefresh()
     }
 
@@ -382,6 +379,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
+        if(position>=0)
         adapter.updateListByCheck(isChecked, position)
     }
 
@@ -395,8 +393,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             totalPrice -= item.amount.toInt()
         }
         updateCheckoutView()
-
-        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
+        updateCheckAll()
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -465,7 +462,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     private fun updateCheckoutView() {
         if (totalPrice >= 0) {
             val totalPriceString = if (totalPrice > 0) {
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true)
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, false)
             } else {
                 getString(R.string.smart_bills_no_item_price)
             }
@@ -526,6 +523,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     private fun getDataErrorException(): Throwable {
         return MessageErrorException(getString(R.string.smart_bills_data_error))
+    }
+
+    private fun updateCheckAll(){
+        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
     }
 
     companion object {

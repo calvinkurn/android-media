@@ -36,6 +36,7 @@ class SomListViewModel @Inject constructor(
         somRejectOrderUseCase: SomRejectOrderUseCase,
         somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
         somEditRefNumUseCase: SomEditRefNumUseCase,
+        somValidateOrderUseCase: SomValidateOrderUseCase,
         userSession: UserSessionInterface,
         private val dispatcher: CoroutineDispatchers,
         private val somListGetTickerUseCase: SomListGetTickerUseCase,
@@ -48,7 +49,8 @@ class SomListViewModel @Inject constructor(
         authorizeSomListAccessUseCase: AuthorizeAccessUseCase,
         authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, authorizeSomListAccessUseCase, authorizeMultiAcceptAccessUseCase) {
+        somEditRefNumUseCase, somRejectCancelOrderRequest, somValidateOrderUseCase,
+        authorizeSomListAccessUseCase, authorizeMultiAcceptAccessUseCase) {
 
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
@@ -92,6 +94,10 @@ class SomListViewModel @Inject constructor(
     private val _isLoadingOrder = MutableLiveData<Boolean>()
     val isLoadingOrder: LiveData<Boolean>
         get() = _isLoadingOrder
+
+    private val _refreshOrderRequest = MutableLiveData<Pair<String, String>>()
+    val refreshOrderRequest: LiveData<Pair<String, String>>
+        get() = _refreshOrderRequest
 
     private val _isOrderManageEligible = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
     val isOrderManageEligible: LiveData<Result<Pair<Boolean, Boolean>>>
@@ -165,25 +171,33 @@ class SomListViewModel @Inject constructor(
     override suspend fun doAcceptOrder(orderId: String, invoice: String) {
         super.doAcceptOrder(orderId, invoice)
         getFilters(false)
-        refreshSelectedOrder(orderId, invoice)
+        withContext(dispatcher.main) {
+            _refreshOrderRequest.value = orderId to invoice
+        }
     }
 
     override suspend fun doRejectOrder(rejectOrderRequestParam: SomRejectRequestParam, invoice: String) {
         super.doRejectOrder(rejectOrderRequestParam, invoice)
         getFilters(false)
-        refreshSelectedOrder(rejectOrderRequestParam.orderId, invoice)
+        withContext(dispatcher.main) {
+            _refreshOrderRequest.value = rejectOrderRequestParam.orderId to invoice
+        }
     }
 
     override suspend fun doEditAwb(orderId: String, shippingRef: String, invoice: String) {
         super.doEditAwb(orderId, shippingRef, invoice)
         getFilters(false)
-        refreshSelectedOrder(orderId, invoice)
+        withContext(dispatcher.main) {
+            _refreshOrderRequest.value = orderId to invoice
+        }
     }
 
     override suspend fun doRejectCancelOrder(orderId: String, invoice: String) {
         super.doRejectCancelOrder(orderId, invoice)
         getFilters(false)
-        refreshSelectedOrder(orderId, invoice)
+        withContext(dispatcher.main) {
+            _refreshOrderRequest.value = orderId to invoice
+        }
     }
 
     private fun getBulkAcceptOrderStatus(batchId: String, wait: Long) {
@@ -214,9 +228,11 @@ class SomListViewModel @Inject constructor(
 
     private fun updateLoadOrderStatus(job: Job) {
         job.invokeOnCompletion {
-            launch(context = dispatcher.main) {
+            launchCatchError(context = dispatcher.main, block = {
                 _isLoadingOrder.value = isRefreshingOrder()
-            }
+            }, onError = {
+                _isLoadingOrder.value = false
+            })
         }
     }
 

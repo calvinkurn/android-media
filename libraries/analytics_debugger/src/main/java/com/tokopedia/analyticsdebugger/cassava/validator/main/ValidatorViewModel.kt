@@ -1,25 +1,29 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.main
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
-import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.debugger.helper.SingleLiveEvent
+import androidx.lifecycle.*
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
+import com.tokopedia.analyticsdebugger.cassava.domain.JourneyListUseCase
+import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
+import com.tokopedia.analyticsdebugger.cassava.validator.core.CassavaQuery
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
+import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
+import com.tokopedia.analyticsdebugger.debugger.helper.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class ValidatorViewModel constructor(val context: Application) : AndroidViewModel(context) {
+class ValidatorViewModel @Inject constructor(
+        private val queryListUseCase: QueryListUseCase,
+        private val journeyListUseCase: JourneyListUseCase,
+        private val engine: ValidatorEngine,
+        private val repo: GtmRepo
+) : ViewModel() {
 
-    private val dao: GtmLogDBSource by lazy { GtmLogDBSource(context) }
-    private val engine: ValidatorEngine by lazy { ValidatorEngine(dao) }
-    private val repo: GtmRepo by lazy { GtmRepo(TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()) }
+    private var journeyId: String = ""
 
     private val _testCases: MutableLiveData<List<Validator>> = MutableLiveData()
     val testCases: LiveData<List<Validator>>
@@ -29,7 +33,24 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
     val snackBarMessage: LiveData<String>
         get() = _snackBarMessage
 
-    fun run(queries: List<Map<String, Any>>, mode: String) {
+    private val _cassavaSource = MutableLiveData<CassavaSource>()
+
+    val listFiles = _cassavaSource.switchMap {
+        liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+            runCatching { emit(journeyListUseCase.execute(it)) }
+                    .onFailure { _snackBarMessage.postValue(it.message ?: "") }
+        }
+    }
+
+    private val _cassavaQuery = MutableLiveData<CassavaQuery>()
+    val cassavaQuery: LiveData<CassavaQuery>
+        get() = _cassavaQuery
+
+    fun changeSource(isFromNetwork: Boolean) {
+        _cassavaSource.value = if (isFromNetwork) CassavaSource.NETWORK else CassavaSource.LOCAL
+    }
+
+    fun run(queries: List<Pair<Int, Map<String, Any>>>, mode: String) {
         val v = queries.map { it.toDefaultValidator() }
         _testCases.value = v
 
@@ -50,6 +71,23 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
         viewModelScope.launch {
             repo.delete()
             _snackBarMessage.setValue("Successfully deleted!")
+        }
+    }
+
+    fun getListFiles(): List<Pair<String, String>> = listFiles.value ?: arrayListOf()
+
+    fun fetchQueryFromAsset(filePath: String, isFromNetwork: Boolean) {
+        if (isFromNetwork) {
+            this.journeyId = filePath
+        }
+        val source = if (isFromNetwork) CassavaSource.NETWORK else CassavaSource.LOCAL
+        viewModelScope.launch(CoroutineDispatchersProvider.io) {
+            try {
+                _cassavaQuery.postValue(queryListUseCase.execute(source, filePath))
+            } catch (t: Throwable) {
+                t.printStackTrace()
+                _snackBarMessage.postValue(t.message)
+            }
         }
     }
 

@@ -5,5 +5,5 @@
     <gradient
         android:angle="90"
         android:endColor="@color/transparent"
-        android:startColor="@color/sbank_top_shadow_color" />
+        android:startColor="@color/sbank_dms_top_shadow_color" />
 </shape>

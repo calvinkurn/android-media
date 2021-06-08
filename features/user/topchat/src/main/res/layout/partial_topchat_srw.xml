@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <LinearLayout
+        android:id="@+id/rv_srw_content_container"
+        android:layout_width="@dimen/dp_topchat_290"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/tp_srw_container_partial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tp_srw_partial"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingVertical="@dimen/unify_space_12"
+                android:paddingStart="@dimen/unify_space_16"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:ignore="RtlSymmetry"
+                tools:text="@tools:sample/lorem/random" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_header_state_partial"
+                android:layout_width="@dimen/unify_space_16"
+                android:layout_height="@dimen/unify_space_16"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                app:icon_color_light_enable="@color/Unify_N700_96"
+                app:icon_name="CHEVRON_UP" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_srw_partial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/ll_srw_partial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:visibility="gone"
+        app:unify_local_load_description="@string/desc_topchat_srw_load_failed"
+        app:unify_local_load_title="@string/title_topchat_srw_load_failed"
+        tools:visibility="gone" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/lu_srw_partial"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_topchat_88"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="rect"
+        tools:visibility="gone" />
+</merge>

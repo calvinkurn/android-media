@@ -56,7 +56,7 @@ class BarChartViewHolder(
             data == null -> setOnLoading()
             data.error.isNotBlank() -> {
                 setonError(element)
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }
@@ -122,7 +122,7 @@ class BarChartViewHolder(
     }
 
     private fun getBarChartConfig(element: BarChartWidgetUiModel): BarChartConfigModel {
-        val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+        val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
             xAnimationDuration { 200 }

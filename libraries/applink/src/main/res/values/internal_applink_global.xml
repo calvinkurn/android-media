@@ -12,6 +12,7 @@
     <string name="path_withdraw">/withdraw</string>
     <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
     <string name="path_add_name_register">/add-name-register</string>
+    <string name="path_add_name_register_clean_view">/add-name-register/clean-view</string>
     <string name="path_forgot_password">/forgot-password</string>
     <string name="path_add_password">/add-password</string>
     <string name="path_profile_completion">/profile-completion</string>
@@ -40,8 +41,11 @@
     <string name="path_cotp">/cotp</string>
     <string name="path_otp_push_notif_receiver">/otp-push-notif-receiver</string>
     <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
+    <string name="path_qr_login">/qr-login</string>
+    <string name="path_qr_login_result">/qr-login-result</string>
     <string name="path_otp_validator">/otp-validator</string>
     <string name="path_image_picker">/image-picker</string>
+    <string name="path_video_picker">/video-picker</string>
     <string name="path_image_editor">/image-editor</string>
     <string name="path_webview" translatable="false">/webview</string>
     <string name="path_webview_download_html" translatable="false">/webview-download-html</string>
@@ -63,9 +67,10 @@
     <string name="path_home_account_old" translatable="false">/account-home-old</string>
 
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
-    <string name="path_login">/login</string>
+    <string name="path_user_login" translatable="false">/login</string>
     <string name="path_init_register">/init-register</string>
     <string name="path_manage_name">/manage-name</string>
+    <string name="path_image_quality_setting" translatable="false">/media-quality-setting</string>
 
     <string name="path_email_register">/email-register</string>
     <string name="path_ovo_pay_with_qr">/ovo-pay-with-qr</string>
@@ -82,6 +87,7 @@
     <string name="path_seller_seamless_login" translatable="false">/login-seamless</string>
     <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/</string>
     <string name="two_factor_register">/two-factor-register</string>
+    <string name="path_term_privacy">/term-privacy/.*\</string>
 
     <string name="old_home_account">/old-home-account</string>
 
@@ -90,8 +96,6 @@
     <string name="path_screen_recorder">/screen-recorder</string>
 
     <string name="path_internal_feedback">/internal-feedback</string>
-
-    <string name="path_term_privacy">/term-privacy/.*\</string>
 
     <!-- Ovo Register -->
     <string name="path_ovo_add_name">/ovo-add-name</string>
