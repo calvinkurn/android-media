@@ -308,7 +308,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 emit(Throwable(result.error.firstOrNull() ?: "").asFail())
             } else {
                 updateMiniCartData(copyOfMiniCartItem.productId, copyOfMiniCartItem.cartId, copyOfMiniCartItem.quantity, copyOfMiniCartItem.notes)
-                emit("sukses".asSuccess())
+                emit((result.data.message).asSuccess())
             }
         }
     }
@@ -643,6 +643,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
             } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
+                it
+            } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
                 it
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
                 it

@@ -1665,6 +1665,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val cartId = result.data.cartId
         //todo change
         if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
+            view?.showToasterSuccess(result.data.message.firstOrNull() ?: "")
             updateButtonState()
             return
         }
@@ -1792,7 +1793,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             setupProductVideoCoordinator()
 
             activity?.invalidateOptionsMenu()
-            submitInitialList(data)
+            submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
         }
     }
 
@@ -2070,6 +2071,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             isAutoSelectVariant = pairAutoSelectAndSelectedOptionIds.first
 
             pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = pairAutoSelectAndSelectedOptionIds.second
+            pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant = pairAutoSelectAndSelectedOptionIds.second
         }
         return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant
                 ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
