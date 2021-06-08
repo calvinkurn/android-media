@@ -48,7 +48,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycCommonUrl
-import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 /**

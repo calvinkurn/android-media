@@ -56,7 +56,6 @@ import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import kotlinx.android.synthetic.main.layout_kyc_upload_error.*
 import com.tokopedia.utils.file.FileUtil
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList

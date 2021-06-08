@@ -35,7 +35,7 @@ class KycUploadUseCaseTest {
         val faceImageString = "good face image"
 
         coEvery {
-            repository.uploadImages(any(), any(), any(), any())
+            repository.uploadImages(any(), any(), any(), any(), any())
         } coAnswers {
             expectedResult.isSuccessRegister  = true
             expectedResult
@@ -56,7 +56,7 @@ class KycUploadUseCaseTest {
         val faceImageString = "bad face image"
 
         coEvery {
-            repository.uploadImages(any(), any(), any(), any())
+            repository.uploadImages(any(), any(), any(), any(), any())
         } coAnswers {
             expectedResult.isSuccessRegister  = false
             expectedResult
@@ -77,7 +77,7 @@ class KycUploadUseCaseTest {
         val faceImageString = "bad face image"
 
         coEvery {
-            repository.uploadImages(any(), any(), any(), any())
+            repository.uploadImages(any(), any(), any(), any(), any())
         } throws expectedResult
 
         assertFailsWith<Exception> {
