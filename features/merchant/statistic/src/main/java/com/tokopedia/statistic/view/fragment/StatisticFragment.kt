@@ -258,6 +258,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionLineGraphEvent(model, position)
     }
 
+    override fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {
+        StatisticTracker.sendEmptyStateCtaClickLineGraphEvent(model)
+    }
+
     override fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {
         StatisticTracker.sendImpressionCarouselItemBannerEvent(dataKey, carouselItems, position)
     }

@@ -284,5 +284,7 @@ class LineGraphViewHolder(
         fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {}
 
         fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {}
+
+        fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {}
     }
 }

@@ -76,6 +76,24 @@ object StatisticTracker {
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
+    fun sendEmptyStateCtaClickLineGraphEvent(model: LineGraphWidgetUiModel) {
+        val isEmpty = model.data?.list?.all { it.yVal == 0f } == true
+        val emptyStatus = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dataKey = model.dataKey
+        val cardValue = model.data?.header.orEmpty()
+
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_HOMEPAGE,
+                TrackingConstant.SELLER_APP_STATISTIC,
+                "${TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH} - $dataKey",
+                "$emptyStatus - $cardValue"
+        )
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
     fun sendClickLineGraphEvent(dataKey: String, chartValue: String) {
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_SHOP_INSIGHT,

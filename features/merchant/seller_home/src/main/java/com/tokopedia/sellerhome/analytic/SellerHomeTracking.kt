@@ -36,12 +36,17 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendImpressionLineGraphEvent(dataKey: String, cardValue: String) {
+    fun sendImpressionLineGraphEvent(model: LineGraphWidgetUiModel) {
+        val isEmpty = model.data?.list?.all { it.yVal == 0f } == true
+        val emptyStatus = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dataKey = model.dataKey
+        val cardValue = model.data?.header.orEmpty()
+
         val map = TrackingHelper.createMap(
                 TrackingConstant.VIEW_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
-                cardValue
+                "$emptyStatus - $cardValue"
         )
         TrackingHelper.sendGeneralEvent(map)
     }
@@ -53,6 +58,24 @@ object SellerHomeTracking {
                 arrayOf(TrackingConstant.CLICK_WIDGET_LINE_GRAPH, dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
                 cardValue
         )
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
+    fun sendClickEmptyCtaLineGraphEvent(model: LineGraphWidgetUiModel) {
+        val isEmpty = model.data?.list?.all { it.yVal == 0f } == true
+        val emptyStatus = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val dataKey = model.dataKey
+        val cardValue = model.data?.header.orEmpty()
+
+        val map = TrackingHelper.createMap(
+                TrackingConstant.CLICK_HOMEPAGE,
+                "${TrackingConstant.SELLER_APP} - ${TrackingConstant.HOME}",
+                "${TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH} - $dataKey",
+                "$emptyStatus - $cardValue"
+        )
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
+
         TrackingHelper.sendGeneralEvent(map)
     }
 
