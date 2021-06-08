@@ -92,16 +92,12 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
-        val intent = intent
-
         var isCoachmarkApplink = false
-        if (intent != null) {
-            intent.extras?.let {
-                isCoachmarkApplink = it.getString(EXTRAS_COACHMARK_KEY) == EXTRAS_COACHMARK_DISABLE
-            }
+        intent?.extras?.let {
+            isCoachmarkApplink = it.getString(EXTRAS_COACHMARK_KEY) == EXTRAS_COACHMARK_DISABLE
         }
         if (isCoachmarkApplink) {
-            handleCoachmarkUri(EXTRAS_COACHMARK_DISABLE)
+            handleDisableCoachmarkUri()
         } else {
             initObserver()
             loadTime = System.currentTimeMillis()
@@ -128,11 +124,9 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         window.attributes = winParams
     }
 
-    private fun handleCoachmarkUri(key: String) {
-        if (key == EXTRAS_COACHMARK_DISABLE) {
-            CoachMark2.isCoachmmarkShowAllowed = false
-            finish()
-        }
+    private fun handleDisableCoachmarkUri() {
+        CoachMark2.isCoachmmarkShowAllowed = false
+        finish()
     }
 
     private fun initObserver() {
