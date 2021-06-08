@@ -595,6 +595,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         selected_Keyword.visibility = visibility
         info2.visibility = visibility
         div.visibility = visibility
+        selectedKeyword.visibility = visibility
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
