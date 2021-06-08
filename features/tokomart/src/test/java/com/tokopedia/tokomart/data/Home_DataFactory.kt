@@ -101,7 +101,8 @@ fun createHomeLayoutListWithCategory(): HomeLayoutListUiModel {
                             channelConfig = ChannelConfig(layout = "banner_carousel_v2", showPromoBadge = false, hasCloseButton = false, serverTimeOffset = 0, createdTimeMillis = "", isAutoRefreshAfterExpired = false, enableTimeDiffMoreThan24h = false, dividerType = 0),
                             trackingAttributionModel = TrackingAttributionModel(galaxyAttribution = "", persona = "", brandId = "", categoryPersona = "", categoryId = "", persoType = "", campaignCode = "", homeAttribution = "", campaignId = "", promoName = ""),
                             channelGrids = listOf(), name = "", layout = "banner_carousel_v2"))),
-            isInitialLoad = false
+            isInitialLoad = false,
+            isHeaderBackgroundShowed = true
     )
 }
 
