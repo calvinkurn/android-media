@@ -151,7 +151,7 @@ class HomeTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        Thread.sleep(8000)
     }
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
