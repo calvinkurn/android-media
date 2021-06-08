@@ -95,7 +95,6 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
 
     override fun getToolbarResourceID() = com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar
 
-
     override fun getParentViewResourceID() = com.tokopedia.saldodetails.R.id.saldo_deposit_parent_view
 
     override fun setupLayout(savedInstanceState: Bundle?) {
