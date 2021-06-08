@@ -425,7 +425,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             renderList(list, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
             checkShowLoading(it.canLoadMore)
-            presenter.sendReadEvent(messageId)
         }
     }
 
