@@ -215,44 +215,4 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         val expectedStart = 16
         `Then verify load more use case request params`(expectedStart, searchProductModelSecondPage.searchProduct.header.additionalParams)
     }
-
-    @Test
-    fun `Load More Data Success with empty warehouseId`() {
-        val searchProductModelFirstPage = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
-        val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
-        `Setup choose address`(LocalCacheModel())
-        setUp()
-
-        `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
-        `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
-        `Given Mechanism to save and get product position from cache`()
-        `Given Product List Presenter already Load Data`()
-
-        val loadMoreSearchParameter = createLoadMoreSearchParameter()
-        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
-
-        val expectedStart = 8
-        `Then verify load more use case request params without warehouseId`(expectedStart, searchProductModelFirstPage.searchProduct.header.additionalParams)
-        `Then verify view interaction when load more data success`(searchProductModelFirstPage)
-        `Then verify start from is incremented twice`()
-        val topAdsIndexStart = searchProductModelFirstPage.topAdsModel.data.size
-        val organicIndexStart = searchProductModelFirstPage.searchProduct.data.productList.size
-        `Then verify visitable list with product items`(visitableListSlot, searchProductModelSecondPage, topAdsIndexStart, organicIndexStart)
-    }
-
-    private fun `Then verify load more use case request params without warehouseId`(expectedStart: Int, additionalParams: String) {
-        val requestParams = requestParamsSlot.captured
-
-        val params = requestParams.getSearchProductParams()
-        params[SearchApiConst.START] shouldBe expectedStart
-        params.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
-
-        verifyRequestContainsAdditionalParams(params, additionalParams)
-
-        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe false
-        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, false) shouldBe false
-        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, false) shouldBe false
-        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, false) shouldBe false
-        requestParams.getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, false) shouldBe false
-    }
 }

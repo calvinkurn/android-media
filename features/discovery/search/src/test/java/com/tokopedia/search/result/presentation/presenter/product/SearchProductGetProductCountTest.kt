@@ -90,26 +90,4 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
             secondArg<Subscriber<String>>().error(TestException())
         }
     }
-
-    @Test
-    fun `Get product count with parameter should call get product count use case with parameters, size = 0, and no warehouseId`() {
-        `Setup choose address`(LocalCacheModel())
-
-        val successfulProductCountText = "10rb Produk"
-        `Given Get Product Count Use Case will be successful`(successfulProductCountText)
-
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true.toString())
-        `When get product count`(mapParameter)
-
-        `Then assert request params contains map parameters`(mapParameter)
-        `Then verify warehouseId is not sent`()
-        `Then assert request params has key ROWS with value 0`()
-        `Then assert view set product count`(successfulProductCountText)
-    }
-
-    private fun `Then verify warehouseId is not sent`() {
-        val requestParams = requestParamsSlot.captured
-
-        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
-    }
 }

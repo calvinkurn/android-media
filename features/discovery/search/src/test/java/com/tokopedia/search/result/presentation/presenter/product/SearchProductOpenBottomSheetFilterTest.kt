@@ -237,25 +237,4 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
             productListView.setDynamicFilter(dynamicFilterModel)
         }
     }
-
-    @Test
-    fun `Open filter page for the first time with get dynamic filter API success and no warehouseId`() {
-        val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
-        val getDynamicFilterRequestParamSlot = slot<RequestParams>()
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
-
-        `Setup choose address`(LocalCacheModel())
-        `Given get dynamic filter model API will success`(getDynamicFilterRequestParamSlot, dynamicFilterModel)
-
-        `When open filter page`(mapParameter)
-
-        val getDynamicFilterRequestParams = getDynamicFilterRequestParamSlot.captured.parameters
-        `Then verify view interactions for open filter page first time`(dynamicFilterModel)
-        `Then assert Get Dynamic Filter Request Params`(getDynamicFilterRequestParams, mapParameter)
-        `Then verify warehouseId is not sent`(getDynamicFilterRequestParams)
-    }
-
-    private fun `Then verify warehouseId is not sent`(params: HashMap<String, Any>) {
-        params.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
-    }
 }
