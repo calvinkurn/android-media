@@ -514,9 +514,12 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     }
 
     private fun setupObserver() {
-        viewModel.notifications.observe(this, Observer { result ->
+        viewModel.notifications.observe(this, { result ->
             if (result is Success) {
                 InboxConfig.notifications = result.data
+                InboxConfig.notifications.adjustTotalCounterBasedOn(
+                    InboxConfig.page, isShowBottomNav
+                )
                 updateBadgeCounter()
             }
         })
