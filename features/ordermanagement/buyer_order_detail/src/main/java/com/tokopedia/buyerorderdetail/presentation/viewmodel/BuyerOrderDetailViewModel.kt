@@ -55,13 +55,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
     val multiAtcResult: LiveData<Result<AtcMultiData>>
         get() = _multiAtcResult
 
-    private fun getOrderId(): String {
-        val currentBuyerOrderDetailResult = buyerOrderDetailResult.value
-        return if (currentBuyerOrderDetailResult is Success) {
-            currentBuyerOrderDetailResult.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId
-        } else "0"
-    }
-
     private fun getFinishOrderActionStatus(): String {
         val statusId = getOrderStatusId()
         return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < 600) BuyerOrderDetailConst.ACTION_FINISH_ORDER else ""
@@ -72,13 +65,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
         return if (currentBuyerOrderDetailResult is Success) {
             currentBuyerOrderDetailResult.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId
         } else ""
-    }
-
-    private fun getShopId(): String {
-        val buyerOrderDetailResult = _buyerOrderDetailResult.value
-        return if (buyerOrderDetailResult is Success) {
-            buyerOrderDetailResult.data.productListUiModel.productListHeaderUiModel.shopId
-        } else "0"
     }
 
     private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
@@ -148,5 +134,50 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun restoreBuyerOrderDetailData(savedBuyerOrderDetailData: BuyerOrderDetailUiModel) {
         _buyerOrderDetailResult.value = Success(savedBuyerOrderDetailData)
+    }
+
+    fun getProducts(): List<ProductListUiModel.ProductUiModel> {
+        val buyerOrderDetailResult = buyerOrderDetailResult.value
+        return if (buyerOrderDetailResult is Success) {
+            buyerOrderDetailResult.data.productListUiModel.productList
+        } else emptyList()
+    }
+
+    fun getOrderId(): String {
+        val currentBuyerOrderDetailResult = buyerOrderDetailResult.value
+        return if (currentBuyerOrderDetailResult is Success) {
+            currentBuyerOrderDetailResult.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId
+        } else "0"
+    }
+
+    fun getShopId(): String {
+        val buyerOrderDetailResult = _buyerOrderDetailResult.value
+        return if (buyerOrderDetailResult is Success) {
+            buyerOrderDetailResult.data.productListUiModel.productListHeaderUiModel.shopId
+        } else "0"
+    }
+
+    fun getShopName(): String {
+        val buyerOrderDetailResult = _buyerOrderDetailResult.value
+        return if (buyerOrderDetailResult is Success) {
+            buyerOrderDetailResult.data.productListUiModel.productListHeaderUiModel.shopName
+        } else ""
+    }
+
+    fun getShopType(): String {
+        val buyerOrderDetailResult = _buyerOrderDetailResult.value
+        return if (buyerOrderDetailResult is Success) {
+            buyerOrderDetailResult.data.productListUiModel.productListHeaderUiModel.shopType
+        } else ""
+    }
+
+    fun getCurrencyCode(): String {
+        return getProducts().firstOrNull()?.priceText?.filter {
+            it.isLetter()
+        }.orEmpty()
+    }
+
+    fun getUserId(): String {
+        return userSession.get().userId
     }
 }

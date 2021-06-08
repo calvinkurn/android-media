@@ -213,7 +213,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_VIEW_COMPLAINT -> {
                 onViewComplaintActionButtonClicked(button.url)
-                ""
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER, BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> {
                 onReceiveConfirmationActionButtonClicked(button)
@@ -225,6 +225,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> {
                 onBuyAgainAllProductButtonClicked()
+                trackBuyAgainProduct(viewModel.getProducts())
                 ""
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_GIVE_REVIEW -> {
@@ -236,6 +237,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         if (buttonName.isNotBlank()) {
             trackClickActionButton(isFromPrimaryButton, buttonName)
         }
+    }
+
+    private fun getCartId(): String {
+        return activity?.intent?.extras?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "0") ?: "0"
     }
 
     override fun onPopUpActionButtonClicked(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton) {
@@ -255,6 +260,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         val productCopy = product.copy(isProcessing = true)
         adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
+        trackBuyAgainProduct(listOf(product))
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
@@ -697,5 +703,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                         orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
             }
         }
+    }
+
+    private fun trackBuyAgainProduct(products: List<ProductListUiModel.ProductUiModel>) {
+        BuyerOrderDetailTracker.eventClickBuyAgain(
+                products,
+                viewModel.getOrderId(),
+                getCartId(),
+                viewModel.getShopId(),
+                viewModel.getShopName(),
+                viewModel.getShopType(),
+                viewModel.getCurrencyCode(),
+                viewModel.getUserId())
     }
 }

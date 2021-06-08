@@ -43,7 +43,9 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("shop")
                 val shop: Shop = Shop(),
                 @SerializedName("ticker_info")
-                val tickerInfo: TickerInfo = TickerInfo()
+                val tickerInfo: TickerInfo = TickerInfo(),
+                @SerializedName("order_shop_type")
+                val orderShopType: OrderShopType = OrderShopType()
         ) {
             data class Button(
                     @SerializedName("display_name")
@@ -155,6 +157,10 @@ data class GetBuyerOrderDetailResponse(
             data class Product(
                     @SerializedName("button")
                     val button: Button = Button(),
+                    @SerializedName("category")
+                    val category: String = "",
+                    @SerializedName("category_id")
+                    val categoryId: String = "",
                     @SerializedName("notes")
                     val notes: String = "",
                     @SerializedName("order_detail_id")
@@ -249,6 +255,13 @@ data class GetBuyerOrderDetailResponse(
                     val isBebasOngkir: Boolean = false,
                     @SerializedName("bo_image_url")
                     val boImageUrl: String = "false"
+            )
+
+            data class OrderShopType(
+                    @SerializedName("shop_type")
+                    val shopType: Int = 0,
+                    @SerializedName("shop_type_name")
+                    val shopTypeName: String = ""
             )
         }
     }

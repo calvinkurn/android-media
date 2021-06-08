@@ -13,6 +13,7 @@ data class ProductListUiModel(
             val shopBadgeUrl: String,
             val shopId: String,
             val shopName: String,
+            val shopType: String,
             val orderId: String,
             val orderStatusId: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
@@ -23,6 +24,8 @@ data class ProductListUiModel(
 
     data class ProductUiModel(
             val button: ActionButtonsUiModel.ActionButton,
+            val category: String,
+            val categoryId: String,
             val orderDetailId: String,
             val orderId: String,
             val orderStatusId: String,

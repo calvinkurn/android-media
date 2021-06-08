@@ -32,7 +32,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
     companion object {
         private const val PARAM_INPUT = "input"
 
-        private const val QUERY = """
+        private val QUERY = """
             query MPBOMDetail(${'$'}input: BomDetailV2Request!) {
               mp_bom_detail(input: ${'$'}input) {
                 order_id
@@ -183,6 +183,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 }
               }
             }
-        """
+        """.trimIndent()
     }
 }

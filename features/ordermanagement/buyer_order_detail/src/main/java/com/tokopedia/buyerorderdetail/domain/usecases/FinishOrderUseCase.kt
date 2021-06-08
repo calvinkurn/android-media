@@ -31,13 +31,13 @@ class FinishOrderUseCase @Inject constructor(private val useCase: GraphqlUseCase
         private const val ERROR_MESSAGE_INVALID_PARAMETER = "Tidak dapat menyelesaikan pesanan, silahkan muat ulang dan coba lagi!"
         private const val PARAM_INPUT = "input"
 
-        private const val QUERY = """
+        private val QUERY = """
             mutation FinishOrderBuyer(${'$'}input:FinishOrderBuyerRequest!) {
               finish_order_buyer(input: ${'$'}input) {
                 success
                 message
               }
             }
-        """
+        """.trimIndent()
     }
 }
