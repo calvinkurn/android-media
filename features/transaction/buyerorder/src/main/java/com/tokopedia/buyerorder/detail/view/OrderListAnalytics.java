@@ -476,7 +476,7 @@ public class OrderListAnalytics {
     }
 
     public static void eventWidgetClick(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem item, int position) {
-        String price = (item.getTrackingData().getItemType().equals("recommendation")) ? item.getSubtitle() : "";
+        String price = (item.getTrackingData().getItemType().equals("recommendation")) ? item.getSubtitle() : "none";
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
