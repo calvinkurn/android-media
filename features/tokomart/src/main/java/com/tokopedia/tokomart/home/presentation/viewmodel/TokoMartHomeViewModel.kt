@@ -80,13 +80,20 @@ class TokoMartHomeViewModel @Inject constructor(
 
     fun getChooseAddress() {
         layoutList = addChooseAddressIntoList()
-        val data = HomeLayoutListUiModel(layoutList, isChooseAddressWidgetDisplayed = true)
+        val data = HomeLayoutListUiModel(
+                result = layoutList,
+                isChooseAddressWidgetDisplayed = true,
+                isHeaderBackgroundShowed = false
+        )
         _homeLayoutList.value = Success(data)
     }
 
     fun getEmptyState(id: String) {
         layoutList = addEmptyStateIntoList(id)
-        val data = HomeLayoutListUiModel(layoutList, isHeaderBackgroundShowed = false)
+        val data = HomeLayoutListUiModel(
+                result = layoutList,
+                isHeaderBackgroundShowed = false
+        )
         _homeLayoutList.value = Success(data)
     }
 
@@ -117,7 +124,11 @@ class TokoMartHomeViewModel @Inject constructor(
                         homeLayoutResponse,
                         mapTickerData(getTickerAsync.await().orEmpty())
                 )
-                val data = HomeLayoutListUiModel(layoutList, isInitialLoad = true, isHeaderBackgroundShowed = true)
+                val data = HomeLayoutListUiModel(
+                        result = layoutList,
+                        isInitialLoad = true,
+                        isHeaderBackgroundShowed = true
+                )
                 _homeLayoutList.postValue(Success(data))
             }
         }) {
@@ -132,7 +143,10 @@ class TokoMartHomeViewModel @Inject constructor(
             val getDataForEachLayout = layoutItems.filter { it.isNotStaticLayout() }.map {
                 asyncCatchError(block = {
                     val layoutList = getHomeComponentData(it, warehouseId)
-                    val data = HomeLayoutListUiModel(layoutList, isHeaderBackgroundShowed = true)
+                    val data = HomeLayoutListUiModel(
+                            result = layoutList,
+                            isHeaderBackgroundShowed = true
+                    )
                     _homeLayoutList.postValue(Success(data))
                 }) {
                     _homeLayoutList.postValue(Fail(it))

@@ -417,25 +417,23 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
         data.run {
-            if (isChooseAddressWidgetDisplayed) {
-                adapter.submitList(result)
-                checkIfChooseAddressWidgetDataUpdated()
-                checkStateNotInServiceArea(
-                        shopId = localCacheModel?.shop_id.toLongOrZero(),
-                        warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
-                )
-            } else if (isInitialLoad) {
-                needToShowHeaderBackground(isHeaderBackgroundShowed)
-                adapter.submitList(result)
-                // TO-DO: Lazy Load Data
-                viewModel.getLayoutData(localCacheModel?.warehouse_id.orEmpty())
-
-                // isMyShop needs shopId to differentiate
-                if (!isChooseAddressWidgetShowed(false))
-                    adapter.removeHomeChooseAddressWidget()
-            } else {
-                needToShowHeaderBackground(isHeaderBackgroundShowed)
-                adapter.submitList(result)
+            needToShowHeaderBackground(isHeaderBackgroundShowed)
+            adapter.submitList(result)
+            when {
+                isChooseAddressWidgetDisplayed -> {
+                    checkIfChooseAddressWidgetDataUpdated()
+                    checkStateNotInServiceArea(
+                            shopId = localCacheModel?.shop_id.toLongOrZero(),
+                            warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
+                    )
+                }
+                isInitialLoad -> {
+                    // TO-DO: Lazy Load Data
+                    viewModel.getLayoutData(localCacheModel?.warehouse_id.orEmpty())
+                }
+            }
+            if (!isChooseAddressWidgetShowed(isMyShop = userSession.shopId == localCacheModel?.shop_id)) {
+                adapter.removeHomeChooseAddressWidget()
             }
         }
     }

@@ -5,6 +5,7 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.home.constant.HomeLayoutType
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
@@ -12,10 +13,7 @@ import com.tokopedia.tokomart.home.domain.mapper.LegoBannerMapper.mapLegoBannerD
 import com.tokopedia.tokomart.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.tokomart.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeEmptyStateUiModel
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -30,6 +28,7 @@ object HomeLayoutMapper {
     fun addChooseAddressIntoList(): List<Visitable<*>> {
         val layoutList = mutableListOf<Visitable<*>>()
         layoutList.add(HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID))
+        layoutList.add(HomeLoadingStateUiModel(id = LOADING_STATE))
         return layoutList
     }
 
