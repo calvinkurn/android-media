@@ -81,4 +81,10 @@ class SearchFilterPageTest: SearchTestFixtures(), Callback {
 
         filterPageTestHelper.`test get filter count fail when choosing filter`(mandatoryParams)
     }
+
+    @Test
+    fun `test open filter page after applying filter should update filter from API`() {
+        filterPageTestHelper.
+        `test open filter page after applying filter should update filter from API`()
+    }
 }
