@@ -54,7 +54,7 @@
                 app:layout_constraintLeft_toLeftOf="@id/optionRv"
                 app:layout_constraintRight_toRightOf="@id/optionRv"/>
 
-            <com.tokopedia.design.component.EditTextCompat
+            <EditText
                 android:id="@+id/reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
 
     </ScrollView>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/sendButton"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"

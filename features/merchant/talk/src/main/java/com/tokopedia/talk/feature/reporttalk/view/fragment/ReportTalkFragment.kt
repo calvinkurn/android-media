@@ -1,7 +1,6 @@
 package com.tokopedia.talk.feature.reporttalk.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reporttalk.analytics.TalkAnalytics
@@ -158,24 +156,19 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
     private fun checkEnableSendButton() {
         reason.text?.let {
             if (reportTalkAdapter.getItem(2).isChecked && it.isBlank()) {
-                disableSendButton(sendButton.context)
+                disableSendButton()
             } else {
-                enableSendButton(sendButton.context)
+                enableSendButton()
             }
         }
     }
 
-    private fun disableSendButton(context: Context) {
+    private fun disableSendButton() {
         sendButton.isEnabled = false
-        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
-        MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.bg_button_disabled))
     }
 
-    private fun enableSendButton(context: Context) {
+    private fun enableSendButton() {
         sendButton.isEnabled = true
-        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
-                .bg_button_green))
     }
 
 
