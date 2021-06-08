@@ -453,20 +453,20 @@ public class OrderListAnalytics {
                         recomTitle));
     }
 
-    public static void eventWidgetListView(@NotNull WidgetGridItem contentItemTab, int position) {
+    public static void eventWidgetListView(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem contentItemTab, int position) {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, "my purchase list - " + contentItemTab.getName(),
+                EVENT_CATEGORY, "my purchase list - " + contentItemTab.getTitle(),
                 EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, "historical - " + contentItemTab.getName() + " - " + (1 + position),
+                EVENT_LABEL, "historical - " + contentItemTab.getTitle() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
-                                NAME, contentItemTab.getName(),
+                                NAME, contentItemTab.getTitle(),
                                 ID, contentItemTab.getId(),
-                                PRICE, contentItemTab.getPrice(),
-                                LIST, contentItemTab.getName(),
+                                PRICE, "", // TODO: [Misael] ini ngga ada harga jg
+                                LIST, contentItemTab.getTitle(),
                                 POSITION, position + 1
                                 )
                         )
@@ -476,27 +476,27 @@ public class OrderListAnalytics {
 
     }
 
-    public static void eventWidgetClick(@NotNull WidgetGridItem item, int position) {
+    public static void eventWidgetClick(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem item, int position) {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, "recommendation - " + item.getName() + " - " + (1 + position),
+                EVENT_LABEL, "recommendation - " + item.getTitle() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, item.getName()
+                                        LIST, item.getTitle()
                                 ),
                                 PRODUCTS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                NAME, item.getName(),
+                                                NAME, item.getTitle(),
                                                 ID, item.getId(),
-                                                PRICE, item.getPrice(),
+                                                PRICE, "", // item.getPrice(), // TODO: [Misael] ini response baru ngga ada harga
                                                 BRAND, "none",
-                                                CATEGORY, item.getName(),
+                                                CATEGORY, item.getTitle(),
                                                 VARIANT, "none",
-                                                LIST, item.getName(),
+                                                LIST, item.getTitle(),
                                                 POSITION, position + 1,
                                                 ATTRIBUTION, "none"
                                         )

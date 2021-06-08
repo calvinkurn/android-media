@@ -52,7 +52,7 @@ import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.RechargeWidgetAdapter;
@@ -504,15 +504,15 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setRecommendation(Object recommendationResponse) {
-        RechargeWidgetResponse rechargeWidgetResponse = (RechargeWidgetResponse) recommendationResponse;
-        if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null) {
-            if (rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
+        RecommendationDigiPersoResponse rechargeWidgetResponse = (RecommendationDigiPersoResponse) recommendationResponse;
+        if (rechargeWidgetResponse != null && rechargeWidgetResponse.getPersonalizedItems() != null) {
+            if (rechargeWidgetResponse.getPersonalizedItems().getRecommendationItems().isEmpty()) {
                 ViewRecomendItems.setVisibility(View.GONE);
             } else {
                 if (getContext() != null) {
                     recommendListTitle.setText(getContext().getString(R.string.tkpdtransaction_widget_title));
                     recommendationList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-                    recommendationList.setAdapter(new RechargeWidgetAdapter(rechargeWidgetResponse.getHomeWidget().getWidgetGrid()));
+                    recommendationList.setAdapter(new RechargeWidgetAdapter(rechargeWidgetResponse.getPersonalizedItems().getRecommendationItems()));
                 }
             }
         }

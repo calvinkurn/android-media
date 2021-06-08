@@ -20,6 +20,7 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse;
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.BuyerGetRecommendationUseCase;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
@@ -156,17 +157,29 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             orderDetailUseCase.addRequest(graphqlRequest);
 
-            GraphqlRequest requestRecomm = null;
-            Map<String, Object> variablesWidget = new HashMap<>();
-            variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
+            GraphqlRequest requestDigiPersoRecomm = null;
+            Map<String, Object> params = new HashMap<>();
+            Map<String, Object> input = new HashMap<>();
+
+            ArrayList<Integer> dgCategoryIds = new ArrayList<>();
+            ArrayList<Integer> pgCategoryIds = new ArrayList<>();
+            ArrayList<String> clientNumbers = new ArrayList<>();
+            dgCategoryIds.add(1);
+
+            input.put("channelName", "dg_order_detail_recommendation");
+            input.put("clientNumbers", clientNumbers);
+            input.put("dgCategoryIDs", dgCategoryIds);
+            input.put("pgCategoryIDs", pgCategoryIds);
+            params.put("input", input);
+
             if (getView() != null && getView().getActivity() != null) {
-                requestRecomm = new
+                requestDigiPersoRecomm = new
                         GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                        R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget, false);
+                        R.raw.recharge_widget), RecommendationDigiPersoResponse.class, params, false);
             }
 
-            if (requestRecomm != null) {
-                orderDetailUseCase.addRequest(requestRecomm);
+            if (requestDigiPersoRecomm != null) {
+                orderDetailUseCase.addRequest(requestDigiPersoRecomm);
                 orderDetailUseCase.execute(new Subscriber<GraphqlResponse>() {
                     @Override
                     public void onCompleted() {
@@ -216,7 +229,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                     category = category.substring(1, category.length() - 1);
                                 }
                             } else {
-                                RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                                RecommendationDigiPersoResponse rechargeWidgetResponse = response.getData(RecommendationDigiPersoResponse.class);
                                 if (getView() != null) {
                                     getView().setRecommendation(rechargeWidgetResponse);
                                 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/transparent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="104dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/bg_card_recharge_widget"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/categoryName"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:gravity="right"
+            android:textSize="@dimen/sp_10"
+            android:textColor="@color/Unify_N700_68"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:letterSpacing="0.02"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            tools:text="PAKET DATA"
+            tools:visibility="visible"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8">
+
+            <TextView
+                android:id="@+id/productName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/Unify_N700_96"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="BRONET 4G OWS"
+                tools:visibility="visible"
+                />
+
+            <TextView
+                android:id="@+id/clientNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/productName"
+                android:layout_marginTop="@dimen/dp_2"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="@dimen/sp_10"
+                android:textColor="@color/Unify_N700_96"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:visibility="gone"
+                tools:text="081234567890"
+                tools:visibility="visible"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/layout_template_icon_recharge_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        />
+
+</FrameLayout>
