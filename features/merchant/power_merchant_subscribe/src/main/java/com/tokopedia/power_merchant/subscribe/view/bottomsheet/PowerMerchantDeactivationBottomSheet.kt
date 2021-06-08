@@ -14,7 +14,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantDateFormatter
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_deactivation.*

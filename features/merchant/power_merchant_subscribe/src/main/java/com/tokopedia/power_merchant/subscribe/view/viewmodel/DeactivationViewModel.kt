@@ -8,7 +8,7 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.domain.interactor.DeactivatePMUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMDeactivationQuestionnaireUseCase
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetPMDeactivationQuestionnaireUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,7 +22,7 @@ import javax.inject.Inject
  */
 
 class DeactivationViewModel @Inject constructor(
-        private val getPMDeactivationQuestionnaireUseCase: Lazy<GetPMDeactivationQuestionnaireUseCase>,
+        private val getPmDeactivationQuestionnaireUseCase: Lazy<GetPMDeactivationQuestionnaireUseCase>,
         private val deactivatePmUseCase: Lazy<DeactivatePMUseCase>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -45,10 +45,10 @@ class DeactivationViewModel @Inject constructor(
 
     fun getPMCancellationQuestionnaireData(pmTireType: Int, isFirstLoad: Boolean) {
         launchCatchError(block = {
-            getPMDeactivationQuestionnaireUseCase.get().setCacheStrategy(GetPMDeactivationQuestionnaireUseCase.getCacheStrategy(isFirstLoad))
-            getPMDeactivationQuestionnaireUseCase.get().params = GetPMDeactivationQuestionnaireUseCase.createParams(PMConstant.PM_SETTING_INFO_SOURCE, pmTireType)
+            getPmDeactivationQuestionnaireUseCase.get().setCacheStrategy(GetPMDeactivationQuestionnaireUseCase.getCacheStrategy(isFirstLoad))
+            getPmDeactivationQuestionnaireUseCase.get().params = GetPMDeactivationQuestionnaireUseCase.createParams(PMConstant.PM_SETTING_INFO_SOURCE, pmTireType)
             val result = withContext(dispatchers.io) {
-                getPMDeactivationQuestionnaireUseCase.get().executeOnBackground()
+                getPmDeactivationQuestionnaireUseCase.get().executeOnBackground()
             }
             _pmDeactivationQuestionnaireData.value = Success(result)
         }, onError = {

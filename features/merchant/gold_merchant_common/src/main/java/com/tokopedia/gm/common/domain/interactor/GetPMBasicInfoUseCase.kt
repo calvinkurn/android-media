@@ -21,7 +21,7 @@ class GetPMBasicInfoUseCase @Inject constructor(
 
     suspend fun executeOnBackground(isFirstLoad: Boolean): PowerMerchantBasicInfoUiModel {
         return coroutineScope {
-            val pmStatusInfoAsync = async { getPmStatusInfo() }
+            val pmStatusInfoAsync = async { getPmStatusInfo(isFirstLoad) }
             val pmShopInfoAsync = async { getPmShopInfo() }
             val pmSettingInfoAsync = async { getPmSettingInfo(isFirstLoad) }
             val shopScoreAsync = async { getShopScore() }
@@ -53,7 +53,8 @@ class GetPMBasicInfoUseCase @Inject constructor(
         return getPMShopInfoUseCase.executeOnBackground()
     }
 
-    private suspend fun getPmStatusInfo(): PMStatusUiModel {
+    private suspend fun getPmStatusInfo(shouldFromCache: Boolean): PMStatusUiModel {
+        getPmStatusInfo.setCacheStrategy(GetPMStatusUseCase.getCacheStrategy(shouldFromCache))
         getPmStatusInfo.params = GetPMStatusUseCase.createParams(userSession.shopId)
         return getPmStatusInfo.executeOnBackground()
     }

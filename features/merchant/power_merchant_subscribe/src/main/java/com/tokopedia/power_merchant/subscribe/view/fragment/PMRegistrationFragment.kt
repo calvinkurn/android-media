@@ -16,6 +16,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceMonitoringConst
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
@@ -128,6 +129,9 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
                     logToCrashlytic(PowerMerchantErrorLogger.PM_REGISTRATION_PAGE_ERROR, it.throwable)
                 }
             }
+
+            stopCustomMetricPerformanceMonitoring(PerformanceMonitoringConst.PM_REGISTRATION_DATA_METRICS)
+            stopRenderPerformanceMonitoring()
         })
     }
 

@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.domain.interactor
+package com.tokopedia.power_merchant.subscribe.domain.usecase
 
 import com.tokopedia.gm.common.domain.interactor.BaseGqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaire
+import com.tokopedia.power_merchant.subscribe.domain.model.GoldCancellationsQuestionaire
 import com.tokopedia.power_merchant.subscribe.domain.mapper.PMDeactivationQuestionnaireMapper
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.usecase.RequestParams

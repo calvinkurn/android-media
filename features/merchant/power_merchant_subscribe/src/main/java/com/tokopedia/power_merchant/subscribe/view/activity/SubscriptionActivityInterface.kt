@@ -17,4 +17,10 @@ interface SubscriptionActivityInterface {
     fun hideActivationProgress()
 
     fun showActivationProgress()
+
+    fun stopRenderPerformanceMonitoring()
+
+    fun startCustomMetricPerformanceMonitoring(tag: String)
+
+    fun stopCustomMetricPerformanceMonitoring(tag: String)
 }

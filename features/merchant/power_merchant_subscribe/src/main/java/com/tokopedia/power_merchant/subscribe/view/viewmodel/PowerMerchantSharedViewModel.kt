@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetShopModerationStatusUseCase
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetShopModerationStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantRemoteConfig
 import com.tokopedia.usecase.coroutines.Fail

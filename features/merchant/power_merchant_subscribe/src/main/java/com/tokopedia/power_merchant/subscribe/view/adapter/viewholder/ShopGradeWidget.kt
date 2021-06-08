@@ -13,7 +13,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
 

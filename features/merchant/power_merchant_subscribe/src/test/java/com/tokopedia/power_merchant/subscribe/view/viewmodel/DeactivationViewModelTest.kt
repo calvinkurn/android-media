@@ -3,7 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.domain.interactor.DeactivatePMUseCase
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMDeactivationQuestionnaireUseCase
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetPMDeactivationQuestionnaireUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyErrorEquals

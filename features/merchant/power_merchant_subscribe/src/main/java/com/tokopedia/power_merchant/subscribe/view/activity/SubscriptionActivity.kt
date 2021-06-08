@@ -22,11 +22,13 @@ import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiM
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.analytics.performance.PMPerformanceMonitoring
+import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceMonitoringConst
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMTermAndConditionBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.fragment.PMRegistrationFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
@@ -66,6 +68,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
+    private var performanceMonitoring: PMPerformanceMonitoring? = null
     private val sharedViewModel: PowerMerchantSharedViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSharedViewModel::class.java)
     }
@@ -88,6 +91,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initPerformanceMonitoring()
         initInjector()
         switchPMToWebView()
         setContentView(R.layout.activity_pm_subsription)
@@ -97,6 +101,11 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         setupView()
         observePmBasicInfo()
         observeShopModerationStatus()
+    }
+
+    private fun initPerformanceMonitoring() {
+        performanceMonitoring = PMPerformanceMonitoring()
+        performanceMonitoring?.initPerformanceMonitoring()
     }
 
     override fun getComponent(): PowerMerchantSubscribeComponent {
@@ -164,9 +173,24 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         pmRegistrationFooterView.hideLoadingState()
     }
 
+    override fun stopRenderPerformanceMonitoring() {
+        stopPerformanceMonitoring()
+    }
+
+    override fun startCustomMetricPerformanceMonitoring(tag: String) {
+        startCustomMetricMonitoring(tag)
+    }
+
+    override fun stopCustomMetricPerformanceMonitoring(tag: String) {
+        stopCustomMetricMonitoring(tag)
+    }
+
     private fun observeShopModerationStatus() {
+        startCustomMetricMonitoring(PerformanceMonitoringConst.PM_SHOP_MODERATION_STATUS_METRICS)
         sharedViewModel.getShopModerationStatus(userSession.shopId.toLongOrZero())
+
         observe(sharedViewModel.shopModerationStatus) {
+            stopCustomMetricMonitoring(PerformanceMonitoringConst.PM_SHOP_MODERATION_STATUS_METRICS)
             when (it) {
                 is Success -> showModerationShopTicker(it.data)
                 is Fail -> logToCrashlytics(it.throwable, PowerMerchantErrorLogger.PM_SHOP_MODERATION_STATUS_ERROR)
@@ -176,6 +200,8 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun observePmBasicInfo() {
         observe(sharedViewModel.powerMerchantBasicInfo) {
+            startRenderPerformanceMonitoring()
+            stopCustomMetricPerformanceMonitoring(PerformanceMonitoringConst.PM_BASIC_INFO_METRICS)
             when (it) {
                 is Success -> setOnSuccessGetBasicInfo(it.data)
                 is Fail -> {
@@ -218,6 +244,8 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun fetchPmBasicInfo(isFirstLoad: Boolean) {
         showLoadingState()
+        startNetworkPerformanceMonitoring()
+        startCustomMetricPerformanceMonitoring(PerformanceMonitoringConst.PM_BASIC_INFO_METRICS)
         sharedViewModel.getPowerMerchantBasicInfo(isFirstLoad)
     }
 
@@ -389,5 +417,25 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun logToCrashlytics(throwable: Throwable, message: String) {
         PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
+    }
+
+    private fun startNetworkPerformanceMonitoring() {
+        performanceMonitoring?.startNetworkPerformanceMonitoring()
+    }
+
+    private fun startRenderPerformanceMonitoring() {
+        performanceMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    private fun startCustomMetricMonitoring(tag: String) {
+        performanceMonitoring?.startCustomMetric(tag)
+    }
+
+    private fun stopCustomMetricMonitoring(tag: String) {
+        performanceMonitoring?.stopCustomMetric(tag)
+    }
+
+    private fun stopPerformanceMonitoring() {
+        performanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 }

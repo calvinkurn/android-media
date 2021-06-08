@@ -21,10 +21,11 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceMonitoringConst
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
@@ -206,6 +207,18 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
 
     protected fun showErrorState(throwable: Throwable) {
         (activity as? SubscriptionActivityInterface)?.showErrorState(throwable)
+    }
+
+    protected fun startCustomMetricPerformanceMonitoring(tag: String) {
+        (activity as? SubscriptionActivityInterface)?.startCustomMetricPerformanceMonitoring(tag)
+    }
+
+    protected fun stopCustomMetricPerformanceMonitoring(tag: String) {
+        (activity as? SubscriptionActivityInterface)?.stopCustomMetricPerformanceMonitoring(tag)
+    }
+
+    protected fun stopRenderPerformanceMonitoring() {
+        (activity as? SubscriptionActivityInterface)?.stopRenderPerformanceMonitoring()
     }
 
     protected fun submitPmRegistration(nextShopTireType: Int) {
@@ -425,6 +438,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
     }
 
     private fun fetchPmRegistrationData(isFirstLoad: Boolean) {
+        startCustomMetricPerformanceMonitoring(PerformanceMonitoringConst.PM_REGISTRATION_DATA_METRICS)
         mViewModel.getPmRegistrationData(isFirstLoad)
     }
 
@@ -492,6 +506,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
 
     private fun observePmActiveState() {
         mViewModel.pmPmActiveData.observe(viewLifecycleOwner, Observer {
+            stopCustomMetricPerformanceMonitoring(PerformanceMonitoringConst.PM_ACTIVE_DATA_METRICS)
             hideSwipeRefreshLoading()
             when (it) {
                 is Success -> renderPmActiveState(it.data)
@@ -500,10 +515,12 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
                     logToCrashlytic(PowerMerchantErrorLogger.PM_ACTIVE_PAGE_ERROR, it.throwable)
                 }
             }
+            stopRenderPerformanceMonitoring()
         })
     }
 
     private fun fetchPmActiveState(pmTire: Int) {
+        startCustomMetricPerformanceMonitoring(PerformanceMonitoringConst.PM_ACTIVE_DATA_METRICS)
         mViewModel.getPmActiveStateData(pmTire)
     }
 
