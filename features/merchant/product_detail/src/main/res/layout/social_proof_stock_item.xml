@@ -18,10 +18,10 @@
         tools:ignore="RtlSymmetry"
         tools:text="Dilihat 200" />
 
-    <LinearLayout
+    <View
         android:layout_width="1dp"
         android:layout_height="@dimen/dp_16"
         android:layout_gravity="center"
-        android:background="#BFC9D9" />
+        android:background="@color/Unify_NN300" />
 
 </LinearLayout>
