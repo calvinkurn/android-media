@@ -147,13 +147,11 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val campaign = onGoingData.campaign
         if (onGoingData.thematicCampaign.campaignName.isEmpty()) {
             if (campaign.shouldShowRibbonCampaign) {
-                // thematic data
-                val thematicCampaign = onGoingData.thematicCampaign
                 // render campaign name
                 campaignNameViews3?.text = campaign.campaignTypeName
                 // render campaign ribbon background
-                val gradientDrawable = getGradientDrawableForBackGround(campaign.background, SLASH_PRICE)
-                campaignRibbonType3View?.background = gradientDrawable
+                val backGroundColorData = campaign.background
+                renderBackGroundColor(campaignRibbonType3View, backGroundColorData, SLASH_PRICE)
                 // show count down wording
                 endsInWordingView3?.show()
                 // render ongoing count down timer
@@ -175,7 +173,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
         if (thematicCampaign.background.isNotBlank()) {
-            campaignRibbonType3View?.background = getGradientDrawableForBackGround(thematicCampaign.background)
+            val backGroundColorData = thematicCampaign.background
+            renderBackGroundColor(campaignRibbonType3View, backGroundColorData)
         }
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
@@ -306,20 +305,13 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    // ONGOING CAMPAIGN - use campaign ribbon structure type 2 -
+    // ONGOING CAMPAIGN - use campaign ribbon structure type 2
     private fun renderOnGoingCampaignRibbon(onGoingData: ProductContentMainData) {
         val campaign = onGoingData.campaign
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
         val backGroundColorData = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
-        val colorCount = backGroundColorData.split(",").size
-        if (colorCount == 1) {
-            val backgroundColor = getBackgroundColor(backGroundColorData)
-            campaignRibbonType2View?.setBackgroundColor(backgroundColor)
-        } else {
-            val gradientDrawable = getGradientDrawableForBackGround(backGroundColorData)
-            campaignRibbonType2View?.background = gradientDrawable
-        }
+        renderBackGroundColor(campaignRibbonType2View, backGroundColorData)
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
             campaignLogoView2?.loadImage(thematicCampaign.icon)
@@ -375,7 +367,7 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun renderOnGoingCountDownTimer(campaign: CampaignModular, timerView: TimerUnifySingle?) {
         try {
-            val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
+            val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
             val calendar = Calendar.getInstance()
@@ -399,7 +391,18 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    private fun getBackgroundColor(colorString: String): Int {
+    private fun renderBackGroundColor(view: View?, backGroundColorData: String, campaignTypes: Int = FLASH_SALE) {
+        val colorCount = backGroundColorData.split(",").size
+        if (colorCount == 1) {
+            val backgroundColor = getBackGroundColor(backGroundColorData)
+            view?.setBackgroundColor(backgroundColor)
+        } else {
+            val gradientDrawable = getGradientDrawableForBackGround(backGroundColorData, campaignTypes)
+            view?.background = gradientDrawable
+        }
+    }
+
+    private fun getBackGroundColor(colorString: String): Int {
         return try {
             Color.parseColor(colorString)
         } catch (ex: Exception) {
