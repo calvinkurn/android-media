@@ -106,7 +106,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
     }
 
     private fun setupCalendarView() {
-        val initMinDate = getNPastDaysTimeStamp(MAX_FILTER_DATE)
+        val initMinDate = getPastDaysPenaltyTimeStamp()
         val initMaxDate = Date(getNowTimeStamp())
         calendarView?.let { cpv ->
             cpv.init(initMinDate, initMaxDate, emptyList()).inMode(mode)
@@ -178,7 +178,6 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
         const val KEY_START_DATE_PENALTY = "key_start_date_penalty"
         const val KEY_END_DATE_PENALTY = "key_end_date_penalty"
         const val DELAY_SELECTED_FILTER_DATE_PENALTY = 300L
-        const val MAX_FILTER_DATE = 90
 
         fun newInstance(startDate: String, endDate: String): PenaltyDateFilterBottomSheet {
             return PenaltyDateFilterBottomSheet().apply {

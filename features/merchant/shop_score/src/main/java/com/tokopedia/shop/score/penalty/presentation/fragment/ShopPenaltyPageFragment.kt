@@ -158,7 +158,6 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         }
         clearAllData()
         viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
-        viewModelShopPenalty.getDataPenalty()
         penaltyPageAdapter.showLoading()
         penaltyPageAdapter.updateDateFilterText(date)
     }

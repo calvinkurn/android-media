@@ -71,7 +71,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
     }
 
     override fun type(sectionPMProBenefitUIModel: SectionPotentialPMProUiModel): Int {
-        return ItemStatusPMProViewHolder.LAYOUT
+        return ItemPotentialPMProViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -89,7 +89,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(parent, sectionFaqListener)
             ItemShopPerformanceErrorViewHolder.LAYOUT -> ItemShopPerformanceErrorViewHolder(parent, globalErrorListener)
             ItemLevelScoreProjectViewHolder.LAYOUT -> ItemLevelScoreProjectViewHolder(parent)
-            ItemStatusPMProViewHolder.LAYOUT -> ItemStatusPMProViewHolder(parent, sectionPMProListener)
+            ItemPotentialPMProViewHolder.LAYOUT -> ItemPotentialPMProViewHolder(parent, sectionPMProListener)
             else -> return super.createViewHolder(parent, type)
         }
     }

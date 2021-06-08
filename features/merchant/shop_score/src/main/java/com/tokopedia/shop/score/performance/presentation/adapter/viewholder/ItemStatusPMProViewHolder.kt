@@ -1,45 +1,53 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMProBenefitAdapter
-import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPMProListener
-import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMProUiModel
-import kotlinx.android.synthetic.main.item_potential_pm_pro.view.*
+import com.tokopedia.shop.score.common.setTextMakeHyperlink
+import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantListener
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
+import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
 
-class ItemStatusPMProViewHolder(view: View, private val itemStatusPMProListener: ItemStatusPMProListener):
-        AbstractViewHolder<SectionPotentialPMProUiModel>(view) {
+class ItemStatusPMViewHolder(view: View,
+                             private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener) : AbstractViewHolder<ItemStatusPMUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_potential_pm_pro
+        val LAYOUT = R.layout.item_status_power_merchant
     }
 
-    private var itemPMProBenefitAdapter: ItemPMProBenefitAdapter? = null
-
-    override fun bind(element: SectionPotentialPMProUiModel?) {
-        itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
-        with(itemView) {
-            tvDescPMPro?.text = getString(R.string.desc_potential_pm_pro,
-                    element?.transitionEndDate)
-            tv_see_all_benefit_pm_pro?.setOnClickListener {
-                itemStatusPMProListener.onGotoPMProPage()
-            }
-            ic_chevron_right_benefit_pm_pro?.setOnClickListener {
-                itemStatusPMProListener.onGotoPMProPage()
-            }
-        }
-        setPotentialPMProBenefitAdapter(element)
+    override fun bind(element: ItemStatusPMUiModel?) {
+        setupIconClickListener()
+        setupItemPowerMerchant(element)
     }
 
-    private fun setPotentialPMProBenefitAdapter(element: SectionPotentialPMProUiModel?) {
+    private fun setupItemPowerMerchant(element: ItemStatusPMUiModel?) {
         with(itemView) {
-            rv_shop_pm_pro_potential_benefit?.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = itemPMProBenefitAdapter
+            tv_pm_reputation_value?.text = getString(R.string.title_pm_value)
+            element?.descPM?.let {
+                tv_desc_content_pm_section?.setTextMakeHyperlink(it) {
+                    itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
+                }
+                if (element.isNewSellerProjection) {
+                    tv_desc_content_pm_section?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                } else {
+                    tv_desc_content_pm_section?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                }
+            }
+            tv_title_content_pm_section?.showWithCondition(element?.isNewSellerProjection == false)
+        }
+    }
+
+    private fun setupIconClickListener() {
+        with(itemView) {
+            ic_pm_reputation_right?.setOnClickListener {
+                itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
+            }
+            if (ic_pm_reputation_right?.isVisible == true) {
+                itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
             }
         }
-        element?.potentialPMProPMBenefitList?.let { itemPMProBenefitAdapter?.setPotentialPMProBenefit(it) }
     }
 }

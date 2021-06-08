@@ -7,13 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.*
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
-import com.tokopedia.shop.score.common.format
-import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
-import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailParam
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
@@ -61,7 +58,7 @@ class ShopPenaltyViewModel @Inject constructor(
     private val _typeFilterData = MutableLiveData<Int>()
     private val _sortTypeFilterData = MutableLiveData<Pair<Int, Int>>()
 
-    private var startDate = format(getNPastMonthTimeStamp(1).time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    private var startDate = format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var endDate = format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var typeId = 0
     private var sortBy = 0
