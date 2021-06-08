@@ -12,7 +12,6 @@ import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
-import com.tokopedia.home_wishlist.util.SingleObserverLiveEvent
 import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.util.WishlistLiveData
 import com.tokopedia.home_wishlist.view.ext.*
