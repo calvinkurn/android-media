@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/review_form_product_image_loading"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_product_name_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/review_form_product_image_loading"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_product_variant_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl9"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/review_form_product_image_loading"
+        app:layout_constraintTop_toBottomOf="@id/review_form_product_name_loading" />
+
+    <ImageView
+        android:id="@+id/review_form_rating_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:contentDescription="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_product_image_loading"
+        app:srcCompat="@drawable/create_review_shimmer_stars" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/review_form_rating_divider_loading"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="@color/Unify_N75"
+        app:layout_constraintTop_toBottomOf="@id/review_form_rating_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_text_area_title_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl8"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="@id/review_form_rating_loading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_rating_divider_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_text_area_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl7"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_text_area_title_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_chips_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toStartOf="@id/review_form_chips_loading_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_text_area_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_chips_loading_2"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toStartOf="@id/review_form_chips_loading_3"
+        app:layout_constraintTop_toBottomOf="@id/review_form_text_area_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_chips_loading_3"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toStartOf="@id/review_form_chips_loading_4"
+        app:layout_constraintTop_toBottomOf="@id/review_form_text_area_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_chips_loading_4"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_text_area_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_chips_loading_5"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_chips_loading_6"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintStart_toEndOf="@id/review_form_chips_loading_5"
+        app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_chips_loading_7"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintStart_toEndOf="@id/review_form_chips_loading_6"
+        app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_chips_loading_8"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/review_form_chips_loading_7"
+        app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_add_image_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl7"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_chips_loading_8" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_text_area_anonymous_option_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl7"
+        android:layout_marginEnd="@dimen/layout_lvl8"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="@id/review_form_rating_loading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_add_image_loading" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/review_form_progress_bar_divider_loading"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/Unify_N75"
+        app:layout_constraintTop_toBottomOf="@id/review_form_text_area_anonymous_option_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_progress_bar_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl8"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="@id/review_form_rating_loading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_progress_bar_description_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl8"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="@id/review_form_progress_bar_loading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_loading" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/review_form_submit_button_loading"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/review_form_progress_bar_loading"
+        app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider_loading" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

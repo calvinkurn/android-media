@@ -1,19 +1,14 @@
 package com.tokopedia.trackingoptimizer
 
 import android.content.Context
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.trackingoptimizer.constant.Constant.Companion.ECOMMERCE
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
-import com.tokopedia.trackingoptimizer.repository.ITrackingRepository
-import com.tokopedia.trackingoptimizer.repository.NewITrackingRepository
-import com.tokopedia.trackingoptimizer.repository.NewTrackingRepository
-import com.tokopedia.trackingoptimizer.repository.TrackingRepository
+import com.tokopedia.trackingoptimizer.repository.TrackRepositoryImpl
+import com.tokopedia.trackingoptimizer.repository.TrackRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -54,16 +49,9 @@ class TrackingQueue(val context: Context) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = TrackingExecutors.executor + TrackingExecutors.handler
 
-
-    private val remoteConfig = FirebaseRemoteConfigImpl(context)
-    val trackingRepository: ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
-        TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
-        TrackingRepository(context)
-    }
-
-    val newTrackingRepository: NewITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
+    val newTrackingRepository: TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
             TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
-        NewTrackingRepository(context)
+        TrackRepository(context)
     }
 
     /**
@@ -76,11 +64,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
             return
         }
         launch {
-            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
-                newTrackingRepository.put(map)
-            } else {
-                trackingRepository.put(map)
-            }
+            newTrackingRepository.put(map)
         }
     }
 
@@ -92,11 +76,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
                       enhanceECommerceMap: HashMap<String, Any>,
                       customDimension: HashMap<String, Any>? = null) {
         launch {
-            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
-                newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
-            } else {
-                trackingRepository.putEE(event, customDimension, enhanceECommerceMap)
-            }
+            newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
         }
     }
 
@@ -107,11 +87,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
     fun putEETracking(map: HashMap<String, Any>? = null,
                       enhanceECommerceMap: HashMap<String, Any>?) {
         launch {
-            if (remoteConfig.getBoolean(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, true)) {
-                newTrackingRepository.putEE(map, enhanceECommerceMap)
-            } else {
-                trackingRepository.putEE(map, enhanceECommerceMap)
-            }
+            newTrackingRepository.putEE(map, enhanceECommerceMap)
         }
     }
 

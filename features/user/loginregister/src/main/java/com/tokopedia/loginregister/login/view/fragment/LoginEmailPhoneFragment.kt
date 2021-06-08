@@ -348,6 +348,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
 
+        autoFillWithDataFromLatestLoggedIn()
+
         setupToolbar()
     }
 
@@ -1889,6 +1891,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 , mapOf("type" to flow
                 , "error" to errorMessage.orEmpty()
                 , "throwable" to Log.getStackTraceString(throwable)))
+    }
+
+    private fun autoFillWithDataFromLatestLoggedIn() {
+        if(!userSession.autofillUserData.isNullOrEmpty() && emailPhoneEditText?.text?.isEmpty() == true) {
+            emailPhoneEditText?.let {
+                it.setText(userSession.autofillUserData)
+                it.setSelection(it.text.length)
+            }
+        }
     }
 
     companion object {
