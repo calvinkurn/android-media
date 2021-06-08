@@ -12,7 +12,7 @@ object DeeplinkMapperInbox {
     fun getRegisteredNavigationNotifcenter(): String {
         var applink = ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
         if (useNewNotifcenterOnInbox() && !GlobalConfig.isSellerApp()) {
-            applink = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
+            applink = Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
                 appendQueryParameter(
                     ApplinkConst.Inbox.PARAM_PAGE,
                     ApplinkConst.Inbox.VALUE_PAGE_NOTIFICATION
