@@ -51,6 +51,7 @@ import javax.inject.Inject
 class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder.ImageClickListener {
 
     companion object {
+        const val REQUEST_CODE_PERMISSION = 5111
         const val REQUEST_CODE_IMAGE = 111
         const val EXTRA_URI_IMAGE = "uri_image"
 
@@ -133,12 +134,22 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         }
 
         if (!allPermissionsGranted()) {
-            requestPermissions(requiredPermissions.toTypedArray(), 5111)
+            requestPermissions(requiredPermissions.toTypedArray(), REQUEST_CODE_PERMISSION)
         }
 
         setupViewInteraction()
         observeViewModel()
         initData()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSION) {
+            val grantSize = grantResults.filter { it == PackageManager.PERMISSION_GRANTED }.size
+            if (grantSize == requiredPermissions.size) {
+                initData()
+            }
+        }
     }
 
     override fun getScreenName() = ""
@@ -336,9 +347,8 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
             screenshotManager.getUiModel(uri)?.let {
                 viewModel?.setImages(listOf(it))
             }
-        }
+        } else viewModel?.setImages(emptyList())
     }
-
 
     private fun allPermissionsGranted(): Boolean {
         requiredPermissions.forEach { permission ->

@@ -116,7 +116,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         savedUri = uri
         currentActivity?.let {
             if (!allPermissionsGranted(it) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ScreenshotAnalytics.eventUseScreenshot()
+                if(!GlobalConfig.isSellerApp()) ScreenshotAnalytics.eventUseScreenshot()
                 openBottomSheetFeedback(it, uri, className)
             } else {
                 handleItem(uri)
@@ -135,7 +135,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
             if (cursor != null && cursor.moveToFirst()) {
                 val Name = generateScreenshotDataFromCursor(cursor)
                 if (Name != null) {
-                    ScreenshotAnalytics.eventUseScreenshot()
+                    if(!GlobalConfig.isSellerApp()) ScreenshotAnalytics.eventUseScreenshot()
                     openBottomSheetFeedback(currentActivity, uri, className)
                 }
             }

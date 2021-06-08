@@ -39,7 +39,7 @@ class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackView
 
     private fun checkAddImageFeedback() {
         with(imageFeedbackData) {
-            if (size < MAX_IMAGE && last() !is AddImageFeedbackUiModel) {
+            if (size < MAX_IMAGE && lastOrNull() !is AddImageFeedbackUiModel) {
                 imageFeedbackData.add(addImageFeedbackUiModel)
             }
         }
