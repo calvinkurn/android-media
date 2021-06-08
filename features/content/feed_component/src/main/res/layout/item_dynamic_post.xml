@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_16">
 
@@ -21,6 +20,7 @@
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
+        app:cardBackgroundColor="@color/cardview_dms_background_color"
         app:cardCornerRadius="@dimen/dp_8">
 
         <LinearLayout

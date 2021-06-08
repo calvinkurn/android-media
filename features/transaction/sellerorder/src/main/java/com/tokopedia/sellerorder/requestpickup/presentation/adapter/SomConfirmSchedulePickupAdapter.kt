@@ -16,7 +16,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class SomConfirmSchedulePickupAdapter(private val listener: SomConfirmSchedulePickupAdapterListener) : RecyclerView.Adapter<SomConfirmSchedulePickupAdapter.ScheduleTimeViewHolder>() {
 
-    private val scheduleTime = mutableListOf<ScheduleTime>()
+    val scheduleTime = mutableListOf<ScheduleTime>()
     private var selectedKey = ""
 
     interface SomConfirmSchedulePickupAdapterListener {

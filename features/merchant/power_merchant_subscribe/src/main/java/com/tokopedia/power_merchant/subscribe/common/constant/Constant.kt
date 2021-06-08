@@ -6,6 +6,7 @@ package com.tokopedia.power_merchant.subscribe.common.constant
 
 object Constant {
 
+    const val OLD_POWER_MERCHANT_CHARGING = "1%"
     const val REGULAR_MERCHANT_CHARGING = "0,5%"
     const val POWER_MERCHANT_CHARGING = "1,25%"
     const val POWER_MERCHANT_PRO_CHARGING = "1,5%"
@@ -15,7 +16,7 @@ object Constant {
         const val POWER_MERCHANT_FEATURES = "https://seller.tokopedia.com/edu/fitur-power-merchant"
         const val POWER_MERCHANT_PRO_EDU = "https://seller.tokopedia.com/edu/power-merchant-pro"
         const val PM_PRO_BENEFIT_PACKAGE_EDU = "https://seller.tokopedia.com/edu/paket-keuntungan-power-merchant-pro"
-        const val POWER_MERCHANT_TERMS_AND_CONDITION = "https://m.tokopedia.com/help/article/syarat-dan-ketentuan-power-merchant?navHide=true"
+        const val POWER_MERCHANT_TERMS_AND_CONDITION = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-power-merchant-dan-power-merchant-pro"
         const val SHOP_PERFORMANCE_TIPS = "https://seller.tokopedia.com/edu/skor-toko"
     }
 

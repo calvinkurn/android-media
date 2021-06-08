@@ -266,4 +266,7 @@
     <string name="desc_image_voucher">image_voucher</string>
     <string name="desc_image_tokomember">image_tokomember</string>
 
+    <string name="title_dark_mode">Dark Mode</string>
+    <string name="subtitle_dark_mode">Aktifkan dark mode di Tokopedia</string>
+
 </resources>

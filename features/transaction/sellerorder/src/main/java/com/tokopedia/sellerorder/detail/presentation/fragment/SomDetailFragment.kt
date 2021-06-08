@@ -12,10 +12,10 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.util.TypedValue
 import android.view.*
-import android.widget.ProgressBar
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +36,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -128,7 +129,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         RefreshHandler.OnRefreshHandlerListener,
         SomBottomSheetRejectOrderAdapter.ActionListener,
         SomDetailAdapter.ActionListener,
-        SomBottomSheetRejectReasonsAdapter.ActionListener, Toolbar.OnMenuItemClickListener,
+        SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener {
 
     @Inject
@@ -168,8 +169,26 @@ open class SomDetailFragment : BaseDaggerFragment(),
     protected val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
+    private val chatIcon: IconUnify by lazy {
+        createChatIcon(requireContext())
+    }
 
-    protected var menu: Menu? = null
+    private fun createChatIcon(context: Context): IconUnify {
+        return IconUnify(requireContext(), IconUnify.CHAT).apply {
+            setOnClickListener {
+                doClickChat()
+            }
+            layoutParams = LinearLayout.LayoutParams(
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt(),
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt()).apply {
+                setMargins(0, 0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
+            }
+            val outValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+            setBackgroundResource(outValue.resourceId)
+            gone()
+        }
+    }
 
     protected val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
@@ -241,6 +260,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
         setupToolbar()
         prepareLayout()
@@ -269,14 +289,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showBuyerRequestCancelBottomSheet(it)
     }
 
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.som_action_chat -> {
-                doClickChat()
-                true
-            }
-            else -> false
-        }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        som_detail_toolbar?.addCustomRightContent(chatIcon)
     }
 
     private fun checkUserRole() {
@@ -526,7 +540,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun renderProducts() {
         // products
         detailResponse?.run {
-            val dataProducts = SomDetailProducts(listProduct, flagOrderMeta.isTopAds)
+            val dataProducts = SomDetailProducts(listProduct, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
             listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
         }
     }
@@ -896,7 +910,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         }
                     })
                     init(it)
-                    setTitle(SomConsts.TITLE_UBAH_RESI)
                     hideKnob()
                     showCloseButton()
                     show()
@@ -975,7 +988,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
             })
             init(popUp, Utils.getL2CancellationReason(detailResponse?.buyerRequestCancel?.reason.orEmpty()), detailResponse?.statusCode.orZero())
-            setTitle(view.context.getString(R.string.som_request_cancel_bottomsheet_title))
             hideKnob()
             showCloseButton()
         }
@@ -1352,22 +1364,17 @@ open class SomDetailFragment : BaseDaggerFragment(),
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
-                som_detail_toolbar?.inflateMenu(R.menu.chat_menu)
                 som_detail_toolbar?.title = getString(R.string.title_som_detail)
                 som_detail_toolbar?.isShowBackButton = showBackButton()
                 som_detail_toolbar?.setNavigationOnClickListener {
                     onBackPressed()
                 }
-                som_detail_toolbar?.setOnMenuItemClickListener(this@SomDetailFragment)
             }
         }
     }
 
     private fun setChatButtonEnabled(isEnabled: Boolean) {
-        menu?.findItem(R.id.som_action_chat)?.run {
-            isVisible = isEnabled
-            setEnabled(isEnabled)
-        }
+        chatIcon.showWithCondition(isEnabled)
     }
 
     private fun getActivityPltPerformanceMonitoring() {

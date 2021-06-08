@@ -97,7 +97,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
-        if (shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData() != null &&
+        if (shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData() == null ||
                 shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData().getTextLabel().isEmpty()) {
             dynamicPriceLabel.setVisibility(View.GONE);
         } else {
