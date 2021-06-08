@@ -304,7 +304,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             val currentWeight = cartShopHolderData.shopGroupAvailableData?.totalWeight ?: return
             val maximumWeight = cartShopHolderData.shopGroupAvailableData?.maximumShippingWeight
                     ?: return
-            val extraWeight = (currentWeight - maximumWeight)
+            val extraWeight = (currentWeight - maximumWeight) / 1000
             val descriptionText = cartShopHolderData.shopGroupAvailableData?.maximumWeightWording
                     ?: ""
             if (extraWeight > 0 && descriptionText.isNotEmpty()) {
