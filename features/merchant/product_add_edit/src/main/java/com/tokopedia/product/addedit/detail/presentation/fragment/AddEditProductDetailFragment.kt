@@ -1684,7 +1684,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun setupProductNameValidationBottomsheet() {
         productNameField?.icon2?.setOnClickListener {
             val titleValidationModel = viewModel.productNameValidationResult
-            TitleValidationBottomSheet(titleValidationModel).show(childFragmentManager)
+            val bottomSheet = TitleValidationBottomSheet(titleValidationModel)
+
+            bottomSheet.setOnDeleteActionClicked {
+                val cleanedProductName = viewModel.removeKeywords(productNameField.getText(), it)
+                productNameField.setText(cleanedProductName)
+                productNameField?.editText?.setSelection(cleanedProductName.length)
+            }
+
+            bottomSheet.show(childFragmentManager)
         }
     }
 

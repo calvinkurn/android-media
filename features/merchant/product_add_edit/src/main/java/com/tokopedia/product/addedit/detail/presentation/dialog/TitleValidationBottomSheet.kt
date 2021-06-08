@@ -11,10 +11,12 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.IconUnify.Companion.INFORMATION
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TITLE_VALIDATION_ERROR
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TITLE_VALIDATION_SUCCESS
+import com.tokopedia.product.addedit.common.util.setUnifyDrawableEnd
 import com.tokopedia.product.addedit.detail.presentation.customview.TitleCorrectionView
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -30,6 +32,7 @@ class TitleValidationBottomSheet(
         const val TAG = "Tag Title Validation Bottom Sheet"
     }
 
+    private var onDeleteActionClicked: (errorKeywords: List<String>) -> Unit = {}
     private var contentView: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -82,12 +85,14 @@ class TitleValidationBottomSheet(
     }
 
     private fun setupPoints(blacklistKeyword: Boolean, negativeKeyword: Boolean, typoDetected: Boolean) {
+        val descPoint1: Typography? = contentView?.findViewById(R.id.descPoint1)
         val iconPoint1: IconUnify? = contentView?.findViewById(R.id.iconPoint1)
         val iconPoint2: IconUnify? = contentView?.findViewById(R.id.iconPoint2)
         val iconPoint3: IconUnify? = contentView?.findViewById(R.id.iconPoint3)
         val textPoint1: Typography? = contentView?.findViewById(R.id.textPoint1)
         val textPoint2: Typography? = contentView?.findViewById(R.id.textPoint2)
         val textPoint3: Typography? = contentView?.findViewById(R.id.textPoint3)
+        val btnDelete: UnifyButton? = contentView?.findViewById(R.id.btnDelete)
         val redColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500_96)
         val yellowColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300)
         val blackColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
@@ -96,16 +101,27 @@ class TitleValidationBottomSheet(
             iconPoint1?.setImage(INFORMATION, redColor)
             textPoint1?.setWeight(BOLD)
             textPoint1?.setTextColor(redColor)
+            textPoint1?.text = getString(R.string.error_product_title_validation_bottomsheet_point1)
+            btnDelete?.setUnifyDrawableEnd(IconUnify.DELETE)
+            btnDelete?.text = titleValidationModel.errorKeywords.joinToString(", ")
+            btnDelete?.setOnClickListener {
+                onDeleteActionClicked.invoke(titleValidationModel.errorKeywords)
+                dismiss()
+            }
+            btnDelete?.show()
+            descPoint1?.show()
         }
 
         if (negativeKeyword) {
             iconPoint2?.setImage(INFORMATION, yellowColor)
             textPoint2?.setWeight(BOLD)
+            textPoint2?.text = getString(R.string.error_product_title_validation_bottomsheet_point2)
         }
 
         if (typoDetected) {
             iconPoint3?.setImage(INFORMATION, blackColor)
             textPoint3?.setWeight(BOLD)
+            textPoint3?.text = getString(R.string.error_product_title_validation_bottomsheet_point3)
         }
     }
 
@@ -122,5 +138,9 @@ class TitleValidationBottomSheet(
         manager?.run {
             super.show(this , TAG)
         }
+    }
+
+    fun setOnDeleteActionClicked(listener: (errorKeywords: List<String>) -> Unit) {
+        onDeleteActionClicked = listener
     }
 }

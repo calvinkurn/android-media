@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.common.util
 
+import android.graphics.drawable.ScaleDrawable
 import android.text.*
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
@@ -7,11 +8,11 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.unifycomponents.TextAreaUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.math.BigInteger
@@ -110,4 +111,13 @@ fun RadioButtonUnify?.setTitle(title: String) {
 
         text = TextUtils.concat(span1, "\n", span2)
     }
+}
+
+fun UnifyButton.setUnifyDrawableEnd(iconId: Int) {
+    val icon = getIconUnifyDrawable(context, iconId, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N400))
+    val dp8 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).dpToPx()
+    val drawable = ScaleDrawable(icon, 0, dp8, dp8).drawable
+
+    drawable?.setBounds(0, 0, dp8.toInt(), dp8.toInt())
+    this.setCompoundDrawables(null, null, drawable, null)
 }

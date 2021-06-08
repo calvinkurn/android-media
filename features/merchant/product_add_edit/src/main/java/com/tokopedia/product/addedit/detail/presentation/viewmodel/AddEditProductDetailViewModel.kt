@@ -651,4 +651,12 @@ class AddEditProductDetailViewModel @Inject constructor(
             mProductPriceRecommendationError.value = it
         })
     }
+
+    fun removeKeywords(text: String, removedWords: List<String>): String {
+        var result = text
+        removedWords.forEach {
+            result = result.replace(it, "")
+        }
+        return result.trim()
+    }
 }

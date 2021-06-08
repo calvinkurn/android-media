@@ -29,12 +29,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/ivValidationError"
             app:layout_constraintStart_toEndOf="@+id/ivValidationError"
             app:layout_constraintTop_toTopOf="@+id/ivValidationError"
-            app:typographyType="body_3"
+            app:typographyType="body_2"
             android:text="@string/title_product_title_validation_bottomsheet_error" />
 
         <com.tokopedia.product.addedit.detail.presentation.customview.TitleCorrectionView
@@ -48,89 +48,116 @@
             android:id="@+id/titleValidationSuccess"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700"
             android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/title_product_title_validation_bottomsheet_success"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitleCorrection"
-            app:typographyType="body_3"
-            android:text="@string/title_product_title_validation_bottomsheet_success" />
+            app:typographyType="body_2" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iconPoint1"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/spacing_lvl1"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_enable_state="true"
             app:icon_name="CHECK_CIRCLE"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textPoint1" />
+            app:layout_constraintTop_toBottomOf="@+id/titleValidationSuccess" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textPoint1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:textColor="@color/Unify_N700"
-            android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginStart="@dimen/spacing_lvl3"
+            android:gravity="start"
+            android:text="@string/label_product_title_validation_bottomsheet_point1"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iconPoint1"
-            app:layout_constraintTop_toBottomOf="@+id/titleValidationSuccess"
-            app:typographyType="body_3"
-            android:text="@string/label_product_title_validation_bottomsheet_point1" />
+            app:layout_constraintTop_toTopOf="@+id/iconPoint1"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/descPoint1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:gravity="start"
+            android:text="@string/label_product_title_validation_bottomsheet_point1_desc"
+            android:textColor="@color/Unify_N700"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textPoint1"
+            app:layout_constraintTop_toBottomOf="@+id/textPoint1"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl8"
+            android:textAlignment="textStart"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/descPoint1"
+            app:layout_constraintTop_toBottomOf="@+id/descPoint1"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iconPoint2"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/spacing_lvl1"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_enable_state="true"
             app:icon_name="CHECK_CIRCLE"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textPoint2" />
+            app:layout_constraintTop_toBottomOf="@+id/btnDelete" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textPoint2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:textColor="@color/Unify_N700"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:gravity="start"
+            android:text="@string/label_product_title_validation_bottomsheet_point2"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/iconPoint1"
-            app:layout_constraintTop_toBottomOf="@+id/textPoint1"
-            app:typographyType="body_3"
-            android:text="@string/label_product_title_validation_bottomsheet_point2" />
+            app:layout_constraintStart_toEndOf="@+id/iconPoint2"
+            app:layout_constraintTop_toTopOf="@+id/iconPoint2"
+            app:typographyType="body_2" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iconPoint3"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/spacing_lvl1"
             app:icon_color_light_enable="@color/Unify_G500"
             app:icon_enable_state="true"
             app:icon_name="CHECK_CIRCLE"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textPoint3" />
+            app:layout_constraintTop_toBottomOf="@+id/textPoint2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textPoint3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:textColor="@color/Unify_N700"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:gravity="start"
+            android:text="@string/label_product_title_validation_bottomsheet_point3"
+            android:textColor="@color/Unify_N700"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/iconPoint2"
-            app:layout_constraintTop_toBottomOf="@+id/textPoint2"
-            app:typographyType="body_3"
-            android:text="@string/label_product_title_validation_bottomsheet_point3" />
+            app:layout_constraintStart_toEndOf="@+id/iconPoint3"
+            app:layout_constraintTop_toTopOf="@+id/iconPoint3"
+            app:typographyType="body_2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvDescription"
@@ -140,7 +167,7 @@
             android:text="@string/label_product_title_validation_bottomsheet_description"
             android:textColor="@color/unify_N700_44"
             app:layout_constraintTop_toBottomOf="@+id/textPoint3"
-            app:typographyType="small" />
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnDismiss"
@@ -148,7 +175,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:text="@string/label_product_title_validation_bottomsheet_dismiss"
+            app:unifyButtonSize="medium"
             app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
