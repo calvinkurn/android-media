@@ -72,8 +72,7 @@ data class TokopointsCatalogMVCSummary(
         @SerializedName("isShown") val isShown: Boolean?,
         @SerializedName("subTitle") val subTitle: String?,
         @SerializedName("imageURL") val imageURL: String?,
-        @SerializedName("counterTotal") val counterTotal: Int?,
-        @SerializedName("animatedInfos") val animatedInfos: List<AnimatedInfos>?,
+        @SerializedName("counterTotal") val counterTotal: Int?
         )
 
 data class Titles(
@@ -109,12 +108,6 @@ data class FollowShopResponse(
 
 data class FollowShop(
         @SerializedName("success") val success: Boolean?
-)
-
-data class AnimatedInfos(
-        @SerializedName("title") val title: String?,
-        @SerializedName("subTitle") val subTitle: String?,
-        @SerializedName("iconURL") val iconURL: String?
 )
 
 @Retention(AnnotationRetention.SOURCE)

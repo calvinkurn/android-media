@@ -195,7 +195,8 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
             FollowWidgetType.MEMBERSHIP_OPEN -> {
                 collapsableContainer.visibility = View.GONE
                 containerContent.visibility = View.VISIBLE
-                setBottomMarginContainerContent()
+                tvSubTitle.visibility = View.GONE
+                setAdjustableMargin()
                 btnSecond.text = context.resources.getString(R.string.mvc_jadi_member)
             }
             FollowWidgetType.MEMBERSHIP_CLOSE -> {
@@ -305,10 +306,10 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         }
     }
 
-    private fun setBottomMarginContainerContent() {
-        val marginLayoutParams = collapsableContainer.layoutParams as ViewGroup.MarginLayoutParams
-                marginLayoutParams.bottomMargin =
-                    containerContent.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+    private fun setAdjustableMargin() {
+        val marginLayoutParams = containerContent.layoutParams as ViewGroup.MarginLayoutParams
+        marginLayoutParams.bottomMargin =
+            containerContent.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
         containerContent.layoutParams = marginLayoutParams
     }
 }

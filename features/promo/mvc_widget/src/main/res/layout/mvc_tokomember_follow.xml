@@ -53,15 +53,15 @@
                 android:id="@+id/container_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_28"
+                android:layout_marginEnd="@dimen/dp_16"
                 android:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvSubTitle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_9"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:visibility="visible"
                     android:textColor="@color/Unify_N700"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -77,8 +77,8 @@
                     android:id="@+id/ll_buttons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_9"
                     android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_9"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvSubTitle">
 
