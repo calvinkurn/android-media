@@ -28,18 +28,17 @@ object Utils {
     private const val STRING_BUTTON_VARIANT_GHOST = "ghost"
     private const val STRING_BUTTON_VARIANT_TEXT_ONLY = "text_only"
 
-    fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-        val color = if (colorHex.length > 1) Color.parseColor(colorHex)
-        else MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
-        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
-        drawable.colorFilter = filter
-        return drawable
+    fun parseColorHex(context: Context, colorHex: String, defaultColor: Int): Int {
+        return try {
+            Color.parseColor(colorHex)
+        } catch (e: Exception) {
+            MethodChecker.getColor(context, defaultColor)
+        }
     }
 
-    fun getColoredChatIcon(context: Context): Drawable? {
-        val color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val drawable = MethodChecker.getDrawable(context, com.tokopedia.iconunify.R.drawable.iconunify_chat)
+    fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
+        val color = parseColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
         drawable.colorFilter = filter
         return drawable
