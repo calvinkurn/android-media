@@ -501,7 +501,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_FACEBOOK,
-                LABEL_REGISTER_SUCCESS
+                LABEL_SUCCESS
         ))
 
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -519,7 +519,7 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_GOOGLE,
-                LABEL_REGISTER_SUCCESS
+                LABEL_SUCCESS
         ))
 
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -691,7 +691,6 @@ class RegisterAnalytics @Inject constructor() {
         private val LABEL_FAILED = "failed - "
         private val LABEL_FAILED_POPUP_PHONE = "failed - pop up phone number sudah terdaftar"
         private val LABEL_FAILED_POPUP_EMAIL = "failed - pop up email sudah terdaftar"
-        private val LABEL_REGISTER_SUCCESS = "register success"
         val LABEL_EMAIL_EXIST = "email exist"
         val LABEL_PHONE_EXIST = "phone number exist"
         private const val LABEL_EMAIL = "Email"
