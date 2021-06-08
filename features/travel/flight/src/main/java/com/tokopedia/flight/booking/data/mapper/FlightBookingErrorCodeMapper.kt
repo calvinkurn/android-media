@@ -1,7 +1,7 @@
 package com.tokopedia.flight.booking.data.mapper
 
 import com.tokopedia.flight.R
-import com.tokopedia.flight.common.constant_kotlin.FlightErrorConstant
+import com.tokopedia.flight.common.constant.FlightErrorConstant
 
 /**
  * @author by jessica on 2019-11-08

@@ -14,7 +14,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.travel.widget.TravelMenuBottomSheet;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.constant_kotlin.FlightUrl;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.user.session.UserSessionInterface;

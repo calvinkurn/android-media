@@ -8,7 +8,7 @@ import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.flight.common.constant_kotlin.FlightUrl.FLIGHT_PASSENGER_HELP_URL
+import com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PASSENGER_HELP_URL
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent

@@ -3,7 +3,7 @@ package com.tokopedia.flight.common.util;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.tokopedia.flight.common.constant_kotlin.FlightFlowExtraConstant;
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
 
 /**
  * Created by alvarisi on 12/5/17.

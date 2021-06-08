@@ -1,4 +1,4 @@
-package com.tokopedia.flight.common.constant_kotlin
+package com.tokopedia.flight.common.constant
 
 import com.tokopedia.url.TokopediaUrl
 

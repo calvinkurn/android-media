@@ -43,8 +43,8 @@ import com.tokopedia.flight.booking.presentation.adapter.FlightBookingPriceAdapt
 import com.tokopedia.flight.booking.presentation.adapter.FlightInsuranceAdapter
 import com.tokopedia.flight.booking.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.booking.viewmodel.FlightBookingViewModel
-import com.tokopedia.flight.common.constant_kotlin.FlightErrorConstant
-import com.tokopedia.flight.common.constant_kotlin.FlightFlowConstant
+import com.tokopedia.flight.common.constant.FlightErrorConstant
+import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.*
 import com.tokopedia.flight.detail.view.model.FlightDetailModel

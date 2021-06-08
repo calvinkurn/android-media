@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
-import com.tokopedia.flight.common.constant_kotlin.FlightFlowExtraConstant
+import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil

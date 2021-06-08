@@ -15,7 +15,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.*
 import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
-import com.tokopedia.flight.common.constant_kotlin.FlightErrorConstant
+import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil

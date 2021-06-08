@@ -22,7 +22,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
-import com.tokopedia.flight.common.constant_kotlin.FlightErrorConstant
+import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.HorizontalProgressBar
 import com.tokopedia.flight.common.view.adapter.FlightAdapterTypeFactory

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.common.constant_kotlin
+package com.tokopedia.flight.common.constant
 
 /**
  * @author by furqan on 08/06/2021
