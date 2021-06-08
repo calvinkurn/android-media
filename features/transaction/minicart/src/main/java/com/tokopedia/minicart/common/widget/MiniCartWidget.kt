@@ -183,7 +183,6 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun onSuccessUpdateCartForCheckout(context: Context) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
-        intent.putExtra("EXTRA_IS_ONE_CLICK_SHIPMENT", true)
         context.startActivity(intent)
     }
 
