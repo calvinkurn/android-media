@@ -325,6 +325,7 @@ abstract class BaseSearchCategoryViewModel(
         totalFetchedData = 0
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        dynamicFilterModelMutableLiveData.value = null
 
         onViewCreated()
     }
