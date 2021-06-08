@@ -114,7 +114,7 @@ class TokoMartHomeFragment: Fragment(),
     private var movingPosition = 0
 
     private val homeMainToolbarHeight: Int
-        get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+        get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
@@ -269,7 +269,7 @@ class TokoMartHomeFragment: Fragment(),
             rvHome?.addOnScrollListener(NavRecyclerViewScrollListener(
                     navToolbar = toolbar,
                     startTransitionPixel = homeMainToolbarHeight,
-                    toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range),
+                    toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range),
                     navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                         override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
                         override fun onSwitchToLightToolbar() { /* nothing to do */ }

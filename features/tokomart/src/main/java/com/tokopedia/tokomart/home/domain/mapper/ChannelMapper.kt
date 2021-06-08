@@ -54,7 +54,7 @@ object ChannelMapper {
                 response.layout,
                 response.showPromoBadge,
                 response.hasCloseButton,
-                ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(response.header.serverTimeUnix),
+                if (response.header.serverTimeUnix != 0L) ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(response.header.serverTimeUnix) else 0,
                 response.timestamp,
                 response.isAutoRefreshAfterExpired
             ),

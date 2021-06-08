@@ -159,111 +159,112 @@ private const val QUICK_FILTER_QUERY = """
     }
 """
 
-private const val DYNAMIC_CHANNEL_QUERY =
-        "query getDynamicChannel(\${'$'}type: String!){\n" +
-            "    dynamicHomeChannel {\n" +
-            "        channels(type: \${'$'}type){\n" +
-            "          id\n" +
-            "          group_id\n" +
-            "          galaxy_attribution\n" +
-            "          persona\n" +
-            "          brand_id\n" +
-            "          category_persona\n" +
-            "          name\n" +
-            "          layout\n" +
-            "          type\n" +
-            "          pageName\n" +
-            "          showPromoBadge\n" +
-            "          categoryID\n" +
-            "          perso_type\n" +
-            "          campaignCode\n" +
-            "          has_close_button\n" +
-            "          isAutoRefreshAfterExpired\n" +
-            "          token\n" +
-            "          widgetParam\n" +
-            "          contextualInfo\n" +
-            "          header {\n" +
-            "            id\n" +
-            "            name\n" +
-            "            subtitle\n" +
-            "            url\n" +
-            "            applink\n" +
-            "            serverTime\n" +
-            "            expiredTime\n" +
-            "            backColor\n" +
-            "            backImage\n" +
-            "            textColor\n" +
-            "          }\n" +
-            "           grids {\n" +
-            "             campaignCode\n" +
-            "             id\n" +
-            "             back_color\n" +
-            "             name\n" +
-            "             url\n" +
-            "             applink\n" +
-            "             price\n" +
-            "             slashedPrice\n" +
-            "             discount\n" +
-            "             imageUrl\n" +
-            "             label\n" +
-            "             soldPercentage\n" +
-            "             attribution\n" +
-            "             productClickUrl\n" +
-            "             impression\n" +
-            "             cashback\n" +
-            "             isTopads\n" +
-            "             freeOngkir {\n" +
-            "                isActive\n" +
-            "                imageUrl\n" +
-            "              }\n" +
-            "              productViewCountFormatted\n" +
-            "              isOutOfStock\n" +
-            "              warehouseID\n" +
-            "              minOrder\n" +
-            "              recommendationType\n" +
-            "              shop{\n" +
-            "                shopID\n" +
-            "                city\n" +
-            "               }\n" +
-            "              labelGroup {\n" +
-            "                title\n" +
-            "                position\n" +
-            "                type\n" +
-            "                url\n" +
-            "              }\n" +
-            "              has_buy_button\n" +
-            "              rating\n" +
-            "              ratingAverage\n" +
-            "              count_review\n" +
-            "              benefit {\n" +
-            "                 type\n" +
-            "                 value\n" +
-            "              }\n" +
-            "              textColor\n" +
-            "              badges {\n" +
-            "                 title\n" +
-            "                 image_url\n" +
-            "              }\n" +
-            "          }\n" +
-            "          banner {\n" +
-            "            id\n" +
-            "            title\n" +
-            "            description\n" +
-            "            url\n" +
-            "            back_color\n" +
-            "            cta {\n" +
-            "              type\n" +
-            "              mode\n" +
-            "              text\n" +
-            "              coupon_code\n" +
-            "            }\n" +
-            "            applink\n" +
-            "            text_color\n" +
-            "            image_url\n" +
-            "            attribution\n" +
-            "            gradient_color\n" +
-            "\n" +
-            "          }\n" +
-            "        }\n" +
-            "    }\n" +
-            "}"
+private const val DYNAMIC_CHANNEL_QUERY = """
+    query getDynamicChannel(${'$'}type: String!){
+        dynamicHomeChannel {
+            channels(type: ${'$'}type){
+              id
+              group_id
+              galaxy_attribution
+              persona
+              brand_id
+              category_persona
+              name
+              layout
+              type
+              pageName
+              showPromoBadge
+              categoryID
+              perso_type
+              campaignCode
+              has_close_button
+              isAutoRefreshAfterExpired
+              token
+              widgetParam
+              contextualInfo
+              header {
+                id
+                name
+                subtitle
+                url
+                applink
+                serverTime
+                expiredTime
+                backColor
+                backImage
+                textColor
+              }
+               grids {
+                 campaignCode
+                 id
+                 back_color
+                 name
+                 url
+                 applink
+                 price
+                 slashedPrice
+                 discount
+                 imageUrl
+                 label
+                 soldPercentage
+                 attribution
+                 productClickUrl
+                 impression
+                 cashback
+                 isTopads
+                 freeOngkir {
+                    isActive
+                    imageUrl
+                  }
+                  productViewCountFormatted
+                  isOutOfStock
+                  warehouseID
+                  minOrder
+                  recommendationType
+                  shop{
+                    shopID
+                    city
+                   }
+                  labelGroup {
+                    title
+                    position
+                    type
+                    url
+                  }
+                  has_buy_button
+                  rating
+                  ratingAverage
+                  count_review
+                  benefit {
+                     type
+                     value
+                  }
+                  textColor
+                  badges {
+                     title
+                     image_url
+                  }
+              }
+              banner {
+                id
+                title
+                description
+                url
+                back_color
+                cta {
+                  type
+                  mode
+                  text
+                  coupon_code
+                }
+                applink
+                text_color
+                image_url
+                attribution
+                gradient_color
+    
+              }
+            }
+        }
+    }
+"""

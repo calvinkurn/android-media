@@ -1,0 +1,38 @@
+[
+  {
+    "data": {
+      "merchantPromotionGetMVDataByID": {
+        "header": {
+          "process_time": 1304501118,
+          "message": [],
+          "reason": "",
+          "error_code": ""
+        },
+        "data": {
+          "voucher_id": 3095186,
+          "voucher_name": "isi nama voucher",
+          "voucher_type": 3,
+          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2021/4/26/128068031/128068031_005119c1-5c04-4571-a705-814af9a91b0e.jpg",
+          "voucher_image_square": "https://ecs7.tokopedia.net/img/attachment/2021/4/26/128068031/128068031_f23976d1-fdc3-46da-b081-3e635931dd44.jpg",
+          "voucher_status": 3,
+          "voucher_discount_type": 1,
+          "voucher_discount_amt": 20000,
+          "voucher_discount_amt_max": 20000,
+          "voucher_minimum_amt": 287500,
+          "voucher_quota": 15,
+          "voucher_start_time": "2021-04-26T20:30:00Z",
+          "voucher_finish_time": "2021-05-03T17:30:00Z",
+          "voucher_code": "YDPSJO843K",
+          "create_time": "2021-04-26T17:14:10Z",
+          "update_time": "2021-05-03T17:30:53.001081Z",
+          "is_public": 1,
+          "voucher_type_formatted": "Cashback",
+          "voucher_discount_type_formatted": "idr",
+          "voucher_discount_amt_formatted": "20rb",
+          "confirmed_global_quota": 0,
+          "booked_global_quota": 0
+        }
+      }
+    }
+  }
+]

@@ -163,6 +163,7 @@
     <string name="mvc_voucher_recommendation">Yuk, tingkatkan minat pembeli dengan\npakai rekomendasi voucher dibawah ini.</string>
     <string name="mvc_voucher_recommendation_cta_title">Yuk, Gunakan Rekomendasi Voucher</string>
     <string name="mvc_voucher_recommendation_cta">Nggak pakai ribet, tarik banyak pembeli\ndengan rekomendasi dari kami. Terapkan</string>
+    <string name="mvc_voucher_tips_trick_info_icon_content_description">icon tips dan trik</string>
 
     <!-- common -->
     <string name="mvc_create_set_period">Tentukan periode voucher aktif</string>

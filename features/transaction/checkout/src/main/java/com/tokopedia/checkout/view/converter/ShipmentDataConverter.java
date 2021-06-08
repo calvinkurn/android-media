@@ -193,7 +193,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setDisableChangeCourier(groupShop.isDisableChangeCourier());
             shipmentCartItemModel.setAutoCourierSelection(groupShop.getAutoCourierSelection());
             shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
-            shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getDescription());
+            shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -306,6 +306,7 @@ public class ShipmentDataConverter {
         cartItemModel.setPreOrderInfo(product.getProductPreOrderInfo());
         cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
+        cartItemModel.setCashback(product.getProductCashback());
         cartItemModel.setCashback(!UtilsKt.isNullOrEmpty(product.getProductCashback()));
         cartItemModel.setFInsurance(product.isProductFcancelPartial());
         cartItemModel.setFCancelPartial(product.isProductFinsurance());
