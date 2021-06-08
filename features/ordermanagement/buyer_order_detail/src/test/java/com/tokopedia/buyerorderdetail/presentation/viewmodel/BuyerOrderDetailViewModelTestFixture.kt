@@ -11,11 +11,11 @@ import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 
@@ -45,6 +45,9 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     val cart = "1234567890"
     val userId = "10001"
     val shopId = "10002"
+    val shopName = "Test Toko"
+    val shopType = "Shop Type Test"
+    val rupiahCurrencyCode = "Rp"
 
     val product = ProductListUiModel.ProductUiModel(
             button = ActionButtonsUiModel.ActionButton(
@@ -59,6 +62,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     type = "main",
                     url = ""
             ),
+            category = "Pakaian Atas",
+            categoryId = "10",
             orderDetailId = "20531238",
             orderStatusId = "220",
             orderId = "166835036",
@@ -89,11 +94,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = BuyerOrderDetailViewModel(
                 coroutineDispatchers = coroutineDispatchers,
-                atcMultiQuery = Lazy { "" },
-                userSession = Lazy { userSession },
-                getBuyerOrderDetailUseCase = Lazy { getBuyerOrderDetailUseCase },
-                finishOrderUseCase = Lazy { finishOrderUseCase },
-                atcUseCase = Lazy { atcUseCase }
+                atcMultiQuery = { "" },
+                userSession = { userSession },
+                getBuyerOrderDetailUseCase = { getBuyerOrderDetailUseCase },
+                finishOrderUseCase = { finishOrderUseCase },
+                atcUseCase = { atcUseCase }
         )
 
         every { userSession.userId } returns userId
@@ -113,5 +118,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         } throws throwable
 
         viewModel.getBuyerOrderDetail(orderId, paymentId, cart)
+    }
+
+    fun createProductItemWithCurrencyCode(currencyCode: String, price: String = "1.000"): ProductListUiModel.ProductUiModel {
+        return mockk(relaxed = true) {
+            every { priceText } returns "$currencyCode $price"
+        }
     }
 }

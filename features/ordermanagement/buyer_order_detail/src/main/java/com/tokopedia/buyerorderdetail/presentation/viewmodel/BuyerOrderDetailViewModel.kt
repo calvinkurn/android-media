@@ -172,8 +172,10 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     fun getCurrencyCode(): String {
-        return getProducts().firstOrNull()?.priceText?.filter {
-            it.isLetter()
+        return getProducts().firstOrNull()?.let { product ->
+            product.priceText.filter {
+                it.isLetter()
+            }
         }.orEmpty()
     }
 
