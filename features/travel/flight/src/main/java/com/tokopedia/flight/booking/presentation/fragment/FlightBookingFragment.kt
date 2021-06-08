@@ -43,8 +43,8 @@ import com.tokopedia.flight.booking.presentation.adapter.FlightBookingPriceAdapt
 import com.tokopedia.flight.booking.presentation.adapter.FlightInsuranceAdapter
 import com.tokopedia.flight.booking.presentation.adapter.FlightJourneyAdapter
 import com.tokopedia.flight.booking.viewmodel.FlightBookingViewModel
-import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.constant.FlightFlowConstant
+import com.tokopedia.flight.common.constant_kotlin.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.*
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
@@ -310,9 +310,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun mapThrowableToFlightError(message: String): FlightError {
         return try {
-            if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL ||
-                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY ||
-                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY) {
+            if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL.value.toString() ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY.value.toString() ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY.value.toString()) {
                 val error = FlightError(message)
                 error.head = getString(R.string.flight_booking_general_error_title)
                 error.message = getString(R.string.flight_booking_general_error_subtitle)
@@ -839,7 +839,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         if (activity != null) {
             if (e.id != null) {
                 val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
-                if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME) renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
+                if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
+                    renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
                 else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
                     showErrorFullPage(e)
                 } else {

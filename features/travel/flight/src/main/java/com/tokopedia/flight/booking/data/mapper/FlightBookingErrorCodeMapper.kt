@@ -1,7 +1,7 @@
 package com.tokopedia.flight.booking.data.mapper
 
 import com.tokopedia.flight.R
-import com.tokopedia.flight.common.constant.FlightErrorConstant
+import com.tokopedia.flight.common.constant_kotlin.FlightErrorConstant
 
 /**
  * @author by jessica on 2019-11-08
@@ -9,7 +9,7 @@ import com.tokopedia.flight.common.constant.FlightErrorConstant
 
 class FlightBookingErrorCodeMapper {
     companion object {
-        fun mapToFlightErrorCode(errorCode: Int): String {
+        fun mapToFlightErrorCode(errorCode: Int): FlightErrorConstant {
             return when (errorCode) {
                 56, 73, 83, 731, 732, 733, 734, 735 -> FlightErrorConstant.FLIGHT_SOLD_OUT
                 1, 2, 3, 4, 8, 9, 13, 14, 15,
@@ -24,11 +24,11 @@ class FlightBookingErrorCodeMapper {
                 1335 -> FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY
                 1337 -> FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY
                 1339 -> FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL
-                else ->FlightErrorConstant.INVALID_JSON
+                else -> FlightErrorConstant.INVALID_JSON
             }
         }
 
-        fun getErrorIcon(errorCode: String): Int {
+        fun getErrorIcon(errorCode: FlightErrorConstant): Int {
             return when (errorCode) {
                 FlightErrorConstant.FLIGHT_SOLD_OUT -> R.drawable.ic_travel_no_ticket
                 FlightErrorConstant.INVALID_JSON -> R.drawable.ic_flight_booking_error_refresh

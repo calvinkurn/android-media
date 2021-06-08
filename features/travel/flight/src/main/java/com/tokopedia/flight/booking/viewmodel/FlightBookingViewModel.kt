@@ -15,7 +15,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.*
 import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
-import com.tokopedia.flight.common.constant.FlightErrorConstant
+import com.tokopedia.flight.common.constant_kotlin.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
@@ -156,7 +156,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     getCart(rawQuery, cartId, autoVerify, bookingVerifyParam, verifyQuery, checkVoucherQuery)
                 } else {
                     retryCount = 0
-                    _flightCartResult.postValue(Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY)))
+                    _flightCartResult.postValue(Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY.value.toString())))
                 }
             }
         }) {
@@ -212,7 +212,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     verifyCartData(query, bookingVerifyParam, checkVoucherQuery)
                 } else {
                     verifyRetryCount = 0
-                    _flightVerifyResult.postValue(Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY)))
+                    _flightVerifyResult.postValue(Fail(MessageErrorException(FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY.value.toString())))
                 }
             }
         }) {

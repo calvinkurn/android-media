@@ -2,7 +2,6 @@ package com.tokopedia.flight.common.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.flight.common.constant.FlightErrorConstant;
 
 /**
  * Created by User on 11/28/2017.
@@ -32,8 +31,7 @@ public class FlightError {
     public FlightError() {
     }
 
-    public @FlightErrorConstant
-    String getId() {
+    public String getId() {
         return id;
     }
 
