@@ -50,6 +50,11 @@
         <item name="android:padding">@dimen/dp_4</item>
     </style>
 
+    <style name="SomListTheme" parent="@style/Theme.White">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="WaitingPaymentOrderTheme" parent="@style/Theme.White" />
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

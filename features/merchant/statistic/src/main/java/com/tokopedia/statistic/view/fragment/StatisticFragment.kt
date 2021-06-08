@@ -23,10 +23,12 @@ import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
+import com.tokopedia.statistic.analytics.TrackingHelper
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -102,7 +104,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
         val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
-                statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                statisticPage?.pageTitle != getString(R.string.stc_shop)) {
             Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_REGULAR_MERCHANT))
         } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate
@@ -110,7 +112,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
     private val defaultEndDate by lazy {
         val defaultEndDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
-                statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                statisticPage?.pageTitle != getString(R.string.stc_shop)) {
             Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_REGULAR_MERCHANT))
         } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate
@@ -230,10 +232,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        recyclerView?.post {
-            adapter.data.remove(widget)
-            adapter.notifyItemRemoved(position)
-        }
+        // No-Op
+        // We are not removing any widget in this page as we want the functionality to
+        // show/hide widget only according to filter result
     }
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
@@ -298,9 +299,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionDescriptionEvent(descriptionTitle)
     }
 
-    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {
+    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {
         val position = adapter.data.indexOf(model)
         StatisticTracker.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
+        getCategoryPage()?.let { categoryPage ->
+            StatisticTracker.sendTableSlideEvent(categoryPage, slideNumber + 1, maxSlidePosition)
+        }
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -318,6 +322,38 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
+
+    override fun sendTableFilterClick(element: TableWidgetUiModel) {
+        element.tableFilters.find { it.isSelected }?.let { filterOption ->
+            getCategoryPage()?.let { categoryPage ->
+                StatisticTracker.sendTableFilterClickEvent(categoryPage, filterOption.name)
+            }
+        }
+    }
+
+    override fun sendTableFilterImpression(element: TableWidgetUiModel) {
+        getCategoryPage()?.let { categoryPage ->
+            StatisticTracker.sendTableFilterImpressionEvent(categoryPage)
+        }
+    }
+
+    override fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {
+        if (!isAdded || context == null) return
+
+        val tableFilterBottomSheet = (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.TABLE_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        tableFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data, element.tableFilters) {
+            recyclerView?.post {
+                val copiedWidget = adapter.data
+                        ?.find { it.dataKey == element.dataKey }
+                        ?.apply { data = null } as? TableWidgetUiModel
+                copiedWidget?.let {
+                    notifyWidgetChanged(it)
+                    fetchTableData(listOf(copiedWidget))
+                }
+            }
+        }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
+    }
 
     fun setSelectedWidget(widget: String) {
         this.selectedWidget = widget
@@ -360,7 +396,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             val headerSubtitle = if (it != null) {
                 it.getHeaderSubTitle(requireContext())
             } else if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
-                    statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                    statisticPage?.pageTitle != getString(R.string.stc_shop)) {
                 val headerSubTitle: String = getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
                 val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
                 "$headerSubTitle ($startEndDateFmt)"
@@ -370,7 +406,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
                 getString(R.string.stc_today_fmt, dateStr, hourStr)
             }
-            setHeaderSubTitle(headerSubtitle)
+            this@StatisticFragment.headerSubTitle = headerSubtitle
         }
     }
 
@@ -459,7 +495,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun fetchTableData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
-        val dataKeys: List<String> = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<TableWidgetUiModel>().map {
+            val tableFilter = it.tableFilters.find { filter -> filter.isSelected }?.value.orEmpty()
+            return@map Pair(it.dataKey, tableFilter)
+        }
         performanceMonitoringTableWidget = PerformanceMonitoring.start(TABLE_WIDGET_TRACE)
         mViewModel.getTableWidgetData(dataKeys)
     }
@@ -866,6 +905,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             WidgetType.TABLE -> performanceMonitoringTableWidget?.stopTrace()
             WidgetType.PIE_CHART -> performanceMonitoringPieChartWidget?.stopTrace()
             WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
+        }
+    }
+
+    private fun getCategoryPage(): String? {
+        return context?.let {
+            TrackingHelper.getCategoryPage(it, statisticPage?.pageTitle.orEmpty())
         }
     }
 }

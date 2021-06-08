@@ -206,7 +206,7 @@ class StatisticViewModel @Inject constructor(
         })
     }
 
-    fun getTableWidgetData(dataKeys: List<String>) {
+    fun getTableWidgetData(dataKeys: List<Pair<String, String>>) {
         launchCatchError(block = {
             val result: Success<List<TableDataUiModel>> = Success(withContext(dispatcher.io) {
                 getTableDataUseCase.get().params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)

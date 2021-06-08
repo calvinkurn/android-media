@@ -14,6 +14,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
+
 /**
  * Created by Yoris Prayogo on 25/11/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.

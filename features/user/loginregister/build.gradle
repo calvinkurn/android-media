@@ -117,6 +117,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.testDependencies.kotlinMockito2
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
@@ -149,6 +150,10 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMock
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+
 }
 
 project.ext {

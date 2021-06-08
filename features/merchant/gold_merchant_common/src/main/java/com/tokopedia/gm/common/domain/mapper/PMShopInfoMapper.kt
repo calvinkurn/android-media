@@ -3,6 +3,8 @@ package com.tokopedia.gm.common.domain.mapper
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPMShopInfoDataModel
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
@@ -14,17 +16,18 @@ class PMShopInfoMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(response: GoldGetPMShopInfoDataModel?): PMShopInfoUiModel {
         return PMShopInfoUiModel(
-                shopId = response?.shopId.orZero().toString(),
-                isNewSeller = response?.isNewSeller ?: true,
-                shopAge = response?.shopAge.orZero(),
-                isKyc = response?.isKyc ?: false,
-                kycStatusId = response?.kycStatusId ?: KYCStatusId.NOT_VERIFIED,
-                shopScore = response?.shopScore.orZero(),
-                shopScoreThreshold = response?.shopScoreThreshold.orZero(),
-                isEligibleShopScore = response?.isEligibleShopScore ?: false,
-                hasActiveProduct = response?.hasActiveProduct ?: false,
-                isEligiblePm = response?.isEligiblePm ?: false,
-                shopLevel = response?.shopLevel.orZero()
+                isNewSeller = response?.isNewSeller.orTrue(),
+                isKyc = response?.isKyc.orFalse(),
+                kycStatusId = response?.kycStatusId?.toIntOrNull() ?: KYCStatusId.NOT_VERIFIED,
+                shopScoreThreshold = response?.shopScoreThreshold ?: PMShopInfoUiModel.DEFAULT_PM_SHOP_SCORE_THRESHOLD,
+                shopScorePmProThreshold = response?.shopScorePmProThreshold ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD,
+                hasActiveProduct = response?.hasActiveProduct.orFalse(),
+                isEligiblePm = response?.isEligiblePm.orFalse(),
+                isEligiblePmPro = response?.isEligiblePmPro.orFalse(),
+                itemSoldOneMonth = response?.itemSoldOneMonth.orZero(),
+                itemSoldPmProThreshold = response?.itemSoldPmProThreshold ?: PMShopInfoUiModel.DEFAULT_ORDER_THRESHOLD,
+                netItemValueOneMonth = response?.nivOneMonth.orZero(),
+                netItemValuePmProThreshold = response?.nivPmProThreshold ?: PMShopInfoUiModel.DEFAULT_NIV_THRESHOLD
         )
     }
 }

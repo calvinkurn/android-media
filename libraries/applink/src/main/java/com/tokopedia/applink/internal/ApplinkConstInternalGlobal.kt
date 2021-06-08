@@ -23,6 +23,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_TOKEN = "token"
     const val PARAM_ACTION = "action"
     const val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    const val PARAM_IS_SMART_REGISTER = "isSmartRegister"
     const val PARAM_IS_PENDING = "isPending"
     const val PARAM_LOGIN_TYPE = "loginType"
     const val PARAM_IS_SQ_CHECK = "isSqCheck"
@@ -236,6 +237,16 @@ object ApplinkConstInternalGlobal {
     // FingerprintSettingActivity
     // tokopedia-android-internal://global/biometric-setting
     const val BIOMETRIC_SETTING = "$INTERNAL_GLOBAL/biometric-setting"
+
+    // LoginByQrActivity
+    // tokopedia-android-internal://global/qr-login
+    @JvmField
+    val QR_LOGIN = "$INTERNAL_GLOBAL/qr-login"
+
+    // LoginByQrResultActivity
+    // tokopedia-android-internal://global/qr-login-result
+    @JvmField
+    val QR_LOGIN_RESULT = "$INTERNAL_GLOBAL/qr-login-result"
 
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number

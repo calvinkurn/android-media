@@ -3,6 +3,7 @@
     <dimen name="sah_dimen_1dp">1dp</dimen>
     <dimen name="sah_dimen_4dp">4dp</dimen>
     <dimen name="sah_dimen_5dp">5dp</dimen>
+    <dimen name="sah_dimen_12dp">12dp</dimen>
     <dimen name="sah_dimen_14dp">14dp</dimen>
     <dimen name="sah_dimen_17dp">17dp</dimen>
     <dimen name="sah_dimen_19dp">19dp</dimen>
@@ -26,7 +27,7 @@
     <dimen name="setting_zero_dp">0dp</dimen>
     <dimen name="setting_status_padding_top">15dp</dimen>
     <dimen name="setting_status_padding_bottom">14dp</dimen>
-    <dimen name="setting_card_height">42dp</dimen>
+    <dimen name="setting_card_height">45dp</dimen>
     <dimen name="setting_shop_badge_border_margin">2dp</dimen>
     <dimen name="setting_shop_info_height">60dp</dimen>
     <dimen name="setting_header_height">56dp</dimen>
