@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
@@ -16,6 +17,8 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 03/03/21
@@ -27,6 +30,7 @@ class ShopGradeWidget(
 ) : AbstractViewHolder<WidgetShopGradeUiModel>(itemView) {
 
     companion object {
+        private const val DATE_FORMAT = "dd MMM yyyy"
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
     }
 
@@ -79,13 +83,8 @@ class ShopGradeWidget(
 
         tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), getShopScoreFmt(element.shopScore)).parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
-        val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-        val thresholdInfo = if (element.pmStatus == PMStatusConst.ACTIVE) {
-            context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.threshold, getPmTireLabel(element.pmTierType))
-        } else {
-            context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.threshold, getPmTireLabel(element.pmTierType))
-        }
-        tvPmShopGradeThreshold.text = thresholdInfo.parseAsHtml()
+        val shopGradeInfo = getPmShopGradeInfo(element)
+        tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
 
         val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
         tvPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
@@ -93,6 +92,34 @@ class ShopGradeWidget(
         tvPmShopScoreTips.setOnClickListener {
             RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
             powerMerchantTracking.sendEventClickTipsToImproveShopScore(element.shopScore.toString())
+        }
+    }
+
+    private fun getPmShopGradeInfo(element: WidgetShopGradeUiModel): String {
+        val textColor = PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        return if (element.pmStatus == PMStatusConst.ACTIVE) {
+            if (element.isNewSeller) {
+                val endOfTenure = getEndOfTenureDate(element)
+                itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active_new_seller, endOfTenure)
+            } else {
+                itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+            }
+        } else {
+            itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+        }
+    }
+
+    private fun getEndOfTenureDate(element: WidgetShopGradeUiModel): String {
+        val endOfTenureDays = 90L
+        val shopAge = element.shopAge
+        val nowMillis = Date().time
+        val remainingDays = endOfTenureDays.minus(shopAge)
+        return if (remainingDays < endOfTenureDays) {
+            val remainingDaysMillis = TimeUnit.DAYS.toMillis(remainingDays)
+            val endOfTenureMillis = nowMillis.plus(remainingDaysMillis)
+            DateFormatUtils.getFormattedDate(endOfTenureMillis, DATE_FORMAT)
+        } else {
+            DateFormatUtils.getFormattedDate(nowMillis, DATE_FORMAT)
         }
     }
 

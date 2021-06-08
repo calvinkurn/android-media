@@ -12,7 +12,7 @@ data class PowerMerchantInterruptUiModel(
         val shopScoreThreshold: Int = 0,
         val shopLevel: Int = 0,
         val isNewSeller: Boolean = true,
-        val shopAge: Int = MIN_SHOP_AGE,
+        val shopAge: Long = MIN_SHOP_AGE,
         val isEligiblePm: Boolean = false,
         val pmStatus: String = PMStatusConst.INACTIVE,
         val pmGrade: String = PMShopGrade.NEW_SELLER,
@@ -25,6 +25,6 @@ data class PowerMerchantInterruptUiModel(
         val isOfficialStore: Boolean = false
 ) {
     companion object {
-        const val MIN_SHOP_AGE = 1
+        const val MIN_SHOP_AGE = 1L
     }
 }
