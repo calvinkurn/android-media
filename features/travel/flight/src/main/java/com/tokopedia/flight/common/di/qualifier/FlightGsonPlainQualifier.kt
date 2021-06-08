@@ -1,7 +1,6 @@
-package com.tokopedia.flight.common.di.qualifier;
+package com.tokopedia.flight.common.di.qualifier
 
-import javax.inject.Qualifier;
+import javax.inject.Qualifier
 
 @Qualifier
-public @interface FlightGsonPlainQualifier {
-}
+annotation class FlightGsonPlainQualifier 
