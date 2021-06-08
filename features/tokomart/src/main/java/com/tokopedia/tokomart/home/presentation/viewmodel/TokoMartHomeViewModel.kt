@@ -57,8 +57,6 @@ class TokoMartHomeViewModel @Inject constructor(
             HomeStaticLayoutId.EMPTY_STATE_FAILED_TO_FETCH_DATA
         )
 
-        // Temp hardcoded wh_id
-        private const val WAREHOUSE_ID = "1"
         private const val CATEGORY_LEVEL_DEPTH = 1
     }
 
@@ -128,13 +126,13 @@ class TokoMartHomeViewModel @Inject constructor(
         }
     }
 
-    fun getLayoutData() {
+    fun getLayoutData(warehouseId: String) {
         launchCatchError(block = {
             val layoutItems = layoutList.toList()
 
             val getDataForEachLayout = layoutItems.filter { it.isNotStaticLayout() }.map {
                 asyncCatchError(block = {
-                    val layoutList = getHomeComponentData(it)
+                    val layoutList = getHomeComponentData(it, warehouseId)
                     val data = HomeLayoutListUiModel(layoutList)
                     _homeLayoutList.postValue(Success(data))
                 }) {
@@ -174,19 +172,19 @@ class TokoMartHomeViewModel @Inject constructor(
                 .tickerList
     }
 
-    private suspend fun getHomeComponentData(item: Visitable<*>): List<Visitable<*>> {
+    private suspend fun getHomeComponentData(item: Visitable<*>, warehouseId: String): List<Visitable<*>> {
         layoutList = when (item) {
-            is TokoMartHomeLayoutUiModel -> getDataForTokoMartHomeComponent(item)
+            is TokoMartHomeLayoutUiModel -> getDataForTokoMartHomeComponent(item, warehouseId)
             is HomeComponentVisitable -> getDataForGlobalHomeComponent(item)
             else -> layoutList
         }
         return layoutList
     }
 
-    private suspend fun getDataForTokoMartHomeComponent(item: TokoMartHomeLayoutUiModel): List<Visitable<*>> {
+    private suspend fun getDataForTokoMartHomeComponent(item: TokoMartHomeLayoutUiModel, warehouseId: String): List<Visitable<*>> {
         return when (item) {
             is HomeCategoryGridUiModel -> {
-                val response = getCategoryListUseCase.execute(WAREHOUSE_ID, CATEGORY_LEVEL_DEPTH)
+                val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
                 layoutList.mapHomeCategoryGridData(item, response)
             }
             else -> layoutList

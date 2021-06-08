@@ -33,10 +33,10 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        tokoNowListener?.getTokoNowFragment()?.let { fragment ->
+        tokoNowListener?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
-                    homeChooseAddressWidgetListener?.onRefreshLayoutFromChooseAddressWidget()
+                    tokoNowListener.refreshLayoutPage()
                 }
 
                 override fun onLocalizingAddressServerDown() {
@@ -44,18 +44,18 @@ class HomeChooseAddressWidgetViewHolder(
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {
-                    homeChooseAddressWidgetListener?.onRefreshLayoutFromChooseAddressWidget()
+                    tokoNowListener.refreshLayoutPage()
                 }
-
-                override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
-
-                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment
 
                 override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
                 override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
+
+                override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
+
+                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
             })
         }
     }
@@ -95,7 +95,6 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     interface HomeChooseAddressWidgetListener {
-        fun onRefreshLayoutFromChooseAddressWidget()
         fun onRemoveChooseAddressWidget()
     }
 }

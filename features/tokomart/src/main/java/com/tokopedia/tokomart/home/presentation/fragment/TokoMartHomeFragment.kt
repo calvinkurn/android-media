@@ -58,7 +58,6 @@ import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeF
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeEmptyStateViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -70,7 +69,6 @@ import javax.inject.Inject
 class TokoMartHomeFragment: Fragment(),
         TokoNowView,
         HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
-        HomeEmptyStateViewHolder.HomeEmptyStateListener,
         HomeTickerViewHolder.HomeTickerListener,
         MiniCartWidgetListener,
         BannerComponentListener
@@ -96,7 +94,6 @@ class TokoMartHomeFragment: Fragment(),
                 tokoNowListener = this,
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
-                homeEmptyStateListener = this,
                 bannerComponentListener = this
             ),
             differ = TokoMartHomeListDiffer()
@@ -145,9 +142,12 @@ class TokoMartHomeFragment: Fragment(),
         getChooseAddress()
     }
 
-    override fun getTokoNowFragment(): Fragment = this
+    override fun getFragmentPage(): Fragment = this
 
-    override fun getTokoNowFragmentManager(): FragmentManager = childFragmentManager
+    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
+
+    override fun refreshLayoutPage() = onRefreshLayout()
+
 
     override fun onAttach(context: Context) {
         initInjector()
@@ -159,25 +159,14 @@ class TokoMartHomeFragment: Fragment(),
         checkIfChooseAddressWidgetDataUpdated()
     }
 
-    override fun onTickerDismiss() {
-        adapter.removeTickerWidget()
-    }
+    override fun onTickerDismiss() = adapter.removeTickerWidget()
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-    }
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {}
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
         context?.let {
             RouteManager.route(it, channelGrid.applink)
         }
-    }
-
-    override fun onRefreshLayoutFromEmptyState() {
-        onRefreshLayout()
-    }
-
-    override fun onRefreshLayoutFromChooseAddressWidget() {
-        onRefreshLayout()
     }
 
     override fun onRemoveChooseAddressWidget() {
@@ -186,25 +175,17 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
-    override fun isMainViewVisible(): Boolean {
-        return true
-    }
+    override fun isMainViewVisible(): Boolean = true
 
-    override fun isBannerImpressed(id: String): Boolean {
-        return true
-    }
+    override fun isBannerImpressed(id: String): Boolean = true
 
-    override fun onPromoScrolled(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-    }
+    override fun onPromoScrolled(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {}
 
-    override fun onPageDragStateChanged(isDrag: Boolean) {
-    }
+    override fun onPageDragStateChanged(isDrag: Boolean) {}
 
-    override fun onPromoAllClick(channelModel: ChannelModel) {
-    }
+    override fun onPromoAllClick(channelModel: ChannelModel) {}
 
-    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-    }
+    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {}
 
     private fun initInjector() {
         DaggerTokoMartHomeComponent.builder()
@@ -215,7 +196,6 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun checkStateNotInServiceArea() {
         context?.let {
-            val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
             if (localCacheModel?.shop_id.toIntOrZero() == 0 && localCacheModel?.warehouse_id.toIntOrZero() == 0) {
                 checkIfChooseAddressWidgetDataUpdated()
                 // after this then what to do?
@@ -438,7 +418,7 @@ class TokoMartHomeFragment: Fragment(),
             } else if (isInitialLoad) {
                 adapter.submitList(result)
                 // TO-DO: Lazy Load Data
-                viewModel.getLayoutData()
+                viewModel.getLayoutData(localCacheModel?.warehouse_id.orEmpty())
 
                 // isMyShop needs shopId to differentiate
                 if (!isChooseAddressWidgetShowed(false))

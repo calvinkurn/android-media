@@ -20,7 +20,6 @@ import com.tokopedia.tokomart.home.presentation.uimodel.HomeEmptyStateUiModel
 class HomeEmptyStateViewHolder(
         itemView: View,
         private val tokoNowListener: TokoNowView? = null,
-        private val homeEmptyStatetListener: HomeEmptyStateListener? = null
 ) : AbstractViewHolder<HomeEmptyStateUiModel>(itemView) {
 
     companion object {
@@ -65,7 +64,7 @@ class HomeEmptyStateViewHolder(
             override fun getLocalizingAddressHostSourceBottomSheet(): String = SOURCE
 
             override fun onAddressDataChanged() {
-                homeEmptyStatetListener?.onRefreshLayoutFromEmptyState()
+                tokoNowListener?.refreshLayoutPage()
             }
 
             override fun onLocalizingAddressServerDown() { /* to do : nothing */ }
@@ -74,7 +73,7 @@ class HomeEmptyStateViewHolder(
 
             override fun onDismissChooseAddressBottomSheet() { /* to do : nothing */ }
         })
-        tokoNowListener?.getTokoNowFragmentManager()?.let {
+        tokoNowListener?.getFragmentManagerPage()?.let {
             chooseAddressBottomSheet.show(it, SHIPPING_CHOOSE_ADDRESS_TAG)
         }
     }
@@ -83,11 +82,7 @@ class HomeEmptyStateViewHolder(
         emptyStateNoAddress?.hide()
         emptyStateFailedToFetchData?.show()
         emptyStateFailedToFetchData?.setActionClickListener {
-            homeEmptyStatetListener?.onRefreshLayoutFromEmptyState()
+            tokoNowListener?.refreshLayoutPage()
         }
-    }
-
-    interface HomeEmptyStateListener {
-        fun onRefreshLayoutFromEmptyState()
     }
 }
