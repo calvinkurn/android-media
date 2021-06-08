@@ -329,6 +329,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendBarChartImpressionEvent(model, position)
     }
 
+    override fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {
+        StatisticTracker.sendBarChartEmptyStateCtaClickEvent(element)
+    }
+
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
         StatisticTracker.sendSectionTooltipClickEvent(model.title)
     }

@@ -312,6 +312,24 @@ object StatisticTracker {
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
+    fun sendBarChartEmptyStateCtaClickEvent(model: BarChartWidgetUiModel) {
+        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
+        val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
+        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_HOMEPAGE,
+                category = TrackingConstant.SELLER_APP_STATISTIC,
+                action = arrayOf(TrackingConstant.CLICK_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
+                label = "$state - $value"
+        )
+
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
     fun sendSectionTooltipClickEvent(sectionTitle: String) {
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_SHOP_INSIGHT,

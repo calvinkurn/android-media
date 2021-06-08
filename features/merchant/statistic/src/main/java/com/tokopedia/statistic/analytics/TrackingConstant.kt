@@ -59,6 +59,7 @@ object TrackingConstant {
     const val CLICK_MENU_3_DOT = "click - 3 dot"
     const val CLICK_MENU_MENU_LAINNYA = "click - %s - menu lainnya"
     const val CLICK_TABLE_WIDGET_FILTER = "click table widget - filter"
+    const val CLICK_WIDGET_BAR_CHART = "click widget bar chart"
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trend line"
     const val IMPRESSION_WIDGET_DESCRIPTION = "impression widget description"

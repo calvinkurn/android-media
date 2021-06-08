@@ -669,6 +669,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendBarChartImpressionEvent(model, position)
     }
 
+    override fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {
+        SellerHomeTracking.sendBarChartEmptyStateCtaClickEvent(element)
+    }
+
     override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {
         SellerHomeTracking.sendMultiLineGraphImpressionEvent(element, userSession.userId)
     }
