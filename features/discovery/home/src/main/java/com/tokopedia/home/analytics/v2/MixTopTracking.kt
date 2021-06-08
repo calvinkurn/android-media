@@ -41,7 +41,7 @@ object MixTopTracking : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
                 eventLabel = Label.NONE,
-                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, topadsString, grid.recommendationType, "recom_page_name", headerName),
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, topadsString, grid.recommendationType, " ", headerName),
                 products = products)
                 .appendScreen(Screen.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -58,7 +58,7 @@ object MixTopTracking : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
                 eventLabel = Label.NONE,
-                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, topadsString, grid.recommendationType, "recom_page_name", headerName),
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, topadsString, grid.recommendationType, " ", headerName),
                 products = products)
                 .appendScreen(Screen.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -75,7 +75,7 @@ object MixTopTracking : BaseTrackerConst() {
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
                 eventLabel = "$channelId - $headerName",
-                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, topadsString, grid.recommendationType, "recom_page_name", headerName),
+                list = CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, topadsString, grid.recommendationType, " ", headerName),
                 products = products)
                 .appendChannelId(channelId)
                 .appendCampaignCode(campaignCode)
