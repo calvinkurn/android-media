@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMProBenefitAdapter
-import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPMProListener
+import com.tokopedia.shop.score.performance.presentation.adapter.ItemPotentialPMProListener
 import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMProUiModel
 import kotlinx.android.synthetic.main.item_potential_pm_pro.view.*
 
-class ItemPotentialPMProViewHolder(view: View, private val itemStatusPMProListener: ItemStatusPMProListener):
+class ItemPotentialPMProViewHolder(view: View, private val itemStatusPMProListener: ItemPotentialPMProListener):
         AbstractViewHolder<SectionPotentialPMProUiModel>(view) {
 
     companion object {

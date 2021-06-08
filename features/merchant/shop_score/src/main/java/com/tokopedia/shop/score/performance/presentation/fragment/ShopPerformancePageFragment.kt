@@ -51,7 +51,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
         ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
-        GlobalErrorListener, ItemStatusPMProListener {
+        GlobalErrorListener, ItemPotentialPMProListener, ItemStatusPowerMerchantProListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -67,7 +67,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
                 this, this, this,
-                this, this)
+                this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -220,6 +220,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     /**
+     * ItemStatusPowerMerchantProListener
+     */
+    override fun onItemClickedPMProPage() {
+        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+    }
+
+    override fun onItemClickedGoToPMProActivation() {
+        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+    }
+
+    /**
      * ItemRecommendationFeatureListener
      */
     override fun onItemClickedRecommendationFeature(appLink: String, identifier: String) {
@@ -357,7 +368,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     val itemPMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
                     val itemRMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
                     val itemRMNonEligibleIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
-                    val itemPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+                    val itemPotentialPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+                    val itemPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
+
 
                     if (coachMark?.isShowing == true) {
                         when (coachMark?.currentIndex) {
@@ -379,7 +392,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                                 if (itemPMIndex in firstVisiblePosition..lastVisiblePosition
                                         || itemRMIndex in firstVisiblePosition..lastVisiblePosition
                                         || itemRMNonEligibleIndex in firstVisiblePosition..lastVisiblePosition
-                                        || itemPMProIndex in firstVisiblePosition..lastVisiblePosition) {
+                                        || itemPotentialPMProIndex in firstVisiblePosition..lastVisiblePosition
+                                        || itemPMProIndex in firstVisiblePosition in lastVisiblePosition
+                                ) {
                                     coachMark?.animateShow()
                                 } else {
                                     coachMark?.animateHide()
@@ -427,7 +442,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getPositionLastItemCoachMark(): Int? {
-        val positionPMPro = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+        val positionPotentialPMPro = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+        val positionPMPro = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
         val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
         val positionRMNonEligible = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
         val positionRMEligible = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
@@ -437,6 +453,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         when {
             positionPMPro != RecyclerView.NO_POSITION -> {
                 position = positionPMPro
+            }
+            positionPotentialPMPro != RecyclerView.NO_POSITION -> {
+                position = positionPotentialPMPro
             }
             positionPM != RecyclerView.NO_POSITION -> {
                 position = positionPM

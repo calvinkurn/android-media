@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
+import com.tokopedia.gm.common.constant.PMStatusConst
+import com.tokopedia.gm.common.constant.PMTier
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -123,6 +125,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     fun mapToShopPerformanceVisitable(shopScoreWrapperResponse: ShopScoreWrapperResponse, shopInfoPeriodUiModel: ShopInfoPeriodUiModel): List<BaseShopPerformance> {
         val shopScoreVisitableList = mutableListOf<BaseShopPerformance>()
+        val powerMerchantResponse = shopScoreWrapperResponse.goldGetPMOStatusResponse
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val isEligiblePMPro = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePmPro
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
@@ -160,38 +163,46 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 userSession.isShopOfficialStore || shopAge < SHOP_AGE_SIXTY -> {
                     add(SectionFaqUiModel(mapToItemFaqUiModel()))
                 }
-                userSession.isGoldMerchant && !userSession.isShopOfficialStore -> {
-                    if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
-                        if (shopAge >= NEW_SELLER_DAYS) {
-                            add(mapToTransitionPeriodReliefUiModel(shopInfoPeriodUiModel.periodEndDate))
-                        }
-                    }
-
-                    if (shopAge >= SHOP_AGE_SIXTY) {
-                        when (isEligiblePMPro) {
-                            true -> {
-                                add(mapToSectionPMPro(shopInfoPeriodUiModel))
-                                return@apply
-                            }
-                            else -> {
-                                add(mapToItemPMUiModel(isNewSellerProjection))
-                                return@apply
-                            }
-                        }
-                    }
+                powerMerchantResponse?.pmTier == PMTier.PRO -> {
+                    add(ItemStatusPMProUiModel())
                 }
-                else -> {
-                    if (shopAge >= SHOP_AGE_SIXTY) {
-                        if (isNewSellerProjection) {
-                            add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
-                            return@apply
-                        } else {
-                            if (isEligiblePM == true) {
-                                add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
-                                return@apply
-                            } else {
-                                add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
-                                return@apply
+                powerMerchantResponse?.pmTier == PMTier.REGULAR -> {
+                    when {
+                        powerMerchantResponse.status == PMStatusConst.INACTIVE -> {
+                            if (shopAge >= SHOP_AGE_SIXTY) {
+                                if (isNewSellerProjection) {
+                                    add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
+                                    return@apply
+                                } else {
+                                    if (isEligiblePM == true) {
+                                        add(mapToItemCurrentStatusRMUiModel(shopInfoPeriodUiModel, isNewSellerProjection))
+                                        return@apply
+                                    } else {
+                                        add(mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel))
+                                        return@apply
+                                    }
+                                }
+                            }
+                        }
+                        (powerMerchantResponse.status == PMStatusConst.ACTIVE || powerMerchantResponse.status == PMStatusConst.IDLE)
+                                && !userSession.isShopOfficialStore -> {
+                            if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
+                                if (shopAge >= NEW_SELLER_DAYS) {
+                                    add(mapToTransitionPeriodReliefUiModel(shopInfoPeriodUiModel.periodEndDate))
+                                }
+                            }
+
+                            if (shopAge >= SHOP_AGE_SIXTY) {
+                                when (isEligiblePMPro) {
+                                    true -> {
+                                        add(mapToSectionPMPro(shopInfoPeriodUiModel))
+                                        return@apply
+                                    }
+                                    else -> {
+                                        add(mapToItemPMUiModel(isNewSellerProjection))
+                                        return@apply
+                                    }
+                                }
                             }
                         }
                     }

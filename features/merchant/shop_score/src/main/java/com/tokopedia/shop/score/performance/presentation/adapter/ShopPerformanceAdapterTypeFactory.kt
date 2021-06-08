@@ -15,7 +15,8 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
                                         private val itemTimerNewSellerListener: ItemTimerNewSellerListener,
                                         private val sectionFaqListener: SectionFaqListener,
                                         private val globalErrorListener: GlobalErrorListener,
-                                        private val sectionPMProListener: ItemStatusPMProListener
+                                        private val potentialPMProListener: ItemPotentialPMProListener,
+                                        private val itemStatusPowerMerchantProListener: ItemStatusPowerMerchantProListener
 ) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
     override fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int {
@@ -74,6 +75,10 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return ItemPotentialPMProViewHolder.LAYOUT
     }
 
+    override fun type(itemStatusPMProUiModel: ItemStatusPMProUiModel): Int {
+        return ItemStatusPMProViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ItemHeaderShopPerformanceViewHolder.LAYOUT -> ItemHeaderShopPerformanceViewHolder(parent, shopPerformanceListener)
@@ -89,7 +94,8 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(parent, sectionFaqListener)
             ItemShopPerformanceErrorViewHolder.LAYOUT -> ItemShopPerformanceErrorViewHolder(parent, globalErrorListener)
             ItemLevelScoreProjectViewHolder.LAYOUT -> ItemLevelScoreProjectViewHolder(parent)
-            ItemPotentialPMProViewHolder.LAYOUT -> ItemPotentialPMProViewHolder(parent, sectionPMProListener)
+            ItemPotentialPMProViewHolder.LAYOUT -> ItemPotentialPMProViewHolder(parent, potentialPMProListener)
+            ItemStatusPMProViewHolder.LAYOUT -> ItemStatusPMProViewHolder(parent, itemStatusPowerMerchantProListener)
             else -> return super.createViewHolder(parent, type)
         }
     }

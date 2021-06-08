@@ -1,52 +1,41 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.gm.common.constant.PMProURL
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
-import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantListener
-import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
-import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
+import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantProListener
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
+import kotlinx.android.synthetic.main.item_status_power_merchant_pro.view.*
 
-class ItemStatusPMViewHolder(view: View,
-                             private val itemStatusPowerMerchantListener: ItemStatusPowerMerchantListener) : AbstractViewHolder<ItemStatusPMUiModel>(view) {
+class ItemStatusPMProViewHolder(view: View,
+                                private val itemStatusPowerMerchantProListener: ItemStatusPowerMerchantProListener) : AbstractViewHolder<ItemStatusPMProUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_status_power_merchant
+        val LAYOUT = R.layout.item_status_power_merchant_pro
     }
 
-    override fun bind(element: ItemStatusPMUiModel?) {
+    override fun bind(element: ItemStatusPMProUiModel?) {
         setupIconClickListener()
-        setupItemPowerMerchant(element)
+        setupItemPowerMerchantPro()
     }
 
-    private fun setupItemPowerMerchant(element: ItemStatusPMUiModel?) {
+    private fun setupItemPowerMerchantPro() {
         with(itemView) {
-            tv_pm_reputation_value?.text = getString(R.string.title_pm_value)
-            element?.descPM?.let {
-                tv_desc_content_pm_section?.setTextMakeHyperlink(it) {
-                    itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
-                }
-                if (element.isNewSellerProjection) {
-                    tv_desc_content_pm_section?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                } else {
-                    tv_desc_content_pm_section?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                }
+            ic_pm_pro_badge_current_status?.loadImage(PMProURL.ICON_URL)
+            tv_pm_pro_reputation_value?.text = getString(R.string.title_pm_pro_value)
+            tv_desc_content_pm_pro_section?.setTextMakeHyperlink(getString(R.string.desc_content_pm_pro_section)) {
+                itemStatusPowerMerchantProListener.onItemClickedPMProPage()
             }
-            tv_title_content_pm_section?.showWithCondition(element?.isNewSellerProjection == false)
         }
     }
 
     private fun setupIconClickListener() {
         with(itemView) {
-            ic_pm_reputation_right?.setOnClickListener {
-                itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
-            }
-            if (ic_pm_reputation_right?.isVisible == true) {
-                itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
+            ic_pm_pro_reputation_right?.setOnClickListener {
+                itemStatusPowerMerchantProListener.onItemClickedGoToPMProActivation()
             }
         }
     }

@@ -68,7 +68,7 @@ class ShopPerformanceViewModel @Inject constructor(
         launchCatchError(block = {
             val shopScoreLevelResponse = withContext(dispatchers.io) {
                 getShopPerformanceUseCase.requestParams = GetShopPerformanceUseCase.createParams(
-                        userSession.shopId.toIntOrZero(), ShopScoreLevelParam(shopID = userSession.shopId),
+                        userSession.shopId.toLongOrZero(), ShopScoreLevelParam(shopID = userSession.shopId),
                         ShopLevelTooltipParam(shopID = userSession.shopId)
                 )
                 getShopPerformanceUseCase.executeOnBackground()

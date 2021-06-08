@@ -33,7 +33,9 @@
 
     <string name="maximum_score_performance">/100</string>
     <string name="title_pm_value">Power Merchant</string>
-    
+
+    <string name="title_pm_pro_value">Power Merchant PRO</string>
+
     <string name="period_date_detail_penalty">Periode %s</string>
 
     <string name="date_penalty_detail">Tanggal pelanggaran %s</string>
@@ -50,6 +52,9 @@
     <string name="title_header_rm_section">Selamat! Karena Performamu, kamu bisa daftar Power Merchant</string>
 
     <!--> PM Pro -->
+    <string name="title_content_pm_pro_section">Kamu dapat menikmati berbagai keuntungan eksklusif Power Merchant PRO!</string>
+    <string name="desc_content_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal, ya. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+
     <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant Pro!</string>
     <string name="desc_potential_pm_pro">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
 

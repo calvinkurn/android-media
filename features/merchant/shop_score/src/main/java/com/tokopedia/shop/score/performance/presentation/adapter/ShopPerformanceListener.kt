@@ -13,7 +13,7 @@ interface ItemShopPerformanceListener {
     fun onItemClickedToFaqClicked()
 }
 
-interface ItemStatusPMProListener {
+interface ItemPotentialPMProListener {
     fun onGotoPMProPage()
 }
 
@@ -31,6 +31,11 @@ interface ItemStatusPowerMerchantListener {
     fun onItemClickedGotoPMPro()
     fun onItemClickedGoToPMActivation()
     fun onImpressHeaderPowerMerchantSection()
+}
+
+interface ItemStatusPowerMerchantProListener {
+    fun onItemClickedPMProPage()
+    fun onItemClickedGoToPMProActivation()
 }
 
 interface SectionFaqListener {
