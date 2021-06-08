@@ -621,9 +621,10 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
     private fun getCurrentShopGradeBenefit(data: PMGradeBenefitInfoUiModel): WidgetExpandableUiModel {
         val grade = data.currentPMGrade
         val benefits = mutableListOf<BaseExpandableItemUiModel>()
-        data.currentPMBenefits?.forEach { benefit ->
+        data.currentPMBenefits?.forEachIndexed { index, benefit ->
             if (!benefits.any { it.text == benefit.categoryName }) {
-                benefits.add(ExpandableSectionUiModel(benefit.categoryName))
+                val shouldShowTopSeparator = index != 0
+                benefits.add(ExpandableSectionUiModel(benefit.categoryName, shouldShowTopSeparator))
             }
             if (benefit.benefitName.isNotBlank()) {
                 benefits.add(ExpandableItemUiModel(benefit.benefitName, benefit.appLink.orEmpty()))
