@@ -235,7 +235,11 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 }
 
-                analytics.trackGenerateOtp(otpData, modeListData, true)
+                if (!isFirstSendOtp) {
+                    analytics.trackResendOtp(otpData, modeListData, true)
+                } else {
+                    analytics.trackGenerateOtp(otpData, modeListData, true)
+                }
             }
             otpRequestData.errorMessage.isNotEmpty() -> {
                 onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
@@ -268,7 +272,12 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 }
             }
 
-            analytics.trackGenerateOtp(otpData, modeListData, false, throwable.message.toString())
+            if (!isFirstSendOtp) {
+                analytics.trackResendOtp(otpData, modeListData, false, throwable.message.toString())
+            } else {
+                analytics.trackGenerateOtp(otpData, modeListData, false, throwable.message.toString())
+            }
+
             isFirstSendOtp = false
             showKeyboard()
         }

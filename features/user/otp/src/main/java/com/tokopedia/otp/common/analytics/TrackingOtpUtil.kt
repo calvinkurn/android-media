@@ -616,6 +616,19 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         ))
     }
 
+    fun trackResendOtp(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_RESEND_OTP,
+                if (isSuccess) {
+                    "success"
+                } else {
+                    "fail - $message"
+                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+        ))
+    }
+
 
     /* Auto Submit Tracker */
     fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
