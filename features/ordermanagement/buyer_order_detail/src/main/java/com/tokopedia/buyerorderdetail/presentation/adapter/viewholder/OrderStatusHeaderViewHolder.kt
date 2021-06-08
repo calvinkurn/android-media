@@ -45,8 +45,7 @@ class OrderStatusHeaderViewHolder(
     override fun bind(element: OrderStatusUiModel.OrderStatusHeaderUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
-                val oldItem = it.first
-                val newItem = it.second
+                val (oldItem, newItem) = it
                 if (oldItem is OrderStatusUiModel.OrderStatusHeaderUiModel && newItem is OrderStatusUiModel.OrderStatusHeaderUiModel) {
                     container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = element

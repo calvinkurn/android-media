@@ -27,8 +27,7 @@ class PaymentGrandTotalViewHolder(itemView: View?) : AbstractViewHolder<PaymentI
     override fun bind(element: PaymentInfoUiModel.PaymentGrandTotalUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
-                val oldItem = it.first
-                val newItem = it.second
+                val (oldItem, newItem) = it
                 if (oldItem is PaymentInfoUiModel.PaymentGrandTotalUiModel && newItem is PaymentInfoUiModel.PaymentGrandTotalUiModel) {
                     container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     if (oldItem.label != newItem.label) {

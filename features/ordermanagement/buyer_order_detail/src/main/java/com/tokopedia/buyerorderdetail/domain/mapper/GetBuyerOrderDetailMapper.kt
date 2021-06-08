@@ -220,10 +220,6 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapShopBadge(os: Boolean, pm: Boolean): Int {
-        return if (os) 2 else if (pm) 1 else 0
-    }
-
     private fun mapProductList(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, orderId: String, orderStatusId: String): List<ProductListUiModel.ProductUiModel> {
         return products.map {
             mapProduct(it, orderId, orderStatusId)

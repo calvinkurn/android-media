@@ -45,8 +45,7 @@ class ProductListHeaderViewHolder(
     override fun bind(element: ProductListUiModel.ProductListHeaderUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
-                val oldItem = it.first
-                val newItem = it.second
+                val (oldItem, newItem) = it
                 if (oldItem is ProductListUiModel.ProductListHeaderUiModel && newItem is ProductListUiModel.ProductListHeaderUiModel) {
                     container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = newItem

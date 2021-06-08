@@ -33,8 +33,7 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
     override fun bind(element: ShipmentInfoUiModel.CourierInfoUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
-                val oldItem = it.first
-                val newItem = it.second
+                val (oldItem, newItem) = it
                 if (oldItem is ShipmentInfoUiModel.CourierInfoUiModel && newItem is ShipmentInfoUiModel.CourierInfoUiModel) {
                     container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     if (oldItem.courierNameAndProductName != newItem.courierNameAndProductName) {

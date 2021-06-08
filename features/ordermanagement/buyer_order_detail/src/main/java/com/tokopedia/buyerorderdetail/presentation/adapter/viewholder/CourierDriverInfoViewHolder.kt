@@ -46,8 +46,7 @@ class CourierDriverInfoViewHolder(
     override fun bind(element: ShipmentInfoUiModel.CourierDriverInfoUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
-                val oldItem = it.first
-                val newItem = it.second
+                val (oldItem, newItem) = it
                 if (oldItem is ShipmentInfoUiModel.CourierDriverInfoUiModel && newItem is ShipmentInfoUiModel.CourierDriverInfoUiModel) {
                     container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = newItem

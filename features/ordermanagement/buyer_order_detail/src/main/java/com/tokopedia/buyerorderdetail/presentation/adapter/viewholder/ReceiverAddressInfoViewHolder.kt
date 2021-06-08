@@ -73,8 +73,7 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<Shi
     override fun bind(element: ShipmentInfoUiModel.ReceiverAddressInfoUiModel?, payloads: MutableList<Any>) {
         payloads.firstOrNull()?.let {
             if (it is Pair<*, *>) {
-                val oldItem = it.first
-                val newItem = it.second
+                val (oldItem, newItem) = it
                 if (oldItem is ShipmentInfoUiModel.ReceiverAddressInfoUiModel && newItem is ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
                     this.element = newItem
                     container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
