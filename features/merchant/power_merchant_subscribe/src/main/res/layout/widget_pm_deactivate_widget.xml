@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/layout_lvl2"
-    android:paddingTop="@dimen/layout_lvl1"
+    android:paddingTop="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingBottom="@dimen/layout_lvl3">
+    android:paddingBottom="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmDeactivateCta"
@@ -14,5 +14,5 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/pm_deactivate_power_merchant_bottom_cta"
-        app:typographyType="body_2" />
+        app:typographyType="body_3" />
 </RelativeLayout>

@@ -10,4 +10,5 @@ data class PMGradeBenefitUiModel(
         val sequenceNum: Int = 0,
         val appLink: String? = null,
         val iconUrl: String? = null,
+        val drawableResIcon: Int? = null
 )

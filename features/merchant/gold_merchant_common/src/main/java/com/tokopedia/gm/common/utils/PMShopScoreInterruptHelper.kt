@@ -27,7 +27,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.Toaster
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -55,7 +54,7 @@ class PMShopScoreInterruptHelper @Inject constructor(
     fun getPeriodType() = data?.periodType
 
     fun showInterrupt(context: Context, owner: LifecycleOwner, fm: FragmentManager) {
-        if(!remoteConfig.getPmShopScoreInterruptEnabled()) {
+        if (!remoteConfig.getPmShopScoreInterruptEnabled()) {
             return
         }
 
@@ -95,11 +94,12 @@ class PMShopScoreInterruptHelper @Inject constructor(
         return !hasShownCoachMark && hasOpenedInterruptPage() && isTransitionPeriod
     }
 
-    fun openInterruptPage(context: Context) {
+    private fun openInterruptPage(context: Context) {
         val intent = RouteManager.getIntent(context, getInterruptPageUrl(context))
         (context as? Activity)?.startActivityForResult(intent, REQUEST_CODE)
         val numberOfPageOpened = pmCommonPreferenceManager.getInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, 0).orZero()
         pmCommonPreferenceManager.putInt(PMCommonPreferenceManager.KEY_NUMBER_OF_INTERRUPT_PAGE_OPENED, numberOfPageOpened.plus(1))
+        pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
         pmCommonPreferenceManager.apply()
     }
 
@@ -223,15 +223,11 @@ class PMShopScoreInterruptHelper @Inject constructor(
     private fun showInterruptPage(context: Context, data: PowerMerchantInterruptUiModel) {
         if (data.periodType == PeriodType.TRANSITION_PERIOD) {
             if (!hasOpenedInterruptPage()) {
-                pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
-                pmCommonPreferenceManager.apply()
                 openInterruptPage(context)
             }
-        } else {
+        } else if (data.periodType == PeriodType.COMMUNICATION_PERIOD) {
             val hasConsentChecked = hasConsentChecked()
             if (!hasConsentChecked) {
-                pmCommonPreferenceManager.putBoolean(PMCommonPreferenceManager.KEY_HAS_OPENED_COMMUNICATION_INTERRUPT_PAGE, true)
-                pmCommonPreferenceManager.apply()
                 openInterruptPage(context)
             }
         }
@@ -245,8 +241,9 @@ class PMShopScoreInterruptHelper @Inject constructor(
                 PARAM_HAS_CLICKED to hasConsentChecked
         )
         val url = UriUtil.buildUriAppendParams(PMConstant.Urls.SHOP_SCORE_INTERRUPT_PAGE, param)
-        val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-        val backPressedMessage = URLEncoder.encode(context.getString(R.string.pm_on_back_pressed_disabled_message), StandardCharsets.UTF_8.toString())
+        val chartSetUtf8 = "UTF-8"
+        val encodedUrl = URLEncoder.encode(url, chartSetUtf8)
+        val backPressedMessage = URLEncoder.encode(context.getString(R.string.pm_on_back_pressed_disabled_message), chartSetUtf8)
         val backPressedEnabled = (getPeriodType() != PeriodType.COMMUNICATION_PERIOD).toString()
         val showTitleBar = (getPeriodType() != PeriodType.COMMUNICATION_PERIOD).toString()
 

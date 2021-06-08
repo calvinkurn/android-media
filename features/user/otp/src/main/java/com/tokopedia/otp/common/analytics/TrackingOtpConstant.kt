@@ -7,6 +7,10 @@ package com.tokopedia.otp.common.analytics
 
 object TrackingOtpConstant{
 
+    const val EVENT_BUSINESS_UNIT = "businessUnit"
+    const val EVENT_CURRENT_SITE = "currentSite"
+    const val EVENT_USER_ID = "userId"
+
     object Screen{
         const val SCREEN_COTP = "Input OTP "
         const val SCREEN_COTP_MISSCALL = "Input OTP miscall"
@@ -20,15 +24,20 @@ object TrackingOtpConstant{
         const val SCREEN_PUSH_NOTIF_RECEIVE_FAILED_FROM_OTHER_DEVICE = "OTP Push Notif - Receive failed from other device"
         const val SCREEN_PUSH_NOTIF_RECEIVE_FAILED_EXPIRED = "OTP Push Notif - Receive failed otp expired"
         const val SCREEN_PUSH_NOTIF_SETTING = "OTP Push Notif - Setting page"
+        const val SCREEN_LOGIN_BY_QR_APPROVAL_PAGE = "Approval Page"
+        const val SCREEN_LOGIN_BY_QR_SUCCESS_PAGE = "Success page"
+        const val SCREEN_LOGIN_BY_QR_EXPIRED_PAGE = "Expired page"
     }
 
     object Event{
         const val EVENT_CLICK_ACTIVATION = "clickActivation"
         const val EVENT_CLICK_OTP = "clickOtp"
+        const val EVENT_CLICK_LOGIN = "clickLogin"
         const val EVENT_CLICK_REGISTER = "clickRegister"
         const val EVENT_CLICK_BACK = "clickBack"
         const val EVENT_CLICK_CONFIRM = "clickConfirm"
         const val EVENT_VIEW_PUSH_NOTIF_IRIS = "viewPushNotifIris"
+        const val EVENT_VIEW_LOGIN_IRIS = "viewLoginIris"
     }
 
     object Category{
@@ -44,6 +53,7 @@ object TrackingOtpConstant{
         const val CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_FROM_OTHER_DEVICE_PAGE = "otp push notif - receive failed from other device page"
         const val CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_OTP_EXPIRED_PAGE = "otp push notif - receive failed otp expired page"
         const val CATEGORY_PUSH_NOTIF_SETTING_PAGE = "otp push notif - setting page"
+        const val CATEGORY_LOGIN_WITH_QR_CODE = "login with qr code"
     }
 
     object Action{
@@ -78,6 +88,16 @@ object TrackingOtpConstant{
         const val ACTION_CLICK_ATUR_ULANG_KATA_SANDI = "click atur ulang kata sandi"
         const val ACTION_CLICK_ON_BUTTON_AKTIFKAN_MASUK_LEWAT_NOTIF = "click on button aktifkan masuk lewat notifikasi"
         const val ACTION_CLICK_ON_INACTIVE_PHONE = "click nomor saya sudah tidak aktif"
+        const val ACTION_SUCCESSFULLY_SCANNING_QR_CODE = "successfully scanning qr code"
+        const val ACTION_APPROVAL_CLICK_ON_BUTTON_APPROVED = "approval - click on button approved"
+        const val ACTION_APPROVAL_CLICK_ON_BUTTON_REJECTED = "approval - click on button rejected"
+        const val ACTION_APPROVAL_CLICK_ON_BUTTON_BACK = "approval - click on button back"
+        const val ACTION_APPROVAL_APPROVED = "approval approved"
+        const val ACTION_SUCCESS_CLICK_ON_BUTTON_TUTUP = "success - click on button tutup"
+        const val ACTION_SUCCESS_CLICK_ON_BUTTON_CLOSE = "success - click on button close"
+        const val ACTION_APPROVAL_EXPIRED = "approval expired"
+        const val ACTION_EXPIRED_CLICK_ON_BUTTON_SCAN_KEMBALI = "expired - click on button scan kembali"
+        const val ACTION_EXPIRED_CLICK_ON_BUTTON_CLOSE = "expired - click on button close"
     }
 
     object Label{
@@ -87,5 +107,13 @@ object TrackingOtpConstant{
         const val LABEL_FAILED = "failed - "
         const val LABEL_ON = "on"
         const val LABEL_OFF = "off"
+    }
+
+    object BusinessUnit {
+        const val USER_PLATFORM_UNIT = "user platform"
+    }
+
+    object CurrentSite {
+        const val TOKOPEDIA_MARKETPLACE_SITE = "tokopediamarketplace"
     }
 }

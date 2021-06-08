@@ -1,35 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshPm"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_alignParentTop="true">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshPm"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/pmRegistrationFooterView"
-        android:layout_alignParentTop="true">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPmRegistration"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvPmRegistration"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:itemCount="1"
-                tools:listitem="@layout/widget_pm_registration_header" />
-        </RelativeLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <com.tokopedia.power_merchant.subscribe.view.viewcomponent.RegistrationFooterView
-        android:id="@+id/pmRegistrationFooterView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        tools:layout_height="@dimen/layout_lvl6"
-        tools:visibility="visible" />
-</RelativeLayout>
+        <com.tokopedia.power_merchant.subscribe.view.viewcomponent.UpgradePMProStickyView
+            android:id="@+id/viewPmUpgradePmPro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/layout_lvl3"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

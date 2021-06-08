@@ -4,18 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/layout_lvl2"
     android:paddingTop="@dimen/layout_lvl1"
-    android:paddingEnd="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/layout_lvl1">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPmBenefitItem"
-        android:layout_width="@dimen/pm_spacing_18dp"
-        android:layout_height="@dimen/pm_spacing_18dp" />
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmBenefitItem"

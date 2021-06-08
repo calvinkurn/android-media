@@ -4,7 +4,6 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -20,8 +19,10 @@ import kotlinx.android.synthetic.main.item_pm_registration_term.view.*
  */
 
 class RegistrationTermAdapter(
-        private val terms: List<RegistrationTermUiModel>
+        private val onTermCtaClicked: ((RegistrationTermUiModel) -> Unit)? = null
 ) : RecyclerView.Adapter<RegistrationTermAdapter.RegistrationTermViewHolder>() {
+
+    private var terms: List<RegistrationTermUiModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegistrationTermViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -35,6 +36,10 @@ class RegistrationTermAdapter(
     }
 
     override fun getItemCount(): Int = terms.size
+
+    fun setItems(terms: List<RegistrationTermUiModel>) {
+        this.terms = terms
+    }
 
     inner class RegistrationTermViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -51,11 +56,12 @@ class RegistrationTermAdapter(
                 val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
                 val termDescription = PowerMerchantSpannableUtil.createSpannableString(
                         text = term.descriptionHtml.parseAsHtml(),
-                        highlightText = term.clickableText,
+                        highlightText = term.clickableText.orEmpty(),
                         colorId = itemView.context.getResColor(ctaTextColor),
                         isBold = true
                 ) {
                     RouteManager.route(itemView.context, term.appLinkOrUrl)
+                    onTermCtaClicked?.invoke(term)
                 }
                 itemView.tvPmTermItemDesc.movementMethod = LinkMovementMethod.getInstance()
                 itemView.tvPmTermItemDesc.text = termDescription

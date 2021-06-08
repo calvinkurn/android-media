@@ -48,9 +48,7 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
             startActivity(intent)
         }
-        tv_label_transition_desc.text = MethodChecker.fromHtml( getString(R.string.pm_label_transition_period_desc))
         renderTxtTnc()
-
     }
 
     private fun renderTxtTnc() {
@@ -68,9 +66,5 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
         }, LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(StyleSpan(Typeface.BOLD),
                 LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, com.tokopedia.unifyprinciples.R.color.Unify_G500)),
-                LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        txt_learnmore_transition_page.movementMethod = LinkMovementMethod.getInstance();
-        txt_learnmore_transition_page.text = spanText
     }
 }

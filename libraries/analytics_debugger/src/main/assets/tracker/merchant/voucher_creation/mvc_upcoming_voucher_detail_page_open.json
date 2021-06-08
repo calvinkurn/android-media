@@ -1,0 +1,14 @@
+{
+  "readme": "open upcoming voucher detail page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "openScreen",
+      "screenName" : "/voucherdetailpage - mendatang",
+      "isLoggedInStatus" : ".+",
+      "currentSite" : "tokopediaseller",
+      "userId" : ".+",
+      "businessUnit" : "physical goods"
+    }
+  ]
+}

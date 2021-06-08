@@ -88,6 +88,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
+    private val toppers: String = "Toppers"
 
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private lateinit var localCacheHandler: LocalCacheHandler
@@ -197,7 +198,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
 
         et_label_address.setText(labelRumah)
-        et_receiver_name.setText(userSession.name)
+
+        if (userSession.name.isNotEmpty() && !userSession.name.contains(toppers, ignoreCase = true)) {
+            et_receiver_name.setText(userSession.name)
+        }
+
         et_kode_pos_mismatch.setText(saveAddressDataModel?.postalCode ?: "")
         et_phone.setText(userSession.phoneNumber)
 
@@ -888,6 +893,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         saveAddressDataModel?.receiverName = et_receiver_name.text.toString()
         saveAddressDataModel?.phone = et_phone.text.toString()
         saveAddressDataModel?.postalCode = et_kode_pos_mismatch.text.toString()
+
+        if (userSession.name.isNotEmpty() && userSession.name.contains(toppers, ignoreCase = true)) {
+            saveAddressDataModel?.applyNameAsNewUserFullname = true
+        }
     }
 
     override fun onSuccessAddAddress(saveAddressDataModel: SaveAddressDataModel) {

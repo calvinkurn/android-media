@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.sellerActiveCommon)
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
@@ -63,6 +64,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
 
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

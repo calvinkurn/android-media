@@ -52,8 +52,6 @@ interface LoginEmailPhoneContract {
 
         fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener
 
-        fun setSmartLock()
-
         fun stopTrace()
 
         fun setLoginSuccessSellerApp()
@@ -148,9 +146,9 @@ interface LoginEmailPhoneContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun loginEmail(email: String, password: String, isSmartLock : Boolean = false)
+        fun loginEmail(email: String, password: String)
 
-        fun loginEmailV2(email: String, password: String, isSmartLock : Boolean = false, useHash: Boolean = false)
+        fun loginEmailV2(email: String, password: String, useHash: Boolean = false)
 
         fun loginGoogle(accessToken: String, email: String)
 

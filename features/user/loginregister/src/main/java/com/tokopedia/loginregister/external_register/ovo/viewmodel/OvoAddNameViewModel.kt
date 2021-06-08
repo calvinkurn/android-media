@@ -4,15 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.ovo.data.ActivateOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.ActivateOvoUseCase
-import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+
 
 /**
  * Created by Yoris Prayogo on 25/11/20.

@@ -54,8 +54,15 @@
                 android:id="@+id/containerEligiblePowerMerchant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_12"
-                tools:background="@drawable/bg_header_gold">
+                android:layout_marginBottom="@dimen/dp_12">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_bg_eligible_rm"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_pm_section_green" />
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/ic_pm_badge_eligible_status"
@@ -65,8 +72,7 @@
                     app:icon_name="BADGE_PM_FILLED"
                     app:layout_constraintBottom_toBottomOf="@id/tv_pm_potential_value"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_pm_potential_value"
-                    tools:src="@drawable/ic_pm_gold_badge" />
+                    app:layout_constraintTop_toTopOf="@id/tv_pm_potential_value" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_pm_potential_value"

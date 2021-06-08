@@ -3,12 +3,17 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
-import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
 
@@ -16,7 +21,10 @@ import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
  * Created By @ilhamsuaib on 03/03/21
  */
 
-class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiModel>(itemView) {
+class ShopGradeWidget(
+        itemView: View,
+        private val powerMerchantTracking: PowerMerchantTracking
+) : AbstractViewHolder<WidgetShopGradeUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
@@ -25,6 +33,41 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
     override fun bind(element: WidgetShopGradeUiModel) {
         setupShopGrade(element)
         setupShopScore(element)
+        showTopedIllustration(element)
+    }
+
+    private fun showTopedIllustration(element: WidgetShopGradeUiModel) {
+        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val illustrationSize: Pair<Int, Int>
+        val imgUrl = when {
+            isPmPro && isPmActive -> {
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_128dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_134dp)
+                PMConstant.Images.IMG_TOPED_PM_PRO_ACTIVE
+            }
+            isPmPro && !isPmActive -> {
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_136dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_132dp)
+                PMConstant.Images.IMG_TOPED_PM_PRO_INACTIVE
+            }
+            !isPmPro && isPmActive -> {
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_122dp)
+                PMConstant.Images.IMG_TOPED_PM_ACTIVE
+            }
+            else -> {
+                illustrationSize = Pair(com.tokopedia.gm.common.R.dimen.gmc_dimen_112dp, com.tokopedia.gm.common.R.dimen.gmc_dimen_114dp)
+                PMConstant.Images.IMG_TOPED_PM_INACTIVE
+            }
+        }
+        itemView.imgPmShopGradeIllustration.loadImageWithoutPlaceholder(imgUrl)
+        setTopedImageSize(illustrationSize)
+    }
+
+    private fun setTopedImageSize(illustrationSize: Pair<Int, Int>) = with(itemView.imgPmShopGradeIllustration) {
+        val imageWidth = context.resources.getDimensionPixelSize(illustrationSize.first)
+        val imageHeight = context.resources.getDimensionPixelSize(illustrationSize.second)
+        layoutParams.width = imageWidth
+        layoutParams.height = imageHeight
+        requestLayout()
     }
 
     private fun setupShopScore(element: WidgetShopGradeUiModel) = with(itemView) {
@@ -36,29 +79,27 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
 
         tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), getShopScoreFmt(element.shopScore)).parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
-        val thresholdInfo = if (element.periodType == PeriodType.TRANSITION_PERIOD) {
-            context.getString(R.string.pm_shop_score_threshold_description, element.threshold, element.nextPmCalculationDate)
+        val textColor = PMCommonUtils.getHexColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        val thresholdInfo = if (element.pmStatus == PMStatusConst.ACTIVE) {
+            context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.threshold, getPmTireLabel(element.pmTierType))
         } else {
-            context.getString(R.string.pm_shop_score_threshold_description_final_period, element.threshold)
+            context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.threshold, getPmTireLabel(element.pmTierType))
         }
         tvPmShopGradeThreshold.text = thresholdInfo.parseAsHtml()
 
-        val days60ofTenure = 60
-        val shopScoreTipsVisibility = if (element.shopScore < element.threshold && element.shopAge >= days60ofTenure) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-        tvPmShopScoreTips.visibility = shopScoreTipsVisibility
-        icPmShopScoreTips.visibility = shopScoreTipsVisibility
+        val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
+        tvPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
+        icPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         tvPmShopScoreTips.setOnClickListener {
-            RouteManager.route(context, Constant.Url.URL_SHOP_PERFORMANCE_TIPS)
+            RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
+            powerMerchantTracking.sendEventClickTipsToImproveShopScore(element.shopScore.toString())
         }
     }
 
     private fun getShopScoreTextColor(element: WidgetShopGradeUiModel): String {
+        val minScore = 1
         return when (element.shopScore) {
-            in 1..element.threshold -> {
+            in minScore..element.threshold -> {
                 PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
             }
             else -> PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
@@ -73,21 +114,40 @@ class ShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetShopGradeUiMode
     }
 
     private fun setupShopGrade(element: WidgetShopGradeUiModel) = with(itemView) {
-        tvPmShopGrade.text = context.getString(R.string.pm_your_shop_grade, element.shopGrade.asCamelCase())
-        imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl, R.drawable.bg_pm_registration_header)
+        tvPmShopGrade.text = getPmTireLabel(element.pmTierType)
+        imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl)
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
-        tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
-        tvPmShopGradeMessage.text = if (element.isNewSeller) {
-            context.getString(R.string.pm_shop_grade_message_new_seller, element.newSellerTenure)
+        val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
+        if (isPmStatusActive) {
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_active)
         } else {
-            context.getString(R.string.pm_shop_grade_message)
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_inactive)
+        }
+        tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
+        tvPmShopGrade.setTextColor(getPmLabelTextColor(element.pmStatus))
+    }
+
+    private fun getPmTireLabel(pmTierType: Int): String {
+        return if (pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
+            getString(R.string.pm_power_merchant_pro)
+        } else {
+            getString(R.string.pm_power_merchant)
+        }
+    }
+
+    private fun getPmLabelTextColor(pmStatus: String): Int {
+        return when(pmStatus) {
+            PMStatusConst.ACTIVE -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            else -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         }
     }
 
     private fun getPMStatusLabel(pmStatus: String): String {
         return when (pmStatus) {
-            PMStatusConst.INACTIVE -> itemView.context.getString(R.string.pm_inactive)
-            else -> itemView.context.getString(R.string.pm_active)
+            PMStatusConst.ACTIVE -> itemView.context.getString(R.string.pm_active)
+            else -> itemView.context.getString(R.string.pm_inactive)
         }
     }
 }
