@@ -1783,7 +1783,7 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.TopAdsComponent.TOP_ADS
         )
 
-        view.sendTopAdsGTMTrackingProductImpression(item)
+        view.sendTopAdsGTMTrackingProductImpression(item, getDimension90())
     }
 
     private fun getViewToTrackImpressedOrganicProduct(item: ProductItemDataView) {

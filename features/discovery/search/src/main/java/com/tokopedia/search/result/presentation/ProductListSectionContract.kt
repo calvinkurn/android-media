@@ -64,7 +64,7 @@ interface ProductListSectionContract {
         val previousKeyword: String
         val isLandingPage: Boolean
         fun logWarning(message: String?, throwable: Throwable?)
-        fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView)
+        fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView, dimension90: String)
         fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView)
         fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String, dimension90: String)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)

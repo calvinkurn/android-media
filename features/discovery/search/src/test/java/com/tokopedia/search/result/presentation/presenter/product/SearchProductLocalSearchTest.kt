@@ -40,6 +40,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
         SearchApiConst.SRP_PAGE_ID to "1234"
     )
+    private val dimension90Slot = slot<String>()
 
     @Test
     fun `Show page title and remove top ads in page 1`() {
@@ -333,5 +334,43 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         `When load more data`(searchParameter)
 
         `Then verify visitable list have search in tokopedia at bottom`()
+    }
+
+    @Test
+    fun `Custom Dimension90 will return local search info`() {
+        val searchProductModel = searchProductLocalSearchFirstPageJSON.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given visitable list will be captured`()
+        `Given view already load data`(searchParameter)
+
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = false)
+        val firstProductPosition = 0
+        `When product impressed`(productItemViewModel, firstProductPosition)
+
+        `Then verify Top Ads product impression`(productItemViewModel)
+        `Then verify value for dimension90`(searchParameter)
+    }
+
+    private fun `When product impressed`(productItemDataView: ProductItemDataView?, adapterPosition: Int) {
+        productListPresenter.onProductImpressed(productItemDataView, adapterPosition)
+    }
+
+    private fun findProductItemFromVisitableList(isTopAds: Boolean, isOrganicAds: Boolean): ProductItemDataView {
+        val visitableList = visitableListSlot.captured
+
+        return visitableList.find { it is ProductItemDataView && it.isTopAds == isTopAds && it.isOrganicAds == isOrganicAds } as ProductItemDataView
+    }
+
+    private fun `Then verify Top Ads product impression`(productItemDataView: ProductItemDataView) {
+        verify {
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, any(), capture(dimension90Slot))
+        }
+    }
+
+    private fun `Then verify value for dimension90`(searchParameter: Map<String, String>) {
+        val actual = dimension90Slot.captured
+        val expected = "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}.local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
+        actual shouldBe expected
     }
 }

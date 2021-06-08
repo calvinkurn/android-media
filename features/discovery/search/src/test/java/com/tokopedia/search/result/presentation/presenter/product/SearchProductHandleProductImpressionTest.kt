@@ -99,7 +99,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     SearchConstant.TopAdsComponent.TOP_ADS
             )
 
-            productListView.sendTopAdsGTMTrackingProductImpression(productItemDataView)
+            productListView.sendTopAdsGTMTrackingProductImpression(productItemDataView, any())
         }
 
         verify(exactly = 0) {
@@ -193,7 +193,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     SearchConstant.TopAdsComponent.TOP_ADS
             )
 
-            productListView.sendTopAdsGTMTrackingProductImpression(capture(capturedProductItemViewModel))
+            productListView.sendTopAdsGTMTrackingProductImpression(capture(capturedProductItemViewModel), any())
             productListView.showOnBoarding(position)
         }
     }
