@@ -24,6 +24,7 @@ import com.tokopedia.smart_recycler_helper.SmartVisitable
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.wishlist.common.data.datamodel.WishlistActionData
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
@@ -96,19 +97,19 @@ open class WishlistViewModel @Inject constructor(
     val isWishlistState: LiveData<Status> get() = wishlistState
     val isWishlistErrorInFirstPageState: LiveData<Boolean> get() = isWishlistErrorInFirstPage
 
-    val addToCartActionData = SingleObserverLiveEvent<Event<AddToCartActionData>>()
-    val updateCartCounterActionData = SingleObserverLiveEvent<Event<Int>>()
-    val productClickActionData = SingleObserverLiveEvent<Event<ProductClickActionData>>()
-    val removeWishlistActionData = SingleObserverLiveEvent<Event<RemoveWishlistActionData>>()
-    val bulkRemoveWishlistActionData = SingleObserverLiveEvent<Event<BulkRemoveWishlistActionData>>()
-    val loadMoreWishlistAction = SingleObserverLiveEvent<Event<LoadMoreWishlistActionData>>()
-    val addWishlistRecommendationActionData = SingleObserverLiveEvent<Event<AddWishlistRecommendationData>>()
-    val removeWishlistRecommendationActionData = SingleObserverLiveEvent<Event<RemoveWishlistRecommendationData>>()
-    val bulkSelectCountActionData = SingleObserverLiveEvent<Event<Int>>().apply { value = Event(0) }
+    val addToCartActionData = SingleLiveEvent<Event<AddToCartActionData>>()
+    val updateCartCounterActionData = SingleLiveEvent<Event<Int>>()
+    val productClickActionData = SingleLiveEvent<Event<ProductClickActionData>>()
+    val removeWishlistActionData = SingleLiveEvent<Event<RemoveWishlistActionData>>()
+    val bulkRemoveWishlistActionData = SingleLiveEvent<Event<BulkRemoveWishlistActionData>>()
+    val loadMoreWishlistAction = SingleLiveEvent<Event<LoadMoreWishlistActionData>>()
+    val addWishlistRecommendationActionData = SingleLiveEvent<Event<AddWishlistRecommendationData>>()
+    val removeWishlistRecommendationActionData = SingleLiveEvent<Event<RemoveWishlistRecommendationData>>()
+    val bulkSelectCountActionData = SingleLiveEvent<Event<Int>>().apply { value = Event(0) }
 
-    private val isInBulkMode = SingleObserverLiveEvent<Boolean>().default(false)
-    private val wishlistState = SingleObserverLiveEvent<Status>().default(Status.LOADING)
-    private val isWishlistErrorInFirstPage = SingleObserverLiveEvent<Boolean>().default(false)
+    private val isInBulkMode = SingleLiveEvent<Boolean>().default(false)
+    private val wishlistState = SingleLiveEvent<Status>().default(Status.LOADING)
+    private val isWishlistErrorInFirstPage = SingleLiveEvent<Boolean>().default(false)
 
 
     private fun loadInitialPage(){
