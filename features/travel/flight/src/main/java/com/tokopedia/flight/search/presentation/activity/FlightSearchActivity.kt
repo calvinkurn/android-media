@@ -16,8 +16,8 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
-import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
+import com.tokopedia.flight.common.constant_kotlin.FlightFlowConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
@@ -79,16 +79,16 @@ open class FlightSearchActivity : BaseFlightActivity(),
             REQUEST_CODE_RETURN, REQUEST_CODE_BOOKING -> {
                 if (data != null) {
                     when (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)) {
-                        FlightFlowConstant.PRICE_CHANGE -> {
+                        FlightFlowConstant.PRICE_CHANGE.value -> {
                             if (fragment is FlightSearchFragment) {
                                 (fragment as FlightSearchFragment).resetDateAndReload(true)
                             }
                         }
-                        FlightFlowConstant.EXPIRED_JOURNEY -> {
+                        FlightFlowConstant.EXPIRED_JOURNEY.value -> {
                             FlightFlowUtil.actionSetResultAndClose(this, intent,
-                                    FlightFlowConstant.EXPIRED_JOURNEY)
+                                    FlightFlowConstant.EXPIRED_JOURNEY.value)
                         }
-                        FlightFlowConstant.CHANGE_SEARCH_PARAM -> {
+                        FlightFlowConstant.CHANGE_SEARCH_PARAM.value -> {
                             if (fragment is FlightSearchFragment) {
                                 (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataModel))
                                 (fragment as FlightSearchFragment).resetDateAndReload(true)
@@ -114,7 +114,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
             if (isReturnPage()) {
                 val intent = Intent()
                 intent.putExtra(EXTRA_PASS_DATA, flightSearchPassDataModel)
-                FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
+                FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM.value)
             } else {
                 if (fragment is FlightSearchFragment) {
                     (fragment as FlightSearchFragment).setSearchPassData(flightSearchPassDataModel)
