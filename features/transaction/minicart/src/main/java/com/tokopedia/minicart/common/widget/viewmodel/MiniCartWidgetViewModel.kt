@@ -88,6 +88,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 break@loop
             }
         }
+
+        val cartItems = miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+        loop@ for (cartItem in cartItems) {
+            if (cartItem.productId == productId && !cartItem.isError) {
+                cartItem.quantity = newQty
+                break@loop
+            }
+        }
     }
 
     fun updateProductNotes(productId: String, newNotes: String) {
@@ -95,6 +103,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
                 visitable.productNotes = newNotes
+                break@loop
+            }
+        }
+
+        val cartItems = miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+        loop@ for (cartItem in cartItems) {
+            if (cartItem.productId == productId && !cartItem.isError) {
+                cartItem.notes = newNotes
                 break@loop
             }
         }
