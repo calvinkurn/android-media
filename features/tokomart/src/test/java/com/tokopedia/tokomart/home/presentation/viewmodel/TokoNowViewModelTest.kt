@@ -10,7 +10,7 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
 
-class TokoNowViewModelTest: TokoNowViewModelTestFixture() {
+class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
 
     @Test
     fun `when getting homeLayout should run and give the success result`() {
