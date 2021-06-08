@@ -40,6 +40,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK -> {
+                    listOfComponent.add(ProductMiniSocialProofStockDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
@@ -52,6 +55,9 @@ object DynamicProductDetailMapper {
                             ?: "", content?.firstOrNull()?.subtitle
                             ?: "", content?.firstOrNull()?.icon ?: "")
                     )
+                }
+                ProductDetailConstant.MINI_SHOP_WIDGET -> {
+                    listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
                     listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
@@ -243,7 +249,7 @@ object DynamicProductDetailMapper {
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
                 ?: "", data?.name ?: "", data?.getProductImageUrl()
                 ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
-                ?: listOf(), productInfoContent, forceRefresh)
+                ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
     }
 
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {

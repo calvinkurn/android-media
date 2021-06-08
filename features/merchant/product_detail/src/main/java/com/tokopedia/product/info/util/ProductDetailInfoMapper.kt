@@ -52,8 +52,9 @@ object ProductDetailInfoMapper {
             }
         }
 
-        listOfComponent.add(ProductDetailInfoDiscussionDataModel(componentName = listOfComponent.count() + 1, title = responseData.discussion.title, discussionCount = parcelData.discussionCount, isShowable = false))
-
+        if (!parcelData.isTokoNow) {
+            listOfComponent.add(ProductDetailInfoDiscussionDataModel(componentName = listOfComponent.count() + 1, title = responseData.discussion.title, discussionCount = parcelData.discussionCount, isShowable = false))
+        }
         return listOfComponent
     }
 }

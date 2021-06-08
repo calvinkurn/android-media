@@ -36,6 +36,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentTokoCabangGroup: Group? = itemView.findViewById(R.id.group_fullfillment)
     private val shipmentLocalLoad: LocalLoad? = itemView.findViewById(R.id.local_load_pdp_shipment)
 
+    private val shipmentSeparator: View? = itemView.findViewById(R.id.pdp_shipment_separator)
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
     private val shipmentDestination: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_destination)
     private val shipmentEstimation: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_estimation)
@@ -49,6 +50,10 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     override fun bind(element: ProductShipmentDataModel) {
         val data = element.rates
+
+        if (element.isTokoNow) {
+            shipmentSeparator?.visibility = View.GONE
+        }
 
         when {
             element.shouldShowShipmentError -> {

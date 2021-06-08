@@ -60,6 +60,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductMiniSocialProofViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductMiniSocialProofStockDataModel): Int {
+        return ProductMiniSocialProofStockViewHolder.LAYOUT
+    }
+
     override fun type(data: ProductTickerInfoDataModel): Int {
         return ProductTickerInfoViewHolder.LAYOUT
     }
@@ -104,6 +108,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductSingleVariantViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductMiniShopWidgetDataModel): Int {
+        return ProductMiniShopWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
@@ -119,6 +127,8 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductMediaViewHolder.LAYOUT -> ProductMediaViewHolder(view, listener)
             ProductContentViewHolder.LAYOUT -> ProductContentViewHolder(view, listener)
             ProductMiniSocialProofViewHolder.LAYOUT -> ProductMiniSocialProofViewHolder(view, listener)
+            ProductMiniSocialProofStockViewHolder.LAYOUT -> ProductMiniSocialProofStockViewHolder(view, listener)
+            ProductMiniShopWidgetViewHolder.LAYOUT -> ProductMiniShopWidgetViewHolder(view, listener)
             ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
             ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
             ProductCustomInfoViewHolder.LAYOUT -> ProductCustomInfoViewHolder(view, listener)

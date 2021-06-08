@@ -72,6 +72,7 @@ object ProductDetailConstant {
 
     //Mapper
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
+    const val MINI_SOCIAL_PROOF_STOCK = "mini_social_proof_stock"
     const val PRODUCT_INFO = "product_info"
     const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
@@ -105,6 +106,7 @@ object ProductDetailConstant {
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
     const val MVC = "mvc"
+    const val MINI_SHOP_WIDGET = "mini_shop_widget"
 
 
     //Arguments

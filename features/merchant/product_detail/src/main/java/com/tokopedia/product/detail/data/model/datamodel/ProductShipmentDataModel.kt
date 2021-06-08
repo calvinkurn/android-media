@@ -19,7 +19,8 @@ data class ProductShipmentDataModel(
         var tokoCabangIconUrl: String = "",
         var isCod: Boolean = false,
         var shouldShowShipmentError: Boolean = false,
-        var localDestination: String = ""
+        var localDestination: String = "",
+        var isTokoNow: Boolean = false
 ) : DynamicPdpDataModel {
 
     fun isBoeType(): Boolean {
