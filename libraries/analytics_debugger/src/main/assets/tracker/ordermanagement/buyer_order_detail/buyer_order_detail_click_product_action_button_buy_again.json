@@ -14,15 +14,15 @@
           "products": [
             {
               "category": ".{1,}",
-              "category_id": "\\d{1,}",
+              "category_id": "\\d{1,}\\.\\d{1,}",
               "dimension45": ".*",
               "id": "\\d{1,}",
               "name": ".{1,}",
               "price": "\\d{1,}",
-              "quantity": "\\d{1,}",
+              "quantity": "\\d{1,}\\.\\d{1,}",
               "shop_id": "\\d{1,}",
               "shop_name": ".{1,}",
-              "shop_type": "\\d{1,}"
+              "shop_type": "\\d{1,}\\.\\d{1,}"
             }
           ]
         },
@@ -30,7 +30,8 @@
       },
       "productId": ".{1,}",
       "userId": "\\d{1,}",
-      "sessionIris": ".{1,}"
+      "sessionIris": ".{1,}",
+      "clientId": ".{1,}"
     }
   ]
 }
