@@ -203,6 +203,7 @@ public class MainParentActivity extends BaseActivity implements
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
     private boolean useNewInbox = false;
+    private boolean useNewNotificationOnNewInbox = false;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
 
@@ -240,6 +241,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initInjector();
         initInboxAbTest();
+        initNotifcenterOnNewInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -270,6 +272,15 @@ public class MainParentActivity extends BaseActivity implements
         useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isNewNavigation;
+    }
+
+    private void initNotifcenterOnNewInboxAbTest() {
+        useNewNotificationOnNewInbox = RemoteConfigInstance.getInstance()
+                .getABTestPlatform()
+                .getString(
+                        AbTestPlatform.KEY_NEW_NOTFICENTER,
+                        AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                ).equals(AbTestPlatform.VARIANT_NEW_NOTFICENTER);
     }
 
     private void installDFonBackground() {
@@ -757,11 +768,15 @@ public class MainParentActivity extends BaseActivity implements
 
             if (fragment instanceof AllNotificationListener && notification != null) {
                 int totalInbox = notification.getTotalInbox();
+                int totalNotification = notification.getTotalNotif();
                 if (useNewInbox) {
                     totalInbox = notification.totalNewInbox;
                 }
+                if (useNewNotificationOnNewInbox) {
+                    totalNotification = notification.totalNotificationOnNewInbox;
+                }
                 ((AllNotificationListener) fragment).onNotificationChanged(
-                        notification.getTotalNotif(),
+                        totalNotification,
                         totalInbox,
                         notification.getTotalCart());
             }
