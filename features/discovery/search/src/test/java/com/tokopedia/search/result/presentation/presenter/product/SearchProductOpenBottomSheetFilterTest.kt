@@ -2,19 +2,16 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.error
 import com.tokopedia.search.shouldBe
-import com.tokopedia.search.shouldNotContain
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
-import java.util.HashMap
 
 internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestFixtures() {
 
@@ -30,9 +27,8 @@ internal class SearchProductOpenBottomSheetFilterTest: ProductListPresenterTestF
     fun `Open filter page for the first time with get dynamic filter API success`() {
         val dynamicFilterModel = "searchproduct/dynamicfilter/dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
         val getDynamicFilterRequestParamSlot = slot<RequestParams>()
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true, SearchApiConst.USER_WAREHOUSE_ID to warehouseId)
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true)
 
-        `Setup choose address`(dummyChooseAddressData)
         `Given get dynamic filter model API will success`(getDynamicFilterRequestParamSlot, dynamicFilterModel)
 
         `When open filter page`(mapParameter)

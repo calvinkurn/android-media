@@ -3,14 +3,12 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.error
 import com.tokopedia.search.shouldBe
-import com.tokopedia.search.shouldNotContain
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
@@ -31,9 +29,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
             it[SearchApiConst.UNIQUE_ID] = "unique_id"
             it[SearchApiConst.USER_ID] = productListPresenter.userId
         }
-
-        `Setup choose address`(dummyChooseAddressData)
-        setUp()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View getQueryKey will return the keyword`(searchParameter[SearchApiConst.Q].toString())
@@ -65,7 +60,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
         val params = requestParams.getSearchProductParams()
         params.getOrDefault(SearchApiConst.START, null) shouldBe "0"
-        params.getOrDefault(SearchApiConst.USER_WAREHOUSE_ID, null) shouldBe warehouseId
 
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, false) shouldBe false
         requestParams.getBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, false) shouldBe false
@@ -149,9 +143,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Load Data Success Is First Time Load`() {
-        `Setup choose address`(dummyChooseAddressData)
-        setUp()
-
         val searchProductModel = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View is first active tab`()

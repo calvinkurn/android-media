@@ -1,11 +1,9 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.TestException
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.error
-import com.tokopedia.search.shouldNotContain
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
@@ -36,12 +34,10 @@ internal class SearchProductGetProductCountTest: ProductListPresenterTestFixture
 
     @Test
     fun `Get product count with parameter should call get product count use case with parameters and size = 0`() {
-        `Setup choose address`(dummyChooseAddressData)
-
         val successfulProductCountText = "10rb Produk"
         `Given Get Product Count Use Case will be successful`(successfulProductCountText)
 
-        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true.toString(), SearchApiConst.USER_WAREHOUSE_ID to warehouseId)
+        val mapParameter = mapOf(SearchApiConst.Q to "samsung", SearchApiConst.OFFICIAL to true.toString())
         `When get product count`(mapParameter)
 
         `Then assert request params contains map parameters`(mapParameter)

@@ -3,14 +3,12 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.error
 import com.tokopedia.search.shouldBe
-import com.tokopedia.search.shouldNotContain
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
@@ -28,9 +26,6 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
     fun `Load More Data Success`() {
         val searchProductModelFirstPage = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
         val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
-        `Setup choose address`(dummyChooseAddressData)
-        setUp()
-
         `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
         `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
         `Given Mechanism to save and get product position from cache`()
@@ -97,7 +92,6 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
         val params = requestParams.getSearchProductParams()
         params[SearchApiConst.START] shouldBe expectedStart
-        params[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
 
         verifyRequestContainsAdditionalParams(params, additionalParams)
 
@@ -193,9 +187,6 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         val searchProductModelFirstPage = searchProductFirstPageJSON.jsonToObject<SearchProductModel>()
         val searchProductModelSecondPage = searchProductSecondPageJSON.jsonToObject<SearchProductModel>()
         val searchProductModelThirdPage = searchProductThirdPageJSON.jsonToObject<SearchProductModel>()
-        `Setup choose address`(dummyChooseAddressData)
-        setUp()
-
         `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
 
         every { searchProductLoadMoreUseCase.execute(capture(requestParamsSlot), any()) }.answers {
