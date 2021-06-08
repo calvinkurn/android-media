@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.features.medialoader)
+    implementation project(rootProject.ext.libraries.track)
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+}
+
+project.ext {
+    artifactId = 'telephony_masking'
+    groupId = 'com.tokopedia.telephony_masking'
+    versionName = "0.0.1"
+    artifactName = "telephony_masking-release"
+}
+
+apply from: '../../../publish_local.gradle'

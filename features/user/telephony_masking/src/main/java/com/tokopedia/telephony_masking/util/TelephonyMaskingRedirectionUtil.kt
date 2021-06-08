@@ -1,4 +1,4 @@
-package com.tokopedia.applink.telephony_masking
+package com.tokopedia.telephony_masking.util
 
 import android.content.ContentValues
 import android.content.Context
@@ -6,37 +6,35 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.provider.ContactsContract
-import com.tokopedia.applink.telephony_masking.TelephonyMaskingConst.CONTACT_NAME
-import com.tokopedia.applink.telephony_masking.TelephonyMaskingConst.CONTACT_NUMBERS_DEFAULT
-import com.tokopedia.applink.telephony_masking.TelephonyMaskingConst.TELEPHONY_MASKING_KEY
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.telephony_masking.util.TelephonyMaskingConst.CONTACT_NAME
+import com.tokopedia.telephony_masking.util.TelephonyMaskingConst.CONTACT_NUMBERS_DEFAULT
+import com.tokopedia.telephony_masking.util.TelephonyMaskingConst.SAVE_EXTRA
+import com.tokopedia.telephony_masking.util.TelephonyMaskingConst.TELEPHONY_MASKING_KEY
 import tokopedia.applink.R
 import java.io.ByteArrayOutputStream
 import kotlin.collections.ArrayList
-
 
 class TelephonyMaskingRedirectionUtil {
 
     private var remoteConfig: RemoteConfig? = null
 
-    fun saveTokopediaPhoneNumbers(context: Context) {
+    fun createIntentSavePhoneNumbers(context: Context): Intent {
         val intent = createIntentToPutContacts()
         val data = ArrayList<ContentValues>()
         addMultipleNumbers(data, getListNumbers(context))
         addImageToContact(context, data)
         intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data)
+        intent.putExtra(SAVE_EXTRA, true)
 
-        context.startActivity(intent)
+        return intent
     }
 
     private fun createIntentToPutContacts(): Intent {
         return Intent(ContactsContract.Intents.Insert.ACTION).apply {
             type = ContactsContract.RawContacts.CONTENT_TYPE
             putExtra(ContactsContract.Intents.Insert.NAME, CONTACT_NAME)
-//            putExtra(ContactsContract.Intents.Insert.EMAIL, email)
-//            putExtra(ContactsContract.Intents.Insert.EMAIL_TYPE,
-//                    ContactsContract.CommonDataKinds.Email.TYPE_WORK)
         }
     }
 

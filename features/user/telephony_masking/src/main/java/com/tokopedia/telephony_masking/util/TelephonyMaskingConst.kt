@@ -1,4 +1,4 @@
-package com.tokopedia.applink.telephony_masking
+package com.tokopedia.telephony_masking.util
 
 object TelephonyMaskingConst {
     const val CONTACT_NAME = "Tokopedia Care"
@@ -6,4 +6,6 @@ object TelephonyMaskingConst {
     const val CONTACT_NUMBERS_DEFAULT = """
         021-50917008, 021-50917000, 021-25091708, 021-30030316, 021-30034080
     """
+
+    const val SAVE_EXTRA = "finishActivityOnSaveCompleted"
 }
