@@ -5,6 +5,7 @@ object QueryHome {
             "    dynamicHomeChannel {\n" +
             "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token, param: \$param, location: \$location){\n" +
             "          id\n" +
+            "          dividerType\n" +
             "          group_id\n" +
             "          galaxy_attribution\n" +
             "          persona\n" +
