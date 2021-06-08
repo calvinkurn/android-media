@@ -88,6 +88,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.toko
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -175,6 +177,9 @@ class DiscoveryHomeFactory {
 
             //Category Best Seller
             initializeComponent(ComponentsList.CategoryBestSeller, ::CategoryBestSellerViewHolder, ::CategoryBestSellerViewModel)
+
+            //Topads Headline View
+            initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
 
         }
 

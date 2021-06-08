@@ -77,7 +77,9 @@ enum class ComponentNames(val componentName: String) {
     DiscoPlayWidgetView("play_widget"),
 
     //Category Best Seller
-    CategoryBestSeller("product-card-horizontal-scroll")
+    CategoryBestSeller("product-card-horizontal-scroll"),
 
+    //Topads Headline View
+    TopadsHeadlineView("topads_healine"),
 
 }
