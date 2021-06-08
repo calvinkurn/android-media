@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
 
@@ -119,10 +119,10 @@ class ShopGradeWidget(
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
         val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
         if (isPmStatusActive) {
-            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_active)
         } else {
-            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.light_R600))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_inactive)
         }
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
@@ -138,9 +138,9 @@ class ShopGradeWidget(
     }
 
     private fun getPmLabelTextColor(pmStatus: String): Int {
-        return when(pmStatus) {
-            PMStatusConst.ACTIVE -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            else -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        return when (pmStatus) {
+            PMStatusConst.ACTIVE -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+            else -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.light_N700_96)
         }
     }
 
