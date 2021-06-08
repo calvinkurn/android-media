@@ -61,9 +61,9 @@ import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
-import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -71,7 +71,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
@@ -3031,6 +3030,31 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (layoutManager != null) {
             ((LinearLayoutManager) layoutManager).scrollToPositionWithOffset(position, (int) dy);
         }
+    }
+
+    @Override
+    public void onViewTickerProductError(String shopId, String errorMessage) {
+//        checkoutAnalyticsCourierSelection.eventViewTickerProductLevelErrorInCheckoutPage(shopId, errorMessage);
+    }
+
+    @Override
+    public void onViewTickerOrderError(String shopId, String errorMessage) {
+//        checkoutAnalyticsCourierSelection.eventViewTickerOrderLevelErrorInCheckoutPage(shopId, errorMessage);
+    }
+
+    @Override
+    public void onClickLihatOnTickerOrderError(String shopId, String errorMessage) {
+//        checkoutAnalyticsCourierSelection.eventViewTickerOrderLevelErrorInCheckoutPage(shopId, errorMessage);
+    }
+
+    @Override
+    public void onClickRefreshErrorLoadCourier() {
+//        checkoutAnalyticsCourierSelection.eventClickRefreshWhenErrorLoadCourier();
+    }
+
+    @Override
+    public void onViewErrorInCourierSection(String errorMessage) {
+//        checkoutAnalyticsCourierSelection.eventViewErrorInCourierSection(errorMessage);
     }
 
     @Override

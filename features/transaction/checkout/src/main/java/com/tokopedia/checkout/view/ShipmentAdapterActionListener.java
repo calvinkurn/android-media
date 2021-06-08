@@ -112,4 +112,14 @@ public interface ShipmentAdapterActionListener {
     FragmentManager getCurrentFragmentManager();
 
     void scrollToPositionWithOffset(int position, float dy);
+
+    void onViewTickerProductError(String shopId, String errorMessage);
+
+    void onViewTickerOrderError(String shopId, String errorMessage);
+
+    void onClickLihatOnTickerOrderError(String shopId, String errorMessage);
+
+    void onClickRefreshErrorLoadCourier();
+
+    void onViewErrorInCourierSection(String errorMessage);
 }

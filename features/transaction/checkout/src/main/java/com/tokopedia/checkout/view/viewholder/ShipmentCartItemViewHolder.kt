@@ -151,6 +151,10 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
             }
             tickerError.visible()
             // todo analytics
+            if (!cartItemModel.hasShownTickerError) {
+                shipmentItemListener?.onViewTickerError(cartItemModel.shopId, cartItemModel.errorMessage)
+                cartItemModel.hasShownTickerError = true
+            }
         } else {
             tickerError.gone()
         }
@@ -194,6 +198,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     interface ShipmentItemListener {
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
         fun navigateToWebView(protectionLinkUrl: String?)
+        fun onViewTickerError(shopId: String, errorMessage: String)
     }
 
     companion object {

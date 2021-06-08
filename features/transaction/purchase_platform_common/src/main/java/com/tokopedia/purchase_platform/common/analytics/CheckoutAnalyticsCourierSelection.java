@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -158,7 +158,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
-                ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+                ConstantTransactionAnalytics.Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
         if (tradeInCustomDimension != null && tradeInCustomDimension.size() > 0) {
             dataLayer.putAll(tradeInCustomDimension);
@@ -634,4 +634,63 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendGeneralEvent(gtmMap);
     }
 
+    public void eventViewTickerProductLevelErrorInCheckoutPage(String shopId, String errorMessage) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_TICKER_PRODUCT_LEVEL_ERROR_IN_CHECKOUT_PAGE,
+                shopId + " - " + errorMessage
+        );
+        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventViewTickerOrderLevelErrorInCheckoutPage(String shopId, String errorMessage) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE,
+                shopId + " - " + errorMessage
+        );
+        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(String shopId, String errorMessage) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_LIHAT_ON_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE,
+                shopId + " - " + errorMessage
+        );
+        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventClickRefreshWhenErrorLoadCourier() {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_REFRESH_WHEN_ERROR_LOAD_COURIER,
+                ""
+        );
+        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventViewErrorInCourierSection(String errorMessage) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_ERROR_IN_COURIER_SECTION,
+                errorMessage
+        );
+        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        sendGeneralEvent(gtmMap);
+    }
 }
