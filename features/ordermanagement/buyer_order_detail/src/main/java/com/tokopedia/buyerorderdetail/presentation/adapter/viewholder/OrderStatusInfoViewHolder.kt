@@ -90,7 +90,7 @@ class OrderStatusInfoViewHolder(
         }
         itemView.tvBuyerOrderDetailDeadlineValue?.apply {
             text = deadline.value
-            setTextColor(Utils.parseColorHex(context, deadline.color, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setTextColor(Utils.parseColorHex(context, deadline.color, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             showWithCondition(deadline.label.isNotBlank())
         }
     }
