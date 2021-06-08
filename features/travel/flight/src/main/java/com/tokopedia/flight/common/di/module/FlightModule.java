@@ -13,7 +13,6 @@ import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.flight.cancellation.data.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.common.data.db.FlightRoomDb;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl;
 import com.tokopedia.flight.common.data.source.FlightAuthInterceptor;
@@ -25,7 +24,6 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
@@ -182,16 +180,6 @@ public class FlightModule {
     @FlightScope
     FlightComboDao provideComboNewDao(FlightSearchRoomDb flightSearchRoomDb) {
         return flightSearchRoomDb.flightComboDao();
-    }
-
-    @Provides
-    FlightRoomDb provideFlightAirportRoomDb(@ApplicationContext Context context) {
-        return FlightRoomDb.getDatabase(context);
-    }
-
-    @Provides
-    FlightAirportCountryDao provideFlightAirportCountryDao(FlightRoomDb flightRoomDb) {
-        return flightRoomDb.flightAirportCountryDao();
     }
 
     @FlightScope
