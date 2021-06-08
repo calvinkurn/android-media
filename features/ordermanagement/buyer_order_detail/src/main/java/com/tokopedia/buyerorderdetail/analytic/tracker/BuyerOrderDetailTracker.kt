@@ -5,6 +5,11 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
+/**
+ * Created by yusuf.hendrawan on 08/06/21.
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/1122
+ */
+
 object BuyerOrderDetailTracker {
     private fun MutableMap<String, Any>.appendGeneralEventData(
             eventName: String,
