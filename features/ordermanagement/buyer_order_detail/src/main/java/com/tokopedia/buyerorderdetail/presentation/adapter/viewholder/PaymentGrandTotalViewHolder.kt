@@ -2,15 +2,20 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
-import kotlinx.android.synthetic.main.item_buyer_order_detail_payment_grand_total.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class PaymentGrandTotalViewHolder(itemView: View?) : AbstractViewHolder<PaymentInfoUiModel.PaymentGrandTotalUiModel>(itemView) {
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_payment_grand_total
     }
+
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val tvBuyerOrderDetailPaymentInfoLabel = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailPaymentInfoLabel)
+    private val tvBuyerOrderDetailPaymentInfoValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailPaymentInfoValue)
 
     override fun bind(element: PaymentInfoUiModel.PaymentGrandTotalUiModel?) {
         element?.let {
@@ -25,14 +30,14 @@ class PaymentGrandTotalViewHolder(itemView: View?) : AbstractViewHolder<PaymentI
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is PaymentInfoUiModel.PaymentGrandTotalUiModel && newItem is PaymentInfoUiModel.PaymentGrandTotalUiModel) {
-                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     if (oldItem.label != newItem.label) {
                         setupPaymentLabel(newItem.label)
                     }
                     if (oldItem.value != newItem.value) {
                         setupPaymentValue(newItem.value)
                     }
-                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -41,10 +46,10 @@ class PaymentGrandTotalViewHolder(itemView: View?) : AbstractViewHolder<PaymentI
     }
 
     private fun setupPaymentLabel(label: String) {
-        itemView.tvBuyerOrderDetailPaymentInfoLabel?.text = label
+        tvBuyerOrderDetailPaymentInfoLabel?.text = label
     }
 
     private fun setupPaymentValue(value: String) {
-        itemView.tvBuyerOrderDetailPaymentInfoValue?.text = value
+        tvBuyerOrderDetailPaymentInfoValue?.text = value
     }
 }

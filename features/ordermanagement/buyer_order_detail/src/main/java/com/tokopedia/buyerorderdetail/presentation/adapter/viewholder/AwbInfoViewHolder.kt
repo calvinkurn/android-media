@@ -2,11 +2,13 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
-import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_awb.view.*
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class AwbInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiModel.AwbInfoUiModel>(itemView) {
 
@@ -15,6 +17,10 @@ class AwbInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiM
 
         private const val LABEL_AWB = "awb"
     }
+
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val icBuyerOrderDetailCopyAwb = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailCopyAwb)
+    private val tvBuyerOrderDetailAwbValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailAwbValue)
 
     private var element: ShipmentInfoUiModel.AwbInfoUiModel? = null
 
@@ -30,13 +36,13 @@ class AwbInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiM
     }
 
     override fun bind(element: ShipmentInfoUiModel.AwbInfoUiModel?, payloads: MutableList<Any>) {
-        itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+        container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         bind(element)
-        itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+        container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
     }
 
     private fun setupClickListener() {
-        itemView.icBuyerOrderDetailCopyAwb?.setOnClickListener {
+        icBuyerOrderDetailCopyAwb?.setOnClickListener {
             copyAwb()
         }
     }
@@ -50,6 +56,6 @@ class AwbInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiM
     }
 
     private fun setupAwbNumber(awbNumber: String) {
-        itemView.tvBuyerOrderDetailAwbValue?.text = awbNumber
+        tvBuyerOrderDetailAwbValue?.text = awbNumber
     }
 }

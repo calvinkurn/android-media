@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.SecondaryActionButtonAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.SecondaryActionButtonItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -28,7 +29,7 @@ class SecondaryActionButtonBottomSheet(
         val rvSecondaryActionButton = View.inflate(context, R.layout.buyer_order_detail_secondary_action_button_bottomsheet, null) as RecyclerView
         rvSecondaryActionButton.apply {
             adapter = this@SecondaryActionButtonBottomSheet.adapter
-            addItemDecoration(SecondaryActionButtonAdapter.ViewHolder.ItemDivider(context))
+            addItemDecoration(SecondaryActionButtonItemDecoration(context))
         }
         return rvSecondaryActionButton
     }

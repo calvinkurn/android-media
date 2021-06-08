@@ -1,15 +1,16 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
-import android.graphics.Color
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class OrderStatusInfoViewHolder(
         itemView: View?,
@@ -21,6 +22,15 @@ class OrderStatusInfoViewHolder(
 
         private const val LABEL_INVOICE = "invoice"
     }
+
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val icBuyerOrderDetailCopyInvoice = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailCopyInvoice)
+    private val icBuyerOrderDetailDeadline = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailDeadline)
+    private val tvBuyerOrderDetailSeeInvoice = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailSeeInvoice)
+    private val tvBuyerOrderDetailInvoice = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailInvoice)
+    private val tvBuyerOrderDetailPurchaseDateValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailPurchaseDateValue)
+    private val tvBuyerOrderDetailDeadlineLabel = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailDeadlineLabel)
+    private val tvBuyerOrderDetailDeadlineValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailDeadlineValue)
 
     private var element: OrderStatusUiModel.OrderStatusInfoUiModel? = null
 
@@ -40,7 +50,7 @@ class OrderStatusInfoViewHolder(
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is OrderStatusUiModel.OrderStatusInfoUiModel && newItem is OrderStatusUiModel.OrderStatusInfoUiModel) {
-                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = newItem
                     if (oldItem.invoice.invoice != newItem.invoice.invoice) {
                         setupInvoice(newItem.invoice.invoice)
@@ -51,7 +61,7 @@ class OrderStatusInfoViewHolder(
                     if (oldItem.deadline != newItem.deadline) {
                         setupDeadline(newItem.deadline)
                     }
-                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -67,28 +77,28 @@ class OrderStatusInfoViewHolder(
     }
 
     private fun setupClickListener() {
-        itemView.icBuyerOrderDetailCopyInvoice?.setOnClickListener(this)
-        itemView.tvBuyerOrderDetailSeeInvoice?.setOnClickListener(this)
+        icBuyerOrderDetailCopyInvoice?.setOnClickListener(this)
+        tvBuyerOrderDetailSeeInvoice?.setOnClickListener(this)
     }
 
     private fun setupInvoice(invoice: String) {
-        itemView.tvBuyerOrderDetailInvoice?.text = invoice
+        tvBuyerOrderDetailInvoice?.text = invoice
     }
 
     private fun setupPurchaseDate(purchaseDate: String) {
-        itemView.tvBuyerOrderDetailPurchaseDateValue?.text = purchaseDate
+        tvBuyerOrderDetailPurchaseDateValue?.text = purchaseDate
     }
 
     private fun setupDeadline(deadline: OrderStatusUiModel.OrderStatusInfoUiModel.DeadlineUiModel) {
-        itemView.tvBuyerOrderDetailDeadlineLabel?.apply {
+        tvBuyerOrderDetailDeadlineLabel?.apply {
             text = deadline.label
             showWithCondition(deadline.label.isNotBlank())
         }
-        itemView.icBuyerOrderDetailDeadline?.apply {
+        icBuyerOrderDetailDeadline?.apply {
             setColorFilter(Utils.parseColorHex(context, deadline.color, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             showWithCondition(deadline.label.isNotBlank())
         }
-        itemView.tvBuyerOrderDetailDeadlineValue?.apply {
+        tvBuyerOrderDetailDeadlineValue?.apply {
             text = deadline.value
             setTextColor(Utils.parseColorHex(context, deadline.color, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             showWithCondition(deadline.label.isNotBlank())

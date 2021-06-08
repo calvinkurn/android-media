@@ -2,10 +2,12 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
-import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_address.view.*
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<ShipmentInfoUiModel.ReceiverAddressInfoUiModel>(itemView) {
 
@@ -15,6 +17,12 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<Shi
         private const val LABEL_RECEIVER_ADDRESS = "receiverAddress"
     }
 
+    private val icBuyerOrderDetailCopyReceiverAddress = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailCopyReceiverAddress)
+    private val tvBuyerOrderDetailReceiverNameValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailReceiverNameValue)
+    private val tvBuyerOrderDetailReceiverPhoneNumberValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailReceiverPhoneNumberValue)
+    private val tvBuyerOrderDetailReceiverAddressValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailReceiverAddressValue)
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+
     init {
         setupListeners()
     }
@@ -22,7 +30,7 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<Shi
     private var element: ShipmentInfoUiModel.ReceiverAddressInfoUiModel? = null
 
     private fun setupListeners() {
-        itemView.icBuyerOrderDetailCopyReceiverAddress.setOnClickListener {
+        icBuyerOrderDetailCopyReceiverAddress?.setOnClickListener {
             copyReceiverAddress()
         }
     }
@@ -69,7 +77,7 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<Shi
                 val newItem = it.second
                 if (oldItem is ShipmentInfoUiModel.ReceiverAddressInfoUiModel && newItem is ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
                     this.element = newItem
-                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     if (oldItem.receiverName != newItem.receiverName) {
                         setupReceiverName(newItem.receiverName)
                     }
@@ -79,7 +87,7 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<Shi
                     if (oldItem.receiverAddress != newItem.receiverAddress) {
                         setupReceiverAddress(newItem.receiverAddress)
                     }
-                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -88,14 +96,14 @@ class ReceiverAddressInfoViewHolder(itemView: View?) : BaseToasterViewHolder<Shi
     }
 
     private fun setupReceiverName(receiverName: String) {
-        itemView.tvBuyerOrderDetailReceiverNameValue?.text = receiverName
+        tvBuyerOrderDetailReceiverNameValue?.text = receiverName
     }
 
     private fun setupReceiverPhoneNumber(receiverPhoneNumber: String) {
-        itemView.tvBuyerOrderDetailReceiverPhoneNumberValue?.text = receiverPhoneNumber
+        tvBuyerOrderDetailReceiverPhoneNumberValue?.text = receiverPhoneNumber
     }
 
     private fun setupReceiverAddress(receiverAddress: String) {
-        itemView.tvBuyerOrderDetailReceiverAddressValue?.text = receiverAddress
+        tvBuyerOrderDetailReceiverAddressValue?.text = receiverAddress
     }
 }

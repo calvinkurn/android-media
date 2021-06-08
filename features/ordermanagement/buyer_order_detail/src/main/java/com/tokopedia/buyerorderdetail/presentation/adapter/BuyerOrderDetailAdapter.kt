@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
-import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter

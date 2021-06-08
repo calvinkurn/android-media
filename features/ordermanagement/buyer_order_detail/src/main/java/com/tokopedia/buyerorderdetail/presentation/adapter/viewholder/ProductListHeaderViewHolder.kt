@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.buyerorderdetail.R
@@ -10,7 +11,8 @@ import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import kotlinx.android.synthetic.main.item_buyer_order_detail_product_list_header.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class ProductListHeaderViewHolder(
         itemView: View?,
@@ -20,6 +22,11 @@ class ProductListHeaderViewHolder(
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_header
     }
+
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val icBuyerOrderDetailSeeShopBadge = itemView?.findViewById<ImageUnify>(R.id.icBuyerOrderDetailSeeShopBadge)
+    private val icBuyerOrderDetailSeeShopPage = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailSeeShopPage)
+    private val tvBuyerOrderDetailShopName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailShopName)
 
     init {
         setupClickListener()
@@ -41,7 +48,7 @@ class ProductListHeaderViewHolder(
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is ProductListUiModel.ProductListHeaderUiModel && newItem is ProductListUiModel.ProductListHeaderUiModel) {
-                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = newItem
                     if (oldItem.shopBadgeUrl != newItem.shopBadgeUrl) {
                         setupShopBadge(newItem.shopBadgeUrl)
@@ -49,7 +56,7 @@ class ProductListHeaderViewHolder(
                     if (oldItem.shopName != newItem.shopName) {
                         setupShopName(newItem.shopName)
                     }
-                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -73,11 +80,9 @@ class ProductListHeaderViewHolder(
     }
 
     private fun setupClickListener() {
-        itemView.apply {
-            icBuyerOrderDetailSeeShopBadge?.setOnClickListener(this@ProductListHeaderViewHolder)
-            tvBuyerOrderDetailShopName?.setOnClickListener(this@ProductListHeaderViewHolder)
-            icBuyerOrderDetailSeeShopPage?.setOnClickListener(this@ProductListHeaderViewHolder)
-        }
+        icBuyerOrderDetailSeeShopBadge?.setOnClickListener(this@ProductListHeaderViewHolder)
+        tvBuyerOrderDetailShopName?.setOnClickListener(this@ProductListHeaderViewHolder)
+        icBuyerOrderDetailSeeShopPage?.setOnClickListener(this@ProductListHeaderViewHolder)
     }
 
     private fun setupShopBadge(shopBadgeUrl: String) {
@@ -89,15 +94,15 @@ class ProductListHeaderViewHolder(
     }
 
     private fun setupShopName(shopName: String) {
-        itemView.tvBuyerOrderDetailShopName?.text = shopName
+        tvBuyerOrderDetailShopName?.text = shopName
     }
 
     private fun hideShopBadge() {
-        itemView.icBuyerOrderDetailSeeShopBadge?.gone()
+        icBuyerOrderDetailSeeShopBadge?.gone()
     }
 
     private fun showShopBadge(url: String) {
-        itemView.icBuyerOrderDetailSeeShopBadge?.let {
+        icBuyerOrderDetailSeeShopBadge?.let {
             ImageHandler.loadImage2(it, url, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
         }
     }

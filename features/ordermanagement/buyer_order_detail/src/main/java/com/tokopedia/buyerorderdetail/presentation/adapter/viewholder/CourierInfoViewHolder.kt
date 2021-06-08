@@ -2,18 +2,25 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.android.synthetic.main.item_buyer_order_detail_shipment_info_courier.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUiModel.CourierInfoUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_shipment_info_courier
     }
+
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val ivBuyerOrderDetailFreeShipmentBadge = itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailFreeShipmentBadge)
+    private val tvBuyerOrderDetailCourierValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierValue)
+    private val tvBuyerOrderDetailArrivalEstimationValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailArrivalEstimationValue)
 
     override fun bind(element: ShipmentInfoUiModel.CourierInfoUiModel?) {
         element?.let {
@@ -29,7 +36,7 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is ShipmentInfoUiModel.CourierInfoUiModel && newItem is ShipmentInfoUiModel.CourierInfoUiModel) {
-                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     if (oldItem.courierNameAndProductName != newItem.courierNameAndProductName) {
                         setupCourierNameAndProductName(newItem.courierNameAndProductName)
                     }
@@ -39,7 +46,7 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
                     if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping) {
                         setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping)
                     }
-                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -48,20 +55,20 @@ class CourierInfoViewHolder(itemView: View?) : AbstractViewHolder<ShipmentInfoUi
     }
 
     private fun setupCourierNameAndProductName(courierNameAndProductName: String) {
-        itemView.tvBuyerOrderDetailCourierValue?.text = courierNameAndProductName
+        tvBuyerOrderDetailCourierValue?.text = courierNameAndProductName
     }
 
     private fun setupFreeShippingBadge(freeShipping: Boolean, boBadgeUrl: String) {
-        itemView.ivBuyerOrderDetailFreeShipmentBadge?.apply {
+        ivBuyerOrderDetailFreeShipmentBadge?.apply {
             ImageHandler.loadImage2(this, boBadgeUrl, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
             showWithCondition(freeShipping)
         }
     }
 
     private fun setupArrivalEstimation(arrivalEstimation: String, freeShipping: Boolean) {
-        itemView.tvBuyerOrderDetailArrivalEstimationValue?.text = arrivalEstimation
-        itemView.tvBuyerOrderDetailArrivalEstimationValue?.setPadding(0, getArrivalEstimationTopMargin(freeShipping), 0, 0)
-        itemView.tvBuyerOrderDetailArrivalEstimationValue?.showWithCondition(arrivalEstimation.isNotBlank())
+        tvBuyerOrderDetailArrivalEstimationValue?.text = arrivalEstimation
+        tvBuyerOrderDetailArrivalEstimationValue?.setPadding(0, getArrivalEstimationTopMargin(freeShipping), 0, 0)
+        tvBuyerOrderDetailArrivalEstimationValue?.showWithCondition(arrivalEstimation.isNotBlank())
     }
 
     private fun getArrivalEstimationTopMargin(freeShipping: Boolean): Int {

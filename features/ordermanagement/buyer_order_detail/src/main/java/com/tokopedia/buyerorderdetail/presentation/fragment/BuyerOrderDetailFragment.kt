@@ -12,9 +12,13 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
@@ -44,16 +48,18 @@ import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailVie
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.StringUtils
-import kotlinx.android.synthetic.main.fragment_buyer_order_detail.*
-import kotlinx.android.synthetic.main.fragment_buyer_order_detail.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -80,11 +86,23 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private var bottomSheetReceiveConfirmation: ReceiveConfirmationBottomSheet? = null
+
+    private var containerActionButtons: CardView? = null
+    private var containerBuyerOrderDetail: ConstraintLayout? = null
+    private var swipeRefreshBuyerOrderDetail: SwipeRefreshLayout? = null
+    private var rvBuyerOrderDetail: RecyclerView? = null
+    private var btnBuyerOrderDetailPrimaryActions: UnifyButton? = null
+    private var actionButtonWrapper: ConstraintLayout? = null
+    private var toolbarBuyerOrderDetail: HeaderUnify? = null
+    private var globalErrorBuyerOrderDetail: GlobalError? = null
+    private var emptyStateBuyerOrderDetail: EmptyStateUnify? = null
+    private var btnBuyerOrderDetailSecondaryActions: UnifyImageButton? = null
+    private var loaderBuyerOrderDetail: LoaderUnify? = null
+
     private val viewModel: BuyerOrderDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
     }
-
-    private var bottomSheetReceiveConfirmation: ReceiveConfirmationBottomSheet? = null
 
     private val actionButtonAnimator by lazy {
         BuyerOrderDetailActionButtonAnimator(containerActionButtons, containerBuyerOrderDetail)
@@ -346,17 +364,32 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun setupViews() {
-        containerBuyerOrderDetail.layoutTransition.apply {
+        bindViews()
+        containerBuyerOrderDetail?.layoutTransition?.apply {
             setInterpolator(LayoutTransition.CHANGING, AccelerateInterpolator())
             enableTransitionType(LayoutTransition.CHANGING)
             setDuration(LayoutTransition.CHANGING, CONTENT_CHANGING_ANIMATION_DURATION)
             setStartDelay(LayoutTransition.CHANGING, CONTENT_CHANGING_ANIMATION_DELAY)
         }
-        containerActionButtons?.actionButtonWrapper?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+        actionButtonWrapper?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         setupToolbar()
         setupGlobalError()
         setupSwipeRefreshLayout()
         setupRecyclerView()
+    }
+
+    private fun bindViews() {
+        containerActionButtons = view?.findViewById(R.id.containerActionButtons)
+        containerBuyerOrderDetail = view?.findViewById(R.id.containerBuyerOrderDetail)
+        swipeRefreshBuyerOrderDetail = view?.findViewById(R.id.swipeRefreshBuyerOrderDetail)
+        rvBuyerOrderDetail = view?.findViewById(R.id.rvBuyerOrderDetail)
+        btnBuyerOrderDetailPrimaryActions = view?.findViewById(R.id.btnBuyerOrderDetailPrimaryActions)
+        actionButtonWrapper = view?.findViewById(R.id.actionButtonWrapper)
+        toolbarBuyerOrderDetail = view?.findViewById(R.id.toolbarBuyerOrderDetail)
+        globalErrorBuyerOrderDetail = view?.findViewById(R.id.globalErrorBuyerOrderDetail)
+        emptyStateBuyerOrderDetail = view?.findViewById(R.id.emptyStateBuyerOrderDetail)
+        btnBuyerOrderDetailSecondaryActions = view?.findViewById(R.id.btnBuyerOrderDetailSecondaryActions)
+        loaderBuyerOrderDetail = view?.findViewById(R.id.loaderBuyerOrderDetail)
     }
 
     private fun setupToolbar() {
@@ -367,7 +400,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun setupGlobalError() {
-        globalErrorBuyerOrderDetail.setActionClickListener {
+        globalErrorBuyerOrderDetail?.setActionClickListener {
             globalErrorBuyerOrderDetail?.gone()
             showLoadIndicator()
             contentVisibilityAnimator.hideContent()
@@ -394,7 +427,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun setupRecyclerView() {
-        rvBuyerOrderDetail.adapter = adapter
+        rvBuyerOrderDetail?.adapter = adapter
     }
 
     private fun loadBuyerOrderDetail() {
@@ -464,7 +497,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         bottomSheetReceiveConfirmation?.dismiss()
         secondaryActionButtonBottomSheet.dismiss()
         showCommonToaster(data.message.firstOrNull().orEmpty())
-        swipeRefreshBuyerOrderDetail.isRefreshing = true
+        swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
     }
 
@@ -591,11 +624,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun showLoadIndicator() {
-        loaderBuyerOrderDetail.show()
+        loaderBuyerOrderDetail?.show()
     }
 
     private fun hideLoadIndicator() {
-        loaderBuyerOrderDetail.gone()
+        loaderBuyerOrderDetail?.gone()
     }
 
     private fun showReceiveConfirmationBottomSheet(button: ActionButtonsUiModel.ActionButton) {

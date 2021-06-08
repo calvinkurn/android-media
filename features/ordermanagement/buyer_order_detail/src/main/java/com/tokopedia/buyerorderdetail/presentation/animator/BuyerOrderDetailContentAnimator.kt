@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class BuyerOrderDetailContentAnimator(
-        private val swipeRefreshLayout: SwipeRefreshLayout,
-        private val recyclerView: RecyclerView
+        private val swipeRefreshLayout: SwipeRefreshLayout?,
+        private val recyclerView: RecyclerView?
 ) {
 
     companion object {
@@ -22,19 +22,27 @@ class BuyerOrderDetailContentAnimator(
     private var animatorShowContent: AnimatorSet? = null
     private var animatorHideContent: AnimatorSet? = null
 
-    private fun createShowContentAnimatorSet(): AnimatorSet {
-        val showContentAnimator = createTranslationYAnimator(swipeRefreshLayout, swipeRefreshLayout.translationY, 0f)
-        val fadeInAnimator = createFadeAnimator(recyclerView, recyclerView.alpha, 1f)
-        return AnimatorSet().apply {
-            playTogether(showContentAnimator, fadeInAnimator)
+    private fun createShowContentAnimatorSet(): AnimatorSet? {
+        return if (swipeRefreshLayout == null || recyclerView == null) {
+            null
+        } else {
+            val showContentAnimator = createTranslationYAnimator(swipeRefreshLayout, swipeRefreshLayout.translationY, 0f)
+            val fadeInAnimator = createFadeAnimator(recyclerView, recyclerView.alpha, 1f)
+            AnimatorSet().apply {
+                playTogether(showContentAnimator, fadeInAnimator)
+            }
         }
     }
 
-    private fun createHideContentAnimatorSet(): AnimatorSet {
-        val hideContentAnimator = createTranslationYAnimator(swipeRefreshLayout, swipeRefreshLayout.translationY, swipeRefreshLayout.measuredHeight.toFloat())
-        val fadeOutAnimator = createFadeAnimator(recyclerView, recyclerView.alpha, 0f)
-        return AnimatorSet().apply {
-            playTogether(hideContentAnimator, fadeOutAnimator)
+    private fun createHideContentAnimatorSet(): AnimatorSet? {
+        return if (swipeRefreshLayout == null || recyclerView == null) {
+            null
+        } else {
+            val hideContentAnimator = createTranslationYAnimator(swipeRefreshLayout, swipeRefreshLayout.translationY, swipeRefreshLayout.measuredHeight.toFloat())
+            val fadeOutAnimator = createFadeAnimator(recyclerView, recyclerView.alpha, 0f)
+            AnimatorSet().apply {
+                playTogether(hideContentAnimator, fadeOutAnimator)
+            }
         }
     }
 

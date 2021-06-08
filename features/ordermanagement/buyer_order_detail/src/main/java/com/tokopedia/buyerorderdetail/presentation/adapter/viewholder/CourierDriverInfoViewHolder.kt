@@ -2,11 +2,14 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
-import kotlinx.android.synthetic.main.item_buyer_order_detail_courier_driver_info.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class CourierDriverInfoViewHolder(
         itemView: View?,
@@ -16,6 +19,13 @@ class CourierDriverInfoViewHolder(
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_courier_driver_info
     }
+
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val btnBuyerOrderDetailCallCourierDriver = itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailCallCourierDriver)
+    private val ivBuyerOrderDetailCourierDriverPhoto = itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailCourierDriverPhoto)
+    private val tvBuyerOrderDetailCourierDriverName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierDriverName)
+    private val tvBuyerOrderDetailCourierDriverPhoneNumber = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierDriverPhoneNumber)
+    private val tvBuyerOrderDetailCourierDriverPlateNumber = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierDriverPlateNumber)
 
     private var element: ShipmentInfoUiModel.CourierDriverInfoUiModel? = null
 
@@ -39,7 +49,7 @@ class CourierDriverInfoViewHolder(
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is ShipmentInfoUiModel.CourierDriverInfoUiModel && newItem is ShipmentInfoUiModel.CourierDriverInfoUiModel) {
-                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = newItem
                     if (oldItem.photoUrl != newItem.photoUrl) {
                         setupDriverPhoto(newItem.photoUrl)
@@ -53,7 +63,7 @@ class CourierDriverInfoViewHolder(
                     if (oldItem.plateNumber != newItem.plateNumber) {
                         setupDriverPlateNumber(newItem.plateNumber)
                     }
-                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -62,7 +72,7 @@ class CourierDriverInfoViewHolder(
     }
 
     private fun setupClickListeners() {
-        itemView.btnBuyerOrderDetailCallCourierDriver?.setOnClickListener {
+        btnBuyerOrderDetailCallCourierDriver?.setOnClickListener {
             callDriver()
         }
     }
@@ -72,18 +82,18 @@ class CourierDriverInfoViewHolder(
     }
 
     private fun setupDriverPhoto(photoUrl: String) {
-        itemView.ivBuyerOrderDetailCourierDriverPhoto?.setImageUrl(photoUrl)
+        ivBuyerOrderDetailCourierDriverPhoto?.setImageUrl(photoUrl)
     }
 
     private fun setupDriverName(name: String) {
-        itemView.tvBuyerOrderDetailCourierDriverName?.text = name
+        tvBuyerOrderDetailCourierDriverName?.text = name
     }
 
     private fun setupDriverPhoneNumber(phoneNumber: String) {
-        itemView.tvBuyerOrderDetailCourierDriverPhoneNumber?.text = phoneNumber
+        tvBuyerOrderDetailCourierDriverPhoneNumber?.text = phoneNumber
     }
 
     private fun setupDriverPlateNumber(plateNumber: String) {
-        itemView.tvBuyerOrderDetailCourierDriverPlateNumber?.text = plateNumber
+        tvBuyerOrderDetailCourierDriverPlateNumber?.text = plateNumber
     }
 }

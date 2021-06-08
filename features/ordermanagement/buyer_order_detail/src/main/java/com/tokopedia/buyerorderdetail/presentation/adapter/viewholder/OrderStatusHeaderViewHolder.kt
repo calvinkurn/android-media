@@ -2,13 +2,15 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.kotlin.extensions.view.gone
-import kotlinx.android.synthetic.main.item_buyer_order_detail_status_info_header.view.*
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.Typography
 
 class OrderStatusHeaderViewHolder(
         itemView: View?,
@@ -18,6 +20,12 @@ class OrderStatusHeaderViewHolder(
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_status_info_header
     }
+
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val buyerOrderDetailIndicator = itemView?.findViewById<View>(R.id.buyerOrderDetailIndicator)
+    private val labelBuyerOrderDetailPreOrder = itemView?.findViewById<Label>(R.id.labelBuyerOrderDetailPreOrder)
+    private val tvBuyerOrderDetailSeeDetail = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailSeeDetail)
+    private val tvBuyerOrderDetailStatusOrder = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailStatusOrder)
 
     init {
         setupSeeOrderStatusDetail()
@@ -40,7 +48,7 @@ class OrderStatusHeaderViewHolder(
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is OrderStatusUiModel.OrderStatusHeaderUiModel && newItem is OrderStatusUiModel.OrderStatusHeaderUiModel) {
-                    itemView.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = element
                     if (oldItem.indicatorColor != newItem.indicatorColor) {
                         setupIndicatorColor(newItem.indicatorColor)
@@ -51,7 +59,7 @@ class OrderStatusHeaderViewHolder(
                     if (oldItem.preOrder != newItem.preOrder) {
                         setupPreOrderLabel(newItem.preOrder)
                     }
-                    itemView.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -60,7 +68,7 @@ class OrderStatusHeaderViewHolder(
     }
 
     private fun setupSeeOrderStatusDetail() {
-        itemView.tvBuyerOrderDetailSeeDetail?.apply {
+        tvBuyerOrderDetailSeeDetail?.apply {
             setOnClickListener {
                 val element = element
                 if (element == null || element.orderId.isBlank()) {
@@ -74,18 +82,18 @@ class OrderStatusHeaderViewHolder(
     }
 
     private fun setupIndicatorColor(indicatorColor: String) {
-        itemView.buyerOrderDetailIndicator?.background = Utils.getColoredIndicator(itemView.context, indicatorColor)
+        buyerOrderDetailIndicator?.background = Utils.getColoredIndicator(itemView.context, indicatorColor)
     }
 
     private fun setupStatusHeader(orderStatus: String) {
-        itemView.tvBuyerOrderDetailStatusOrder?.text = orderStatus
+        tvBuyerOrderDetailStatusOrder?.text = orderStatus
     }
 
     private fun setupPreOrderLabel(preOrder: OrderStatusUiModel.OrderStatusHeaderUiModel.PreOrderUiModel) {
         if (preOrder.isPreOrder && preOrder.value.isNotBlank()) {
-            itemView.labelBuyerOrderDetailPreOrder?.setLabel(itemView.context.getString(R.string.label_pre_order_duration, preOrder.value))
+            labelBuyerOrderDetailPreOrder?.setLabel(itemView.context.getString(R.string.label_pre_order_duration, preOrder.value))
         } else {
-            itemView.labelBuyerOrderDetailPreOrder?.gone()
+            labelBuyerOrderDetailPreOrder?.gone()
         }
     }
 }

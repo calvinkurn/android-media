@@ -5,6 +5,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
@@ -14,7 +15,10 @@ import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.android.synthetic.main.item_buyer_order_detail_product_list_item.view.*
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class ProductViewHolder(
         itemView: View?,
@@ -25,6 +29,15 @@ class ProductViewHolder(
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
     }
+
+    private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
+    private val cardBuyerOrderDetailProduct = itemView?.findViewById<CardUnify>(R.id.cardBuyerOrderDetailProduct)
+    private val btnBuyerOrderDetailBuyProductAgain = itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
+    private val ivBuyerOrderDetailProductThumbnail = itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailProductThumbnail)
+    private val tvBuyerOrderDetailProductName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductName)
+    private val tvBuyerOrderDetailProductPriceQuantity = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceQuantity)
+    private val tvBuyerOrderDetailProductNote = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductNote)
+    private val tvBuyerOrderDetailProductPriceValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceValue)
 
     private var element: ProductListUiModel.ProductUiModel? = null
 
@@ -50,7 +63,7 @@ class ProductViewHolder(
                 val oldItem = it.first
                 val newItem = it.second
                 if (oldItem is ProductListUiModel.ProductUiModel && newItem is ProductListUiModel.ProductUiModel) {
-                    itemView.cardBuyerOrderDetailProduct?.container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                     this.element = newItem
                     if (oldItem.productThumbnailUrl != newItem.productThumbnailUrl) {
                         setupProductThumbnail(newItem.productThumbnailUrl)
@@ -70,7 +83,7 @@ class ProductViewHolder(
                     if (oldItem.button != newItem.button || oldItem.isProcessing != newItem.isProcessing) {
                         setupButton(newItem.button, newItem.isProcessing)
                     }
-                    itemView.cardBuyerOrderDetailProduct?.container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                    container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
                 }
             }
@@ -115,28 +128,26 @@ class ProductViewHolder(
     }
 
     private fun setupClickListeners() {
-        with(itemView) {
-            cardBuyerOrderDetailProduct?.setOnClickListener(this@ProductViewHolder)
-            btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this@ProductViewHolder)
-        }
+        cardBuyerOrderDetailProduct?.setOnClickListener(this@ProductViewHolder)
+        btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this@ProductViewHolder)
     }
 
     private fun setupProductThumbnail(productThumbnailUrl: String) {
-        itemView.ivBuyerOrderDetailProductThumbnail?.apply {
+        ivBuyerOrderDetailProductThumbnail?.apply {
             setImageUrl(productThumbnailUrl)
         }
     }
 
     private fun setupProductName(productName: String) {
-        itemView.tvBuyerOrderDetailProductName?.text = productName
+        tvBuyerOrderDetailProductName?.text = productName
     }
 
     private fun setupProductQuantityAndPrice(quantity: Int, priceText: String) {
-        itemView.tvBuyerOrderDetailProductPriceQuantity?.text = itemView.context.getString(R.string.label_product_price_and_quantity, quantity, priceText)
+        tvBuyerOrderDetailProductPriceQuantity?.text = itemView.context.getString(R.string.label_product_price_and_quantity, quantity, priceText)
     }
 
     private fun setupProductNote(productNote: String) {
-        itemView.tvBuyerOrderDetailProductNote?.apply {
+        tvBuyerOrderDetailProductNote?.apply {
             text = composeItalicNote(productNote)
             showWithCondition(productNote.isNotBlank())
         }
@@ -149,11 +160,11 @@ class ProductViewHolder(
     }
 
     private fun setupTotalPrice(totalPrice: String) {
-        itemView.tvBuyerOrderDetailProductPriceValue?.text = totalPrice
+        tvBuyerOrderDetailProductPriceValue?.text = totalPrice
     }
 
     private fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
-        itemView.btnBuyerOrderDetailBuyProductAgain?.apply {
+        btnBuyerOrderDetailBuyProductAgain?.apply {
             isLoading = processing
             text = showBuyAgainButton.label
             buttonVariant = Utils.mapButtonVariant(showBuyAgainButton.variant)
