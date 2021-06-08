@@ -18,6 +18,7 @@ import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
 import com.tokopedia.rechargeocr.util.RechargeOcrGqlQuery
@@ -78,8 +79,8 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         uploadImageviewModel.errorActionOcr.observe(viewLifecycleOwner, Observer {
             hideLoading()
             showCameraView()
-            rechargeCameraAnalytics.scanIdCard(it)
-            Toaster.build(layout_container, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            rechargeCameraAnalytics.scanIdCard(it.message ?: "")
+            Toaster.build(layout_container, ErrorHandler.getErrorMessage(requireContext(), it), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         })
     }
 

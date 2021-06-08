@@ -111,7 +111,7 @@ class ShipmentMapper @Inject constructor() {
             groupShopListResult.add(
                     GroupShop().apply {
                         isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                        errorMessage = convertToString(it.errors)
+                        errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else convertToString(it.errors)
                         shippingId = it.shippingId
                         spId = it.spId
                         dropshipperName = it.dropshiper.name

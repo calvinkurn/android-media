@@ -32,11 +32,16 @@ object TrackingConstant {
     const val PROMO_CLICK = "promoClick"
     const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
     const val CLICK_STATISTIC = "clickStatistik"
+    const val VIEW_PRODUCT_INSIGHT_IRIS = "viewProductInsightIris"
+    const val CLICK_PRODUCT_INSIGHT = "clickProductInsight"
 
     //category
     const val SHOP_INSIGHT = "shop insight"
     const val SELLER_APP = "seller app"
     const val SELLER_APP_STATISTIC = "seller app - statistik"
+    const val SELLER_APP_SHOP_INSIGHT = "seller app - wawasan toko"
+    const val SELLER_APP_BUYER_INSIGHT = "seller app - wawasan pembeli"
+    const val SELLER_APP_PRODUCT_INSIGHT = "seller app - wawasan produk"
 
     //action
     const val CLICK_WIDGET_CARD = "click widget card"
@@ -52,19 +57,22 @@ object TrackingConstant {
     const val CLICK_MENU_CALENDAR = "click- %s - calendar"
     const val CLICK_MENU_3_DOT = "click - 3 dot"
     const val CLICK_MENU_MENU_LAINNYA = "click - %s - menu lainnya"
+    const val CLICK_TABLE_WIDGET_FILTER = "click table widget - filter"
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trend line"
     const val IMPRESSION_WIDGET_DESCRIPTION = "impression widget description"
     const val IMPRESSION_WIDGET_PROGRESS_BAR = "impression widget progress bar"
     const val IMPRESSION_WIDGET_POST = "impression widget post"
     const val IMPRESSION_WIDGET_BANNER = "impression widget banner"
-    const val IMPRESSION_WIDGET_TABLE = "impression widget simple table"
+    const val IMPRESSION_WIDGET_TABLE_FILTER = "impression table widget - filter"
+    const val IMPRESSION_WIDGET_SIMPLE_TABLE = "impression widget simple table"
     const val IMPRESSION_WIDGET_PIE_CHART = "impression widget pie chart"
     const val IMPRESSION_WIDGET_BAR_CHART = "impression widget bar chart"
     const val IMPRESSION_MENU_TAB = "impression - tab menu"
     const val IMPRESSION_CALENDAR = "impression - %s - calendar"
     const val IMPRESSION_3_DOT = "impression - 3 dot"
     const val IMPRESSION_MENU_LAINNYA = "impression - %s - menu lainnya"
+    const val SLIDE_TABLE_WIDGET = "slide table widget"
     const val SEE_MORE = "see more"
 
     //other

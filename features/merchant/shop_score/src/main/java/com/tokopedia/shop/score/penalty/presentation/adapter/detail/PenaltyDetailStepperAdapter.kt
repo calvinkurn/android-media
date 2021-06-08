@@ -12,9 +12,9 @@ import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiMo
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_penalty_stepper.view.*
 
-class PenaltyDetailStepperAdapter: RecyclerView.Adapter<PenaltyDetailStepperAdapter.DetailPenaltyStepperViewHolder>() {
+class PenaltyDetailStepperAdapter : RecyclerView.Adapter<PenaltyDetailStepperAdapter.DetailPenaltyStepperViewHolder>() {
 
-    private var stepperPenaltyDetailList = mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>()
+    private val stepperPenaltyDetailList = mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>()
 
     fun setStepperPenaltyDetail(stepperList: List<ShopPenaltyDetailUiModel.StepperPenaltyDetail>) {
         if (stepperList.isNullOrEmpty()) return
@@ -34,7 +34,7 @@ class PenaltyDetailStepperAdapter: RecyclerView.Adapter<PenaltyDetailStepperAdap
 
     override fun getItemCount(): Int = stepperPenaltyDetailList.size
 
-    inner class DetailPenaltyStepperViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class DetailPenaltyStepperViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(data: ShopPenaltyDetailUiModel.StepperPenaltyDetail) {
             with(itemView) {
@@ -45,7 +45,9 @@ class PenaltyDetailStepperAdapter: RecyclerView.Adapter<PenaltyDetailStepperAdap
                 } else {
                     divider_stepper_penalty?.hide()
                 }
-                tv_title_status_stepper?.text = MethodChecker.fromHtml(data.titleStepper)
+                 data.titleStepper?.let { titleStepper ->
+                     tv_title_status_stepper?.text = MethodChecker.fromHtml(context?.getString(titleStepper) ?: "")
+                }
                 data.colorStatusTitle?.let { tv_title_status_stepper?.setTextColor(ContextCompat.getColor(context, it)) }
                 if (data.isBold) {
                     tv_title_status_stepper?.setWeight(Typography.BOLD)

@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.shc_table_view.view.*
 
 class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
-    private var slideImpressionListener: ((position: Int, isEmpty: Boolean) -> Unit)? = null
+    private var slideImpressionListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? = null
     private var htmlClickListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
     private var alreadyAttachToSnapHelper = false
@@ -38,12 +38,14 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         rvTableViewPage.run {
             layoutManager = mLayoutManager
             adapter = mTablePageAdapter
-
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
                     if (position != RecyclerView.NO_POSITION) {
+                        mLayoutManager.findViewByPosition(position)?.let { view ->
+                            refreshTableHeight(view)
+                        }
                         this@TableView.tableViewPageControl.setCurrentIndicator(position)
                     }
                 }
@@ -64,11 +66,25 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
         }
     }
 
-    fun addOnSlideImpressionListener(onView: (position: Int, isEmpty: Boolean) -> Unit) {
+    fun addOnSlideImpressionListener(onView: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
          this.slideImpressionListener = onView
     }
 
     fun addOnHtmlClickListener(onClick: (url: String, isEmpty: Boolean) -> Unit) {
         this.htmlClickListener = onClick
+    }
+
+    /**
+     * Dynamically set recyclerview height according to view's measured height
+     */
+    private fun refreshTableHeight(view: View) {
+        val wMeasureSpec = MeasureSpec.makeMeasureSpec(view.width, MeasureSpec.EXACTLY)
+        val hMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        view.measure(wMeasureSpec, hMeasureSpec)
+
+        if (rvTableViewPage?.layoutParams?.height != view.measuredHeight) {
+            rvTableViewPage?.layoutParams = (rvTableViewPage?.layoutParams as? LayoutParams)
+                    ?.also { lp -> lp.height = view.measuredHeight }
+        }
     }
 }
