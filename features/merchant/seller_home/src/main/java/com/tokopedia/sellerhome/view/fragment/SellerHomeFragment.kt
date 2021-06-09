@@ -313,6 +313,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    override fun getIsShouldRemoveWidget(): Boolean = true
+
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         SellerHomeTracking.sendImpressionCardEvent(model.dataKey,
                 model.data?.state.orEmpty(), model.data?.value ?: "0")

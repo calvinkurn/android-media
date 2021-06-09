@@ -37,6 +37,9 @@ class TableViewHolder(
     private val tableFilter: Typography? = itemView?.findViewById(R.id.filterShcTable)
 
     override fun bind(element: TableWidgetUiModel) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            // TODO: Show itemview
+        }
         itemView.tvTableWidgetTitle.text = element.title
         itemView.tvTableWidgetTitle.visible()
         itemView.commonWidgetErrorState.gone()
@@ -83,7 +86,11 @@ class TableViewHolder(
                 if (element.isShowEmpty) {
                     setOnTableEmpty(element)
                 } else {
-                    listener.removeWidget(adapterPosition, element)
+                    if (listener.getIsShouldRemoveWidget()) {
+                        listener.removeWidget(adapterPosition, element)
+                    } else {
+                        // TODO: hide itemview
+                    }
                 }
             }
         }

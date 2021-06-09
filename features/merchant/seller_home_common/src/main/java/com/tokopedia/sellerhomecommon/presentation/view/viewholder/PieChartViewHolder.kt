@@ -45,6 +45,9 @@ class PieChartViewHolder(
 
     override fun bind(element: PieChartWidgetUiModel) {
         with(itemView) {
+            if (!listener.getIsShouldRemoveWidget()) {
+                // TODO: Show itemview
+            }
             tvPieChartTitle.text = element.title
             setupTooltip(element)
 
@@ -54,8 +57,6 @@ class PieChartViewHolder(
 
     private fun observeState(element: PieChartWidgetUiModel) {
         val data = element.data
-
-        itemView.visible()
 
         when {
             data == null -> setOnLoading()
@@ -90,8 +91,11 @@ class PieChartViewHolder(
             if (element.shouldShowEmptyStateIfEmpty()) {
                 showEmptyState(element)
             } else {
-                itemView.gone()
-                listener.removeWidget(adapterPosition, element)
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, element)
+                } else {
+                    // TODO: Hide itemView
+                }
             }
         } else {
             setupPieChart(element)

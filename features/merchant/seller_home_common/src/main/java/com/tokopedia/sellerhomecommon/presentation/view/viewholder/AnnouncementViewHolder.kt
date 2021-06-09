@@ -29,12 +29,19 @@ class AnnouncementViewHolder(
     }
 
     override fun bind(element: AnnouncementWidgetUiModel) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            // Todo: Show itemview
+        }
         val data = element.data
         when {
             data == null -> showLoadingState()
             data.error.isNotBlank() -> {
                 //remove widget if state is error
-                listener.removeWidget(adapterPosition, element)
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, element)
+                } else {
+                    // Todo: Hide itemview
+                }
             }
             else -> showSuccessState(element)
         }

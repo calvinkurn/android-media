@@ -45,6 +45,9 @@ class CarouselViewHolder(
     private val emptyStateButton: UnifyButton? = itemView?.findViewById(R.id.btn_shc_carousel_empty)
 
     override fun bind(element: CarouselWidgetUiModel) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            // TODO: Show itemview
+        }
         itemView.rvCarouselBanner.isNestedScrollingEnabled = false
         observeState(element)
     }
@@ -90,7 +93,11 @@ class CarouselViewHolder(
             if (element.shouldShowEmptyStateIfEmpty()) {
                 setupEmptyState(element)
             } else {
-                listener.removeWidget(adapterPosition, element)
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, element)
+                } else {
+                    // TODO: Hide itemview
+                }
             }
         } else {
             setupCarousel(element)

@@ -48,6 +48,9 @@ class LineGraphViewHolder(
     private var showEmptyState: Boolean = false
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            // TODO: Show itemview
+        }
         showAnimation?.end()
         hideAnimation?.end()
         observeState(element)
@@ -151,8 +154,11 @@ class LineGraphViewHolder(
                 if (element.shouldShowEmptyStateIfEmpty()) {
                     setupEmptyState(element.emptyState)
                 } else {
-                    itemView.gone()
-                    listener.removeWidget(adapterPosition, element)
+                    if (listener.getIsShouldRemoveWidget()) {
+                        listener.removeWidget(adapterPosition, element)
+                    } else {
+                        // TODO: Hide itemview
+                    }
                 }
             } else {
                 animateHideEmptyState()

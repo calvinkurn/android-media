@@ -242,6 +242,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         showErrorToaster()
     }
 
+    override fun getIsShouldRemoveWidget(): Boolean = false
+
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         StatisticTracker.sendClickCardEvent(model)
     }

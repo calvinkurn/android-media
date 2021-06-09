@@ -53,10 +53,12 @@ class BarChartViewHolder(
     }
 
     private fun observeState(element: BarChartWidgetUiModel) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            // Todo: Show itemview
+        }
         showAnimation?.end()
         hideAnimation?.end()
         with(itemView) {
-            show()
             tvShcBarChartTitle.text = element.title
         }
 
@@ -111,8 +113,11 @@ class BarChartViewHolder(
                 if (element.shouldShowEmptyStateIfEmpty()) {
                     setupEmptyState(element)
                 } else {
-                    itemView.gone()
-                    listener.removeWidget(adapterPosition, element)
+                    if (listener.getIsShouldRemoveWidget()) {
+                        listener.removeWidget(adapterPosition, element)
+                    } else {
+                        // TODO: Hide itemview
+                    }
                 }
             } else {
                 animateHideEmptyState()
