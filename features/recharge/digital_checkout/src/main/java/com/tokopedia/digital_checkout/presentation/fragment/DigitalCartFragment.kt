@@ -167,7 +167,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getCart(it.data)
-                is Fail -> closeViewWithMessageAlert(it.throwable.message ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                is Fail -> closeViewWithMessageAlert(it.throwable.message
+                        ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         })
 
@@ -251,10 +252,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         digitalSubscriptionParams.isSubscribed = cartInfo.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
         sendGetCartAndCheckoutAnalytics()
 
-        cartInfo.attributes.userInputPrice.run {
-            if (maxPaymentPlain != 0.0 && minPaymentPlain != 0.0) {
-                renderInputPriceView(cartInfo.attributes.pricePlain.toLong(), cartInfo.attributes.userInputPrice)
-            }
+        if (cartInfo.attributes.isOpenAmount) {
+            renderInputPriceView(cartInfo.attributes.pricePlain.toLong(), cartInfo.attributes.userInputPrice)
         }
 
         renderMyBillsLayout(cartInfo)
