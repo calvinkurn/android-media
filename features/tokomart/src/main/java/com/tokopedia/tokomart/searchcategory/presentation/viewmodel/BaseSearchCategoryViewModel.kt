@@ -13,8 +13,6 @@ import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_SHOP_ID_PLEASE_DELETE
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
@@ -89,7 +87,10 @@ abstract class BaseSearchCategoryViewModel(
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
-    val shopId: String = HARDCODED_SHOP_ID_PLEASE_DELETE
+    val shopId: String
+        get() = chooseAddressData?.shop_id ?: ""
+    val warehouseId: String
+        get() = chooseAddressData?.warehouse_id ?: ""
     var autoCompleteApplink = ""
         private set
 
@@ -190,8 +191,8 @@ abstract class BaseSearchCategoryViewModel(
             tokonowQueryParam[USER_LONG] = chooseAddressData.long
         if (chooseAddressData.postal_code.isNotEmpty())
             tokonowQueryParam[USER_POST_CODE] = chooseAddressData.postal_code
-
-        tokonowQueryParam[USER_WAREHOUSE_ID] = HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+        if (chooseAddressData.warehouse_id.isNotEmpty())
+            tokonowQueryParam[USER_WAREHOUSE_ID] = chooseAddressData.warehouse_id
     }
 
     protected open fun appendPaginationParam(tokonowQueryParam: MutableMap<String, Any>) {
@@ -674,6 +675,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
+        if (productItem.nonVariantATC?.quantity == quantity) return
+
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
                 productId = productItem.id,
                 shopId = productItem.shop.id,
@@ -681,10 +684,20 @@ abstract class BaseSearchCategoryViewModel(
         )
 
         addToCartUseCase.setParams(addToCartRequestParams)
-        addToCartUseCase.execute(::onAddToCartSuccess, ::onAddToCartFailed)
+        addToCartUseCase.execute({
+            onAddToCartSuccess(productItem, it)
+        }, {
+            onAddToCartFailed(it)
+        })
     }
 
-    private fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel) {
+    private fun onAddToCartSuccess(
+            productItem: ProductItemDataView,
+            addToCartDataModel: AddToCartDataModel,
+    ) {
+        val nonVariantATC = productItem.nonVariantATC ?: return
+
+        nonVariantATC.quantity = addToCartDataModel.data.quantity
         addToCartEventMessageMutableLiveData.value = Event("")
     }
 

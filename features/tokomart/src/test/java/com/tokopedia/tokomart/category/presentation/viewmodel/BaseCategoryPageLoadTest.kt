@@ -8,9 +8,9 @@ import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail.Naviga
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.searchcategory.utils.CATEGORY_ID
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokomart.searchcategory.utils.WAREHOUSE_ID
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import com.tokopedia.usecase.RequestParams
 import io.mockk.slot
 import org.hamcrest.CoreMatchers.instanceOf
@@ -44,7 +44,7 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
         )
 
         assertThat(useCaseRequestParams[CATEGORY_ID], shouldBe(defaultCategoryId.toString()))
-        assertThat(useCaseRequestParams[WAREHOUSE_ID], shouldBe(HARDCODED_WAREHOUSE_ID_PLEASE_DELETE))
+        assertThat(useCaseRequestParams[WAREHOUSE_ID], shouldBe(dummyChooseAddressData.warehouse_id))
     }
 
     private fun `Then assert request params map contains query param map`(
