@@ -112,7 +112,7 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public void addSearchResultProductViewImpressions(Product item, int position, String dimension90) {
+    public void addSearchResultProductViewImpressions(Product item, int position) {
         this.dataLayerList.add(DataLayer.mapOf("name", item.getName(),
                 "id", item.getId(),
                 "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
@@ -121,8 +121,7 @@ public class TopAdsGtmTracker {
                 "category", getCategoryBreadcrumb(item),
                 "list", "/searchproduct - topads productlist",
                 "position", position,
-                "dimension83", setFreeOngkirDataLayer(item),
-                "dimension90", dimension90));
+                "dimension83", setFreeOngkirDataLayer(item)));
 
         //GTMv5
         Bundle product = new Bundle();

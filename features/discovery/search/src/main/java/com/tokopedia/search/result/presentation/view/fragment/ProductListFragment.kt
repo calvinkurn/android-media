@@ -750,9 +750,9 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.onProductImpressed(item, adapterPosition)
     }
 
-    override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView, dimension90: String) {
+    override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView) {
         val product: Product = createTopAdsProductForTracking(item)
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position, dimension90)
+        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position)
     }
 
     private fun createTopAdsProductForTracking(item: ProductItemDataView): Product {
