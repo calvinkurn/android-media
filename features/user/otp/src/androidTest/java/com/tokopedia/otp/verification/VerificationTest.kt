@@ -33,8 +33,8 @@ import javax.inject.Inject
 abstract class VerificationTest {
 
     @get:Rule
-    var activityTestRule = ActivityTestRule(
-            VerificationActivityStub::class.java, false, true
+    var activityTestRule = IntentsTestRule(
+            VerificationActivityStub::class.java, false, false
     )
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -194,11 +194,12 @@ abstract class VerificationTest {
 
     protected fun inflateTestFragment() {
         activity.setupTestFragment(otpComponentStub, keyboardStateIdling)
+        waitForFragmentResumed()
     }
 
     protected fun waitForFragmentResumed() {
         IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        onView(withId(R.id.parent_view))
+        onView(withId(R.id.base_view))
                 .check(ViewAssertions.matches(isDisplayed()))
         IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
     }
