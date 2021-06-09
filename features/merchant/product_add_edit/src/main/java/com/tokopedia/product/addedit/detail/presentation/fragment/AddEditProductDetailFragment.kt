@@ -1298,6 +1298,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val validationResult = viewModel.productNameValidationResult
             productNameField?.isInputError = it
             productNameField?.setMessage(viewModel.productNameMessage)
+            typoCorrection?.hide()
 
             // if product name input has no issue
             if (!it) {
@@ -1311,33 +1312,33 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 if (viewModel.isAdding && !viewModel.hasVariants && !needToSetCategoryName) {
                     viewModel.getCategoryRecommendation(productNameInput)
                 }
+                // update product name field icon warning or success
+                when {
+                    validationResult.isNegativeKeyword -> {
+                        showProductNameIconNegative()
+                    }
+                    validationResult.isTypoDetected -> {
+                        showProductNameIconTypo()
+                        typoCorrection?.setKeywords(validationResult.typoCorrections)
+                    }
+                    else -> {
+                        showProductNameIconSuccess()
+                        showPriceRecommendationShimmer()
+                        viewModel.getProductPriceRecommendationByKeyword(productNameInput)
+                    }
+                }
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
                 hideProductNameLoadingIndicator()
+
                 // keep the category
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
                 }
-            }
 
-            typoCorrection?.hide()
-            when {
-                validationResult.isBlacklistKeyword -> {
-                    showProductNameIconBlacklist()
-                }
-                validationResult.isNegativeKeyword -> {
-                    showProductNameIconNegative()
-                }
-                validationResult.isTypoDetected -> {
-                    showProductNameIconTypo()
-                    typoCorrection?.setKeywords(validationResult.typoCorrections)
-                }
-                else -> {
-                    showProductNameIconSuccess()
-                    viewModel.getProductPriceRecommendationByKeyword(productNameInput)
-                    showPriceRecommendationShimmer()
-                }
+                // update icon product name field error
+                showProductNameIconError()
             }
 
             if (needToSetCategoryName) {
@@ -1885,7 +1886,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productNameField?.isInputError = false
     }
 
-    private fun showProductNameIconBlacklist() {
+    private fun showProductNameIconError() {
         showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_R500, IconUnify.INFORMATION)
         productNameField?.isInputError = true
     }
