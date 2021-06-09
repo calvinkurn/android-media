@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
@@ -156,7 +157,9 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     private fun onSuccessGetAutoTopUp(data: AutoTopUpStatus) {
         autoTopUpData = data
         bonus = data.statusBonus
-        status_title.text = String.format(getString(R.string.topads_auto_topup_widget, bonus))
+        context?.let {
+            status_title.text = MethodChecker.fromHtml(String.format(it.getString(R.string.topads_auto_topup_widget), "$bonus%"))
+        }
         val isAutoTopUpActive = (data.status.toIntOrZero()) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
         if (!isAutoTopUpActive && isTopUp) {
             showAutoAdsOption()
