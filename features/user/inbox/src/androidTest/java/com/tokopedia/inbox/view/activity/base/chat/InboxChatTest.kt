@@ -10,6 +10,7 @@ import javax.inject.Inject
 
 open class InboxChatTest : InboxTest() {
 
+    // TODO: refactor this to inject child class only not parent
     @Inject
     protected lateinit var inboxChatDep: InboxChatFakeDependency
 
