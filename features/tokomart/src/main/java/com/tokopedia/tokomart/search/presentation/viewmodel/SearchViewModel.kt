@@ -1,15 +1,22 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
+import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
@@ -45,6 +52,8 @@ class SearchViewModel @Inject constructor (
 
     val query = queryParamMap[SearchApiConst.Q] ?: ""
 
+    private var suggestionModel: AceSearchProductModel.Suggestion? = null
+
     override fun onViewCreated() {
         getSearchFirstPageUseCase.cancelJobs()
         getSearchFirstPageUseCase.execute(
@@ -61,6 +70,8 @@ class SearchViewModel @Inject constructor (
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
+        suggestionModel = searchModel.searchProduct.data.suggestion
+
         val headerDataView = HeaderDataView(
                 title = "",
                 hasSeeAllCategoryButton = false,
@@ -75,6 +86,35 @@ class SearchViewModel @Inject constructor (
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView)
+    }
+
+    override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
+        processSuggestionModel(headerList)
+    }
+
+    private fun processSuggestionModel(headerList: MutableList<Visitable<*>>) {
+        val suggestionModel = suggestionModel ?: return
+
+        if (suggestionModel.text.isNotEmpty()) {
+            val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
+
+            headerList.add(
+                    suggestionDataViewIndex,
+                    SuggestionDataView(
+                            text = suggestionModel.text,
+                            query = suggestionModel.query,
+                            suggestion = suggestionModel.suggestion,
+                    ),
+            )
+        }
+
+        this.suggestionModel = null
+    }
+
+    private fun determineSuggestionDataViewIndex(headerList: List<Visitable<*>>): Int {
+        val quickFilterIndex = headerList.indexOfFirst { it is QuickFilterDataView }
+
+        return quickFilterIndex + 1
     }
 
     private fun onGetSearchFirstPageError(throwable: Throwable) {
