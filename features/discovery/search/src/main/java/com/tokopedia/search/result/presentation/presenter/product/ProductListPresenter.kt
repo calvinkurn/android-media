@@ -299,7 +299,6 @@ class ProductListPresenter @Inject constructor(
 
         putRequestParamsOtherParameters(requestParams, searchParameter)
         putRequestParamsChooseAddress(requestParams)
-        putRequestParamWarehouseId(requestParams)
         requestParams.putAll(searchParameter)
 
         return requestParams
@@ -310,12 +309,6 @@ class ProductListPresenter @Inject constructor(
 
         val chooseAddressData = chooseAddressData ?: return
         requestParams.putAllString(chooseAddressData.toSearchParams())
-    }
-
-    private fun putRequestParamWarehouseId(requestParams: RequestParams) {
-        val chooseAddressData = chooseAddressData ?: return
-
-        if (chooseAddressData.warehouse_id.isNotEmpty()) requestParams.putString(SearchApiConst.USER_WAREHOUSE_ID, chooseAddressData.warehouse_id)
     }
 
     private fun putRequestParamsOtherParameters(requestParams: RequestParams, searchParameter: Map<String, Any>) {
@@ -1890,7 +1883,6 @@ class ProductListPresenter @Inject constructor(
         val requestParams = createInitializeSearchParam(mapParameter)
 
         enrichWithRelatedSearchParam(requestParams)
-        putRequestParamWarehouseId(requestParams)
 
         requestParams.putString(SearchApiConst.ROWS, "0")
 
@@ -1938,7 +1930,6 @@ class ProductListPresenter @Inject constructor(
         val requestParams = RequestParams.create()
 
         putRequestParamsChooseAddress(requestParams)
-        putRequestParamWarehouseId(requestParams)
         requestParams.putAll(searchParameter)
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_PRODUCT)
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
