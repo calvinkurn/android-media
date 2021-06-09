@@ -170,6 +170,7 @@ include "features:user:loginfingerprint"
 include 'features:user:notif-troubleshooter'
 include "features:user:additional_check"
 include "features:user:inbox_common"
+include "features:user:telephony_masking"
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"

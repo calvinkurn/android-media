@@ -239,7 +239,7 @@ include "features:user:inbox"
 include "features:user:inbox_common"
 
 include "features:user:vote"
-
+include "features:user:telephony_masking"
 include "features:user:fcm_common"
 
 include "tkpdcore"
