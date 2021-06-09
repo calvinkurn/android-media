@@ -49,6 +49,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private var rvMiniCartList: RecyclerView? = null
     private var adapter: MiniCartListAdapter? = null
     private var bottomSheetListener: MiniCartListBottomSheetListener? = null
+    private var miniCartChevronClickListener: View.OnClickListener? = null
 
     private var measureRecyclerViewPaddingDebounceJob: Job? = null
     private var updateCartDebounceJob: Job? = null
@@ -128,19 +129,20 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         totalAmount = view.findViewById(R.id.total_amount)
         chatIcon = view.findViewById(R.id.chat_icon)
         totalAmount?.let {
-            it.amountChevronView.setOnClickListener {
+            miniCartChevronClickListener = View.OnClickListener {
                 analytics.eventClickChevronToShowSummaryTransaction()
                 viewModel?.miniCartListListBottomSheetUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
                     summaryTransactionBottomSheet.show(it, fragmentManager, context)
                 }
             }
+            it.amountChevronView.setOnClickListener(miniCartChevronClickListener)
             it.amountCtaView.setOnClickListener {
                 sendEventClickBuy()
                 showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
             }
             it.enableAmountChevron(true)
-            setTotalAmountChatIcon()
+            validateTotalAmountView()
             setTotalAmountLoading(true)
         }
     }
@@ -281,10 +283,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 totalAmount?.isTotalAmountLoading = false
             }
         }
-        setTotalAmountChatIcon()
+        validateTotalAmountView()
     }
 
-    private fun setTotalAmountChatIcon() {
+    private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)
@@ -297,6 +299,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 context.startActivity(intent)
             }
             this.chatIcon?.setImageDrawable(chatIcon)
+            totalAmount?.enableAmountChevron(true)
+            totalAmount?.amountChevronView?.setOnClickListener(miniCartChevronClickListener)
         }
     }
 
