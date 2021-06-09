@@ -1,7 +1,6 @@
 package com.tokopedia.flight.common.di.component
 
 import android.content.Context
-import android.content.res.Resources
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -20,10 +19,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
 /**
- * @author sebastianuskh on 4/13/17.
+ * @author by furqan on 09/06/2021
  */
 @FlightScope
-@Component(modules = [FlightModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [FlightModule::class],
+        dependencies = [BaseAppComponent::class])
 interface FlightComponent {
     @ApplicationContext
     fun context(): Context
@@ -34,7 +34,6 @@ interface FlightComponent {
     fun flightJourneyNewDao(): FlightJourneyDao
     fun flightRouteNewDao(): FlightRouteDao
     fun flightComboNewDao(): FlightComboDao
-    fun resources(): Resources
     fun graphqlRepository(): GraphqlRepository
     fun multiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase
     fun dispatcherProvider(): CoroutineDispatchers
