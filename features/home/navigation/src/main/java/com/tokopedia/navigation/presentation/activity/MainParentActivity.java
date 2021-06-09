@@ -269,18 +269,26 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void initInboxAbTest() {
-        useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isNewNavigation;
+        try {
+            useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
+                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+            ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isNewNavigation;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initNotifcenterOnNewInboxAbTest() {
-        useNewNotificationOnNewInbox = RemoteConfigInstance.getInstance()
-                .getABTestPlatform()
-                .getString(
-                        AbTestPlatform.KEY_NEW_NOTFICENTER,
-                        AbTestPlatform.VARIANT_OLD_NOTFICENTER
-                ).equals(AbTestPlatform.VARIANT_NEW_NOTFICENTER);
+        try {
+            useNewNotificationOnNewInbox = RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .getString(
+                            AbTestPlatform.KEY_NEW_NOTFICENTER,
+                            AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                    ).equals(AbTestPlatform.VARIANT_NEW_NOTFICENTER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void installDFonBackground() {
