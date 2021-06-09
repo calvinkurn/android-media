@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
@@ -39,7 +40,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     private var createReviewFragment: CreateReviewFragment? = null
     private var rating = DEFAULT_PRODUCT_RATING
     private var isEditMode = false
-    private var feedbackId = ""
+    private var feedbackId = 0L
     private var reputationId: String = ""
     private var utmSource: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -160,7 +161,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             rating = uri.getQueryParameter(PARAM_RATING)?.toIntOrNull() ?: DEFAULT_PRODUCT_RATING
             isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean()
                     ?: false
-            feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID) ?: ""
+            feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID).toLongOrZero()
             utmSource = uri.getQueryParameter(ReviewConstants.PARAM_UTM_SOURCE) ?: ""
         } else {
             productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""

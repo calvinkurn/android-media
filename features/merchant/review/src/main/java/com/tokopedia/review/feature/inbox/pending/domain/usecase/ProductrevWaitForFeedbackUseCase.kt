@@ -19,12 +19,9 @@ class ProductrevWaitForFeedbackUseCase @Inject constructor(graphqlRepository: Gr
                 query productrevWaitForFeedback(${'$'}limit: Int!, ${'$'}page: Int!) {
                     productrevWaitForFeedback(limit: ${'$'}limit, page: ${'$'}page) {
                       list {
-                        reputationID
                         reputationIDStr
-                        inboxReviewID
                         inboxReviewIDStr
                         product {
-                          productID
                           productIDStr
                           productName
                           productImageURL

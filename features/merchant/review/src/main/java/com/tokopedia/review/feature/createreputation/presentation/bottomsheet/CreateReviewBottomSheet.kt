@@ -776,7 +776,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun getReputationId(): String {
-        return (createReviewViewModel.getReputationDataForm.value as? Success)?.data?.productrevGetForm?.reputationID.toString()
+        return (createReviewViewModel.getReputationDataForm.value as? Success)?.data?.productrevGetForm?.reputationIDStr ?: ""
     }
 
     private fun getRating(): Int {

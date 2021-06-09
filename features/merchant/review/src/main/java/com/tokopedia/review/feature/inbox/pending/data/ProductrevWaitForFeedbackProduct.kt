@@ -4,9 +4,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductrevWaitForFeedbackProduct(
-        @SerializedName("productID")
-        @Expose
-        val productId: Long = 0,
         @SerializedName("productIDStr")
         @Expose
         val productIDStr: String = "",

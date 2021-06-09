@@ -103,13 +103,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: String, utmSource: String) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Long, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
-                putString(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
+                putLong(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
                 putString(ReviewConstants.PARAM_UTM_SOURCE, utmSource)
             }
         }
@@ -392,7 +392,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onExpandButtonClicked(text: String) {
-        CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
+        CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId)
         if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, createReviewViewModel.isUserEligible())
         (textAreaBottomSheet as BottomSheetUnify).setTitle(createReviewTextAreaTitle.text.toString())
@@ -400,7 +400,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onCollapseButtonClicked(text: String) {
-        CreateReviewTracking.onCollapseTextBoxClicked(getOrderId(), productId.toString())
+        CreateReviewTracking.onCollapseTextBoxClicked(getOrderId(), productId)
         textAreaBottomSheet?.dismiss()
     }
 
@@ -414,7 +414,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun trackWhenHasFocus(textLength: Int) {
-        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), textLength == 0, isEditMode, feedbackId.toString())
+        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId, textLength == 0, isEditMode, feedbackId.toString())
         setHelperText(textLength)
     }
 
@@ -427,7 +427,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onReviewScoreClicked(score: Int): Boolean {
-        CreateReviewTracking.eventClickSmiley(getOrderId(), productId.toString())
+        CreateReviewTracking.eventClickSmiley(getOrderId(), productId)
         createReviewScore.onScoreSelected(score)
         return true
     }
@@ -577,9 +577,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
             hideShimmering()
             showLayout()
 
-            CreateReviewTracking.reviewOnViewTracker(orderID, productId.toString())
+            CreateReviewTracking.reviewOnViewTracker(orderID, productId)
 
-            shopId = shopData.shopID.toString()
+            shopId = shopData.shopIDStr
             setProductDetail(productData.productName, productData.productVariant.variantName, productData.productImageURL)
             setReputation(reputation, shopData.shopName)
         }
@@ -915,7 +915,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewExpandableTextArea.apply {
             setListener(this@CreateReviewFragment)
             addOnImpressionListener(ImpressHolder()) {
-                CreateReviewTracking.reviewOnScoreVisible(getOrderId(), productId.toString())
+                CreateReviewTracking.reviewOnScoreVisible(getOrderId(), productId)
             }
         }
     }
@@ -1027,7 +1027,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun getThankYouFormTrackerData(): ThankYouBottomSheetTrackerData {
-        return ThankYouBottomSheetTrackerData(reputationId.toString(), getOrderId(), productId.toString(), createReviewViewModel.getUserId(), getFeedbackId())
+        return ThankYouBottomSheetTrackerData(reputationId, getOrderId(), productId, createReviewViewModel.getUserId(), getFeedbackId())
     }
 
     private fun getFeedbackId(): String {

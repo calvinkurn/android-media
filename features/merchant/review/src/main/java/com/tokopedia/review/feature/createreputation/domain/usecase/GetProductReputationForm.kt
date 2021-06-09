@@ -19,12 +19,10 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
         const val REPUTATION_FORM_QUERY = """
             query productrevGetFormV2(${'$'}reputationId:String!,${'$'}productId:String!){
               productrevGetFormV2(reputationID:${'$'}reputationId, productID:${'$'}productId){
-                reputationID
                 reputationIDStr
                 orderID
                 validToReview
                 productData{
-                  productID
                   productIDStr
                   productName
                   productPageURL
@@ -36,7 +34,6 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
                   }
                 }
                 shopData{
-                  shopID
                   shopIDStr
                   shopOpen
                   shopName
