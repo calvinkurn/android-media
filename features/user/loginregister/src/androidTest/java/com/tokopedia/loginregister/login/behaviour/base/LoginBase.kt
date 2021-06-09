@@ -5,10 +5,8 @@ import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -30,13 +28,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
 
-open class LoginBase {
+open class LoginBase: LoginRegisterBase() {
 
     var isDefaultRegisterCheck = true
     var isDefaultDiscover = true
@@ -192,33 +189,13 @@ open class LoginBase {
         viewInteraction.perform(ViewActions.click())
     }
 
-    fun clickSubmit(){
-        val viewInteraction = onView(withId(R.id.register_btn)).check(matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(ViewActions.click())
-    }
-
     fun clickUbahButton() {
         onView(withId(R.id.change_button)).check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-    }
-
-    fun clearEmailInput() {
-        val viewInteraction = onView(withId(R.id.input_email_phone)).check(matches(isDisplayed()))
-        viewInteraction.perform(ViewActions.clearText())
-    }
-
-    fun inputEmailOrPhone(value: String) {
-        val viewInteraction = onView(withId(R.id.input_email_phone)).check(matches(isDisplayed()))
-        viewInteraction.perform(ViewActions.typeText(value))
     }
 
     fun inputPassword(value: String) {
         val viewInteraction = onView(withId(R.id.text_field_input)).check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.typeText(value))
-    }
-
-    fun deleteEmailOrPhoneInput() {
-        val viewInteraction = onView(withId(R.id.input_email_phone)).check(matches(isDisplayed()))
-        viewInteraction.perform(clearText())
     }
 
     fun clickSocmedButton() {
@@ -229,32 +206,6 @@ open class LoginBase {
 
     fun shouldBeEnabled(id: Int) {
         onView(withId(id)).check(matches(isEnabled()))
-    }
-
-    fun shouldBeDisabled(id: Int) {
-        onView(withId(id)).check(matches(not(isEnabled())))
-    }
-
-    fun shouldBeDisplayed(id: Int) {
-        onView(withId(id)).check(matches(isDisplayed()))
-    }
-
-    fun shouldBeHidden(id: Int) {
-        onView(withId(id)).check(matches(not(isDisplayed())))
-    }
-
-    fun isDisplayingGivenText(id: Int, givenText: String) {
-        onView(withId(id)).check(matches(withText(givenText))).check(matches(isDisplayed()))
-    }
-
-    fun isTextInputHasError(id: Int, errorText: String) {
-        onView(withId(id)).check(matches(hasErrorText(errorText))).check(matches(isDisplayed()))
-    }
-
-    fun isDialogDisplayed(text: String) {
-        onView(withText(text))
-                .inRoot(RootMatchers.isDialog())
-                .check(matches(isDisplayed()))
     }
 
     fun isEmailExtensionDisplayed() {
