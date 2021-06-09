@@ -1966,6 +1966,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
                 dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
         )
+        cartListData.unavailableGroupData.forEach {
+            cartPageAnalytics.eventLoadCartWithUnavailableProduct(it.title)
+        }
 
         cartAdapter.notifyDataSetChanged()
 

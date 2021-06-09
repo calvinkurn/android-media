@@ -532,6 +532,7 @@ public interface ConstantTransactionAnalytics {
 
         // Cart TokoNow
         String VIEW_TOASTER_ERROR_IN_CART_PAGE = "view toaster error in cart page";
+        String LOAD_CART_WITH_UNAVAILABLE_PRODUCT = "load cart with unavailable product";
     }
 
     interface EventLabel {

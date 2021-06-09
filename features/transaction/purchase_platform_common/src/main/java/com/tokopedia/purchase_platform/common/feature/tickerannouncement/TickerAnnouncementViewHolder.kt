@@ -22,7 +22,6 @@ open class TickerAnnouncementViewHolder(itemView: View, val actionListener: Tick
             cartTicker?.requestLayout()
         }
 
-        // todo: implement error ticker here? Or new view holder?
         actionListener?.onShowCartTicker(tickerAnnouncementData.id)
     }
 

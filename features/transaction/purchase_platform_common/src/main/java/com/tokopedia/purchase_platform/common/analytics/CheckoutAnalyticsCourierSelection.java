@@ -634,6 +634,8 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendGeneralEvent(gtmMap);
     }
 
+    // TokoNow
+
     public void eventViewTickerProductLevelErrorInCheckoutPage(String shopId, String errorMessage) {
         Map<String, Object> gtmMap = TrackAppUtils.gtmData(
                 EventName.VIEW_COURIER_IRIS,
