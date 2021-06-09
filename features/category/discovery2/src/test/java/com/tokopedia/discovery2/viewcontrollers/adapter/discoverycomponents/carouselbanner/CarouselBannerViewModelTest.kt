@@ -27,10 +27,6 @@ class CarouselBannerViewModelTest {
         every { componentsItem.data } returns null
     }
 
-    @After
-    fun shutDown() {
-    }
-
     @Test
     fun `component value is present in live data`() {
         assert(viewModel.getComponentLiveData().value == componentsItem)

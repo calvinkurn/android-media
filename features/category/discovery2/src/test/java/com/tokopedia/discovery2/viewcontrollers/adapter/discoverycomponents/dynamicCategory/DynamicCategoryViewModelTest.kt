@@ -26,10 +26,6 @@ class DynamicCategoryViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    @After
-    fun shutDown() {
-    }
-
     @Test
     fun `test for component List`() {
         var viewModelTest = viewModel

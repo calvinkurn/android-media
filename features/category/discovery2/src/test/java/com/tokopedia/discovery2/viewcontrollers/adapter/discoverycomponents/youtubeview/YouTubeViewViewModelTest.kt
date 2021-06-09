@@ -28,10 +28,6 @@ class YouTubeViewViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    @After
-    fun shutDown() {
-    }
-
     @Test
     fun `test for video id`() {
         every { componentsItem.data } returns null

@@ -27,10 +27,6 @@ class CircularSliderBannerViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    @After
-    fun shutDown() {
-    }
-
     @Test
     fun `test title`() {
         every { componentsItem.title } returns TEST_STRING

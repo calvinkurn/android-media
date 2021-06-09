@@ -30,9 +30,6 @@ class BrandRecommendationItemViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    @After
-    fun shutDown() {
-    }
 
     @Test
     fun `design type test`() {

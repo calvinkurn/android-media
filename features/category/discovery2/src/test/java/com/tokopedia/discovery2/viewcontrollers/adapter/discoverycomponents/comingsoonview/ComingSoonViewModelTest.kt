@@ -25,10 +25,6 @@ class ComingSoonViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    @After
-    fun shutDown() {
-    }
-
     @Test
     fun `test component data`(){
         assert(viewModel.getComponent().value == componentsItem)

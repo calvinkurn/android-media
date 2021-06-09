@@ -35,10 +35,6 @@ class CategoryNavigationViewModelTest {
         Dispatchers.setMain(TestCoroutineDispatcher())
     }
 
-    @After
-    fun shutDown() {
-    }
-
     @Test
     fun `test if title is available or not`() {
         every { componentsItem.title } returns null

@@ -27,10 +27,6 @@ class DiscoveryDataMapperTest {
         MockKAnnotations.init(this)
     }
 
-    @After
-    fun shutDown() {
-    }
-
     @Test
     fun `map List To ComponentList test`(){
 //      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
