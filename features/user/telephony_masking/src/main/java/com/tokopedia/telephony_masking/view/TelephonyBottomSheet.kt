@@ -17,9 +17,9 @@ object TelephonyBottomSheet {
 
     fun show(
             activity: FragmentActivity,
-            onSaveButtonClick: () -> Unit,
-            onSkipButtonClick: () -> Unit,
-            onCloseButtonClick: () -> Unit
+            onGiveAccessButtonClick: (() -> Unit),
+            onSkipButtonClick: (() -> Unit),
+            onCloseButtonClick: (() -> Unit)
     ) {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(
@@ -28,7 +28,7 @@ object TelephonyBottomSheet {
 
         setupImage(view)
         setupPrivacyText(view)
-        setupButton(view, bottomSheetUnify, onSaveButtonClick, onSkipButtonClick, onCloseButtonClick)
+        setupButton(view, bottomSheetUnify, onGiveAccessButtonClick, onSkipButtonClick, onCloseButtonClick)
 
         bottomSheetUnify.apply {
             showCloseIcon = true
@@ -54,14 +54,14 @@ object TelephonyBottomSheet {
     private fun setupButton(
             view: View,
             bottomSheetUnify: BottomSheetUnify,
-            onSaveButtonClick: () -> Unit,
-            onSkipButtonClick: () -> Unit,
-            onCloseButtonClick: () -> Unit
+            onGiveAccessButtonClick: (() -> Unit),
+            onSkipButtonClick: (() -> Unit),
+            onCloseButtonClick: (() -> Unit)
     ) {
         val saveButton = view.findViewById<UnifyButton>(R.id.telephony_save_button)
         val skipButton = view.findViewById<UnifyButton>(R.id.telephony_skip_button)
         saveButton?.setOnClickListener {
-            onSaveButtonClick()
+            onGiveAccessButtonClick()
         }
         skipButton?.setOnClickListener {
             onSkipButtonClick()

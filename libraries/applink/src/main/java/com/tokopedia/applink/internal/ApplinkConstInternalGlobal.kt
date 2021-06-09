@@ -466,4 +466,8 @@ object ApplinkConstInternalGlobal {
     // OvoRegisterInitialActivity
     // tokopedia-android-internal://global/ovo-reg-init
     const val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
+
+    // TelephonyActivity
+    // tokopedia-android-internal://global/telephony-masking
+    const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"
 }

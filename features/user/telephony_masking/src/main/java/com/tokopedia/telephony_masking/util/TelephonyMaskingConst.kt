@@ -8,4 +8,6 @@ object TelephonyMaskingConst {
     """
 
     const val SAVE_EXTRA = "finishActivityOnSaveCompleted"
+    const val RESULT_NOT_SAVED = -2
+    const val RESULT_SKIP = -3
 }
