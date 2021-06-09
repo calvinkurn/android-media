@@ -2,6 +2,7 @@ package com.tokopedia.minicart.common.analytics
 
 import android.os.Bundle
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -144,6 +145,34 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         }
     }
 
+    private fun getBundleProduct(product: MiniCartItem): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_104, product.campaignId.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_38, product.attribution.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_45, product.cartId.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_48, product.productWeight.toString().toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_49, "".toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_53, product.productSlashPriceLabel.isNotEmpty().toString().toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_56, product.warehouseId.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_59, "".toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_79, product.shopId.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_80, product.shopName.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_81, product.shopType.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_82, product.categoryId.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(DIMENSION_83, product.freeShippingType.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(ITEM_BRAND, "".toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(ITEM_CATEGORY, product.category.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(ITEM_ID, product.productId.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(ITEM_NAME, product.productName.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(ITEM_VARIANT, product.productVariantName.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(PRICE, product.productPrice.toString().toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(SHOP_ID, product.shopId.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(QUANTITY, product.productQty.toString().toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(SHOP_NAME, product.shopName.toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(SHOP_TYPE, product.shopType.toEnhancedEcommerceDefaultValueIfEmpty())
+        }
+    }
+
     // 1 - DONE
     fun eventClickProductName(productId: String) {
         val data = getGtmData(
@@ -236,8 +265,53 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         sendGeneralEvent(data)
     }
 
-    // 10, 11, 12
+    // 10, 11, 12 Bottom Sheet - DONE
+    @JvmName("eventClickBuyFromBottomSheet")
     fun eventClickBuy(page: String, products: List<MiniCartProductUiModel>) {
+        var eventAction = ""
+        var eventCategory = ""
+        when (page) {
+            TOKONOW_HOME_PAGE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "landing")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "homepage")
+            }
+            SEARCH_PAGE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "search")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "search result")
+            }
+            CATEGORY_PAGE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, "category")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "category page")
+            }
+        }
+
+        val dataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, EVENT_NAME_BEGIN_CHECKOUT)
+            putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
+            putString(TrackAppUtils.EVENT_ACTION, eventAction)
+            putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
+            putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            putString(KEY_USER_ID, userSession.userId)
+            putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BELI_IN_MINICART)
+            putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
+            val items = ArrayList<Bundle>()
+            products.forEach { product ->
+                val bundle = getBundleProduct(product)
+                items.add(bundle)
+            }
+            putParcelableArrayList(KEY_ITEMS, items)
+        }
+
+        sendEnhanceEcommerceEvent(
+                eventName = EVENT_NAME_BEGIN_CHECKOUT,
+                bundle = dataLayer
+        )
+    }
+
+    // 10, 11, 12 Widget - DONE
+    @JvmName("eventClickBuyFromWidget")
+    fun eventClickBuy(page: String, products: List<MiniCartItem>) {
         var eventAction = ""
         var eventCategory = ""
         when (page) {

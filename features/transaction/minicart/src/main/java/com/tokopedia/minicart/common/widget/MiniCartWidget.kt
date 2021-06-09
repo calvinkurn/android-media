@@ -69,12 +69,13 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true) {
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: String = MiniCartAnalytics.TOKONOW_HOME_PAGE) {
         val application = fragment.activity?.application
         initializeInjector(application)
         initializeView(fragment)
         initializeListener(listener)
         initializeViewModel(fragment)
+        viewModel?.initializeCurrentPage(pageName)
         if (autoInitializeData) {
             updateData(shopIds)
         } else {
@@ -226,6 +227,7 @@ class MiniCartWidget @JvmOverloads constructor(
             }
             it.amountChevronView.setOnClickListener(miniCartChevronClickListener)
             it.amountCtaView.setOnClickListener {
+                sendEventClickBuy()
                 showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
@@ -235,6 +237,12 @@ class MiniCartWidget @JvmOverloads constructor(
         }
         validateTotalAmountView()
         initializeProgressDialog(fragment.context)
+    }
+
+    private fun sendEventClickBuy() {
+        val pageName = viewModel?.currentPage?.value ?: ""
+        val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
+        analytics.eventClickBuy(pageName, products)
     }
 
     private fun initializeProgressDialog(context: Context?) {

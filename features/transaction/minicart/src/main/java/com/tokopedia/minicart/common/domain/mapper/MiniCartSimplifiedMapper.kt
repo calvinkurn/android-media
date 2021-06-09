@@ -44,6 +44,24 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             productParentId = cartDetail.product.parentId
                             quantity = cartDetail.product.productQuantity
                             notes = cartDetail.product.productNotes
+                            campaignId = cartDetail.product.campaignId
+                            attribution = cartDetail.product.productTrackerData.attribution
+                            productWeight = cartDetail.product.productWeight
+                            productSlashPriceLabel = cartDetail.product.slashPriceLabel
+                            warehouseId = cartDetail.product.warehouseId
+                            shopId = availableGroup.shop.shopId
+                            shopName = availableGroup.shop.shopName
+                            shopType = availableGroup.shop.shopTypeInfo.titleFmt
+                            categoryId = cartDetail.product.categoryId
+                            freeShippingType =
+                                    if (availableGroup.shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
+                                    else if (availableGroup.shipmentInformation.freeShipping.eligible) "bebas ongkir"
+                                    else ""
+                            category = cartDetail.product.category
+                            productName = cartDetail.product.productName
+                            productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
+                            productPrice = cartDetail.product.productPrice
+                            productQty = cartDetail.product.productQuantity
                         }
                 )
             }

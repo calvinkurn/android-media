@@ -135,6 +135,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 }
             }
             it.amountCtaView.setOnClickListener {
+                sendEventClickBuy()
                 showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
             }
@@ -142,6 +143,12 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             setTotalAmountChatIcon()
             setTotalAmountLoading(true)
         }
+    }
+
+    private fun sendEventClickBuy() {
+        val pageName = viewModel?.currentPage?.value ?: ""
+        val products = viewModel?.miniCartListListBottomSheetUiModel?.value?.getProduct() ?: emptyList()
+        analytics.eventClickBuy(pageName, products)
     }
 
     private fun observeGlobalEvent(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {

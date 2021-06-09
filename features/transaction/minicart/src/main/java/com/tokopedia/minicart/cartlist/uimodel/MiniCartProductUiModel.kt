@@ -29,9 +29,9 @@ data class MiniCartProductUiModel(
         var selectedUnavailableActionLink: String = "",
         var wholesalePriceGroup: List<WholesalePrice> = emptyList(),
         var maxNotesLength: Int = 0,
-
-        // Fields below is for analytics only
         var isProductDisabled: Boolean = false,
+
+        // Fields below are for analytics purpose only
         var campaignId: String = "",
         var attribution: String = "",
         var warehouseId: String = "",
@@ -72,7 +72,16 @@ data class MiniCartProductUiModel(
                 selectedUnavailableActionLink = this.selectedUnavailableActionLink,
                 wholesalePriceGroup = this.wholesalePriceGroup,
                 maxNotesLength = this.maxNotesLength,
-                isProductDisabled = this.isProductDisabled
+                isProductDisabled = this.isProductDisabled,
+                campaignId = campaignId,
+                attribution = attribution,
+                warehouseId = warehouseId,
+                categoryId = categoryId,
+                category = category,
+                shopId = shopId,
+                shopName = shopName,
+                shopType = shopType,
+                freeShippingType = freeShippingType
         )
     }
 

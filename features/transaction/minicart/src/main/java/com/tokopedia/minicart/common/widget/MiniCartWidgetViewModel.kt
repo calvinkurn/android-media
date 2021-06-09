@@ -28,6 +28,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     val currentShopIds: LiveData<List<String>>
         get() = _currentShopIds
 
+    private val _currentPage = MutableLiveData<String>()
+    val currentPage: LiveData<String>
+        get() = _currentPage
+
     // Widget DATA
     private val _globalEvent = MutableLiveData<GlobalEvent>()
     val globalEvent: LiveData<GlobalEvent>
@@ -45,6 +49,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     private val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
     private var lastDeletedProductItem: MiniCartProductUiModel? = null
+
+    fun initializeCurrentPage(currentPage: String) {
+        _currentPage.value = currentPage
+    }
 
     fun initializeShopIds(shopIds: List<String>) {
         _currentShopIds.value = shopIds

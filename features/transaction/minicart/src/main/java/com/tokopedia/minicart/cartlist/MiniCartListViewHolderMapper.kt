@@ -277,6 +277,21 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                     productParentId = visitable.parentId
                     quantity = visitable.productQty
                     notes = visitable.productNotes
+                    campaignId = visitable.campaignId
+                    attribution = visitable.attribution
+                    productWeight = visitable.productWeight
+                    productSlashPriceLabel = visitable.productSlashPriceLabel
+                    warehouseId = visitable.warehouseId
+                    shopId = visitable.shopId
+                    shopName = visitable.shopName
+                    shopType = visitable.shopType
+                    categoryId = visitable.categoryId
+                    freeShippingType = visitable.freeShippingType
+                    category = visitable.category
+                    productName = visitable.productName
+                    productVariantName = visitable.productVariantName
+                    productPrice = visitable.productPrice
+                    productQty = visitable.productQty
                 }
                 miniCartItems.add(miniCartItem)
             }
