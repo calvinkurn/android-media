@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
@@ -34,6 +35,7 @@ open class CategoryTestFixtures {
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
+    protected val updateCartUseCase = mockk<UpdateCartUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
     protected lateinit var categoryViewModel: CategoryViewModel
@@ -66,6 +68,7 @@ open class CategoryTestFixtures {
                 getProductCountUseCase,
                 getMiniCartListSimplifiedUseCase,
                 addToCartUseCase,
+                updateCartUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,
         )

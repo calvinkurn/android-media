@@ -372,7 +372,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
         getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
-        getViewModel().addToCartEventMessageLiveData.observeEvent(this::showAddToCartMessage)
+        getViewModel().cartEventMessageLiveData.observeEvent(this::showAddToCartMessage)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel

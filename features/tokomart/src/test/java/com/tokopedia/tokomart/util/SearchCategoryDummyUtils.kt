@@ -7,12 +7,12 @@ import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 
 object SearchCategoryDummyUtils {
 
-    val miniCartWidgetData = MiniCartWidgetData(
+    val miniCartWidgetData get() = MiniCartWidgetData(
             totalProductCount = 7,
             totalProductPrice = 1000000,
     )
 
-    val miniCartItems = listOf(
+    val miniCartItems get() = listOf(
             MiniCartItem(productId = "574261655", productParentId = "0", quantity = 10),
 
             MiniCartItem(productId = "574261652", productParentId = "0", quantity = 3),
@@ -25,13 +25,13 @@ object SearchCategoryDummyUtils {
             MiniCartItem(productId = "576861652", productParentId = "2682234972", quantity = 5),
     )
 
-    val miniCartSimplifiedData = MiniCartSimplifiedData(
+    val miniCartSimplifiedData get() = MiniCartSimplifiedData(
             miniCartWidgetData = miniCartWidgetData,
             miniCartItems = miniCartItems,
             isShowMiniCartWidget = true,
     )
 
-    val dummyChooseAddressData =
+    val dummyChooseAddressData get() =
             LocalCacheModel(
                     address_id = "12257",
                     city_id = "12345",

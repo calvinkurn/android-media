@@ -19,6 +19,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
         addToCartTestHelper = AddToCartNonVariantTestHelper(
                 searchViewModel,
                 addToCartUseCase,
+                updateCartUseCase,
                 getMiniCartListSimplifiedUseCase,
                 this,
         )
@@ -41,5 +42,15 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     @Test
     fun `add to cart with current quantity should do nothing`() {
         addToCartTestHelper.`add to cart with current quantity should do nothing`()
+    }
+
+    @Test
+    fun `add to cart to update quantity success`() {
+        addToCartTestHelper.`add to cart to update quantity success`()
+    }
+
+    @Test
+    fun `add to cart to update quantity failed`() {
+        addToCartTestHelper.`add to cart to update quantity failed`()
     }
 }
