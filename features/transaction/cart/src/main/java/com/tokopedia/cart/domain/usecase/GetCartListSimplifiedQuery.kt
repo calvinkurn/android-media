@@ -35,6 +35,10 @@ fun getQueryCartRevamp(): String {
                 type
                 state
                 state_detail
+                tokonow {
+                  shop_id
+                  warehouse_id
+                }
               }
               empty_cart {
                 title
