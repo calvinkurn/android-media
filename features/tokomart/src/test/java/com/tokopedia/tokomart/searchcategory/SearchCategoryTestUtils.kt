@@ -39,9 +39,6 @@ fun Visitable<*>.assertChooseAddressDataView() {
 
 fun Visitable<*>.assertBannerDataView() {
     assertThat(this, instanceOf(BannerDataView::class.java))
-
-    //TODO: assert banner data here
-    val bannerDataView = this as BannerDataView
 }
 
 fun Visitable<*>.assertTitleDataView(title: String, hasSeeAllCategoryButton: Boolean) {
