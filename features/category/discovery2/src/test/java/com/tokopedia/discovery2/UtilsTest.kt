@@ -159,14 +159,6 @@ class UtilsTest {
     }
 
     @Test
-    fun `extracted dimension`() {
-        val url = "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/1/26/7cf71db6-88bc-4caa-8131-88c4ffbfd57a.jpg.webp?width=900&height=450"
-//        print(Utils.extractDimension(url))
-//        Why is URI null ?
-
-    }
-
-    @Test
     fun `parsed Color`() {
         val context: Context = mockk()
         val fontColour = "#FFFFFF"

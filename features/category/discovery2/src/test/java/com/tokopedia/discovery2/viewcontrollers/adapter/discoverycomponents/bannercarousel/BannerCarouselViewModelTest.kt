@@ -30,8 +30,6 @@ class BannerCarouselViewModelTest {
         MockKAnnotations.init(this)
     }
 
-
-//      Todo:: Why is this not working
     @Test
     fun `component value is present in live data`() {
         assert(viewModel.getComponents().value == componentsItem)
