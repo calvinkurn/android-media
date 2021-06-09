@@ -23,6 +23,7 @@ import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
 import com.tokopedia.minicart.cartlist.subpage.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.common.data.response.updatecart.Data
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.totalamount.TotalAmount
@@ -285,8 +286,8 @@ class MiniCartWidget @JvmOverloads constructor(
     * Function to trigger update mini cart data
     * This will trigger widget to update the UI with provided data
     * */
-    fun updateData(miniCartWidgetData: MiniCartWidgetData) {
-        renderWidget(miniCartWidgetData)
+    fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
@@ -339,7 +340,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     override fun onMiniCartListBottomSheetDismissed() {
         viewModel?.getLatestMiniCartData()?.let {
-            updateData(it.miniCartWidgetData)
+            updateData(it)
             miniCartWidgetListener?.onCartItemsUpdated(it)
         }
     }

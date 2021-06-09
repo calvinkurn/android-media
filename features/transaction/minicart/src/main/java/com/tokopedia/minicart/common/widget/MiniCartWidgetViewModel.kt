@@ -476,4 +476,8 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     fun getLatestMiniCartData(): MiniCartSimplifiedData {
         return miniCartListViewHolderMapper.reverseMapUiModel(miniCartListListBottomSheetUiModel.value)
     }
+
+    fun updateMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        _miniCartSimplifiedData.value = miniCartSimplifiedData
+    }
 }
