@@ -52,9 +52,6 @@ data class GetOrderSnapshot(
 	@field:SerializedName("product_image_secondary")
 	val productImageSecondary: List<ProductImageSecondaryItem> = listOf(),
 
-	@field:SerializedName("product_total_price_formatted")
-	val productTotalPriceFormatted: String = "",
-
 	@field:SerializedName("campaign_data")
 	val campaignData: CampaignData = CampaignData()
 )
