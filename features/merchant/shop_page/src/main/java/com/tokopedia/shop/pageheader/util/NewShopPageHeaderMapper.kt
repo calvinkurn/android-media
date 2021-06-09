@@ -111,6 +111,7 @@ object NewShopPageHeaderMapper {
             BaseShopHeaderComponentUiModel.ComponentType.IMAGE_ONLY.toLowerCase() -> mapShopHeaderImageOnlyComponent(component)
             BaseShopHeaderComponentUiModel.ComponentType.BADGE_TEXT_VALUE.toLowerCase() -> mapShopHeaderBadgeTextValueComponent(component)
             BaseShopHeaderComponentUiModel.ComponentType.BUTTON.toLowerCase() -> mapShopHeaderButtonComponent(component)
+//            BaseShopHeaderComponentUiModel.ComponentType.IMAGE_TEXT.toLowerCase() -> mapaasdShopHeaderButtonComponent(component)
             else -> null
         }?.apply {
             this.componentPosition = componentPosition
