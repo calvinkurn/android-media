@@ -99,6 +99,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
+    private val coachMark by lazy { CoachMark2(requireContext()) }
+    private val coachMarks = arrayListOf<CoachMark2Item>()
+
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -262,6 +265,9 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     //Expanded
                     lastIsCollapsed = false
                     (activity as EmoneyPdpActivity).emoney_toolbar.isShowShadow = false
+                    showCoachMark(true)
+                } else {
+                    showCoachMark(false)
                 }
             }
         })
@@ -455,6 +461,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onRemoveNumberIconClick() {
         EmoneyPdpAnalyticsUtils.clickClearCardNumber(userSession.userId)
+        showCoachMark(false)
         emoneyCardNumber = ""
         showRecentNumberAndPromo()
     }
@@ -528,6 +535,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     override fun onClickProduct(product: CatalogProduct, position: Int) {
         //atc
         emoneyPdpViewModel.setSelectedProduct(product)
+        coachMark.dismissCoachMark()
 
         if (product.attributes.price.isNotEmpty()) {
             emoneyBuyWidget.setTotalPrice(product.attributes.price)
@@ -576,22 +584,18 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun showOnBoarding() {
         context?.run {
-            val coachMarkHasShown = localCacheHandler.getBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, false)
-            if (coachMarkHasShown) return
-
+            if (getCoachMarkHasShown()) return
             emoneyPdpProductWidget.emoneyProductListRecyclerView.let { rv ->
                 rv.post {
                     try {
                         (rv.findViewHolderForAdapterPosition(0) as EmoneyPdpProductViewHolder)
                                 .itemView.emoneyProductPrice?.let { firstNominalView ->
-                                    val coachMarks = ArrayList<CoachMark2Item>()
                                     coachMarks.add(CoachMark2Item(firstNominalView,
                                             getString(R.string.recharge_pdp_emoney_coachmark_title),
                                             getString(R.string.recharge_pdp_emoney_coachmark_subtitle),
                                             CoachMark2.POSITION_BOTTOM))
 
-                                    val coachMark = CoachMark2(requireContext())
-                                    coachMark.showCoachMark(coachMarks)
+                                    showCoachMark(true)
 
                                     localCacheHandler.apply {
                                         putBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, true)
@@ -604,6 +608,18 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     }
                 }
             }
+        }
+    }
+
+    private fun getCoachMarkHasShown(): Boolean {
+        return localCacheHandler.getBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, false)
+    }
+
+    private fun showCoachMark(show: Boolean) {
+        if (show) {
+            coachMark.showCoachMark(coachMarks)
+        } else {
+            coachMark.hideCoachMark()
         }
     }
 
