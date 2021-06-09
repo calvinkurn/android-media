@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
+import com.tokopedia.unifyprinciples.Typography
 
 class MiniCartUnavailableReasonViewHolder(private val view: View,
                                           private val listener: MiniCartListActionListener)
@@ -14,8 +15,12 @@ class MiniCartUnavailableReasonViewHolder(private val view: View,
         val LAYOUT = R.layout.item_mini_cart_unavailable_reason
     }
 
-    override fun bind(element: MiniCartUnavailableReasonUiModel) {
+    private val textDisabledTitle: Typography? by lazy {
+        view.findViewById(R.id.text_disabled_title)
+    }
 
+    override fun bind(element: MiniCartUnavailableReasonUiModel) {
+        textDisabledTitle?.text = element.reason
     }
 
 }

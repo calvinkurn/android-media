@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.drawable.Drawable
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
@@ -24,19 +26,21 @@ class PartialButtonActionView private constructor(val view: View,
                 if (value) base_btn_action.visible() else base_btn_action.gone()
             }
         }
-    var hasComponentLoading = false
-    var isExpressCheckout = false
-    var isWarehouseProduct: Boolean = false
-    var hasShopAuthority: Boolean = false
-    var hasTopAdsActive: Boolean = false
-    var isShopOwner: Boolean = false
-    var preOrder: PreOrder? = PreOrder()
-    var onSuccessGetCartType = false
-    var cartTypeData: CartTypeData? = null
-    var miniCartItem: MiniCartItem? = null
-    var isVariant: Boolean = false
-    var minQuantity: Int = 0
-    var alternateButtonVariant: String = ""
+    private var hasComponentLoading = false
+    private var isExpressCheckout = false
+    private var isWarehouseProduct: Boolean = false
+    private var hasShopAuthority: Boolean = false
+    private var hasTopAdsActive: Boolean = false
+    private var isShopOwner: Boolean = false
+    private var preOrder: PreOrder? = PreOrder()
+    private var onSuccessGetCartType = false
+    private var cartTypeData: CartTypeData? = null
+    private var miniCartItem: MiniCartItem? = null
+    private var isVariant: Boolean = false
+    private var minQuantity: Int = 0
+    private var alternateButtonVariant: String = ""
+    private var textWatchers: TextWatcher? = null
+    private var localQuantity: Int = 0
 
     private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(R.id.qty_editor_pdp)
 
@@ -147,19 +151,43 @@ class PartialButtonActionView private constructor(val view: View,
         btn_add_to_cart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
     }
 
-    private fun renderQuantityButton(quantity:Int) = with(view) {
+    private fun renderQuantityButton(quantity: Int) = with(view) {
+        localQuantity = quantity
         btn_buy_now?.hide()
         btn_add_to_cart?.hide()
         qtyButtonPdp?.run {
             minValue = minQuantity
-            setValue(quantity)
+            setValue(localQuantity)
+
+            if (textWatchers != null) {
+                editText.removeTextChangedListener(textWatchers)
+            }
+
+            textWatchers = object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (s.toString().toIntOrZero() < minQuantity) {
+                        setValue(minQuantity)
+                    } else if (s.toString().toIntOrZero() > maxValue) {
+                        setValue(maxValue)
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (localQuantity != s.toString().toIntOrZero() && s.toString().isNotEmpty()) {
+                        localQuantity = s.toString().toIntOrZero()
+                        buttonListener.updateQuantityNonVarTokoNow(getValue(), miniCartItem
+                                ?: MiniCartItem()
+                        )
+                        setValue(localQuantity)
+                        //fire again to update + and - button
+                    }
+                }
+            }
+            editText.addTextChangedListener(textWatchers)
             show()
-            setAddClickListener {
-                buttonListener.updateQuantityNonVarTokoNow(getValue(), miniCartItem ?: MiniCartItem())
-            }
-            setSubstractListener {
-                buttonListener.updateQuantityNonVarTokoNow(getValue(), miniCartItem ?: MiniCartItem())
-            }
         }
     }
 

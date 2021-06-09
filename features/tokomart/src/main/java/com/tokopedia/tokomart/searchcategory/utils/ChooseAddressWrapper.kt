@@ -1,12 +1,13 @@
 package com.tokopedia.tokomart.searchcategory.utils
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import javax.inject.Inject
 
-open class ChooseAddressWrapper @Inject constructor (private val context: Context) {
+open class ChooseAddressWrapper @Inject constructor (@ApplicationContext private val context: Context) {
 
     open fun isChooseAddressEnabled() = try {
         ChooseAddressUtils.isRollOutUser(context)

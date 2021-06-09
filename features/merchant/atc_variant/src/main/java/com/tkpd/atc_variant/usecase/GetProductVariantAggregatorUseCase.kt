@@ -6,19 +6,20 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
-import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class GetProductVariantAggregatorUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository)
+class GetProductVariantAggregatorUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
     : UseCase<ProductVariantAggregatorUiData>() {
 
     companion object {
@@ -132,19 +133,18 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
             }
         }
         """.trimIndent()
-
-        fun createRequestParams(productId: String,
-                                source: String,
-                                warehouseId: String? = null,
-                                pdpSession: String? = null,
-                                userLocation: UserLocationRequest): Map<String, Any?> = mapOf(
-                ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
-                ProductDetailCommonConstant.PARAM_PDP_SESSION to pdpSession,
-                ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId,
-                ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
-                ProductDetailCommonConstant.PARAM_USER_LOCATION to userLocation
-        )
     }
+
+    fun createRequestParams(productId: String,
+                            source: String,
+                            warehouseId: String? = null,
+                            pdpSession: String? = null): Map<String, Any?> = mapOf(
+            ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
+            ProductDetailCommonConstant.PARAM_PDP_SESSION to pdpSession,
+            ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId,
+            ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
+            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+    )
 
     private var requestParams: Map<String, Any?> = mapOf()
 

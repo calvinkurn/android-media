@@ -8,6 +8,8 @@ data class Data(
         val error: String = "",
         @SerializedName("status")
         val status: Boolean = false,
+        @SerializedName("message")
+        val message: String = "",
         @SerializedName("out_of_service")
         val outOfService: OutOfService = OutOfService(),
         @SerializedName("toaster_action")

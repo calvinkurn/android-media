@@ -98,10 +98,10 @@ class SearchApiConst {
 
         // TODO:: Please delete this later
         @Deprecated("Hardcoded shop id")
-        const val HARDCODED_SHOP_ID_PLEASE_DELETE = "480552"
+        const val HARDCODED_SHOP_ID_PLEASE_DELETE = "11515028"
 
         // TODO:: Please delete this later
         @Deprecated("Hardcoded warehouse id")
-        const val HARDCODED_WAREHOUSE_ID_PLEASE_DELETE = "2216"
+        const val HARDCODED_WAREHOUSE_ID_PLEASE_DELETE = "11491038"
     }
 }

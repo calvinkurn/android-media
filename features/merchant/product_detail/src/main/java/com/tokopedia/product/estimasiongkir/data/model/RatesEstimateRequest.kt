@@ -21,7 +21,8 @@ data class RatesEstimateRequest(
         val uspImageUrl: String = "",
         val userId: String = "",
         val forceRefresh: Boolean = false,
-        val shopTier: Int = 0
+        val shopTier: Int = 0,
+        val isTokoNow: Boolean = false
 ) {
     companion object {
         const val KG_TEXT = "kilo"

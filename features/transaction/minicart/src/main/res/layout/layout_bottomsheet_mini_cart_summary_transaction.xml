@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_price_total_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Total Harga (10) Barang" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_price_total_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_price_total_title"
+        app:typographyType="heading_6"
+        tools:text="Rp10.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_discount_total_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_price_total_title"
+        app:typographyType="body_3"
+        tools:text="Total Diskon Barang" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_discount_total_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_discount_total_title"
+        app:typographyType="heading_6"
+        tools:text="Rp10.000.000" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/Unify_N75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_discount_total_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_total_pay_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:typographyType="body_3"
+        tools:text="Total Bayar" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_total_pay_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_total_pay_title"
+        app:typographyType="heading_6"
+        tools:text="Rp10.000.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

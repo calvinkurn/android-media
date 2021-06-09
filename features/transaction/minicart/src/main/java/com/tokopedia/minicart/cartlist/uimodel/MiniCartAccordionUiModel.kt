@@ -13,4 +13,12 @@ data class MiniCartAccordionUiModel(
         return typeFactory.type(this)
     }
 
+    fun deepCopy(): MiniCartAccordionUiModel {
+        return MiniCartAccordionUiModel(
+                isCollapsed = this.isCollapsed,
+                showMoreWording = this.showMoreWording,
+                showLessWording = this.showLessWording
+        )
+    }
+
 }

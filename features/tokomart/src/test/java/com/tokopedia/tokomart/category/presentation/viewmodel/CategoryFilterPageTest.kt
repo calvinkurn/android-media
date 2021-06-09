@@ -33,7 +33,7 @@ class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
     }
 
     override fun `Then assert first page use case is called twice`(
-            requestParamsSlot: CapturingSlot<RequestParams>
+            requestParamsSlot: MutableList<RequestParams>
     ) {
         verify (exactly = 2) {
             getCategoryFirstPageUseCase.cancelJobs()
@@ -80,5 +80,11 @@ class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
         val mandatoryParams = createMandatoryTokonowQueryParams()
 
         filterPageTestHelper.`test get filter count fail when choosing filter`(mandatoryParams)
+    }
+
+    @Test
+    fun `test open filter page after applying filter should update filter from API`() {
+        filterPageTestHelper.
+        `test open filter page after applying filter should update filter from API`()
     }
 }

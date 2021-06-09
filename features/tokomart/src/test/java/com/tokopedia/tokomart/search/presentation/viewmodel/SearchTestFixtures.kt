@@ -9,6 +9,7 @@ import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
@@ -33,13 +34,31 @@ open class SearchTestFixtures {
     protected val getProductCountUseCase = mockk<UseCase<String>>(relaxed = true)
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
-    protected val chooseAdddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
+    protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
+    protected val dummyChooseAddressData =
+            LocalCacheModel(
+                    address_id = "12257",
+                    city_id = "12345",
+                    district_id = "2274",
+                    lat = "1.1000",
+                    long = "37.002",
+                    postal_code = "15123",
+            )
     protected lateinit var searchViewModel: SearchViewModel
 
     @Before
     open fun setUp() {
+        `Given choose address data`()
         `Given search view model`()
+    }
+
+    protected fun `Given choose address data`(
+            chooseAddressData: LocalCacheModel = dummyChooseAddressData
+    ) {
+        every {
+            chooseAddressWrapper.getChooseAddressData()
+        } returns chooseAddressData
     }
 
     protected fun `Given search view model`(queryParamMap: Map<String, String> = defaultQueryParamMap) {
@@ -52,7 +71,7 @@ open class SearchTestFixtures {
                 getProductCountUseCase,
                 getMiniCartListSimplifiedUseCase,
                 addToCartUseCase,
-                chooseAdddressWrapper,
+                chooseAddressWrapper,
                 abTestPlatformWrapper,
         )
     }
@@ -68,10 +87,18 @@ open class SearchTestFixtures {
         }
     }
 
-    protected fun createMandatoryTokonowQueryParams() = mapOf(
+    protected fun createMandatoryTokonowQueryParams(
+            chooseAddressData: LocalCacheModel = dummyChooseAddressData
+    ) = mapOf(
             SearchApiConst.SOURCE to TOKONOW,
             SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
             SearchApiConst.USER_WAREHOUSE_ID to HARDCODED_WAREHOUSE_ID_PLEASE_DELETE,
+            SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
+            SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,
+            SearchApiConst.USER_DISTRICT_ID to chooseAddressData.district_id,
+            SearchApiConst.USER_LAT to chooseAddressData.lat,
+            SearchApiConst.USER_LONG to chooseAddressData.long,
+            SearchApiConst.USER_POST_CODE to chooseAddressData.postal_code,
     )
 
     protected fun `Given view already created`() {

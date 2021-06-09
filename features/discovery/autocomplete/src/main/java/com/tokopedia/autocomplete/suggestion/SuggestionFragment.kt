@@ -23,6 +23,9 @@ import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
 
@@ -210,4 +213,13 @@ class SuggestionFragment :
     override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String) {
         AutocompleteTracking.eventClickGlobalKeyword(eventLabel, userId)
     }
+
+    override val chooseAddressData: LocalCacheModel
+        get() = context?.let {
+            try {
+                ChooseAddressUtils.getLocalizingAddressData(it)
+            } catch (e: Throwable) {
+                ChooseAddressConstant.emptyAddress
+            }
+        } ?: ChooseAddressConstant.emptyAddress
 }

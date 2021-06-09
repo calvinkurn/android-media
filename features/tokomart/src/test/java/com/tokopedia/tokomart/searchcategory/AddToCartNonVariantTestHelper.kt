@@ -79,7 +79,8 @@ class AddToCartNonVariantTestHelper(
     }
 
     private fun `Then assert add to cart error message is empty`() {
-        val addToCartErrorMessage = baseViewModel.addToCartErrorMessageLiveData.value
+        val addToCartEvent = baseViewModel.addToCartEventMessageLiveData.value!!
+        val addToCartErrorMessage = addToCartEvent.getContentIfNotHandled()
 
         assertThat(addToCartErrorMessage, shouldBe(""))
     }
@@ -114,7 +115,8 @@ class AddToCartNonVariantTestHelper(
     private fun `Then assert add to cart error message from exception`(
             responseErrorMessage: ResponseErrorException
     ) {
-        val addToCartErrorMessage = baseViewModel.addToCartErrorMessageLiveData.value
+        val addToCartEvent = baseViewModel.addToCartEventMessageLiveData.value!!
+        val addToCartErrorMessage = addToCartEvent.getContentIfNotHandled()
 
         assertThat(addToCartErrorMessage, shouldBe(responseErrorMessage.message))
     }

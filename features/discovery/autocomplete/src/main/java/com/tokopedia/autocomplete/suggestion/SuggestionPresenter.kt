@@ -62,17 +62,19 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     }
 
     override fun search() {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
         getSuggestionUseCase.execute(
-                createGetSuggestionParams(searchParameter, isTyping),
+                createGetSuggestionParams(searchParameter, isTyping, warehouseId),
                 createGetSuggestionSubscriber()
         )
     }
 
-    private fun createGetSuggestionParams(searchParameter: HashMap<String, String>, isTyping: Boolean) = SuggestionUseCase.getParams(
+    private fun createGetSuggestionParams(searchParameter: HashMap<String, String>, isTyping: Boolean, warehouseId: String) = SuggestionUseCase.getParams(
         searchParameter,
         userSession.deviceId,
         userSession.userId,
-        isTyping
+        isTyping,
+        warehouseId
     )
 
     private fun createGetSuggestionSubscriber(): Subscriber<SuggestionUniverse> = object : Subscriber<SuggestionUniverse>() {

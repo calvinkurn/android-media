@@ -59,11 +59,13 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun getInitialStateData() {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getInitialStateSubscriber()
         )

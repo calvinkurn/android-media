@@ -15,6 +15,10 @@ class MiniCartShopViewHolder(private val view: View,
                              private val listener: MiniCartListActionListener)
     : AbstractViewHolder<MiniCartShopUiModel>(view) {
 
+    companion object {
+        val LAYOUT = R.layout.item_mini_cart_shop
+    }
+
     private val iuImageFulfill: ImageUnify? by lazy {
         view.findViewById(R.id.iu_image_fulfill)
     }
@@ -26,10 +30,6 @@ class MiniCartShopViewHolder(private val view: View,
     }
     private val textEstimatedTimeArrival: Typography? by lazy {
         view.findViewById(R.id.text_estimated_time_arrival)
-    }
-
-    companion object {
-        val LAYOUT = R.layout.item_mini_cart_shop
     }
 
     override fun bind(element: MiniCartShopUiModel) {

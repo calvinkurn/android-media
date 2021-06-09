@@ -135,8 +135,8 @@ class FilterPageTestHelper(
     }
 
     fun `test apply filter from filter page`() {
-        val requestParamsSlot = slot<RequestParams>()
-        val requestParams by lazy { requestParamsSlot.captured }
+        val requestParamsSlot = mutableListOf<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.last() }
 
         `Given view setup from created until open filter page`()
 
@@ -183,8 +183,16 @@ class FilterPageTestHelper(
     private fun `Then verify query params is updated from filter`(requestParams: RequestParams) {
         val queryParams = getTokonowQueryParam(requestParams)
 
+        `Then verify query params with filter map param`(queryParams)
+    }
+
+    private fun `Then verify query params with filter map param`(queryParams: Map<String?, Any>) {
         mockApplyFilterMapParam.forEach { (key, value) ->
-            assertThat("Query param with key $key is incorrect", queryParams[key], shouldBe(value))
+            assertThat(
+                    "Query param with key $key is incorrect",
+                    queryParams[key],
+                    shouldBe(value)
+            )
         }
     }
 
@@ -257,8 +265,37 @@ class FilterPageTestHelper(
         }
     }
 
+    fun `test open filter page after applying filter should update filter from API`() {
+        val requestParamsSlot = mutableListOf<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.last() }
+
+        `Given view setup from created until open filter page`()
+        `Given view apply filter and dismissed`()
+
+        `When view open filter page`()
+
+        `Then verify filter API is called twice`(requestParamsSlot)
+        `Then verify query params with filter map param`(requestParams.parameters)
+    }
+
+    private fun `Given view apply filter and dismissed`() {
+        val applySortFilterModel = applySortFilterModel
+                ?: throw AssertionError("Apply Sort Filter Model is null")
+
+        baseViewModel.onViewApplySortFilter(applySortFilterModel)
+        baseViewModel.onViewDismissFilterPage()
+    }
+
+    private fun `Then verify filter API is called twice`(requestParamsSlot: MutableList<RequestParams>) {
+        verify(exactly = 2) {
+            getFilterUseCase.execute(any(), any(), capture(requestParamsSlot))
+        }
+    }
+
     interface Callback {
         fun `Given first page API will be successful`()
-        fun `Then assert first page use case is called twice`(requestParamsSlot: CapturingSlot<RequestParams>)
+        fun `Then assert first page use case is called twice`(
+                requestParamsSlot: MutableList<RequestParams>
+        )
     }
 }

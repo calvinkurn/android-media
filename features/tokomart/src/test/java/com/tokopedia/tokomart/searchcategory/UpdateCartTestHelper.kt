@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.searchcategory
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_SHOP_ID_PLEASE_DELETE
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -82,8 +83,7 @@ class UpdateCartTestHelper(
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         }
 
-        // Assert shop id list
-        //        shopIdListSlot.captured ....
+        assertThat(shopIdListSlot.captured.first(), shouldBe(HARDCODED_SHOP_ID_PLEASE_DELETE))
     }
 
     private fun `Then assert mini cart widget live data is updated`(
@@ -108,7 +108,9 @@ class UpdateCartTestHelper(
         val miniCartItemsNonVariant = miniCartItems.filter { it.productParentId == "0" }
 
         miniCartItemsNonVariant.forEach { miniCartItem ->
-            val productItemIndexed = productItems.withIndex().find { it.value.id == miniCartItem.productId }!!
+            val productItemIndexed = productItems.withIndex().find {
+                it.value.id == miniCartItem.productId
+            }!!
             val productItem = productItemIndexed.value
             val reason = createInvalidNonVariantQtyReason(miniCartItem)
             assertThat(reason, productItem.nonVariantATC?.quantity, shouldBe(miniCartItem.quantity))
