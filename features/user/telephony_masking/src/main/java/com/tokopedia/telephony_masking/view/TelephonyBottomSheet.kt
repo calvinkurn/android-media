@@ -1,7 +1,10 @@
 package com.tokopedia.telephony_masking.view
 
+import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.telephony_masking.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -27,7 +30,7 @@ object TelephonyBottomSheet {
         )
 
         setupImage(view)
-        setupPrivacyText(view)
+        setupPrivacyText(activity, view)
         setupButton(view, bottomSheetUnify, onGiveAccessButtonClick, onSkipButtonClick, onCloseButtonClick)
 
         bottomSheetUnify.apply {
@@ -44,10 +47,11 @@ object TelephonyBottomSheet {
         mainImage.loadImage(MAIN_IMAGE_URL)
     }
 
-    private fun setupPrivacyText(view: View) {
+    private fun setupPrivacyText(context: Context, view: View) {
         val privacy = view.findViewById<Typography>(R.id.privacy_telephony)
         privacy.setOnClickListener {
-            //TODO: RouteManager.route()
+            RouteManager.route(context,
+                    ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY)
         }
     }
 
