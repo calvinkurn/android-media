@@ -58,8 +58,6 @@ import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -306,7 +304,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId, isForceRefresh)
+                presenter.getFeedFirstPage(
+                    shopId,
+                    isForceRefresh,
+                    whitelistDomain.authors.isEmpty()
+                )
             } else {
                 presenter.getFeed(shopId)
             }
@@ -317,7 +319,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         hideSnackBarRetry()
         presenter.clearCache()
         isLoadingInitialData = true
-        presenter.getFeedFirstPage(shopId, true)
+        presenter.getFeedFirstPage(shopId, true,whitelistDomain.authors.isEmpty())
         recyclerView.scrollToPosition(0)
     }
 

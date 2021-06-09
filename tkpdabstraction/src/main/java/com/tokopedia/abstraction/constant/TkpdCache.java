@@ -20,5 +20,6 @@ public class TkpdCache {
         public static final String ETALASE_ADD_PROD = "ETALASE_ADD_PROD";
         public static final String STATUS2 = "STATUS";
         public static final String MESSAGE = "message";
+        public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
     }
 }
