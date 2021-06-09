@@ -1572,7 +1572,8 @@ class ProductListPresenter @Inject constructor(
                         productDataView.productList.isNotEmpty().toString(),
                         StringUtils.join(categoryIdMapping, ","),
                         StringUtils.join(categoryNameMapping, ","),
-                        createGeneralSearchTrackingRelatedKeyword(productDataView)
+                        createGeneralSearchTrackingRelatedKeyword(productDataView),
+                        getDimension90(),
                 )
         )
     }

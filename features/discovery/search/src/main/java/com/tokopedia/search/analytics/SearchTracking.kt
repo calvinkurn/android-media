@@ -6,11 +6,9 @@ import com.tokopedia.analytic_constant.Event.Companion.ADDTOCART
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
-import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
-import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IMPRESSIONS
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -501,7 +499,8 @@ object SearchTracking {
                 SearchTrackingConstant.IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound,
                 SearchTrackingConstant.CATEGORY_ID_MAPPING, generalSearchTrackingModel.categoryIdMapping,
                 SearchTrackingConstant.CATEGORY_NAME_MAPPING, generalSearchTrackingModel.categoryNameMapping,
-                SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword
+                SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword,
+                SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingModel.pageSource
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }

@@ -14,7 +14,8 @@
       "categoryIdMapping": ".+",
       "categoryNameMapping": ".+",
       "relatedKeyword": ".+ - .+",
-      "sessionIris": ".+"
+      "sessionIris": ".+",
+      "pageSource": ".*"
     },
     {
       "event": "view_item_list",

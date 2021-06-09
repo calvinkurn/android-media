@@ -566,4 +566,81 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
     }
+
+    @Test
+    fun `General Search Tracking Local Search`() {
+        val pageTitle = "Waktu Indonesia Belanja"
+        val navSource = "campaign"
+
+        searchParameter = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = keyword
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+            it[SearchApiConst.SRP_PAGE_TITLE] = pageTitle
+            it[SearchApiConst.NAVSOURCE] = navSource
+            it[SearchApiConst.SRP_PAGE_ID] = "1234"
+        }
+
+        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventCategory = "${SearchEventTracking.Category.EVENT_TOP_NAV} - $pageTitle",
+                eventLabel = String.format(
+                        SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        NONE,
+                        navSource,
+                        pageTitle,
+                        searchProductModel.searchProduct.header.totalData,
+                ),
+                userId = userId,
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none",
+                pageSource = "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}.local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General Search Tracking Search Ref`() {
+        val searchRef = "search ref example"
+
+        searchParameter = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = keyword
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+            it[SearchApiConst.SEARCH_REF] = searchRef
+        }
+
+        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventCategory = SearchEventTracking.Category.EVENT_TOP_NAV,
+                eventLabel = String.format(
+                        SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        NONE,
+                        NONE,
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
+                ),
+                userId = userId,
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none",
+                pageSource = searchRef
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
 }
