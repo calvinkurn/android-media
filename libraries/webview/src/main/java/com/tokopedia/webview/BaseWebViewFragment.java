@@ -292,6 +292,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             });
 
         }
+
+        @JavascriptInterface
+        public void showTelephonyBottomSheet() {
+            if (mContextRef.get() == null) {
+                return;
+            }
+            mContextRef.get().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        RouteManager.route(mContextRef.get(), ApplinkConst.TELEPHONY_MASKING);
+                    } catch (Throwable ignored) {}
+                }
+            });
+        }
     }
 
     @Override
