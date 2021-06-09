@@ -61,6 +61,7 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.*
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
@@ -2125,7 +2126,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     uspImageUrl = viewModel.p2Data.value?.uspImageUrl ?: "",
                     userId = viewModel.userId,
                     forceRefresh = shouldRefreshShippingBottomSheet,
-                    shopTier = viewModel.getShopInfo().shopTier
+                    shopTier = viewModel.getShopInfo().shopTier,
+                    isTokoNow = it.basic.isTokoNow
             ))
             shouldRefreshShippingBottomSheet = false
             val shippingBs = ProductDetailShippingBottomSheet()
@@ -2147,11 +2149,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
 
             DynamicProductDetailTracking.BottomSheetErrorShipment.impressShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title)
-            ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(it, bottomSheetData, rates?.p2RatesError?.firstOrNull()?.errorCode
-                    ?: 0) { errorCode ->
-                DynamicProductDetailTracking.BottomSheetErrorShipment.eventClickButtonShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title, errorCode)
-                goToShipmentErrorAddressOrChat(errorCode)
-            }.show(childFragmentManager, ProductDetailConstant.BS_SHIPMENT_ERROR_TAG)
+            ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(
+                    it,
+                    bottomSheetData,
+                    rates?.p2RatesError?.firstOrNull()?.errorCode ?: 0,
+                    onButtonClicked = { errorCode ->
+                        DynamicProductDetailTracking.BottomSheetErrorShipment.eventClickButtonShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title, errorCode)
+                        goToShipmentErrorAddressOrChat(errorCode)
+                    },
+                    onHomeClicked = {
+                        goToHomePageClicked()
+                    }
+            ).show(childFragmentManager, ProductDetailConstant.BS_SHIPMENT_ERROR_TAG)
             return true
         } ?: return false
     }
@@ -2671,14 +2680,19 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
-            setupSearchbar(listOf(HintData(getString(R.string.pdp_search_hint, ""))))
+
+            setNavToolbarSearchHint(getString(R.string.pdp_search_hint, ""))
             setToolbarPageName(ProductTrackingConstant.Category.PDP)
             show()
         }
     }
 
     private fun setNavToolbarSearchHint(hint: String) {
-        navToolbar?.setupSearchbar(listOf(HintData(hint)))
+        val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
+        val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE +
+                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokoMart.SEARCH}"
+                else ""
+        navToolbar?.setupSearchbar(listOf(HintData(hint)), applink = applink)
     }
 
     private fun initStickyLogin(view: View) {
