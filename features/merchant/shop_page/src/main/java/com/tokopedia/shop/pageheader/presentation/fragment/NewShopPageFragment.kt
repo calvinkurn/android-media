@@ -81,7 +81,6 @@ import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
-import android.os.Handler
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
 import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
@@ -1767,7 +1766,7 @@ class NewShopPageFragment :
 
                             shopShareBottomSheet?.dismiss()
                         }
-                    },5000)
+                    }
 
                     override fun onError(linkerError: LinkerError?) {}
                 })
