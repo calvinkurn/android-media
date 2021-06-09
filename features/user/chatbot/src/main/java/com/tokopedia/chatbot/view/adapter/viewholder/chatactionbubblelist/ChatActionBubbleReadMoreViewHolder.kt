@@ -12,7 +12,7 @@ class ChatActionBubbleReadMoreViewHolder(itemView: View) : BaseChatActionBubbleV
 
     override fun bind(element: ChatActionBubbleViewModel, onSelect: (Int) -> Unit) {
         if (element.text ==  MORE_DETAILS_TEXT){
-            arrowUpDown.setImageResource(com.tokopedia.design.R.drawable.ic_arrow_down)
+            arrowUpDown.setImageResource(R.drawable.ic_arrow_down)
         }else{
             arrowUpDown.setImageResource(com.tokopedia.abstraction.R.drawable.ic_arrow_up)
         }

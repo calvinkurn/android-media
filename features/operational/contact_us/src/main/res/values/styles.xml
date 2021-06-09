@@ -2,7 +2,7 @@
 <resources>
 
     <style name="error_appearance" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/black_38</item>
+        <item name="android:textColor">@color/contact_us_black_38</item>
         <item name="android:textSize">12sp</item>
     </style>
 

@@ -41,7 +41,7 @@
                 android:background="@color/transparent"
                 android:hint="Cari..."
                 android:textColor="@color/black_70"
-                android:textColorHint="@color/black_38"
+                android:textColorHint="@color/contact_us_black_38"
                 android:textSize="@dimen/sp_16"
                 android:gravity="center_vertical"
                 app:layout_constraintBottom_toBottomOf="parent"

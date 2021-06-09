@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_ilustration" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_no_ticket"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,13 +26,13 @@
         android:gravity="center_horizontal"
         android:lineSpacingExtra="6sp"
         android:visibility="visible"
-        android:textColor="@color/black_38"
+        android:textColor="@color/contact_us_black_38"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_no_ticket" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_ok_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
