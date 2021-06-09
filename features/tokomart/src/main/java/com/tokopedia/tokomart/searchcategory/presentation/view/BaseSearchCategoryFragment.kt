@@ -49,17 +49,21 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
-import com.tokopedia.tokomart.searchcategory.presentation.listener.*
+import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toDp
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -408,7 +412,7 @@ abstract class BaseSearchCategoryFragment:
         RouteManager.route(
                 context,
                 ApplinkConstInternalTokoMart.CATEGORY_LIST,
-                SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+                getViewModel().warehouseId,
         )
     }
 
