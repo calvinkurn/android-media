@@ -72,6 +72,8 @@ class MiniCartWidget @JvmOverloads constructor(
         initializeViewModel(fragment)
         if (autoInitializeData) {
             updateData(shopIds)
+        } else {
+            viewModel?.initializeShopIds(shopIds)
         }
     }
 
@@ -219,9 +221,11 @@ class MiniCartWidget @JvmOverloads constructor(
                 showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
+            it.setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
+            it.setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(0, false))
+            it.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), 0))
         }
-        setTotalAmountLoading(true)
-        reValidateTotalAmountView()
+        validateTotalAmountView()
         initializeProgressDialog(fragment.context)
     }
 
@@ -273,6 +277,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * This will trigger view model to fetch latest data from backend and update the UI
     * */
     fun updateData(shopIds: List<String>) {
+        setTotalAmountLoading(true)
         viewModel?.getLatestWidgetState(shopIds)
     }
 
@@ -312,10 +317,10 @@ class MiniCartWidget @JvmOverloads constructor(
                 totalAmount?.isTotalAmountLoading = false
             }
         }
-        reValidateTotalAmountView()
+        validateTotalAmountView()
     }
 
-    private fun reValidateTotalAmountView() {
+    private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)

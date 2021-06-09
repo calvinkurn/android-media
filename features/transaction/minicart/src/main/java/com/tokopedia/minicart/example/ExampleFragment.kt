@@ -21,7 +21,7 @@ class ExampleFragment : Fragment(), MiniCartWidgetListener {
         super.onViewCreated(view, savedInstanceState)
         val shopIds = listOf("480552")
         val miniCartWidget = view.findViewById<MiniCartWidget>(R.id.mini_cart_widget)
-        miniCartWidget.initialize(shopIds, this, this)
+        miniCartWidget.initialize(shopIds, this, this, false)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
