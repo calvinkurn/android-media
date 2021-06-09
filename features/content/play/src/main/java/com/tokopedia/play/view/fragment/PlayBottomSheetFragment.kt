@@ -114,7 +114,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        productAnalyticHelper.sendImpressedBottomSheetProducts()
+        productAnalyticHelper.sendImpressedProductSheets()
         analytic.getTrackingQueue().sendAll()
     }
 
@@ -167,6 +167,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
         trackImpressedProduct(products)
+    }
+
+    override fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
+        trackImpressedVoucher(vouchers)
     }
 
     override fun onProductCountChanged(view: ProductSheetViewComponent) {
@@ -362,6 +366,7 @@ class PlayBottomSheetFragment @Inject constructor(
                     productSheetView.setProductSheet(it.productTags)
 
                     trackImpressedProduct()
+                    trackImpressedVoucher()
                 } else {
                     productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
                 }
@@ -473,4 +478,9 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
     }
+
+    private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = productSheetView.getVisibleVouchers()) {
+        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
+    }
+
 }

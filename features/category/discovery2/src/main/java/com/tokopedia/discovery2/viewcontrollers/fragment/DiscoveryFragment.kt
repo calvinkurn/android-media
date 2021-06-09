@@ -14,7 +14,6 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -63,12 +62,12 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -673,6 +672,12 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
+    fun refreshCarouselData(componentPosition: Int = -1) {
+        if (componentPosition >= 0) {
+            discoveryAdapter.getViewModelAtPosition(componentPosition)?.refreshProductCarouselError()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -880,11 +885,11 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return analytics.getHostSource()
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return analytics.getHostTrackingSource()
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -892,6 +897,10 @@ class DiscoveryFragment :
 
     override fun onLocalizingAddressUpdatedFromBackground() {
 
+    }
+
+    override fun getEventLabelHostPage(): String {
+        return analytics.getEventLabel()
     }
 
     private fun fetchUserLatestAddressData() {

@@ -15,5 +15,9 @@
         <activity
             android:name=".ProductDetailActivityCommonTest"
             android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".ui.base.ProductDetailActivityMock"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

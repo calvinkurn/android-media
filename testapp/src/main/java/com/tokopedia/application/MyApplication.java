@@ -24,12 +24,14 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -111,6 +113,7 @@ public class MyApplication extends BaseMainApplication
         }
 
         IrisAnalytics.Companion.getInstance(this).initialize();
+        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
     }
 
 

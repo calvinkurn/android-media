@@ -114,7 +114,8 @@ object MockSearchProductModel {
                 imageUrl = "",
                 url = "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
                 applink = "tokopedia://product/15340985?",
-                priceString = ""
+                priceString = "",
+                carouselProductType = BroadMatchProduct(false),
         )
     }
 

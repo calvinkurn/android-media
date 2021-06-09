@@ -1,16 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.nps">
+<manifest package="com.tokopedia.nps">
 
-    <application>
-        <activity android:name=".presentation.view.activity.FeedbackActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/fb_app_title"/>
-
-        <activity android:name=".presentation.view.activity.FeedbackThankPageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/fb_app_title"/>
-
-    </application>
 </manifest>

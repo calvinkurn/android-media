@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -132,9 +134,9 @@ class ManageAddressViewModel @Inject constructor(
         }
     }
 
-    fun setStateChosenAddress(status: Int?, addressId: String?, receiverName: String?, addressName: String?, latitude: String?, longitude: String?, districtId: String?, postalCode: String?) {
+    fun setStateChosenAddress(model: RecipientAddressModel) {
         viewModelScope.launch(onErrorSetStateChosenAddress) {
-            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(status, addressId?.toInt(), receiverName, addressName, latitude, longitude, districtId?.toInt(), postalCode)
+            val setStateChosenAddress = chooseAddressRepo.setStateChosenAddressFromAddress(model)
             _setChosenAddress.value = Success(chooseAddressMapper.mapSetStateChosenAddress(setStateChosenAddress.response))
         }
     }

@@ -25,7 +25,6 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
-                app:tckv_content_text_size = "@dimen/sp_12"
                 app:tickerShapeType="loose"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>

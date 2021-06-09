@@ -22,7 +22,7 @@ class AutoAdsItemsEmptyViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoA
     }
 
     override fun bind(item: AutoAdsItemsEmptyModel, statsData: MutableList<WithoutGroupDataItem>) {
-        view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
+        view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.no_products))
         view.text_title.text = view.context.getString(R.string.topads_dash_empty_non_group_title)
         view.text_desc.text = view.context.getString(R.string.topads_dash_empty_non_group_desc)
         view.btn_submit.text = view.context.getString(R.string.topads_dash_empty_non_group_butt)

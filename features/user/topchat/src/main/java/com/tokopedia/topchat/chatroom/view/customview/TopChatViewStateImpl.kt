@@ -306,7 +306,7 @@ open class TopChatViewStateImpl constructor(
         val onlineStats = toolbar.findViewById<View>(com.tokopedia.chat_common.R.id.online_status)
         val lastOnlineTimeStamp = getShopLastTimeOnlineTimeStamp(viewModel)
 
-        if (isOfficialStore(viewModel)) {
+        if (isOfficialAccountTokopedia(viewModel)) {
             onlineStats.visibility = View.GONE
             onlineDesc.visibility = View.GONE
         } else {
@@ -333,7 +333,8 @@ open class TopChatViewStateImpl constructor(
         return viewModel.headerModel.lastTimeOnline.toLongOrZero()
     }
 
-    private fun isOfficialStore(viewModel: ChatroomViewModel) = viewModel.headerModel.isOfficialStore()
+    private fun isOfficialAccountTokopedia(viewModel: ChatroomViewModel) =
+            viewModel.headerModel.isOfficialAccountTokopedia()
 
     private fun setHeaderMenuButton(
             headerMenuListener: HeaderMenuListener
@@ -372,9 +373,11 @@ open class TopChatViewStateImpl constructor(
             listMenu.add(followStatusMenu)
             listMenu.add(promoStatusChanger)
         }
-        val blockChatMenu = createBlockChatMenu()
-        listMenu.add(blockChatMenu)
-        listMenu.add(TopchatItemMenu(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
+        if(!isOfficialAccountTokopedia(userChatRoom)) {
+            val blockChatMenu = createBlockChatMenu()
+            listMenu.add(blockChatMenu)
+            listMenu.add(TopchatItemMenu(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
+        }
         listMenu.add(TopchatItemMenu(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
         return listMenu
     }
@@ -629,6 +632,10 @@ open class TopChatViewStateImpl constructor(
 
     override fun attachFragmentView(fragmentView: TopChatContract.View) {
         this.fragmentView = fragmentView
+    }
+
+    override fun hideKeyboard() {
+        chatMenu?.hideKeyboard()
     }
 
     fun setTemplate(

@@ -69,7 +69,8 @@ internal class ShopViewModelMapper: Mapper<SearchShopModel, ShopDataView> {
                 reputationScore = shopItemModel.reputationScore,
                 isOfficial = shopItemModel.isOfficial,
                 gaKey = shopItemModel.gaKey,
-                isRecommendation = isRecommendation
+                isRecommendation = isRecommendation,
+                isPMPro = shopItemModel.isPMPro,
         )
     }
 

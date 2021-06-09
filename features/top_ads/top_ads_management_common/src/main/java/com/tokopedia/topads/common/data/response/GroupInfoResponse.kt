@@ -33,7 +33,10 @@ data class GroupInfoResponse(
                 val status: String = "",
 
                 @field:SerializedName("group_total")
-                val groupTotal: String = ""
+                val groupTotal: String = "",
+
+                @field:SerializedName("strategies")
+                val strategies: List<String> = listOf()
 
         )
     }

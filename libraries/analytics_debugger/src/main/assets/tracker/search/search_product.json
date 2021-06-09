@@ -23,6 +23,9 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - topads productlist",
       "sessionIris": ".+",
+      "businessUnit": "Ads Solution",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -44,6 +47,9 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - organic|/searchproduct - organic ads",
       "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -51,12 +57,11 @@
           "item_brand": ".+",
           "item_category": ".+",
           "item_variant": ".+",
-          "userId": ".+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "shopId": ".+",
           "index": "\\d*.\\d*",
           "dimension40": "/searchproduct - organic|/searchproduct - organic ads",
           "dimension61": ".+",
+          "dimension79": ".+",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
           "dimension87": "search result",
           "dimension88": "search - product",
@@ -73,6 +78,9 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - topads productlist",
       "sessionIris": ".+",
+      "businessUnit": "Ads Solution",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -95,6 +103,9 @@
       "searchFilter": ".+",
       "item_list": "/searchproduct - organic|/searchproduct - organic ads",
       "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -102,12 +113,11 @@
           "item_brand": ".+",
           "item_category": ".+",
           "item_variant": ".+",
-          "userId": ".+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "shopId": ".+",
           "index": "\\d*.\\d*",
           "dimension40": "/searchproduct - organic|/searchproduct - organic ads",
           "dimension61": ".+",
+          "dimension79": ".+",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
           "dimension87": "search result",
           "dimension88": "search - product",

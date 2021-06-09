@@ -65,10 +65,6 @@ yang ditemukan</string>
     <string name="title_reason_bottom_sheet">Beritahu kami apa yang salah?</string>
     <string name="template_subtitle_attach_product">Toko %s</string>
     <string name="topchat_online_status_desc">Online</string>
-    <string name="topchat_online_minutes_ago">Terakhir online %1$d menit yang lalu</string>
-    <string name="topchat_online_hours_ago">Terakhir online %1$d jam yang lalu</string>
-    <string name="topchat_online_days_ago">Terakhir online %1$d hari yang lalu</string>
-    <string name="topchat_online_months_ago">Terakhir online %1$d bulan yang lalu</string>
     <string name="delete_chat_default_error_message">Hapus chat gagal!</string>
     <string name="follow_store">Follow Toko</string>
     <string name="already_follow_store">Following</string>

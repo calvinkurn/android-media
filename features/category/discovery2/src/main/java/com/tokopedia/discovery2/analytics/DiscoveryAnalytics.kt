@@ -1111,4 +1111,12 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 PAGE_TYPE to removedDashPageIdentifier)
         getTracker().sendGeneralEvent(map)
     }
+
+    override fun getHostSource(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+    }
+
+    override fun getHostTrackingSource(): String {
+        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+    }
 }

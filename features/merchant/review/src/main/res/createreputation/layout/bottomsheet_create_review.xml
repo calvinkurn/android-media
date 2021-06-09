@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/review_form_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/layout_lvl1">
+
+            <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewProductCard
+                android:id="@+id/review_form_product_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
+                android:id="@+id/review_form_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/review_form_product_card" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/review_form_rating_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_12"
+                android:background="@color/Unify_N75"
+                app:layout_constraintTop_toBottomOf="@id/review_form_rating" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/review_form_incentives_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_form_rating_divider"
+                app:tickerType="announcement" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/review_form_text_area_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_form_incentives_ticker"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"
+                tools:text="Apa yang bikin kamu puas?" />
+
+            <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
+                android:id="@+id/review_form_text_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_form_text_area_title" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/review_form_incentive_helper_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:textColor="@color/Unify_N700_68"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@id/review_form_text_area"
+                app:layout_constraintTop_toBottomOf="@id/review_form_text_area"
+                app:typographyType="body_3" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_form_templates_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_12"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_form_incentive_helper_text"
+                tools:listitem="@layout/item_image_chooser_review" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/review_form_photos_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_12"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_form_templates_rv"
+                tools:listitem="@layout/item_image_chooser_review" />
+
+            <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAddPhoto
+                android:id="@+id/review_form_add_photo"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_form_templates_rv" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/create_review_add_photo_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="review_form_add_photo, review_form_photos_rv"
+                tools:visibility="gone" />
+
+            <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAnonymousOption
+                android:id="@+id/review_form_anonymous_option"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/create_review_add_photo_barrier" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/review_form_progress_bar_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/Unify_N75"
+                app:layout_constraintTop_toBottomOf="@id/review_form_anonymous_option" />
+
+            <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewProgressBar
+                android:id="@+id/review_form_progress_bar_widget"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                app:layout_constraintEnd_toStartOf="@id/review_form_submit_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/review_form_submit_button"
+                android:layout_width="@dimen/layout_lvl9"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:text="@string/submit_review"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_form_progress_bar_divider" />
+
+            <include
+                android:id="@+id/shimmering_create_review_form"
+                layout="@layout/bottomsheet_create_review_loading"
+                tools:visibility="gone" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
