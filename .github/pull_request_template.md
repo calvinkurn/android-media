@@ -45,6 +45,7 @@ https://phab.tokopedia.com/XXXXX
 - **/check datatest** - run data tracking test (Cassava)
 - **/check performance** - run performance check
 - **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
+- **/check vector** - run vector drawable optimizer
 
 ## Gatekeeper Spells
 - **approved for app-size** - send along with the approval to cast the magic 
