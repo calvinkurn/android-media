@@ -52,7 +52,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
 
     fun getLatestWidgetState(shopIds: List<String>? = null) {
         if (shopIds != null) {
-            _currentShopIds.value = shopIds
+            initializeShopIds(shopIds)
             getMiniCartListSimplifiedUseCase.setParams(shopIds)
         } else {
             val tmpShopIds = currentShopIds.value ?: emptyList()
