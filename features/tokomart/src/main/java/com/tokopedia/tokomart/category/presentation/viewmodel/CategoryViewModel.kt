@@ -117,6 +117,7 @@ class CategoryViewModel @Inject constructor (
         return CategoryAisleItemDataView(
                 name = navigationItem?.name ?: "",
                 imgUrl = navigationItem?.imageUrl ?: "",
+                applink = navigationItem?.applinks ?: "",
         )
     }
 

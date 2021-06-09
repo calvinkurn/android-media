@@ -8,13 +8,17 @@ import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import kotlinx.android.synthetic.main.item_tokomart_category_aisle.view.*
 
-class CategoryAisleViewHolder(itemView: View): AbstractViewHolder<CategoryAisleDataView>(itemView) {
+class CategoryAisleViewHolder(
+        itemView: View,
+        private val categoryAisleListener: CategoryAisleListener,
+): AbstractViewHolder<CategoryAisleDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -43,15 +47,25 @@ class CategoryAisleViewHolder(itemView: View): AbstractViewHolder<CategoryAisleD
         val txtCategoryNameLeft = itemView.findViewById<TextView?>(R.id.tokomartSearchCategoryAisleNameLeft)
         val imgCategoryLeft = itemView.findViewById<ImageUnify?>(R.id.tokomartSearchCategoryAisleImageLeft)
 
-        txtCategoryNameLeft?.text = item.name
-        imgCategoryLeft?.loadImage(item.imgUrl)
+        bindNavigationItem(item, txtCategoryNameLeft, imgCategoryLeft)
     }
 
     private fun bindRightAisle(item: CategoryAisleItemDataView) {
         val txtCategoryNameRight = itemView.findViewById<TextView?>(R.id.tokomartSearchCategoryAisleNameRight)
         val imgCategoryRight = itemView.findViewById<ImageUnify?>(R.id.tokomartSearchCategoryAisleImageRight)
 
-        txtCategoryNameRight?.text = item.name
-        imgCategoryRight?.loadImage(item.imgUrl)
+        bindNavigationItem(item, txtCategoryNameRight, imgCategoryRight)
+    }
+
+    private fun bindNavigationItem(
+            item: CategoryAisleItemDataView,
+            txtCategoryNameLeft: TextView?,
+            imgCategoryLeft: ImageUnify?,
+    ) {
+        txtCategoryNameLeft?.text = item.name
+        imgCategoryLeft?.loadImage(item.imgUrl)
+        imgCategoryLeft?.setOnClickListener {
+            categoryAisleListener.onAisleClick(item)
+        }
     }
 }
