@@ -400,10 +400,11 @@ class OtherMenuViewHolder(private val itemView: View,
         val powerMerchantStatusTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantStatusText)
         val powerMerchantText: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantText)
         val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
+        val isNewSeller = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                    upgradePMTextView.show()
+                    upgradePMTextView.showWithCondition(isNewSeller == false)
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }

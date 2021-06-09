@@ -12,6 +12,7 @@ data class UserShopInfoWrapper(val shopType: ShopType?,
             var shopTierName: String = "",
             var shopTier: Int = -1,
             var pmProGradeName: String = "",
-            var periodTypePmPro: String = ""
+            var periodTypePmPro: String = "",
+            var isNewSeller: Boolean = false
     )
 }
