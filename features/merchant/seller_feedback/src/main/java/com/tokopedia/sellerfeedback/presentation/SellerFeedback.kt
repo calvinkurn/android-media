@@ -1,7 +1,7 @@
 package com.tokopedia.sellerfeedback.presentation
 
 data class SellerFeedback(
-        var shopId: Int = 0,
+        var shopId: Long = 0,
         val feedbackScore: String,
         val feedbackType: String,
         val feedbackPage: String,

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/toaster_bg_normal">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/snackbar_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
             android:paddingLeft="@dimen/toaster_text_horizontal_padding"
             android:paddingRight="@dimen/toaster_text_horizontal_padding"
             android:text="@string/feedback_form_toast_success_submit"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toStartOf="parent"

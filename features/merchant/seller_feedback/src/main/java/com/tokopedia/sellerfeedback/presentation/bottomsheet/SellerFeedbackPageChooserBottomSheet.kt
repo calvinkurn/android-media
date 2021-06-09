@@ -60,11 +60,6 @@ class SellerFeedbackPageChooserBottomSheet(private val selectedTitle: String) : 
         super.show(manager, TAG)
     }
 
-    private fun dismiss(manager: FragmentManager) {
-        (manager.findFragmentByTag(TAG) as? BottomSheetUnify)
-                ?.dismissAllowingStateLoss()
-    }
-
     fun setListener(listener: BottomSheetListener) {
         this.listener = listener
     }
@@ -103,7 +98,7 @@ class SellerFeedbackPageChooserBottomSheet(private val selectedTitle: String) : 
     private fun onItemClicked(title: String) {
         activity?.supportFragmentManager?.let {
             listener?.onPageSelected(title)
-            dismiss(it)
+            dismiss()
         }
     }
 

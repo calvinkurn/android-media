@@ -62,7 +62,7 @@ class SubmitGlobalFeedbackUseCase @Inject constructor(
 
     fun setParams(sellerFeedback: SellerFeedback) {
         setRequestParams(RequestParams.create().apply {
-            putInt(PARAM_SHOPID, sellerFeedback.shopId)
+            putLong(PARAM_SHOPID, sellerFeedback.shopId)
             putString(PARAM_FEEDBACKSCORE, sellerFeedback.feedbackScore)
             putString(PARAM_FEEDBACKTYPE, sellerFeedback.feedbackType)
             putString(PARAM_FEEDBACKPAGE, sellerFeedback.feedbackPage)

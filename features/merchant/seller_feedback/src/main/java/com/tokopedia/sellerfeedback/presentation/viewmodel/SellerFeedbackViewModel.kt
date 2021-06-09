@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.sellerfeedback.data.SubmitResult
@@ -53,7 +53,7 @@ class SellerFeedbackViewModel @Inject constructor(
             sellerFeedback.uploadId2 = uploadIds.getOrNull(1)
             sellerFeedback.uploadId3 = uploadIds.getOrNull(2)
 
-            sellerFeedback.shopId = userSession.shopId.toIntOrZero()
+            sellerFeedback.shopId = userSession.shopId.toLongOrZero()
 
             submitGlobalFeedbackUseCase.setParams(sellerFeedback)
             val result = submitGlobalFeedbackUseCase.executeOnBackground()
