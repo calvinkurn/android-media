@@ -62,27 +62,27 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
             when (shopScore) {
                 in ShopScoreConstant.SHOP_SCORE_ZERO..ShopScoreConstant.SHOP_SCORE_FIFTY_NINE -> {
                     progressBarScorePerformance?.progressBarColor = intArrayOf(
-                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500),
-                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_red),
+                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_red)
                     )
                 }
                 in ShopScoreConstant.SHOP_SCORE_SIXTY..ShopScoreConstant.SHOP_SCORE_SIXTY_NINE -> {
                     progressBarScorePerformance?.progressBarColor = intArrayOf(
-                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300),
-                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300)
+                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_yellow),
+                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_yellow)
                     )
                 }
                 in ShopScoreConstant.SHOP_SCORE_SEVENTY..ShopScoreConstant.SHOP_SCORE_SEVENTY_NINE -> {
                     progressBarScorePerformance?.progressBarColor = intArrayOf(
-                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300),
-                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
+                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_green_light),
+                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_green_light)
                     )
                 }
 
                 in ShopScoreConstant.SHOP_SCORE_EIGHTY..ShopScoreConstant.SHOP_SCORE_ONE_HUNDRED -> {
                     progressBarScorePerformance?.progressBarColor = intArrayOf(
-                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400),
-                            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_green_dark),
+                            ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_green_dark)
                     )
                 }
                 else -> { }

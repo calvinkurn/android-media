@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -167,7 +168,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 29/06/20.
  */
-class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
+class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
         UohBottomSheetOptionAdapter.ActionListener, UohBottomSheetKebabMenuAdapter.ActionListener,
         UohItemAdapter.ActionListener {
     @Inject
@@ -242,6 +243,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 arguments = bundle
             }
         }
+
+        const val CREATE_REVIEW_APPLINK = "product-review/create/"
+        const val CREATE_REVIEW_REQUEST_CODE = 200
+        const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -280,6 +285,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 initialLoad()
             } else {
                 activity?.finish()
+            }
+        }
+        if ((requestCode == CREATE_REVIEW_REQUEST_CODE)) {
+            if (resultCode == Activity.RESULT_OK) {
+                onSuccessCreateReview()
+            } else if (resultCode == Activity.RESULT_FIRST_USER) {
+                onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_ERROR_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
             }
         }
     }
@@ -921,7 +933,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true))
-                        && !isReset) {
+                && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_MP
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
@@ -933,7 +945,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         || filterStatus.equals(PARAM_HOTEL, true)
                         || filterStatus.equals(PARAM_TRAIN, true)
                         || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true))
-                        && !isReset) {
+                && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true)
@@ -1011,15 +1023,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when {
                 searchBarIsNotEmpty -> {
                     emptyStatus = context?.let { context ->
-                            ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
-                                activity?.resources?.let { resource ->
-                                    UohEmptyState(drawable,
-                                            resource.getString(R.string.uoh_search_empty),
-                                            resource.getString(R.string.uoh_search_empty_desc),
-                                            false, "")
-                                }
-
+                        ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
+                            activity?.resources?.let { resource ->
+                                UohEmptyState(drawable,
+                                        resource.getString(R.string.uoh_search_empty),
+                                        resource.getString(R.string.uoh_search_empty_desc),
+                                        false, "")
                             }
+
+                        }
                     }
                 }
                 paramUohOrder.status.isNotEmpty() -> {
@@ -1583,7 +1595,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
         order.metadata.buttons.firstOrNull()?.let { button ->
             if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                RouteManager.route(context, URLDecoder.decode(button.appURL, UohConsts.UTF_8))
+                handleRouting(button.appURL)
             } else {
                 when {
                     button.actionType.equals(GQL_FINISH_ORDER, true) -> {
@@ -1627,7 +1639,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     override fun onTickerDetailInfoClicked(url: String) {
-        if (url.contains(APPLINK_BASE)){
+        if (url.contains(APPLINK_BASE)) {
             RouteManager.route(context, url)
         } else {
             if (url.contains(ApplinkConst.WEBVIEW)) {
@@ -1828,5 +1840,22 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
             userSession.userId?.let { UohAnalytics.clickBeliLagiOnOrderCardMP("", it, arrayListProducts, orderData.verticalCategory) }
         }
+    }
+
+    private fun handleRouting(applink: String) {
+        if (applink.contains(CREATE_REVIEW_APPLINK)) {
+            startActivityForResult(RouteManager.getIntent(context, URLDecoder.decode(applink, UohConsts.UTF_8)), CREATE_REVIEW_REQUEST_CODE)
+        } else {
+            RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
+        }
+    }
+
+    private fun onSuccessCreateReview() {
+        view?.let { Toaster.build(it, getString(R.string.uoh_review_create_success_toaster, userSession.name), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.uoh_review_oke)).show() }
+        refreshHandler?.startRefresh()
+    }
+
+    private fun onFailCreateReview(errorMessage: String) {
+        view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke)).show() }
     }
 }

@@ -13,15 +13,14 @@ import com.tokopedia.home_component.model.ChannelBanner
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.DateHelper
-import com.tokopedia.home_component.util.FPM_DEALS_WIDGET_PRODUCT_IMAGE
-import com.tokopedia.home_component.util.loadImage
-import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.android.synthetic.main.layout_product_highlight.view.*
+import kotlinx.android.synthetic.main.layout_product_highlight.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.layout_product_highlight.view.home_component_divider_header
 import java.util.*
 
 class ProductHighlightComponentViewHolder(
@@ -52,6 +51,15 @@ class ProductHighlightComponentViewHolder(
         setDealsChannelTitle(productHighlightDataModel.channelModel.channelHeader)
         setDealsCountDownTimer(productHighlightDataModel)
         setDealsChannelBackground(productHighlightDataModel.channelModel.channelBanner)
+        setChannelDivider(productHighlightDataModel)
+    }
+
+    private fun setChannelDivider(element: ProductHighlightDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun setDealsCountDownTimer(dataModel: ProductHighlightDataModel) {

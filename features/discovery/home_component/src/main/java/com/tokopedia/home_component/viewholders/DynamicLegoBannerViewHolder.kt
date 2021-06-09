@@ -21,11 +21,15 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
+import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_divider_header
+import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_header_view
 
 /**
  * Created by Devara on 2020-04-28
@@ -47,11 +51,20 @@ class DynamicLegoBannerViewHolder(itemView: View,
         isCacheData = element.isCache
         isLego4UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego4BannerUsingRollenceVariant()
         setHeaderComponent(element)
+        setChannelDivider(element)
         setGrids(element)
     }
 
     override fun bind(element: DynamicLegoBannerDataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun setChannelDivider(element: DynamicLegoBannerDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun setGrids(element: DynamicLegoBannerDataModel) {
@@ -99,6 +112,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
             marginLayoutParams.rightMargin = marginValue
             marginLayoutParams.topToBottom = R.id.home_component_header_view
             recyclerView.layoutParams = marginLayoutParams
+            recyclerView.setPadding(
+                0,0,0, marginValue
+            )
 
         } else {
             legoListener?.getDynamicLegoBannerData(element.channelModel)
