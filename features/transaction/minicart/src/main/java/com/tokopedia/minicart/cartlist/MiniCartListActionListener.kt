@@ -18,4 +18,6 @@ interface MiniCartListActionListener {
 
     fun onToggleShowHideUnavailableItemsClicked()
 
+    fun onProductInfoClicked(element: MiniCartProductUiModel)
+
 }
