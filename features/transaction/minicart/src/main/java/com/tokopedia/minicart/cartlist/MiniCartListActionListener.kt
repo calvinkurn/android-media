@@ -20,4 +20,12 @@ interface MiniCartListActionListener {
 
     fun onProductInfoClicked(element: MiniCartProductUiModel)
 
+    fun onQuantityPlusClicked()
+
+    fun onQuantityMinusClicked()
+
+    fun onWriteNotesClicked()
+
+    fun onChangeNotesClicked()
+
 }

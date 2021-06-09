@@ -21,6 +21,7 @@ import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
@@ -36,7 +37,8 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration,
-                                                  var summaryTransactionBottomSheet: SummaryTransactionBottomSheet)
+                                                  var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
+                                                  var analytics: MiniCartAnalytics)
     : MiniCartListActionListener {
 
     private var viewModel: MiniCartWidgetViewModel? = null
@@ -79,6 +81,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             isHideable = true
             clearContentPadding = true
             customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
+            knobView.setOnClickListener {
+                analytics.eventClickKnobToExpandMiniCartBottomSheet()
+            }
             setOnDismissListener {
                 cancelAllDebounceJob()
                 bottomSheetListener?.onMiniCartListBottomSheetDismissed()
@@ -122,6 +127,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         chatIcon = view.findViewById(R.id.chat_icon)
         totalAmount?.let {
             it.amountChevronView.setOnClickListener {
+                analytics.eventClickChevronToShowSummaryTransaction()
                 viewModel?.miniCartListListBottomSheetUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
                     summaryTransactionBottomSheet.show(it, fragmentManager, context)
                 }
@@ -209,6 +215,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             viewModel.getCartList()
             bottomsheetContainer?.let { view ->
                 bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
+                    analytics.eventClickUndoDelete()
                     showProgressLoading()
                     viewModel.undoDeleteCartItems()
                 }
@@ -218,6 +225,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun observeMiniCartListUiModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.miniCartListListBottomSheetUiModel.observe(lifecycleOwner, {
+            if (it.isFirstLoad) {
+                analytics.eventLoadMiniCartBottomSheetSuccess(it.getProduct())
+            }
             hideLoading()
             hideProgressLoading()
             bottomSheet?.setTitle(it.title)
@@ -270,6 +280,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)
             totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
+                analytics.eventClickChatOnMiniCart()
                 val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: "0"
                 val intent = RouteManager.getIntent(
                         context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
@@ -335,11 +346,13 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
+        analytics.eventClickDeleteFromTrashBin()
         bottomSheetListener?.showProgressLoading()
         viewModel?.singleDeleteCartItems(element)
     }
 
     override fun onBulkDeleteUnavailableItems() {
+        analytics.eventClickDeleteAllUnavailableProduct()
         val unavailableProducts = viewModel?.getUnavailableItems() ?: emptyList()
         bottomSheet?.context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -396,10 +409,28 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onProductInfoClicked(element: MiniCartProductUiModel) {
+        analytics.eventClickProductName(element.productId)
         bottomSheet?.context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, element.productId)
             it.startActivity(intent)
         }
     }
+
+    override fun onQuantityPlusClicked() {
+        analytics.eventClickQuantityPlus()
+    }
+
+    override fun onQuantityMinusClicked() {
+        analytics.eventClickQuantityMinus()
+    }
+
+    override fun onWriteNotesClicked() {
+        analytics.eventClickWriteNotes()
+    }
+
+    override fun onChangeNotesClicked() {
+        analytics.eventClickChangeNotes()
+    }
+
 
 }

@@ -145,7 +145,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         }
     }
 
-    // 1
+    // 1 - DONE
     fun eventClickProductName(productId: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -156,7 +156,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 2
+    // 2 - DONE
     fun eventClickQuantityPlus() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -166,7 +166,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 3
+    // 3 - DONE
     fun eventClickQuantityMinus() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -187,7 +187,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 5
+    // 5 - DONE
     fun eventClickDeleteFromTrashBin() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -197,7 +197,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 6
+    // 6 - DONE
     fun eventClickUndoDelete() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -207,7 +207,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 7
+    // 7 - DONE
     fun eventClickWriteNotes() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -217,7 +217,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 8
+    // 8 - DONE
     fun eventClickChangeNotes() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -227,7 +227,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 9
+    // 9 - DONE
     fun eventClickChatOnMiniCart() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -280,7 +280,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         )
     }
 
-    // 13
+    // 13 - DONE
     fun eventClickChevronToShowMiniCartBottomSheet() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -290,7 +290,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 14
+    // 14 - DONE
     fun eventClickChevronToShowSummaryTransaction() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -311,7 +311,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 16
+    // 16 - DONE
     fun eventClickDeleteAllUnavailableProduct() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -332,7 +332,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 18
+    // 18 - DONE
     fun eventClickBuyThenGetToasterError(errorMessage: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -345,7 +345,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
 
     // 19 invalid
 
-    // 20
+    // 20 - DONE
     fun eventClickBuyThenGetBottomSheetError(errorMessage: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -367,7 +367,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 22, 23
+    // 22, 23 - DONE
     fun eventLoadMiniCartBottomSheetSuccess(products: List<MiniCartProductUiModel>) {
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, EVENT_NAME_CHECKOUT_PROGRESS)
@@ -393,7 +393,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         )
     }
 
-    // 24
+    // 24 - DONE
     fun eventClickKnobToExpandMiniCartBottomSheet() {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,

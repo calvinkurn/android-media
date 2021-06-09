@@ -70,7 +70,9 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
-                    _miniCartListBottomSheetUiModel.value = miniCartListViewHolderMapper.mapUiModel(it)
+                    val tmpMiniCartListUiModel = miniCartListViewHolderMapper.mapUiModel(it)
+                    tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
+                    _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
                 },
                 onError = {
                     if (isFirstLoad) {

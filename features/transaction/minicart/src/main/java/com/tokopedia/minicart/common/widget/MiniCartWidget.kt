@@ -22,6 +22,7 @@ import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
 import com.tokopedia.minicart.cartlist.subpage.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -47,6 +48,9 @@ class MiniCartWidget @JvmOverloads constructor(
 
     @Inject
     lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
+
+    @Inject
+    lateinit var analytics: MiniCartAnalytics
 
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
@@ -135,6 +139,7 @@ class MiniCartWidget @JvmOverloads constructor(
         if (data is Data) {
             if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
                 // Prioritize to show out of service data
+                analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
                 globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
                     override fun onGoToHome() {
                         RouteManager.route(context, ApplinkConst.HOME)
@@ -147,6 +152,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 })
             } else {
                 // Show toaster error if have no out of service data
+                analytics.eventClickBuyThenGetToasterError(data.error)
                 var ctaText = "Oke"
                 if (data.toasterAction.showCta) {
                     ctaText = data.toasterAction.text
@@ -215,6 +221,7 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount?.let {
             it.enableAmountChevron(true)
             miniCartChevronClickListener = OnClickListener {
+                analytics.eventClickChevronToShowMiniCartBottomSheet()
                 showMiniCartListBottomSheet(fragment)
             }
             it.amountChevronView.setOnClickListener(miniCartChevronClickListener)
@@ -326,6 +333,7 @@ class MiniCartWidget @JvmOverloads constructor(
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)
             totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
+                analytics.eventClickChatOnMiniCart()
                 val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: "0"
                 val intent = RouteManager.getIntent(
                         context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId

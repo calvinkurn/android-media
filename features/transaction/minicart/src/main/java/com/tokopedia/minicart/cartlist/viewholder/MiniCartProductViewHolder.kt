@@ -249,9 +249,11 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductNotes(element: MiniCartProductUiModel) {
         textNotes?.setOnClickListener {
+            listener.onWriteNotesClicked()
             renderProductNotesEditable(element)
         }
         textNotesChange?.setOnClickListener {
+            listener.onChangeNotesClicked()
             renderProductNotesEditable(element)
         }
 
@@ -430,6 +432,12 @@ class MiniCartProductViewHolder(private val view: View,
                 }
                 true
             } else false
+        }
+        qtyEditorProduct?.setAddClickListener {
+            listener.onQuantityPlusClicked()
+        }
+        qtyEditorProduct?.setSubstractListener {
+            listener.onQuantityMinusClicked()
         }
     }
 
