@@ -288,9 +288,11 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
 
     private fun showEmptyView(isEmpty: Boolean) {
         if (isEmpty) {
+            (parentFragment as EditAdCostFragment).hideToolTip(View.GONE)
             keyword_counter.hide()
             add_keyword.hide()
         } else {
+            (parentFragment as EditAdCostFragment).hideToolTip(View.VISIBLE)
             keyword_counter.show()
             add_keyword.show()
             if (keywordType == KEYWORD_POSITIVE) {
