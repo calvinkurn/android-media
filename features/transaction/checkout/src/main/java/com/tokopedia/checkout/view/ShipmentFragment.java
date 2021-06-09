@@ -3053,7 +3053,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     userAddress.getLongitude(),
                     String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
                     userAddress.getPostalCode(),
-                    userAddress.getShopId(), userAddress.getWarehouseId()
+                    userAddress.getShopId(),
+                    userAddress.getWarehouseId()
             );
         }
     }
