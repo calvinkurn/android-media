@@ -65,6 +65,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 shop {
                   shop_id
                   shop_name
+                  shop_type
                   badge_url
                 }
                 products {

@@ -15,7 +15,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
-                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderShopType, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
+                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
                 shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id)
         )
     }
@@ -45,10 +45,10 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderShopType: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.OrderShopType, orderId: String, orderStatusId: String): ProductListUiModel {
+    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel {
         return ProductListUiModel(
                 productList = mapProductList(products, orderId, orderStatusId),
-                productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId, orderShopType)
+                productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId)
         )
     }
 
@@ -208,13 +208,13 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductListHeaderUiModel(shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String, orderShopType: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.OrderShopType): ProductListUiModel.ProductListHeaderUiModel {
+    private fun mapProductListHeaderUiModel(shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel.ProductListHeaderUiModel {
         return ProductListUiModel.ProductListHeaderUiModel(
                 header = resourceProvider.getProductListSectionHeader(),
                 orderId = orderId,
                 shopBadgeUrl = shop.badgeUrl,
                 shopName = shop.shopName,
-                shopType = orderShopType.shopType,
+                shopType = shop.shopType,
                 shopId = shop.shopId,
                 orderStatusId = orderStatusId
         )
