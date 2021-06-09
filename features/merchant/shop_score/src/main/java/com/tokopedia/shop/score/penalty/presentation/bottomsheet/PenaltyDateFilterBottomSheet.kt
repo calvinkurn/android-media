@@ -2,7 +2,6 @@ package com.tokopedia.shop.score.penalty.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
@@ -10,20 +9,15 @@ import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.format
-import com.tokopedia.shop.score.common.getLocale
-import com.tokopedia.shop.score.common.getNPastMonthTimeStamp
-import com.tokopedia.shop.score.common.getNowTimeStamp
+import com.tokopedia.shop.score.common.*
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.unifycomponents.TextFieldUnify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.max
 
 class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
 
@@ -112,7 +106,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
     }
 
     private fun setupCalendarView() {
-        val initMinDate = getNPastMonthTimeStamp(3)
+        val initMinDate = getNPastDaysTimeStamp(MAX_FILTER_DATE)
         val initMaxDate = Date(getNowTimeStamp())
         calendarView?.let { cpv ->
             cpv.init(initMinDate, initMaxDate, emptyList()).inMode(mode)
@@ -184,6 +178,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
         const val KEY_START_DATE_PENALTY = "key_start_date_penalty"
         const val KEY_END_DATE_PENALTY = "key_end_date_penalty"
         const val DELAY_SELECTED_FILTER_DATE_PENALTY = 300L
+        const val MAX_FILTER_DATE = 90
 
         fun newInstance(startDate: String, endDate: String): PenaltyDateFilterBottomSheet {
             return PenaltyDateFilterBottomSheet().apply {

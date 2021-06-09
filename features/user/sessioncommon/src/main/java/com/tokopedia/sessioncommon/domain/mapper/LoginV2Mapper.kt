@@ -36,8 +36,6 @@ class LoginV2Mapper(val userSession: UserSessionInterface) {
                     loginTokenPojo.loginToken.popupError.body.isNotEmpty() &&
                     loginTokenPojo.loginToken.popupError.action.isNotEmpty()) {
                 onShowPopupError(loginTokenPojo)
-            } else if (loginTokenPojo.loginToken.errors.isNotEmpty()) {
-                onErrorLoginToken(MessageErrorException(loginTokenPojo.loginToken.errors[0].message))
             } else if (errors.isNotEmpty()) {
                 onErrorLoginToken(MessageErrorException(errors[0].message))
             } else {

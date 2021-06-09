@@ -84,6 +84,10 @@ class GetLayoutUseCase(
                     ctaText
                     applink
                   }
+                  searchTableColumnFilter{
+                    name
+                    value
+                  }
                 }
               }
             }
