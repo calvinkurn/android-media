@@ -20,5 +20,5 @@ import dagger.Component
     dependencies = [(FakeBaseAppComponent::class)]
 )
 interface FakeNotificationComponent : NotificationComponent {
-    fun injectMembers(inboxNotifcenterTest: InboxNotifcenterFakeDependency)
+    fun injectMembers(inboxNotifcenterDep: InboxNotifcenterFakeDependency)
 }

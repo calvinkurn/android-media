@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.fake.di.chat
 
+import com.tokopedia.inbox.fake.InboxChatFakeDependency
 import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
 import com.tokopedia.inbox.view.activity.base.chat.InboxChatTest
 import com.tokopedia.topchat.chatlist.di.*
@@ -20,5 +21,5 @@ import dagger.Component
         dependencies = [FakeBaseAppComponent::class]
 )
 interface FakeChatListComponent : ChatListComponent {
-    fun inject(inboxChatTest: InboxChatTest)
+    fun injectMembers(inboxChatFakeDependency: InboxChatFakeDependency)
 }
