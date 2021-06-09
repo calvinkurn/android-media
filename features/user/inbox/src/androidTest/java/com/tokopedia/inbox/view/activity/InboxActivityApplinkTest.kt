@@ -30,14 +30,12 @@ class InboxActivityApplinkTest {
     }
 
     private fun forceAbNewInbox() {
-        RemoteConfigInstance.getInstance().abTestPlatform.apply {
-            setString(
-                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_NEW_INBOX
-            )
-            setString(
-                    AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-            )
-        }
+        applyAbKeyValue(
+            AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_NEW_INBOX
+        )
+        applyAbKeyValue(
+            AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+        )
     }
 
     @Test
@@ -57,7 +55,7 @@ class InboxActivityApplinkTest {
         // Given
         val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
             appendQueryParameter(
-                    PARAM_PAGE, VALUE_PAGE_CHAT
+                PARAM_PAGE, VALUE_PAGE_CHAT
             )
         }
 
@@ -74,7 +72,7 @@ class InboxActivityApplinkTest {
         // Given
         val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
             appendQueryParameter(
-                    PARAM_ROLE, VALUE_ROLE_BUYER
+                PARAM_ROLE, VALUE_ROLE_BUYER
             )
         }
 
@@ -91,10 +89,10 @@ class InboxActivityApplinkTest {
         // Given
         val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
             appendQueryParameter(
-                    PARAM_PAGE, VALUE_PAGE_NOTIFICATION
+                PARAM_PAGE, VALUE_PAGE_NOTIFICATION
             )
             appendQueryParameter(
-                    PARAM_ROLE, VALUE_ROLE_SELLER
+                PARAM_ROLE, VALUE_ROLE_SELLER
             )
         }
 
@@ -113,7 +111,7 @@ class InboxActivityApplinkTest {
         val source = "UOH"
         val applinkUri = Uri.parse(ApplinkConst.INBOX).buildUpon().apply {
             appendQueryParameter(
-                    PARAM_SOURCE, source
+                PARAM_SOURCE, source
             )
         }
 
@@ -125,6 +123,30 @@ class InboxActivityApplinkTest {
         assertThat(intent, hasQueryParameter(PARAM_SOURCE, source))
     }
 
-    // TODO: applink should redirected to notifcenter on new inbox if user use new Notifcenter
-    // TODO: add new optional parameter, `showBottomNav`
+    @Test
+    fun should_point_to_new_inbox_when_whitelisted_ab_old_to_new_notifcenter() {
+        // Given
+        applyAbKeyValue(
+            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_NEW_NOTFICENTER
+        )
+        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
+
+        // When
+        val intent = RouteManager.getIntent(context, applinkUri.toString())
+
+        // Then
+        assertThat(intent, isPointingTo(inbox))
+        assertThat(intent, hasQueryParameter(PARAM_PAGE, VALUE_PAGE_NOTIFICATION))
+        assertThat(intent, hasQueryParameter(PARAM_SHOW_BOTTOM_NAV, "false"))
+    }
+
+    private fun applyAbKeyValue(key: String, value: String) {
+        RemoteConfigInstance.getInstance().abTestPlatform.apply {
+            setString(
+                key, value
+            )
+        }
+    }
+
+    // TODO: should redirect to old notifcenter if not whitelisted
 }
