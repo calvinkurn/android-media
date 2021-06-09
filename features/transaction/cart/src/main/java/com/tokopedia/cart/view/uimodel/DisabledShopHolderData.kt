@@ -10,6 +10,5 @@ data class DisabledShopHolderData(
         var shopBadgeUrl: String = "",
         var isFulfillment: Boolean = false,
         var showDivider: Boolean = false,
-        var isTokoNow: Boolean = false,
-        var hasShown: Boolean = false
+        var isTokoNow: Boolean = false
 )
