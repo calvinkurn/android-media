@@ -42,6 +42,10 @@ class ProductItemViewHolder(
                 )
         )
 
+        productCard?.setOnClickListener {
+            productItemListener.onProductClick(element)
+        }
+
         productCard?.setAddVariantClickListener {
             productItemListener.onProductChooseVariantClicked(element)
         }

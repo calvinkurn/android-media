@@ -4,6 +4,8 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataV
 
 interface ProductItemListener {
 
+    fun onProductClick(productItemDataView: ProductItemDataView)
+
     fun onProductNonVariantQuantityChanged(productItemDataView: ProductItemDataView, quantity: Int)
 
     fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView)

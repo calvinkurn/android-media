@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        app:toolbarAlwaysShowShadow="true"
+        app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeSearchbar"
         app:toolbarInitialFillColor="transparent"
