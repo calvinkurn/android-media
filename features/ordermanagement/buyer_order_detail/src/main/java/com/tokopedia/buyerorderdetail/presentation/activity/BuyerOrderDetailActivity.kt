@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
@@ -9,12 +10,25 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
+import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailModule
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
 
-class BuyerOrderDetailActivity: BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent> {
+class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent> {
+    companion object {
+        @JvmStatic
+        fun createIntent(
+                context: Context,
+                cartString: String,
+                orderId: String,
+                paymentId: String) = Intent(context, BuyerOrderDetailActivity::class.java).apply {
+            putExtra(BuyerOrderDetailConst.PARAM_CART_STRING, cartString)
+            putExtra(BuyerOrderDetailConst.PARAM_ORDER_ID, orderId)
+            putExtra(BuyerOrderDetailConst.PARAM_PAYMENT_ID, paymentId)
+        }
+    }
 
     var buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring? = null
 

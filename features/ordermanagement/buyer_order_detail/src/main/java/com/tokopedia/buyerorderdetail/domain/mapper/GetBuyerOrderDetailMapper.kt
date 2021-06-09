@@ -59,13 +59,13 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
                 headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
                 receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
-                ticker = mapTicker(shipment.shippingInfo)
+                ticker = mapTicker(shipment.shippingInfo, BuyerOrderDetailConst.TICKER_KEY_SHIPPING_INFO)
         )
     }
 
-    private fun mapTicker(tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo): TickerUiModel {
+    private fun mapTicker(tickerInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.TickerInfo, actionKey: String? = null): TickerUiModel {
         return TickerUiModel(
-                actionKey = tickerInfo.actionKey,
+                actionKey = actionKey ?: tickerInfo.actionKey,
                 actionText = tickerInfo.actionText,
                 actionUrl = tickerInfo.actionUrl,
                 description = tickerInfo.text,

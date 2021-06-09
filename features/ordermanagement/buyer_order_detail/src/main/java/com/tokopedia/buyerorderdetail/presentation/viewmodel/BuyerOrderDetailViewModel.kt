@@ -60,13 +60,6 @@ class BuyerOrderDetailViewModel @Inject constructor(
         return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < BuyerOrderDetailConst.STATUS_CODE_ORDER_DELIVERED) BuyerOrderDetailConst.ACTION_FINISH_ORDER else ""
     }
 
-    private fun getOrderStatusId(): String {
-        val currentBuyerOrderDetailResult = buyerOrderDetailResult.value
-        return if (currentBuyerOrderDetailResult is Success) {
-            currentBuyerOrderDetailResult.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId
-        } else ""
-    }
-
     private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
         return AddToCartMultiParam(
                 productId = productId.toLong(),
@@ -181,5 +174,12 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun getUserId(): String {
         return userSession.get().userId
+    }
+
+    fun getOrderStatusId(): String {
+        val currentBuyerOrderDetailResult = buyerOrderDetailResult.value
+        return if (currentBuyerOrderDetailResult is Success) {
+            currentBuyerOrderDetailResult.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId
+        } else ""
     }
 }

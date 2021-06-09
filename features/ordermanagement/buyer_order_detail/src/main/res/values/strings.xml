@@ -33,4 +33,5 @@
     <string name="header_section_product_list">Daftar Produk</string>
     <string name="header_section_shipment_info">Info Pengiriman</string>
     <string name="header_section_payment_into">Rincian Pembayaran</string>
+    <string name="buyer_order_detail_label_invoice">Lihat Invoice</string>
 </resources>

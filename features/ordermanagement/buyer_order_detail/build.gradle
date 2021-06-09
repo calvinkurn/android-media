@@ -4,8 +4,17 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-kapt'
 
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     defaultConfig {
         multiDexEnabled true
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
     }
 }
 
@@ -61,11 +70,35 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    // Unit Test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
 
     testImplementation project(rootProject.ext.libraries.unitTest)
+
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: "com.google.android.gms", module: "play-services-plus"
+        exclude group: "com.google.android.gms", module: "play-services-location"
+        exclude group: "com.google.android.gms", module: "play-services-maps"
+        exclude group: "com.google.android.gms", module: "play-services-auth"
+        exclude group: "com.google.android.gms", module: "play-services-places"
+    }
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+
+    androidTestImplementation project(rootProject.ext.features.loginregister)
 }
 
 apply from: '../../../jacoco_task.gradle'

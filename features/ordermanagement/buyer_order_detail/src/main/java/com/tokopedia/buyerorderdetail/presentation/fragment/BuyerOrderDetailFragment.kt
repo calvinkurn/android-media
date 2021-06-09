@@ -36,6 +36,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickList
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailActionButtonAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.ReceiveConfirmationBottomSheet
@@ -64,7 +65,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener, ActionButtonClickListener {
+class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener, ActionButtonClickListener, TickerViewHolder.TickerViewHolderListener {
 
     companion object {
         @JvmStatic
@@ -76,6 +77,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
         const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
+
+        const val CHAT_ICON_TAG = "buyerOrderDetailToolbarChatIcon"
 
         private const val CONTENT_CHANGING_ANIMATION_DURATION = 300L
         private const val CONTENT_CHANGING_ANIMATION_DELAY = 45L
@@ -114,7 +117,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, navigator)
+        BuyerOrderDetailTypeFactory(this, navigator, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -158,6 +161,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             val outValue = TypedValue()
             context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
             setBackgroundResource(outValue.resourceId)
+            tag = CHAT_ICON_TAG
         }
     }
 
@@ -279,6 +283,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
         trackBuyAgainProduct(listOf(product))
+    }
+
+    override fun onClickShipmentInfoTnC() {
+        BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {

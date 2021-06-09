@@ -119,7 +119,6 @@ object BuyerOrderDetailTracker {
         eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_PRODUCT, orderStatusCode, orderId)
     }
 
-    // TODO: ask backend to put ticker action_key so that we can trigger this tracker
     fun eventClickSeeShipmentInfoTNC(orderStatusCode: String, orderId: String) {
         eventGeneralBuyerOrderDetail(BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_SHIPMENT_TNC, orderStatusCode, orderId)
     }
