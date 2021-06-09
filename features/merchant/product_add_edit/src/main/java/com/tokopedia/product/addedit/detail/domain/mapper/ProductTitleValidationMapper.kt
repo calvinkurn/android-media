@@ -16,7 +16,8 @@ object ProductTitleValidationMapper {
                     mapWarningKeywords(negativeKeyword, typoDetection),
                     blacklistKeyword.isNotEmpty(),
                     negativeKeyword.isNotEmpty(),
-                    typoDetection.isNotEmpty()
+                    typoDetection.isNotEmpty(),
+                    mapTypoCorrections(typoDetection)
             )
         }
     }
@@ -40,5 +41,9 @@ object ProductTitleValidationMapper {
 
     private fun mapErrorKeywords(blacklistKeyword: List<BlacklistKeyword>) = blacklistKeyword.map {
         it.keyword
+    }
+
+    private fun mapTypoCorrections(typoDetection: List<TypoDetection>) = typoDetection.map {
+        Pair(it.incorrect, it.correct)
     }
 }

@@ -410,6 +410,8 @@
     <string name="error_product_title_validation_typo">Pastikan ejaan kata di nama produk benar, ya.</string>
     <string name="error_product_title_validation_negative">Nama produk berisi kata-kata spam. Cek lagi, ya.</string>
     <string name="error_product_title_validation_blacklisted">Tidak boleh menggunakan kata terlarang di dalam nama produk.</string>
+    <string name="label_success_remove_blacklisted_words">Kata terlarang berhasil dihapus</string>
+    <string name="label_product_title_validation_typo_correction"><![CDATA[<strike>%1$s</strike><h6>&rsaquo;</h6><font color=\'#%3$s\'>%2$s</font>]]></string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

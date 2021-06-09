@@ -37,6 +37,15 @@
         app:unify_text_field_label="@string/detail_label_product_name"
         app:unify_text_field_message="@string/label_add_product_name_tips" />
 
+    <com.tokopedia.product.addedit.detail.presentation.customview.TypoCorrectionView
+        android:id="@+id/typo_correction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tfu_product_name"/>
+
     <LinearLayout
         android:id="@+id/product_name_rec_shimmering"
         android:layout_width="match_parent"
@@ -46,7 +55,7 @@
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tfu_product_name">
+        app:layout_constraintTop_toBottomOf="@id/typo_correction">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
@@ -78,7 +87,7 @@
         android:visibility="gone"
         android:layout_marginStart="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tfu_product_name" />
+        app:layout_constraintTop_toBottomOf="@id/typo_correction" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

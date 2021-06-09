@@ -138,8 +138,6 @@ class AddEditProductDetailViewModel @Inject constructor(
                     .distinctUntilChanged()
                     .collect {
                         validateProductNameInput(it)
-                        delay(DEBOUNCE_DELAY_MILLIS)
-                        getProductPriceRecommendationByKeyword(it)
                     }
         }
     }
@@ -657,6 +655,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         removedWords.forEach {
             result = result.replace(it, "")
         }
-        return result.trim()
+        return result.trim().replace("\\s+".toRegex(), " ")
     }
 }

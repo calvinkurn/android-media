@@ -74,10 +74,10 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
+import com.tokopedia.product.addedit.detail.presentation.customview.TypoCorrectionView
 import com.tokopedia.product.addedit.detail.presentation.dialog.TitleValidationBottomSheet
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
@@ -165,6 +165,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productNameRecView: RecyclerView? = null
     private var productNameRecShimmering: View? = null
     private var productNameRecAdapter: NameRecommendationAdapter? = null
+    private var typoCorrection: TypoCorrectionView? = null
 
     // product category
     private var productCategoryId: String = ""
@@ -306,6 +307,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productNameField = view.findViewById(R.id.tfu_product_name)
         productNameRecView = view.findViewById(R.id.rv_product_name_rec)
         productNameRecShimmering = view.findViewById(R.id.product_name_rec_shimmering)
+        typoCorrection = view.findViewById(R.id.typo_correction)
         productNameRecAdapter = NameRecommendationAdapter(this)
         productNameRecView?.let {
             it.adapter = productNameRecAdapter
@@ -523,7 +525,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             viewModel.setProductNameInput(editable)
             showProductNameLoadingIndicator()
-            showPriceRecommendationShimmer()
         }
 
         // product price text change listener
@@ -1293,11 +1294,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToProductNameInputStatus() {
         viewModel.isProductNameInputError.observe(viewLifecycleOwner, Observer {
+            val productNameInput = productNameField?.getEditableValue().toString()
+            val validationResult = viewModel.productNameValidationResult
             productNameField?.isInputError = it
             productNameField?.setMessage(viewModel.productNameMessage)
+
             // if product name input has no issue
             if (!it) {
-                val productNameInput = productNameField?.getEditableValue().toString()
                 // prevent queries getting called from recursive name selection and clicked submit button
                 if (!viewModel.isNameRecommendationSelected && viewModel.isProductNameChanged) {
                     // show product name recommendations
@@ -1308,7 +1311,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 if (viewModel.isAdding && !viewModel.hasVariants && !needToSetCategoryName) {
                     viewModel.getCategoryRecommendation(productNameInput)
                 }
-                showProductNameIconSuccess()
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
@@ -1317,7 +1319,25 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
                 }
-                showProductNameIconBlacklist()
+            }
+
+            typoCorrection?.hide()
+            when {
+                validationResult.isBlacklistKeyword -> {
+                    showProductNameIconBlacklist()
+                }
+                validationResult.isNegativeKeyword -> {
+                    showProductNameIconNegative()
+                }
+                validationResult.isTypoDetected -> {
+                    showProductNameIconTypo()
+                    typoCorrection?.setKeywords(validationResult.typoCorrections)
+                }
+                else -> {
+                    showProductNameIconSuccess()
+                    viewModel.getProductPriceRecommendationByKeyword(productNameInput)
+                    showPriceRecommendationShimmer()
+                }
             }
 
             if (needToSetCategoryName) {
@@ -1644,6 +1664,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun showSuccessRemoveBlacklistedWordsToast() {
+        view?.let {
+            val errorMessage = getString(R.string.label_success_remove_blacklisted_words)
+            Toaster.build(it, errorMessage, type = Toaster.TYPE_NORMAL).show()
+        }
+    }
+
     private fun showVariantWholesalePriceDialog() {
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
@@ -1690,6 +1717,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 val cleanedProductName = viewModel.removeKeywords(productNameField.getText(), it)
                 productNameField.setText(cleanedProductName)
                 productNameField?.editText?.setSelection(cleanedProductName.length)
+                showSuccessRemoveBlacklistedWordsToast()
             }
 
             bottomSheet.show(childFragmentManager)
@@ -1844,18 +1872,22 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun showProductNameIconSuccess() {
         showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_G500, IconUnify.CHECK_CIRCLE)
+        productNameField?.isInputError = false
     }
 
     private fun showProductNameIconTypo() {
         showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_N700, IconUnify.INFORMATION)
+        productNameField?.isInputError = false
     }
 
     private fun showProductNameIconNegative() {
         showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_Y300, IconUnify.INFORMATION)
+        productNameField?.isInputError = false
     }
 
     private fun showProductNameIconBlacklist() {
         showProductNameIconIndicator(com.tokopedia.unifyprinciples.R.color.Unify_R500, IconUnify.INFORMATION)
+        productNameField?.isInputError = true
     }
 
     private fun showProductNameIconIndicator(colorResource: Int, iconResource: Int) {
