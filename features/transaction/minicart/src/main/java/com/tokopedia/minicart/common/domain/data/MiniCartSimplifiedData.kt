@@ -36,21 +36,3 @@ data class MiniCartItem(
         var productPrice: Long = 0L,
         var productQty: Int = 0
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
