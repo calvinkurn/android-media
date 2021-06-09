@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMShopGrade
-import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.asUpperCase
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -52,7 +51,7 @@ class NextShopGradeWidget(itemView: View) : AbstractViewHolder<WidgetNextShopGra
     @DrawableRes
     private fun getBackgroundResByGrade(@ShopGrade gradeName: String): Int {
         return when {
-            PMShopGrade.ULTIMATE.equals(gradeName, true) -> R.drawable.bg_pm_next_grade_advanced
+            PMShopGrade.ULTIMATE.equals(gradeName, true) -> R.drawable.bg_pm_next_grade_ultimate
             else -> R.drawable.bg_pm_next_grade_expert
         }
     }

@@ -253,7 +253,7 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
     }
 
     private fun showRegularPmDeactivationBottomSheet() {
-        val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(getExpiredTimeFmt(), pmBasicInfo?.isFreeShippingEnabled.orFalse())
+        val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(getExpiredTimeFmt())
         if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         bottomSheet.setListener(object : PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {

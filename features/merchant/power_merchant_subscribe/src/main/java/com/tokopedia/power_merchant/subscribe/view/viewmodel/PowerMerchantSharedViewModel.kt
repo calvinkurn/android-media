@@ -8,7 +8,6 @@ import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiM
 import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
 import com.tokopedia.power_merchant.subscribe.domain.usecase.GetShopModerationStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantRemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,7 +23,6 @@ import javax.inject.Inject
 class PowerMerchantSharedViewModel @Inject constructor(
         private val getPmBasicInfo: Lazy<GetPMBasicInfoUseCase>,
         private val getShopModerationStatusUseCase: Lazy<GetShopModerationStatusUseCase>,
-        private val remoteConfig: Lazy<PowerMerchantRemoteConfig>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -39,9 +37,7 @@ class PowerMerchantSharedViewModel @Inject constructor(
     fun getPowerMerchantBasicInfo(isFirstLoad: Boolean) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val isFreeShippingEnabled = remoteConfig.get().isFreeShippingEnabled()
-                val data = getPmBasicInfo.get().executeOnBackground(isFirstLoad)
-                return@withContext data.copy(isFreeShippingEnabled = isFreeShippingEnabled)
+                return@withContext getPmBasicInfo.get().executeOnBackground(isFirstLoad)
             }
             _powerMerchantBasicInfo.value = Success(result)
         }, onError = {

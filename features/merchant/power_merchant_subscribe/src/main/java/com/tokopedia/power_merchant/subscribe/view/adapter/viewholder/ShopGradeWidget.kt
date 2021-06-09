@@ -119,10 +119,10 @@ class ShopGradeWidget(
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
         val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
         if (isPmStatusActive) {
-            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            tvPmShopGradeStatus.setTextColor(context.getResColor(R.color.Unify_Static_White))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_active)
         } else {
-            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.light_R600))
+            tvPmShopGradeStatus.setTextColor(context.getResColor(R.color.pm_static_r600_dms))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_inactive)
         }
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)
@@ -140,7 +140,7 @@ class ShopGradeWidget(
     private fun getPmLabelTextColor(pmStatus: String): Int {
         return when (pmStatus) {
             PMStatusConst.ACTIVE -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
-            else -> itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.light_N700_96)
+            else -> itemView.context.getResColor(R.color.pm_static_n700_96_dms)
         }
     }
 

@@ -55,7 +55,6 @@ class PowerMerchantSharedViewModelTest {
         viewModel = PowerMerchantSharedViewModel(
                 Lazy { getPmBasicInfo },
                 Lazy { getShopModerationStatusUseCase },
-                Lazy { powerMerchantRemoteConfig },
                 CoroutineTestDispatchersProvider
         )
     }
@@ -66,8 +65,7 @@ class PowerMerchantSharedViewModelTest {
                 PMStatusUiModel(),
                 PMShopInfoUiModel(),
                 emptyList(),
-                PeriodType.COMMUNICATION_PERIOD_PM_PRO,
-                true
+                PeriodType.COMMUNICATION_PERIOD_PM_PRO
         )
         val isFirstLoad = anyBoolean()
 
