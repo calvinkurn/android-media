@@ -574,11 +574,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setTopActionButton(ActionButton actionButton) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
-                getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0),
-                getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
-                getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3));
         primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
@@ -590,9 +585,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1), Color.parseColor(actionButton.getActionColor().getBorder()));
         }
         primaryActionBtn.setBackground(shape);
-        if (isSingleButton) {
-            primaryActionBtn.setLayoutParams(params);
-        }
         if (!actionButton.getActionColor().getTextColor().equals("")) {
             primaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
         }
