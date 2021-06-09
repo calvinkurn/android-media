@@ -38,6 +38,10 @@
             android:name=".login.behaviour.activity.ChangeNameActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".login.behaviour.activity.RegisterInitialActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_id_ma" />
