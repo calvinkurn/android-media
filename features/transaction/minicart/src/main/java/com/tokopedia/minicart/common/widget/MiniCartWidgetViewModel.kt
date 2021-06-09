@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget.viewmodel
+package com.tokopedia.minicart.common.widget
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +11,6 @@ import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.*
-import com.tokopedia.minicart.common.widget.GlobalEvent
 import kotlinx.coroutines.*
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
 package com.tokopedia.minicart.cartlist.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.minicart.cartlist.MiniCartSummaryTransactionUiModel
+import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 
 data class MiniCartListUiModel(
