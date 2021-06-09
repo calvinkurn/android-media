@@ -370,7 +370,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
         if (isNavRevamp()) {
             ifNavRevamp.invoke()
-        } else if (isNavOld()) {
+        } else {
             ifNavOld.invoke()
         }
     }

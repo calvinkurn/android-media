@@ -189,19 +189,23 @@ object DeeplinkMapper {
      */
     fun getRegisteredNavigationFromHttp(context: Context, uri: Uri, deeplink: String): String {
         val pathSize = uri.pathSegments.size
-        if (pathSize == 1 && (uri.pathSegments[0] == TOKOPOINTS ||
-                        uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS)) {
+        val firstPath = uri.pathSegments[0]
+        if (pathSize == 1 && (firstPath == TOKOPOINTS ||
+                    firstPath == ApplinkConst.RewardFallback.Reward.REWARDS)
+        ) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
-        val appLinkContent = DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
+        val appLinkContent =
+            DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent
 
-        val applinkDigital = DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
+        val applinkDigital =
+            DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
         }
 
-        if(deeplink.startsWithPattern(DeeplinkMapperAccount.getLoginByQrNavigationFromHttp())){
+        if (firstPath == "qrcode-login") {
             return DeeplinkMapperAccount.getLoginByQr(uri)
         }
 

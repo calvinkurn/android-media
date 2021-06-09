@@ -573,7 +573,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
 
         showNotificationBottomSheet(title, description, primaryCtaText, imageUrl, secondaryCtaText,
                 onPrimaryCtaClicked = {
-                    RouteManager.route(requireContext(), ApplinkConst.SellerApp.CENTRALIZED_PROMO)
+                    openCentralizedPromoPage()
                 }
         )
 
@@ -845,6 +845,7 @@ class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiModel, Wi
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 shopScore = shopInfo?.shopScore.orZero(),
                 threshold = shopInfo?.shopScoreThreshold.orZero(),
+                shopAge = shopInfo?.shopAge.orZero(),
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
                 pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE
