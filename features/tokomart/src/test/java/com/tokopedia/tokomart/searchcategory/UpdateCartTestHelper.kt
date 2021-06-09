@@ -162,6 +162,25 @@ class UpdateCartTestHelper(
         assertThat(baseViewModel.isShowMiniCartLiveData.value, shouldBe(isShowMiniCartWidget))
     }
 
+    fun `onViewReloadPage should have product with quantity from mini cart`() {
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given view created and resumed`()
+
+        `When view reload page`()
+
+        `Then assert product quantity is updated`()
+    }
+
+    private fun `Given view created and resumed`() {
+        baseViewModel.onViewCreated()
+        baseViewModel.onViewResumed()
+    }
+
+    private fun `When view reload page`() {
+        baseViewModel.onViewReloadPage()
+    }
+
     fun `onViewUpdateCartItems should update quantity in product list`() {
         callback.`Given first page API will be successful`()
         `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
