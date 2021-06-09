@@ -6,13 +6,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
-import com.tokopedia.loginregister.login.behaviour.data.DynamicBannerUseCaseStub
-import com.tokopedia.loginregister.login.behaviour.data.GeneratePublicKeyUseCaseStub
-import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
-import com.tokopedia.loginregister.login.behaviour.data.TickerInfoUseCaseStub
-import com.tokopedia.loginregister.login.di.LoginScope
+import com.tokopedia.loginregister.login.behaviour.data.*
+import com.tokopedia.loginregister.login.data.CloudDiscoverDataSource
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialScope
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
@@ -44,12 +42,12 @@ class MockRegisterInitialuseCaseModule {
     }
 
     @Provides
-    @LoginScope
+    @RegisterInitialScope
     fun provideTickerInfoUseCase(
         stub: TickerInfoUseCaseStub
     ): TickerInfoUseCase = stub
 
-    @LoginScope
+    @RegisterInitialScope
     @Provides
     fun provideTickerInfoUseCaseStub(resources: Resources,
                                      graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): TickerInfoUseCaseStub {
@@ -60,6 +58,19 @@ class MockRegisterInitialuseCaseModule {
     fun provideCheckHasOvoUseCase(graphqlRepository: GraphqlRepository): CheckHasOvoAccUseCase {
         val useCase = GraphqlUseCase<CheckOvoResponse>(graphqlRepository)
         return CheckHasOvoAccUseCase(useCase)
+    }
+
+    @RegisterInitialScope
+    @Provides
+    fun provideDiscoverUseCase(
+        stub: DiscoverUseCaseStub
+    ): DiscoverUseCase = stub
+
+    @RegisterInitialScope
+    @Provides
+    fun provideDiscoverUseCasStub(cloudDiscoverDataSource: CloudDiscoverDataSource
+    ): DiscoverUseCaseStub {
+        return DiscoverUseCaseStub(cloudDiscoverDataSource)
     }
 
     @RegisterInitialScope
