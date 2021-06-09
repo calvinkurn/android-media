@@ -19,9 +19,9 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
     return listOf(
             HomeLayoutResponse(
                     id = "34923",
-                    layout = "category_tokonow",
+                    layout = "lego_3_image",
                     header = Header(
-                            name = "Category Tokonow",
+                            name = "Lego Banner",
                             serverTimeUnix = 0
                     ),
             )
@@ -170,31 +170,4 @@ fun createHomeLayoutListwithBanner(): HomeLayoutResponse {
             )
     )
 }
-
-fun createHomeLayoutBannerModelEmptyID(): List<Visitable<*>> {
-    return listOf<Visitable<*>>(
-                    BannerDataModel(channelModel = ChannelModel(id = "", groupId = "", type = "", style = ChannelStyle.ChannelHome, verticalPosition = 0, contextualInfo = 0, widgetParam = "", pageName = "",
-                            channelHeader = ChannelHeader(id = "", name = "Banner Tokonow", subtitle = "", expiredTime = "", serverTimeUnix = 0, applink = "", url = "", backColor = "", backImage = "", textColor = ""),
-                            channelBanner = ChannelBanner(id = "", title = "", description = "", backColor = "", url = "", applink = "", textColor = "", imageUrl = "", attribution = "",
-                                    cta = ChannelCtaData(type = "", mode = "", text = "", couponCode = ""), gradientColor = arrayListOf()),
-                            channelConfig = ChannelConfig(layout = "banner_carousel_v2", showPromoBadge = false, hasCloseButton = false, serverTimeOffset = 0, createdTimeMillis = "", isAutoRefreshAfterExpired = false, enableTimeDiffMoreThan24h = false, dividerType = 0),
-                            trackingAttributionModel = TrackingAttributionModel(galaxyAttribution = "", persona = "", brandId = "", categoryPersona = "", categoryId = "", persoType = "", campaignCode = "", homeAttribution = "", campaignId = "", promoName = ""),
-                            channelGrids = listOf(), name = "", layout = "banner_carousel_v2"))
-    )
-}
-
-fun createHomeLayoutListWithBannerEmptyId(): HomeLayoutListUiModel {
-    return HomeLayoutListUiModel(
-            result = listOf<Visitable<*>>(
-                    BannerDataModel(channelModel = ChannelModel(id = "34922", groupId = "", type = "", style = ChannelStyle.ChannelHome, verticalPosition = 0, contextualInfo = 0, widgetParam = "", pageName = "",
-                            channelHeader = ChannelHeader(id = "", name = "Banner Tokonow", subtitle = "", expiredTime = "", serverTimeUnix = 0, applink = "", url = "", backColor = "", backImage = "", textColor = ""),
-                            channelBanner = ChannelBanner(id = "", title = "", description = "", backColor = "", url = "", applink = "", textColor = "", imageUrl = "", attribution = "",
-                                    cta = ChannelCtaData(type = "", mode = "", text = "", couponCode = ""), gradientColor = arrayListOf("")),
-                            channelConfig = ChannelConfig(layout = "banner_carousel_v2", showPromoBadge = false, hasCloseButton = false, serverTimeOffset = 0, createdTimeMillis = "", isAutoRefreshAfterExpired = false, enableTimeDiffMoreThan24h = false, dividerType = 0),
-                            trackingAttributionModel = TrackingAttributionModel(galaxyAttribution = "", persona = "", brandId = "", categoryPersona = "", categoryId = "", persoType = "", campaignCode = "", homeAttribution = "", campaignId = "", promoName = ""),
-                            channelGrids = listOf(), name = "", layout = "banner_carousel_v2"))),
-            isInitialLoad = false
-    )
-}
-
 

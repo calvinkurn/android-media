@@ -17,7 +17,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         onGetTicker_thenReturn(createTicker())
         onGetHomeLayout_thenReturn(createHomeLayoutList())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutUseCaseCalled()
@@ -38,7 +38,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         onGetTicker_thenReturn(createTicker())
         onGetHomeLayout_thenReturn(createHomeLayoutList())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutUseCaseCalled()
@@ -103,7 +103,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
     fun `when getting homeLayout should throw ticker's exception and get the failed result`() {
         onGetTicker_thenReturn(Exception())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         verifyGetHomeLayoutResponseFail()
     }
@@ -112,7 +112,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
     fun `when getting homeLayout should throw homeLayout's exception and get the failed result`() {
         onGetHomeLayout_thenReturn(Exception())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         verifyGetHomeLayoutResponseFail()
     }
@@ -151,7 +151,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         onGetTicker_thenReturn(createTicker())
         onGetHomeLayout_thenReturn(createHomeLayoutListwithHome())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         viewModel.getLayoutData("1")
 
@@ -168,7 +168,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         onGetTicker_thenReturn(createTicker())
         onGetHomeLayout_thenReturn(createHomeLayoutListwithHome())
 
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         viewModel.getLayoutData("1")
 
