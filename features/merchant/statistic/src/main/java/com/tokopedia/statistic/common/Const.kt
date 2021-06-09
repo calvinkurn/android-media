@@ -23,12 +23,14 @@ object Const {
         const val SHOP_INSIGHT = "shop-insight"
         const val BUYER_INSIGHT = "buyer-insight"
         const val PRODUCT_INSIGHT = "product-landing-insight"
+        const val OPERATIONAL_INSIGHT = "operational-insight"
     }
 
     object TickerPageName {
         const val SHOP_INSIGHT = "seller-statistic"
         const val BUYER_INSIGHT = "wawasan-pembeli"
         const val PRODUCT_INSIGHT = "seller-statistic#wawasan-produk"
+        const val OPERATIONAL_INSIGHT = "seller-statistic#wawasan-produk"
     }
 
     object BottomSheet {
@@ -42,5 +44,7 @@ object Const {
         const val BUYER_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1g16aH6t8n6k-jMqOZpDK4QVgaxIXNodclNpwhS9KdkU/edit"
         const val PRODUCT_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-wawasan-produk?source=sapp-wawasan-produk"
         const val PRODUCT_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
+        const val OPERATIONAL_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
+        const val OPERATIONAL_LEARN_MORE = "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
     }
 }
