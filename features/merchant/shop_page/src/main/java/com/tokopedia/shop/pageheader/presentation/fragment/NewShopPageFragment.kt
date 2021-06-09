@@ -1696,75 +1696,76 @@ class NewShopPageFragment :
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        context?.let {
+                            val shopImageFileUri = MethodChecker.getUri(context, File(shopImageFilePath))
+                            shopShare.appIntent?.clipData = ClipData.newRawUri("", shopImageFileUri)
+                            shopShare.appIntent?.removeExtra(Intent.EXTRA_STREAM)
+                            shopShare.appIntent?.removeExtra(Intent.EXTRA_TEXT)
+                            when (shopShare) {
+                                is ShopShareModel.CopyLink -> {
+                                    linkerShareData?.url?.let { ClipboardHandler().copyToClipboard((activity as Activity), it) }
+                                    Toast.makeText(context, getString(R.string.shop_page_share_action_copy_success), Toast.LENGTH_SHORT).show()
+                                }
+                                is ShopShareModel.Instagram, is ShopShareModel.Facebook -> {
+                                    startActivity(shopShare.appIntent?.apply {
+                                        putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
+                                    })
+                                }
+                                is ShopShareModel.Whatsapp -> {
+                                    startActivity(shopShare.appIntent?.apply {
+                                        putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
+                                        type = ShopShareBottomSheet.MimeType.TEXT.type
+                                        putExtra(Intent.EXTRA_TEXT, getString(
+                                                R.string.shop_page_share_text_with_link,
+                                                shopPageHeaderDataModel?.shopName,
+                                                linkerShareData?.shareContents
+                                        ))
+                                    })
+                                }
+                                is ShopShareModel.Others -> {
+                                    startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+                                        type = ShopShareBottomSheet.MimeType.IMAGE.type
+                                        putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
+                                        type = ShopShareBottomSheet.MimeType.TEXT.type
+                                        putExtra(Intent.EXTRA_TEXT, getString(
+                                                R.string.shop_page_share_text_with_link,
+                                                shopPageHeaderDataModel?.shopName,
+                                                linkerShareData?.shareContents
+                                        ))
+                                    }, getString(R.string.shop_page_share_to_social_media_text)))
+                                }
+                                else -> {
+                                    startActivity(shopShare.appIntent?.apply {
+                                        putExtra(Intent.EXTRA_TEXT, getString(
+                                                R.string.shop_page_share_text_with_link,
+                                                shopPageHeaderDataModel?.shopName,
+                                                linkerShareData?.shareContents
+                                        ))
+                                    })
+                                }
+                            }
 
-                        val shopImageFileUri = MethodChecker.getUri(context, File(shopImageFilePath))
-                        shopShare.appIntent?.clipData = ClipData.newRawUri("", shopImageFileUri)
-                        shopShare.appIntent?.removeExtra(Intent.EXTRA_STREAM)
-                        shopShare.appIntent?.removeExtra(Intent.EXTRA_TEXT)
-                        when (shopShare) {
-                            is ShopShareModel.CopyLink -> {
-                                linkerShareData?.url?.let { ClipboardHandler().copyToClipboard((activity as Activity), it) }
-                                Toast.makeText(context, getString(R.string.shop_page_share_action_copy_success), Toast.LENGTH_SHORT).show()
-                            }
-                            is ShopShareModel.Instagram, is ShopShareModel.Facebook -> {
-                                startActivity(shopShare.appIntent?.apply {
-                                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
-                                })
-                            }
-                            is ShopShareModel.Whatsapp -> {
-                                startActivity(shopShare.appIntent?.apply {
-                                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
-                                    type = ShopShareBottomSheet.MimeType.TEXT.type
-                                    putExtra(Intent.EXTRA_TEXT, getString(
-                                            R.string.shop_page_share_text_with_link,
-                                            shopPageHeaderDataModel?.shopName,
-                                            linkerShareData?.shareContents
-                                    ))
-                                })
-                            }
-                            is ShopShareModel.Others -> {
-                                startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-                                    type = ShopShareBottomSheet.MimeType.IMAGE.type
-                                    putExtra(Intent.EXTRA_STREAM, shopImageFileUri)
-                                    type = ShopShareBottomSheet.MimeType.TEXT.type
-                                    putExtra(Intent.EXTRA_TEXT, getString(
-                                            R.string.shop_page_share_text_with_link,
-                                            shopPageHeaderDataModel?.shopName,
-                                            linkerShareData?.shareContents
-                                    ))
-                                }, getString(R.string.shop_page_share_to_social_media_text)))
-                            }
-                            else -> {
-                                startActivity(shopShare.appIntent?.apply {
-                                    putExtra(Intent.EXTRA_TEXT, getString(
-                                            R.string.shop_page_share_text_with_link,
-                                            shopPageHeaderDataModel?.shopName,
-                                            linkerShareData?.shareContents
-                                    ))
-                                })
-                            }
-                        }
-
-                        // send gql tracker
-                        shopShare.socialMediaName?.let { name ->
-                            shopViewModel?.sendShopShareTracker(
-                                    shopId,
-                                    channel = when (shopShare) {
-                                        is ShopShareModel.CopyLink -> {
-                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                            // send gql tracker
+                            shopShare.socialMediaName?.let { name ->
+                                shopViewModel?.sendShopShareTracker(
+                                        shopId,
+                                        channel = when (shopShare) {
+                                            is ShopShareModel.CopyLink -> {
+                                                ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                            }
+                                            is ShopShareModel.Others -> {
+                                                ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                            }
+                                            else -> name
                                         }
-                                        is ShopShareModel.Others -> {
-                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
-                                        }
-                                        else -> name
-                                    }
-                            )
+                                )
+                            }
+
+                            // send gtm tracker
+                            shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
+
+                            shopShareBottomSheet?.dismiss()
                         }
-
-                        // send gtm tracker
-                        shopPageTracking?.clickShareSocialMedia(customDimensionShopPage, isMyShop, shopShare.socialMediaName)
-
-                        shopShareBottomSheet?.dismiss()
                     }
 
                     override fun onError(linkerError: LinkerError?) {}
