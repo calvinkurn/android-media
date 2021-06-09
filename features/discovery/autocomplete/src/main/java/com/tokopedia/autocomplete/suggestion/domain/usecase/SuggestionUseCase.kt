@@ -76,7 +76,7 @@ class SuggestionUseCase(
         private const val DEVICE_ID = "device_id"
         private const val IS_TYPING = "is_typing"
 
-        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String, isTyping: Boolean): RequestParams {
+        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String, isTyping: Boolean, warehouseId: String): RequestParams {
             val params = RequestParams.create()
 
             params.putAll(searchParameter)
@@ -93,8 +93,7 @@ class SuggestionUseCase(
             params.putString(DEVICE_ID, registrationId)
             params.putBoolean(IS_TYPING, isTyping)
 
-            //need to get user_warehouseId from chooseAddress later
-            params.putString(SearchApiConst.USER_WAREHOUSE_ID, SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
+            if (warehouseId.isNotEmpty()) params.putString(SearchApiConst.USER_WAREHOUSE_ID, warehouseId)
 
             return params
         }

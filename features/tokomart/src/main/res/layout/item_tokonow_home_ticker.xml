@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ticker.Ticker android:id="@+id/ticker_announcement"
-    android:layout_marginStart="@dimen/unify_space_16"
-    android:layout_marginEnd="@dimen/unify_space_16"
-    android:layout_width="match_parent"
-    android:layout_alignParentTop="true"
+<RelativeLayout
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
-    custom:titleText="Hello"
-    custom:descriptionText="Description"
-    custom:tickerType="announcement"
-    custom:tickerShapeType="loose"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto" />
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker android:id="@+id/ticker_announcement"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        custom:tickerType="announcement"
+        custom:tickerShapeType="loose"
+        xmlns:custom="http://schemas.android.com/apk/res-auto" />
+</RelativeLayout>

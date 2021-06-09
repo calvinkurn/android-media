@@ -14,6 +14,14 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_SHOP_ID_PLEASE_DELETE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LAT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -24,6 +32,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
@@ -50,15 +59,6 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LAT
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_LONG
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_POST_CODE
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -123,8 +123,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val isRefreshPageMutableLiveData = MutableLiveData(false)
     val isRefreshPageLiveData: LiveData<Boolean> = isRefreshPageMutableLiveData
 
-    protected val addToCartErrorMessageMutableLiveData = MutableLiveData<String>(null)
-    val addToCartErrorMessageLiveData: LiveData<String> = addToCartErrorMessageMutableLiveData
+    protected val addToCartEventMessageMutableLiveData = MutableLiveData<Event<String>>(null)
+    val addToCartEventMessageLiveData: LiveData<Event<String>> = addToCartEventMessageMutableLiveData
 
     init {
         updateQueryParamWithDefaultSort()
@@ -218,9 +218,9 @@ abstract class BaseSearchCategoryViewModel(
         filterController.initFilterController(queryParamMutable, filterList)
 
         createVisitableListFirstPage(headerDataView, contentDataView)
+        updateIsRefreshPage()
         clearVisitableListLiveData()
         updateVisitableListLiveData()
-        updateIsRefreshPage()
         updateNextPageData()
         processMiniCartUpdate()
     }
@@ -237,24 +237,34 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun createHeaderVisitableList(headerDataView: HeaderDataView): List<Visitable<*>> {
-        val headerList = mutableListOf(
-                ChooseAddressDataView(),
-                createBannerDataView(headerDataView),
-                TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton),
-        )
+        val headerList = mutableListOf<Visitable<*>>()
 
-        val categoryFilter = headerDataView.categoryFilterDataValue.filter.getOrNull(0)
-        if (categoryFilter != null) {
-            headerList.add(CategoryFilterDataView(createCategoryFilterItemList(categoryFilter)))
-        }
+        headerList.add(ChooseAddressDataView())
+        headerList.add(createBannerDataView(headerDataView))
+        headerList.add(TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton))
+
+        processCategoryFilter(headerList, headerDataView.categoryFilterDataValue)
 
         headerList.add(QuickFilterDataView(createQuickFilterItemList(headerDataView)))
         headerList.add(ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText))
 
+        postProcessHeaderList(headerList)
+
         return headerList
     }
 
-    private fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
+    protected open fun processCategoryFilter(
+            headerList: MutableList<Visitable<*>>,
+            categoryFilterDataValue: DataValue,
+    ) {
+        val categoryFilter = categoryFilterDataValue.filter.getOrNull(0)
+
+        if (categoryFilter != null) {
+            headerList.add(CategoryFilterDataView(createCategoryFilterItemList(categoryFilter)))
+        }
+    }
+
+    protected fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
         val channel = headerDataView.bannerChannel
         val position = 1
         val channelModel = DynamicChannelComponentMapper.mapChannelToComponent(channel, position)
@@ -262,12 +272,12 @@ abstract class BaseSearchCategoryViewModel(
         return BannerDataView(channelModel)
     }
 
-    private fun createCategoryFilterItemList(categoryFilter: Filter) =
+    protected fun createCategoryFilterItemList(categoryFilter: Filter) =
             categoryFilter.options.map {
                 CategoryFilterItemDataView(it, filterController.getFilterViewState(it))
             }
 
-    private fun createQuickFilterItemList(headerDataView: HeaderDataView) =
+    protected fun createQuickFilterItemList(headerDataView: HeaderDataView) =
             headerDataView.quickFilterDataValue.filter.map {
                 SortFilterItemDataView(
                         filter = it,
@@ -325,6 +335,7 @@ abstract class BaseSearchCategoryViewModel(
         totalFetchedData = 0
         nextPage = 1
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        dynamicFilterModelMutableLiveData.value = null
 
         onViewCreated()
     }
@@ -333,6 +344,10 @@ abstract class BaseSearchCategoryViewModel(
         if (isL3FilterPageOpenMutableLiveData.value != null) return
 
         isL3FilterPageOpenMutableLiveData.value = selectedFilter
+    }
+
+    protected open fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
+
     }
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
@@ -670,11 +685,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel) {
-        addToCartErrorMessageMutableLiveData.value = ""
+        addToCartEventMessageMutableLiveData.value = Event("")
     }
 
     private fun onAddToCartFailed(throwable: Throwable) {
-        addToCartErrorMessageMutableLiveData.value = throwable.message
+        addToCartEventMessageMutableLiveData.value = Event(throwable.message ?: "")
     }
 
     fun onLocalizingAddressSelected() {

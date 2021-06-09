@@ -1,10 +1,11 @@
-package com.tokopedia.minicart.cartlist
+package com.tokopedia.minicart.cartlist.subpage
 
 import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.common.data.response.minicartlist.Button
 import com.tokopedia.minicart.common.data.response.minicartlist.OutOfService
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -67,12 +68,4 @@ class GlobalErrorBottomSheet @Inject constructor() {
         bottomSheet.setChild(view)
         bottomSheet.show(fragmentManager, "Mini Cart Global Error")
     }
-}
-
-interface GlobalErrorBottomSheetActionListener {
-
-    fun onGoToHome()
-
-    fun onRefreshErrorPage()
-
 }

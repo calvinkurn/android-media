@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.cartlist
+package com.tokopedia.minicart.cartlist.subpage.summarytransaction
 
 data class MiniCartSummaryTransactionUiModel(
         var qty: Int = 0,
