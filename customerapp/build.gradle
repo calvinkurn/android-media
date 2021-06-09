@@ -286,6 +286,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.mediaCommon)
+    implementation project(rootProject.ext.features.telephony_masking)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
