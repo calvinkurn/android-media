@@ -8,11 +8,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
-import com.tokopedia.tokomart.home.constant.TokoNowConstant.SHOP_ID
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addChooseAddressIntoList
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
@@ -40,7 +41,8 @@ class TokoMartHomeViewModel @Inject constructor(
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
     private val getTickerUseCase: GetTickerUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-    private val dispatchers: CoroutineDispatchers
+    private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
+    private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -66,22 +68,32 @@ class TokoMartHomeViewModel @Inject constructor(
         get() = _keywordSearch
     val miniCart: LiveData<Result<MiniCartSimplifiedData>>
         get() = _miniCart
+    val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
+        get() = _chooseAddress
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
+    private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
 
     private var layoutList = listOf<Visitable<*>>()
 
     fun getChooseAddress() {
         layoutList = addChooseAddressIntoList()
-        val data = HomeLayoutListUiModel(layoutList, isChooseAddressWidgetDisplayed = true)
+        val data = HomeLayoutListUiModel(
+                result = layoutList,
+                isChooseAddressWidgetDisplayed = true,
+                isHeaderBackgroundShowed = false
+        )
         _homeLayoutList.value = Success(data)
     }
 
     fun getEmptyState(id: String) {
         layoutList = addEmptyStateIntoList(id)
-        val data = HomeLayoutListUiModel(layoutList, isHeaderBackgroundShowed = false)
+        val data = HomeLayoutListUiModel(
+                result = layoutList,
+                isHeaderBackgroundShowed = false
+        )
         _homeLayoutList.value = Success(data)
     }
 
@@ -112,7 +124,11 @@ class TokoMartHomeViewModel @Inject constructor(
                         homeLayoutResponse,
                         mapTickerData(getTickerAsync.await().orEmpty())
                 )
-                val data = HomeLayoutListUiModel(layoutList, isInitialLoad = true, isHeaderBackgroundShowed = true)
+                val data = HomeLayoutListUiModel(
+                        result = layoutList,
+                        isInitialLoad = true,
+                        isHeaderBackgroundShowed = true
+                )
                 _homeLayoutList.postValue(Success(data))
             }
         }) {
@@ -127,7 +143,10 @@ class TokoMartHomeViewModel @Inject constructor(
             val getDataForEachLayout = layoutItems.filter { it.isNotStaticLayout() }.map {
                 asyncCatchError(block = {
                     val layoutList = getHomeComponentData(it, warehouseId)
-                    val data = HomeLayoutListUiModel(layoutList, isHeaderBackgroundShowed = true)
+                    val data = HomeLayoutListUiModel(
+                            result = layoutList,
+                            isHeaderBackgroundShowed = true
+                    )
                     _homeLayoutList.postValue(Success(data))
                 }) {
                     _homeLayoutList.postValue(Fail(it))
@@ -147,9 +166,9 @@ class TokoMartHomeViewModel @Inject constructor(
         }) {}
     }
 
-    fun getMiniCart() {
+    fun getMiniCart(shopId: List<String>) {
         launchCatchError(block = {
-            getMiniCartUseCase.setParams(listOf(SHOP_ID))
+            getMiniCartUseCase.setParams(shopId)
             getMiniCartUseCase.execute({
                 _miniCart.postValue(Success(it))
             }, {
@@ -158,6 +177,14 @@ class TokoMartHomeViewModel @Inject constructor(
         }) {
             _miniCart.postValue(Fail(it))
         }
+    }
+
+    fun getChosenAddress(source: String){
+        getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
+            _chooseAddress.postValue(Success(it))
+        },{
+            _chooseAddress.postValue(Fail(it))
+        }, source)
     }
 
     private suspend fun getTicker(): List<Ticker> {
