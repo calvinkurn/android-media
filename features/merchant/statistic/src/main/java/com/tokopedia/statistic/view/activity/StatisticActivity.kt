@@ -50,6 +50,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -125,13 +126,19 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         supportActionBar?.title = getString(R.string.stc_statistic)
         return if (isWhiteListed) {
             tabStatistic.visible()
-            listOf(StatisticPageHelper.getShopStatistic(this, userSession),
+            listOf(
+                    StatisticPageHelper.getShopStatistic(this, userSession),
                     StatisticPageHelper.getProductStatistic(this, userSession),
-                    StatisticPageHelper.getBuyerStatistic(this, userSession))
+                    StatisticPageHelper.getOperationalStatistic(this),
+                    StatisticPageHelper.getBuyerStatistic(this, userSession)
+            )
         } else {
             tabStatistic.gone()
-            listOf(StatisticPageHelper.getShopStatistic(this, userSession),
-                    StatisticPageHelper.getProductStatistic(this, userSession))
+            listOf(
+                    StatisticPageHelper.getShopStatistic(this, userSession),
+                    StatisticPageHelper.getProductStatistic(this, userSession),
+                    StatisticPageHelper.getOperationalStatistic(this)
+            )
         }
     }
 
@@ -168,8 +175,13 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun setupViewPager(isWhiteListed: Boolean) {
         pages = getStatisticPages(isWhiteListed)
-        pages.forEach { page ->
-            viewPagerAdapter?.addFragment(StatisticFragment.newInstance(page), page.pageTitle)
+        pages.forEachIndexed { index, page ->
+            val shouldLoadDataOnCreate = if (selectedPageSource.isNotBlank()) {
+                page.pageSource == selectedPageSource
+            } else {
+                index == 0
+            }
+            viewPagerAdapter?.addFragment(StatisticFragment.newInstance(page, shouldLoadDataOnCreate), page.pageTitle)
         }
 
         viewPagerAdapter?.let {
