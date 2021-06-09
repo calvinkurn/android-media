@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.login.behaviour.activity.RegisterInitialActivityStub
+import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.di.DaggerBaseAppComponentStub
 import com.tokopedia.loginregister.login.behaviour.di.DaggerRegisterInitialComponentStub
@@ -19,6 +19,7 @@ import com.tokopedia.loginregister.login.behaviour.di.RegisterInitialComponentSt
 import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
 import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginRegisterComponent
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
+import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -29,10 +30,12 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 import javax.inject.Inject
 
-class RegisterInitialBase {
+open class RegisterInitialBase: LoginRegisterBase() {
+
+    var isDefaultRegisterCheck = true
+    var isDefaultDiscover = true
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
@@ -55,6 +58,9 @@ class RegisterInitialBase {
 
     @Inject
     lateinit var registerCheckUseCase: GraphqlUseCaseStub<RegisterCheckPojo>
+
+    @Inject
+    lateinit var discoverUseCaseStub: DiscoverUseCaseStub
 
     @ExperimentalCoroutinesApi
     @Before
@@ -115,50 +121,26 @@ class RegisterInitialBase {
         registerCheckUseCase.response = RegisterCheckPojo(data)
     }
 
+    protected fun setDefaultDiscover() {
+        val mockProviders = arrayListOf(
+            DiscoverItemDataModel("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
+            DiscoverItemDataModel("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
+        )
+        val response = DiscoverDataModel(mockProviders, "")
+        discoverUseCaseStub.response = response
+    }
+
     fun runTest(test: () -> Unit) {
-        setRegisterCheckDefaultResponse()
-//        if(isDefaultDiscover) {
-//            setDefaultDiscover()
-//        }
-//        if(isDefaultRegisterCheck) {
-//            setRegisterCheckDefaultResponse()
-//        }
+//        setRegisterCheckDefaultResponse()
+        if(isDefaultDiscover) {
+            setDefaultDiscover()
+        }
+        if(isDefaultRegisterCheck) {
+            setRegisterCheckDefaultResponse()
+        }
         launchDefaultFragment()
         clearEmailInput()
         test.invoke()
-    }
-
-    fun clearEmailInput() {
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.input_email_phone))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(ViewActions.clearText())
-    }
-
-    fun inputEmailOrPhone(value: String) {
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.input_email_phone))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(ViewActions.typeText(value))
-    }
-
-    fun clickSubmit(){
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.register_btn))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(ViewActions.click())
-    }
-
-    @Test
-    fun testRunning() {
-        runTest {
-            inputEmailOrPhone("yoris.prayogoooooo@tokopedia.com")
-            clickSubmit()
-            isDialogDisplayed("Email Sudah Terdaftar")
-        }
-    }
-
-    fun isDialogDisplayed(text: String) {
-        Espresso.onView(ViewMatchers.withText(text))
-            .inRoot(RootMatchers.isDialog())
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
 }
