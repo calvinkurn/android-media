@@ -31,7 +31,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "event": "openScreen",
@@ -44,7 +45,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "click camera onboarding",
@@ -310,7 +312,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "click capture",
@@ -411,7 +414,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "click title live streaming",
@@ -534,7 +538,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "click product tag live",
@@ -668,7 +673,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "error state on report page",
