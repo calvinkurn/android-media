@@ -8,6 +8,9 @@ data class ProductData(
     @SerializedName("productID")
     @Expose
     val productID: Long = 0,
+    @SerializedName("productIDStr")
+    @Expose
+    val productIDStr: String = "",
     @SerializedName("productImageURL")
     @Expose
     val productImageURL: String = "",

@@ -28,6 +28,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -80,13 +81,13 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         mockkObject(GetProductReputationForm)
 
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
         } returns ProductRevGetForm()
 
         viewModel.getProductReputation(anyLong(), anyLong())
 
         coVerify {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
         }
 
         assertTrue(viewModel.getReputationDataForm.observeAwaitValue() is Success)
@@ -97,13 +98,13 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         mockkObject(GetProductReputationForm)
 
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
         } throws Throwable()
 
         viewModel.getProductReputation(anyLong(), anyLong())
 
         coVerify {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
         }
 
         assertTrue(viewModel.getReputationDataForm.observeAwaitValue() is Fail)
@@ -556,7 +557,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun onGetForm_thenReturn() {
         coEvery {
-            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyLong(), anyLong()))
+            getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
         } returns ProductRevGetForm()
     }
 

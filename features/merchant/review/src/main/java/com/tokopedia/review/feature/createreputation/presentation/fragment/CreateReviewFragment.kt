@@ -103,13 +103,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Long, utmSource: String) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: String, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
-                putLong(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
+                putString(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
                 putString(ReviewConstants.PARAM_UTM_SOURCE, utmSource)
             }
         }
@@ -127,8 +127,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var shouldPlayAnimation: Boolean = true
     private var reviewClickAt: Int = 0
-    private var reputationId: Long = 0
-    private var productId: Long = 0
+    private var reputationId: String = ""
+    private var productId: String = ""
     private var shopId: String = ""
     private var isEditMode: Boolean = false
     private var feedbackId: Long = 0
@@ -201,9 +201,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
         CreateReviewTracking.openScreen(screenName)
 
         arguments?.let {
-            productId = it.getString(PRODUCT_ID_REVIEW, "").toLongOrZero()
+            productId = it.getString(PRODUCT_ID_REVIEW, "")
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
-            reputationId = it.getString(REPUTATION_ID, "").toLongOrZero()
+            reputationId = it.getString(REPUTATION_ID, "")
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
             feedbackId = it.getLong(ReviewConstants.PARAM_FEEDBACK_ID, 0)
             utmSource = it.getString(ReviewConstants.PARAM_UTM_SOURCE, "")
@@ -290,7 +290,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             override fun onClick(position: Int) {
                 CreateReviewTracking.reviewOnRatingChangedTracker(
                         getOrderId(),
-                        productId.toString(10),
+                        productId,
                         (position).toString(10),
                         true,
                         isEditMode,
@@ -333,7 +333,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         createReviewAnonymousCheckbox.setOnClickListener {
             if (createReviewAnonymousCheckbox.isChecked) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId, isEditMode, feedbackId.toString())
             }
             clearFocusAndHideSoftInput(view)
         }
@@ -458,7 +458,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
                             getOrderId(),
-                            productId.toString(10),
+                            productId,
                             true,
                             selectedImage.size.toString(10),
                             isEditMode,
@@ -487,7 +487,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewViewModel.getReviewDetails(feedbackId)
     }
 
-    private fun getIncentiveOvoData(productId: Long = 0, reputationId: Long = 0) {
+    private fun getIncentiveOvoData(productId: String = "", reputationId: String = "") {
         createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
@@ -495,7 +495,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         val reviewMessage = createReviewExpandableTextArea.getText()
         CreateReviewTracking.reviewOnSubmitTracker(
                 getOrderId(),
-                productId.toString(10),
+                productId,
                 reviewClickAt.toString(10),
                 reviewMessage.isEmpty(),
                 createReviewViewModel.getSelectedImagesUrl().size.toString(10),
@@ -509,7 +509,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 showToasterError(getString(R.string.review_edit_blank_error))
                 return
             }
-            createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toLongOrZero(),
+            createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId,
                     createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {
             if (!isReviewComplete() && isUserEligible()) {
@@ -563,7 +563,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         with(data.productrevGetForm) {
-            updateProductId(productData.productID)
+            updateProductId(productData.productIDStr)
             when {
                 !validToReview -> {
                     finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
@@ -929,7 +929,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun initAnonymousText() {
         createReviewAnonymousText.setOnClickListener {
             if (createReviewAnonymousCheckbox.isChecked) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId, isEditMode, feedbackId.toString())
             }
         }
     }
@@ -985,7 +985,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun updateProductId(productId: Long) {
+    private fun updateProductId(productId: String) {
         this.productId = productId
     }
 

@@ -10,6 +10,9 @@ data class ProductRevResponse(
         @SerializedName("reputationID")
         @Expose
         val reputationID: Long = 0,
+        @SerializedName("reputationIDStr")
+        @Expose
+        val reputationIDStr: String = "",
         @SerializedName("orderID")
         @Expose
         val orderID: String = "",

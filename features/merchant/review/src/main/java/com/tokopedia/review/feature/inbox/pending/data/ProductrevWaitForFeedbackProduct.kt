@@ -7,6 +7,9 @@ data class ProductrevWaitForFeedbackProduct(
         @SerializedName("productID")
         @Expose
         val productId: Long = 0,
+        @SerializedName("productIDStr")
+        @Expose
+        val productIDStr: String = "",
         @SerializedName("productName")
         @Expose
         val productName: String = "",
