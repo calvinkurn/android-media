@@ -23,6 +23,7 @@ class InboxActivityApplinkTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val inbox = "com.tokopedia.inbox.view.activity.InboxActivity"
+    private val oldNotifcenter = "com.tokopedia.notifcenter.presentation.activity.NotificationActivity"
 
     @Before
     fun setUp() {
@@ -140,6 +141,23 @@ class InboxActivityApplinkTest {
         assertThat(intent, hasQueryParameter(PARAM_SHOW_BOTTOM_NAV, "false"))
     }
 
+    @Test
+    fun should_point_to_old_inbox_when_not_whitelisted_ab_old_to_new_notifcenter() {
+        // Given
+        applyAbKeyValue(
+            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
+        )
+        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
+
+        // When
+        val intent = RouteManager.getIntent(context, applinkUri.toString())
+
+        // Then
+        assertThat(intent, isPointingTo(oldNotifcenter))
+    }
+
+    // TODO: should always redirect to old notifcenter if whitelisted on sellerapp
+
     private fun applyAbKeyValue(key: String, value: String) {
         RemoteConfigInstance.getInstance().abTestPlatform.apply {
             setString(
@@ -147,6 +165,4 @@ class InboxActivityApplinkTest {
             )
         }
     }
-
-    // TODO: should redirect to old notifcenter if not whitelisted
 }
