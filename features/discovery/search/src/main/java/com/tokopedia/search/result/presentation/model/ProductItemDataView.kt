@@ -10,6 +10,8 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.safeCastRupiahToInt
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
+import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.utils.text.currency.StringUtils
 
 class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductListTypeFactory> {
@@ -59,12 +61,13 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         get() = (position - 1) / SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt() + 1
     val categoryString: String?
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
+    var dimension90: String = ""
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
 
-    fun getProductAsObjectDataLayer(filterSortParams: String, dimension90: String): Any {
+    fun getProductAsObjectDataLayer(filterSortParams: String): Any {
         return DataLayer.mapOf(
                 "name", productName,
                 "id", productID,
@@ -83,6 +86,21 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
                 "dimension96", boosterList,
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", sourceEngine
+        )
+    }
+
+    fun getProductAdsAsObjectDataLayer(): Any {
+        return DataLayer.mapOf(
+                "name", productName,
+                "id", productID,
+                "price", price.replace("[^0-9]".toRegex(), ""),
+                "brand", "none / other",
+                "category", if (categoryBreadcrumb?.isEmpty() == true) "none / other" else categoryBreadcrumb,
+                "variant", "none / other",
+                "list", "/searchproduct - topads productlist",
+                "position", position.toString(),
+                "dimension83", getFreeOngkirDataLayer(),
+                "dimension90", dimension90,
         )
     }
 
@@ -107,30 +125,30 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         get() = String.format(ACTION_FIELD, if (isOrganicAds) ORGANIC_ADS else ORGANIC)
 
     fun getProductAsATCObjectDataLayer(cartId: String): Any = DataLayer.mapOf(
-                "name", productName,
-                "id", productID,
-                "price", safeCastRupiahToInt(price).toString(),
-                "brand", "none / other",
-                "category", categoryBreadcrumb,
-                "variant", "none / other",
-                "quantity", minOrder,
-                "shop_id", shopID,
-                "shop_type", shopType,
-                "shop_name", shopName,
-                "category_id", categoryID,
-                "dimension82", cartId
-        )
+            "name", productName,
+            "id", productID,
+            "price", safeCastRupiahToInt(price).toString(),
+            "brand", "none / other",
+            "category", categoryBreadcrumb,
+            "variant", "none / other",
+            "quantity", minOrder,
+            "shop_id", shopID,
+            "shop_type", shopType,
+            "shop_name", shopName,
+            "category_id", categoryID,
+            "dimension82", cartId
+    )
 
     fun getProductAsShopPageObjectDataLayer(): Any = DataLayer.mapOf(
-                "id", shopID,
-                "name", String.format(ACTION_FIELD, if (isAds) ORGANIC_ADS else ORGANIC),
-                "creative", shopName,
-                "creative_url", shopUrl,
-                "position", position.toString(),
-                "category", categoryBreadcrumb,
-                "promo_id", "none / other",
-                "promo_code", "none / other"
-        )
+            "id", shopID,
+            "name", String.format(ACTION_FIELD, if (isAds) ORGANIC_ADS else ORGANIC),
+            "creative", shopName,
+            "creative_url", shopUrl,
+            "position", position.toString(),
+            "category", categoryBreadcrumb,
+            "promo_id", "none / other",
+            "promo_code", "none / other"
+    )
 
     private val shopType: String
         get() = when {

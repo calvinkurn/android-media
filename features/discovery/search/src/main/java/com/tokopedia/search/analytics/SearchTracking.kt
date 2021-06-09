@@ -786,13 +786,15 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackEventClickBroadMatchSeeMore(keyword: String?, alternativeKeyword: String?) {
+    fun trackEventClickBroadMatchSeeMore(keyword: String?, alternativeKeyword: String?, pageSource: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
                         SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_BROAD_MATCH_LIHAT_SEMUA,
-                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword))
+                        SearchTrackingConstant.EVENT_LABEL, String.format("%s - %s", keyword, alternativeKeyword),
+                        SearchTrackingConstant.PAGE_SOURCE, pageSource,
+                )
         )
     }
 
@@ -811,7 +813,7 @@ object SearchTracking {
                                 DataLayer.mapOf("list", "/search - broad match"),
                                 "products", DataLayer.listOf(
                                 *broadMatchItems.toTypedArray()
-                        )
+                            )
                         )
                 )
                 )

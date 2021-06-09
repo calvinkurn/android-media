@@ -455,7 +455,8 @@ class ProductListPresenter @Inject constructor(
                 lastProductItemPosition,
                 searchProductModel,
                 pageTitle,
-                isLocalSearch()
+                isLocalSearch(),
+                getDimension90(),
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -560,6 +561,7 @@ class ProductListPresenter @Inject constructor(
                     item.categoryBreadcrumb = topAds.product.categoryBreadcrumb
                     item.productUrl = topAds.product.uri
                     item.minOrder = topAds.product.productMinimumOrder
+                    item.dimension90 = getDimension90()
                     list.add(i, item)
                     j++
                     topAdsCount++
@@ -1798,7 +1800,7 @@ class ProductListPresenter @Inject constructor(
             )
         }
 
-        view.sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword(), getDimension90())
+        view.sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword())
     }
 
     private fun getSuggestedRelatedKeyword(): String {
@@ -1863,7 +1865,7 @@ class ProductListPresenter @Inject constructor(
             )
         }
 
-        view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword(), getDimension90())
+        view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
     }
 
     override fun getProductCount(mapParameter: Map<String, String>?) {
