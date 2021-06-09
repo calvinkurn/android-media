@@ -159,6 +159,7 @@ open class LoginBase {
             setRegisterCheckDefaultResponse()
         }
         launchDefaultFragment()
+        clearEmailInput()
         test.invoke()
     }
 
@@ -198,6 +199,11 @@ open class LoginBase {
 
     fun clickUbahButton() {
         onView(withId(R.id.change_button)).check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+    }
+
+    fun clearEmailInput() {
+        val viewInteraction = onView(withId(R.id.input_email_phone)).check(matches(isDisplayed()))
+        viewInteraction.perform(ViewActions.clearText())
     }
 
     fun inputEmailOrPhone(value: String) {

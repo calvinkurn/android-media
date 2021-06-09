@@ -39,6 +39,7 @@ import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import org.hamcrest.CoreMatchers.not
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 
@@ -170,6 +171,29 @@ class LoginNormalCase : LoginBase() {
                     .perform(click())
             intended(hasComponent(RegisterInitialActivity::class.java.name))
             intended(hasComponent(RegisterEmailActivity::class.java.name))
+        }
+    }
+
+    @Test
+    /* Check if activity is finished when login success */
+    fun finishActivityIfLoginSuccess() {
+        isDefaultRegisterCheck = false
+        val regCheck = RegisterCheckData(isExist = true, userID = "123456", registerType = "email", view = "yoris.prayogo@tokopedia.com", isPending = false)
+        registerCheckUseCaseStub.response = RegisterCheckPojo(data = regCheck)
+
+        val loginToken = LoginToken(accessToken = "abc123")
+        val loginPojo = LoginTokenPojo(loginToken)
+        loginTokenUseCaseStub.response = loginPojo
+
+        runTest {
+            mockVerificationSuccess()
+            mockChooseAccountSuccess()
+
+            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
+            clickSubmit()
+            inputPassword("test123")
+            clickSubmit()
+            assertTrue(activity.isFinishing)
         }
     }
 
