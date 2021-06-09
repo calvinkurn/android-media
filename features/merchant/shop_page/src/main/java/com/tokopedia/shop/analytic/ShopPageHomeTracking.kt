@@ -116,6 +116,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VERTICAL_POSITION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE_IRIS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_BUY_AGAIN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_CAROUSELL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WIDGET_TYPE_REMINDER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WISHLIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITHOUT_CART
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.WITH_CART
@@ -123,6 +124,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
+import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
 import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.StatusCampaign
@@ -242,11 +244,7 @@ class ShopPageHomeTracking(
             widgetName: String,
             customDimensionShopPage: CustomDimensionShopPage
     ) {
-        val widgetType = if(isSameTypeAsBuyAgain(widgetName)) {
-            WIDGET_TYPE_BUY_AGAIN
-        } else {
-            WIDGET_TYPE_CAROUSELL
-        }
+        val widgetType = getShopPersoWidgetType(widgetName)
         val eventAction = IMPRESSION_PRODUCT_RECOMMENDATION
         val eventLabel = joinDash(
                 widgetHeaderTitle,
@@ -292,8 +290,13 @@ class ShopPageHomeTracking(
         sendDataLayerEvent(eventMap)
     }
 
-    private fun isSameTypeAsBuyAgain(widgetName: String): Boolean {
-        return widgetName == BUY_AGAIN || widgetName == REMINDER
+    private fun getShopPersoWidgetType(widgetName: String): String {
+        return when (widgetName) {
+            BUY_AGAIN -> WIDGET_TYPE_BUY_AGAIN
+            RECENT_ACTIVITY -> WIDGET_TYPE_CAROUSELL
+            REMINDER -> WIDGET_TYPE_REMINDER
+            else -> ""
+        }
     }
 
     fun impressionProduct(
@@ -405,11 +408,7 @@ class ShopPageHomeTracking(
             widgetName: String,
             customDimensionShopPage: CustomDimensionShopPage
     ) {
-        val widgetType = if(isSameTypeAsBuyAgain(widgetName)) {
-            WIDGET_TYPE_BUY_AGAIN
-        } else {
-            WIDGET_TYPE_CAROUSELL
-        }
+        val widgetType = getShopPersoWidgetType(widgetName)
         val eventAction = if(isLogin) {
             CLICK_PRODUCT_RECOMMENDATION
         } else {
@@ -525,16 +524,11 @@ class ShopPageHomeTracking(
             customDimensionShopPage: CustomDimensionShopPage
     ) {
 
-        val widgetType = if(isSameTypeAsBuyAgain(widgetName)) {
-            WIDGET_TYPE_BUY_AGAIN
-        } else {
-            WIDGET_TYPE_CAROUSELL
-        }
-
-        val eventAction = if(widgetType == WIDGET_TYPE_CAROUSELL) {
-            CLICK_ATC_RECOMMENDATION
-        } else {
-            CLICK_OCC_RECOMMENDATION
+        val widgetType = getShopPersoWidgetType(widgetName)
+        val eventAction = when(widgetType){
+            WIDGET_TYPE_CAROUSELL, WIDGET_TYPE_REMINDER -> CLICK_ATC_RECOMMENDATION
+            WIDGET_TYPE_BUY_AGAIN -> CLICK_OCC_RECOMMENDATION
+            else -> ""
         }
 
         val eventLabel = joinDash(

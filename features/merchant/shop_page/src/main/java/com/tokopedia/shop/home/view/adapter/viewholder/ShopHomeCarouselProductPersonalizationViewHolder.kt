@@ -127,7 +127,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
 
     private fun isAtcOcc(
             widgetName: String
-    ) : Boolean = widgetName == BUY_AGAIN || widgetName == REMINDER
+    ) : Boolean = widgetName == BUY_AGAIN
 
     private fun isHasATC(
        element : ShopHomeCarousellProductUiModel?
