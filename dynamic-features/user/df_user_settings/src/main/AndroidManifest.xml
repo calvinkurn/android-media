@@ -3,7 +3,7 @@
     package="com.tokopedia.df.user.settings">
 
     <dist:module
-        dist:title="@string/title_module_user_settings">
+        dist:title="@string/title_feature_login_fingerprint_setting">
         <dist:delivery>
             <dist:on-demand/>
         </dist:delivery>

@@ -1,14 +1,23 @@
 package com.tokopedia.loginfingerprint.view.helper
 
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
+import androidx.fragment.app.FragmentActivity
+import com.tokopedia.loginfingerprint.R
 
 object BiometricPromptHelper {
-    fun showBiometricPrompt(fragment: Fragment, onSuccess: () -> Unit, onFailed: () -> Unit, onError: (Int) -> Unit) {
-        val executor = ContextCompat.getMainExecutor(fragment.activity)
-        var counter = 0
+
+    fun isBiometricAvailable(context: FragmentActivity?): Boolean {
+        context?.let {
+            return BiometricManager.from(context).canAuthenticate(BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+        }
+        return false
+    }
+
+    fun showBiometricPrompt(fragmentActivity: FragmentActivity, onSuccess: () -> Unit, onFailed: () -> Unit, onError: (Int) -> Unit) {
+        val executor = ContextCompat.getMainExecutor(fragmentActivity)
         var biometricPrompt: BiometricPrompt? = null
 
         val callback =  object : BiometricPrompt.AuthenticationCallback() {
@@ -27,20 +36,14 @@ object BiometricPromptHelper {
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
                 onFailed()
-                counter++
-
-                if(counter == 3){
-                    biometricPrompt?.cancelAuthentication()
-                    FingerprintDialogHelper.showInvalidFingerprintDialog(fragment.activity)
-                }
             }
         }
 
-        biometricPrompt = BiometricPrompt(fragment, executor, callback)
+        biometricPrompt = BiometricPrompt(fragmentActivity, executor, callback)
 
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Masuk dengan sidik jari")
-            .setNegativeButtonText("Gunakan metode lain")
+            .setTitle(fragmentActivity.getString(R.string.title_main))
+            .setNegativeButtonText(fragmentActivity.getString(R.string.button_close_fingerprint))
             .build()
 
         biometricPrompt.authenticate(promptInfo)

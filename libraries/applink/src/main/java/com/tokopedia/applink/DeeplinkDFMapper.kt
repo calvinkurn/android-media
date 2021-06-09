@@ -2,7 +2,6 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
@@ -56,6 +55,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_COMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.BIOMETRIC_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_GENDER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
@@ -80,6 +80,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_INTRO
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.VERIFY_BIOMETRIC
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V1
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.ADD_ADDRESS_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
@@ -190,6 +191,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_TRAVEL = "df_travel"
     const val DF_USER_LIVENESS = "df_user_liveness"
     const val DF_USER_SETTINGS = "df_user_settings"
+    const val DF_USER_FINGERPRINT = "df_user_fingerprint"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
     const val DF_PROMO_CHECKOUT = "df_promo_checkout"
@@ -466,6 +468,10 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DF_BASE, R.string.fingerprint_onboarding))
             add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
+            add(DFP({
+                    it.startsWith(VERIFY_BIOMETRIC) ||
+                    it.startsWith(BIOMETRIC_SETTING)
+                    }, DF_USER_FINGERPRINT, R.string.applink_fingerprint))
 
             add(DFP({ it.startsWith(NOTIFICATION) }, DF_BASE, R.string.title_notification_center))
             add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DF_BASE, R.string.title_notification_center))
@@ -628,9 +634,6 @@ object DeeplinkDFMapper : CoroutineScope {
     @JvmStatic
     fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String): String? {
         //KITKAT does not support dynamic feature
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            return null
-        }
         if (deeplink.startsWith(DYNAMIC_FEATURE_INSTALL_BASE)) {
             return null
         }

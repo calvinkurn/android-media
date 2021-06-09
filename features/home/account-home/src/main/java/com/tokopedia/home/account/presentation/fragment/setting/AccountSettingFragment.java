@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +36,10 @@ import com.tokopedia.home.account.presentation.AccountSetting;
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.sessioncommon.constants.SessionConstants;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -55,11 +58,15 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
 
     private static final String REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF = "android_user_setting_otp_push_notif";
+    private static final String REMOTE_CONFIG_SETTING_BIOMETRIC = "android_user_fingerprint_login_new";
+
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
     private Integer PROJECT_ID = 7;
+
+    private RemoteConfigInstance remoteConfigInstance;
 
     private View personalDataMenu;
     private View addressMenu;
@@ -73,11 +80,13 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View bankAccount;
     private View mainView;
     private View sampaiSeparator;
-    private ProgressBar progressBar;
+    private LoaderUnify progressBar;
 
     private boolean isFromNewAccount = false;
 
     private LinearLayout accountSection;
+
+    FirebaseRemoteConfigImpl firebaseRemoteConfig;
 
     @Inject
     AccountSetting.Presenter presenter;
@@ -93,6 +102,14 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         super.onAttach(context);
         userSession = new UserSession(getActivity());
         accountAnalytics = new AccountAnalytics(getActivity());
+        firebaseRemoteConfig = new FirebaseRemoteConfigImpl(context);
+    }
+
+    private AbTestPlatform getAbTestPlatform() {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = new RemoteConfigInstance(getActivity().getApplication());
+        }
+        return remoteConfigInstance.getABTestPlatform();
     }
 
     @Nullable
@@ -122,6 +139,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         setMenuClickListener(view);
         getMenuToggle();
+        checkFingerprintStatus();
         showSignInNotif();
         checkForNewAccount();
     }
@@ -189,6 +207,14 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     public void showErrorNoConnection() {
         hideLoading();
         showError(getString(R.string.error_no_internet_connection));
+    }
+
+    private void checkFingerprintStatus() {
+        if(showFingerprintMenu() && rolloutFingerprint()) {
+            biometricMenu.setVisibility(View.VISIBLE);
+        } else {
+            biometricMenu.setVisibility(View.GONE);
+        }
     }
 
     private void setMenuClickListener(View view) {
@@ -337,9 +363,16 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void showSignInNotif() {
-        FirebaseRemoteConfigImpl firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
         boolean isShowSignInNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF, false);
         pushNotifMenu.setVisibility(isShowSignInNotif ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean showFingerprintMenu() {
+        return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_BIOMETRIC, true);
+    }
+
+    private boolean rolloutFingerprint() {
+        return !getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_SETTING_FINGERPRINT).isEmpty();
     }
 
     @Override

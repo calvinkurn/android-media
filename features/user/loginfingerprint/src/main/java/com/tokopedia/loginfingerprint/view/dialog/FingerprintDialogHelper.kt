@@ -5,12 +5,13 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loginfingerprint.R
 
 object FingerprintDialogHelper {
-    fun showInvalidFingerprintDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}) {
+
+    fun showFingerprintLockoutDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}) {
         context?.run {
             val dialog = DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.error_fingerprint_invalid_title))
-            dialog.setDescription(getString(R.string.error_fingerprint_invalid_description))
-            dialog.setPrimaryCTAText(getString(R.string.error_fingerprint_use_other_method))
+            dialog.setDescription(getString(R.string.error_fingerprint_lockout_description))
+            dialog.setPrimaryCTAText(getString(R.string.error_fingerprint_ok))
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 onPositiveButtonClick()
@@ -18,4 +19,22 @@ object FingerprintDialogHelper {
             dialog.show()
         }
     }
+
+    fun showNotRegisteredFingerprintDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}) {
+        context?.run {
+            val dialog = DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.error_fingerprint_not_registered))
+                setDescription(getString(R.string.error_fingerprint_not_registered_description))
+                setPrimaryCTAText(getString(R.string.button_close_fingerprint))
+                setCancelable(false)
+                setCanceledOnTouchOutside(false)
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    onPositiveButtonClick()
+                }
+            }
+            dialog.show()
+        }
+    }
+
 }

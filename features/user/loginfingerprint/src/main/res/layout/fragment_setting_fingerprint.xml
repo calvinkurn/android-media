@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout
-    android:background="@color/white_95"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@color/Unify_NN0"
         android:id="@+id/fragment_fingerprint_setting_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.tokopedia.unifycomponents.ContainerUnify
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/Unify_N50"
             app:container_color="GREY"
             android:id="@+id/fragment_fingerprint_setting_container_switch"
             android:padding="@dimen/loginfingerprint_20"
@@ -26,7 +24,7 @@
                 android:id="@+id/fragment_fingerprint_setting_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Verifikasi Sidik Jari" />
+                android:text="@string/title_setting_fingerprint_switch" />
 
         </com.tokopedia.unifycomponents.ContainerUnify>
 
@@ -34,13 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/unify_space_24"
-            android:text="Gunakan Sidik Jari untuk proses verifikasi yang cepat dan aman.\n\nSidik jari akan otomatis terhapus jika kamu mematikan fitur ini atau mengatur ulang kata sandi."
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_fingerprint_setting_container_switch"
+            android:text="@string/description_fingerprint_setting"
             app:typographyType="body_2"
             app:typographyWeight="reguler" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/fragment_fingerprint_setting_loader"

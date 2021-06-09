@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class VerifyFingerprintPojo(
-        @SerializedName("OtpVerifyBiometric")
+        @SerializedName("OTPVerifyBiometric")
         var data: VerifyFingerprint = VerifyFingerprint()
 )
 

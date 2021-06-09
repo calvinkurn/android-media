@@ -7,10 +7,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
+import com.tokopedia.loginfingerprint.data.model.RemoveFingerprintData
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
-import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
+import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,8 +22,8 @@ import javax.inject.Inject
 
 class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                       private val userSession: UserSessionInterface,
-                                                      private val verifyFingerprintUseCase: VerifyFingerprintUseCase,
                                                       private val registerFingerprintUseCase: RegisterFingerprintUseCase,
+                                                      private val removeFingerprintUseCase: RemoveFingerprintUsecase,
                                                       private val cryptographyUtils: Cryptography?,
                                                       private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase)
     : BaseViewModel(dispatcher.main) {
@@ -33,6 +35,10 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
     private val mutableRegisterFingerprintResult = MutableLiveData<Result<RegisterFingerprintResult>>()
     val registerFingerprintResult: LiveData<Result<RegisterFingerprintResult>>
         get() = mutableRegisterFingerprintResult
+
+    private val mutableRemoveFingerprintResult = MutableLiveData<Result<RemoveFingerprintData>>()
+    val removeFingerprintResult: LiveData<Result<RemoveFingerprintData>>
+        get() = mutableRemoveFingerprintResult
 
     fun getFingerprintStatus() {
         checkFingerprintToggleStatusUseCase.checkFingerprint(userSession.userId,
@@ -58,9 +64,21 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
                     onErrorRegisterFP()
                 )
             }else {
-                onErrorRegisterFP().invoke(com.tokopedia.network.exception.MessageErrorException())
+                onErrorRegisterFP().invoke(MessageErrorException())
             }
         }
+    }
+
+    fun removeFingerprint() {
+        removeFingerprintUseCase.removeFingerprint(onSuccess = {
+            if(it.data.isSuccess && it.data.error.isEmpty()) {
+                mutableRemoveFingerprintResult.postValue(Success(it.data))
+            }else {
+                mutableRemoveFingerprintResult.postValue(Fail(MessageErrorException(it.data.error)))
+            }
+        }, onError = {
+            mutableRemoveFingerprintResult.postValue(Fail(it))
+        })
     }
 
     private fun onSuccessRegisterFP(): (RegisterFingerprintPojo) -> Unit {
@@ -70,10 +88,10 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
 
                 mutableRegisterFingerprintResult.value = Success(it.data)
             } else if (response.errorMessage.isNotBlank()) {
-                mutableRegisterFingerprintResult.value = Fail(com.tokopedia.network.exception.MessageErrorException(response.errorMessage,
+                mutableRegisterFingerprintResult.value = Fail(MessageErrorException(response.errorMessage,
                     ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
             } else {
-                mutableRegisterFingerprintResult.value = Fail(RuntimeException())
+                mutableRegisterFingerprintResult.value = Fail(MessageErrorException())
             }
         }
     }

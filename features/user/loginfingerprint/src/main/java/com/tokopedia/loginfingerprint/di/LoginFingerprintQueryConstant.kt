@@ -6,9 +6,6 @@ package com.tokopedia.loginfingerprint.di
  */
 
 object LoginFingerprintQueryConstant {
-    const val QUERY_REGISTER_FINGERPRINT = "register_fingerprint"
-    const val QUERY_VALIDATE_FINGERPRINT = "validate_fingerprint"
-
     const val PARAM_ID = "id"
 
     const val PARAM_USER_ID = "UserID"
@@ -17,8 +14,6 @@ object LoginFingerprintQueryConstant {
     const val PARAM_SIGNATURE = "signature"
     const val PARAM_MODE = "mode"
     const val PARAM_DATETIME = "datetime"
-    const val PARAM_TIME_UNIX = "time_unix"
 
-    const val VALIDATE_OTP_TYPE = 145
-    const val VALIDATE_MODE = "fingerprint"
+    const val VALIDATE_OTP_TYPE = 157
 }

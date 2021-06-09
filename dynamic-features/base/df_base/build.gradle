@@ -134,7 +134,6 @@ dependencies {
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.kyccentralized)
-    implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.managename)
     implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.notifCenter)

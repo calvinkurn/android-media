@@ -238,6 +238,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/biometric-setting
     const val BIOMETRIC_SETTING = "$INTERNAL_GLOBAL/biometric-setting"
 
+    // VerifyFingerprintActivity
+    // tokopedia-android-internal://global/verify-fingerprint
+    const val VERIFY_BIOMETRIC = "$INTERNAL_GLOBAL/verify-fingerprint"
+
     // LoginByQrActivity
     // tokopedia-android-internal://global/qr-login
     @JvmField
@@ -448,6 +452,10 @@ object ApplinkConstInternalGlobal {
     // HomeAccountUserActivity
     // tokopedia-android-internal://global/new-home-account
     const val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
+
+    // ChooseAccountFingerprintActivity
+    // tokopedia-android-internal://global/choose-account-fingerprint
+    const val CHOOSE_ACCOUNT_FINGERPRINT = "$INTERNAL_GLOBAL/choose-account-fingerprint"
 
     //SeamlessActivity
     const val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"

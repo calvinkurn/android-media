@@ -7,6 +7,9 @@ import androidx.lifecycle.Observer
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.encryption.security.RsaUtils
+import com.tokopedia.loginfingerprint.domain.usecase.RegisterCheckFingerprintUseCase
+import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
@@ -21,7 +24,6 @@ import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
 import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
@@ -65,6 +67,9 @@ class LoginEmailPhoneViewModelTest {
     val statusPinUseCase = mockk<StatusPinUseCase>(relaxed = true)
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
+    val cryptographyUtils = mockk<Cryptography>(relaxed = true)
+    val verifyFingerprintUseCase = mockk<VerifyFingerprintUseCase>(relaxed = true)
+    val registerCheckFingerprintUseCase = mockk<RegisterCheckFingerprintUseCase>(relaxed = true)
 
     lateinit var viewModel: LoginEmailPhoneViewModel
 
@@ -76,7 +81,7 @@ class LoginEmailPhoneViewModelTest {
     private var showPopupErrorObserver = mockk<Observer<PopupError>>(relaxed = true)
     private var goToSecurityQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var loginToken = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
-    private var loginTokenV2 = mockk<Observer<Result<LoginTokenPojoV2>>>(relaxed = true)
+    private var loginTokenV2 = mockk<Observer<Result<LoginToken>>>(relaxed = true)
 
     private var loginTokenFacebookPhoneObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
     private var loginTokenFacebookObserver = mockk<Observer<Result<LoginToken>>>(relaxed = true)
@@ -119,6 +124,9 @@ class LoginEmailPhoneViewModelTest {
             loginTokenV2UseCase,
             generatePublicKeyUseCase,
             dynamicBannerUseCase,
+            verifyFingerprintUseCase,
+            cryptographyUtils,
+            registerCheckFingerprintUseCase,
             userSession,
             CoroutineTestDispatchersProvider
         )
@@ -359,7 +367,7 @@ class LoginEmailPhoneViewModelTest {
         verify {
             RsaUtils.encrypt(any(), any(), true)
             loginTokenV2UseCase.setParams(any(), any(), any())
-            loginTokenV2.onChanged(Success(responseToken))
+            loginTokenV2.onChanged(Success(responseToken.loginToken))
         }
     }
 
@@ -857,35 +865,6 @@ class LoginEmailPhoneViewModelTest {
         /* Then */
         verify {
             getUserInfoObserver.onChanged(Fail(throwable))
-        }
-    }
-
-    @Test
-    fun `on Success check status pin`() {
-        /* When */
-        val statusPinData = StatusPinData()
-        val response = StatusPinPojo(data = statusPinData)
-
-        coEvery { statusPinUseCase.executeOnBackground() } returns response
-
-        viewModel.checkStatusPin()
-
-        /* Then */
-        verify {
-            statusPinObserver.onChanged(Success(response.data))
-        }
-    }
-
-    @Test
-    fun `on Failed check status pin`() {
-        /* When */
-        coEvery { statusPinUseCase.executeOnBackground() } throws throwable
-
-        viewModel.checkStatusPin()
-
-        /* Then */
-        verify {
-            statusPinObserver.onChanged(Fail(throwable))
         }
     }
 

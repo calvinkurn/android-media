@@ -5,8 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
-import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
@@ -39,12 +37,6 @@ class MockLoginModule {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             CryptographyUtils()
         } else null
-    }
-
-    @LoginScope
-    @Provides
-    fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
-        return FingerprintPreferenceHelper(context)
     }
 
     @LoginScope

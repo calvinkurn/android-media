@@ -3,6 +3,7 @@ package com.tokopedia.loginphone.chooseaccount.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
@@ -15,30 +16,29 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Named
 
 open class BaseChooseAccountViewModel(
     @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
      private val getProfileUseCase: GetProfileUseCase,
      private val getAdminTypeUseCase: GetAdminTypeUseCase,
-     dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher) {
+     dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.main) {
 
     private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
     val getUserInfoResponse: LiveData<Result<ProfileInfo>>
         get() = mutableGetUserInfoResponse
 
-    private val mutableShowPopup = MutableLiveData<PopupError>()
-    val showPopup: LiveData<PopupError>
-        get() = mutableShowPopup
+    private val mutablePopupError = MutableLiveData<Result<PopupError>>()
+    val popupError: LiveData<Result<PopupError>>
+        get() = mutablePopupError
 
-    private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
-    val goToActivationPage: LiveData<MessageErrorException>
-        get() = mutableGoToActivationPage
+    private val mutableActivationPage = MutableLiveData<Result<MessageErrorException>>()
+    val activationPage: LiveData<Result<MessageErrorException>>
+        get() = mutableActivationPage
 
-    private val mutableGoToSecurityQuestion = MutableLiveData<String>()
-    val goToSecurityQuestion: LiveData<String>
-        get() = mutableGoToSecurityQuestion
+    private val mutableSecurityQuestion = MutableLiveData<Result<String>>()
+    val securityQuestion: LiveData<Result<String>>
+        get() = mutableSecurityQuestion
 
     private val mutableShowAdminLocationPopUp = MutableLiveData<Result<Boolean>>()
     val showAdminLocationPopUp: LiveData<Result<Boolean>>
@@ -64,22 +64,16 @@ open class BaseChooseAccountViewModel(
         }
     }
 
-    protected fun showPopup(): (PopupError) -> Unit {
-        return {
-            mutableShowPopup.value = it
-        }
+    protected fun onHasPopupError(popupError: PopupError) {
+        mutablePopupError.value = Success(popupError)
     }
 
-    protected fun onGoToActivationPage(): (MessageErrorException) -> Unit {
-        return {
-            mutableGoToActivationPage.value = it
-        }
+    protected fun onNeedActivation(message: MessageErrorException) {
+        mutableActivationPage.value = Success(message)
     }
 
-    protected fun onGoToSecurityQuestion(phone: String): () -> Unit {
-        return {
-            mutableGoToSecurityQuestion.value = phone
-        }
+    protected fun onSecurityCheck(phone: String) {
+        mutableSecurityQuestion.value = Success(phone)
     }
 
     fun getUserInfo() {
@@ -91,10 +85,5 @@ open class BaseChooseAccountViewModel(
             showLocationAdminPopUp(),
             showGetAdminTypeError())
         )
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        getProfileUseCase.unsubscribe()
     }
 }

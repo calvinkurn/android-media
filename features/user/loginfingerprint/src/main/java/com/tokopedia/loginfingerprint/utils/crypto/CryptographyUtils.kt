@@ -9,6 +9,7 @@ import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.SignatureData
 import java.security.*
+import java.security.interfaces.RSAPublicKey
 import java.security.spec.X509EncodedKeySpec
 
 /**
@@ -27,7 +28,7 @@ class CryptographyUtils: Cryptography {
     override fun getCryptoObject(): FingerprintManagerCompat.CryptoObject? = _cryptoObject
 
     private val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
-    private val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
+    private val PUBLIC_KEY_SUFFIX = "-----END PUBLIC KEY-----"
 
     private var signatureInitialized = false
 
@@ -49,18 +50,17 @@ class CryptographyUtils: Cryptography {
         }
     }
 
-    override fun generatePublicKey(): PublicKey? {
+    override fun generatePublicKey(): RSAPublicKey? {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var publicKey: PublicKey? = null
+            var publicKey: RSAPublicKey? = null
             try {
                 val keyStore = KeyStore.getInstance(BiometricConstant.ANDROID_KEY_STORE)
                 keyStore.load(null)
                 generateKeyPair(keyStore)
-
-                publicKey = keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey
-                val factory = KeyFactory.getInstance(publicKey.algorithm)
+                publicKey = keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey as RSAPublicKey
+                val factory = KeyFactory.getInstance("RSA")
                 val spec = X509EncodedKeySpec(publicKey.encoded)
-                return factory.generatePublic(spec)
+                return factory.generatePublic(spec) as RSAPublicKey
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -77,7 +77,8 @@ class CryptographyUtils: Cryptography {
                 val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, BiometricConstant.ANDROID_KEY_STORE)
                 val builder = KeyGenParameterSpec.Builder(BiometricConstant.FINGERPRINT,
                         KeyProperties.PURPOSE_SIGN)
-                        .setDigests(KeyProperties.DIGEST_SHA1)
+                        .setKeySize(4096)
+                        .setDigests(KeyProperties.DIGEST_SHA256)
                         .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
                 keyPairGenerator.initialize(builder.build())
                 keyPairGenerator.generateKeyPair()
@@ -89,7 +90,6 @@ class CryptographyUtils: Cryptography {
         try {
             keyStore = KeyStore.getInstance(BiometricConstant.ANDROID_KEY_STORE)
             keyStore?.load(null)
-
             generateKeyPair(keyStore)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -100,7 +100,7 @@ class CryptographyUtils: Cryptography {
         return try {
             keyStore?.load(null)
             val key = keyStore?.getKey(BiometricConstant.FINGERPRINT, null) as? PrivateKey
-            signature = Signature.getInstance(BiometricConstant.SHA_1_WITH_RSA)
+            signature = Signature.getInstance(BiometricConstant.SHA_256_WITH_RSA)
             signature?.initSign(key)
             true
         } catch (e: Exception) {
@@ -112,15 +112,18 @@ class CryptographyUtils: Cryptography {
     override fun getPublicKey(): String {
         val pubKey = generatePublicKey()
         pubKey?.run {
-            val encoded = Base64.encodeToString(this.encoded, Base64.NO_WRAP)
-            return "$PUBLIC_KEY_PREFIX$encoded$PUBLIC_KEY_SUFFIX"
+            val encoded = Base64.encodeToString(this.encoded, Base64.DEFAULT)
+            return "$PUBLIC_KEY_PREFIX${encoded}$PUBLIC_KEY_SUFFIX"
         }
         return ""
     }
 
-    override fun generateFingerprintSignature(adsId: String, deviceId: String): SignatureData {
+    override fun generateFingerprintSignature(uniqueId: String, deviceId: String): SignatureData {
         val datetime = (System.currentTimeMillis()/1000).toString()
-        return SignatureData(signature = getSignature(adsId + datetime + deviceId, BiometricConstant.SHA_1_WITH_RSA), datetime = datetime)
+        return SignatureData(signature = getSignature
+            (uniqueId + datetime + deviceId,
+                BiometricConstant.SHA_256_WITH_RSA
+            ), datetime = datetime)
     }
 
     override fun getSignature(textToEncrypt: String, algorithm: String): String {
@@ -137,7 +140,6 @@ class CryptographyUtils: Cryptography {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
             return signText
         }
         return ""
