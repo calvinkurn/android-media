@@ -73,7 +73,6 @@ data class ComponentData(
         val children : List<ProductP1VariantChild> = listOf(),
         //endregioncopy
 
-
         //region best seller data
         @SerializedName("productID")
         val productId: String = "",

@@ -11,6 +11,12 @@ data class BestSellerInfoDataModel(
         var bestSellerInfoContent: BestSellerInfoContent? = null
 ) : DynamicPdpDataModel {
 
+    companion object {
+        const val SEPARATOR_TOP = "top"
+        const val SEPARATOR_BOTTOM = "bottom"
+        const val SEPARATOR_BOTH = "both"
+    }
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name

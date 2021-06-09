@@ -6,7 +6,7 @@ data class DynamicProductInfoP1(
         val data: ComponentData = ComponentData(),
         val bestSellerContent: Map<String, BestSellerInfoContent>? = mapOf(),
         val layoutName: String = "",
-        val pdpSession: String = "",
+        val pdpSession: String = ""
 ) {
 
     fun isProductVariant(): Boolean = data.variant.isVariant
