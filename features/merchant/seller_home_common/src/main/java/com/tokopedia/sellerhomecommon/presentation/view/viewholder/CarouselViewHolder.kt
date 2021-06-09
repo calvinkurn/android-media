@@ -16,6 +16,7 @@ import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.presentation.adapter.CarouselBannerAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -46,7 +47,7 @@ class CarouselViewHolder(
 
     override fun bind(element: CarouselWidgetUiModel) {
         if (!listener.getIsShouldRemoveWidget()) {
-            // TODO: Show itemview
+            itemView.toggleWidgetHeight(true)
         }
         itemView.rvCarouselBanner.isNestedScrollingEnabled = false
         observeState(element)
@@ -96,7 +97,7 @@ class CarouselViewHolder(
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
                 } else {
-                    // TODO: Hide itemview
+                    itemView.toggleWidgetHeight(false)
                 }
             }
         } else {

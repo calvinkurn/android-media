@@ -20,6 +20,7 @@ import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -49,7 +50,7 @@ class LineGraphViewHolder(
 
     override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
         if (!listener.getIsShouldRemoveWidget()) {
-            // TODO: Show itemview
+            itemView.toggleWidgetHeight(true)
         }
         showAnimation?.end()
         hideAnimation?.end()
@@ -157,7 +158,7 @@ class LineGraphViewHolder(
                     if (listener.getIsShouldRemoveWidget()) {
                         listener.removeWidget(adapterPosition, element)
                     } else {
-                        // TODO: Hide itemview
+                        itemView.toggleWidgetHeight(false)
                     }
                 }
             } else {

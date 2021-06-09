@@ -1,6 +1,8 @@
 package com.tokopedia.sellerhomecommon.utils
 
 import android.graphics.drawable.ScaleDrawable
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -25,4 +27,14 @@ fun TextView.setUnifyDrawableEnd(
 
 fun TextView.clearUnifyDrawableEnd() {
     this.setCompoundDrawables(null, null, null, null)
+}
+
+internal fun View.toggleWidgetHeight(isShown: Boolean) {
+    layoutParams.height =
+            if (isShown) {
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            } else {
+                0
+            }
+    requestLayout()
 }

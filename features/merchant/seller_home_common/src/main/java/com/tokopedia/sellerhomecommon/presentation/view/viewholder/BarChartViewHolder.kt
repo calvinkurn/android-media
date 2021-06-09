@@ -54,7 +54,7 @@ class BarChartViewHolder(
 
     private fun observeState(element: BarChartWidgetUiModel) {
         if (!listener.getIsShouldRemoveWidget()) {
-            // Todo: Show itemview
+            itemView.toggleWidgetHeight(true)
         }
         showAnimation?.end()
         hideAnimation?.end()
@@ -116,7 +116,7 @@ class BarChartViewHolder(
                     if (listener.getIsShouldRemoveWidget()) {
                         listener.removeWidget(adapterPosition, element)
                     } else {
-                        // TODO: Hide itemview
+                        itemView.toggleWidgetHeight(false)
                     }
                 }
             } else {

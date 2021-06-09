@@ -17,6 +17,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget_error.view.*
@@ -42,7 +43,7 @@ class PostListViewHolder(
 
     override fun bind(element: PostListWidgetUiModel) {
         if (!listener.getIsShouldRemoveWidget()) {
-            // TODO: Show itemview
+            itemView.toggleWidgetHeight(true)
         }
         itemView.rvPostList.isNestedScrollingEnabled = false
         observeState(element)
@@ -81,7 +82,7 @@ class PostListViewHolder(
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, postListWidgetUiModel)
                 } else {
-                    // TODO: Hide itemview
+                    itemView.toggleWidgetHeight(false)
                 }
             }
             else -> showSuccessState(postListWidgetUiModel)

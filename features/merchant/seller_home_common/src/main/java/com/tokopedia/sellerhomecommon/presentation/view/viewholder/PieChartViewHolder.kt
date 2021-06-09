@@ -15,6 +15,7 @@ import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -46,7 +47,7 @@ class PieChartViewHolder(
     override fun bind(element: PieChartWidgetUiModel) {
         with(itemView) {
             if (!listener.getIsShouldRemoveWidget()) {
-                // TODO: Show itemview
+                toggleWidgetHeight(true)
             }
             tvPieChartTitle.text = element.title
             setupTooltip(element)
@@ -94,7 +95,7 @@ class PieChartViewHolder(
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
                 } else {
-                    // TODO: Hide itemView
+                    toggleWidgetHeight(false)
                 }
             }
         } else {
