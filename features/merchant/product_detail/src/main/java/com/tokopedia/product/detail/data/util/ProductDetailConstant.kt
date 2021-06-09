@@ -117,7 +117,8 @@ object ProductDetailConstant {
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
     const val MVC = "mvc"
-
+    const val BEST_SELLER = "best_seller"
+    const val ONE_LINERS = "one_liners"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

@@ -276,6 +276,16 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           additionalInfo
                         }
                       }
+                    },
+                     ... on pdpDataBestSellerInfo {
+                       productID
+                       content
+                       linkText
+                       color
+                       applink
+                       separator
+                       icon
+                       isVisible
                     }
                   }
                 }

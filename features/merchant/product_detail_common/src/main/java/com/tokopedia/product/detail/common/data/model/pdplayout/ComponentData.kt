@@ -70,7 +70,21 @@ data class ComponentData(
         @SerializedName("variants")
         val variants: List<ProductP1Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf()
+        val children : List<ProductP1VariantChild> = listOf(),
+        //endregioncopy
+
+
+        //region best seller data
+        @SerializedName("productID")
+        val productId: String = "",
+        @SerializedName("oneLinerContent")
+        val oneLinerContent: String = "",
+        @SerializedName("linkText")
+        val linkText: String = "",
+        @SerializedName("color")
+        val color: String = "",
+        @SerializedName("isVisible")
+        val isVisible: Boolean = true
         //endregioncopy
 )  {
     companion object{
