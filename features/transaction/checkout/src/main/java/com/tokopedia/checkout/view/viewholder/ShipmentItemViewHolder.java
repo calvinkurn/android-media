@@ -1665,6 +1665,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             cbDropshipper.setEnabled(false);
             llDropshipper.setClickable(false);
             mIconTooltip.setClickable(false);
+            rlCartSubTotal.setClickable(false);
             textInputLayoutShipperName.getTextFieldInput().setClickable(false);
             textInputLayoutShipperName.getTextFieldInput().setFocusable(false);
             textInputLayoutShipperName.getTextFieldInput().setFocusableInTouchMode(false);
@@ -1679,6 +1680,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llInsurance.setClickable(true);
             llDropshipper.setClickable(true);
             mIconTooltip.setClickable(true);
+            rlCartSubTotal.setClickable(true);
             textInputLayoutShipperName.getTextFieldInput().setClickable(true);
             textInputLayoutShipperName.getTextFieldInput().setFocusable(true);
             textInputLayoutShipperName.getTextFieldInput().setFocusableInTouchMode(true);
