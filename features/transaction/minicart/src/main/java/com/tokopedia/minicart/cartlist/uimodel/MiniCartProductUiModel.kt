@@ -29,7 +29,18 @@ data class MiniCartProductUiModel(
         var selectedUnavailableActionLink: String = "",
         var wholesalePriceGroup: List<WholesalePrice> = emptyList(),
         var maxNotesLength: Int = 0,
-        var isProductDisabled: Boolean = false
+
+        // Fields below is for analytics only
+        var isProductDisabled: Boolean = false,
+        var campaignId: String = "",
+        var attribution: String = "",
+        var warehouseId: String = "",
+        var categoryId: String = "",
+        var category: String = "",
+        var shopId: String = "",
+        var shopName: String = "",
+        var shopType: String = "",
+        var freeShippingType: String = ""
 ) : Visitable<MiniCartListAdapterTypeFactory> {
 
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int {

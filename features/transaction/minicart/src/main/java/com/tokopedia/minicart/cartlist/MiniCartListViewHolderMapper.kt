@@ -69,6 +69,8 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                     weightTotal += cartDetail.product.productWeight * cartDetail.product.productQuantity
                     val miniCartProductUiModel = mapProductUiModel(
                             cartDetail = cartDetail,
+                            shop = availableGroup.shop,
+                            shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
                             notesLength = miniCartData.data.maxCharNote)
                     miniCartProductUiModels.add(miniCartProductUiModel)
@@ -99,6 +101,8 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                 unavailableGroup.cartDetails.forEach { cartDetail ->
                     val miniCartProductUiModel = mapProductUiModel(
                             cartDetail = cartDetail,
+                            shop = unavailableGroup.shop,
+                            shipmentInformation = unavailableGroup.shipmentInformation,
                             action = unavailableSection.action,
                             isDisabled = true,
                             unavailableActionId = unavailableSection.selectedUnavailableActionId)
@@ -161,6 +165,8 @@ class MiniCartListViewHolderMapper @Inject constructor() {
     }
 
     private fun mapProductUiModel(cartDetail: CartDetail,
+                                  shop: Shop,
+                                  shipmentInformation: ShipmentInformation,
                                   action: List<Action>,
                                   isDisabled: Boolean = false,
                                   unavailableActionId: String = "",
@@ -187,6 +193,18 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
             maxNotesLength = notesLength
+            campaignId = cartDetail.product.campaignId
+            attribution = cartDetail.product.productTrackerData.attribution
+            warehouseId = cartDetail.product.warehouseId
+            categoryId = cartDetail.product.categoryId
+            category = cartDetail.product.category
+            shopId = shop.shopId
+            shopName = shop.shopName
+            shopType = shop.shopTypeInfo.titleFmt
+            freeShippingType =
+                    if (shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
+                    else if (shipmentInformation.freeShipping.eligible) "bebas ongkir"
+                    else ""
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
                 selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
