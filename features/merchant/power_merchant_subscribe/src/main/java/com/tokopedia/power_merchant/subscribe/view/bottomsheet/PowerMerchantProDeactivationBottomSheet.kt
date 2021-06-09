@@ -73,7 +73,7 @@ class PowerMerchantProDeactivationBottomSheet : BaseBottomSheet() {
         val tncDescription = PowerMerchantSpannableUtil.createSpannableString(
                 text = getString(R.string.pm_options_tnc_text).parseAsHtml(),
                 highlightText = clickableText,
-                colorId = requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Green_G500),
+                colorId = requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500),
                 isBold = true
         ) {
             showPmTermAndCondition()

@@ -5,8 +5,7 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.tokopedia.header.HeaderUnify android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:theme="?toolbarTheme"
@@ -20,6 +19,7 @@
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/digital_search_number_toolbar_seperator_top_margin" />
 
 </LinearLayout>
