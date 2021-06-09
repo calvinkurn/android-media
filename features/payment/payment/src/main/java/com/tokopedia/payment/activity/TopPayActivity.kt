@@ -89,6 +89,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private val remoteConfig: RemoteConfig by lazy { FirebaseRemoteConfigImpl(this.applicationContext) }
 
+    private var isPaymentPageLoadingError : Boolean = false
+
     private var scroogeWebView: WebView? = null
     private var progressBar: ProgressBar? = null
     private var btnBack: View? = null
@@ -381,6 +383,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun onBackPressed() {
+        if(isPaymentPageLoadingError){
+            callbackPaymentCanceled()
+        }else {
+            handleBackPress()
+        }
+    }
+
+    private fun handleBackPress(){
         val url = scroogeWebView?.url
         if (url != null && url.contains(getBaseUrlDomainPayment()) && isHasFinishedFirstLoad()) {
             scroogeWebView?.loadUrl(BACK_DIALOG_URL)
@@ -564,6 +574,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
+            isPaymentPageLoadingError = isMainPaymentPage(request?.url)
             ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
                     mapOf("type" to request?.url.toString(),
                             "error_code" to error?.errorCode.toString(),
@@ -601,6 +612,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             view.stopLoading()
             showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
         }
+    }
+
+    private fun isMainPaymentPage(url: Uri?) : Boolean{
+        url?.let {
+            return (url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment"))
+        }
+
+        return false
     }
 
     private fun getBaseUrlDomainPayment(): String {
