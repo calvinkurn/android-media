@@ -2,7 +2,6 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.util.TypedValue
 import android.view.View
-import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
