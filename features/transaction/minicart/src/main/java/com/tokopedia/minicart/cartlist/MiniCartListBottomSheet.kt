@@ -393,7 +393,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         updateCart()
     }
 
-    override fun onShowSimilarProductClicked(appLink: String) {
+    override fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel) {
+        analytics.eventClickSeeSimilarProductOnUnavailableSection(element.productId, element.errorType)
         bottomSheet?.context?.let {
             RouteManager.route(it, appLink)
         }
@@ -445,5 +446,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         analytics.eventClickChangeNotes()
     }
 
+    override fun onShowUnavailableItem(element: MiniCartProductUiModel) {
+        analytics.eventViewTickerErrorUnavailableProduct(element.errorType)
+    }
 
 }

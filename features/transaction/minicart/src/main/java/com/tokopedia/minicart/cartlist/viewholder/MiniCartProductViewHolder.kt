@@ -469,7 +469,7 @@ class MiniCartProductViewHolder(private val view: View,
         textProductUnavailableAction?.text = action.message
         textProductUnavailableAction?.setOnClickListener {
             if (element.selectedUnavailableActionLink.isNotBlank()) {
-                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink)
+                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
             }
         }
         textProductUnavailableAction?.context?.let {
@@ -480,6 +480,7 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductAlpha(element: MiniCartProductUiModel) {
         if (element.isProductDisabled) {
+            listener.onShowUnavailableItem(element)
             imageProduct?.alpha = 0.5f
             textProductName?.alpha = 0.5f
             textProductVariant?.alpha = 0.5f

@@ -12,7 +12,7 @@ interface MiniCartListActionListener {
 
     fun onNotesChanged(productId: String, newNotes: String)
 
-    fun onShowSimilarProductClicked(appLink: String)
+    fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel)
 
     fun onShowUnavailableItemsCLicked()
 
@@ -30,4 +30,5 @@ interface MiniCartListActionListener {
 
     fun onChangeNotesClicked()
 
+    fun onShowUnavailableItem(element: MiniCartProductUiModel)
 }

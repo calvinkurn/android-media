@@ -394,7 +394,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         sendGeneralEvent(data)
     }
 
-    // 17
+    // 17 - DONE
     fun eventClickSeeSimilarProductOnUnavailableSection(productId: String, errorType: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
@@ -429,7 +429,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         sendGeneralEvent(data)
     }
 
-    // 21
+    // 21 - DONE
     fun eventViewTickerErrorUnavailableProduct(errorMessage: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_VIEW_MINICART_IRIS,

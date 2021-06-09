@@ -40,7 +40,8 @@ data class MiniCartProductUiModel(
         var shopId: String = "",
         var shopName: String = "",
         var shopType: String = "",
-        var freeShippingType: String = ""
+        var freeShippingType: String = "",
+        var errorType: String = ""
 ) : Visitable<MiniCartListAdapterTypeFactory> {
 
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int {
@@ -73,15 +74,16 @@ data class MiniCartProductUiModel(
                 wholesalePriceGroup = this.wholesalePriceGroup,
                 maxNotesLength = this.maxNotesLength,
                 isProductDisabled = this.isProductDisabled,
-                campaignId = campaignId,
-                attribution = attribution,
-                warehouseId = warehouseId,
-                categoryId = categoryId,
-                category = category,
-                shopId = shopId,
-                shopName = shopName,
-                shopType = shopType,
-                freeShippingType = freeShippingType
+                campaignId = this.campaignId,
+                attribution = this.attribution,
+                warehouseId = this.warehouseId,
+                categoryId = this.categoryId,
+                category = this.category,
+                shopId = this.shopId,
+                shopName = this.shopName,
+                shopType = this.shopType,
+                freeShippingType = this.freeShippingType,
+                errorType = this.errorType
         )
     }
 

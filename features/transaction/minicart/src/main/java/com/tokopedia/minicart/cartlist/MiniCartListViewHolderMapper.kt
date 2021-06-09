@@ -47,7 +47,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
 
     private fun mapVisitables(miniCartData: MiniCartData): MutableList<Visitable<*>> {
         var miniCartTickerErrorUiModel: MiniCartTickerErrorUiModel? = null
-        var miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel? = null
+        val miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel? = null
         var miniCartShopUiModel: MiniCartShopUiModel? = null
         val miniCartAvailableSectionUiModels: MutableList<MiniCartProductUiModel> = mutableListOf()
         val miniCartUnavailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
@@ -105,7 +105,8 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                             shipmentInformation = unavailableGroup.shipmentInformation,
                             action = unavailableSection.action,
                             isDisabled = true,
-                            unavailableActionId = unavailableSection.selectedUnavailableActionId)
+                            unavailableActionId = unavailableSection.selectedUnavailableActionId,
+                            unavailableReason = unavailableSection.title)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartUnavailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -170,6 +171,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                                   action: List<Action>,
                                   isDisabled: Boolean = false,
                                   unavailableActionId: String = "",
+                                  unavailableReason: String = "",
                                   notesLength: Int = 0): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
@@ -205,6 +207,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                     if (shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
                     else if (shipmentInformation.freeShipping.eligible) "bebas ongkir"
                     else ""
+            errorType = unavailableReason
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
                 selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink

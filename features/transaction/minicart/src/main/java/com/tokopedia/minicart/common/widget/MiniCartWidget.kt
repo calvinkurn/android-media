@@ -316,7 +316,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun renderWidget(miniCartWidgetData: MiniCartWidgetData) {
         totalAmount?.apply {
-            setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
+            setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
             setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
         }
