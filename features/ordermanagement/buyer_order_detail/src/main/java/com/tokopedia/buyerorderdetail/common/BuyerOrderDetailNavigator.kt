@@ -52,7 +52,7 @@ class BuyerOrderDetailNavigator(
     }
 
     private fun applyTransition() {
-        activity.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
+        activity.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
     }
 
     fun goToPrintInvoicePage(url: String, invoiceNum: String) {

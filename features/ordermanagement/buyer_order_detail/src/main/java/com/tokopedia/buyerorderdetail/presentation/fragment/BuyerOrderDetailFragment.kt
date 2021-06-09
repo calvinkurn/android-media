@@ -198,7 +198,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        activity?.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
+        activity?.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
         when (requestCode) {
             BuyerOrderDetailConst.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
             BuyerOrderDetailConst.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()

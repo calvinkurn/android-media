@@ -48,7 +48,7 @@ class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDe
             initLoadMonitoring()
         }
         super.onCreate(savedInstanceState)
-        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
+        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
         setupWindowColor()
     }
 
@@ -58,16 +58,16 @@ class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDe
 
     override fun onBackPressed() {
         super.onBackPressed()
-        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
+        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
     }
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
+        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
+        overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
         super.onActivityResult(requestCode, resultCode, data)
     }
 
