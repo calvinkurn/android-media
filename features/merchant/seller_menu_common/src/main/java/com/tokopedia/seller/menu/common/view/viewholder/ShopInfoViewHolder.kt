@@ -356,10 +356,11 @@ class ShopInfoViewHolder(
         val powerMerchantStatusTextView: Typography = findViewById(R.id.powerMerchantStatusText)
         val powerMerchantText: Typography = findViewById(R.id.powerMerchantText)
         val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
+        val isNewSeller = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                    upgradePMTextView.show()
+                    upgradePMTextView.showWithCondition(isNewSeller == false)
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }

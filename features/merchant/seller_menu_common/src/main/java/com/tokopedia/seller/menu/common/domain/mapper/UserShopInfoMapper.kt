@@ -28,7 +28,8 @@ class UserShopInfoMapper @Inject constructor() {
                         shopTierName = goldOsResult?.shopTierWording ?: "",
                         shopTier = goldOsResult?.shopTier ?: -1,
                         pmProGradeName = goldOsResult?.shopGradeWording ?: "",
-                        periodTypePmPro = userShopInfoResponse.goldGetPMSettingInfo.periodTypePmPro
+                        periodTypePmPro = userShopInfoResponse.goldGetPMSettingInfo.periodTypePmPro,
+                        isNewSeller = GoldMerchantUtil.isNewSeller(userShopInfoResponse.userShopInfo.info.dateShopCreated)
                 )
         )
     }
