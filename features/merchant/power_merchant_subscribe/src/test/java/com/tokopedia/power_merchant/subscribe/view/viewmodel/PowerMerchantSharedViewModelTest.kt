@@ -6,7 +6,6 @@ import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantRemoteConfig
 import com.tokopedia.power_merchant.subscribe.domain.usecase.GetShopModerationStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -43,9 +42,6 @@ class PowerMerchantSharedViewModelTest {
     @RelaxedMockK
     lateinit var getShopModerationStatusUseCase: GetShopModerationStatusUseCase
 
-    @RelaxedMockK
-    lateinit var powerMerchantRemoteConfig: PowerMerchantRemoteConfig
-
     private lateinit var viewModel: PowerMerchantSharedViewModel
 
     @Before
@@ -70,18 +66,10 @@ class PowerMerchantSharedViewModelTest {
         val isFirstLoad = anyBoolean()
 
         coEvery {
-            powerMerchantRemoteConfig.isFreeShippingEnabled()
-        } returns true
-
-        coEvery {
             getPmBasicInfo.executeOnBackground(isFirstLoad)
         } returns result
 
         viewModel.getPowerMerchantBasicInfo(isFirstLoad)
-
-        coVerify {
-            powerMerchantRemoteConfig.isFreeShippingEnabled()
-        }
 
         coVerify {
             getPmBasicInfo.executeOnBackground(isFirstLoad)
@@ -102,10 +90,6 @@ class PowerMerchantSharedViewModelTest {
         } throws throwable
 
         viewModel.getPowerMerchantBasicInfo(isFirstLoad)
-
-        coVerify {
-            powerMerchantRemoteConfig.isFreeShippingEnabled()
-        }
 
         coVerify {
             getPmBasicInfo.executeOnBackground(isFirstLoad)
