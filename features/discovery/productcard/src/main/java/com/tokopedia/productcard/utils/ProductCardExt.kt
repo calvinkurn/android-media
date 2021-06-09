@@ -320,7 +320,7 @@ internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: 
 }
 
 private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCardModel: ProductCardModel) {
-    progressBarStock?.shouldShowWithAction(isStockBarShown(productCardModel)) {
+    progressBarStock?.shouldShowWithAction(productCardModel.isStockBarShown()) {
         it.setProgressIcon(icon = null)
         if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
             it.setProgressIcon(
@@ -334,16 +334,12 @@ private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCa
 }
 
 private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: ProductCardModel) {
-    textViewStockLabel?.shouldShowWithAction(isStockBarShown(productCardModel)) {
+    textViewStockLabel?.shouldShowWithAction(productCardModel.isStockBarShown()) {
         it.text = productCardModel.stockBarLabel
 
         val color = getStockLabelColor(productCardModel, it)
         it.setTextColor(color)
     }
-}
-
-private fun isStockBarShown(productCardModel: ProductCardModel): Boolean {
-    return productCardModel.stockBarLabel.isNotEmpty() && !productCardModel.isOutOfStock
 }
 
 private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typography) =
