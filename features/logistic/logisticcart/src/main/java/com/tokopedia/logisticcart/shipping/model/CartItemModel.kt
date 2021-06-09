@@ -55,5 +55,6 @@ data class CartItemModel(
         var diagnosticId: String = "",
         var productInformation: List<String> = emptyList(),
         var productAlertMessage: String = "",
+        // flag for tracking
         var hasShownTickerError: Boolean = false
 ) : Parcelable
