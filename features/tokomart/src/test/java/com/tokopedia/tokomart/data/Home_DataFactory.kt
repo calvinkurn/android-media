@@ -3,16 +3,17 @@ package com.tokopedia.tokomart.data
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.*
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokomart.home.domain.model.*
 import com.tokopedia.tokomart.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.*
 
 fun createHomeLayoutList(): List<HomeLayoutResponse> {
     return listOf(
@@ -24,6 +25,27 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                             serverTimeUnix = 0
                     ),
             )
+    )
+}
+
+fun createChooseAddressWidget(): HomeLayoutListUiModel {
+    val mutableList = mutableListOf<Visitable<*>>()
+    mutableList.add(HomeChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID))
+    mutableList.add(HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE))
+    return HomeLayoutListUiModel(
+            result = mutableList,
+            isChooseAddressWidgetDisplayed = true,
+            isHeaderBackgroundShowed = false
+    )
+}
+
+fun createEmptyState(id: String): HomeLayoutListUiModel {
+    val mutableList = mutableListOf<Visitable<*>>()
+    mutableList.add(HomeChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID))
+    mutableList.add(HomeEmptyStateUiModel(id = id))
+    return HomeLayoutListUiModel(
+            mutableList,
+            isHeaderBackgroundShowed = false
     )
 }
 
@@ -49,6 +71,17 @@ fun createKeywordSearch(): KeywordSearchData {
                     data = Data(
                             keyword = "Hello World",
                             placeholder = "Search tomato"
+                    )
+            )
+    )
+}
+
+fun createChooseAddress(): GetStateChosenAddressQglResponse {
+    return GetStateChosenAddressQglResponse(
+            response = GetStateChosenAddressResponse(
+                    tokonow = Tokonow(
+                            shopId = 121231,
+                            warehouseId = 21313
                     )
             )
     )
@@ -114,15 +147,15 @@ fun createHomeLayoutListwithHome(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Category Tokonow",
                             serverTimeUnix = 0
-                    ),
+                    )
             ),
             HomeLayoutResponse(
-                    id = "34922",
+                    id = "",
                     layout = "banner_carousel_v2",
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
-                    ),
+                    )
             )
     )
 }

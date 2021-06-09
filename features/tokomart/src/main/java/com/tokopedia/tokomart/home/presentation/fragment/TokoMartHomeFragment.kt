@@ -197,7 +197,7 @@ class TokoMartHomeFragment: Fragment(),
         context?.let {
             when {
                 shopId == 0L -> {
-                    viewModel.getChosenAddress(SOURCE)
+                    viewModel.getChooseAddress(SOURCE)
                 }
                 warehouseId == 0L -> {
                     showEmptyState(EMPTY_STATE_NO_ADDRESS)
@@ -454,7 +454,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun getChooseAddress() {
-        viewModel.getChooseAddress()
+        viewModel.getChooseAddressWidget()
     }
 
     //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder

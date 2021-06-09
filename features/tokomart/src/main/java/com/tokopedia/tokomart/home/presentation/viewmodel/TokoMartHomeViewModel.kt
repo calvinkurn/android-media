@@ -78,7 +78,7 @@ class TokoMartHomeViewModel @Inject constructor(
 
     private var layoutList = listOf<Visitable<*>>()
 
-    fun getChooseAddress() {
+    fun getChooseAddressWidget() {
         layoutList = addChooseAddressIntoList()
         val data = HomeLayoutListUiModel(
                 result = layoutList,
@@ -179,7 +179,7 @@ class TokoMartHomeViewModel @Inject constructor(
         }
     }
 
-    fun getChosenAddress(source: String){
+    fun getChooseAddress(source: String){
         getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
             _chooseAddress.postValue(Success(it))
         },{
