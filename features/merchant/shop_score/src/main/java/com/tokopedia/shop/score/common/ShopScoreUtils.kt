@@ -74,15 +74,14 @@ fun getLocale(): Locale {
 
 fun getPastDaysPenaltyTimeStamp(): Date {
     val date = Calendar.getInstance(getLocale())
-    val fourWeeks = 28
-    val totalDays = fourWeeks + getNPastDaysPenalty(fourWeeks)
+    val totalDays = ShopScoreConstant.FOUR_WEEKS + getNPastDaysPenalty()
     date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - totalDays)
     return date.time
 }
 
-fun getNPastDaysPenalty(totalDaysOfWeek: Int): Int {
+fun getNPastDaysPenalty(): Int {
     val calendar = Calendar.getInstance(getLocale())
-    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - totalDaysOfWeek)
+    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - ShopScoreConstant.FOUR_WEEKS)
     return when (calendar.get(Calendar.DAY_OF_WEEK)) {
         Calendar.SUNDAY -> 6
         Calendar.SATURDAY -> 5

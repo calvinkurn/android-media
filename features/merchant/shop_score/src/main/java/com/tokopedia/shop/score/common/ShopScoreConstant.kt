@@ -20,6 +20,7 @@ object ShopScoreConstant {
     const val SHOP_SCORE_ONE_HUNDRED = 100
 
     const val SHOP_AGE_SIXTY = 60
+    const val FOUR_WEEKS = 28
 
     const val COUNT_DAYS_NEW_SELLER = 90
     const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
