@@ -1,8 +1,8 @@
-package com.tokopedia.localizationchooseaddress.domain.response
+package com.tokopedia.logisticaddaddress.domain.model.add_address
 
 import com.google.gson.annotations.SerializedName
 
-data class ChosenAddressDataResponse (
+data class ChosenAddressAddResponse(
         @SerializedName("addr_id")
         var addressId: Int = 0,
         @SerializedName("receiver_name")
@@ -24,21 +24,5 @@ data class ChosenAddressDataResponse (
         @SerializedName("longitude")
         var longitude: String = "",
         @SerializedName("postal_code")
-        var postalCode: String = "",
-        @SerializedName("error")
-        var error: ErrorChosenAddress = ErrorChosenAddress()
-)
-
-data class Tokonow(
-        @SerializedName("shop_id")
-        var shopId: Long = 0,
-        @SerializedName("warehouse_id")
-        var warehouseId: Long = 0
-)
-
-data class ErrorChosenAddress(
-        @SerializedName("code")
-        var code: Int = 0,
-        @SerializedName("title")
-        var title: String = ""
+        var postalCode: String = ""
 )

@@ -27,7 +27,8 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
                         createHomeLayoutList(),
                         mapTickerData(createTicker().ticker.tickerList)
                 ),
-                isInitialLoad = true
+                isInitialLoad = true,
+                isHeaderBackgroundShowed = true
         )
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }
@@ -89,7 +90,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout()
 
-        viewModel.getLayoutData()
+        viewModel.getLayoutData("1")
 
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutUseCaseCalled()
@@ -106,7 +107,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout()
 
-        viewModel.getLayoutData()
+        viewModel.getLayoutData("1")
 
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutUseCaseCalled()

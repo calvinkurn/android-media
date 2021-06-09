@@ -6,17 +6,17 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.common.view.TokoMartHomeView
+import com.tokopedia.tokomart.common.view.TokoNowView
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.SOURCE
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
 class HomeChooseAddressWidgetViewHolder(
         itemView: View,
-        private val listener: TokoMartHomeView? = null,
+        private val tokoNowListener: TokoNowView? = null,
+        private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetListener? = null
 ): AbstractViewHolder<HomeChooseAddressWidgetUiModel>(itemView) {
 
     companion object {
@@ -33,27 +33,29 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        listener?.getFragment()?.let { fragment ->
+        tokoNowListener?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
-                    chooseAddressWidget?.updateWidget()
+                    tokoNowListener.refreshLayoutPage()
                 }
 
                 override fun onLocalizingAddressServerDown() {
-                    chooseAddressWidget?.hide()
+                    homeChooseAddressWidgetListener?.onRemoveChooseAddressWidget()
                 }
 
-                override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
-
-                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
-
-                override fun onLocalizingAddressLoginSuccess() { /* to do : refresh page */ }
+                override fun onLocalizingAddressLoginSuccess() {
+                    tokoNowListener.refreshLayoutPage()
+                }
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment
 
                 override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
                 override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
+
+                override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
+
+                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
             })
         }
     }
@@ -90,5 +92,9 @@ class HomeChooseAddressWidgetViewHolder(
         } else {
             null
         }
+    }
+
+    interface HomeChooseAddressWidgetListener {
+        fun onRemoveChooseAddressWidget()
     }
 }
