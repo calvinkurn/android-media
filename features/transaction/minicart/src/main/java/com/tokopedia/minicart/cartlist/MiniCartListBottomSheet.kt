@@ -18,11 +18,12 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
+import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
-import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
+import com.tokopedia.minicart.common.widget.MiniCartWidgetViewModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.totalamount.TotalAmount

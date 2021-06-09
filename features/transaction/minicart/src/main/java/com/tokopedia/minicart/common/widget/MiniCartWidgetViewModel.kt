@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget.viewmodel
+package com.tokopedia.minicart.common.widget
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +11,6 @@ import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.*
-import com.tokopedia.minicart.common.widget.GlobalEvent
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -88,6 +87,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 break@loop
             }
         }
+
+        val cartItems = miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+        loop@ for (cartItem in cartItems) {
+            if (cartItem.productId == productId && !cartItem.isError) {
+                cartItem.quantity = newQty
+                break@loop
+            }
+        }
     }
 
     fun updateProductNotes(productId: String, newNotes: String) {
@@ -95,6 +102,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
                 visitable.productNotes = newNotes
+                break@loop
+            }
+        }
+
+        val cartItems = miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+        loop@ for (cartItem in cartItems) {
+            if (cartItem.productId == productId && !cartItem.isError) {
+                cartItem.notes = newNotes
                 break@loop
             }
         }

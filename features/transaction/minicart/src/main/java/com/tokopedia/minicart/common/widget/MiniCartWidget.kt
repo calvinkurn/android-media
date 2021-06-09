@@ -18,14 +18,13 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
-import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheet
-import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
+import com.tokopedia.minicart.cartlist.subpage.GlobalErrorBottomSheet
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
-import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -53,6 +52,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private var chatIcon: ImageUnify? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private var progressDialog: AlertDialog? = null
+    private var miniCartChevronClickListener: OnClickListener? = null
 
     private var viewModel: MiniCartWidgetViewModel? = null
 
@@ -183,7 +183,6 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun onSuccessUpdateCartForCheckout(context: Context) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
-        intent.putExtra("EXTRA_IS_ONE_CLICK_SHIPMENT", true)
         context.startActivity(intent)
     }
 
@@ -212,16 +211,17 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         totalAmount?.let {
             it.enableAmountChevron(true)
-            it.amountChevronView.setOnClickListener {
+            miniCartChevronClickListener = OnClickListener {
                 showMiniCartListBottomSheet(fragment)
             }
+            it.amountChevronView.setOnClickListener(miniCartChevronClickListener)
             it.amountCtaView.setOnClickListener {
                 showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
         }
         setTotalAmountLoading(true)
-        setTotalAmountChatIcon()
+        reValidateTotalAmountView()
         initializeProgressDialog(fragment.context)
     }
 
@@ -312,10 +312,10 @@ class MiniCartWidget @JvmOverloads constructor(
                 totalAmount?.isTotalAmountLoading = false
             }
         }
-        setTotalAmountChatIcon()
+        reValidateTotalAmountView()
     }
 
-    private fun setTotalAmountChatIcon() {
+    private fun reValidateTotalAmountView() {
         totalAmount?.context?.let { context ->
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)
@@ -327,11 +327,14 @@ class MiniCartWidget @JvmOverloads constructor(
                 context.startActivity(intent)
             }
             this.chatIcon?.setImageDrawable(chatIcon)
+            totalAmount?.enableAmountChevron(true)
+            totalAmount?.amountChevronView?.setOnClickListener(miniCartChevronClickListener)
         }
     }
 
     override fun onMiniCartListBottomSheetDismissed() {
         viewModel?.getLatestMiniCartData()?.let {
+            updateData(it.miniCartWidgetData)
             miniCartWidgetListener?.onCartItemsUpdated(it)
         }
     }

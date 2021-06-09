@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWLESS
