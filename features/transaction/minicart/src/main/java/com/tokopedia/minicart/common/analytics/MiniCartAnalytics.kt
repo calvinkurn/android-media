@@ -373,8 +373,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         sendGeneralEvent(data)
     }
 
-    // 15
-    fun eventViewErrorTickerInMiniCart(errorMessage: String) {
+    // 15 - DONE
+    fun eventViewErrorTickerOverweightInMiniCart(errorMessage: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_VIEW_MINICART_IRIS,
                 eventAction = EVENT_VIEW_ERROR_TICKER_IN_MINICART,

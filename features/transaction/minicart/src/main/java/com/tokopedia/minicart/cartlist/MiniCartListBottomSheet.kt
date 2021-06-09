@@ -149,7 +149,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun sendEventClickBuy() {
         val pageName = viewModel?.currentPage?.value ?: ""
-        val products = viewModel?.miniCartListListBottomSheetUiModel?.value?.getProduct() ?: emptyList()
+        val products = viewModel?.miniCartListListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
+                ?: emptyList()
         analytics.eventClickBuy(pageName, products)
     }
 
@@ -237,7 +238,11 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private fun observeMiniCartListUiModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         viewModel.miniCartListListBottomSheetUiModel.observe(lifecycleOwner, {
             if (it.isFirstLoad) {
-                analytics.eventLoadMiniCartBottomSheetSuccess(it.getProduct())
+                analytics.eventLoadMiniCartBottomSheetSuccess(it.getMiniCartProductUiModelList())
+                val overweightData = it.getMiniCartTickerWarningUiModel()
+                if (overweightData != null) {
+                    analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
+                }
             }
             hideLoading()
             hideProgressLoading()

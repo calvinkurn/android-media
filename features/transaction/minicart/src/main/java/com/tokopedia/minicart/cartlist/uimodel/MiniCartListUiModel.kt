@@ -14,7 +14,7 @@ data class MiniCartListUiModel(
         var isFirstLoad: Boolean = false
 ) {
 
-    fun getProduct(): List<MiniCartProductUiModel> {
+    fun getMiniCartProductUiModelList(): List<MiniCartProductUiModel> {
         val products = mutableListOf<MiniCartProductUiModel>()
         visitables.forEach {
             if (it is MiniCartProductUiModel) {
@@ -24,4 +24,13 @@ data class MiniCartListUiModel(
         return products
     }
 
+    fun getMiniCartTickerWarningUiModel(): MiniCartTickerWarningUiModel? {
+        loop@ for (visitable in visitables) {
+            if (visitable is MiniCartTickerWarningUiModel) {
+                return visitable
+            }
+        }
+
+        return null
+    }
 }
