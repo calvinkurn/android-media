@@ -58,7 +58,7 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
     fun clearList(){
         this.items.clear()
         this.added.clear()
-        this.items.clear()
+        this.data.clear()
     }
 
     fun setBid(bid: String) {
