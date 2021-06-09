@@ -60,7 +60,7 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(productID: Int, sortBy: String, filterBy: String, limit: Int, page: Int): Map<String, Any> =
+        fun createParams(productID: Long, sortBy: String, filterBy: String, limit: Int, page: Int): Map<String, Any> =
                 mapOf(PRODUCT_ID to productID,
                         SORT_BY to sortBy,
                         FILTER_BY to filterBy,

@@ -37,7 +37,7 @@ class ProductReviewDetailViewModel @Inject constructor(
     private var prefixRating = "rating="
 
     private var chipsFilterText = "30 Hari Terakhir"
-    private var productId = 0
+    private var productId = 0L
     private var filterByList: MutableList<String> = mutableListOf(chipsFilterText)
 
     private var filterRatingData: List<RatingBarUiModel> = listOf()
@@ -172,7 +172,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         ratingFilterData.value = updatedData
     }
 
-    fun getProductRatingDetail(productID: Int, sortBy: String) {
+    fun getProductRatingDetail(productID: Long, sortBy: String) {
         launchCatchError(block = {
             productId = productID
             getProductReviewInitialUseCase.requestParams = GetProductReviewInitialUseCase.createParams(productID, filterByList.getGeneratedFilterByText, sortBy, 1,
@@ -208,7 +208,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         }
     }
 
-    fun getFeedbackDetailListNext(productID: Int, sortBy: String, page: Int) {
+    fun getFeedbackDetailListNext(productID: Long, sortBy: String, page: Int) {
         launchCatchError(block = {
             val feedbackDetailList = withContext(dispatcherProvider.io) {
                 getProductFeedbackDetailListUseCase.params = GetProductFeedbackDetailListUseCase.createParams(

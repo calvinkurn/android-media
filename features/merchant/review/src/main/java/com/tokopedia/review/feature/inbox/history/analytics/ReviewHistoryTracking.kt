@@ -25,17 +25,17 @@ object ReviewHistoryTracking {
         )
     }
 
-    fun eventClickImageGallery(userId: String, productId: Int, feedbackId: Int) {
+    fun eventClickImageGallery(userId: String, productId: Long, feedbackId: Long) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
                         ReviewHistoryTrackingConstants.CLICK_REVIEW_IMAGE_GALLERY,
                         userId,
-                        String.format(ReviewHistoryTrackingConstants.EVENT_LABEL_PRODUCT_FEEDBACK_ID, productId, feedbackId)
+                        String.format(ReviewHistoryTrackingConstants.EVENT_LABEL_PRODUCT_FEEDBACK_ID, productId.toString(), feedbackId.toString())
                 )
         )
     }
 
-    fun eventClickReviewCard(userId: String, productId: Int, feedbackId: Int) {
+    fun eventClickReviewCard(userId: String, productId: Long, feedbackId: Long) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
                         ReviewHistoryTrackingConstants.CLICK_REVIEW_CARD,

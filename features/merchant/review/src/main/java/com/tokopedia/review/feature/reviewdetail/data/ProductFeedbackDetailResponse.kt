@@ -33,7 +33,7 @@ data class ProductFeedbackDetailResponse(
                 @SerializedName("autoReply")
                 val autoReply: Boolean = false,
                 @SerializedName("feedbackID")
-                val feedbackID: Int? = 0,
+                val feedbackID: Long? = 0,
                 @SerializedName("rating")
                 val rating: Int? = 0,
                 @SerializedName("replyText")

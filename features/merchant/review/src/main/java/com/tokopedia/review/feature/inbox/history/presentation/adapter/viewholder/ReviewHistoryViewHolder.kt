@@ -55,7 +55,7 @@ class ReviewHistoryViewHolder(view: View,
         }
     }
 
-    private fun showAttachedImages(attachedImages: List<ProductrevReviewAttachment>, productName: String, productId: Int, feedbackId: Int) {
+    private fun showAttachedImages(attachedImages: List<ProductrevReviewAttachment>, productName: String, productId: Long, feedbackId: Long) {
         if(attachedImages.isEmpty()) {
             itemView.reviewHistoryAttachedImages.hide()
             return

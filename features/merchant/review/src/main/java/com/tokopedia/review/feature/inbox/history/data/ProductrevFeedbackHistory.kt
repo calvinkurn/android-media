@@ -7,7 +7,7 @@ import com.tokopedia.review.feature.inbox.common.data.common.ProductrevTimestamp
 data class ProductrevFeedbackHistory(
         @SerializedName("reputationID")
         @Expose
-        val reputationId: Int = 0,
+        val reputationId: Long = 0,
         @SerializedName("product")
         @Expose
         val product: ProductrevFeedbackHistoryProduct = ProductrevFeedbackHistoryProduct(),

@@ -32,7 +32,7 @@ class UpdateSellerResponseUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(productId: Int, responseMessage: String): Map<String, Any> =
+        fun createParams(productId: Long, responseMessage: String): Map<String, Any> =
                 mapOf(FEEDBACK_ID to productId, RESPONSE_MESSAGE to responseMessage)
     }
 

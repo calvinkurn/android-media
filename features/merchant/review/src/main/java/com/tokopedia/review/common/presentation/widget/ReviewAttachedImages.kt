@@ -33,8 +33,8 @@ class ReviewAttachedImages : BaseCustomView {
                   productName: String,
                   reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener,
                   reviewHistoryItemListener: ReviewHistoryItemListener? = null,
-                  productId: Int? = null,
-                  feedbackId: Int? = null) {
+                  productId: Long? = null,
+                  feedbackId: Long? = null) {
         val attachedImageAdapter = ReviewAttachedImagesAdapter(reviewAttachedImagesClickListener, productName, reviewHistoryItemListener, productId, feedbackId)
         this.reviewAttachedImages.apply {
             adapter = attachedImageAdapter

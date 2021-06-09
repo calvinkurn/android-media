@@ -63,7 +63,7 @@ class SellerReviewListViewHolder(val view: View,
     }
 
     interface SellerReviewListListener {
-        fun onItemProductReviewClicked(productId: Int, position: Int, imageUrl: String)
+        fun onItemProductReviewClicked(productId: Long, position: Int, imageUrl: String)
         fun onAddedCoachMarkItemProduct(view: View)
     }
 }

@@ -14,13 +14,13 @@ data class ReviewReplyUpdateResponse(
     ) {
         data class DataFeedback(
                 @SerializedName("feedbackID")
-                val feedbackID: Int? = 0,
+                val feedbackID: Long? = 0,
                 @SerializedName("responseBy")
                 val responseBy: Int? = 0,
                 @SerializedName("responseMessage")
                 val responseMessage: String? = "",
                 @SerializedName("shopID")
-                val shopID: Int? = 0
+                val shopID: Long? = 0
         )
     }
 }

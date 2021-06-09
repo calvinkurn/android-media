@@ -83,7 +83,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         ReviewTemplateListAdapter(this)
     }
 
-    private var shopId = 0
+    private var shopId = 0L
     private var isEmptyReply = false
 
     private var replyTemplateList: List<ReplyTemplateUiModel>? = null
@@ -328,7 +328,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     private fun initData(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
-                shopId = getStringExtra(EXTRA_SHOP_ID).toIntOrZero()
+                shopId = getStringExtra(EXTRA_SHOP_ID).toLongOrZero()
                 isEmptyReply = getBooleanExtra(IS_EMPTY_REPLY_REVIEW, false)
                 val objectId = getStringExtra(CACHE_OBJECT_ID)
                 val manager = if (savedInstanceState == null) {

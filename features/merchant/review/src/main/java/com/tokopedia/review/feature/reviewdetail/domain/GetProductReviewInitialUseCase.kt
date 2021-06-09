@@ -57,8 +57,8 @@ class GetProductReviewInitialUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(productID: Int, filterBy: String, sortBy: String, page: Int, timeFilter: String): RequestParams = RequestParams.create().apply {
-            putInt(PRODUCT_ID, productID)
+        fun createParams(productID: Long, filterBy: String, sortBy: String, page: Int, timeFilter: String): RequestParams = RequestParams.create().apply {
+            putLong(PRODUCT_ID, productID)
             putString(FILTER_BY, filterBy)
             putString(SORT_BY, sortBy)
             putInt(PAGE, page)

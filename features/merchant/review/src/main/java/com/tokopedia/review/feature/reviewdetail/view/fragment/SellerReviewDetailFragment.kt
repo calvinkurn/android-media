@@ -101,7 +101,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private var chipFilterBundle = ""
 
-    private var productID: Int = 0
+    private var productID: Long = 0L
     private var productName = ""
     private var variantName = ""
     private var productImageUrl = ""
@@ -129,7 +129,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
-                productID = getIntExtra(PRODUCT_ID, 0)
+                productID = getIntExtra(PRODUCT_ID, 0).toLong()
                 chipFilterBundle = getStringExtra(CHIP_FILTER) ?: ReviewConstants.ALL_VALUE
                 productImageUrl = getStringExtra(PRODUCT_IMAGE) ?: ""
             }

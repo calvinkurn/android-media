@@ -138,7 +138,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         viewModel.updateKeyWord(text)
     }
 
-    override fun trackAttachedImageClicked(productId: Int?, feedbackId: Int?) {
+    override fun trackAttachedImageClicked(productId: Long?, feedbackId: Long?) {
         if(productId != null && feedbackId != null) {
             ReviewHistoryTracking.eventClickImageGallery(viewModel.getUserId(), productId, feedbackId)
         }
@@ -196,7 +196,7 @@ class ReviewHistoryFragment : BaseListFragment<ReviewHistoryUiModel, ReviewHisto
         })
     }
 
-    private fun goToReviewDetails(reputationId: Int, feedbackId: Int) {
+    private fun goToReviewDetails(reputationId: Long, feedbackId: Long) {
         RouteManager.route(context,
                 Uri.parse(
                         UriUtil.buildUri(ApplinkConstInternalMarketplace.REVIEW_DETAIL, reputationId.toString()))

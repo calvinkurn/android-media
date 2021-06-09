@@ -20,7 +20,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
                                private val tracking: ProductReviewDetailTracking,
                                private val userSession: UserSessionInterface,
-                               private val productID: Int,
+                               private val productID: Long,
                                listenerTopics: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit) :
         BaseTopicsBottomSheet(mActivity, listenerTopics), TopicSortFilterListener.Topic, TopicSortFilterListener.Sort {
 

@@ -7,7 +7,7 @@ import com.tokopedia.review.common.data.ProductrevReviewAttachment
 data class ProductrevFeedbackHistoryReview(
         @SerializedName("feedbackID")
         @Expose
-        val feedbackId: Int = 0,
+        val feedbackId: Long = 0,
         @SerializedName("userName")
         @Expose
         val userName: String = "",
