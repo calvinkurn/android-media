@@ -84,7 +84,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
             getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
         } returns ProductRevGetForm()
 
-        viewModel.getProductReputation(anyLong(), anyLong())
+        viewModel.getProductReputation(anyString(), anyString())
 
         coVerify {
             getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
@@ -101,7 +101,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
             getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
         } throws Throwable()
 
-        viewModel.getProductReputation(anyLong(), anyLong())
+        viewModel.getProductReputation(anyString(), anyString())
 
         coVerify {
             getProductReputationForm.getReputationForm(GetProductReputationForm.createRequestParam(anyString(), anyString()))
