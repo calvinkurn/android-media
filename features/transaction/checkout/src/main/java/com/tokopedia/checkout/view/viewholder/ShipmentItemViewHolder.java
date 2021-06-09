@@ -1670,7 +1670,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tickerError.setCloseButtonVisibility(View.GONE);
                 tickerError.setVisibility(View.VISIBLE);
                 layoutError.setVisibility(View.VISIBLE);
-                //todo analytics
                 if (!shipmentCartItemModel.isHasShownErrorTicker()) {
                     mActionListener.onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorTitle);
                     shipmentCartItemModel.setHasShownErrorTicker(true);
