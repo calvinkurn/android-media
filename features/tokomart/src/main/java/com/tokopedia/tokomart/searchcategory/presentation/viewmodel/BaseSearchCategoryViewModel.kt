@@ -85,7 +85,6 @@ abstract class BaseSearchCategoryViewModel(
     protected var totalFetchedData = 0
     protected var nextPage = 1
     protected var chooseAddressData: LocalCacheModel? = null
-    private var miniCartItems: List<MiniCartItem>? = null
     private var cartItemsNonVariant: List<MiniCartItem>? = null
     private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
 
@@ -627,7 +626,6 @@ abstract class BaseSearchCategoryViewModel(
         val cartItemsPartition =
                 splitCartItemsVariantAndNonVariant(miniCartSimplifiedData.miniCartItems)
 
-//        viewModel.miniCartItems = miniCartSimplifiedData.miniCartItems
         viewModel.cartItemsNonVariant = cartItemsPartition.first
         viewModel.cartItemsVariantGrouped =
                 cartItemsPartition.second.groupBy { it.productParentId }
@@ -681,14 +679,13 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
-        if (productItem.nonVariantATC?.quantity == quantity) return
+        val nonVariantATC = productItem.nonVariantATC ?: return
+        if (nonVariantATC.quantity == quantity) return
 
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id }
-
-        if (miniCartItem == null)
+        if (nonVariantATC.quantity == 0)
             addToCart(productItem, quantity)
         else
-            updateCart(miniCartItem, productItem, quantity)
+            updateCart(productItem, quantity)
     }
 
     private fun addToCart(productItem: ProductItemDataView, quantity: Int) {
@@ -728,10 +725,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun updateCart(
-            miniCartItem: MiniCartItem,
             productItem: ProductItemDataView,
             quantity: Int,
     ) {
+        val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id }
+                ?: return
         miniCartItem.quantity = quantity
         updateCartUseCase.setParams(listOf(miniCartItem))
         updateCartUseCase.execute({
