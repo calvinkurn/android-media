@@ -248,6 +248,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           stockWording
                           stockWordingHTML
                           minimumOrder
+                          maximumOrder
                         }
                         isWishlist
                         campaignInfo {
