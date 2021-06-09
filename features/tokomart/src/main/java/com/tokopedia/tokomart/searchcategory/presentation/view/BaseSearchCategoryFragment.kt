@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.EventObserver
@@ -331,9 +332,9 @@ abstract class BaseSearchCategoryFragment:
         movingPosition += dy
         headerBackground?.y = -(movingPosition.toFloat())
         if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
-            navToolbar?.showShadow(lineShadow = true)
+            navToolbar?.showShadow(lineShadow = false)
         } else {
-            navToolbar?.hideShadow(lineShadow = true)
+            navToolbar?.hideShadow(lineShadow = false)
         }
     }
 
@@ -525,6 +526,16 @@ abstract class BaseSearchCategoryFragment:
         indices.forEach {
             searchCategoryAdapter?.notifyItemChanged(it)
         }
+    }
+
+    override fun onProductClick(productItemDataView: ProductItemDataView) {
+        val context = context ?: return
+
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productItemDataView.id,
+        )
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
