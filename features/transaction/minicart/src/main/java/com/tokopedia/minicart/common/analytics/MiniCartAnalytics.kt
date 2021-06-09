@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.common.analytics
 
 import android.os.Bundle
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -9,7 +8,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
-class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession: UserSessionInterface) {
+class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     companion object {
         // HOST PAGE
@@ -176,7 +175,7 @@ class MiniCartAnalytics @Inject constructor(@ApplicationContext val userSession:
         sendGeneralEvent(data)
     }
 
-    // 4
+    // 4 - DONE
     fun eventClickInputQuantity(quantity: Int) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,

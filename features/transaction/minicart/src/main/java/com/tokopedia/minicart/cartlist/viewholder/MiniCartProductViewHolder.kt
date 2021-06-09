@@ -433,6 +433,10 @@ class MiniCartProductViewHolder(private val view: View,
                 true
             } else false
         }
+        qtyEditorProduct?.editText?.setOnClickListener {
+            val qty = qtyEditorProduct?.editText?.text?.toString().toIntOrZero()
+            listener.onInputQuantityClicked(qty)
+        }
         qtyEditorProduct?.setAddClickListener {
             listener.onQuantityPlusClicked()
         }

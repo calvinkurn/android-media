@@ -24,6 +24,8 @@ interface MiniCartListActionListener {
 
     fun onQuantityMinusClicked()
 
+    fun onInputQuantityClicked(qty: Int)
+
     fun onWriteNotesClicked()
 
     fun onChangeNotesClicked()

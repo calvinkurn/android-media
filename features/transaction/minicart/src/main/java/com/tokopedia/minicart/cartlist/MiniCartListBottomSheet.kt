@@ -81,8 +81,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             isHideable = true
             clearContentPadding = true
             customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-            knobView.setOnClickListener {
-                analytics.eventClickKnobToExpandMiniCartBottomSheet()
+            setShowListener {
+                knobView.setOnClickListener {
+                    analytics.eventClickKnobToExpandMiniCartBottomSheet()
+                }
             }
             setOnDismissListener {
                 cancelAllDebounceJob()
@@ -422,6 +424,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     override fun onQuantityMinusClicked() {
         analytics.eventClickQuantityMinus()
+    }
+
+    override fun onInputQuantityClicked(qty: Int) {
+        analytics.eventClickInputQuantity(qty)
     }
 
     override fun onWriteNotesClicked() {
