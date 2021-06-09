@@ -67,6 +67,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.setHeadingText
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -1343,6 +1344,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             wrapper.addView(textView)
 
             btnHotelSearchWithMap.addItem(wrapper)
+            btnHotelSearchWithMap.color = FloatingButtonUnify.COLOR_GREEN
         }
         btnHotelSearchWithMap.setOnClickListener {
             rvVerticalPropertiesHotelSearchMap.scrollTo(0, 0)
