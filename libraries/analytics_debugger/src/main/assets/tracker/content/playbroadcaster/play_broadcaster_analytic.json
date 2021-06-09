@@ -104,17 +104,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click mulai persiapannya",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "view product tagging bottomsheet",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
