@@ -408,7 +408,6 @@ class OtherMenuViewHolder(private val itemView: View,
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }
-
                 powerMerchantStatusTextView.hide()
                 powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
             }
