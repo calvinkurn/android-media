@@ -1327,6 +1327,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun setupFindWithMapButton() {
         context?.let {
+            btnHotelSearchWithMap.color = FloatingButtonUnify.COLOR_GREEN
             val wrapper = LinearLayout(it)
             wrapper.gravity = Gravity.CENTER
 
@@ -1338,13 +1339,12 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val textView = Typography(it)
             textView.apply {
                 setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-                setTextColor(ContextCompat.getColor(context, R.color.hotel_dms_active_price_marker_color))
+                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 text = getString(R.string.hotel_search_map_search_with_map)
             }
             wrapper.addView(textView)
 
             btnHotelSearchWithMap.addItem(wrapper)
-            btnHotelSearchWithMap.color = FloatingButtonUnify.COLOR_GREEN
         }
         btnHotelSearchWithMap.setOnClickListener {
             rvVerticalPropertiesHotelSearchMap.scrollTo(0, 0)
