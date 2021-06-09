@@ -147,6 +147,7 @@ object SmartBillsQueries {
         ){
         userID: UserID
         bills: Bills{
+                  UUID
                   index: Index
                   productID: ProductID
                   productName: ProductName
