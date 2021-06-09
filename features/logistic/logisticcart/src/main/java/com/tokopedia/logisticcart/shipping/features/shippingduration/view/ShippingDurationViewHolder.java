@@ -182,7 +182,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         }
 
         /*Dynamic Price*/
-        if (shippingDurationUiModel.getDynamicPriceModel().getTextLabel().isEmpty()) {
+        if (shippingDurationUiModel.getDynamicPriceModel() == null || shippingDurationUiModel.getDynamicPriceModel().getTextLabel().isEmpty()) {
             labelDynamicPricing.setVisibility(View.GONE);
         } else {
             labelDynamicPricing.setVisibility(View.VISIBLE);
