@@ -52,6 +52,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -394,15 +395,22 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.ticker.subtitle)
-                setOnClickListener { _ ->
-                    if (ovoIncentiveBottomSheet == null) {
-                        ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this@CreateReviewBottomSheet, "", getTncBottomSheetTrackerData()) }
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        if (ovoIncentiveBottomSheet == null) {
+                            ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this@CreateReviewBottomSheet, "", getTncBottomSheetTrackerData()) }
+                        }
+                        ovoIncentiveBottomSheet?.let { bottomSheet ->
+                            activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
+                            CreateReviewTracking.eventClickIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
+                        }
                     }
-                    ovoIncentiveBottomSheet?.let { bottomSheet ->
-                        activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
-                        CreateReviewTracking.eventClickIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
+
+                    override fun onDismiss() {
+                        // No Op
                     }
-                }
+
+                })
                 viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         CreateReviewTracking.eventViewIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
