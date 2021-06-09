@@ -2,6 +2,7 @@ package com.tokopedia.play.view.uimodel.recom
 
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.util.extension.exhaustive
 import kotlin.contracts.ExperimentalContracts
@@ -31,10 +32,10 @@ sealed class PlayVideoPlayerUiModel {
     object Unknown : PlayVideoPlayerUiModel()
 }
 
-enum class PlayerType {
+sealed class PlayerType {
 
-    Client,
-    Cast
+    object Client : PlayerType()
+    data class Cast(val coverUrl: String) : PlayerType()
 }
 
 data class PlayGeneralVideoPlayerParams(
@@ -43,10 +44,16 @@ data class PlayGeneralVideoPlayerParams(
         val lastMillis: Long?
 )
 
-fun PlayVideoPlayerUiModel.General.setPlayer(videoPlayer: Player) = PlayVideoPlayerUiModel.General.Complete(
+fun PlayVideoPlayerUiModel.General.setPlayer(videoPlayer: ExoPlayer) = PlayVideoPlayerUiModel.General.Complete(
         params = params,
         exoPlayer = videoPlayer,
-        playerType = if (videoPlayer is ExoPlayer) PlayerType.Client else PlayerType.Cast
+        playerType = PlayerType.Client
+)
+
+fun PlayVideoPlayerUiModel.General.setPlayer(videoPlayer: CastPlayer, coverUrl: String) = PlayVideoPlayerUiModel.General.Complete(
+        params = params,
+        exoPlayer = videoPlayer,
+        playerType = PlayerType.Cast(coverUrl)
 )
 
 val PlayVideoPlayerUiModel.isYouTube: Boolean

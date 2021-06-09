@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.MediaItem
+import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaMetadata
@@ -571,18 +572,41 @@ class PlayViewModel @Inject constructor(
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
         if (channelData.statusInfo.statusType.isFreeze) return
+        if (!channelData.videoMetaInfo.videoPlayer.isGeneral()) return
 
-        if (castPlayer.isCastSessionAvailable && channelData.videoMetaInfo.videoPlayer.isGeneral()) {
+        fun loadCast() {
+            defocusVideoPlayer(true)
+
             val params = channelData.videoMetaInfo.videoPlayer.params
             val videoStream = channelData.videoMetaInfo.videoStream
             val mediaItem = getCastMediaItem(params, videoStream, channelData.partnerInfo, channelData.channelInfo.coverUrl)
             castPlayer.loadItem(mediaItem, playVideoPlayer.getCurrentPosition())
             _observableVideoMeta.value = channelData.videoMetaInfo.copy(
-                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayer)
+                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayer, channelData.channelInfo.coverUrl)
             )
-        } else {
+        }
+
+        fun loadPlayer() {
             playVideoPlayer.addListener(videoManagerListener)
             playVideoPlayer.resume()
+
+            _observableVideoMeta.value = channelData.videoMetaInfo.copy(
+                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(playVideoPlayer.videoPlayer)
+            )
+        }
+
+        if (castPlayer.isCastSessionAvailable) loadCast()
+        else {
+            loadPlayer()
+            castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
+                override fun onCastSessionAvailable() {
+                    loadCast()
+                }
+
+                override fun onCastSessionUnavailable() {
+                    loadPlayer()
+                }
+            })
         }
     }
 
