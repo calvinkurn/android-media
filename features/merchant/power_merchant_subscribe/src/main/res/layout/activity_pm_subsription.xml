@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@+id/imgPmHeaderImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgPmHeaderImage"
