@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.util.TypedValue
 import android.view.View
+import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -29,13 +30,11 @@ class AnnouncementViewHolder(
     }
 
     override fun bind(element: AnnouncementWidgetUiModel) {
-        itemView.visible()
         val data = element.data
         when {
             data == null -> showLoadingState()
             data.error.isNotBlank() -> {
                 //remove widget if state is error
-                itemView.gone()
                 listener.removeWidget(adapterPosition, element)
             }
             else -> showSuccessState(element)

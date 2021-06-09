@@ -42,7 +42,6 @@ class PostListViewHolder(
 
     override fun bind(element: PostListWidgetUiModel) {
         itemView.rvPostList.isNestedScrollingEnabled = false
-        itemView.visible()
         observeState(element)
     }
 
@@ -76,7 +75,6 @@ class PostListViewHolder(
         val isEmpty = postListWidgetUiModel.data?.items.isNullOrEmpty()
         when {
             isEmpty && !postListWidgetUiModel.isShowEmpty -> {
-                itemView.gone()
                 listener.removeWidget(adapterPosition, postListWidgetUiModel)
             }
             else -> showSuccessState(postListWidgetUiModel)
