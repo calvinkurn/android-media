@@ -26,7 +26,7 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/grey_750"
+            android:textColor="@color/Unify_N600"
             android:textSize="@dimen/sp_17"
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/dp_16"
@@ -38,7 +38,7 @@
             android:id="@+id/tv_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G400"
             android:textSize="@dimen/sp_14"
             android:visibility="gone"
             android:gravity="end|right"
@@ -49,7 +49,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/grey_300"/>
+        android:background="@color/Unify_N100"/>
 
     <FrameLayout
         android:id="@+id/bottomsheet_container"

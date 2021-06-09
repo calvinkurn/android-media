@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4">
+
+    <ImageView
+        android:id="@+id/image_radio_item"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:srcCompat="@drawable/ic_radio_button_empty"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title_radio"
+        app:typographyType="body_1"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textSize="@dimen/fontSize_lvl6"
+        app:layout_constraintLeft_toRightOf="@id/image_radio_item"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image_radio_item"
+        app:layout_constraintBottom_toBottomOf="@id/image_radio_item"
+        tools:text="Otomatis (rekomendasi)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_subtitle_radio"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textSize="@dimen/fontSize_lvl6"
+        android:textColor="@color/setting_text_grey"
+        app:layout_constraintLeft_toLeftOf="@id/text_title_radio"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_radio"
+        tools:text="Kualitas media akan otomatis diturunkan ketika jaringan seluler kamu 3G atau dibawahnya." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

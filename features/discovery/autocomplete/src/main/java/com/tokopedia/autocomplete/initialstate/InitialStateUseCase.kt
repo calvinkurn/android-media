@@ -2,24 +2,51 @@ package com.tokopedia.autocomplete.initialstate
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.autocomplete.initialstate.data.InitialStateGqlResponse
 import com.tokopedia.autocomplete.util.UrlParamHelper
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import rx.functions.Func1
-import java.util.HashMap
-import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 
 class InitialStateUseCase(
-        private val graphqlRequest: GraphqlRequest,
-        private val graphqlUseCase: GraphqlUseCase,
-        private val initialStateDataModelMapper: Func1<GraphqlResponse, List<InitialStateData>>
+        private val graphqlUseCase: GraphqlUseCase
 ) : UseCase<List<InitialStateData>>() {
 
     companion object {
+        internal const val GQL_QUERY = """
+            query universe_initial_state(${'$'}params: String!){
+              universe_initial_state(param: ${'$'}params) {
+                data{
+                  id
+                  header
+                  label_action
+                  feature_id
+                  items{
+                    id
+                    template
+                    image_url
+                    applink
+                    url
+                    title
+                    subtitle
+                    icon_title
+                    icon_subtitle
+                    label
+                    label_type
+                    shortcut_image
+                    type
+                    discount_percentage
+                    original_price
+                  }
+                }
+              }
+            }
+        """
+
         private const val KEY_DEVICE = "device"
         private const val KEY_SOURCE = "source"
         private const val KEY_UNIQUE_ID = "unique_id"
@@ -50,19 +77,22 @@ class InitialStateUseCase(
         }
     }
 
+    @GqlQuery("InitialStateUseCaseQuery", GQL_QUERY)
     override fun createObservable(requestParams: RequestParams): Observable<List<InitialStateData>> {
-        val variables = createParametersForQuery(requestParams.parameters)
-        graphqlRequest.variables = variables
+        val params = UrlParamHelper.generateUrlParamString(requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(
+                InitialStateUseCaseQuery.GQL_QUERY,
+                InitialStateGqlResponse::class.java,
+                mapOf(GQL.KEY_PARAMS to params)
+        )
+
         graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.addRequests(listOf(graphqlRequest))
+
         return graphqlUseCase
                 .createObservable(RequestParams.EMPTY)
-                .map(initialStateDataModelMapper)
-    }
-
-    private fun createParametersForQuery(parameters: Map<String, Any>): Map<String, Any> {
-        val variables: MutableMap<String, Any> = HashMap()
-        variables[GQL.KEY_PARAMS] = UrlParamHelper.generateUrlParamString(parameters)
-        return variables
+                .map {
+                    it.getData<InitialStateGqlResponse>(InitialStateGqlResponse::class.java)?.initialStateUniverse?.data ?: listOf()
+                }
     }
 }

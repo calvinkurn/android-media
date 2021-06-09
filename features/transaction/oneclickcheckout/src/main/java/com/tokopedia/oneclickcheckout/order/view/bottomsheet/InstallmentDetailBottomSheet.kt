@@ -1,10 +1,12 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Base64
 import android.view.View
 import android.webkit.WebView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -93,13 +95,21 @@ class InstallmentDetailBottomSheet {
         }
     }
 
+    private fun generateColorRGBAString(colorInt: Int): String {
+        return "rgba(${Color.red(colorInt)},${Color.green(colorInt)},${Color.blue(colorInt)},${Color.alpha(colorInt).toFloat()/255})"
+    }
+
     private fun setupTerms(child: View, tncInfo: String) {
         val webView = child.findViewById<WebView>(R.id.web_view_terms)
+        val backgroundColor = generateColorRGBAString(ContextCompat.getColor(child.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        val headerColor = generateColorRGBAString(ContextCompat.getColor(child.context, com.tokopedia.unifyprinciples.R.color.Unify_N600))
+        val ulColor = generateColorRGBAString(ContextCompat.getColor(child.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        val pColor = generateColorRGBAString(ContextCompat.getColor(child.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         val htmlText = """
 <html>
 	<style>
     body {
-        background: #FAFBFC;
+        background: $backgroundColor;
     }
     h1 {
      	font-family: SF Pro Text;
@@ -107,19 +117,19 @@ class InstallmentDetailBottomSheet {
         font-weight: bold;
         font-size: 12px;
         line-height: 14px;
-        color: #4A4A4A;
+        color: $headerColor;
     }
     ul {
         padding-inline-start: 20px;
     }
     ul li {
-     	color: #42B549;
+     	color: $ulColor;
     }
     ol li {
         font-family: SFProText;
         font-size: 12px;
         line-height: 18px;
-        color: rgba(0, 0, 0, 0.38);
+        color: $pColor;
         margin-top:8px;
     }
     ol {
@@ -129,7 +139,7 @@ class InstallmentDetailBottomSheet {
         font-family: SFProText;
         font-size: 12px;
         line-height: 18px;
-        color: rgba(0, 0, 0, 0.38);
+        color: $pColor;
     }
     </style>
     <body>

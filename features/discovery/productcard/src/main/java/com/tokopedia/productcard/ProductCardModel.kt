@@ -50,7 +50,8 @@ data class ProductCardModel (
         val countSoldRating: String = "",
         val hasNotifyMeButton: Boolean = false,
         val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
-        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION
+        val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+        val isWideContent: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -140,6 +141,14 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_FULFILLMENT)
     }
 
+    fun getLabelCategory(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY)
+    }
+
+    fun getLabelCostPerUnit(): LabelGroup? {
+        return findLabelGroup(LABEL_COST_PER_UNIT)
+    }
+
     fun willShowRatingAndReviewCount(): Boolean {
         return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
@@ -186,6 +195,12 @@ data class ProductCardModel (
                 && labelFulfillment.title.isNotEmpty()
                 && labelFulfillment.imageUrl.isNotEmpty()
     }
+
+    fun isShowLabelCategory() = !willShowVariant() && (getLabelCategory()?.title?.isNotEmpty() == true)
+
+    fun isShowLabelCostPerUnit() = !willShowVariant() && (getLabelCostPerUnit()?.title?.isNotEmpty() == true)
+
+    fun isShowCategoryAndCostPerUnit() = isShowLabelCategory() && isShowLabelCostPerUnit()
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
@@ -246,11 +261,5 @@ data class ProductCardModel (
 
         customVariant.clear()
         customVariant.add(labelGroupCustomVariant)
-    }
-
-    companion object {
-        const val WORDING_SEGERA_HABIS = "Segera Habis"
-        val FIRE_WIDTH = R.dimen.dp_12
-        val FIRE_HEIGHT = R.dimen.dp_13
     }
 }

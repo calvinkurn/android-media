@@ -1,158 +1,93 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.inboxcommon.util.FileUtil
-import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingChat
-import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper.mapToIncomingTypeState
+import com.tokopedia.topchat.chatlist.domain.websocket.DefaultTopChatWebSocket
+import com.tokopedia.topchat.chatlist.domain.websocket.DefaultWebSocketParser
 import com.tokopedia.topchat.chatlist.domain.websocket.PendingMessageHandler
+import com.tokopedia.topchat.chatlist.domain.websocket.WebSocketStateHandler
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
+import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessage
+import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModelTest.Companion.eventReplyMessageString
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.WebSocketResponse
-import io.mockk.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
+import org.junit.After
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ChatListWebSocketViewModelTest {
+open class ChatListWebSocketViewModelTest {
 
-    @get:Rule val rule = InstantTaskExecutorRule()
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
-    private val webSocket: TopChatWebSocket = mockk(relaxed = true)
-    private val dispatchers = TopchatTestCoroutineContextDispatcher()
-    private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val pendingMessageHandler: PendingMessageHandler = mockk(relaxed = true)
+    protected val topchatWebSocket: DefaultTopChatWebSocket = mockk(relaxed = true)
+    protected val dispatchers = CoroutineTestDispatchersProvider
+    protected val userSession: UserSessionInterface = mockk(relaxed = true)
+    protected val pendingMessageHandler: PendingMessageHandler = PendingMessageHandler(userSession)
+    protected val webSocket: WebSocket = mockk(relaxed = true)
+    protected val webSocketStateHandler: WebSocketStateHandler = mockk(relaxed = true)
+    protected val lifecycleRegistry = LifecycleRegistry(mockk(relaxed = true))
 
-    private val viewModel = ChatListWebSocketViewModel(
-            webSocket,
+    protected val viewModel = ChatListWebSocketViewModel(
+            topchatWebSocket,
+            DefaultWebSocketParser(),
+            webSocketStateHandler,
             userSession,
             dispatchers,
             pendingMessageHandler
     )
 
-    private val itemChatObserver: Observer<Result<BaseIncomingItemWebSocketModel>> = mockk(relaxed = true)
+    protected val itemChatObserver: Observer<Result<BaseIncomingItemWebSocketModel>> = mockk(relaxed = true)
 
-    @Before fun setUp() {
+    @Before
+    fun setUp() {
         viewModel.itemChat.observeForever(itemChatObserver)
+        lifecycleRegistry.addObserver(viewModel)
     }
 
-    @Test fun `onLifeCycleStart should return isOnStop false and activeRoom is empty`() {
+    @After
+    fun tearDown() {
+        lifecycleRegistry.removeObserver(viewModel)
+    }
+
+    @Test
+    fun onLifeCycleStart_should_return_isOnStop_false_and_activeRoom_is_empty() {
         // When
-        viewModel.onLifeCycleStart()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
 
         // Then
-        assertTrue(!viewModel.isOnStop)
-        assertTrue(viewModel.activeRoom.isEmpty())
+        assertThat(viewModel.isOnStop, `is`(false))
+        assertThat(viewModel.activeRoom, `is`(""))
     }
 
-    @Test fun `onLifeCycleStop should return isOnStop true`() {
+    @Test
+    fun onLifeCycleStop_should_return_isOnStop_true() {
         // When
-        viewModel.onLifeCycleStop()
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
 
         // Then
-        assertTrue(viewModel.isOnStop)
+        assertThat(viewModel.isOnStop, `is`(true))
     }
 
-    @Test fun `connectWebSocket should response EVENT_TOPCHAT_REPLY_MESSAGE`() {
-        runBlocking {
-            // Given
-            val data = mapToIncomingChat(eventReplyMessage)
-            val expectedValue = Success(data)
-
-            val channel = Channel<WebSocketResponse>()
-            launch { channel.send(eventReplyMessage) }
-            coEvery { webSocket.createWebSocket() } returns channel
-
-            viewModel.isOnStop = false
-            every { pendingMessageHandler.hasPendingMessage() } returns false
-
-            // When
-            viewModel.connectWebSocket()
-
-            // Then
-            verify(exactly = 1) { itemChatObserver.onChanged(expectedValue) }
-            assertTrue(viewModel.itemChat.value == expectedValue)
-
-            channel.close()
-        }
-    }
-
-    @Test fun `connectWebSocket should queue the incoming message`() {
-        runBlocking {
-            // Given
-            val viewModelSpyk = spyk(viewModel, recordPrivateCalls = true)
-
-            val data = mapToIncomingChat(eventReplyMessage)
-
-            val channel = Channel<WebSocketResponse>()
-            launch { channel.send(eventReplyMessage) }
-            coEvery { webSocket.createWebSocket() } returns channel
-
-            every { pendingMessageHandler.hasPendingMessage() } returns true
-
-            // When
-            viewModelSpyk.connectWebSocket()
-
-            // Then
-            verify(exactly = 1) { viewModelSpyk["queueIncomingMessage"](data) }
-
-            channel.close()
-        }
-    }
-
-    @Test fun `connectWebSocket should response EVENT_TOPCHAT_TYPING`() {
-        runBlocking {
-            // Given
-            val response = mapToIncomingTypeState(eventTyping, true)
-            val expectedValue = Success(response)
-
-            val channel = Channel<WebSocketResponse>()
-            launch { channel.send(eventTyping) }
-
-            coEvery { webSocket.createWebSocket() } returns channel
-
-            // When
-            viewModel.connectWebSocket()
-
-            // Then
-            verify(exactly = 1) { itemChatObserver.onChanged(expectedValue) }
-            assertTrue(viewModel.itemChat.value == expectedValue)
-
-            channel.close()
-        }
-    }
-
-    @Test fun `connectWebSocket should response EVENT_TOPCHAT_END_TYPING`() {
-        runBlocking {
-            // Given
-            val response = mapToIncomingTypeState(eventEndTyping, false)
-            val expectedValue = Success(response)
-
-            val channel = Channel<WebSocketResponse>()
-            launch { channel.send(eventEndTyping) }
-
-            coEvery { webSocket.createWebSocket() } returns channel
-
-            // When
-            viewModel.connectWebSocket()
-
-            // Then
-            verify(exactly = 1) { itemChatObserver.onChanged(expectedValue) }
-            assertTrue(viewModel.itemChat.value == expectedValue)
-
-            channel.close()
-        }
-    }
-
-    @Test fun `onRoleChanged should able to change the role of user`() {
+    @Test
+    fun `onRoleChanged should able to change the role of user`() {
         // Given
         val role = RoleType.SELLER
 
@@ -163,32 +98,84 @@ class ChatListWebSocketViewModelTest {
         assertTrue(viewModel.role == role)
     }
 
-    @Test fun `clearPendingMessages should clear the pending message`() {
+    @Test
+    fun should_have_no_pending_message_when_cleared() {
         // Given
-        every { pendingMessageHandler.pendingMessages.clear() } just runs
+        val response = eventReplyMessageString
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
 
         // When
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        viewModel.connectWebSocket()
         viewModel.clearPendingMessages()
 
         // Then
-        verify(exactly = 1) { pendingMessageHandler.pendingMessages.clear() }
+        assertThat(viewModel.pendingMessages.size, `is`(0))
     }
 
-    companion object {
-        private val eventReplyMessage: WebSocketResponse = FileUtil.parse(
-                "/ws_response_reply_text_is_opposite.json",
-                WebSocketResponse::class.java
-        )
+    @Test
+    fun should_immediately_update_latest_itemChat() {
+        // Given
+        val expectedValue = mapToIncomingChat(eventReplyMessage)
+        val response = eventReplyMessageString
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
 
-        private val eventTyping: WebSocketResponse = FileUtil.parse(
-                "/ws_response_typing.json",
-                WebSocketResponse::class.java
-        )
+        // When
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        viewModel.connectWebSocket()
 
-        private val eventEndTyping: WebSocketResponse = FileUtil.parse(
-                "/ws_response_end_typing.json",
-                WebSocketResponse::class.java
-        )
+        // Then
+        val data = (viewModel.itemChat.value as? Success)?.data
+        assertThat(viewModel.itemChat.value, `is`(instanceOf(Success::class.java)))
+        assertThat(data?.messageId, `is`(expectedValue.messageId))
+    }
+
+    @Test
+    fun should_have_reduced_pending_message_when_msgId_deleted() {
+        // Given
+        val expectedValue = mapToIncomingChat(eventReplyMessage)
+        val response = eventReplyMessageString
+        val webSocketListener = slot<WebSocketListener>()
+        every { topchatWebSocket.connectWebSocket(capture(webSocketListener)) } answers {
+            webSocketListener.captured.onMessage(webSocket, response)
+        }
+
+        // When
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        viewModel.connectWebSocket()
+        viewModel.deletePendingMsgWithId(expectedValue.msgId)
+
+        // Then
+        assertThat(viewModel.pendingMessages.size, `is`(0))
+    }
+
+    @Test
+    fun should_return_the_latest_role_assigned() {
+        // When
+        viewModel.role = RoleType.SELLER
+
+        // Then
+        assertThat(viewModel.role, `is`(RoleType.SELLER))
+    }
+
+    @Test
+    fun should_return_the_latest_activeRoom_assigned() {
+        // Given
+        val msgId = "111"
+
+        // When
+        viewModel.activeRoom = msgId
+
+        // Then
+        assertThat(viewModel.activeRoom, `is`(msgId))
     }
 
 }

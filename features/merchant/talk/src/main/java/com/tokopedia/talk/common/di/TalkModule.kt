@@ -13,8 +13,6 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.talk.feature.reporttalk.data.TalkApi
 import com.tokopedia.talk.feature.reporttalk.data.TalkUrl
 import com.tokopedia.talk.feature.reporttalk.network.TalkErrorResponse
@@ -40,10 +38,6 @@ class TalkModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
-    @TalkScope
-    @Provides
-    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @TalkScope
     @Provides

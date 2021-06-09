@@ -1,18 +1,18 @@
 package com.tokopedia.flight.dummy
 
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.bookingV3.data.*
-import com.tokopedia.flight.bookingV3.data.mapper.FlightBookingMapper
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
+import com.tokopedia.flight.booking.data.*
+import com.tokopedia.flight.booking.data.mapper.FlightBookingMapper
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.search.presentation.model.FlightFareModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 

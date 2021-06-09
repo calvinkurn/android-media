@@ -7,12 +7,14 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
+import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase
 import com.tokopedia.notifcenter.domain.SingleNotificationUpdateUseCase
-import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -32,8 +34,8 @@ class NotificationUpdateViewModel @Inject constructor(
         private val productStockHandlerUseCase: ProductStockHandlerUseCase,
         private val singleNotificationUpdateUseCase: SingleNotificationUpdateUseCase,
         private var notificationMapper: GetNotificationUpdateMapper,
-        dispatcher: DispatcherProvider
-) : BaseViewModel(dispatcher.io()), NotificationUpdateContract {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io), NotificationUpdateContract {
 
     private val _productStockHandler = MutableLiveData<NotificationItemViewBean>()
     val productStockHandler: LiveData<NotificationItemViewBean>
@@ -58,6 +60,13 @@ class NotificationUpdateViewModel @Inject constructor(
         val params = stockHandlerParam(notificationId)
         productStockHandlerUseCase.get(params, {
             _productStockHandler.value = stockHandlerMap(it)
+        }, ::onErrorMessage)
+    }
+
+    fun isProductStockHandlerMultiple(notificationId: String, originData: ProductData) {
+        val params = stockHandlerParam(notificationId)
+        productStockHandlerUseCase.get(params, {
+            _productStockHandler.value = ProductStockHandlerMapper.mapEliminateMultipleProduct(it, originData)
         }, ::onErrorMessage)
     }
 

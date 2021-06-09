@@ -66,6 +66,7 @@ object ProductTrackingConstant {
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
         const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
         const val VALUE_NONE_OTHER = "none / other"
+        const val VALUE_FALSE = "false"
         const val KEY_PRODUCT_ID = "productId"
         const val KEY_LAYOUT = "layout"
         const val KEY_COMPONENT = "component"
@@ -79,6 +80,10 @@ object ProductTrackingConstant {
         const val KEY_INSURANCE = "insurance"
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
+
+        //Tradein
+        const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
+        const val TRADEIN_TRUE_NON_DIAGNOSTIC = "true non diagnostic"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"

@@ -3,10 +3,14 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
@@ -18,10 +22,12 @@ import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 object TopChatWebSocketParam {
 
     fun generateParamSendMessage(
-            thisMessageId: String,
-            messageText: String,
-            startTime: String,
-            attachments: List<SendablePreview>
+        thisMessageId: String,
+        messageText: String,
+        startTime: String,
+        attachments: List<SendablePreview>,
+        intention: String? = null,
+        userLocationInfo: LocalCacheModel? = null
     ): String {
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -32,14 +38,87 @@ object TopChatWebSocketParam {
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
             if (attachments.isNotEmpty()) {
-                add("extras", createProductExtrasAttachments(attachments))
+                val extras = createMessageExtrasAttachments(
+                    attachments, intention, userLocationInfo
+                )
+                add("extras", extras)
             }
         }
         json.add("data", data)
         return json.toString()
     }
 
-    private fun createProductExtrasAttachments(attachments: List<SendablePreview>): JsonElement {
+    fun generateParamSendProductAttachment(
+        messageId: String,
+        product: ResultProduct,
+        startTime: String,
+        toUid: String,
+        productPreview: ProductPreview,
+        message: String,
+        userLocationInfo: LocalCacheModel
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("message_id", Integer.valueOf(messageId))
+        data.addProperty("message", product.productUrl)
+        data.addProperty("start_time", startTime)
+        data.addProperty("to_uid", toUid)
+        data.addProperty(
+            "attachment_type",
+            Integer.parseInt(AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT)
+        )
+        data.addProperty("product_id", product.productId.toLongOrZero())
+
+        val productProfile = JsonObject()
+        productProfile.addProperty("name", product.name)
+        productProfile.addProperty("price", product.price)
+        productProfile.addProperty("price_before", productPreview.priceBefore)
+        productProfile.addProperty("price_before_int", productPreview.priceBeforeInt)
+        productProfile.addProperty("drop_percentage", productPreview.dropPercentage)
+        productProfile.addProperty("image_url", product.productImageThumbnail)
+        productProfile.addProperty("url", product.productUrl)
+        productProfile.addProperty("text", message)
+        productProfile.addProperty("status", productPreview.status)
+        productProfile.addProperty("remaining_stock", productPreview.remainingStock)
+        productProfile.add("variant", productPreview.generateVariantRequest())
+
+        val freeShipping = JsonObject()
+        freeShipping.addProperty("is_active", productPreview.productFsIsActive)
+        freeShipping.addProperty("image_url", productPreview.productFsImageUrl)
+        productProfile.add("free_ongkir", freeShipping)
+
+        val extras = createProductExtrasAttachments(userLocationInfo)
+        data.add("extras", extras)
+
+        data.add("product_profile", productProfile)
+        json.add("data", data)
+        return json
+    }
+
+    private fun createProductExtrasAttachments(
+        userLocationInfo: LocalCacheModel
+    ): JsonElement {
+        val jsonObject = JsonObject()
+        applyExtrasLocationStockTo(jsonObject, userLocationInfo)
+        return jsonObject
+    }
+
+    private fun createMessageExtrasAttachments(
+        attachments: List<SendablePreview>,
+        intention: String?,
+        userLocationInfo: LocalCacheModel?
+    ): JsonElement {
+        val jsonObject = JsonObject()
+        applyExtrasProductTo(jsonObject, attachments)
+        applyExtrasIntentionTo(jsonObject, intention)
+        applyExtrasLocationStockTo(jsonObject, userLocationInfo)
+        return jsonObject
+    }
+
+    private fun applyExtrasProductTo(
+        jsonObject: JsonObject, attachments: List<SendablePreview>
+    ) {
         val extrasProducts = JsonArray()
         attachments.forEach { attachment ->
             if (attachment is SendableProductPreview) {
@@ -50,11 +129,37 @@ object TopChatWebSocketParam {
                 extrasProducts.add(product)
             }
         }
-        return JsonObject().apply {
-            add("extras_product", extrasProducts)
+        jsonObject.add("extras_product", extrasProducts)
+    }
+
+    private fun applyExtrasIntentionTo(
+        jsonObject: JsonObject, intention: String?
+    ) {
+        intention?.let {
+            jsonObject.addProperty("intent", it)
         }
     }
 
+    private fun applyExtrasLocationStockTo(
+        jsonObject: JsonObject, userLocationInfo: LocalCacheModel?
+    ) {
+        userLocationInfo?.let {
+            val locationStock = createLocationStockProperty(it)
+            jsonObject.add("location_stock", locationStock)
+        }
+    }
+
+    private fun createLocationStockProperty(
+        userLocationInfo: LocalCacheModel
+    ): JsonObject {
+        return JsonObject().apply {
+            val latlon = "${userLocationInfo.lat},${userLocationInfo.long}"
+            addProperty("address_id", userLocationInfo.address_id.toLongOrZero())
+            addProperty("district_id", userLocationInfo.district_id.toLongOrZero())
+            addProperty("postal_code", userLocationInfo.postal_code)
+            addProperty("latlon", latlon)
+        }
+    }
 
     fun generateParamSendImage(thisMessageId: String, path: String, startTime: String): String {
         val json = JsonObject()
@@ -96,7 +201,14 @@ object TopChatWebSocketParam {
         return json.toString()
     }
 
-    fun generateParamCopyVoucherCode(thisMessageId: String, replyId: String, blastId: String, attachmentId: String, replyTime: String?, fromUid: String?): String {
+    fun generateParamCopyVoucherCode(
+        thisMessageId: String,
+        replyId: String,
+        blastId: String,
+        attachmentId: String,
+        replyTime: String?,
+        fromUid: String?
+    ): String {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_COPY_VOUCHER_CODE)
         val data = JsonObject()

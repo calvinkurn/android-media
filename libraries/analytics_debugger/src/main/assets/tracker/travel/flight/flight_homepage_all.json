@@ -3,39 +3,81 @@
   "mode": "exact",
   "query": [
     {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "\\d*",
+          "item_id": ".*",
+          "item_name": ".*"
+        }
+      ],
+      "businessUnit" : "travel & entertainment",
+      "clientId" : ".*",
+      "eventCategory": "digital - flight",
+      "currentSite" : "tokopediadigitalflight",
+      "screenName" : "/flight/homepage",
+      "category" : "flight",
+      "event": "view_item",
+      "userId" : ".*",
+      "eventAction": "view travel video",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "\\d*",
+          "item_id": ".*",
+          "item_name": ".*"
+        }
+      ],
+      "businessUnit" : "travel & entertainment",
+      "clientId" : ".*",
+      "eventCategory": "digital - flight",
+      "currentSite" : "tokopediadigitalflight",
+      "screenName" : "/flight/homepage",
+      "category" : "flight",
+      "event": "select_content",
+      "userId" : ".*",
+      "eventAction": "click travel video",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
+    },
+    {
       "event": "genericFlightEvent",
       "eventAction": "select origin",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "genericFlightEvent",
       "eventAction": "select destination",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "genericFlightEvent",
       "eventAction": "select flight class",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "genericFlightEvent",
       "eventAction": "select Passenger",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{\\d* .* - \\d* .* - \\d* .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "\\d* .* - \\d* .* - \\d* .*",
+      "sessionIris": ".*"
     },
     {
       "event": "genericFlightEvent",
       "eventAction": "select trip type",
       "eventCategory": "digital - flight",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     }
   ]
 }

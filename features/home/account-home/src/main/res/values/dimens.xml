@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="accounthome_dp_12">12dp</dimen>
+    <dimen name="accounthome_dp_14">14dp</dimen>
     <dimen name="dp_24">24dp</dimen>
     <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_half">0.5dp</dimen>
@@ -12,4 +14,6 @@
     <dimen name="account_home_seller_shop_bg_width">42dp</dimen>
     <dimen name="account_home_add_name_bottom_sheet_26dp">26dp</dimen>
     <dimen name="account_home_add_name_bottom_sheet_6dp">6dp</dimen>
+
+    <dimen name="image_quality_dp11">11dp</dimen>
 </resources>

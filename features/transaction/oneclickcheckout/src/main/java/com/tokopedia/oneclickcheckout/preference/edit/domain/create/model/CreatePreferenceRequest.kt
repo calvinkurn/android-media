@@ -1,11 +1,14 @@
 package com.tokopedia.oneclickcheckout.preference.edit.domain.create.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 
 data class CreatePreferenceRequest(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("address_id")
-        val addressId: Int,
+        val addressId: Long,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("service_id")
         val serviceId: Int,
         @SerializedName("gateway_code")

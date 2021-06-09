@@ -354,6 +354,11 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     }
 
     @Override
+    public void logRefreshTokenException(String error, String type, String path, String accessToken) {
+
+    }
+
+    @Override
     public FingerprintModel getFingerprintModel() {
         FingerprintModel fingerprintModel = new FingerprintModel();
         fingerprintModel.setRegistrarionId(getRegistrarianId());

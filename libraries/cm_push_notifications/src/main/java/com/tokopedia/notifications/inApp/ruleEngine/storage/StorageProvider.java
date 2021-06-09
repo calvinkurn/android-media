@@ -209,6 +209,16 @@ public class StorageProvider implements InterfaceDataStore {
         }).subscribeOn(Schedulers.io());
     }
 
+    @Override
+    public Completable updateVisibleStateForAlreadyShown() {
+        return Completable.fromAction(new Action0() {
+            @Override
+            public void call() {
+                inAppDataDao.updateVisibleStateForAlreadyShown();
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
     public interface StorageProviderListener {
         void onInappDuplicate(CMInApp cmInApp);
 

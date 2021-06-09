@@ -24,8 +24,6 @@
     <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
     <string name="checkout_module_wishlist_add_to_cart">Tambah ke Keranjang</string>
     <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
-    <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
-    <string name="message_payment_success">Pembayaran Berhasil</string>
     <string name="checkout_module_keranjang_belanja_kosong_new">Wah, keranjang belanjamu kosong</string>
     <string name="checkout_empty_cart_sub_message_new">Yuk, isi dengan barang-barang impianmu!</string>
     <string name="checkout_module_mulai_belanja">Mulai Belanja</string>

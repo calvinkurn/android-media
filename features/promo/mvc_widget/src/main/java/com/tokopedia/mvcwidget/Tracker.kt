@@ -26,6 +26,8 @@ object Tracker {
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
         const val CURRENT_SITE = "currentSite"
+        const val TOKOPOINT_BUSINESSUNIT = "tokopoints"
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     }
 
     object Event {
@@ -33,11 +35,13 @@ object Tracker {
         const val CLICK_MV = "clickMerchantVoucher"
         const val VIEW_MV = "viewMerchantVoucherIris"
         const val VIEW_SHOP = "viewShopPageIris"
+        const val CLICK_KUPON = "clickCoupon"
     }
 
     object Category {
         const val MERCHANT_VOUCHER = "merchant voucher"
         const val SHOP_PAGE_BUYER = "shop page - buyer"
+        const val REWARDS_CATEGORY = "kupon toko"
     }
 
     object Action {
@@ -58,6 +62,7 @@ object Tracker {
         const val VIEW_SHOP_FOLLOWERS_COUPON = "view shop followers coupon"
         const val VIEW_MEMBERSHIP_COUPON = "view membership coupon"
         const val VIEW_REGULAR_COUPON = "view regular coupon"
+        const val CLICK_CEK_TOKO = "click cek toko"
     }
 
     object Label {
@@ -67,7 +72,7 @@ object Tracker {
 
     fun fillCommonItems(map: MutableMap<String, Any>, userId: String?) {
         map[Constants.BUSINESS_UNIT] = "physical goods"
-        map[Constants.CURRENT_SITE] = "tokopediamarketplace"
+        map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
         userId?.let {
             map[Constants.USER_ID] = userId
         }
@@ -345,6 +350,20 @@ object Tracker {
 
     //Outside MVC - entryPoint
     //35,36,37,38,39,40,41,42,43
+
+    //Reward GTM for Bottomsheet CTA
+    fun userClickBottomSheetCTA(label: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Constants.EVENT] = Event.CLICK_KUPON
+        map[Constants.EVENT_CATEGORY] = Category.REWARDS_CATEGORY
+        map[Constants.EVENT_ACTION] = Action.CLICK_CEK_TOKO
+        map[Constants.EVENT_LABEL] = label
+        map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
+        map[Constants.BUSINESS_UNIT] = Constants.TOKOPOINT_BUSINESSUNIT
+
+        getTracker().sendGeneralEvent(map)
+    }
+
 }
 
 @Retention(AnnotationRetention.SOURCE)

@@ -2,8 +2,6 @@ package com.tokopedia.topads.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -66,10 +64,6 @@ class CreateAdsModule {
     @Provides
     @Named(UrlConstant.MAIN)
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @CreateAdsScope
-    @Provides
-    fun provideCoroutineDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @CreateAdsScope
     @Provides

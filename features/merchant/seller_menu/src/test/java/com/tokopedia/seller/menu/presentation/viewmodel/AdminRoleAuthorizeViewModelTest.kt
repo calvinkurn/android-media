@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.menu.common.constant.AdminFeature
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Test
@@ -15,6 +16,7 @@ class AdminRoleAuthorizeViewModelTest: AdminRoleAuthorizeViewModelTestFixture() 
         viewModel.checkAccess(AdminFeature.SALDO)
 
         assert((viewModel.isRoleAuthorizedLiveData.value as? Success)?.data == true)
+        viewModel.isLoadingLiveData.verifyValueEquals(true)
     }
 
     @Test
@@ -26,6 +28,7 @@ class AdminRoleAuthorizeViewModelTest: AdminRoleAuthorizeViewModelTestFixture() 
         viewModel.checkAccess(AdminFeature.SALDO)
 
         assert((viewModel.isRoleAuthorizedLiveData.value as? Success)?.data == isRoleAuthorized)
+        viewModel.isLoadingLiveData.verifyValueEquals(true)
     }
 
     @Test
@@ -37,6 +40,7 @@ class AdminRoleAuthorizeViewModelTest: AdminRoleAuthorizeViewModelTestFixture() 
         viewModel.checkAccess(AdminFeature.SALDO)
 
         assert(viewModel.isRoleAuthorizedLiveData.value is Fail)
+        viewModel.isLoadingLiveData.verifyValueEquals(true)
     }
 
 }

@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCardDataView
@@ -74,7 +74,7 @@ class BigGridInspirationCardViewHolder(
 
     private fun bindCuratedIcon(element: InspirationCardOptionDataView) {
         itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.shouldShowWithAction(element.img.isNotEmpty()) {
-            ImageHandler.loadImageFitCenter(itemView.context, itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon, element.img)
+            itemView.bigGridCardViewInspirationCard?.inspirationCardCuratedIcon?.loadImageFitCenter(element.img)
         }
     }
 

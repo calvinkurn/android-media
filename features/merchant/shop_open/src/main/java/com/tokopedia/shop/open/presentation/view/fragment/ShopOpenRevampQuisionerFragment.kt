@@ -213,7 +213,8 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
                         loadDataSurvey()
                     }
                     ShopOpenRevampErrorHandler.logMessage(
@@ -241,14 +242,15 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
                 is Fail -> {
-                    showErrorNetwork(it.throwable) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
                         val dataSurveyInput: MutableMap<String, Any> = viewModel.getDataSurveyInput(questionsAndAnswersId)
                         viewModel.sendSurveyData(dataSurveyInput)
                     }
                     ShopOpenRevampErrorHandler.logMessage(
                             title = ERROR_SEND_SURVEY,
                             userId = userSession.userId,
-                            message = it.throwable.message ?: ""
+                            message = errorMessage
                     )
                 }
             }
@@ -271,21 +273,19 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
                 is Fail -> {
-                    it.throwable.let {
-                        showErrorNetwork(it) {
-                            if (shopId != 0 && postCode != "" && courierOrigin != 0
-                                    && addrStreet != "" && latitude != "" && longitude != "") {
-                                saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
-                            }
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showErrorNetwork(errorMessage) {
+                        if (shopId != 0 && postCode != "" && courierOrigin != 0
+                                && addrStreet != "" && latitude != "" && longitude != "") {
+                            saveShipmentLocation(shopId, postCode, courierOrigin, addrStreet, latitude, longitude)
                         }
-
-                        ShopOpenRevampErrorHandler.logMessage(
-                                title = ERROR_SAVE_LOCATION_SHIPPING,
-                                userId = userSession.userId,
-                                message = it.message ?: ""
-                        )
-                        ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it)
                     }
+                    ShopOpenRevampErrorHandler.logMessage(
+                            title = ERROR_SAVE_LOCATION_SHIPPING,
+                            userId = userSession.userId,
+                            message = errorMessage
+                    )
+                    ShopOpenRevampErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
         })
@@ -304,11 +304,11 @@ class ShopOpenRevampQuisionerFragment :
         }
     }
 
-    private fun showErrorNetwork(t: Throwable, retry: () -> Unit) {
+    private fun showErrorNetwork(errorMessage: String, retry: () -> Unit) {
         view?.let {
             Toaster.showErrorWithAction(
                     it,
-                    ErrorHandler.getErrorMessage(context, t),
+                    errorMessage,
                     Snackbar.LENGTH_LONG,
                     getString(R.string.open_shop_revamp_retry),
                     View.OnClickListener {

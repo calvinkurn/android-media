@@ -31,6 +31,7 @@
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
+    <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
 
     <!--User Settings-->
     <string name="title_module_user_settings">Settings</string>
@@ -79,8 +80,8 @@
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_title_prepaid_page">Prabayar</string>
     <string name="digital_title_postpaid_page">Pascabayar</string>
-    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
+    <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
@@ -163,6 +164,8 @@
     <string name="wallet_title_header_ovo">TokoCash to OVO</string>
     <string name="wallet_title_header_activation_ovo">Aktivasi OVO</string>
 
+    <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
+
     <!-- Digital-Deals-->
     <string name="digital_deals">digital_deals</string>
 
@@ -189,6 +192,8 @@
     <string name="title_activity_shop_edit_address">Ubah Detail Lokasi</string>
 
     <string name="title_shipping_editor">Pengiriman</string>
+
+    <string name="label_image_preview">Gambar Bukti</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
@@ -313,6 +318,9 @@
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
 
+    <!-- Dynamic feature for cart -->
+    <string name="checkout_module_title_activity_cart">Keranjang</string>
+
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
     <string name="kol_title_post_detail">Post Detail</string>
@@ -349,4 +357,8 @@
 
     <!--Dynamic feature for profile-->
     <string name="title_profile_df">Profile</string>
+
+    <string name="vidpick_app_name">Video Recorder</string>
+    <string name="album">Album</string>
+    <string name="edit_image">Edit Gambar</string>
 </resources>

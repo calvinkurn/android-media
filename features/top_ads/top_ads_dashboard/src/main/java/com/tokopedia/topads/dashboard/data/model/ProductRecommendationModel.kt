@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.data.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.common.data.response.Error
 import kotlinx.android.parcel.Parcelize
 
@@ -46,5 +47,6 @@ data class ProductRecommendation(
         @SerializedName("min_bid")
         val minBid: String = "0",
         var setCurrentBid: Int = 0,
-        var isChecked: Boolean = true
+        var isChecked: Boolean = true,
+        val impressHolder: ImpressHolder = ImpressHolder()
 ):Parcelable

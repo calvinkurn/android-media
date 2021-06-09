@@ -881,33 +881,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     @Override
     protected void onResume() {
         super.onResume();
-        if (isPermissionGotDenied) {
-            finish();
-            return;
-        }
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE_PERMISSIONS);
-        } else {
-            onResumeAfterCheckPermission();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        int result = grantResults[0];
-        if (result == PackageManager.PERMISSION_DENIED) {
-            isPermissionGotDenied = true;
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                //Never ask again selected, or device policy prohibits the app from having that permission.
-                Toast.makeText(getContext(), getString(R.string.permission_enabled_needed), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            isPermissionGotDenied = false;
-            onResumeAfterCheckPermission();
-        }
+        onResumeAfterCheckPermission();
     }
 
     private void onResumeAfterCheckPermission() {

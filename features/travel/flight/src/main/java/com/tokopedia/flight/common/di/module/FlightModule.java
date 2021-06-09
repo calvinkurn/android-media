@@ -10,10 +10,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.common.travel.utils.TrackingCrossSellUtil;
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
-import com.tokopedia.common.travel.utils.TravelProductionDispatcherProvider;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.flight.cancellation.data.cloud.FlightCancellationCloudDataSource;
+import com.tokopedia.flight.cancellation.data.FlightCancellationCloudDataSource;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.db.FlightRoomDb;
 import com.tokopedia.flight.common.data.model.FlightErrorResponse;
@@ -32,10 +30,10 @@ import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
-import com.tokopedia.flight.searchV4.data.FlightRouteDao;
-import com.tokopedia.flight.searchV4.data.cache.db.FlightSearchRoomDb;
-import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightComboDao;
-import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightJourneyDao;
+import com.tokopedia.flight.search.data.FlightRouteDao;
+import com.tokopedia.flight.search.data.cache.db.FlightSearchRoomDb;
+import com.tokopedia.flight.search.data.cache.db.dao.FlightComboDao;
+import com.tokopedia.flight.search.data.cache.db.dao.FlightJourneyDao;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -237,11 +235,4 @@ public class FlightModule {
     public TrackingCrossSellUtil provideTrackingCrossSellUtil() {
         return new TrackingCrossSellUtil();
     }
-
-    @FlightScope
-    @Provides
-    public TravelDispatcherProvider provideDispatcherProvider() {
-        return new TravelProductionDispatcherProvider();
-    }
-
 }

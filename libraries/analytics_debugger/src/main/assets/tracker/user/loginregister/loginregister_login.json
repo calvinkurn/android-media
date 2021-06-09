@@ -24,19 +24,19 @@
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button selanjutnya - email",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "enter login phone number",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button selanjutnya - unknown",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
@@ -72,7 +72,7 @@
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "enter login phone number",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
@@ -95,7 +95,7 @@
       "eventCategory": "login page smart lock",
       "eventAction": "click on email login smart lock",
       "eventLabel": "click",
-      "user_id": "{{.*}}"
+      "user_id": ".*"
     },
     {
       "event": "clickLogin",
@@ -152,7 +152,7 @@
       "event": "clickLogin",
       "eventCategory": "login page smart lock",
       "eventAction": "success",
-      "user_id": "{{.*}}"
+      "user_id": ".*"
     },
     {
       "event": "clickLogin",
@@ -182,31 +182,31 @@
       "event": "clickLogin",
       "eventCategory": "login page smart lock",
       "eventAction": "click on email login smart lock",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button facebook",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button google",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button masuk",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button masuk",
-      "eventLabel": "{{failed - (?:.*)}}"
+      "eventLabel": "failed - (?:.*)"
     },
     {
       "event": "clickLogin",
@@ -217,7 +217,7 @@
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click ticker link",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
       "event": "clickLogin",
@@ -238,19 +238,19 @@
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button popup smart login",
-      "eventLabel": "{{yes - (?:.*)}}"
+      "eventLabel": "yes - (?:.*)"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button popup smart login",
-      "eventLabel": "{{no - (?:.*)}}"
+      "eventLabel": "no - (?:.*)"
     },
     {
       "event": "viewLoginIris",
       "eventCategory": "login page",
       "eventAction": "view banner",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

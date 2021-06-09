@@ -31,6 +31,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

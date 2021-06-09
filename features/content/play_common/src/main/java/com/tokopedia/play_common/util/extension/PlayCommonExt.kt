@@ -20,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -243,4 +244,8 @@ fun Fragment.recreateView() {
             ?.detach(this)
             ?.attach(this)
             ?.commit()
+}
+
+fun dismissToaster() {
+    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 }

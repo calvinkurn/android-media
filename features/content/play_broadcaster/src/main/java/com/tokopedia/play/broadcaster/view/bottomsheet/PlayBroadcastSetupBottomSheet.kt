@@ -29,7 +29,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.extension.cleanBackstack
 import com.tokopedia.play_common.util.extension.compatTransitionName
 import java.util.*
@@ -53,7 +53,7 @@ class PlayBroadcastSetupBottomSheet(
     lateinit var fragmentFactory: FragmentFactory
 
     @Inject
-    lateinit var dispatcher: CoroutineDispatcherProvider
+    lateinit var dispatcher: CoroutineDispatchers
 
     @Inject
     lateinit var dialogCustomizer: PlayBroadcastDialogCustomizer

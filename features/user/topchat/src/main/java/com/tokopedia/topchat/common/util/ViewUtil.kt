@@ -1,11 +1,13 @@
 package com.tokopedia.topchat.common.util
 
+import android.content.Context
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
+import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.ColorRes
@@ -27,7 +29,8 @@ object ViewUtil {
             @DimenRes shadowRadius: Int,
             shadowGravity: Int,
             @ColorRes strokeColor: Int? = null,
-            @DimenRes strokeWidth: Int? = null
+            @DimenRes strokeWidth: Int? = null,
+            useViewPadding: Boolean = false
     ): Drawable? {
         if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
@@ -78,6 +81,21 @@ object ViewUtil {
             }
         }
 
+        if (useViewPadding) {
+            if (view.paddingTop > shapeDrawablePadding.top) {
+                shapeDrawablePadding.top += view.paddingTop
+            }
+            if (view.paddingBottom > shapeDrawablePadding.bottom) {
+                shapeDrawablePadding.bottom += view.paddingBottom
+            }
+            if (view.paddingStart > shapeDrawablePadding.left) {
+                shapeDrawablePadding.left += view.paddingStart
+            }
+            if (view.paddingEnd > shapeDrawablePadding.right) {
+                shapeDrawablePadding.right += view.paddingEnd
+            }
+        }
+
         val shapeDrawable = ShapeDrawable().apply {
             setPadding(shapeDrawablePadding)
             paint.color = backgroundColorValue
@@ -106,5 +124,16 @@ object ViewUtil {
 
         return drawable
 
+    }
+
+    fun areSystemAnimationsEnabled(context: Context?): Boolean {
+        if (context == null) return false
+        val duration: Float = Settings.Global.getFloat(
+                context.contentResolver,
+                Settings.Global.ANIMATOR_DURATION_SCALE, 0f)
+        val transition: Float = Settings.Global.getFloat(
+                context.contentResolver,
+                Settings.Global.TRANSITION_ANIMATION_SCALE, 0f)
+        return duration != 0f && transition != 0f
     }
 }

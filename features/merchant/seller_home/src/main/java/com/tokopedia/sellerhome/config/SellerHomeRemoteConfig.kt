@@ -11,6 +11,7 @@ class SellerHomeRemoteConfig @Inject constructor(
     companion object {
         private const val SELLER_HOME_DASHBOARD_ENABLE_CACHE = "seller_home_dashboard_enable_cache"
         private const val SELLER_HOME_DASHBOARD_ENABLE_NEW_CACHE = "seller_home_dashboard_enable_new_cache"
+        private const val SELLER_HOME_DASHBOARD_NEW_LAZY_LOAD = "seller_home_dashboard_new_lazy_load"
     }
 
     fun isNotificationTrayClear(): Boolean {
@@ -24,4 +25,9 @@ class SellerHomeRemoteConfig @Inject constructor(
     fun isSellerHomeDashboardNewCachingEnabled(): Boolean {
         return remoteConfig.getBoolean(SELLER_HOME_DASHBOARD_ENABLE_NEW_CACHE, false)
     }
+
+    fun isSellerHomeDashboardNewLazyLoad(): Boolean {
+        return remoteConfig.getBoolean(SELLER_HOME_DASHBOARD_NEW_LAZY_LOAD, false)
+    }
+
 }

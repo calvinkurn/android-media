@@ -13,11 +13,13 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.Label
@@ -27,14 +29,18 @@ import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
-internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
+internal fun View.renderProductCardContent(
+        productCardModel: ProductCardModel,
+        isWideContent: Boolean = false,
+) {
     renderTextGimmick(productCardModel)
     renderPdpCountView(productCardModel)
     renderTextProductName(productCardModel)
     renderLabelGroupVariant(productCardModel)
+    renderTextCategoryAndCostPerUnit(productCardModel)
+    renderTextPrice(productCardModel)
     renderDiscount(productCardModel)
     renderLabelPrice(productCardModel)
-    renderTextPrice(productCardModel)
     renderShopBadge(productCardModel)
     renderTextFulfillment(productCardModel)
     renderTextShopLocation(productCardModel)
@@ -46,8 +52,9 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
     renderTextETA(productCardModel)
-}
 
+    if (isWideContent) configureWideContent(productCardModel)
+}
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
     if (productCardModel.isShowLabelGimmick())
@@ -180,6 +187,38 @@ private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.La
     addView(typography)
 }
 
+fun View.renderTextCategoryAndCostPerUnit(productCardModel: ProductCardModel) {
+    textViewCategory?.shouldShowWithAction(productCardModel.isShowLabelCategory()) {
+        it.initLabelGroup(productCardModel.getLabelCategory())
+    }
+
+    dividerCategory?.showWithCondition(productCardModel.isShowCategoryAndCostPerUnit())
+
+    textViewCostPerUnit?.shouldShowWithAction(productCardModel.isShowLabelCostPerUnit()) {
+        it.initLabelGroup(productCardModel.getLabelCostPerUnit())
+    }
+}
+
+private fun View.renderTextPrice(productCardModel: ProductCardModel) {
+    moveTextPriceConstraint(productCardModel)
+
+    val priceToRender = productCardModel.getPriceToRender()
+
+    textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
+        TextAndContentDescriptionUtil.setTextAndContentDescription(it, priceToRender, context.getString(R.string.content_desc_textViewPrice))
+    }
+}
+
+private fun View.moveTextPriceConstraint(productCardModel: ProductCardModel) {
+    val hasLabelCostPerUnit = productCardModel.getLabelCostPerUnit()?.title?.isNotEmpty() == true
+    val targetConstraint = if (hasLabelCostPerUnit) R.id.textViewCostPerUnit else R.id.textViewCategory
+    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+    view?.applyConstraintSet {
+        it.connect(R.id.textViewPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 4.toPx())
+    }
+}
+
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
@@ -204,21 +243,8 @@ private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
     val targetConstraint = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
     val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
 
-    view?.let {
-        val constraintSet = ConstraintSet().apply { clone(it) }
-
-        constraintSet.clear(R.id.labelPrice, ConstraintSet.TOP)
-        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 4.toPx())
-
-        constraintSet.applyTo(it)
-    }
-}
-
-private fun View.renderTextPrice(productCardModel: ProductCardModel) {
-    val priceToRender = productCardModel.getPriceToRender()
-
-    textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
-        TextAndContentDescriptionUtil.setTextAndContentDescription(it, priceToRender, context.getString(R.string.content_desc_textViewPrice))
+    view?.applyConstraintSet {
+        it.connect(R.id.labelPrice, ConstraintSet.TOP, targetConstraint, ConstraintSet.BOTTOM, 2.toPx())
     }
 }
 
@@ -411,3 +437,51 @@ private fun View.renderTextETA(productCardModel: ProductCardModel) {
     textViewETA?.initLabelGroup(productCardModel.getLabelETA())
 }
 
+private fun View.configureWideContent(productCardModel: ProductCardModel) {
+    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+    view?.applyConstraintSet {
+        mergePriceSection(it)
+        configureShopInfoBelowPriceSection(productCardModel, it)
+        mergeShippingSection(it, productCardModel)
+    }
+}
+
+private fun mergePriceSection(constraintSet: ConstraintSet) {
+    constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, R.id.textViewPrice, ConstraintSet.TOP, 0.toPx())
+    constraintSet.connect(R.id.labelPrice, ConstraintSet.START, R.id.textViewPrice, ConstraintSet.END, 4.toPx())
+
+    constraintSet.connect(R.id.labelDiscount, ConstraintSet.TOP, R.id.textViewPrice, ConstraintSet.TOP, 0.toPx())
+    constraintSet.connect(R.id.labelDiscount, ConstraintSet.START, R.id.labelPrice, ConstraintSet.END, 4.toPx())
+
+    constraintSet.connect(R.id.textViewSlashedPrice, ConstraintSet.TOP, R.id.textViewPrice, ConstraintSet.TOP, 0.toPx())
+    constraintSet.setGoneMargin(R.id.textViewSlashedPrice, ConstraintSet.START, 4.toPx())
+}
+
+private fun configureShopInfoBelowPriceSection(productCardModel: ProductCardModel, constraintSet: ConstraintSet) {
+    val visiblePriceSectionId = getVisiblePriceSectionId(productCardModel)
+
+    constraintSet.connect(R.id.imageShopBadge, ConstraintSet.TOP, visiblePriceSectionId, ConstraintSet.BOTTOM, 5.toPx())
+    constraintSet.connect(R.id.textViewShopLocation, ConstraintSet.TOP, visiblePriceSectionId, ConstraintSet.BOTTOM, 4.toPx())
+    constraintSet.connect(R.id.imageFulfillment, ConstraintSet.TOP, visiblePriceSectionId, ConstraintSet.BOTTOM, 5.toPx())
+}
+
+@IdRes
+private fun getVisiblePriceSectionId(productCardModel: ProductCardModel): Int {
+    return when {
+        productCardModel.getPriceToRender().isNotEmpty() -> R.id.textViewPrice
+        productCardModel.discountPercentage.isNotEmpty() -> R.id.labelDiscount
+        productCardModel.slashedPrice.isNotEmpty() -> R.id.textViewSlashedPrice
+        else -> R.id.labelPrice
+    }
+}
+
+private fun mergeShippingSection(it: ConstraintSet, productCardModel: ProductCardModel) {
+    it.connect(R.id.textViewShipping, ConstraintSet.TOP, R.id.imageShopRating, ConstraintSet.BOTTOM, 5.toPx())
+    it.connect(R.id.textViewShipping, ConstraintSet.START, R.id.imageFreeOngkirPromo, ConstraintSet.END, 0.toPx())
+
+    val isShowFreeOngkirBadge = productCardModel.isShowFreeOngkirBadge()
+    val labelETAMarginStart = if (isShowFreeOngkirBadge) 4.toPx() else 0.toPx()
+    it.connect(R.id.textViewETA, ConstraintSet.TOP, R.id.imageShopRating, ConstraintSet.BOTTOM, 7.toPx())
+    it.connect(R.id.textViewETA, ConstraintSet.START, R.id.textViewShipping, ConstraintSet.END, labelETAMarginStart)
+}

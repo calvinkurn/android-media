@@ -326,7 +326,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
             } else if (textAttr.colourRef != null) {
                 textView.setTextColor(ContextCompat.getColor(itemView.context, textAttr.colourRef))
             } else {
-                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             }
             if (textAttr.isBold) {
                 textView.setTypeface(textView.typeface, Typeface.BOLD)

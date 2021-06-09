@@ -7,10 +7,13 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <View
-        android:id="@+id/vShcMlgLegendLine"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icShcMlgLegendLine"
         android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl1" />
+        android:layout_height="1dp"
+        app:unify_image_corner_radius="0"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@drawable/ic_shc_legend_dash_line" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShcMlgLegendName"

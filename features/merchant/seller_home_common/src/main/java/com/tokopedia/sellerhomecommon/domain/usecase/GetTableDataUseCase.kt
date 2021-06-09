@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -35,21 +36,23 @@ class GetTableDataUseCase(
             val data = gqlResponse.getData<GetTableDataResponse>()
             return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
-            throw RuntimeException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
     }
 
     companion object {
         private const val DATA_KEYS = "dataKeys"
+        private const val DEFAULT_POST_LIMIT = 20
 
         fun getRequestParams(
-                dataKey: List<String>,
-                dynamicParameter: DynamicParameterModel
+                dataKey: List<Pair<String, String>>,
+                dynamicParameter: DynamicParameterModel,
+                limit: Int = DEFAULT_POST_LIMIT
         ): RequestParams {
             val dataKeys = dataKey.map {
                 DataKeyModel(
-                        key = it,
-                        jsonParams = dynamicParameter.toJsonString()
+                        key = it.first,
+                        jsonParams = dynamicParameter.copy(limit = limit, tableFilter = it.second).toJsonString()
                 )
             }
             return RequestParams.create().apply {

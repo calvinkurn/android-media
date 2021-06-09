@@ -2,7 +2,7 @@ package com.tokopedia.flight.homepage.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.homepage.presentation.model.FlightFareAttributes
 import com.tokopedia.flight.homepage.usecase.GetFlightFareUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -12,9 +12,9 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProvider: TravelDispatcherProvider,
+class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProvider: CoroutineDispatchers,
                                                       private val getFlightFareUseCase: GetFlightFareUseCase)
-    : BaseViewModel(dispatcherProvider.io()) {
+    : BaseViewModel(dispatcherProvider.io) {
 
     val fareFlightCalendarData = MutableLiveData<List<FlightFareAttributes>>()
 
@@ -39,11 +39,11 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
                 val returnAttributes = getReturnFlightCalendar(mapParam)
                 storeRoundTripCalendarFare(attributes, returnAttributes, departureDate)
             } else {
-                fareFlightCalendarData.value = attributes
+                fareFlightCalendarData.postValue(attributes)
             }
 
         }) {
-            fareFlightCalendarData.value = arrayListOf()
+            fareFlightCalendarData.postValue(arrayListOf())
         }
     }
 
@@ -94,6 +94,6 @@ class FlightFareCalendarViewModel @Inject constructor(private val dispatcherProv
             }
         }
 
-        fareFlightCalendarData.value = attributes
+        fareFlightCalendarData.postValue(attributes)
     }
 }

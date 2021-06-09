@@ -13,8 +13,8 @@ interface PreferenceEditParent {
     fun setProfileId(profileId: Int)
     fun getProfileId(): Int
 
-    fun setAddressId(addressId: Int)
-    fun getAddressId(): Int
+    fun setAddressId(addressId: Long)
+    fun getAddressId(): Long
 
     fun setNewlySelectedAddressModel(addressModel: AddressModel)
     fun getNewlySelectedAddressModel(): AddressModel?
@@ -60,6 +60,5 @@ interface PreferenceEditParent {
 
     fun isDirectPaymentStep(): Boolean
 
-    fun isNewFlow(): Boolean
     fun isSelectedPreference(): Boolean
 }

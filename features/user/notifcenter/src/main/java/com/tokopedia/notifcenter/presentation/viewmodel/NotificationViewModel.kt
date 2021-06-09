@@ -22,7 +22,7 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.domain.*
-import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -61,8 +61,8 @@ class NotificationViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private var addToCartUseCase: AddToCartUseCase,
         private var notifOrderListUseCase: NotifOrderListUseCase,
-        private val dispatcher: DispatcherProvider
-) : BaseViewModel(dispatcher.io()), INotificationViewModel {
+        private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io), INotificationViewModel {
 
     var filter: Long = NotifcenterDetailUseCase.FILTER_NONE
         set(value) {
@@ -116,7 +116,7 @@ class NotificationViewModel @Inject constructor(
             role: Int?
     ) {
         if (role == null) return
-        launchCatchError(dispatcher.io(),
+        launchCatchError(dispatcher.io,
                 {
                     notifOrderListUseCase.getOrderList(role).collect {
                         _orderList.postValue(it)
@@ -154,7 +154,7 @@ class NotificationViewModel @Inject constructor(
             role: Int?
     ) {
         if (role == null) return
-        launchCatchError(dispatcher.io(),
+        launchCatchError(dispatcher.io,
                 {
                     notifcenterFilterUseCase.getFilter(role).collect {
                         _filterList.postValue(it)
@@ -173,7 +173,7 @@ class NotificationViewModel @Inject constructor(
             element: NotificationUiModel
     ) {
         if (role == null) return
-        launchCatchError(dispatcher.io(),
+        launchCatchError(dispatcher.io,
                 {
                     markAsReadUseCase.markAsRead(role, element.notifId).collect { }
                 },
@@ -222,7 +222,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
-        launchCatchError(dispatcher.io(),
+        launchCatchError(dispatcher.io,
                 {
                     bumpReminderUseCase.bumpReminder(
                             product.productId.toString(),
@@ -242,7 +242,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun deleteReminder(product: ProductData, notification: NotificationUiModel) {
-        launchCatchError(dispatcher.io(),
+        launchCatchError(dispatcher.io,
                 {
                     deleteReminderUseCase.deleteReminder(
                             product.productId.toString(),
@@ -262,7 +262,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun loadRecommendations(page: Int) {
-        launchCatchError(dispatcher.io(),
+        launchCatchError(dispatcher.io,
                 {
                     val params = getRecommendationUseCase.getRecomParams(
                             page,
@@ -273,7 +273,7 @@ class NotificationViewModel @Inject constructor(
                     val recommendationWidget = getRecommendationUseCase.createObservable(params)
                             .toBlocking()
                             .single()[0]
-                    withContext(dispatcher.ui()) {
+                    withContext(dispatcher.main) {
                         _recommendations.value = getRecommendationVisitables(
                                 page, recommendationWidget
                         )
@@ -326,7 +326,7 @@ class NotificationViewModel @Inject constructor(
             role: Int?
     ) {
         if (role == null) return
-        launchCatchError(dispatcher.io(),
+        launchCatchError(dispatcher.io,
                 {
                     clearNotifUseCase.clearNotifCounter(role).collect {
                         _clearNotif.postValue(it)
@@ -338,7 +338,7 @@ class NotificationViewModel @Inject constructor(
     private fun addWishListTopAds(
             model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)
     ) {
-        launchCatchError(dispatcher.io(),
+        launchCatchError(dispatcher.io,
                 {
                     val params = RequestParams.create()?.apply {
                         putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
@@ -382,7 +382,7 @@ class NotificationViewModel @Inject constructor(
 
     private fun loadTopAdsBannerData() {
         launchCatchError(
-                dispatcher.io(),
+                dispatcher.io,
                 {
                     val results = topAdsImageViewUseCase.getImageData(
                             topAdsImageViewUseCase.getQueryMap(
@@ -413,12 +413,12 @@ class NotificationViewModel @Inject constructor(
             onError: (msg: String) -> Unit
     ) {
         launchCatchError(
-                dispatcher.io(),
+                dispatcher.io,
                 block = {
                     val atcResponse = addToCartUseCase.createObservable(requestParams)
                             .toBlocking()
                             .single().data
-                    withContext(dispatcher.ui()) {
+                    withContext(dispatcher.main) {
                         if (atcResponse.success == 1) {
                             onSuccessAddToCart(atcResponse)
                         } else {
@@ -427,7 +427,7 @@ class NotificationViewModel @Inject constructor(
                     }
                 },
                 onError = {
-                    withContext(dispatcher.ui()) {
+                    withContext(dispatcher.main) {
                         it.message?.let { errorMsg ->
                             onError(errorMsg)
                         }

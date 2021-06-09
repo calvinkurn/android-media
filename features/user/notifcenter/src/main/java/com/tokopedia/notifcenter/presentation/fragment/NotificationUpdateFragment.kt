@@ -274,6 +274,13 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
+    override fun onItemMultipleStockHandlerClick(notification: NotificationItemViewBean) {
+        val productData = notification.getAtcProduct()
+        productData?.let {
+            viewModel.isProductStockHandlerMultiple(notification.notificationId, it)
+        }
+    }
+
     override fun onSwipeRefresh() {
         cursor = ""
         presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())

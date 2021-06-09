@@ -14,24 +14,24 @@ import kotlinx.android.synthetic.main.layout_autocomplete_double_line_without_im
 class SuggestionDoubleLineWithoutImageViewHolder(
         itemView: View,
         private val clickListener: SuggestionClickListener
-) : AbstractViewHolder<SuggestionDoubleLineWithoutImageViewModel>(itemView) {
+) : AbstractViewHolder<SuggestionDoubleLineWithoutImageDataDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_double_line_without_image_item
     }
 
-    override fun bind(item: SuggestionDoubleLineWithoutImageViewModel) {
+    override fun bind(item: SuggestionDoubleLineWithoutImageDataDataView) {
         bindTitle(item)
         bindSubtitle(item)
         bindListener(item)
     }
 
-    private fun bindTitle(item: SuggestionDoubleLineWithoutImageViewModel) {
+    private fun bindTitle(item: SuggestionDoubleLineWithoutImageDataDataView) {
         itemView.autocompleteSuggestionDoubleLineWithoutImageTitle?.setTextAndCheckShow(item.title)
     }
 
-    private fun bindSubtitle(item: SuggestionDoubleLineWithoutImageViewModel) {
+    private fun bindSubtitle(item: SuggestionDoubleLineWithoutImageDataDataView) {
         if (item.hasApplinkUrl()) {
             itemView.autocompleteSuggestionDoubleLineWithoutImageSubtitle?.setTypography(itemView.context, Typography.BOLD, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         } else {
@@ -40,7 +40,7 @@ class SuggestionDoubleLineWithoutImageViewHolder(
         itemView.autocompleteSuggestionDoubleLineWithoutImageSubtitle?.setTextAndCheckShow(item.subtitle)
     }
 
-    private fun SuggestionDoubleLineWithoutImageViewModel.hasApplinkUrl(): Boolean {
+    private fun SuggestionDoubleLineWithoutImageDataDataView.hasApplinkUrl(): Boolean {
         return applink.isNotEmpty()
     }
 
@@ -49,7 +49,7 @@ class SuggestionDoubleLineWithoutImageViewHolder(
         setTextColor(ContextCompat.getColor(context, color))
     }
 
-    private fun bindListener(item: SuggestionDoubleLineWithoutImageViewModel) {
+    private fun bindListener(item: SuggestionDoubleLineWithoutImageDataDataView) {
         if (item.hasApplinkUrl()) {
             itemView.autocompleteDoubleLineWithoutImageItem?.setOnClickListener {
                 clickListener.onItemClicked(item)

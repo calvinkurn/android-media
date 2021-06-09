@@ -131,7 +131,7 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    private fun getBuyerOvoBalance(): WalletModel {
+    fun getBuyerOvoBalance(): WalletModel {
         return getHomeAccountOvoBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
     }
 

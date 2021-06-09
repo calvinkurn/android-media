@@ -13,54 +13,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
-import static com.tokopedia.user.session.Constants.ADVERTISINGID;
-import static com.tokopedia.user.session.Constants.ANDROID_ID;
-import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
-import static com.tokopedia.user.session.Constants.EMAIL;
-import static com.tokopedia.user.session.Constants.FULL_NAME;
-import static com.tokopedia.user.session.Constants.GCM_ID;
-import static com.tokopedia.user.session.Constants.GCM_ID_TIMESTAMP;
-import static com.tokopedia.user.session.Constants.GCM_STORAGE;
-import static com.tokopedia.user.session.Constants.GC_TOKEN;
-import static com.tokopedia.user.session.Constants.GTM_LOGIN_ID;
-import static com.tokopedia.user.session.Constants.HAS_PASSWORD;
-import static com.tokopedia.user.session.Constants.HAS_SHOWN_SALDO_INTRO_PAGE;
-import static com.tokopedia.user.session.Constants.HAS_SHOWN_SALDO_WARNING;
-import static com.tokopedia.user.session.Constants.IS_AFFILIATE;
-import static com.tokopedia.user.session.Constants.IS_FIRST_TIME_USER;
-import static com.tokopedia.user.session.Constants.IS_FIRST_TIME_USER_NEW_ONBOARDING;
-import static com.tokopedia.user.session.Constants.IS_GOLD_MERCHANT;
-import static com.tokopedia.user.session.Constants.IS_LOCATION_ADMIN;
-import static com.tokopedia.user.session.Constants.IS_LOGIN;
-import static com.tokopedia.user.session.Constants.IS_MSISDN_VERIFIED;
-import static com.tokopedia.user.session.Constants.IS_MULTI_LOCATION_SHOP;
-import static com.tokopedia.user.session.Constants.IS_POWER_MERCHANT_IDLE;
-import static com.tokopedia.user.session.Constants.IS_SHOP_ADMIN;
-import static com.tokopedia.user.session.Constants.IS_SHOP_OFFICIAL_STORE;
-import static com.tokopedia.user.session.Constants.IS_SHOP_OWNER;
-import static com.tokopedia.user.session.Constants.KEY_ADVERTISINGID;
-import static com.tokopedia.user.session.Constants.KEY_ANDROID_ID;
-import static com.tokopedia.user.session.Constants.LOGIN_ID;
-import static com.tokopedia.user.session.Constants.LOGIN_METHOD;
-import static com.tokopedia.user.session.Constants.LOGIN_SESSION;
-import static com.tokopedia.user.session.Constants.LOGIN_UUID_KEY;
-import static com.tokopedia.user.session.Constants.PHONE_NUMBER;
-import static com.tokopedia.user.session.Constants.PROFILE_PICTURE;
-import static com.tokopedia.user.session.Constants.REFRESH_TOKEN;
-import static com.tokopedia.user.session.Constants.REFRESH_TOKEN_KEY;
-import static com.tokopedia.user.session.Constants.SHOP_AVATAR;
-import static com.tokopedia.user.session.Constants.SHOP_ID;
-import static com.tokopedia.user.session.Constants.SHOP_NAME;
-import static com.tokopedia.user.session.Constants.TEMP_EMAIL;
-import static com.tokopedia.user.session.Constants.TEMP_NAME;
-import static com.tokopedia.user.session.Constants.TEMP_PHONE_NUMBER;
-import static com.tokopedia.user.session.Constants.TEMP_USER_ID;
-import static com.tokopedia.user.session.Constants.TOKEN_TYPE;
-import static com.tokopedia.user.session.Constants.TWITTER_ACCESS_TOKEN;
-import static com.tokopedia.user.session.Constants.TWITTER_ACCESS_TOKEN_SECRET;
-import static com.tokopedia.user.session.Constants.TWITTER_SHOULD_POST;
-import static com.tokopedia.user.session.Constants.UUID_KEY;
+import static com.tokopedia.user.session.Constants.*;
 
 /**
  * @author by milhamj on 04/04/18.

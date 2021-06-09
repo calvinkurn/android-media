@@ -61,6 +61,7 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // Debug tools
     implementation rootProject.ext.debugToolsDependencies.chuck

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -35,12 +34,31 @@
 
             <include layout="@layout/include_flight_quick_filter" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:fitsSystemWindows="true" />
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:descendantFocusability="blocksDescendants">
+                <com.tokopedia.flight.promo_chips.presentation.widget.FlightPromoChips
+                    android:id="@+id/flight_promo_chips_view"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:fitsSystemWindows="true" />
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
         </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

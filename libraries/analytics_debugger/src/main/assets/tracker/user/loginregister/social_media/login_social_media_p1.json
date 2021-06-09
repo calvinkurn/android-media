@@ -6,21 +6,21 @@
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button socmed",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": ""
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button google",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": "click"
     },
     {
       "event": "clickLogin",
       "eventCategory": "login page",
       "eventAction": "click on button facebook",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": "click"
     }
   ]

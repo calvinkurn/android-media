@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryCoroutineContextProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -46,11 +45,5 @@ class OrderHistoryModule {
         return GraphqlHelper.loadRawString(
                 context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart
         )
-    }
-
-    @OrderHistoryScope
-    @Provides
-    fun provideOrderHistoryCoroutineContextProvider(): OrderHistoryCoroutineContextProvider {
-        return OrderHistoryCoroutineContextProvider()
     }
 }

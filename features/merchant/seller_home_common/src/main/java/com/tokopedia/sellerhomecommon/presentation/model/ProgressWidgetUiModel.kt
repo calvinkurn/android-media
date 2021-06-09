@@ -22,6 +22,7 @@ class ProgressWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<ProgressDataUiModel> {
 
@@ -30,7 +31,7 @@ class ProgressWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<ProgressDataUiModel> {
-        return ProgressWidgetUiModel(id, widgetType, title, appLink, subtitle, tooltip, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return ProgressWidgetUiModel(id, widgetType, title, appLink, subtitle, tooltip, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<ProgressDataUiModel>): Boolean {

@@ -7,7 +7,7 @@
       "eventCategory": "login page",
       "eventAction": "enter login phone number",
       "eventLabel": "click",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

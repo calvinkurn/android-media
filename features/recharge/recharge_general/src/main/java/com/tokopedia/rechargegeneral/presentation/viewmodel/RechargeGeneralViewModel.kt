@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
-import com.tokopedia.rechargegeneral.util.RechargeGeneralDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,8 +22,8 @@ import javax.inject.Inject
 
 class RechargeGeneralViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val dispatcher: RechargeGeneralDispatchersProvider)
-    : BaseViewModel(dispatcher.IO) {
+        private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.io) {
 
     private val mutableOperatorCluster = MutableLiveData<Result<RechargeGeneralOperatorCluster>>()
     val operatorCluster: LiveData<Result<RechargeGeneralOperatorCluster>>
@@ -38,7 +38,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
@@ -57,7 +57,7 @@ class RechargeGeneralViewModel @Inject constructor(
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralDynamicInput.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                     .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralDynamicInput.Response>()
 

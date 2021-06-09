@@ -2,7 +2,6 @@ package com.tokopedia.notifications.receiver
 
 import android.app.Activity
 import android.content.*
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
@@ -11,6 +10,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.analytics.ProductAnalytics.clickCollapsedBody
@@ -27,12 +28,11 @@ import com.tokopedia.notifications.di.module.NotificationModule
 import com.tokopedia.notifications.factory.CarouselNotification
 import com.tokopedia.notifications.factory.ProductNotification
 import com.tokopedia.notifications.model.*
-import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -60,8 +60,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     .build()
                     .inject(this)
         } catch (e: Exception) {
-            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+            val messageMap: MutableMap<String, String> = HashMap()
+            messageMap["type"] = "exception"
+            messageMap["err"] =  Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT)
+            messageMap["data"] = ""
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
         }
 
     }
@@ -88,7 +91,17 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
                     CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
                         handleNotificationClick(context, intent, notificationId, baseNotificationModel)
-                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
+                        if (baseNotificationModel != null) {
+                            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL, baseNotificationModel.elementId)
+                        }
+                    }
+
+                    CMConstant.ReceiverAction.ACTION_VISUAL_COLLAPSED_CLICK -> {
+                        handleVisualCollapsedClick(context, intent, notificationId, baseNotificationModel)
+                    }
+
+                    CMConstant.ReceiverAction.ACTION_VISUAL_EXPANDED_CLICK -> {
+                        handleVisualExpandedClick(context, intent, notificationId, baseNotificationModel)
                     }
 
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
@@ -115,15 +128,12 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     }
 
                     CMConstant.ReceiverAction.ACTION_GRID_MAIN_CLICK -> {
-                        handleMainClick(context, intent, notificationId)
-                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GRID_NOTIFICATION)
-
+                        handleGridMainClick(context, intent, notificationId, baseNotificationModel)
                     }
 
                     /*Image Carousel Handling*/
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_MAIN_CLICK -> {
-                        handleCarouselMainClick(context, intent, notificationId)
-                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
+                        handleCarouselMainClick(context, intent, notificationId, baseNotificationModel)
                     }
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
                         //has Base Notification Model
@@ -149,10 +159,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     /*Product Info Carousel Click Handling*/
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK -> {
                         handleProductClick(context, intent, notificationId, baseNotificationModel)
-                        sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
-                        handleCollapsedViewClick(context, intent, notificationId, baseNotificationModel)
+                        handleProductCollapsedClick(context, intent, notificationId, baseNotificationModel)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
                         ProductNotification.onLeftIconClick(context.applicationContext, baseNotificationModel!!)
@@ -167,9 +176,33 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 }
             }
         } catch (e: Exception) {
-            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='$intent'")
+            val messageMap: MutableMap<String, String> = HashMap()
+            messageMap["type"] = "exception"
+            messageMap["err"] =  Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT)
+            messageMap["data"] = "$intent"
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
             e.printStackTrace()
+        }
+    }
+
+    private fun handleGridMainClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel?) {
+        handleMainClick(context, intent, notificationId)
+        baseNotificationModel?.let {
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GRID_NOTIFICATION, baseNotificationModel.elementId)
+        }
+    }
+
+    private fun handleVisualExpandedClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel?) {
+        handleNotificationClick(context, intent, notificationId, baseNotificationModel)
+        baseNotificationModel?.let {
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.VISUAL_NOTIIFICATION, baseNotificationModel.visualExpandedElementId)
+        }
+    }
+
+    private fun handleVisualCollapsedClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel?) {
+        handleNotificationClick(context, intent, notificationId, baseNotificationModel)
+        baseNotificationModel?.let {
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.VISUAL_NOTIIFICATION, baseNotificationModel.visualCollapsedElementId)
         }
     }
 
@@ -185,8 +218,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
-    private fun handleCarouselMainClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleCarouselMainClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel?) {
         handleMainClick(context, intent, notificationId)
+        baseNotificationModel?.let {
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, it, CMConstant.NotificationType.CAROUSEL_NOTIFICATION, it.elementId)
+        }
         clearCarouselImages(context.applicationContext)
     }
 
@@ -222,9 +258,12 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
         clearProductImages(context.applicationContext)
+        element?.let {
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, it, PRODUCT_NOTIIFICATION, it.elementId)
+        }
     }
 
-    private fun handleCollapsedViewClick(
+    private fun handleProductCollapsedClick(
             context: Context,
             intent: Intent,
             notificationId: Int,
@@ -234,6 +273,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         handleMainClick(context, intent, notificationId)
         clickCollapsedBody(userSession.userId, baseNotificationModel, productInfo)
         clearProductImages(context.applicationContext)
+        baseNotificationModel?.let {
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, it, PRODUCT_NOTIIFICATION, it.elementId)
+        }
     }
 
     private fun clearProductImages(context: Context) {
@@ -300,8 +342,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         val clip = ClipData.newPlainText("Tokopedia", contents)
         clipboard.setPrimaryClip(clip)
         applyPromoCode(context, contents)
-        Toast.makeText(context, context.getString(R.string.cm_tv_coupon_code_copied)
-                , Toast.LENGTH_LONG).show()
+        Toast.makeText(context, context.getString(R.string.cm_tv_coupon_code_copied), Toast.LENGTH_LONG).show()
     }
 
     private fun handleNotificationClick(
@@ -395,7 +436,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             sendElementClickPushEvent(
                     context,
                     notificationData,
-                    it.pdActions?.element_id
+                    it.pdActions?.element_id ?: it.element_id
             )
         }
     }
@@ -424,7 +465,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
         var (appLink) = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
-        val carousel = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM);
+        val carousel = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLink
                 ?: ApplinkConst.HOME)
         intent.extras?.let { bundle ->
@@ -459,7 +500,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     }
 
     private fun sendElementClickPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, pushType: String, elementId: String?) {
-        baseNotificationModel?.let {
+        baseNotificationModel.let {
             sendPushEvent(context, eventName, baseNotificationModel, elementId)
         }
     }

@@ -278,6 +278,10 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             coachMark?.dismissCoachMark()
+        } else {
+            if(isShowCoachMark() && isSellerView() && isNewInbox()) {
+                coachMark?.showCoachMark(getCoachMarkItems())
+            }
         }
     }
 
@@ -641,14 +645,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private fun initCoachmark() {
         if (isShowCoachMark()) {
             coachMark = context?.let { CoachMark2(it) }
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            if (talkInboxSortFilter?.chipItems != null) {
-                coachMarkItem.addAll(listOf(
-                        getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(0)?.refChipUnify, getString(R.string.inbox_coach_mark_filter_title), getString(R.string.inbox_coach_mark_filter_subtitle)),
-                        getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(1)?.refChipUnify, getString(R.string.inbox_coach_mark_reported_title), getString(R.string.inbox_coach_mark_reported_subtitle)),
-                        getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(2)?.refChipUnify, getString(R.string.inbox_coach_mark_smart_reply_title), getString(R.string.inbox_coach_mark_smart_reply_subtitle))
-                ))
-            }
             coachMark?.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     if (currentIndex == COACH_MARK_LAST_INDEX) {
@@ -656,9 +652,23 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                     }
                 }
             })
-            coachMark?.showCoachMark(coachMarkItem)
+            if(this.isVisible) {
+                coachMark?.showCoachMark(getCoachMarkItems())
+            }
             updateSharedPrefs()
         }
+    }
+
+    private fun getCoachMarkItems(): ArrayList<CoachMark2Item> {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        if (talkInboxSortFilter?.chipItems != null) {
+            coachMarkItem.addAll(listOf(
+                    getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(0)?.refChipUnify, getString(R.string.inbox_coach_mark_filter_title), getString(R.string.inbox_coach_mark_filter_subtitle)),
+                    getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(1)?.refChipUnify, getString(R.string.inbox_coach_mark_reported_title), getString(R.string.inbox_coach_mark_reported_subtitle)),
+                    getCoachMarkItem(talkInboxSortFilter.chipItems?.getOrNull(2)?.refChipUnify, getString(R.string.inbox_coach_mark_smart_reply_title), getString(R.string.inbox_coach_mark_smart_reply_subtitle))
+            ))
+        }
+        return coachMarkItem
     }
 
     private fun setSettingsChipMargins() {

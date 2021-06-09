@@ -6,13 +6,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DIKLAIM
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.HABIS
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.KLAIM
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
-import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.getSubComponent
@@ -20,8 +17,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 
@@ -65,16 +62,15 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
                 try {
                     if (item == NOT_LOGGEDIN) {
                         Toaster.make(itemView.rootView, itemView.context.getString(R.string.discovery_please_log_in), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.discovery_login), View.OnClickListener {
-                            RouteManager.route(itemView.context, ApplinkConst.LOGIN)
+                            (fragment as DiscoveryFragment).openLoginScreen()
                         })
                     } else {
                         setBtn(DIKLAIM)
                         Toaster.make(itemView.rootView, itemView.context.getString(R.string.claim_coupon_redeem_coupon_msg),
                                 Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, itemView.context.getString(R.string.claim_coupon_lihat_text), View.OnClickListener {
 
-                            claimCouponItemViewModel.getCouponSlug()?.let { slug ->
-                                val applink = GenerateUrl.getClaimCouponApplink(slug)
-                                claimCouponItemViewModel.navigate(itemView.context, applink)
+                            claimCouponItemViewModel.getCouponAppLink()?.let { appLink ->
+                                claimCouponItemViewModel.navigate(itemView.context, appLink)
                             }
                         })
                     }

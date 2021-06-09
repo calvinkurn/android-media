@@ -26,7 +26,7 @@ class ShopProductItemBigGridViewHolder(
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         itemView.product_card?.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel)
+                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel, true)
         )
         itemView.product_card?.setThreeDotsOnClickListener {
             shopProductClickedListener?.onThreeDotsClicked(shopProductUiModel, adapterPosition)

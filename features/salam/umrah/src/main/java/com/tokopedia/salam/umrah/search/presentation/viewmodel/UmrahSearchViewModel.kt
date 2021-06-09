@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductEntity
@@ -23,8 +23,8 @@ import javax.inject.Inject
  * @author by M on 16/12/2019
  */
 class UmrahSearchViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                               val dispatcher: UmrahDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+                                               val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.main) {
 
     private val privateSearchResult = MutableLiveData<Result<List<UmrahSearchProduct>>>()
     val searchResult: LiveData<Result<List<UmrahSearchProduct>>>
@@ -76,7 +76,7 @@ class UmrahSearchViewModel @Inject constructor(private val graphqlRepository: Gr
             val params = mapOf(PARAM_UMRAH_SEARCH to searchParam)
             val graphqlRequest = GraphqlRequest(searchQuery, UmrahSearchProductEntity::class.java, params)
 
-            val response = withContext(dispatcher.IO) {
+            val response = withContext(dispatcher.io) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }
             privateSearchResult.value = Success(response.getSuccessData<UmrahSearchProductEntity>().umrahSearchProducts)

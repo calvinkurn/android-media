@@ -5,18 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
-import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 
 abstract class SomOrderBaseViewModel(
@@ -26,6 +23,7 @@ abstract class SomOrderBaseViewModel(
         private val somRejectOrderUseCase: SomRejectOrderUseCase,
         private val somEditRefNumUseCase: SomEditRefNumUseCase,
         private val somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+        private val somValidateOrderUseCase: SomValidateOrderUseCase,
         private val firstAuthorizeAccessUseCase: AuthorizeAccessUseCase,
         private val secondAuthorizeAccessUseCase: AuthorizeAccessUseCase): BaseViewModel(dispatcher.io) {
 
@@ -44,6 +42,10 @@ abstract class SomOrderBaseViewModel(
     private val _rejectCancelOrderResult = MutableLiveData<Result<SomRejectCancelOrderResponse.Data>>()
     val rejectCancelOrderResult: LiveData<Result<SomRejectCancelOrderResponse.Data>>
         get() = _rejectCancelOrderResult
+
+    private val _validateOrderResult = MutableLiveData<Result<Boolean>>()
+    val validateOrderResult: LiveData<Result<Boolean>>
+        get() = _validateOrderResult
 
     protected open suspend fun doAcceptOrder(orderId: String, invoice: String) {
         somAcceptOrderUseCase.setParams(orderId, userSession.shopId ?: "0")
@@ -91,6 +93,16 @@ abstract class SomOrderBaseViewModel(
         launchCatchError(block = {
             doRejectCancelOrder(orderId, invoice)
         }, onError = { _rejectCancelOrderResult.postValue(Fail(it)) })
+    }
+
+    fun validateOrders(orderIds: List<String>) {
+        launchCatchError(block = {
+            val params = SomValidateOrderRequest(orderIds)
+            val result = somValidateOrderUseCase.execute(params)
+            _validateOrderResult.postValue(Success(result))
+        }, onError = {
+            _validateOrderResult.postValue(Fail(it))
+        })
     }
 
     protected suspend fun getAdminAccessEligibilityPair(@AccessId firstAccessId: Int,

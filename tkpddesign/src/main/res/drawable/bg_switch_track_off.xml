@@ -14,8 +14,8 @@
             <gradient
                 android:type="linear"
                 android:angle="0"
-                android:endColor="@color/grey_background"
-                android:startColor="@color/white_two"/>
+                android:endColor="@color/Unify_N50"
+                android:startColor="@color/Unify_N100"/>
         </shape>
     </item>
 </layer-list>

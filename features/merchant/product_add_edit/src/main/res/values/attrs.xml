@@ -6,5 +6,6 @@
     <declare-styleable name="TooltipCardViewSelectable">
         <attr name="textTitle" format="string" />
         <attr name="textDescription" format="string" />
+        <attr name="textTitleDescription" format="string" />
     </declare-styleable>
 </resources>

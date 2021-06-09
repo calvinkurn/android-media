@@ -49,15 +49,17 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
+import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
+import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
-import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
-import com.tokopedia.developer_options.utils.TimberWrapper;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -68,10 +70,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
-import timber.log.Timber;
-
-import static com.tokopedia.developer_options.config.DevOptConfig.CHUCK_ENABLED;
-import static com.tokopedia.developer_options.config.DevOptConfig.IS_CHUCK_ENABLED;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DeveloperOptionActivity extends BaseActivity {
 
@@ -102,6 +102,10 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
+
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
 
@@ -112,7 +116,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private AppCompatTextView abTestRollenceEditorStartButton;
-    private ToggleButton toggleTimberDevOption;
     private Spinner spinnerEnvironmentChooser;
 
     private View sendTimberButton;
@@ -145,6 +148,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
     private CheckBox toggleSellerAppReview;
+    private CheckBox toggleLeakCanary;
 
     private AppCompatEditText ipGroupChat;
     private View saveIpGroupChat;
@@ -179,7 +183,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             boolean isCoachmarkApplink = false;
             if (intent != null) {
                 uri = intent.getData();
-                if (uri!= null) {
+                if (uri != null) {
                     isChangeUrlApplink = (uri.getPathSegments().size() == 3) &&
                             uri.getPathSegments().get(1).equals(CHANGEURL);
                     isCoachmarkApplink = (uri.getPathSegments().size() == 3) &&
@@ -279,6 +283,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
         toggleSellerAppReview = findViewById(R.id.toggle_seller_app_review);
+        toggleLeakCanary = findViewById(R.id.toggle_leak_canary);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
@@ -288,9 +293,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
-
-        toggleTimberDevOption = findViewById(R.id.toggle_timber_dev_options);
-        toggleTimberDevOption.setChecked(false);
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
@@ -425,7 +427,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void onClick(View view) {
                 if (inputRollenceKey.getText().length() < 1) {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Key", Toast.LENGTH_SHORT).show();
-                } else if (inputRollenceVariant.getText().length() <1) {
+                } else if (inputRollenceVariant.getText().length() < 1) {
                     Toast.makeText(DeveloperOptionActivity.this, "Please Insert Rollence Variant", Toast.LENGTH_SHORT).show();
                 } else {
                     RemoteConfigInstance.getInstance().getABTestPlatform().setString(inputRollenceKey.getText().toString().trim(), inputRollenceVariant.getText().toString().trim());
@@ -456,29 +458,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             Toast.makeText(this, "Reset Onboarding", Toast.LENGTH_SHORT).show();
         });
 
-        toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
-                String remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_CUSTOMER_APP;
-                if (GlobalConfig.isSellerApp()) {
-                    remoteConfigValue = TimberWrapper.REMOTE_CONFIG_KEY_LOG_SELLER_APP;
-                }
-                TimberWrapper.initByRemoteConfig(this, remoteConfigValue);
-                Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
-            } else {
-                Timber.uprootAll();
-                Timber.plant(new Timber.DebugTree() {
-                    @Override
-                    protected String createStackElementTag(@NotNull StackTraceElement element) {
-                        return String.format("[%s:%s:%s]",
-                                super.createStackElementTag(element),
-                                element.getMethodName(),
-                                element.getLineNumber());
-                    }
-                });
-                Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         sendTimberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -487,9 +466,46 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this,
                             "Timber message should not empty", Toast.LENGTH_SHORT).show();
                 } else {
-                    Timber.w(timberMessage);
-                    Toast.makeText(DeveloperOptionActivity.this,
-                            timberMessage + " has been sent", Toast.LENGTH_LONG).show();
+                    //"Pno##TAG##message (message: abc=123##edf=456) (required Server Logging ON)"
+                    int priorityIndex = 0;
+                    int tagIndex = 1;
+                    String priority = "";
+                    String tag = "";
+                    String delimiterMessage = "##";
+                    String regexEqualSign = "=([*]*)";
+                    Map<String, String> messageMap = new HashMap<>();
+                    String[] splitMessage = timberMessage.split(delimiterMessage);
+                    for (int i = 0; i < splitMessage.length; i++) {
+                        if (i == priorityIndex) {
+                            priority = splitMessage[priorityIndex];
+                        } else if (i == tagIndex) {
+                            tag = splitMessage[tagIndex];
+                        } else {
+                            String message = splitMessage[i];
+                            if (!TextUtils.isEmpty(message)) {
+                                String[] keyValue = message.split(regexEqualSign);
+                                if (getOrNull(keyValue, 0) != null && getOrNull(keyValue, 1) != null) {
+                                    messageMap.put(keyValue[0], keyValue[1]);
+                                } else {
+                                    Toast.makeText(DeveloperOptionActivity.this,
+                                            "Invalid timber message format", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    Priority priorityLogger = null;
+                    if (priority.equals("P1")) {
+                        priorityLogger = Priority.P1;
+                    } else if (priority.equals("P2")) {
+                        priorityLogger = Priority.P2;
+                    }
+                    if (priorityLogger != null) {
+                        ServerLogger.log(priorityLogger, tag, messageMap);
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                timberMessage + " has been sent", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -545,12 +561,12 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        SharedPreferences cache = getSharedPreferences(CHUCK_ENABLED);
+        SharedPreferences cache = getSharedPreferences(DevOptConfig.CHUCK_ENABLED);
 
-        toggleChuck.setChecked(cache.getBoolean(IS_CHUCK_ENABLED, false));
+        toggleChuck.setChecked(cache.getBoolean(DevOptConfig.IS_CHUCK_ENABLED, false));
 
         toggleChuck.setOnCheckedChangeListener((compoundButton, state) -> {
-            cache.edit().putBoolean(IS_CHUCK_ENABLED, state).apply();
+            cache.edit().putBoolean(DevOptConfig.IS_CHUCK_ENABLED, state).apply();
         });
 
         vGoToScreenRecorder.setOnClickListener(new OneOnClick() {
@@ -687,6 +703,24 @@ public class DeveloperOptionActivity extends BaseActivity {
             new FakeResponseActivityProvider().startActivity(this);
         });
 
+        toggleLeakCanary.setVisibility(GlobalConfig.isSellerApp() ? View.GONE : View.VISIBLE);
+        toggleLeakCanary.setChecked(getLeakCanaryToggleValue());
+        toggleLeakCanary.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, isChecked).apply();
+            Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private boolean getLeakCanaryToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
+    }
+
+    public Object getOrNull(String[] list, int index) {
+        if (index >= 0 && index <= list.length - 1)  {
+            return list[index];
+        } else {
+            return null;
+        }
     }
 
     private void startAbTestRollenceEditor() {
@@ -766,7 +800,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
     }
 
-    private class DeveloperOptionException extends RuntimeException{
+    private class DeveloperOptionException extends RuntimeException {
         public DeveloperOptionException(String message) {
             super(message);
         }

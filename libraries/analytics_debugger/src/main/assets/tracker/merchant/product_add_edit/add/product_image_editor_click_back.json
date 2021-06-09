@@ -6,8 +6,8 @@
       "event" : "clickAddProduct",
       "eventCategory" : "add product page",
       "eventAction" : "click back on edit photo page",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}",
+      "eventLabel" : ".*",
+      "shopId" : ".+",
       "screenName":" /addproductpage - edit photo"
     }
   ]

@@ -3,7 +3,7 @@ package com.tokopedia.flight.cancellationdetail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -17,8 +17,8 @@ import javax.inject.Inject
  */
 class FlightOrderCancellationListViewModel @Inject constructor(
         private val orderDetailUseCase: FlightOrderDetailUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var orderId: String = ""
 
@@ -29,7 +29,7 @@ class FlightOrderCancellationListViewModel @Inject constructor(
 
     fun fetchCancellationData() {
         if (orderId.isNotEmpty()) {
-            launchCatchError(dispatcherProvider.ui(), block = {
+            launchCatchError(dispatcherProvider.main, block = {
                 val cancellationData = orderDetailUseCase.executeGetCancellationList(orderId)
                 mutableCancellationList.postValue(Success(cancellationData))
             }) {

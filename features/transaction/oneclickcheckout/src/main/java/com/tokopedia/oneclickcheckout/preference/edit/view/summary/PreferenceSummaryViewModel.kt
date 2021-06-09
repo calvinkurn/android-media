@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.domain.delete.DeletePrefer
 import com.tokopedia.oneclickcheckout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.oneclickcheckout.preference.edit.domain.update.model.UpdatePreferenceRequest
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import javax.inject.Inject
 
@@ -34,12 +35,12 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     val localCacheAddressResult: LiveData<AddressModel>
         get() = _localCacheAddressResult
 
-    private var profileAddressId: Int = 0
+    private var profileAddressId: Long = 0
     private var profileServiceId: Int = 0
     private var profileGatewayCode: String = ""
     private var profilePaymentMetadata: String = ""
 
-    fun setProfileAddressId(profileAddressId: Int) {
+    fun setProfileAddressId(profileAddressId: Long) {
         this.profileAddressId = profileAddressId
     }
 
@@ -69,7 +70,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         return false
     }
 
-    fun getPreferenceDetail(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String, fromFlow: String) {
+    fun getPreferenceDetail(profileId: Int, addressId: Long, serviceId: Int, gatewayCode: String, metadata: String, paymentProfile: String, fromFlow: String) {
         _preference.value = OccState.Loading
         OccIdlingResource.increment()
         getPreferenceByIdUseCase.execute(
@@ -101,7 +102,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         }
     }
 
-    fun createPreference(addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
+    fun createPreference(addressId: Long, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
         _editResult.value = OccState.Loading
         OccIdlingResource.increment()
         var chosenAddress: ChosenAddress? = null
@@ -116,7 +117,7 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         }
         createPreferenceUseCase.execute(CreatePreferenceRequest(addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow, chosenAddress),
                 { message: String ->
-                    if (addressModel != null && (isSelectedPreference || isDefaultProfileChecked)) {
+                    if (addressModel != null && fromFlow == PreferenceEditActivity.FROM_FLOW_OSP && (isSelectedPreference || isDefaultProfileChecked)) {
                         _localCacheAddressResult.value = addressModel
                     }
                     _editResult.value = OccState.Success(message)
@@ -128,12 +129,12 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
                 })
     }
 
-    fun updatePreference(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
+    fun updatePreference(profileId: Int, addressId: Long, serviceId: Int, gatewayCode: String, paymentQuery: String, isDefaultProfileChecked: Boolean, fromFlow: Int, addressModel: AddressModel?, isSelectedPreference: Boolean) {
         _editResult.value = OccState.Loading
         OccIdlingResource.increment()
         updatePreferenceUseCase.execute(UpdatePreferenceRequest(profileId, addressId, serviceId, gatewayCode, paymentQuery, isDefaultProfileChecked, fromFlow),
                 { message: String ->
-                    if (addressModel != null && (isSelectedPreference || isDefaultProfileChecked)) {
+                    if (addressModel != null && fromFlow == PreferenceEditActivity.FROM_FLOW_OSP && (isSelectedPreference || isDefaultProfileChecked)) {
                         _localCacheAddressResult.value = addressModel
                     }
                     _editResult.value = OccState.Success(message)

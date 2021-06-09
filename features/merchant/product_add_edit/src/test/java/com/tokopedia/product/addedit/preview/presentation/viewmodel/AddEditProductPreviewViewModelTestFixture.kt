@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameU
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
+import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLimitationUseCase
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Result
@@ -57,6 +58,9 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     lateinit var annotationCategoryUseCase: AnnotationCategoryUseCase
 
     @RelaxedMockK
+    lateinit var productLimitationUseCase: ProductLimitationUseCase
+
+    @RelaxedMockK
     lateinit var getProductMapper: GetProductMapper
 
     @RelaxedMockK
@@ -87,6 +91,7 @@ abstract class AddEditProductPreviewViewModelTestFixture {
                 authorizeEditStockUseCase,
                 userSession,
                 annotationCategoryUseCase,
+                productLimitationUseCase,
                 CoroutineTestDispatchersProvider)
 
         viewModel.getProductResult.observeForever(getProductResultObserver)

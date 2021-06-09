@@ -65,4 +65,6 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun hideInvoiceList()
 
+    fun hideHelpfullOptions()
+
 }

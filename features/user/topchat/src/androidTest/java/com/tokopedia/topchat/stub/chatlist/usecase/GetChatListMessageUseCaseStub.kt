@@ -5,12 +5,12 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatlist.domain.mapper.GetChatListMessageMapper
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.usecase.GetChatListMessageUseCase
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 
 class GetChatListMessageUseCaseStub constructor(
         gqlUseCase: GraphqlUseCase<ChatListPojo> = GraphqlUseCase(GraphqlInteractor.getInstance().graphqlRepository),
         private val mapper: GetChatListMessageMapper = GetChatListMessageMapper()
-) : GetChatListMessageUseCase(gqlUseCase, mapper, TopchatCoroutineContextProvider()) {
+) : GetChatListMessageUseCase(gqlUseCase, mapper, CoroutineTestDispatchersProvider) {
 
     var response = ChatListPojo()
 

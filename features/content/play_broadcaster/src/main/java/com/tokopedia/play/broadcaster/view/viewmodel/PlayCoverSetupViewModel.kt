@@ -22,7 +22,7 @@ import com.tokopedia.play.broadcaster.util.cover.PlayCoverImageUtil
 import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -35,7 +35,7 @@ import javax.inject.Inject
  */
 class PlayCoverSetupViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val uploadImageUseCase: UploadImageToRemoteV2UseCase,
         private val getOriginalProductImageUseCase: GetOriginalProductImageUseCase,

@@ -2,8 +2,8 @@ package com.tokopedia.autocomplete.suggestion.doubleline
 
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
 
-fun SuggestionItem.convertToDoubleLineWithoutImageVisitableList(searchTerm: String, position: Int): SuggestionDoubleLineWithoutImageViewModel {
-    val item = SuggestionDoubleLineWithoutImageViewModel()
+fun SuggestionItem.convertToDoubleLineWithoutImageVisitableList(searchTerm: String, position: Int): SuggestionDoubleLineWithoutImageDataDataView {
+    val item = SuggestionDoubleLineWithoutImageDataDataView()
     item.template = this.template
     item.type = this.type
     item.applink = this.applink

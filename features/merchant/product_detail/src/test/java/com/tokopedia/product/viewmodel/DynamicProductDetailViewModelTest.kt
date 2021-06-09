@@ -1215,7 +1215,7 @@ class DynamicProductDetailViewModelTest {
     fun onErrorToggleFavoriteShop() {
         val shopId = "1234"
         coEvery {
-            toggleFavoriteUseCase.executeOnBackground(any()).followShop.isSuccess
+            toggleFavoriteUseCase.executeOnBackground(any()).followShop?.isSuccess
         } throws Throwable()
 
         viewModel.toggleFavorite(shopId)

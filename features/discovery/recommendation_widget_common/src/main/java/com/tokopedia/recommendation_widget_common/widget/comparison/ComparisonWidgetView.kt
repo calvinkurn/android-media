@@ -66,23 +66,23 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
             try {
                 val comparisonListModel =
                         ComparisonWidgetMapper.mapToComparisonWidgetModel(recommendationWidget, context)
-                rootView.tv_header_title.text = comparisonListModel.recommendationWidget.title
-                if (comparisonListModel.recommendationWidget.seeMoreAppLink.isNotEmpty()) {
-                    rootView.btn_see_more.visible()
-                } else {
-                    rootView.btn_see_more.gone()
-                }
-
                 if (this@ComparisonWidgetView.adapter == null) {
-                    this@ComparisonWidgetView.comparisonListModel = comparisonListModel
-                    this@ComparisonWidgetView.adapter = ComparisonWidgetAdapter(
-                            comparisonListModel = comparisonListModel,
-                            comparisonWidgetInterface = comparisonWidgetInterface,
-                            trackingQueue = trackingQueue,
-                            userSessionInterface = userSessionInterface,
-                            recommendationTrackingModel = recommendationTrackingModel
-                    )
                     launch(Dispatchers.Main) {
+                        rootView.tv_header_title.text = comparisonListModel?.recommendationWidget?.title
+                        if (comparisonListModel?.recommendationWidget?.seeMoreAppLink?.isNotEmpty() == true) {
+                            rootView.btn_see_more.visible()
+                        } else {
+                            rootView.btn_see_more.gone()
+                        }
+
+                        this@ComparisonWidgetView.comparisonListModel = comparisonListModel
+                        this@ComparisonWidgetView.adapter = ComparisonWidgetAdapter(
+                                comparisonListModel = comparisonListModel,
+                                comparisonWidgetInterface = comparisonWidgetInterface,
+                                trackingQueue = trackingQueue,
+                                userSessionInterface = userSessionInterface,
+                                recommendationTrackingModel = recommendationTrackingModel
+                        )
                         rootView.rv_comparison_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rootView.rv_comparison_widget.adapter = adapter
                         rootView.btn_collapse.setOnClickListener {

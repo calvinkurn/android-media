@@ -6,18 +6,20 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -32,16 +34,21 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Fill.TO
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
+import com.tokopedia.searchbar.navigation_component.di.DaggerNavigationComponent
+import com.tokopedia.searchbar.navigation_component.di.module.NavigationModule
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
+import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
+import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.navToolbar
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     companion object {
@@ -92,6 +99,49 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var toolbarPageName: String = DEFAULT_PAGE_NAME
     private var toolbarInitialFillColor: Int = TOOLBAR_FILLED
     private var invertSearchBarColor: Boolean = false
+    private var lifecycleOwner: LifecycleOwner? = null
+    private var useCentralizedIconNotification = mapOf<Int, Boolean>()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: NavigationViewModel? by lazy {
+        context?.let {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val enableNotif = remoteConfig.getBoolean(RemoteConfigKey.NAVIGATION_ENABLE_NOTIF, true)
+            if (enableNotif) {
+                initializeViewModel(it)
+            } else {
+                null
+            }
+        }
+    }
+
+    private fun initializeViewModel(it: Context): NavigationViewModel? {
+        val component = DaggerNavigationComponent.builder()
+                .navigationModule(NavigationModule(it.applicationContext))
+                .build()
+        component.inject(this)
+        return when (it) {
+            is AppCompatActivity -> {
+                val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+                viewModelProvider[NavigationViewModel::class.java]
+            }
+            is ContextThemeWrapper -> {
+                val activity = it.getActivityFromContext()
+                activity?.let {
+                    if (activity is AppCompatActivity) {
+                        val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
+                        viewModelProvider[NavigationViewModel::class.java]
+                    } else {
+                        null
+                    }
+                }
+            }
+            else -> {
+                null
+            }
+        }
+    }
 
     //helper variable
     var shadowApplied: Boolean = false
@@ -143,7 +193,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
      * IconList.kt
      */
     fun setIcon(iconBuilder: IconBuilder) {
-        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build(), this)
+        val iconConfig = iconBuilder.build()
+        viewModel?.setRegisteredIconList(iconConfig)
+        this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
+        navIconAdapter = NavToolbarIconAdapter(iconConfig, this)
         navIconAdapter?.setHasStableIds(true)
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
@@ -268,7 +321,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setBadgeCounter(iconId: Int, counter: Int) {
-        navIconAdapter?.setIconCounter(iconId, counter)
+        // only allow direct set badge counter when viewmodel is not initialized
+        // means remote config for centralized notification is off
+        if (viewModel == null) {
+            navIconAdapter?.setIconCounter(iconId, counter)
+        }
     }
 
     fun triggerLottieAnimation(lottieIconId: Int) {
@@ -384,12 +441,32 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
+    fun setCentralizedBadgeCounter(iconId: Int, counter: Int) {
+        useCentralizedIconNotification[iconId]?.let {
+            if (it) {
+                navIconAdapter?.setIconCounter(iconId, counter)
+            }
+        }
+    }
+
+    fun updateNotification() {
+        viewModel?.getNotification()
+    }
+
+    fun applyNotification() {
+        viewModel?.applyNotification()
+    }
+
     private fun applyStatusBarPadding() {
         var pT = 0
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            pT = ViewHelper.getStatusBarHeight(context)
-        }
+        pT = ViewHelper.getStatusBarHeight(context)
         navToolbar?.updatePadding(top = pT)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private fun onStartListener(owner: LifecycleOwner){
+        this.lifecycleOwner = owner
+        observeLiveData()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -403,6 +480,20 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun stopSearchBarHintAnimation() {
         if (::navSearchBarController.isInitialized) {
             navSearchBarController.stopHintAnimation()
+        }
+    }
+
+    private fun observeLiveData() {
+        lifecycleOwner?.let {owner ->
+            viewModel?.navNotificationLiveData?.observe(owner, Observer {
+                it?.let {
+                    setCentralizedBadgeCounter(IconList.ID_MESSAGE, it.totalInbox)
+                    setCentralizedBadgeCounter(IconList.ID_CART, it.totalCart)
+                    setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, it.totalNotif)
+                    setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalNewInbox)
+                    setCentralizedBadgeCounter(IconList.ID_NAV_GLOBAL, it.totalGlobalNavNotif)
+                }
+            })
         }
     }
 
@@ -549,6 +640,13 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun toolbarThemeCondition(lightCondition: () -> Unit = {}, darkCondition: () -> Unit = {}) {
         if (toolbarThemeType == TOOLBAR_LIGHT_TYPE) lightCondition.invoke()
         if (toolbarThemeType == TOOLBAR_DARK_TYPE) darkCondition.invoke()
+    }
+
+    override fun onVisibilityAggregated(isVisible: Boolean) {
+        super.onVisibilityAggregated(isVisible)
+        if (isVisible) {
+            viewModel?.getNotification()
+        }
     }
 
     override fun getUserId(): String = userSessionInterface?.userId?:""

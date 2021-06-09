@@ -57,7 +57,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="@string/mvc_follow"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_Static_White"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

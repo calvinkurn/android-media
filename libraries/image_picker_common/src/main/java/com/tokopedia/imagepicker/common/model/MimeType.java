@@ -1,13 +1,13 @@
 package com.tokopedia.imagepicker.common.model;
 
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.ArraySet;
 import android.webkit.MimeTypeMap;
 
-import com.tokopedia.imagepicker.common.PhotoMetadataUtils;
+import androidx.collection.ArraySet;
+
+import com.tokopedia.utils.file.FileUtil;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -117,7 +117,6 @@ public enum MimeType {
         return mimeType.equals(MimeType.GIF.toString());
     }
 
-    @SuppressLint("NewApi")
     private static Set<String> arraySetOf(String... suffixes) {
         return new ArraySet<>(Arrays.asList(suffixes));
     }
@@ -142,7 +141,7 @@ public enum MimeType {
             }
             if (!pathParsed) {
                 // we only resolve the path for one time
-                path = PhotoMetadataUtils.getPath(resolver, uri);
+                path = FileUtil.getPath(resolver, uri);
                 if (!TextUtils.isEmpty(path)) {
                     path = path.toLowerCase(Locale.US);
                 }

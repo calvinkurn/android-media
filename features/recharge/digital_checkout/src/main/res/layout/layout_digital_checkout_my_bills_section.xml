@@ -16,6 +16,7 @@
         android:id="@+id/tvCheckoutMyBillsHeaderTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
@@ -28,12 +29,12 @@
         app:layout_constraintTop_toBottomOf="@id/seperator"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
-        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_goneMarginRight="@dimen/spacing_lvl4"
         app:layout_goneMarginStart="@dimen/spacing_lvl4"
         app:layout_goneMarginTop="@dimen/unify_space_12"
         app:typographyType="body_2"
-        tools:text="Otomatis Bayar Otomatis" />
+        tools:text="Otomatis Bayar Otomatis Otomatis
+        Bayar Otomatis Otomatis Bayar Otomatis" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icCheckoutMyBillsInfo"
@@ -42,10 +43,11 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/bgAdditionalFintechImage"
         app:layout_constraintStart_toEndOf="@id/tvCheckoutMyBillsHeaderTitle"
         app:layout_constraintTop_toTopOf="@id/tvCheckoutMyBillsHeaderTitle"
-        app:srcCompat="@drawable/ic_system_action_information_16" />
+        app:srcCompat="@drawable/ic_system_action_information_16"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBoxCheckoutMyBills"
@@ -53,9 +55,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/unify_space_12"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seperator"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_goneMarginTop="@dimen/unify_space_12" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -67,23 +69,43 @@
         android:paddingTop="@dimen/spacing_lvl1"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/ivAdditionalFintechImage"
+        app:layout_constraintEnd_toStartOf="@id/bgAdditionalFintechImage"
         app:layout_constraintStart_toStartOf="@id/tvCheckoutMyBillsHeaderTitle"
         app:layout_constraintTop_toBottomOf="@id/tvCheckoutMyBillsHeaderTitle"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="body_2"
-        tools:text="Pembayaran akan dilakukan secara " />
+        tools:text="Pembayaran akan dilakukan secara Pembayaran akan dilakukan secara Pembayaran akan dilakukan secara " />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivAdditionalFintechImage"
+        android:id="@+id/bgAdditionalFintechImage"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:visibility="gone"
+        android:maxWidth="@dimen/layout_lvl7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/seperator"
+        app:srcCompat="@drawable/bg_tebus_murah_icon"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivAdditionalFintechImage"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/bgAdditionalFintechImage"
+        app:layout_constraintEnd_toEndOf="@id/bgAdditionalFintechImage"
+        app:layout_constraintStart_toStartOf="@id/bgAdditionalFintechImage"
+        app:layout_constraintTop_toTopOf="@id/bgAdditionalFintechImage"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect"
+        tools:srcCompat="@drawable/ic_system_action_information_16"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

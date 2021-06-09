@@ -29,7 +29,7 @@ data class CheckoutRequestGqlData(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
         @SerializedName("leasing_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var leasingId: Int = 0
 )
 
@@ -46,13 +46,13 @@ data class TokopediaCornerGqlData(
         @SerializedName("user_corner_id")
         var userCornerId: String? = null,
         @SerializedName("corner_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var cornerId: Long = 0
 )
 
 data class CheckoutGqlData(
         @SerializedName("address_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var addressId: Long = 0,
         @SerializedName("shop_products")
         var shopProducts: List<ShopProductGqlData> = ArrayList()
@@ -60,8 +60,8 @@ data class CheckoutGqlData(
 
 data class ShopProductGqlData(
         @SerializedName("shop_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
-        var shopId: Int = 0,
+        @SuppressLint("Invalid Data Type")
+        var shopId: Long = 0,
         @SerializedName("is_preorder")
         var isPreorder: Int = 0,
         @SerializedName("finsurance")
@@ -77,8 +77,8 @@ data class ShopProductGqlData(
         @SerializedName("fcancel_partial")
         var fcancelPartial: Int = 0,
         @SerializedName("warehouse_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
-        var warehouseId: Int = 0,
+        @SuppressLint("Invalid Data Type")
+        var warehouseId: Long = 0,
         @SerializedName("promo_codes")
         var promoCodes: List<String> = emptyList(),
         @SerializedName("promos")
@@ -89,10 +89,10 @@ data class ShopProductGqlData(
 
 data class ShippingInfoGqlData(
         @SerializedName("shipping_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var shippingId: Int = 0,
         @SerializedName("sp_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var spId: Int = 0,
         @SerializedName("rates_id")
         var ratesId: String? = null,
@@ -125,7 +125,7 @@ data class DropshipGqlData(
 
 data class ProductGqlData(
         @SerializedName("product_id")
-        @SuppressLint("Invalid Data Type") // Need to add this since we're not ready to change the existing data type to String
+        @SuppressLint("Invalid Data Type")
         var productId: Long = 0,
         @SerializedName("is_ppp")
         var isPurchaseProtection: Boolean = false,
@@ -146,13 +146,17 @@ object CheckoutRequestGqlDataMapper {
 
     fun map(checkoutRequest: CheckoutRequest): CheckoutRequestGqlData {
         return CheckoutRequestGqlData().apply {
-            promos = if (checkoutRequest.promos != null) mapPromos(checkoutRequest.promos) else emptyList()
+            val tmpPromos = checkoutRequest.promos
+            promos = if (tmpPromos != null) mapPromos(tmpPromos) else emptyList()
             promoCode = checkoutRequest.promoCode
-            promoCodes = if (checkoutRequest.promoCodes != null) checkoutRequest.promoCodes else emptyList()
+            promoCodes = checkoutRequest.promoCodes ?: emptyList()
             isDonation = checkoutRequest.isDonation
-            egoldData = if (checkoutRequest.egoldData != null) mapEgoldData(checkoutRequest.egoldData) else null
-            data = if (checkoutRequest.data != null) mapData(checkoutRequest.data) else emptyList()
-            tokopediaCornerData = if (checkoutRequest.cornerData != null) mapTokopediaCornerData(checkoutRequest.cornerData) else null
+            val tmpEgoldData = checkoutRequest.egoldData
+            egoldData = if (tmpEgoldData != null) mapEgoldData(tmpEgoldData) else null
+            val tmpCheckoutRequestData = checkoutRequest.data
+            data = if (tmpCheckoutRequestData != null) mapData(tmpCheckoutRequestData) else emptyList()
+            val tmpCornerData = checkoutRequest.cornerData
+            tokopediaCornerData = if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
         }
@@ -190,7 +194,8 @@ object CheckoutRequestGqlDataMapper {
         dataCheckoutRequestList.forEach {
             checkoutGqlDataList.add(CheckoutGqlData().apply {
                 addressId = it.addressId.toLongOrZero()
-                shopProducts = if (it.shopProducts != null) mapShopProduct(it.shopProducts) else emptyList()
+                val tmpShopProducts = it.shopProducts
+                shopProducts = if (tmpShopProducts != null) mapShopProduct(tmpShopProducts) else emptyList()
             })
         }
 
@@ -204,14 +209,18 @@ object CheckoutRequestGqlDataMapper {
                 shopId = it.shopId
                 isPreorder = it.isPreorder
                 finsurance = it.finsurance
-                shippingInfo = if (it.shippingInfo != null) mapShippingInfo(it.shippingInfo) else null
+                val tmpShippingInfo = it.shippingInfo
+                shippingInfo = if (tmpShippingInfo != null) mapShippingInfo(tmpShippingInfo) else null
                 isDropship = it.isDropship
-                dropshipData = if (it.dropshipData != null) mapDropshipData(it.dropshipData) else null
-                productData = if (it.productData != null) mapProductData(it.productData) else emptyList()
+                val tmpDropshipData = it.dropshipData
+                dropshipData = if (tmpDropshipData != null) mapDropshipData(tmpDropshipData) else null
+                val tmpProductData = it.productData
+                productData = if (tmpProductData != null) mapProductData(tmpProductData) else emptyList()
                 fcancelPartial = it.fcancelPartial
                 warehouseId = it.warehouseId
-                promoCodes = if (it.promoCodes != null) it.promoCodes else emptyList()
-                promos = if (it.promos != null) mapPromos(it.promos) else emptyList()
+                promoCodes = it.promoCodes ?: emptyList()
+                val tmpPromos = it.promos
+                promos = if (tmpPromos != null) mapPromos(tmpPromos) else emptyList()
                 isOrderPriority = it.isOrderPriority
             })
         }
@@ -240,7 +249,8 @@ object CheckoutRequestGqlDataMapper {
             ratesId = shippingInfo.ratesId
             checksum = shippingInfo.checksum
             ut = shippingInfo.ut
-            ratesFeature = if (shippingInfo.ratesFeature != null) mapRatesFeature(shippingInfo.ratesFeature) else null
+            val tmpRatesFeature = shippingInfo.ratesFeature
+            ratesFeature = if (tmpRatesFeature != null) mapRatesFeature(tmpRatesFeature) else null
         }
     }
 

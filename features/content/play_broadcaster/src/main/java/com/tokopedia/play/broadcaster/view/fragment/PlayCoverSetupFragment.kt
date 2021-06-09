@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -45,7 +46,6 @@ import com.tokopedia.play.broadcaster.view.state.NotChangeable
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -58,7 +58,7 @@ import javax.inject.Inject
  */
 class PlayCoverSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val permissionPref: PermissionSharedPreferences,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment(), CoverCropViewComponent.Listener, CoverSetupViewComponent.Listener {
@@ -441,7 +441,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     private fun requestGalleryPermission(requestCode: Int, isFullFlow: Boolean = true) {
-        val permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
         if (isFullFlow) {
             permissionHelper.requestMultiPermissionsFullFlow(
                     permissions = permissions,

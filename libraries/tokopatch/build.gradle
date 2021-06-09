@@ -60,6 +60,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
+    implementation project(rootProject.ext.libraries.logger)
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 

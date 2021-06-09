@@ -1,14 +1,14 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
 import io.mockk.every
 import io.mockk.verify
@@ -71,8 +71,8 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify visitable list doesnt have the deleted keyword in recent search`(item: BaseItemInitialStateSearch) {
-        val recentSearchViewModel = slotDeletedVisitableList.captured.find { it is RecentSearchViewModel } as RecentSearchViewModel
-        assert(!recentSearchViewModel.list.contains(item)) {
+        val recentSearchDataView = slotDeletedVisitableList.captured.find { it is RecentSearchDataView } as RecentSearchDataView
+        assert(!recentSearchDataView.list.contains(item)) {
             "Recent Search ${item.title} should be deleted"
         }
     }
@@ -95,10 +95,10 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
     private fun `Then verify visitable list doesnt have shop in recent search`(item: BaseItemInitialStateSearch) {
         val newList = slotDeletedVisitableList.captured
-        assert(newList[3] is RecentSearchViewModel) {
-            "Should be RecentSearchViewModel"
+        assert(newList[3] is RecentSearchDataView) {
+            "Should be RecentSearchDataView"
         }
-        assert(!(newList[3] as RecentSearchViewModel).list.contains(item)) {
+        assert(!(newList[3] as RecentSearchDataView).list.contains(item)) {
             "Recent Search ${item.title} should be deleted"
         }
     }
@@ -119,13 +119,13 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
         `Test Delete Recent Search Data`(initialStateData, item)
         `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
-        `Then verify visitable list still have RecentSearchSeeMoreViewModel`()
+        `Then verify visitable list still have RecentSearchSeeMoreDataView`()
     }
 
-    private fun `Then verify visitable list still have RecentSearchSeeMoreViewModel`() {
-        val seeMoreRecentSearchViewModel = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreViewModel }
-        assert(seeMoreRecentSearchViewModel != null) {
-            "Visitable list should have SeeMoreRecentSearchViewModel"
+    private fun `Then verify visitable list still have RecentSearchSeeMoreDataView`() {
+        val recentSearchSeeMoreDataView = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        assert(recentSearchSeeMoreDataView != null) {
+            "Visitable list should have SeeMoreRecentSearchDataView"
         }
     }
 
@@ -145,13 +145,13 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
         `Test Delete Recent Search Data`(initialStateData, item)
         `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
-        `Then verify visitable list doesnt have RecentSearchSeeMoreViewModel`()
+        `Then verify visitable list doesnt have RecentSearchSeeMoreDataView`()
     }
 
-    private fun `Then verify visitable list doesnt have RecentSearchSeeMoreViewModel`() {
-        val seeMoreRecentSearchViewModel = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreViewModel }
-        assert(seeMoreRecentSearchViewModel == null) {
-            "Visitable list should not have SeeMoreRecentSearchViewModel"
+    private fun `Then verify visitable list doesnt have RecentSearchSeeMoreDataView`() {
+        val recentSearchSeeMoreDataView = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        assert(recentSearchSeeMoreDataView == null) {
+            "Visitable list should not have SeeMoreRecentSearchDataView"
         }
     }
 
@@ -195,12 +195,12 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
     private fun `Then verify visitable list doesnt have recent search anymore`() {
         val list = slotDeletedVisitableList.captured
-        Assert.assertTrue(list[0] is RecentViewTitleViewModel)
-        Assert.assertTrue(list[1] is RecentViewViewModel)
-        Assert.assertTrue(list[2] is PopularSearchTitleViewModel)
-        Assert.assertTrue(list[3] is PopularSearchViewModel)
-        Assert.assertTrue(list[4] is DynamicInitialStateTitleViewModel)
-        Assert.assertTrue(list[5] is DynamicInitialStateSearchViewModel)
+        Assert.assertTrue(list[0] is RecentViewTitleDataView)
+        Assert.assertTrue(list[1] is RecentViewDataView)
+        Assert.assertTrue(list[2] is PopularSearchTitleDataView)
+        Assert.assertTrue(list[3] is PopularSearchDataView)
+        Assert.assertTrue(list[4] is DynamicInitialStateTitleDataView)
+        Assert.assertTrue(list[5] is DynamicInitialStateSearchDataView)
         Assert.assertTrue(list.size == 6)
     }
 

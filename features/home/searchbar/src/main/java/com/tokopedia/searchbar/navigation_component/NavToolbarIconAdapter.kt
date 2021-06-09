@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.navigation_component
 
+import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -15,11 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.R
+import com.tokopedia.searchbar.navigation_component.NavConstant.ICON_COUNTER_NONE_TYPE
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -100,10 +99,12 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
     fun setIconCounter(iconId: Int, counter: Int) {
         val selectedIcon = this.iconConfig.iconList.find { it.id == iconId }
         val selectedIconPosition = this.iconConfig.iconList.indexOf(selectedIcon)
-        selectedIcon?.badgeCounter = counter
         selectedIcon?.let {
-            this.iconConfig.iconList[selectedIconPosition] = selectedIcon
-            notifyItemChanged(selectedIconPosition)
+            if (it.badgeCounter != counter) {
+                it.badgeCounter = counter
+                this.iconConfig.iconList[selectedIconPosition] = it
+                notifyItemChanged(selectedIconPosition)
+            }
         }
     }
 
@@ -211,18 +212,34 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
 
-        if (iconToolbar.badgeCounter.isZero()) {
-            iconImage.notificationRef.gone()
-        } else {
-            iconImage.notificationRef.setNotification(
-                    notif = iconToolbar.badgeCounter.toString(),
-                    notificationType = NotificationUnify.COUNTER_TYPE,
-                    colorType = NotificationUnify.COLOR_PRIMARY
-            )
-            iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
-            iconImage.notificationRef.visible()
+        (iconImage.notificationRef.parent as? ViewGroup)?.layoutTransition = LayoutTransition()
+        iconImage.notificationRef.invisible()
+
+        when {
+            iconToolbar.badgeCounter.isZero() -> {
+                iconImage.notificationRef.gone()
+            }
+            iconToolbar.badgeCounter == ICON_COUNTER_NONE_TYPE -> {
+                iconImage.setNotifXY(0.85f, -0.25f)
+                iconImage.notificationRef.setNotification(
+                        notif = iconToolbar.badgeCounter.toString(),
+                        notificationType = NotificationUnify.NONE_TYPE,
+                        colorType = NotificationUnify.COLOR_PRIMARY
+                )
+                iconImage.notificationGravity = Gravity.TOP or Gravity.END
+                iconImage.notificationRef.visible()
+            }
+            else -> {
+                iconImage.setNotifXY(1f, -0.85f)
+                iconImage.notificationRef.setNotification(
+                        notif = iconToolbar.badgeCounter.toString(),
+                        notificationType = NotificationUnify.COUNTER_TYPE,
+                        colorType = NotificationUnify.COLOR_PRIMARY
+                )
+                iconImage.notificationGravity = Gravity.TOP or Gravity.END
+                iconImage.notificationRef.visible()
+            }
         }
-        iconImage.setNotifXY(1f, -0.8f)
         iconImage.visibility = View.VISIBLE
     }
 

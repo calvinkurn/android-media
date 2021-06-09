@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageSearchFragment
 import com.tokopedia.digital.home.presentation.fragment.RechargeHomepageFragment
-import com.tokopedia.digital.home.presentation.util.RechargeHomepageDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
@@ -18,7 +18,7 @@ interface RechargeHomepageComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun digitalHomePageDispatchersProvider(): RechargeHomepageDispatchersProvider
+    fun digitalHomePageDispatchersProvider(): CoroutineDispatchers
 
     fun inject(digitalHomePageSearchFragment: DigitalHomePageSearchFragment)
 

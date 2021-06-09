@@ -20,6 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -36,6 +37,7 @@ import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
@@ -79,6 +81,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
     private var reviewInboxListener: ReviewInboxListener? = null
     private var source: String = ""
+    private var containerListener: InboxFragmentContainer? = null
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -111,6 +114,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onStarsClicked(reputationId: Long, productId: Long, rating: Int, inboxReviewId: Long, seen: Boolean) {
         if (!seen) {
             viewModel.markAsSeen(inboxReviewId)
+            containerListener?.decreaseReviewUnreviewedCounter()
         }
         goToCreateReviewActivity(reputationId, productId, rating, inboxReviewId.toString())
     }
@@ -142,7 +146,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                reviewPendingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -262,6 +266,12 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getSourceData()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is InboxFragmentContainer) {
+            containerListener = context
+        }
     }
 
     private fun initView() {
@@ -422,16 +432,25 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun goToCreateReviewActivity(reputationId: Long, productId: Long, rating: Int, inboxId: String) {
-        val intent = RouteManager.getIntent(context,
-                Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
-                        .buildUpon()
-                        .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
-                        .build()
-                        .toString())
-        startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+        context?.let {
+            val intent = RouteManager.getIntent(it,
+                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
+                            .buildUpon()
+                            .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
+                            .build()
+                            .toString())
+            startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+        }
     }
 
     private fun getSourceData() {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            source = containerListener?.getPageSource() ?: ReviewInboxConstants.DEFAULT_SOURCE
+            if(source.isBlank()) {
+                source = ReviewInboxConstants.DEFAULT_SOURCE
+            }
+            return
+        }
         source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.di.broadcast
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,8 +16,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -33,10 +32,6 @@ class PlayBroadcastModule(private val mContext: Context) {
         return mContext
     }
 
-    @PlayBroadcastScope
-    @Provides
-    fun provideCoroutineDispatcherProvider(): CoroutineDispatcherProvider = DefaultCoroutineDispatcherProvider()
-
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
@@ -49,8 +44,8 @@ class PlayBroadcastModule(private val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context) : ApsaraLivePusherWrapper.Builder {
-        return ApsaraLivePusherWrapper.Builder(context)
+    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context, dispatcher: CoroutineDispatchers) : ApsaraLivePusherWrapper.Builder {
+        return ApsaraLivePusherWrapper.Builder(context, dispatcher)
     }
 
     @PlayBroadcastScope

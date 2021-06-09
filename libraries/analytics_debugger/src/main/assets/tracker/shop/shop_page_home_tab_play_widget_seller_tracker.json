@@ -4,153 +4,153 @@
   "query": [
     {
       "promotions": [{
-        "creative_name": "{{.+}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.+}}",
-        "item_name": "{{.+}}"
+        "creative_name": ".+",
+        "creative_slot": ".*",
+        "item_id": ".+",
+        "item_name": ".+"
       }],
-      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "eventCategory": "shop page - (buyer|seller)",
       "event": "view_item",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
-      "businessUnit": "{{.*}}",
-      "currentSite": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*",
       "eventAction": "impression - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{(.+) - (.+) - (.+)}}"
+      "sessionIris": ".+",
+      "eventLabel":"(.+) - (.+) - (.+)"
     },
     {
       "promotions": [{
-        "creative_name": "{{.+}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.+}}",
-        "item_name": "{{.+}}"
+        "creative_name": ".+",
+        "creative_slot": ".*",
+        "item_id": ".+",
+        "item_name": ".+"
       }],
-      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "eventCategory": "shop page - (buyer|seller)",
       "event": "view_item",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
-      "businessUnit": "{{.*}}",
-      "currentSite": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*",
       "eventAction": "impression card - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+      "sessionIris": ".+",
+      "eventLabel":"(.+) - (.+) - (.+) - (.+) - (.+) - (.+)"
     },
     {
       "promotions": [{
-        "creative_name": "{{.+}}",
-        "creative_slot": "{{.*}}",
-        "item_id": "{{.+}}",
-        "item_name": "{{.+}}"
+        "creative_name": ".+",
+        "creative_slot": ".*",
+        "item_id": ".+",
+        "item_name": ".+"
       }],
-      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "eventCategory": "shop page - (buyer|seller)",
       "event": "select_content",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
-      "businessUnit": "{{.*}}",
-      "currentSite": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
+      "businessUnit": ".*",
+      "currentSite": ".*",
       "eventAction": "click",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{card - widget play - (.+) - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+      "sessionIris": ".+",
+      "eventLabel":"card - widget play - (.+) - (.+) - (.+) - (.+) - (.+) - (.+)"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "click option button on card - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "viewShopPageIris",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "view bottom sheet - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "click share on bottom sheet - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "click lihat performa - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "click delete on bottom sheet - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "viewShopPageIris",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "view confirm on pop up delete - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "click delete on pop up delete - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "viewShopPageIris",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "error state on shop page seller - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
-      "shopId": "{{.*}}",
+      "userId": ".*",
+      "shopId": ".*",
       "eventAction": "click delete on card - widget play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     }
   ]
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -15,6 +16,7 @@ import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.PMAX_PARAM_KEY
 import com.tokopedia.shop.common.constant.PMIN_PARAM_KEY
@@ -96,6 +98,8 @@ class ShopHomeViewModelTest {
     lateinit var shopProductSortMapper: ShopProductSortMapper
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
+    @RelaxedMockK
+    lateinit var context: Context
     private lateinit var viewModel: ShopHomeViewModel
 
     private val mockShopId = "1234"
@@ -266,7 +270,7 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(null)
-        viewModel.getMerchantVoucherCoupon(mockShopId)
+        viewModel.getMerchantVoucherCoupon(mockShopId, context)
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
     }
@@ -285,7 +289,7 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } throws Throwable()
-        viewModel.getMerchantVoucherCoupon(mockShopId)
+        viewModel.getMerchantVoucherCoupon(mockShopId, context)
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Fail)
     }
@@ -295,7 +299,7 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(null)
-        viewModel.getMerchantVoucherCoupon(mockShopId)
+        viewModel.getMerchantVoucherCoupon(mockShopId, context)
     }
 
     @Test
@@ -308,7 +312,7 @@ class ShopHomeViewModelTest {
                 )
         )
         viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
-        viewModel.getMerchantVoucherCoupon(mockShopId)
+        viewModel.getMerchantVoucherCoupon(mockShopId, context)
         assertTrue(viewModel.shopHomeLayoutData.value is Success)
     }
 
@@ -532,7 +536,7 @@ class ShopHomeViewModelTest {
         coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } returns mockPlayWidgetReminder
         coEvery { playWidgetTools.mapWidgetToggleReminder(mockPlayWidgetReminder) } returns true
 
-        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Reminded)
 
         coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
 
@@ -546,7 +550,7 @@ class ShopHomeViewModelTest {
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } throws Throwable()
 
-        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Reminded)
 
         coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
 
@@ -557,9 +561,9 @@ class ShopHomeViewModelTest {
     fun `check whether playWidgetReminderEvent value is not null when on login`() {
         val mockChannelId = "123"
         every { userSessionInterface.isLoggedIn } returns false
-        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Remind)
+        viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Reminded)
         assert(viewModel.playWidgetReminderEvent.value?.first == mockChannelId)
-        assert(viewModel.playWidgetReminderEvent.value?.second == PlayWidgetReminderType.Remind)
+        assert(viewModel.playWidgetReminderEvent.value?.second == PlayWidgetReminderType.Reminded)
     }
 
     @Test
@@ -747,7 +751,7 @@ class ShopHomeViewModelTest {
                                 "",
                                 mockTotalView,
                                 true,
-                                true,
+                                PlayWidgetPromoType.Default(""),
                                 PlayWidgetVideoUiModel("", false, "", ""),
                                 PlayWidgetChannelType.Upcoming
                         )

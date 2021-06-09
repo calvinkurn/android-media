@@ -139,20 +139,38 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 }
                 is Fail -> {
                     hideLoading()
-                    DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-                        setTitle(getString(R.string.logout))
-                        setDescription(it.throwable.message.toString())
-                        setPrimaryCTAText(getString(R.string.try_again))
-                        setCancelable(false)
-                        setOverlayClose(false)
-                        setPrimaryCTAClickListener {
-                            clearData()
-                            dismiss()
-                        }
-                    }.show()
+                    processingError(it)
                 }
             }
         })
+    }
+
+    private fun processingError(it: Fail) {
+        val errorMessage = it.throwable.message.toString()
+        if(isByPassClearData(errorMessage)) {
+            clearData()
+        } else {
+            showErrorDialog(errorMessage)
+        }
+
+    }
+
+    private fun isByPassClearData(errorMessage: String): Boolean {
+        return errorMessage == INVALID_TOKEN
+    }
+
+    private fun showErrorDialog(errorMessage: String) {
+        DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.logout))
+            setDescription(errorMessage)
+            setPrimaryCTAText(getString(R.string.try_again))
+            setCancelable(false)
+            setOverlayClose(false)
+            setPrimaryCTAClickListener {
+                clearData()
+                dismiss()
+            }
+        }.show()
     }
 
     private fun clearData() {
@@ -258,5 +276,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val OCC_DATA_PREF = "occ_remove_profile_ticker"
+        private const val INVALID_TOKEN = "Token tidak valid."
     }
 }

@@ -33,7 +33,7 @@ public class RechargeBranchHelper {
                 .addContentItems(
                         new BranchUniversalObject().setContentMetadata(
                                 new ContentMetadata()
-                                        .setSku(rechargeLinkerData.getCategoryId())
+                                        .setSku(rechargeLinkerData.getCategoryIds())
                                         .addCustomMetadata(LinkerConstants.CURRENCY, CurrencyType.IDR.toString())
                         )
                 )

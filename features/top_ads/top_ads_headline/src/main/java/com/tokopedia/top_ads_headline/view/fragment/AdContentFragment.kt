@@ -262,7 +262,6 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         val result = ArrayList<TopAdsProductModel>()
         stepperModel?.selectedTopAdsProductMap?.forEach { (_, value) ->
             if (value.size > SINGLE_SELECTION) {
-                result.clear()
                 result.addAll(value)
             }
         }

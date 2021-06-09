@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
@@ -56,7 +56,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
             val shopEtalaseViewModel = visitable.shopEtalaseViewModel
             tvTitle!!.text = shopEtalaseViewModel?.etalaseName.orEmpty()
             if (!TextUtils.isEmpty(shopEtalaseViewModel?.etalaseBadge.orEmpty())) {
-                ImageHandler.LoadImage(ivBadge!!, shopEtalaseViewModel?.etalaseBadge)
+                ivBadge?.loadIcon(shopEtalaseViewModel?.etalaseBadge)
                 ivBadge!!.visibility = View.VISIBLE
             } else {
                 ivBadge!!.visibility = View.GONE
@@ -73,7 +73,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
     private fun bindShopProductCarousel(shopProductUiModelList: List<ShopProductUiModel>) {
         recyclerView?.bindCarouselProductCardViewGrid(
                 productCardModelList = shopProductUiModelList.map {
-                    ShopPageProductListMapper.mapToProductCardModel(it)
+                    ShopPageProductListMapper.mapToProductCardModel(it, isWideContent = false, isShowThreeDots = false)
                 },
                 carouselProductCardOnItemClickListener = object: CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {

@@ -89,6 +89,7 @@ class RechargeGeneralLoginInstrumentTest {
 
         Thread.sleep(3000)
         validate_favorite_number()
+        validate_recent_transaction()
         validate_promo()
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),

@@ -56,7 +56,7 @@ class BarChartViewHolder(
             data == null -> setOnLoading()
             data.error.isNotBlank() -> {
                 setonError(element)
-                listener.setOnErrorWidget(adapterPosition, element)
+                listener.setOnErrorWidget(adapterPosition, element, data.error)
             }
             else -> setOnSuccess(element)
         }

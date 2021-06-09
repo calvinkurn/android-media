@@ -16,10 +16,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.containsMapOf
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
@@ -41,14 +40,16 @@ class DiscomActivityTest {
     val activityRule =
             IntentsTestRule(DiscomActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
-            addMockResponse(GET_DISTRICT_KET, InstrumentationMockHelper.getRawString(context, R.raw.district_recommendation_jakarta), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_DISTRICT_KET, InstrumentationMockHelper.getRawString(
+                    context, R.raw.district_recommendation_jakarta), MockModelConfig.FIND_BY_CONTAINS)
         }
         activityRule.launchActivity(createIntent())
         IdlingRegistry.getInstance().register(SimpleIdlingResource.countingIdlingResource)
@@ -69,8 +70,13 @@ class DiscomActivityTest {
         assertThat(activityRule.activityResult,
                 hasResultData(hasExtraWithKey(INTENT_DISTRICT_RECOMMENDATION_ADDRESS)))
 
-        val discomQuery = "tracker/logistic/discom_positive.json"
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, discomQuery), hasAllSuccess())
+        val query = mapOf(
+                "event" to "clickShipping",
+                "eventCategory" to "cart change address",
+                "eventAction" to "click checklist kota atau kecamatan pada \\+ address",
+                "eventLabel" to ".*"
+        )
+        assertThat(cassavaTestRule.getRecent(), containsMapOf(query, CassavaTestRule.MODE_SUBSET))
     }
 
     @After

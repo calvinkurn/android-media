@@ -198,4 +198,14 @@ object ProductDetailConstant {
     const val ELIGIBLE_TRADE_IN = 1
 
     const val BS_SHIPMENT_ERROR_TAG = "BS_SHIPMENT_ERROR_TAG"
+
+    // Log keys
+    const val PRODUCT_ID_KEY = "product_id"
+    const val DEVICE_ID_KEY = "device_id"
+    const val SESSION_KEY = "param_session"
+    const val MESSAGE_KEY = "message"
+    const val STACK_TRACE_KEY = "stacktrace"
+    const val ERROR_TYPE_KEY = "error_type"
+    const val EXTRAS_KEY = "extras"
+    const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
 }

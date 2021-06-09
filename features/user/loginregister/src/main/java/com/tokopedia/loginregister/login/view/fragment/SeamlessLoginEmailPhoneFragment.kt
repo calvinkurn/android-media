@@ -12,8 +12,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -45,7 +47,6 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isEnableSmartLock = false
         isAutoLogin = false
         redirectAppLinks = activity?.intent?.getStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA)
     }
@@ -104,12 +105,12 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
 
     private fun showFullProgressBar(){
         view?.container?.hide()
-        view?.progress_bar?.show()
+        view?.progressBarLoginWithPhone?.show()
     }
 
     private fun hideFullProgressBar(){
         view?.container?.show()
-        view?.progress_bar?.hide()
+        view?.progressBarLoginWithPhone?.hide()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -120,11 +121,11 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                         if (data.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false) == true) {
                             onGoToSecurityQuestion("").invoke()
                         } else {
-                            presenter.getUserInfo()
+                            viewModel.getUserInfo()
                         }
                     }
                 } else {
-                    presenter.getUserInfo()
+                    viewModel.getUserInfo()
                 }
             }
             else {
@@ -135,10 +136,19 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
                 && data != null) {
             data.extras?.let {
                 val validateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-                presenter.reloginAfterSQ(validateToken)
+                viewModel.reloginAfterSQ(validateToken)
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun setupToolbar() {
+        activity?.findViewById<HeaderUnify>(R.id.unifytoolbar)?.apply {
+            headerTitle = ""
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
         }
     }
 }

@@ -5,9 +5,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-class SubmitDVTokenUseCase @Inject constructor(
-        repository: GraphqlRepository)
-    : GraphqlUseCase<SubmitDeviceInitResponse>(repository) {
+class SubmitDVTokenUseCase @Inject constructor(val repository: dagger.Lazy<GraphqlRepository>) {
+
+    var useCase: GraphqlUseCase<SubmitDeviceInitResponse>? = null
 
     companion object {
         private const val PARAM_KEY = "key"
@@ -24,18 +24,28 @@ class SubmitDVTokenUseCase @Inject constructor(
         """.trimIndent()
     }
 
-    init {
-        setGraphqlQuery(query)
-        setTypeClass(SubmitDeviceInitResponse::class.java)
+    private fun getOrCreateUseCase(): GraphqlUseCase<SubmitDeviceInitResponse> {
+        val useCaseTemp = useCase
+        if (useCaseTemp == null) {
+            val newUseCase = GraphqlUseCase<SubmitDeviceInitResponse>(repository.get())
+            newUseCase.setGraphqlQuery(query)
+            newUseCase.setTypeClass(SubmitDeviceInitResponse::class.java)
+            useCase = newUseCase
+            return newUseCase
+        } else {
+            return useCaseTemp
+        }
     }
 
-    fun setParams(key: String, retryCount: Int, errorMessage: String, deviceType: String = ANDROID) {
+    suspend fun execute(key: String, retryCount: Int, errorMessage: String, deviceType: String = ANDROID): SubmitDeviceInitResponse {
+        val useCase = getOrCreateUseCase()
         val params: Map<String, Any?> = mutableMapOf(
                 PARAM_KEY to key,
                 PARAM_RETRY_COUNT to retryCount,
                 PARAM_ERROR_MESSAGE to errorMessage,
                 PARAM_DEVICE_TYPE to deviceType
         )
-        setRequestParams(params)
+        useCase.setRequestParams(params)
+        return useCase.executeOnBackground()
     }
 }

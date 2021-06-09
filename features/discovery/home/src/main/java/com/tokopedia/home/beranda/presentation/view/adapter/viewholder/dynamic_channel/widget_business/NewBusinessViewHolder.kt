@@ -20,10 +20,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel.Companion.ERROR_BUNDLE_TAB_LAYOUT
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel.Companion.UPDATE_BUNDLE_CONTENT_LAYOUT
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel.Companion.UPDATE_BUNDLE_TAB_LAYOUT
+import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.LocalLoad
+import kotlinx.android.synthetic.main.layout_business_unit_widget.view.*
 import java.util.*
 
 @SuppressLint("SyntheticAccessor")
@@ -79,6 +81,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
+        setChannelDivider(element)
         adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
         performanceMonitoring?.startTrace(performanceTraceName)
         showLoading()
@@ -143,6 +146,14 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             viewPager.hide()
             hideLoading()
         }
+    }
+
+    private fun setChannelDivider(element: NewBusinessUnitWidgetDataModel?) {
+        HomeChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element?.channel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun initContainerColor(color: String){

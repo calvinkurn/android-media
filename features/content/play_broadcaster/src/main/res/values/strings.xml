@@ -96,7 +96,7 @@
     <string name="play_live_broadcast_dialog_end_timeout_primary">Lihat Laporan</string>
     <string name="play_live_broadcast_share_link_copied">Link disalin!</string>
     <string name="play_dialog_continue_live_title">Mau lanjutkan siaranmu?</string>
-    <string name="play_dialog_continue_live_desc">Live streaming tokomu berhenti sementara karena kamu sempat keluar dari apli</string>
+    <string name="play_dialog_continue_live_desc">Live streaming tokomu berhenti sementara karena kamu sempat keluar dari aplikasi.</string>
     <string name="play_dialog_error_active_other_devices_title">Tokomu sedang siaran di\n perangkat lain</string>
     <string name="play_dialog_error_active_other_devices_desc">Akhiri siaran live streaming di perangkat lain\n jika ingin mengambil alih siaran</string>
     <string name="play_loader_connecting">Menyambungkan…</string>

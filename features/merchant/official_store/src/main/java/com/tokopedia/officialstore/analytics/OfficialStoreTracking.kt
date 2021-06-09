@@ -50,6 +50,9 @@ class OfficialStoreTracking(context: Context) {
     private val IMPRESSION = "impression"
     private val ECOMMERCE_IMPRESSIONS = "impressions"
     private val ECOMMERCE_CURRENCY_CODE = "currencyCode"
+    private val FIELD_BUSINESS_UNIT = "businessUnit"
+    private val FIELD_CURRENT_SITE = "currentSite"
+    private val USER_ID = "userId"
 
     private val CLICK_OS_MICROSITE = "clickOSMicrosite"
     private val PROMO_CLICK = "promoClick"
@@ -59,6 +62,7 @@ class OfficialStoreTracking(context: Context) {
     private val CAMPAIGN_CODE = "campaignCode"
 
     private val OS_MICROSITE = "os microsite - "
+    private val OS_MICROSITE_SINGLE = "os microsite"
 
     private val FIELD_PRODUCTS = "products"
     private val FIELD_PRODUCT_NAME = "name"
@@ -81,8 +85,12 @@ class OfficialStoreTracking(context: Context) {
     private val VALUE_IDR = "IDR"
     private val VALUE_EMPTY = ""
     private val VALUE_NON_LOGIN = ""
+    private val VALUE_NON_LOGIN_NEW = "non login"
+    private val VALUE_LOGIN_NEW = "login"
     private val VALUE_DYNAMIC_MIX_TOP_CAROUSEL = "dynamic channel top carousel"
     private val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
+    private val VALUE_BUSINESS_UNIT_DEFAULT = "home & browse"
+    private val VALUE_CURRENT_SITE_DEFAULT = "tokopediamarketplace"
 
 
     private val EVENT_PRODUCT_VIEW = "productView"
@@ -93,6 +101,7 @@ class OfficialStoreTracking(context: Context) {
 
     private val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
     private val SLASH_OFFICIAL_STORE = "/official-store"
+    private val SLASH_OFFICIAL_STORE_WITHCATEGORY = "/official-store/%s"
     private val SKEL_APPLINK = "{&data}"
     private val SKEL_APPLINK_DATA = "&data"
 
@@ -466,7 +475,7 @@ class OfficialStoreTracking(context: Context) {
         ) as HashMap<String, Any>)
     }
 
-    fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid, campaignCode: String) {
+    fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid, campaignCode: String, campaignId: String) {
         val ecommerceBody = DataLayer.mapOf(
                 "click", DataLayer.mapOf(
                     "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - dynamic channel mix - $headerName"),
@@ -477,7 +486,7 @@ class OfficialStoreTracking(context: Context) {
                         "brand", "none",
                         "category", "",
                         "variant", "none",
-                        "list", "/official-store/$categoryName - dynamic channel mix - $headerName",
+                        "list", "/official-store/$categoryName - dynamic channel mix - ${gridData.id} - $campaignId - $headerName",
                         "position", position,
                         "attribution", gridData.attribution
                 ))
@@ -589,7 +598,7 @@ class OfficialStoreTracking(context: Context) {
                 ECOMMERCE, DataLayer.mapOf(
                 CLICK, DataLayer.mapOf(
                 FIELD_ACTION_FIELD, DataLayer.mapOf(
-                    FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType),
+                    FIELD_PRODUCT_LIST, getListProductClickInsideActionField(categoryName, item.recommendationType)
                 ),
                 FIELD_PRODUCTS, DataLayer.listOf(
                 convertRecommendationItemToDataImpressionObject(item, isLogin, position)
@@ -735,7 +744,8 @@ class OfficialStoreTracking(context: Context) {
             channel: ChannelModel,
             productItem: ChannelGrid,
             productPosition: String,
-            isLogin: Boolean
+            isLogin: Boolean,
+            userId: String
     ) {
         val valueDynamicMix = when (channel.layout) {
             DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
@@ -745,20 +755,23 @@ class OfficialStoreTracking(context: Context) {
         val eventAction = "$IMPRESSION on product $valueDynamicMix"
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
-                EVENT_LABEL, channel.id,
+                EVENT_LABEL, channel.id + " - " + categoryName,
+                FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+                FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
+                USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
-                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                createFlashSaleCardProductItemMapComponent(
-                        productItem,
-                        productPosition,
-                        isLogin,
-                        valueDynamicMix
+                    ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                    ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                            createFlashSaleCardProductItemMapComponent(
+                                    productItem,
+                                    productPosition,
+                                    isLogin,
+                                    valueDynamicMix
+                        )
+                    )
                 )
-        )
-        )
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
@@ -857,40 +870,45 @@ class OfficialStoreTracking(context: Context) {
             categoryName: String,
             channel: ChannelModel,
             productItem: ChannelGrid,
-            productPosition: String,
-            isLogin: Boolean
+            productPosition: Int,
+            isLogin: Boolean,
+            userId: String
     ) {
         val valueDynamicMix = when (channel.layout) {
             DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
             DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val list = mutableListOf(SLASH_OFFICIAL_STORE)
-        if (!isLogin)
-            list.add(VALUE_NON_LOGIN)
+        val list = mutableListOf(String.format(SLASH_OFFICIAL_STORE_WITHCATEGORY, categoryName))
         if (valueDynamicMix.isNotEmpty())
             list.add(valueDynamicMix)
+        list.add(channel.trackingAttributionModel.campaignId)
+        if (!isLogin)
+            list.add(VALUE_NON_LOGIN_NEW)
+        else list.add(VALUE_LOGIN_NEW)
         val listKeyValue = TextUtils.join(" - ", list)
         val eventAction = "$CLICK on product $valueDynamicMix"
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
-                EVENT_LABEL, channel.id,
+                EVENT_LABEL, channel.id + " - " + categoryName,
+                FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+                FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
+                USER_ID, userId,
                 CAMPAIGN_CODE, channel.trackingAttributionModel.campaignCode,
                 ECOMMERCE, DataLayer.mapOf(
-                CLICK , DataLayer.mapOf(
-                FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
-                FIELD_PRODUCTS, DataLayer.listOf(
-                createFlashSaleCardProductItemMapComponent(
-                        productItem,
-                        productPosition,
-                        isLogin,
-                        valueDynamicMix
+                    CLICK , DataLayer.mapOf(
+                        FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
+                        FIELD_PRODUCTS, DataLayer.listOf(
+                            createFlashSaleCardProductItemMapComponent(productItem,
+                                    productPosition.toString(),
+                                    isLogin,
+                                    valueDynamicMix
+                            )
+                        )
+                    )
                 )
-        )
-        )
-        )
         )
         tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
@@ -961,15 +979,6 @@ class OfficialStoreTracking(context: Context) {
     // No 31
     fun eventClickMixLeftImageBanner(channel: Channel, categoryName: String, bannerPosition: Int) {
         val eventDataLayer = Bundle()
-        eventDataLayer.putString(EVENT, PROMO_CLICK)
-        eventDataLayer.putString(EVENT_CATEGORY, "${OS_MICROSITE}$categoryName")
-        eventDataLayer.putString(EVENT_ACTION, "$CLICK banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
-        eventDataLayer.putString(EVENT_LABEL, channel.id)
-        eventDataLayer.putString(ATTRIBUTION, channel.galaxyAttribution)
-        eventDataLayer.putString(AFFINITY_LABEL, channel.persona)
-        eventDataLayer.putString(CATEGORY_ID, channel.categoryPersona)
-        eventDataLayer.putString(SHOP_ID, channel.brandId)
-        eventDataLayer.putString(CAMPAIGN_CODE, "${channel.campaignCode.orEmpty()}")
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
                 channelId = channel.id,
                 categoryName = categoryName.toLowerCase(),
@@ -978,6 +987,15 @@ class OfficialStoreTracking(context: Context) {
                 creative = channel.name,
                 creativeUrl = channel.banner?.applink.orEmpty()
         ))
+        eventDataLayer.putString(EVENT_CATEGORY, "${OS_MICROSITE}$categoryName")
+        eventDataLayer.putString(AFFINITY_LABEL, channel.persona)
+        eventDataLayer.putString(ATTRIBUTION, channel.galaxyAttribution)
+        eventDataLayer.putString(SHOP_ID, channel.brandId)
+        eventDataLayer.putString(EVENT, PROMO_CLICK)
+        eventDataLayer.putString(EVENT_ACTION, "$CLICK banner $VALUE_DYNAMIC_MIX_LEFT_CAROUSEL")
+        eventDataLayer.putString(EVENT_LABEL, channel.id)
+        eventDataLayer.putString(CATEGORY_ID, channel.categoryPersona)
+        eventDataLayer.putString(CAMPAIGN_CODE, "${channel.campaignCode.orEmpty()}")
 
         tracker.sendEnhanceEcommerceEvent("select_content", eventDataLayer)
     }

@@ -44,12 +44,14 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
             masterProductCardListView = itemView.findViewById(R.id.master_product_card_list)
             buttonNotify = masterProductCardListView?.getNotifyMeButton()
             masterProductCardListView?.setNotifyMeOnClickListener {
+                sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
             }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
             masterProductCardGridView?.setNotifyMeOnClickListener {
+                sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
             }
         }
@@ -204,4 +206,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
         }
     }
 
+    private fun sentNotifyButtonEvent() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn(),masterProductCardItemViewModel.getUserID())
+    }
 }

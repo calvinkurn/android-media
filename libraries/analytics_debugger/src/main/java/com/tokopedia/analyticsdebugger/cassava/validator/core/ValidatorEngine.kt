@@ -5,8 +5,9 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rx.Observable
+import javax.inject.Inject
 
-class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
+class ValidatorEngine @Inject constructor(private val dao: GtmLogDBSource) {
 
     enum class Mode {
         SUBSET_ALL, SUBSET_ORDER, EXACT_ALL, EXACT_ORDER;
@@ -17,6 +18,7 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
 
     private var currentMode = Mode.EXACT_ALL
 
+    @Deprecated("do not use it, we will remove rx java dependency")
     fun computeRx(testCases: List<Validator>, mode: String = "exact"): Observable<List<Validator>> {
         setMode(mode)
 

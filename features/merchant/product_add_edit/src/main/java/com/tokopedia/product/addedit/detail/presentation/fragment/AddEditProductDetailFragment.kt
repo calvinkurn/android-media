@@ -29,6 +29,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
@@ -47,6 +49,8 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.*
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
+import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
@@ -73,8 +77,6 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapJsonToObject
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapObjectToJson
 import com.tokopedia.product.addedit.imagepicker.ImagePickerAddEditNavigation
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_BACK_PRESSED
@@ -511,6 +513,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             viewModel.setProductNameInput(editable)
             showProductNameLoadingIndicator()
+            showPriceRecommendationShimmer()
         }
 
         // product price text change listener
@@ -543,6 +546,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     // product wholesale input validation
                     viewModel.isWholeSalePriceActivated.value?.run {
                         if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
+                    }
+                    // price recommendation
+                    val suggestedPrice  = viewModel.productPriceRecommendation.value?.suggestedPrice.orZero()
+                    if (it.toDoubleOrZero() == 0.toDouble() || suggestedPrice != it.toDoubleOrZero()) {
+                        productPriceRecommendation?.displaySuggestedPriceDeselected()
+                    } else {
+                        productPriceRecommendation?.displaySuggestedPriceSelected()
                     }
                 }
             }
@@ -684,7 +694,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToSpecificationList()
         subscribeToSpecificationText()
         subscribeToInputStatus()
-        subscribeToProductPriceRecommendation()
+        subscribeToPriceRecommendation()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -1453,7 +1463,42 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun subscribeToProductPriceRecommendation() {
+    private fun subscribeToPriceRecommendation() {
+        if (viewModel.isAdding) {
+            subscribeToAddingPriceRecommendation()
+        } else {
+            subscribeToEditingPriceRecommendation()
+        }
+        viewModel.productPriceRecommendationError.observe(viewLifecycleOwner) {
+            productPriceRecommendation?.isVisible = false
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        }
+    }
+
+    private fun subscribeToAddingPriceRecommendation() {
+        viewModel.productPriceRecommendation.observe(viewLifecycleOwner) { priceSuggestion ->
+            val inputPrice = productPriceField.getTextBigIntegerOrZero()
+            val minText = priceSuggestion.suggestedPriceMin.getCurrencyFormatted()
+            val maxText = priceSuggestion.suggestedPriceMax.getCurrencyFormatted()
+            val descriptionText = getString(R.string.label_price_recommendation_description, minText, maxText)
+            val priceDescriptionText = getString(R.string.label_price_recommendation_price_description, priceSuggestion.title)
+
+            productPriceRecommendation?.apply {
+                setShimmerVisibility(false)
+                description = descriptionText
+                priceDescription = priceDescriptionText
+                price = priceSuggestion.suggestedPrice.getCurrencyFormatted()
+                isVisible = (priceSuggestion.suggestedPrice != 0.toDouble())
+                if (inputPrice == priceSuggestion.suggestedPrice.toBigDecimal().toBigInteger()) {
+                    displaySuggestedPriceSelected()
+                } else {
+                    displaySuggestedPriceDeselected()
+                }
+            }
+        }
+    }
+
+    private fun subscribeToEditingPriceRecommendation() {
         //observe only if (1) product has product id, (2) if seller app, (3) has no variant
         if (viewModel.productInputModel.productId == 0L || !GlobalConfig.isSellerApp()
                 || viewModel.hasVariants) return
@@ -1540,12 +1585,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupProductPriceRecommendationField() {
-        productPriceRecommendation?.setButtonToBlack()
-        productPriceRecommendation?.setOnButtonNextClicked {
-            showProductPriceRecommendationTips()
-        }
-        productPriceRecommendation?.setOnSuggestedPriceSelected { suggestedPrice ->
-            productPriceField.setText(suggestedPrice)
+        productPriceRecommendation?.apply {
+            if (viewModel.isAdding) hideIconCheck()
+            setPriceDescriptionVisibility(viewModel.isAdding)
+            setButtonToBlack()
+            setOnButtonNextClicked {
+                showProductPriceRecommendationTips()
+            }
+            setOnSuggestedPriceSelected { suggestedPrice ->
+                productPriceField.setText(suggestedPrice)
+                if (viewModel.isAdding) {
+                    displaySuggestedPriceSelected()
+                }
+            }
         }
     }
 
@@ -1751,6 +1803,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun showProductNameLoadingIndicator() {
         productNameRecLoader?.visible()
         productNameRecShimmering?.visible()
+    }
+
+    private fun showPriceRecommendationShimmer() {
+        if (viewModel.isAdding) {
+            productPriceRecommendation?.show()
+            productPriceRecommendation?.displaySuggestedPriceDeselected()
+            productPriceRecommendation?.setShimmerVisibility(true)
+        }
     }
 
     private fun hideProductNameLoadingIndicator() {

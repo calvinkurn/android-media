@@ -1,0 +1,12 @@
+[
+  {
+    "data": {
+      "OTPRequest": {
+        "success": true,
+        "message": "Email telah dikirim.",
+        "errorMessage": "",
+        "prefixMisscall": ""
+      }
+    }
+  }
+]

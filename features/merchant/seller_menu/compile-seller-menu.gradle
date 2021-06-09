@@ -26,7 +26,6 @@ include "libraries:network"
 //include "libraries:oms"
 //include "libraries:push_notification"
 //include 'libraries:permissionchecker'
-//include "libraries:react_native"
 include "libraries:remote_config"
 //include "libraries:travel_calendar"
 //include "libraries:tracking_optimizer"

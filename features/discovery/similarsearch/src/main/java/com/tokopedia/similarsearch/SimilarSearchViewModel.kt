@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
-import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.*
@@ -32,14 +32,14 @@ import kotlin.math.min
 import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal class SimilarSearchViewModel(
-        dispatcherProvider: DispatcherProvider,
+        dispatcherProvider: CoroutineDispatchers,
         private val similarSearchQuery: String,
         private val getSimilarProductsUseCase: UseCase<SimilarProductModel>,
         private val addWishlistUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val addToCartUseCase: RxUseCase<AddToCartDataModel>,
         private val userSession: UserSessionInterface
-): BaseViewModel(dispatcherProvider.ui()) {
+): BaseViewModel(dispatcherProvider.main) {
 
     private var hasLoadData = false
     private var originalProduct = Product()

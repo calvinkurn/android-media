@@ -115,4 +115,8 @@
     <string name="tp_catalog_expire">Berlaku Hingga</string>
     <string name="tp_catalog_timer_expire">Kupon Expired</string>
     <string name="tp_coupon_autoapply_msg">Kupon sudah terpasang, transaksi sekarang yuk!</string>
+    <string name="tp_kupon_toko">Kupon Toko</string>
+    <string name="tp_mvc_empty_title">Nggak ada apa-apa di sini</string>
+    <string name="tp_mvc_empty_subtitle">Kupon yang kamu cari nggak ketemu, nih. Coba cek kupon lainnya, yuk!</string>
+    <string name="tp_recom_subtitle">Nggak perlu mikir 2x, cus beli produknya!</string>
 </resources>

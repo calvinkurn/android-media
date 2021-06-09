@@ -6,14 +6,16 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel;
 import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel;
-import com.tokopedia.flight.searchV4.data.cloud.single.Route;
-import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel;
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel;
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel;
-import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum;
+import com.tokopedia.flight.promo_chips.data.model.AirlinePrice;
+import com.tokopedia.flight.search.data.cloud.single.Route;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -62,7 +64,7 @@ public class FlightAnalytics {
     private String CURRENT_SITE = "currentSite";
     private String BUSSINESS_UNIT = "businessUnit";
     private String CATEGORY = "category";
-    private String USER_ID = "userId";
+    private String  USER_ID = "userId";
 
     private String FLIGHT_CURRENT_SITE = "tokopediadigitalflight";
     private String FLIGHT_BU = "travel & entertainment";
@@ -469,7 +471,7 @@ public class FlightAnalytics {
     private Object transformSearchProductViewV2(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
         String isRefundable = "false";
         for (Route route : journeyViewModel.getRouteList()) {
-            if (route.getRefundable()) {
+            if (route.isRefundable()) {
                 isRefundable = "true";
                 break;
             }
@@ -516,7 +518,7 @@ public class FlightAnalytics {
     private Object transformSearchProductClickV2(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
         String isRefundable = "false";
         for (Route route : journeyViewModel.getRouteList()) {
-            if (route.getRefundable()) {
+            if (route.isRefundable()) {
                 isRefundable = "true";
                 break;
             }
@@ -986,6 +988,119 @@ public class FlightAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
+    public void eventFlightPromotionClick(int position,
+                                    AirlinePrice airlinePrice,
+                                    FlightSearchPassDataModel flightSearchPassDataModel,
+                                    String screenName,
+                                    String userId, boolean isReturn) {
+        String actionLabel = Action.CLICK_DEPARTURE_PROMOTION_CHIPS;
+        if(isReturn){
+            actionLabel = Action.CLICK_RETURN_PROMOTION_CHIPS;
+        }
+        List<Object> promos = new ArrayList<>();
+        promos.add(DataLayer.mapOf(
+                EnhanceEccomerce.ID, airlinePrice.getAirlineID(),
+                EnhanceEccomerce.NAME, airlinePrice.getShortName(),
+                "position", String.valueOf(position),
+                "creative", airlinePrice.getShortName(),
+                "creative_url", airlinePrice.getLogo()));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
+                        EVENT_CATEGORY, GENERIC_CATEGORY,
+                        EVENT_ACTION, actionLabel,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
+                        EVENT_LABEL, String.format(getDefaultLocale(), "%s - %s - %s - %d",
+                                airlinePrice.getAirlineID(),
+                                flightSearchPassDataModel.getDepartureAirport(isReturn),
+                                flightSearchPassDataModel.getArrivalAirport(isReturn),
+                                airlinePrice.getPriceNumeric()
+                        ),
+                        ECOMMERCE, DataLayer.mapOf(
+                                "promoClick",
+                                DataLayer.mapOf(
+                                        "promotions",
+                                        DataLayer.listOf(
+                                                promos.toArray(new Object[promos.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public void eventVideoBannerImpression(TravelVideoBannerModel travelVideoBannerModel, String screenName, String userId){
+        List<Object> promos = new ArrayList<>();
+        promos.add(DataLayer.mapOf(
+                EnhanceEccomerce.ID, travelVideoBannerModel.getId(),
+                EnhanceEccomerce.NAME, Label.SLASH_FLIGHT,
+                "creative_name", travelVideoBannerModel.getTitle(),
+                "position", 0));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PROMO_VIEW_EVENT,
+                        EVENT_CATEGORY, GENERIC_CATEGORY,
+                        EVENT_ACTION, Action.VIDEO_BANNER_VIEW,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
+                        EVENT_LABEL, String.format(getDefaultLocale(), "%s - %s",
+                                Label.FLIGHT_SMALL,
+                                Label.FLIGHT_TRAVEL_VIDEO_BANNER
+                        ),
+                        ECOMMERCE, DataLayer.mapOf(
+                                "promoView",
+                                DataLayer.mapOf(
+                                        "promotions",
+                                        DataLayer.listOf(
+                                                promos.toArray(new Object[promos.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    public void eventVideoBannerClick(TravelVideoBannerModel travelVideoBannerModel, String screenName, String userId){
+        List<Object> promos = new ArrayList<>();
+        promos.add(DataLayer.mapOf(
+                EnhanceEccomerce.ID, travelVideoBannerModel.getId(),
+                EnhanceEccomerce.NAME, Label.SLASH_FLIGHT,
+                "creative_name", travelVideoBannerModel.getTitle(),
+                "position", 0));
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
+                        EVENT_CATEGORY, GENERIC_CATEGORY,
+                        EVENT_ACTION, Action.VIDEO_BANNER_CLICK,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
+                        EVENT_LABEL, String.format(getDefaultLocale(), "%s - %s",
+                                Label.FLIGHT_SMALL,
+                                Label.FLIGHT_TRAVEL_VIDEO_BANNER
+                        ),
+                        ECOMMERCE, DataLayer.mapOf(
+                                "promoClick",
+                                DataLayer.mapOf(
+                                        "promotions",
+                                        DataLayer.listOf(
+                                                promos.toArray(new Object[promos.size()])
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
     private void buildGeneralFlightParams(Map<String, Object> params) {
         params.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
         params.put(CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString());
@@ -1060,6 +1175,10 @@ public class FlightAnalytics {
         static String PRODUCT_VIEW_ACTION_V2 = "product impressions v2";
         static String WIDGET_CLICK_FILTER = "click widget filter";
         static String CLICK_CHANGE_SEARCH = "click change search";
+        static String CLICK_DEPARTURE_PROMOTION_CHIPS = "click on departure promo chip";
+        static String CLICK_RETURN_PROMOTION_CHIPS = "click on return promo chip";
+        static String VIDEO_BANNER_VIEW = "view travel video";
+        static String VIDEO_BANNER_CLICK = "click travel video";
     }
 
     private static class Label {
@@ -1080,6 +1199,8 @@ public class FlightAnalytics {
         static String PRODUCT_VIEW = "flight - %s-%s";
         static String WIDGET_FLIGHT_FILTER = "flight - %s";
         static String FLIGHT_CHANGE_SEARCH = "flight - change search";
+        static String FLIGHT_TRAVEL_VIDEO_BANNER = "travel video";
+        static String SLASH_FLIGHT = "/flight";
     }
 
     private static class EnhanceEccomerce {

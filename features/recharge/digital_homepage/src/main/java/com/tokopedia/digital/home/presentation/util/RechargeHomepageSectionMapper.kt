@@ -15,7 +15,6 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerType
 import java.util.*
 
 object RechargeHomepageSectionMapper {
@@ -81,7 +80,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_URGENCY_WIDGET -> {
                         // Check if it is initial sections or not
                         if (it.title.isEmpty() && it.items.isEmpty()) {
-                            ReminderWidgetModel(ReminderWidget(id), ReminderEnum.RECHARGE)
+                            ReminderWidgetModel(id=id, data = ReminderWidget(id), source = ReminderEnum.RECHARGE)
                         } else {
                             getReminderWidgetModel(it)
                         }
@@ -133,10 +132,11 @@ object RechargeHomepageSectionMapper {
 
     private fun getReminderWidgetModel(section: RechargeHomepageSections.Section): ReminderWidgetModel? {
         section.items.firstOrNull()?.run {
-            return ReminderWidgetModel(ReminderWidget(section.id.toString(),
+            return ReminderWidgetModel(id = section.id,
+                    data = ReminderWidget(section.id,
                     listOf(ReminderData(
                             applink,
-                            id = section.id.toString(),
+                            id = section.id,
                             iconURL = mediaUrl,
                             title = section.title,
                             mainText = title,
@@ -153,19 +153,19 @@ object RechargeHomepageSectionMapper {
                                 else -> ReminderState.NEUTRAL
                             }
                     ))
-            ), ReminderEnum.RECHARGE)
+            ), source = ReminderEnum.RECHARGE)
         }
         return null
     }
 
     private fun getDynamicLegoBannerModel(section: RechargeHomepageSections.Section): DynamicLegoBannerDataModel {
         return DynamicLegoBannerDataModel(ChannelModel(
-                section.id.toString(),
-                section.id.toString(),
+                section.id,
+                section.id,
                 channelConfig = ChannelConfig(DynamicChannelLayout.LAYOUT_6_IMAGE),
                 channelHeader = ChannelHeader(name = section.title, subtitle = section.subtitle),
                 channelGrids = section.items.map { item ->
-                    ChannelGrid(item.id.toString(), imageUrl = item.mediaUrl, applink = item.applink)
+                    ChannelGrid(item.id, imageUrl = item.mediaUrl, applink = item.applink)
                 }))
     }
 
@@ -211,7 +211,7 @@ object RechargeHomepageSectionMapper {
         sections.sections.forEach {
             searchCategoryModels.addAll(it.items.map{ item ->
                 DigitalHomePageSearchCategoryModel(
-                        item.id.toString(),
+                        item.id,
                         item.title,
                         item.title,
                         item.applink,

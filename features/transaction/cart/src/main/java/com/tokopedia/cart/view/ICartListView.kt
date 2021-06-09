@@ -62,6 +62,8 @@ interface ICartListView : CustomerView {
 
     fun showToastMessageRed(throwable: Throwable)
 
+    fun showToastMessageRed()
+
     fun showToastMessageGreen(message: String, actionText: String = "", onClickListener: View.OnClickListener? = null)
 
     fun renderLoadGetCartData()

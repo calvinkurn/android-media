@@ -8,14 +8,11 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.*
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
-import com.tokopedia.unifyprinciples.Typography
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -102,18 +99,19 @@ class OrderSummaryPageActivityEtaTest {
                     shippingPrice = null,
                     shippingEta = "Estimasi tiba besok - 3 Feb")
 
-            preferenceInterceptor.customGetPreferenceListResponsePath = GET_PREFERENCE_LIST_WITH_ETA_RESPONSE_PATH
-
-            clickAddOrChangePreferenceRevamp {
-                assertProfile(0) {
-                    val shippingDuration = it.findViewById<Typography>(R.id.tv_new_shipping_duration)
-                    assertEquals("Estimasi tiba besok", shippingDuration.text)
-                }
-                assertProfile(1) {
-                    val shippingDuration = it.findViewById<Typography>(R.id.tv_new_shipping_duration)
-                    assertEquals("Estimasi tiba besok - 3 Feb", shippingDuration.text)
-                }
-            }
+            //    Deprecated Test (will delete in next iteration)
+//            preferenceInterceptor.customGetPreferenceListResponsePath = GET_PREFERENCE_LIST_WITH_ETA_RESPONSE_PATH
+//
+//            clickAddOrChangePreferenceRevamp {
+//                assertProfile(0) {
+//                    val shippingDuration = it.findViewById<Typography>(R.id.tv_new_shipping_duration)
+//                    assertEquals("Estimasi tiba besok", shippingDuration.text)
+//                }
+//                assertProfile(1) {
+//                    val shippingDuration = it.findViewById<Typography>(R.id.tv_new_shipping_duration)
+//                    assertEquals("Estimasi tiba besok - 3 Feb", shippingDuration.text)
+//                }
+//            }
         }
     }
 

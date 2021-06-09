@@ -7,8 +7,6 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
-import com.tokopedia.home_wishlist.common.WishlistProductionDispatcherProvider
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.SendTopAdsUseCase
@@ -43,10 +41,6 @@ open class WishlistModule {
     @WishlistScope
     @Provides
     fun providesGraphqlUsecase(): GraphqlUseCase = GraphqlUseCase()
-
-    @WishlistScope
-    @Provides
-    fun provideWishlistProductionDispatcherProvider(): WishlistDispatcherProvider = WishlistProductionDispatcherProvider()
 
     @Provides
     @WishlistScope

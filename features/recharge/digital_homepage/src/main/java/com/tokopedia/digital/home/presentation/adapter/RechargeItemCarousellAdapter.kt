@@ -35,7 +35,7 @@ class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item
                 if(element.applink.isNotEmpty()){
                     try {
                         val uri = Uri.parse(element.applink)
-                        if (uri.pathSegments.size >= 1){
+                        if (!uri.host.isNullOrEmpty()){
                             onItemBindListener.onRechargeSectionItemClicked(element)
                         }
                     } catch (e: Exception){
