@@ -4,6 +4,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
@@ -14,12 +16,16 @@ class ChatbotLiveChatSeparatorViewHolder(itemView: View) : AbstractViewHolder<Ch
     private val liveChatSeprator: TextView = itemView.findViewById(R.id.chatbot_livechat_seprator)
 
     companion object {
-
+        var showBottomSheet = true
         @LayoutRes
         val LAYOUT = R.layout.chatbot_live_chat_seprator_layout
     }
 
     override fun bind(element: ChatSepratorViewModel) {
         liveChatSeprator.text = String.format("%s. %s", element.sepratorMessage, ChatBotTimeConverter.getHourTime(element.dividerTiemstamp))
+        if(showBottomSheet) {
+            showBottomSheet = false
+            RouteManager.route(itemView.context, ApplinkConst.TELEPHONY_MASKING)
+        }
     }
 }
