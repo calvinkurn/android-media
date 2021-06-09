@@ -71,46 +71,6 @@
             "promo_code": "BAYARPEGADAIAN"
           },
           {
-            "id": 2252,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/4/34631992/34631992_ecb8b9a8-2345-489e-b8d4-4a4a8143f40a.jpg",
-            "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-cashback-7/",
-            "status": 1,
-            "title": "[COBABAYAR] Bayar Tagihan, Cashback hingga Rp100.000. ",
-            "subtitle": "Kode Promo: {COBABAYAR}",
-            "promo_code": "COBABAYAR"
-          },
-          {
-            "id": 2093,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/9/30/42484317/42484317_a2884af5-2dc9-4759-9aa5-527113543c99.jpg",
-            "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-pln-3/",
-            "status": 1,
-            "title": "[BAYARINYUK] Bayarin tagihan mama, papa, saudara, siapa pun, cashback hingga Rp50.000! Klik di sini.",
-            "subtitle": "Kode Promo: {BAYARINYUK}",
-            "promo_code": "BAYARINYUK"
-          },
-          {
-            "id": 1573,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/31/42484317/42484317_fa7e8881-26ca-411d-8371-86dd0aee2b1c.jpg",
-            "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
-            "status": 1,
-            "title": "[Tagihan] Bayar Tagihan, Cashback terus-terusan. Klik di Sini.",
-            "subtitle": "kode promo : {BAYARTERUS}",
-            "promo_code": "BAYARTERUS"
-          },
-          {
-            "id": 2881,
-            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/5/132674561/132674561_30ea6bfa-64fe-45ca-abb8-c358490b1d2f.jpg",
-            "filename_webp": "",
-            "img_url": "https://www.tokopedia.com/promo/digital-angsuran-8/",
-            "status": 1,
-            "title": "[Angsuran TAF] Bayar Angsuran TAF di Tokopedia, ada cashback s.d Rp30.000! ",
-            "subtitle": "Kode promo: {COBABAYARTAF}",
-            "promo_code": "COBABAYARTAF"
-          },
-          {
             "id": 2796,
             "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/8/132674561/132674561_9f232584-32f6-425e-90f3-93aa9cfbd43b.jpg",
             "filename_webp": "",
