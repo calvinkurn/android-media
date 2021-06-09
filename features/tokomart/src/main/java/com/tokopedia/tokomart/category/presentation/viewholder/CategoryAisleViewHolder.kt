@@ -11,9 +11,7 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
-import kotlinx.android.synthetic.main.item_tokomart_category_aisle.view.*
 
 class CategoryAisleViewHolder(
         itemView: View,
@@ -59,12 +57,12 @@ class CategoryAisleViewHolder(
 
     private fun bindNavigationItem(
             item: CategoryAisleItemDataView,
-            txtCategoryNameLeft: TextView?,
-            imgCategoryLeft: ImageUnify?,
+            txtCategoryName: TextView?,
+            imgCategory: ImageUnify?,
     ) {
-        txtCategoryNameLeft?.text = item.name
-        imgCategoryLeft?.loadImage(item.imgUrl)
-        imgCategoryLeft?.setOnClickListener {
+        txtCategoryName?.text = item.name
+        imgCategory?.loadImage(item.imgUrl)
+        imgCategory?.setOnClickListener {
             categoryAisleListener.onAisleClick(item)
         }
     }
