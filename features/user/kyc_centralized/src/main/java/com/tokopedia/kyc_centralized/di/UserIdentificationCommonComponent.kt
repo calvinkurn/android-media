@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
+import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoSimpleFragment
 import dagger.Component
 
 /**
@@ -15,4 +16,5 @@ interface UserIdentificationCommonComponent {
     fun inject(fragment: UserIdentificationFormFaceFragment?)
     fun inject(fragment: UserIdentificationFormFinalFragment?)
     fun inject(fragment: UserIdentificationInfoFragment?)
+    fun inject(fragment: UserIdentificationInfoSimpleFragment?)
 }

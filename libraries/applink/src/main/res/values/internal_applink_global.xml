@@ -30,6 +30,7 @@
     <string name="path_shop_talk">/shop-talk/.*\\/</string>
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>
+    <string name="path_user_identification_only">/user-identification-only</string>
     <string name="path_change_name">/change-name</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>

@@ -25,6 +25,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
