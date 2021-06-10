@@ -20,12 +20,12 @@ import com.tokopedia.notifcenter.data.viewbean.ProductHighlightViewBean
 import com.tokopedia.notifcenter.domain.ProductHighlightUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderDeleteUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
-import com.tokopedia.notifcenter.util.SingleLiveEvent
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.net.ConnectException
