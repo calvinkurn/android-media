@@ -20,17 +20,19 @@
             android:layout_weight="1"
             android:layout_margin="@dimen/dp_8"
             android:textSize="@dimen/sp_12"
-            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="medium"
             android:text="Tokopedia"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_watermark_sellername"
+            android:id="@+id/btn_watermark_user_info"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_32"
             android:layout_weight="1"
             android:layout_margin="@dimen/dp_8"
             android:textSize="@dimen/sp_12"
-            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="medium"
             android:text="Seller Name"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -40,7 +42,9 @@
             android:layout_weight="1"
             android:layout_margin="@dimen/dp_8"
             android:textSize="@dimen/sp_12"
-            app1:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="medium"
+            android:enabled="false"
             android:text="Both"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
