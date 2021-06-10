@@ -2,6 +2,7 @@ package com.tokopedia.inbox.fake.di.notifcenter
 
 import android.content.Context
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterCacheManager
+import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeTopAdsRepository
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
@@ -20,9 +21,20 @@ class FakeNotificationModule {
 
     @Provides
     @NotificationScope
-    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
-        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
+    fun provideTopAdsImageViewUseCase(
+        userSession: UserSessionInterface,
+        fakeRepo: FakeTopAdsRepository
+    ): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, fakeRepo)
     }
+
+    @Provides
+    @NotificationScope
+    fun provideFakeTopAdsRepository(): FakeTopAdsRepository {
+        return FakeTopAdsRepository()
+    }
+
+    // -- separator -- //
 
     @Provides
     @NotificationScope

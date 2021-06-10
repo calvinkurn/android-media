@@ -1,10 +1,7 @@
 package com.tokopedia.inbox.fake
 
 import com.tokopedia.inbox.fake.common.FakeUserSession
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifOrderListUseCase
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterCacheManager
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterDetailUseCase
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterFilterV2UseCase
+import com.tokopedia.inbox.fake.domain.usecase.notifcenter.*
 import javax.inject.Inject
 
 class InboxNotifcenterFakeDependency {
@@ -23,6 +20,9 @@ class InboxNotifcenterFakeDependency {
 
     @Inject
     lateinit var notifcenterFilterUseCase: FakeNotifcenterFilterV2UseCase
+
+    @Inject
+    lateinit var topAdsRepository: FakeTopAdsRepository
 
     fun init() {
 //        initResponse()
