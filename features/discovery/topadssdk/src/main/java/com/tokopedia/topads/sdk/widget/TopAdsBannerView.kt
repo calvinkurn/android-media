@@ -81,6 +81,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
     private var showProductShimmer: Boolean = false
     private var hasAddToCartButton: Boolean = false
+    private var isShowCta: Boolean = true
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
     }
@@ -202,7 +203,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 renderLabelMerchantVouchers(cpmData)
 
                 val items = ArrayList<Item<*>>()
-                items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
+                items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl, isShowCta))
                 if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
                     val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
                     for (i in 0 until productCardModelList.size) {
@@ -440,6 +441,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     fun setAddToCartClickListener(topAdsAddToCartClickListener: TopAdsAddToCartClickListener) {
         this.topAdsAddToCartClickListener = topAdsAddToCartClickListener
+    }
+
+    fun setShowCta(isShowCta: Boolean) {
+        this.isShowCta = isShowCta
     }
 
     override fun showLoading() {

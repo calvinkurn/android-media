@@ -76,4 +76,8 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         topadsBannerView.setAddToCartClickListener(topAdsAddToCartClickListener)
     }
 
+    fun setShowCta(isShowCta: Boolean) {
+        topadsBannerView.setShowCta(isShowCta)
+    }
+
 }

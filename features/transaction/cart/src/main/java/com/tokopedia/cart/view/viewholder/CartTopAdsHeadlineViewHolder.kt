@@ -38,6 +38,7 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
 
     private fun fetchTopadsHeadlineAds(topAdsHeadlineView: TopAdsHeadlineView, userSession: UserSessionInterface) {
         topAdsHeadlineView.setHasAddToCartButton(true)
+        topAdsHeadlineView.setShowCta(false)
         topAdsHeadlineView.setAddToCartClickListener(object : TopAdsAddToCartClickListener{
             override fun onAdToCartClicked(bannerShopProductViewModel: BannerShopProductViewModel) {
                 listener?.onButtonAddToCartClicked(bannerShopProductViewModel)
