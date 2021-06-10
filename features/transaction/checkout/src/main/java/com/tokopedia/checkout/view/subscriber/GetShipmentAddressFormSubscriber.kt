@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.subscriber
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress

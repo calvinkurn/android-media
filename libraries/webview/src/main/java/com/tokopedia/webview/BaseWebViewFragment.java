@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
@@ -52,11 +51,11 @@ import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.URLGenerator;
-import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
@@ -772,6 +771,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 try {
                     hasMoveToNativePage = true;
                     startActivity(intent);
+                    finishActivityIfBackPressedDisabled(hasMoveToNativePage);
                 } catch (Exception ignored) {
                 }
                 return true;
@@ -783,6 +783,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
+        finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
     }
 
@@ -870,6 +871,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     }
 
+    // If back pressed is disabled and the webview has moved to a native page,
+    // finish the webview activity to avoid user not being able to get out of the webview.
+    private void finishActivityIfBackPressedDisabled(boolean hasMoveToNativePage) {
+        if (hasMoveToNativePage && getActivity() != null
+                && getActivity() instanceof BaseSimpleWebViewActivity
+                && !((BaseSimpleWebViewActivity) getActivity()).getBackPressedEnabled()) {
+            getActivity().finish();
+        }
+    }
 
     public TkpdWebView getWebView() {
         return webView;

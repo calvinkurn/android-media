@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPmHeaderTermItem"
@@ -21,7 +20,7 @@
         android:layout_marginStart="@dimen/unify_space_12"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icPmHeaderTermItem"
         app:layout_constraintTop_toTopOf="@+id/icPmHeaderTermItem"

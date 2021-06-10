@@ -78,7 +78,6 @@
     <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
     <string name="digital_cart_toolbar_title">Checkout</string>
     <string name="digital_title_fav_number">Nomor Favorit</string>
-    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>

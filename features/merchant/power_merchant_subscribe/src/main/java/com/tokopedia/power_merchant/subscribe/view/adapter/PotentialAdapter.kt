@@ -4,8 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.PotentialItemUiModel
 import kotlinx.android.synthetic.main.item_pm_potential.view.*
@@ -35,7 +36,7 @@ class PotentialAdapter(
 
         fun bind(item: PotentialItemUiModel) {
             with(itemView) {
-                imgPmPotentialItem.loadImageWithoutPlaceholder(item.resDrawableIcon)
+                imgPmPotentialItem.loadImage(item.imgUrl) {}
                 tvPmPotentialItemDescription.text = item.description.parseAsHtml()
             }
         }

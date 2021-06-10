@@ -8,6 +8,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
 
 class ItemStatusPMViewHolder(view: View,
@@ -20,11 +21,17 @@ class ItemStatusPMViewHolder(view: View,
     override fun bind(element: ItemStatusPMUiModel?) {
         setupIconClickListener()
         setupItemPowerMerchant(element)
+        setupBackgroundColor()
+    }
+
+    private fun setupBackgroundColor() {
+        with(itemView) {
+            bg_container_pm_status?.showWithCondition(!context.isDarkMode())
+        }
     }
 
     private fun setupItemPowerMerchant(element: ItemStatusPMUiModel?) {
         with(itemView) {
-            potentialPowerMerchantWidget?.background = ContextCompat.getDrawable(context, R.drawable.bg_header_bronze)
             tv_pm_reputation_value?.text = getString(R.string.title_pm_value)
             element?.descPM?.let {
                 tv_desc_content_pm_section?.setTextMakeHyperlink(it) {

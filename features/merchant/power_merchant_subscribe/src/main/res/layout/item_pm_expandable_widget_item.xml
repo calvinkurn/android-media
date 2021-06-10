@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/unify_space_12"
-    android:paddingBottom="@dimen/unify_space_12">
+    android:paddingTop="@dimen/layout_lvl1"
+    android:paddingBottom="@dimen/layout_lvl1">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmExpandableItemText"

@@ -43,6 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:textColor="@color/Unify_N700_96"
+            app:typographyWeight="reguler"
+            app:typographyType="body_1"
             android:textSize="@dimen/fontSize_lvl4"
             android:visibility="gone"/>
     </LinearLayout>

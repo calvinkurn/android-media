@@ -1,0 +1,12 @@
+{
+  "VerifyQR": {
+    "success": true,
+    "message": "",
+    "errorMessage": "",
+    "Imglink": "https://images.tokopedia.net/img/qrcode/success.png",
+    "MessageTitle": "Akses masuk diterima",
+    "MessageBody": "Kamu berhasil masuk ke Tokopedia lewat perangkat lain. Selamat berbelanja, ya!",
+    "ButtonType": "Tutup",
+    "Status": "success2"
+  }
+}

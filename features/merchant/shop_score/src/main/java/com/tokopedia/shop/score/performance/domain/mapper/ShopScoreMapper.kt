@@ -147,7 +147,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
 
             add(mapToHeaderShopPerformance(shopScoreWrapperResponse.shopScoreLevelResponse?.result, shopAge))
-            add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreWrapperResponse.shopScoreTooltipResponse?.result, isNewSeller))
+            add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreResult, isNewSeller))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
                 addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge))
             }
@@ -513,9 +513,9 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 transitionEndDate = DateFormatUtils.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT, shopInfoPeriodUiModel.periodEndDate))
     }
 
-    private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreTooltipResponse: ShopLevelTooltipResponse.ShopLevel.Result?, isNewSeller: Boolean): PeriodDetailPerformanceUiModel {
-        return PeriodDetailPerformanceUiModel(period = shopScoreTooltipResponse?.period
-                ?: "-", nextUpdate = shopScoreTooltipResponse?.nextUpdate
+    private fun mapToSectionPeriodDetailPerformanceUiModel(shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?, isNewSeller: Boolean): PeriodDetailPerformanceUiModel {
+        return PeriodDetailPerformanceUiModel(period = shopScoreLevelResponse?.period
+                ?: "-", nextUpdate = shopScoreLevelResponse?.nextUpdate
                 ?: "-", isNewSeller = isNewSeller)
     }
 

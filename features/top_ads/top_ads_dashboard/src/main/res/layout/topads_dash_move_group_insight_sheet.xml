@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/topads_bg_top_round"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.SearchBarUnify

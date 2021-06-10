@@ -26,6 +26,8 @@ data class PMShopStatusDataModel(
 data class PMDataModel(
         @SerializedName("status")
         val status: String? = "",
+        @SerializedName("pm_tier")
+        val pmTire: Int? = 0,
         @SerializedName("expired_time")
         val expiredTime: String? = "",
         @SerializedName("auto_extend")

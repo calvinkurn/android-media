@@ -11,7 +11,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view_old.util.PowerMerchantDateFormatter.formatCancellationDate
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_cancellation.*
+import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_deactivation.*
 
 class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
     private var listener: BottomSheetCancelListener? = null
@@ -41,7 +41,7 @@ class PowerMerchantCancelBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val itemView = View.inflate(context,
-            R.layout.bottom_sheet_power_merchant_cancellation, null)
+            R.layout.bottom_sheet_power_merchant_deactivation, null)
 
         isFullpage = true
         setChild(itemView)

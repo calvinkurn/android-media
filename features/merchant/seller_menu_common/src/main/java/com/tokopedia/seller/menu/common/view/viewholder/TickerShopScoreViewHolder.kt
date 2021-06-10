@@ -26,9 +26,7 @@ class TickerShopScoreViewHolder(itemView: View, private val tickerShopScoreListe
                         tickerShopScoreListener?.onDescriptionViewClick()
                     }
 
-                    override fun onDismiss() {
-                        TODO("Not yet implemented")
-                    }
+                    override fun onDismiss() {}
                 })
             }
         }

@@ -5,6 +5,6 @@ package com.tokopedia.power_merchant.subscribe.view.model
  */
 
 data class PotentialItemUiModel(
-        val resDrawableIcon: Int,
+        val imgUrl: String,
         val description: String
 )
