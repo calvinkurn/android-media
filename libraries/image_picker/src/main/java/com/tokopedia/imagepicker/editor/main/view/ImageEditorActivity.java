@@ -1,22 +1,19 @@
 package com.tokopedia.imagepicker.editor.main.view;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -37,6 +34,7 @@ import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.utils.file.FileUtil;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
@@ -110,6 +108,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private View layoutContrast;
     private View layoutCrop;
     private View layoutRotate;
+    private View layoutWatermark;
     protected ProgressDialog progressDialog;
     private TwoLineSeekBar brightnessSeekbar;
     private TwoLineSeekBar contrastSeekbar;
@@ -118,6 +117,15 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private TextView tvContrast;
     private TextView tvActionTitle;
     private long maxFileSize;
+
+    //watermark
+    private UnifyButton[] btnWatermarks = new UnifyButton[3];
+    private UnifyButton btnWatermarkUnfocus;
+    private int[] btnWatermarksId = {
+            R.id.btn_watermark_tokopedia,
+            R.id.btn_watermark_sellername,
+            R.id.btn_watermark_both
+    };
 
     //to give flag if the image is editted or not, in case the caller need it.
     protected ArrayList<Boolean> isEdittedList;
@@ -226,6 +234,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutRotate = findViewById(R.id.layout_rotate);
         layoutBrightness = findViewById(R.id.layout_brightness);
         layoutContrast = findViewById(R.id.layout_contrast);
+        layoutWatermark = findViewById(R.id.layout_watermark);
         tvActionTitle = findViewById(R.id.tv_action_title);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -279,7 +288,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     fragment.cancelCropRotateImage();
                     break;
                 case ACTION_WATERMARK:
-                    //TODO undo watermark here
+                    fragment.cancelWatermark();
                     break;
                 case ACTION_BRIGHTNESS:
                     fragment.cancelBrightness();
@@ -500,7 +509,10 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     tvActionTitle.setText(getString(R.string.rotate));
                     break;
                 case ACTION_WATERMARK:
-                    //currently not supported.
+                    hideAllControls();
+                    setupWatermarkWidget();
+                    layoutWatermark.setVisibility(View.VISIBLE);
+                    tvActionTitle.setText(getString(R.string.watermark));
                     break;
                 case ACTION_CROP_ROTATE:
                     //currently not supported.
@@ -665,6 +677,34 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
             tvContrast = findViewById(R.id.tv_contrast);
         }
+    }
+
+    private void setupWatermarkWidget() {
+        for (int i = 0; i < btnWatermarksId.length; i++) {
+            btnWatermarks[i] = findViewById(btnWatermarksId[i]);
+            btnWatermarks[i].setButtonType(UnifyButton.Type.ALTERNATE);
+            btnWatermarks[i].setOnClickListener(buttonWatermarkWidgetClicked());
+        }
+    }
+
+    private View.OnClickListener buttonWatermarkWidgetClicked() {
+        return view -> {
+            int id = view.getId();
+            if (id == R.id.btn_watermark_tokopedia) {
+                setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[0]);
+            } else if (id == R.id.btn_watermark_sellername) {
+                setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[1]);
+            } else if (id == R.id.btn_watermark_both) {
+                setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[2]);
+            }
+        };
+    }
+
+    private void setButtonWatermarkFocus(UnifyButton btnUnfocus, UnifyButton btnFocus) {
+        btnUnfocus.setButtonType(UnifyButton.Type.ALTERNATE);
+        btnFocus.setButtonType(UnifyButton.Type.MAIN);
+
+        this.btnWatermarkUnfocus = btnFocus;
     }
 
     @Override

@@ -509,6 +509,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         }
     }
 
+    public void cancelWatermark() {
+        setToInitialRatio();
+    }
+
     public void cancelBrightness() {
         gestureCropImageView.clearColorFilter();
         brightness = 0;

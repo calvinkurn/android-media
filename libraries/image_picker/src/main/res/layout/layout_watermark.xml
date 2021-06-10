@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/image_editor_control_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app1="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_watermark_tokopedia"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_32"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dp_8"
+            android:textSize="@dimen/sp_12"
+            app:unifyButtonType="alternate"
+            android:text="Tokopedia"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_watermark_sellername"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_32"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dp_8"
+            android:textSize="@dimen/sp_12"
+            app:unifyButtonType="alternate"
+            android:text="Seller Name"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_watermark_both"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_32"
+            android:layout_weight="1"
+            android:layout_margin="@dimen/dp_8"
+            android:textSize="@dimen/sp_12"
+            app1:unifyButtonType="alternate"
+            android:text="Both"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>

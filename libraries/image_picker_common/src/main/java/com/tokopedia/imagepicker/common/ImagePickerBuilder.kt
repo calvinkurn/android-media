@@ -94,10 +94,13 @@ data class ImagePickerEditorBuilder(
             )
         }
 
-        fun getDefaultEditor() = arrayOf(ImageEditActionType.ACTION_BRIGHTNESS,
-                ImageEditActionType.ACTION_CONTRAST,
-                ImageEditActionType.ACTION_CROP,
-                ImageEditActionType.ACTION_ROTATE)
+        fun getDefaultEditor() = arrayOf(
+            ImageEditActionType.ACTION_BRIGHTNESS,
+            ImageEditActionType.ACTION_CONTRAST,
+            ImageEditActionType.ACTION_CROP,
+            ImageEditActionType.ACTION_ROTATE,
+            ImageEditActionType.ACTION_WATERMARK
+        )
     }
 }
 
