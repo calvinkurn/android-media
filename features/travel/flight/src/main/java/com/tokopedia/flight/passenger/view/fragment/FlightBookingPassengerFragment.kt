@@ -24,8 +24,7 @@ import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
-import com.tokopedia.flight.common.util.FlightPassengerTitle
-import com.tokopedia.flight.common.util.FlightPassengerTitleType
+import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.detail.view.adapter.FlightSimpleAdapter
 import com.tokopedia.flight.detail.view.model.SimpleModel
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
@@ -222,7 +221,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     private fun onSubmitData() {
-        if(validateAllFields()) {
+        if (validateAllFields()) {
             passengerModel.passengerTitle = getPassengerTitle()
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
@@ -306,9 +305,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun renderPassengerTitle(passengerTitle: String) {
         when {
-            passengerTitle.equals(FlightPassengerTitle.TUAN, true) -> rv_passenger_title.selectChipByPosition(0)
-            passengerTitle.equals(FlightPassengerTitle.NYONYA, true) -> rv_passenger_title.selectChipByPosition(1)
-            passengerTitle.equals(FlightPassengerTitle.NONA, true) -> rv_passenger_title.selectChipByPosition(2)
+            passengerTitle.equals(FlightPassengerTitle.TUAN.salutation, true) -> rv_passenger_title.selectChipByPosition(0)
+            passengerTitle.equals(FlightPassengerTitle.NYONYA.salutation, true) -> rv_passenger_title.selectChipByPosition(1)
+            passengerTitle.equals(FlightPassengerTitle.NONA.salutation, true) -> rv_passenger_title.selectChipByPosition(2)
             else -> rv_passenger_title.onResetChip()
         }
     }
@@ -632,9 +631,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     fun getPassengerTitleId(passengerTitle: String): Int {
         return when {
-            passengerTitle.equals(FlightPassengerTitle.TUAN, true) -> FlightPassengerTitleType.TUAN
-            passengerTitle.equals(FlightPassengerTitle.NYONYA, true) -> FlightPassengerTitleType.NYONYA
-            else -> FlightPassengerTitleType.NONA
+            passengerTitle.equals(FlightPassengerTitle.TUAN.salutation, true) -> FlightPassengerTitle.TUAN.id
+            passengerTitle.equals(FlightPassengerTitle.NYONYA.salutation, true) -> FlightPassengerTitle.NYONYA.id
+            else -> FlightPassengerTitle.NONA.id
         }
     }
 
