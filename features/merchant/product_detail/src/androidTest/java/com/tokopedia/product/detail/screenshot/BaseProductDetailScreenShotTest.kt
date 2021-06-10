@@ -36,7 +36,7 @@ abstract class BaseProductDetailScreenShotTest {
         const val KEY_SHOP = "shop_credibility"
         const val KEY_DISCUSSION = "discussion_faq"
         const val KEY_RECOM = "pdp_5"
-        const val KEY_BEST_SELLER_INFO = "best_seller_info"
+        const val KEY_BEST_SELLER_INFO = "best_seller"
     }
 
     @get:Rule
