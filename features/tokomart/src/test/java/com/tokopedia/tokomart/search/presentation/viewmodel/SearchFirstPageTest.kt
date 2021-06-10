@@ -11,8 +11,10 @@ import com.tokopedia.tokomart.searchcategory.assertTitleDataView
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
+import org.hamcrest.CoreMatchers
 import org.junit.Assert.assertThat
 import org.junit.Test
+import org.hamcrest.CoreMatchers.`is` as shouldBe
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class SearchFirstPageTest: BaseSearchPageLoadTest() {
@@ -32,6 +34,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert has next page value`(false)
         `Then assert auto complete applink from API`(searchModel)
         `Then assert is refresh page flag`()
+        `Then assert header background is shown`()
     }
 
     private fun `Then assert first page visitables`(
@@ -74,6 +77,10 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         assertThat(searchViewModel.isRefreshPageLiveData.value, shouldBe(true))
     }
 
+    private fun `Then assert header background is shown`() {
+        assertThat(searchViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
+    }
+
     @Test
     fun `test first page has next page`() {
         val searchModel = "search/first-page-16-products.json".jsonToObject<SearchModel>()
@@ -89,5 +96,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert has next page value`(true)
         `Then assert auto complete applink from API`(searchModel)
         `Then assert is refresh page flag`()
+        `Then assert header background is shown`()
     }
 }

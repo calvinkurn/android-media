@@ -64,6 +64,7 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            emptyProductListener = this,
             categoryAisleListener = this,
     )
 
