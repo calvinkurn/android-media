@@ -132,7 +132,7 @@ class FlightSimpleAdapter : RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder>
     }
 
     interface OnAdapterInteractionListener {
-        fun onItemClick(adapterPosition: Int, viewModel: SimpleModel?)
+        fun onItemClick(adapterPosition: Int, viewModel: SimpleModel)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

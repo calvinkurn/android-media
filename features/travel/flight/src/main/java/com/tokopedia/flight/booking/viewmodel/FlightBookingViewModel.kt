@@ -449,7 +449,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         val userProfile = if (profileResult.value is Success) (profileResult.value as Success).data else ProfileInfo()
         val passenger = FlightBookingPassengerModel()
         passenger.passengerLocalId = 1
-        passenger.type = FlightBookingPassenger.ADULT
+        passenger.type = FlightBookingPassenger.ADULT.value
         passenger.flightBookingLuggageMetaViewModels = arrayListOf()
         passenger.flightBookingMealMetaViewModels = arrayListOf()
         passenger.headerTitle = userName
@@ -463,7 +463,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         if (passengers.isNotEmpty()) {
             val passenger = FlightBookingPassengerModel()
             passenger.passengerLocalId = 1
-            passenger.type = FlightBookingPassenger.ADULT
+            passenger.type = FlightBookingPassenger.ADULT.value
             passenger.flightBookingLuggageMetaViewModels = arrayListOf()
             passenger.flightBookingMealMetaViewModels = arrayListOf()
             passenger.headerTitle = String.format("Penumpang dewasa")
@@ -485,13 +485,13 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 for (flightBookingAmenityViewModel in flightBookingAmenityMetaViewModel.amenities) {
                     if (meals[flightBookingAmenityMetaViewModel.description] != null) {
                         var total = meals[flightBookingAmenityMetaViewModel.description]!!
-                        total += flightBookingAmenityViewModel.priceNumeric
+                        total += flightBookingAmenityViewModel.priceNumeric.toInt()
                         meals[flightBookingAmenityMetaViewModel.description] = total
 
                         var count = mealsCount[flightBookingAmenityMetaViewModel.description] ?: 1
                         mealsCount[flightBookingAmenityMetaViewModel.description] = count + 1
                     } else {
-                        meals[flightBookingAmenityMetaViewModel.description] = flightBookingAmenityViewModel.priceNumeric
+                        meals[flightBookingAmenityMetaViewModel.description] = flightBookingAmenityViewModel.priceNumeric.toInt()
                         mealsCount[flightBookingAmenityMetaViewModel.description] = 1
                     }
                 }
@@ -500,13 +500,13 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 for (flightBookingLuggageViewModel in flightBookingLuggageMetaViewModel.amenities) {
                     if (luggages[flightBookingLuggageMetaViewModel.description] != null) {
                         var total = luggages[flightBookingLuggageMetaViewModel.description]!!
-                        total += flightBookingLuggageViewModel.priceNumeric
+                        total += flightBookingLuggageViewModel.priceNumeric.toInt()
                         luggages[flightBookingLuggageMetaViewModel.description] = total
 
                         var count = luggageCount[flightBookingLuggageMetaViewModel.description] ?: 1
                         luggageCount[flightBookingLuggageMetaViewModel.description] = count + 1
                     } else {
-                        luggages[flightBookingLuggageMetaViewModel.description] = flightBookingLuggageViewModel.priceNumeric
+                        luggages[flightBookingLuggageMetaViewModel.description] = flightBookingLuggageViewModel.priceNumeric.toInt()
                         luggageCount[flightBookingLuggageMetaViewModel.description] = 1
                     }
                 }

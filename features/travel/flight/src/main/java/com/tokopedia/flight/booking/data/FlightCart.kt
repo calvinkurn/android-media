@@ -222,8 +222,8 @@ data class FlightCart(
             val priceNumeric: Int = 0,
 
             val priceDetailId: String = ""
-    ): Parcelable {
-            fun idEqualsToInsuranceId(other: Insurance): Boolean = other.id == priceDetailId
+    ) : Parcelable {
+        fun idEqualsToInsuranceId(other: Insurance): Boolean = other.id == priceDetailId
     }
 
     data class Amenity(
@@ -279,7 +279,7 @@ data class FlightCart(
 
             @SerializedName("priceNumeric")
             @Expose
-            val priceNumeric: Int = 0,
+            val priceNumeric: Long = 0,
 
             @SerializedName("description")
             @Expose
@@ -323,7 +323,7 @@ data class FlightCart(
             @SerializedName("benefits")
             @Expose
             val benefits: List<Benefit>
-    ): Parcelable
+    ) : Parcelable
 
     data class Voucher(
             @SerializedName("enableVoucher")
@@ -398,7 +398,7 @@ data class FlightCart(
             @SerializedName("icon")
             @Expose
             val icon: String = ""
-    ): Parcelable
+    ) : Parcelable
 
     data class Journey(
             @SerializedName("id")

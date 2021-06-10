@@ -246,9 +246,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             contact.birthDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
                     FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
         if (!isDomestic) {
-            contact.nationality = passengerModel.passportNationality.countryId
+            contact.nationality = passengerModel.passportNationality?.countryId ?: "ID"
             contact.idList = listOf(TravelContactIdCard(type = "passport", title = "Paspor",
-                    number = getPassportNumber(), country = passengerModel.passportIssuerCountry.countryId,
+                    number = getPassportNumber(), country = passengerModel.passportIssuerCountry?.countryId
+                    ?: "ID",
                     expiry = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassportExpiryDate())))
         }
 
@@ -374,29 +375,31 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         mealAdapter.setMarginBottomDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
         mealAdapter.setArrowVisible(true)
         mealAdapter.setFontSize(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2))
-        mealAdapter.setInteractionListener { adapterPosition, viewModel ->
-            val meal = flightBookingMealRouteModels.get(adapterPosition)
-            var existingSelected: FlightBookingAmenityMetaModel? = null
+        mealAdapter.setInteractionListener(object : FlightSimpleAdapter.OnAdapterInteractionListener {
+            override fun onItemClick(adapterPosition: Int, viewModel: SimpleModel) {
+                val meal = flightBookingMealRouteModels[adapterPosition]
+                var existingSelected: FlightBookingAmenityMetaModel? = null
 
-            for (passengerMeal in passengerModel.flightBookingMealMetaViewModels) {
-                if (passengerMeal.key.equals(meal.key, true)) {
-                    existingSelected = passengerMeal
-                    break
+                for (passengerMeal in passengerModel.flightBookingMealMetaViewModels) {
+                    if (passengerMeal.key.equals(meal.key, true)) {
+                        existingSelected = passengerMeal
+                        break
+                    }
                 }
-            }
 
-            if (existingSelected == null) {
-                existingSelected = FlightBookingAmenityMetaModel()
-                existingSelected.key = meal.key
-                existingSelected.journeyId = meal.journeyId
-                existingSelected.arrivalId = meal.arrivalId
-                existingSelected.departureId = meal.departureId
-                existingSelected.amenities = arrayListOf()
-                existingSelected.description = meal.description
-            }
+                if (existingSelected == null) {
+                    existingSelected = FlightBookingAmenityMetaModel()
+                    existingSelected.key = meal.key
+                    existingSelected.journeyId = meal.journeyId
+                    existingSelected.arrivalId = meal.arrivalId
+                    existingSelected.departureId = meal.departureId
+                    existingSelected.amenities = arrayListOf()
+                    existingSelected.description = meal.description
+                }
 
-            navigateToMealPicker(meal.amenities, existingSelected)
-        }
+                navigateToMealPicker(meal.amenities.toMutableList(), existingSelected)
+            }
+        })
 
         rv_meals.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_meals.setHasFixedSize(true)
@@ -446,24 +449,26 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         luggageAdapter.setMarginBottomDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
         luggageAdapter.setArrowVisible(true)
         luggageAdapter.setFontSize(resources.getDimension(com.tokopedia.unifycomponents.R.dimen.fontSize_lvl2))
-        luggageAdapter.setInteractionListener { adapterPosition, viewModel ->
-            val luggage = flightBookingLuggageRouteModels.get(adapterPosition)
+        luggageAdapter.setInteractionListener(object : FlightSimpleAdapter.OnAdapterInteractionListener {
+            override fun onItemClick(adapterPosition: Int, viewModel: SimpleModel) {
+                val luggage = flightBookingLuggageRouteModels[adapterPosition]
 
-            var existingSelected: FlightBookingAmenityMetaModel? = null
-            for (selected in passengerModel.flightBookingLuggageMetaViewModels) {
-                if (selected.key.equals(luggage.key, true)) existingSelected = selected
+                var existingSelected: FlightBookingAmenityMetaModel? = null
+                for (selected in passengerModel.flightBookingLuggageMetaViewModels) {
+                    if (selected.key.equals(luggage.key, true)) existingSelected = selected
+                }
+                if (existingSelected == null) {
+                    existingSelected = FlightBookingAmenityMetaModel()
+                    existingSelected.key = luggage.key
+                    existingSelected.journeyId = luggage.journeyId
+                    existingSelected.arrivalId = luggage.arrivalId
+                    existingSelected.departureId = luggage.departureId
+                    existingSelected.description = luggage.description
+                    existingSelected.amenities = arrayListOf()
+                }
+                navigateToLuggagePicker(luggage.amenities.toMutableList(), existingSelected)
             }
-            if (existingSelected == null) {
-                existingSelected = FlightBookingAmenityMetaModel()
-                existingSelected.key = luggage.key
-                existingSelected.journeyId = luggage.journeyId
-                existingSelected.arrivalId = luggage.arrivalId
-                existingSelected.departureId = luggage.departureId
-                existingSelected.description = luggage.description
-                existingSelected.amenities = arrayListOf()
-            }
-            navigateToLuggagePicker(luggage.amenities, existingSelected)
-        }
+        })
 
         rv_luggages.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         rv_luggages.setHasFixedSize(true)
@@ -478,13 +483,24 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun renderPassport() {
         if (!isDomestic) {
             container_passport_data.visibility = View.VISIBLE
-            if (passengerModel.passportNumber != null) til_passport_no.textFieldInput.setText(passengerModel.passportNumber)
-            if (passengerModel.passportExpiredDate != null) til_passport_expiration_date.textFieldInput.setText(
-                    FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                            passengerModel.passportExpiredDate))
-            if (passengerModel.passportNationality != null) til_nationality.textFieldInput.setText(passengerModel.passportNationality.countryName)
-            if (passengerModel.passportIssuerCountry != null) til_passport_issuer_country.textFieldInput.setText(passengerModel.passportIssuerCountry.countryName)
-        } else container_passport_data.visibility = View.GONE
+            passengerModel.passportNumber?.let {
+                til_passport_no.textFieldInput.setText(it)
+            }
+            passengerModel.passportExpiredDate?.let {
+                til_passport_expiration_date.textFieldInput.setText(FlightDateUtil
+                        .formatDate(FlightDateUtil.DEFAULT_FORMAT,
+                                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                                it))
+            }
+            passengerModel.passportNationality?.let {
+                til_nationality.textFieldInput.setText(it.countryName)
+            }
+            passengerModel.passportIssuerCountry?.let {
+                til_passport_issuer_country.textFieldInput.setText(it.countryName)
+            }
+        } else {
+            container_passport_data.visibility = View.GONE
+        }
     }
 
     private fun renderViewBasedOnType() {
@@ -640,17 +656,17 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     private fun getPassengerTypeString(passengerType: Int): String = when (passengerType) {
-        FlightBookingPassenger.ADULT -> "adult"
-        FlightBookingPassenger.CHILDREN -> "child"
-        FlightBookingPassenger.INFANT -> "infant"
+        FlightBookingPassenger.ADULT.value -> "adult"
+        FlightBookingPassenger.CHILDREN.value -> "child"
+        FlightBookingPassenger.INFANT.value -> "infant"
         else -> ""
     }
 
-    private fun isAdultPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.ADULT
+    private fun isAdultPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.ADULT.value
 
-    private fun isChildPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.CHILDREN
+    private fun isChildPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.CHILDREN.value
 
-    private fun isInfantPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.INFANT
+    private fun isInfantPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.INFANT.value
 
     private fun isMandatoryDoB(): Boolean = isAirAsiaAirlines
 
@@ -661,7 +677,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         if (flightBookingLuggageMetaModel.amenities.size != 0) {
             if (index != -1) {
-                passengerModelAmenities.set(index, flightBookingLuggageMetaModel)
+                passengerModelAmenities[index] = flightBookingLuggageMetaModel
             } else {
                 passengerModelAmenities.add(flightBookingLuggageMetaModel)
             }
@@ -914,7 +930,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun showMessageErrorInSnackBar(resId: Int) {
         view?.let {
-            Toaster.showErrorWithAction(it, getString(resId), Snackbar.LENGTH_LONG, "OK", View.OnClickListener { /* do nothing */ })
+            Toaster.build(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    "OK") { /* do nothing */ }
         }
     }
 
@@ -927,7 +944,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     if (data != null) {
                         val flightBookingLuggageMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
                         flightBookingLuggageMetaViewModel?.let {
-                            renderPassengerLuggages(luggageModels, onAmenitiesDataChange(flightBookingLuggageMetaViewModel, passengerModel.flightBookingLuggageMetaViewModels))
+                            renderPassengerLuggages(luggageModels, onAmenitiesDataChange(flightBookingLuggageMetaViewModel, passengerModel.flightBookingLuggageMetaViewModels.toMutableList()))
                         }
                     }
                 }
@@ -936,7 +953,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     if (data != null) {
                         val flightBookingMealMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
                         flightBookingMealMetaViewModel?.let {
-                            renderPassengerMeals(mealModels, onAmenitiesDataChange(flightBookingMealMetaViewModel, passengerModel.flightBookingMealMetaViewModels))
+                            renderPassengerMeals(mealModels, onAmenitiesDataChange(flightBookingMealMetaViewModel, passengerModel.flightBookingMealMetaViewModels.toMutableList()))
                         }
                     }
                 }
