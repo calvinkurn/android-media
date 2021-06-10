@@ -13,7 +13,7 @@ import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
 
 
-class SellerFeedbackScreenshot(val context: Context) : Screenshot(context.contentResolver) {
+class SellerFeedbackScreenshot(private val context: Context) : Screenshot(context.contentResolver) {
 
     companion object {
         private const val THRESHOLD_TIME = 1000L
