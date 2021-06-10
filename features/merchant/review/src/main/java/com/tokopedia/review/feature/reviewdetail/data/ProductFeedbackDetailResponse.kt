@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductFeedbackDetailResponse(
-        @SerializedName("productrevFeedbackDataPerProduct")
+        @SerializedName("productrevFeedbackDataPerProductV2")
         val productrevFeedbackDataPerProduct: ProductFeedbackDataPerProduct = ProductFeedbackDataPerProduct()
 ) {
     data class ProductFeedbackDataPerProduct(
