@@ -686,15 +686,21 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     private void setUpScrollChangeListener() {
         Rect scrollBounds = new Rect();
+        checkShouldShowStickyButtonInView(orderDetailNestedScrollView, scrollBounds);
+
         orderDetailNestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (nestedScrollView, scrollX, scrollY, scrollOldX, scrollOldY) -> {
-            nestedScrollView.getHitRect(scrollBounds);
-            if (actionBtnLayout.getLocalVisibleRect(scrollBounds)) {
-                // Any portion of the sticky button, even a single pixel, is within the visible window
-                stickyButtonLayout.setVisibility(View.GONE);
-            } else {
-                // NONE of the sticky button is within the visible window
-                stickyButtonLayout.setVisibility(View.VISIBLE);
-            }
+            checkShouldShowStickyButtonInView(nestedScrollView, scrollBounds);
         });
+    }
+
+    private void checkShouldShowStickyButtonInView(NestedScrollView nestedScrollView, Rect scrollBounds) {
+        nestedScrollView.getHitRect(scrollBounds);
+        if (actionBtnLayout.getLocalVisibleRect(scrollBounds)) {
+            // Any portion of the sticky button, even a single pixel, is within the visible window
+            stickyButtonLayout.setVisibility(View.GONE);
+        } else {
+            // NONE of the sticky button is within the visible window
+            stickyButtonLayout.setVisibility(View.VISIBLE);
+        }
     }
 }
