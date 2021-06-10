@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pms.R
+import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.pms.paymentlist.presentation.adapter.PaymentTransactionActionAdapter
 import com.tokopedia.pms.paymentlist.presentation.listener.PaymentListActionListener
@@ -86,13 +87,15 @@ class PaymentTransactionActionSheet : BottomSheetUnify() {
                     else listener.cancelSingleTransaction(
                         it.transactionList.getOrNull(0)?.transactionId ?: "",
                         it.transactionList.getOrNull(0)?.merchantCode ?: "",
-                        null
+                        null,
+                        PmsEvents.InvokeCancelTransactionBottomSheetEvent(3)
                     )
                 }
             }
             else -> listener.cancelSingleTransaction(
                 model.extractValues().first,
-                model.extractValues().second, null
+                model.extractValues().second, null,
+                PmsEvents.InvokeCancelTransactionBottomSheetEvent(3)
             )
         }
     }

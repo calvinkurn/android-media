@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_N0">
 
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unifyEmptyStateCTAFullWidth="true"
         app:unifyEmptyStateDescription="@string/pms_deferred_payment_empty_subtitle"
-        app:unifyEmptyStateImageDrawable="@drawable/unify_globalerrors_maintenance"
+        app:unifyEmptyStateImageDrawable="@drawable/pms_empty_state_background"
         app:unifyEmptyStatePrimaryCTAText="@string/pms_deferred_payment_empty_action"
         app:unifyEmptyStateTitle="@string/pms_deferred_payment_empty_title"
         app:unifyEmptyStateType="section"

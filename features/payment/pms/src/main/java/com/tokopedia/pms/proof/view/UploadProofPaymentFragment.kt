@@ -21,6 +21,8 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor.extract
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.pms.R
+import com.tokopedia.pms.analytics.PmsAnalytics
+import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.extractValues
 import com.tokopedia.pms.proof.di.DaggerUploadProofPaymentComponent
@@ -37,6 +39,8 @@ import javax.inject.Inject
 class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContract.View {
     @Inject
     lateinit var uploadProofPaymentPresenter: UploadProofPaymentPresenter
+    @Inject
+    lateinit var pmsAnalytics: dagger.Lazy<PmsAnalytics>
 
     private var paymentListModel: BasePaymentModel? = null
     private var progressDialog: LoaderDialog? = null
@@ -82,7 +86,10 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
                 invalidateView()
             }
         })
-        button_save_choose_another_image.setOnClickListener(View.OnClickListener { openImagePicker() })
+        button_save_choose_another_image.setOnClickListener(View.OnClickListener {
+            sendUploadPmsEvents(PmsEvents.SelectAnotherImageEvent(13))
+            openImagePicker()
+        })
     }
 
     private fun resetImageUrl() {
@@ -128,10 +135,12 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
 
     private fun actionButtonUpload() {
         if (button_save.text.toString() == getString(R.string.payment_label_choose_image)) {
+            sendUploadPmsEvents(PmsEvents.SelectImageEvent(12))
             openImagePicker()
         } else if (button_save.text.toString() == getString(R.string.payment_label_finish)) {
             activity?.finish()
         } else {
+            sendUploadPmsEvents(PmsEvents.ConfirmSelectedImageEvent(14))
             if (paymentListModel != null) {
                 val (first, second) = paymentListModel!!.extractValues()
                 uploadProofPaymentPresenter.uploadProofPayment(first, second, imageUrl)
@@ -196,6 +205,10 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_SHORT, toastType)
         }
+    }
+
+    private fun sendUploadPmsEvents(event: PmsEvents) {
+        pmsAnalytics.get().sendPmsAnalyticsEvent(event)
     }
 
     companion object {

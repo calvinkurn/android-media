@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pms.R
+import com.tokopedia.pms.analytics.PmsAnalytics
+import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity.Companion.MERCHANT_CODE
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity.Companion.TRANSACTION_ID
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity.Companion.USER_ID_KLIK_BCA
@@ -31,6 +33,9 @@ import javax.inject.Inject
 class ChangeClickBcaFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var pmsAnalytics: dagger.Lazy<PmsAnalytics>
 
     private val viewModel: ChangeClickBcaViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -73,6 +78,7 @@ class ChangeClickBcaFragment : BaseDaggerFragment() {
             )
         }
         button_use.setOnClickListener {
+            pmsAnalytics.get().sendPmsAnalyticsEvent(PmsEvents.ConfirmEditBcaUserIdEvent(8))
             val userId = input_layout_click_bca_user_id.textFieldInput.text.toString()
             if (TextUtils.isEmpty(userId)) {
                 NetworkErrorHelper.showRedCloseSnackbar(

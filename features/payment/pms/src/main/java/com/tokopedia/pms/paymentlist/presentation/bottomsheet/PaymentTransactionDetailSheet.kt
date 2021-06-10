@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pms.R
+import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.paymentlist.domain.data.VaTransactionItem
 import com.tokopedia.pms.paymentlist.presentation.adapter.PaymentTransactionDetailAdapter
 import com.tokopedia.pms.paymentlist.presentation.listener.PaymentListActionListener
@@ -70,14 +69,15 @@ class PaymentTransactionDetailSheet : BottomSheetUnify() {
     }
 
     private fun showInvoiceDetail(model: VaTransactionItem) {
-        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, model.invoiceUrl)
+        (activity as PaymentListActionListener).showInvoiceDetail(model.invoiceUrl)
     }
 
     private fun cancelTransaction(model: VaTransactionItem, transactionName: String?) {
         (activity as PaymentListActionListener).cancelSingleTransaction(
             model.transactionId,
             model.merchantCode,
-            transactionName
+            transactionName,
+            PmsEvents.InvokeCancelTransactionOnDetailEvent(5)
         )
         dismiss()
     }

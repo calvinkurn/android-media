@@ -6,6 +6,7 @@ import com.tokopedia.pms.bankaccount.view.fragment.ChangeBankAccountFragment
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaFragment
 import com.tokopedia.pms.paymentlist.di.module.PmsModule
 import com.tokopedia.pms.paymentlist.di.module.ViewModelModule
+import com.tokopedia.pms.paymentlist.presentation.activity.PaymentListActivity
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment
 import dagger.Component
 
@@ -16,6 +17,7 @@ import dagger.Component
 )
 interface PmsComponent {
     fun inject(deferredPaymentListFragment: DeferredPaymentListFragment)
+    fun inject(paymentListActivity: PaymentListActivity)
     fun inject(deferredPaymentListFragment: ChangeClickBcaFragment)
     fun inject(deferredPaymentListFragment: ChangeBankAccountFragment)
     fun inject(deferredPaymentListBottomSheet: BankDestinationBottomSheet)

@@ -67,7 +67,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/label_date"
-                            android:layout_marginStart="@+id/label_date"
+                            android:layout_alignStart="@+id/label_date"
                             android:text="@string/payment_label_help_proof_example_date"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
@@ -101,7 +101,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/label_date_2"
-                            android:layout_marginStart="@+id/label_date_2"
+                            android:layout_alignStart="@+id/label_date_2"
                             android:text="@string/payment_label_help_proof_example_success_status"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
@@ -135,7 +135,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/label_date_3"
-                            android:layout_marginStart="@+id/label_date_3"
+                            android:layout_alignStart="@+id/label_date_3"
                             android:text="@string/payment_label_help_proof_example_receiver"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
@@ -169,7 +169,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/label_date_4"
-                            android:layout_marginStart="@+id/label_date_4"
+                            android:layout_alignStart="@+id/label_date_4"
                             android:text="@string/payment_label_help_proof_example_total"
                             android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />

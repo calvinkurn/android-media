@@ -20,8 +20,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pms.R
+import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.*
+import com.tokopedia.pms.paymentlist.presentation.activity.PaymentListActivity
 import com.tokopedia.pms.paymentlist.presentation.adapter.DeferredPaymentListAdapter
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionActionSheet
 import com.tokopedia.pms.paymentlist.presentation.bottomsheet.PaymentTransactionDetailSheet
@@ -34,6 +36,8 @@ import java.util.*
 import javax.inject.Inject
 
 class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
+
+    private var isFirstTimeLoad: Boolean = true
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -66,11 +70,11 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         swipe_refresh_layout.setOnRefreshListener(this)
-        loadInitialDeferredTransactions()
+        loadDeferredTransactions()
         observeViewModels()
     }
 
-    private fun loadInitialDeferredTransactions() {
+    private fun loadDeferredTransactions() {
         context?.let {
             loader = LoaderDialog(it)
             loader?.dialog?.setOverlayClose(false)
@@ -131,6 +135,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
                 dialog.setDescription(descriptionMessage.parseAsHtml())
                 dialog.setPrimaryCTAText(getString(R.string.payment_cancel_yes))
                 dialog.setPrimaryCTAClickListener {
+                    sendEventToAnalytics(PmsEvents.ConfirmCancelTransactionEvent(4))
                     viewModel.cancelPayment(data.transactionId, data.merchantCode)
                     dialog.dismiss()
                 }
@@ -144,6 +149,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun renderPaymentList(data: ArrayList<BasePaymentModel>) {
+        sentDataLoadingEvent(PmsEvents.DeferredPaymentsShownEvent(data.size))
         handleSwipeRefresh(false)
         hideLoader()
         noPendingTransactionEmptyState.gone()
@@ -153,6 +159,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun showErrorUi(throwable: Throwable) {
+        sentDataLoadingEvent(PmsEvents.DeferredPaymentsShownEvent(0))
         handleSwipeRefresh(false)
         hideLoader()
         noPendingTransactionEmptyState.gone()
@@ -164,6 +171,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun showEmptyState() {
+        sentDataLoadingEvent(PmsEvents.DeferredPaymentsShownEvent(0))
         handleSwipeRefresh(false)
         noPendingTransactionEmptyState.visible()
         noPendingTransactionEmptyState.setPrimaryCTAClickListener {
@@ -172,6 +180,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun setGlobalErrors(errorType: Int) {
+        sentDataLoadingEvent(PmsEvents.DeferredPaymentsShownEvent(0))
         paymentListGlobalError.setType(errorType)
         paymentListGlobalError.visible()
         paymentListGlobalError.setActionClickListener {
@@ -191,16 +200,21 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun openInvoiceDetail(model: BasePaymentModel) {
+        sendEventToAnalytics(PmsEvents.WaitingCardClickEvent("single"))
         RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, model.invoiceDetailUrl)
     }
 
     private fun redirectToHowToPay(model: BasePaymentModel) {
+        sendEventToAnalytics(PmsEvents.HowToPayRedirectionEvent(15))
         RouteManager.route(context, model.howtoPayAppLink)
     }
 
     private fun checkAndOpenInvoiceDetail(model: BasePaymentModel) {
         (model as VirtualAccountPaymentModel).transactionList.let {
-            if (it.size > 1) showCombinedTransactionDetail(model) else openInvoiceDetail(model)
+            if (it.size > 1) {
+                sendEventToAnalytics(PmsEvents.WaitingCardClickEvent("combine"))
+                showCombinedTransactionDetail(model)
+            } else openInvoiceDetail(model)
         }
     }
 
@@ -216,6 +230,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         val bundle = Bundle()
         bundle.putParcelable(PaymentTransactionActionSheet.PAYMENT_MODEL, model)
         PaymentTransactionActionSheet.show(bundle, childFragmentManager)
+        sendEventToAnalytics(PmsEvents.ChevronTapClickEvent(2))
     }
 
     fun showCombinedTransactionDetail(model: BasePaymentModel) {
@@ -248,6 +263,18 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         loader = null
     }
 
+    fun sentDataLoadingEvent(event: PmsEvents) {
+        if (isFirstTimeLoad) {
+            sendEventToAnalytics(event)
+            isFirstTimeLoad = false
+        }
+    }
+
+    fun sendEventToAnalytics(event: PmsEvents) {
+        activity?.let {
+            (it as PaymentListActivity).sendEventToAnalytics(event)
+        }
+    }
 
     companion object {
         const val ACTION_HOW_TO_PAY_REDIRECTION = 1
@@ -259,7 +286,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     override fun onRefresh() {
         viewModel.refreshPage()
-        loadInitialDeferredTransactions()
+        loadDeferredTransactions()
     }
 
 }

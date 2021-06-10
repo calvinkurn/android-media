@@ -16,6 +16,8 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pms.R
+import com.tokopedia.pms.analytics.PmsAnalytics
+import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.bankaccount.data.model.BankListModel
 import com.tokopedia.pms.bankaccount.domain.BankListDataUseCase
 import com.tokopedia.pms.bankaccount.view.activity.ChangeBankAccountActivity.Companion.PAYMENT_LIST_MODEL_EXTRA
@@ -39,6 +41,9 @@ class ChangeBankAccountFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var bankListDataUseCase: BankListDataUseCase
+
+    @Inject
+    lateinit var pmsAnalytics: dagger.Lazy<PmsAnalytics>
 
     private val viewModel: ChangeBankAccountViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -117,6 +122,7 @@ class ChangeBankAccountFragment : BaseDaggerFragment() {
     }
 
     fun changeBankAccountDetails() {
+        pmsAnalytics.get().sendPmsAnalyticsEvent(PmsEvents.ConfirmAccountDetailsEvent(10))
         showLoadingDialog()
         viewModel.saveDetailAccount(
             transactionId = paymentListModel?.transactionId ?: "",

@@ -240,7 +240,7 @@ class PaymentListMapperUseCase @Inject constructor(
         if (PaymentListItem.isShowEditKlikbcaButton == true) {
             val model: TransactionActionType = EditKlicBCA(EDIT_KLIC_BCA_USER_ID)
             model.actionName = context.getString(R.string.payment_label_change_bca_user_id)
-            model.actionIcon = IconUnify.UPLOAD
+            model.actionIcon = IconUnify.EDIT
             listOfActions.add(model)
         }
         if (PaymentListItem.isShowEditTransferButton == true) {
