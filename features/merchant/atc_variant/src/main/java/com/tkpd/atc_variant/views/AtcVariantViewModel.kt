@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
@@ -251,6 +252,9 @@ class AtcVariantViewModel @Inject constructor(
             )
             aggregatorData = result.variantAggregator
             minicartData = result.miniCartData?.toMutableMap()
+            if (aggregatorParams.pageSource == AtcVariantHelper.PDP_PAGE_SOURCE) {
+                updateActivityResult(shouldRefreshPreviousPage = true)
+            }
         } else {
             aggregatorData = aggregatorParams.variantAggregator
             minicartData = aggregatorParams.miniCartData?.toMutableMap()
@@ -335,13 +339,24 @@ class AtcVariantViewModel @Inject constructor(
                 ?: listOf())
         val selectedWarehouse = getSelectedWarehouse(selectedChild?.productId ?: "")
         val selectedMiniCart = getSelectedMiniCartItem(selectedChild?.productId ?: "")
+        val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
+                ?: selectedChild?.getFinalMinOrder() ?: 1
 
         if (selectedMiniCart != null && isTokoNow) {
-            val updatedQuantity = localQuantityData[selectedChild?.productId ?: ""]
-                    ?: selectedChild?.getFinalMinOrder() ?: 1
             getUpdateCartUseCase(selectedMiniCart, updatedQuantity, isTokoNow)
         } else {
-            val atcRequestParam = AtcCommonMapper.generateAtcData(actionButton, selectedChild, selectedWarehouse, shopIdInt, trackerAttributionPdp, trackerListNamePdp, categoryName, shippingMinPrice, userId)
+            val atcRequestParam = AtcCommonMapper.generateAtcData(
+                    actionButtonCart = actionButton,
+                    selectedChild = selectedChild,
+                    selectedWarehouse = selectedWarehouse,
+                    shopIdInt = shopIdInt,
+                    trackerAttributionPdp = trackerAttributionPdp,
+                    trackerListNamePdp = trackerListNamePdp,
+                    categoryName = categoryName,
+                    shippingMinPrice = shippingMinPrice,
+                    userId = userId,
+                    isTokoNow = isTokoNow,
+                    selectedStock = updatedQuantity)
             addToCart(atcRequestParam, isTokoNow)
         }
     }

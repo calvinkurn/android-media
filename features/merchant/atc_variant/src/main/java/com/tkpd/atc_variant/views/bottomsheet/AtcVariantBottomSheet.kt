@@ -172,8 +172,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeWishlist()
     }
 
-    private fun showToasterSuccess(message: String) {
-        viewContent?.rootView?.showToasterSuccess(message, R.dimen.space_toaster_offsite_atc_variant)
+    private fun showToasterSuccess(message: String, ctaText:String = "") {
+        viewContent?.rootView?.showToasterSuccess(message, R.dimen.space_toaster_offsite_atc_variant, ctaText = ctaText, ctaListener = {
+        })
     }
 
     private fun observeUpdateCart() {
@@ -181,7 +182,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             loadingProgressDialog?.dismiss()
 
             when (it) {
-                is Success -> showToasterSuccess(it.data)
+                is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
                 is Fail -> showToasterError(getErrorMessage(it.throwable))
             }
         })
@@ -265,22 +266,24 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun onSuccessTransaction(result: AddToCartDataModel) {
         val cartId = result.data.cartId
-        //todo change
-        onSuccessAtc(result.errorMessage.firstOrNull())
-//        when (buttonActionType) {
-//            ProductDetailCommonConstant.OCS_BUTTON -> {
-//                onSuccessOcs(result)
-//            }
-//            ProductDetailCommonConstant.OCC_BUTTON -> {
-//                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
-//            }
-//            ProductDetailCommonConstant.BUY_BUTTON -> {
-//                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
-//            }
-//            ProductDetailCommonConstant.ATC_BUTTON -> {
-//                onSuccessAtc(result.errorMessage.firstOrNull())
-//            }
-//        }
+        if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
+            onSuccessAtcTokoNow(result.errorMessage.firstOrNull())
+            return
+        }
+        when (buttonActionType) {
+            ProductDetailCommonConstant.OCS_BUTTON -> {
+                onSuccessOcs(result)
+            }
+            ProductDetailCommonConstant.OCC_BUTTON -> {
+                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+            }
+            ProductDetailCommonConstant.BUY_BUTTON -> {
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
+            }
+            ProductDetailCommonConstant.ATC_BUTTON -> {
+                onSuccessAtc(result.errorMessage.firstOrNull())
+            }
+        }
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -300,6 +303,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun getAtcActivity(): Activity {
         return context as AtcVariantActivity
+    }
+
+    private fun onSuccessAtcTokoNow(successMessage: String?) {
+        context?.let {
+            val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
+                successMessage
+            viewModel.updateActivityResult(atcSuccessMessage = message)
+            showToasterSuccess(message, getString(R.string.atc_variant_oke_label))
+        }
     }
 
     private fun onSuccessAtc(successMessage: String?) {
