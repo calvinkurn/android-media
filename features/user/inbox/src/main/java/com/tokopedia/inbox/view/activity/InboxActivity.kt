@@ -10,7 +10,6 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -309,9 +308,15 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             icon.addIcon(IconList.ID_SEARCH) { }
         }
         icon.addIcon(IconList.ID_CART) { }
-        icon.addIcon(IconList.ID_NAV_GLOBAL) { }
+        if (ableToShowGlobalNav()) {
+            icon.addIcon(IconList.ID_NAV_GLOBAL) { }
+        }
         toolbar?.setIcon(icon)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
+    }
+
+    private fun ableToShowGlobalNav(): Boolean {
+        return InboxConfig.page != InboxFragmentType.NOTIFICATION || isShowBottomNav
     }
 
     private fun setupView() {
