@@ -281,7 +281,6 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         )
     }
 
-    // #11B
     fun trackSingleProductCheckoutCardClick(
             location: String = LABEL_LOCATION,
             notification: NotificationItemViewBean
