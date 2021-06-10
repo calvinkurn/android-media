@@ -36,6 +36,7 @@ class CreateCategoryViewModelTest:
         `Then assert warehouse id from choose address`()
     }
 
+    // TODO: [Misael] test exclude_sc cat lv 2
     private fun `Then assert query param has default sort`() {
         assertThat(
                 categoryViewModel.queryParam[SearchApiConst.OB],

@@ -166,6 +166,7 @@ object FilterHelper {
         }
     }
 
+    // TODO: [Misael] Check here
     fun createParamsWithoutExcludes(mapParameter: Map<String, String>): Map<String, String> {
         val returnValue = mutableMapOf<String, String>()
         val paramWithExcludeKey = mutableMapOf<String, String>()

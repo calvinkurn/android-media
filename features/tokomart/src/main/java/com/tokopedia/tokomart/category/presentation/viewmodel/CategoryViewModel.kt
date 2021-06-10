@@ -28,6 +28,7 @@ import javax.inject.Named
 
 class CategoryViewModel @Inject constructor (
         baseDispatcher: CoroutineDispatchers,
+        // TODO: [Misael] Check here
         @param:Named(TOKONOW_CATEGORY_ID)
         val categoryId: Int,
         @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
@@ -77,6 +78,7 @@ class CategoryViewModel @Inject constructor (
 
     override fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         super.appendMandatoryParams(tokonowQueryParam)
+        // TODO: [Misael] Check here
 
         tokonowQueryParam[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
         tokonowQueryParam[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
@@ -86,6 +88,7 @@ class CategoryViewModel @Inject constructor (
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
         navigation = categoryModel.categoryDetail.data.navigation
 
+        // TODO: [Misael] Check categoryModel.categoryFilter n .quickFilter
         val headerDataView = HeaderDataView(
                 title = categoryModel.categoryDetail.data.name,
                 hasSeeAllCategoryButton = true,

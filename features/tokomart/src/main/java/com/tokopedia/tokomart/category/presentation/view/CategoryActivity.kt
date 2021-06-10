@@ -30,6 +30,7 @@ class CategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryCompo
         val categoryId = uri.getCategoryId()
         val queryParamMap = URLParser(uri.toString()).paramKeyValueMapDecoded
 
+        // TODO: [Misael] check here
         return DaggerCategoryComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
                 .categoryContextModule(CategoryContextModule(this))
@@ -37,10 +38,14 @@ class CategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryCompo
                 .build()
     }
 
+    // TODO: [Misael] ganti string
     private fun Uri?.getCategoryId(): Int =
             this?.pathSegments?.getOrNull(PATH_SEGMENT_INDEX_CATEGORY_ID).toIntOrZero()
 
     companion object {
         private const val PATH_SEGMENT_INDEX_CATEGORY_ID = 1
+
+        // TODO: [Misael] check here
+//        private const val PATH_SEGMENT_INDEX_CATEGORY_ID = 2
     }
 }
