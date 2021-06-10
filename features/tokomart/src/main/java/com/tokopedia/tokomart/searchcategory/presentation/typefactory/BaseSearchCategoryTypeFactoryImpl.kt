@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.EmptyProductListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
@@ -15,12 +16,14 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.BannerViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.EmptyProductDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.CategoryFilterViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ChooseAddressViewHolder
+import com.tokopedia.tokomart.searchcategory.presentation.viewholder.EmptyProductViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.LoadingMoreViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ProductCountViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ProductItemViewHolder
@@ -34,6 +37,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
         protected val quickFilterListener: QuickFilterListener,
         protected val categoryFilterListener: CategoryFilterListener,
         protected val productItemListener: ProductItemListener,
+        protected val emptyProductListener: EmptyProductListener,
 ): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory {
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = ChooseAddressViewHolder.LAYOUT
@@ -52,6 +56,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(viewModel: LoadingMoreModel) = LoadingMoreViewHolder.LAYOUT
 
+    override fun type(emptyProductDataView: EmptyProductDataView) = EmptyProductViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(view, productItemListener)
@@ -62,6 +68,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(view, quickFilterListener)
             ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(view)
             LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(view)
+            EmptyProductViewHolder.LAYOUT -> EmptyProductViewHolder(view, emptyProductListener)
             else -> super.createViewHolder(view, type)
         }
     }
