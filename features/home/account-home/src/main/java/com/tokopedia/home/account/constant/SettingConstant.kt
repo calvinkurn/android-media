@@ -37,6 +37,7 @@ object SettingConstant {
     const val SETTING_APP_ADVANCED_SETTING = 11
     const val SETTING_APP_ADVANCED_CLEAR_CACHE = 1
     const val SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2
+    const val SETTING_APP_ADVANCED_SCREEN_RECORDER = 3
     const val SETTING_ABOUT_US = 36
     const val SETTING_PUSH_NOTIF= 37
     const val SETTING_IMAGE_QUALITY = 38

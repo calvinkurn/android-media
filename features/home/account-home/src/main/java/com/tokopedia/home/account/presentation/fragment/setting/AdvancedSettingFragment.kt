@@ -34,6 +34,8 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
         val settingItems = ArrayList<SettingItemViewModel>()
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_CLEAR_CACHE,
                 getString(R.string.title_app_advanced_clear_cache)))
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SCREEN_RECORDER,
+                getString(R.string.title_app_advanced_screen_recorder)))
         return settingItems
     }
 
@@ -47,6 +49,8 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
         if (settingId == SettingConstant.SETTING_APP_ADVANCED_CLEAR_CACHE) {
             accountAnalytics.eventClickAdvancedSetting(AccountConstants.Analytics.CLEAR_CACHE)
             showDialogClearCache()
+        } else if (settingId == SettingConstant.SETTING_APP_ADVANCED_SCREEN_RECORDER) {
+            context?.let { RouteManager.route(it, ApplinkConstInternalGlobal.SCREEN_RECORDER) }
         }
     }
 
