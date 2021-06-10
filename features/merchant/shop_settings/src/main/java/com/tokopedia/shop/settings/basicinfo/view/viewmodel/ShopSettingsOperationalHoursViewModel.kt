@@ -71,7 +71,7 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
             closeNow: Boolean = false,
             closeStart: String = "",
             closeEnd: String = "",
-            closeNote: String = ""
+            closeNote: String = "example"
     ) {
         launchCatchError(dispatchers.io, block = {
             val requestParams = UpdateShopScheduleUseCase.createRequestParams(

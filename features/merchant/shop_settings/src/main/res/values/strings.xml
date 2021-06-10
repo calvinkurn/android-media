@@ -53,6 +53,8 @@
     <string name="shop_operational_hour_dialog_title">Simpan perubahan jam buka-tutup tokomu?</string>
     <string name="shop_operational_hour_dialog_description">Informasi jadwal toko akan langsung berubah sesuai dengan pengaturanmu.</string>
     <string name="shop_operational_hour_list_textview">%1$s - %2$s</string>
+    <string name="shop_operational_hour_is_on_holiday">Toko sedang libur</string>
+    <string name="shop_operational_hour_is_on_holiday_until">sampai %1$s</string>
     <string name="shop_operational_hour_edit_holiday_text">Ubah tanggal</string>
     <string name="shop_operational_hour_delete_holiday_text">Hapus jadwal</string>
     <string name="shop_operational_hour_ticker_description_auto_chat">Balas chat pembeli secara otomatis ketika tokomu tidak beroperasi. Atur di Sini</string>
@@ -60,6 +62,8 @@
     <string name="shop_operational_hour_set_holiday_schedule_title">Jadwal Toko Libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan jadwal libur tokomu?</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus jadwal libur toko?</string>
+    <string name="shop_operational_hour_abort_shop_holiday_dialog_title">Siap buka toko sekarang?</string>
+    <string name="shop_operational_hour_abort_shop_holiday_dialog_desc">Tokomu akan langsung beroperasi dan siap menerima pesanan. Cek jadwal buka-tutup toko hari ini setelah buka toko kembali</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_desc">Selama beristirahat, pembeli tidak bisa berbelanja di tokomu. Tapi jangan lupa proses pesanan yang sudah masuk, ya.</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_desc">Jadwal libur akan langsung terhapus. Jika tokomu sedang libur saat ini, toko akan otomatis dibuka kembali.</string>
 
@@ -170,6 +174,7 @@
     <string name="shop_settings_basic_info_title">Informasi Toko</string>
 
     <string name="label_open">Buka</string>
+    <string name="label_open_shop">Buka Toko</string>
     <string name="label_cancel">Batal</string>
     <string name="label_close">Tutup</string>
     <string name="label_save">Simpan</string>

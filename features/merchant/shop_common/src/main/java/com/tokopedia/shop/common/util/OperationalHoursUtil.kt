@@ -34,6 +34,7 @@ object OperationalHoursUtil {
     private const val INDONESIA_COUNTRY_ID = "ID"
     private val defaultLocale = Locale(INDONESIA_LANGUAGE_ID, INDONESIA_COUNTRY_ID)
     private val defaultLocalFormatter = SimpleDateFormat("dd MMMM yyyy", defaultLocale)
+    private val shortDateFormatter = SimpleDateFormat("dd/MM/yyyy", defaultLocale)
 
     /**
      * Day of operational represent as Int: 1 (Monday) - 7 (Sunday)
@@ -106,6 +107,10 @@ object OperationalHoursUtil {
             newSelectedMinutes = "0$selectedMinutes"
         }
         return "$newSelectedHour:$newSelectedMinutes:00"
+    }
+
+    fun toShortDateFormat(date: Date): String {
+        return shortDateFormatter.format(date)
     }
 
     fun toIndonesianDateFormat(date: Date): String {
