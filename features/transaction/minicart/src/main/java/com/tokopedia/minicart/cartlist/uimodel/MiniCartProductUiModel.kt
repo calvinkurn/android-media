@@ -29,7 +29,19 @@ data class MiniCartProductUiModel(
         var selectedUnavailableActionLink: String = "",
         var wholesalePriceGroup: List<WholesalePrice> = emptyList(),
         var maxNotesLength: Int = 0,
-        var isProductDisabled: Boolean = false
+        var isProductDisabled: Boolean = false,
+
+        // Fields below are for analytics purpose only
+        var campaignId: String = "",
+        var attribution: String = "",
+        var warehouseId: String = "",
+        var categoryId: String = "",
+        var category: String = "",
+        var shopId: String = "",
+        var shopName: String = "",
+        var shopType: String = "",
+        var freeShippingType: String = "",
+        var errorType: String = ""
 ) : Visitable<MiniCartListAdapterTypeFactory> {
 
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int {
@@ -61,7 +73,17 @@ data class MiniCartProductUiModel(
                 selectedUnavailableActionLink = this.selectedUnavailableActionLink,
                 wholesalePriceGroup = this.wholesalePriceGroup,
                 maxNotesLength = this.maxNotesLength,
-                isProductDisabled = this.isProductDisabled
+                isProductDisabled = this.isProductDisabled,
+                campaignId = this.campaignId,
+                attribution = this.attribution,
+                warehouseId = this.warehouseId,
+                categoryId = this.categoryId,
+                category = this.category,
+                shopId = this.shopId,
+                shopName = this.shopName,
+                shopType = this.shopType,
+                freeShippingType = this.freeShippingType,
+                errorType = this.errorType
         )
     }
 

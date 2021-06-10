@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.category.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokomart.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.viewholder.CategoryAisleViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
@@ -20,6 +21,7 @@ class CategoryTypeFactoryImpl(
         quickFilterListener: QuickFilterListener,
         categoryFilterListener: CategoryFilterListener,
         productItemListener: ProductItemListener,
+        private val categoryAisleListener: CategoryAisleListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
@@ -33,7 +35,7 @@ class CategoryTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            CategoryAisleViewHolder.LAYOUT -> CategoryAisleViewHolder(view)
+            CategoryAisleViewHolder.LAYOUT -> CategoryAisleViewHolder(view, categoryAisleListener)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -47,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout

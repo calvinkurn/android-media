@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.EventObserver
@@ -48,17 +49,21 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
-import com.tokopedia.tokomart.searchcategory.presentation.listener.*
+import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toDp
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -331,9 +336,9 @@ abstract class BaseSearchCategoryFragment:
         movingPosition += dy
         headerBackground?.y = -(movingPosition.toFloat())
         if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
-            navToolbar?.showShadow(lineShadow = true)
+            navToolbar?.showShadow(lineShadow = false)
         } else {
-            navToolbar?.hideShadow(lineShadow = true)
+            navToolbar?.hideShadow(lineShadow = false)
         }
     }
 
@@ -367,7 +372,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
         getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
-        getViewModel().addToCartEventMessageLiveData.observeEvent(this::showAddToCartMessage)
+        getViewModel().cartEventMessageLiveData.observeEvent(this::showAddToCartMessage)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -407,7 +412,7 @@ abstract class BaseSearchCategoryFragment:
         RouteManager.route(
                 context,
                 ApplinkConstInternalTokoMart.CATEGORY_LIST,
-                SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+                getViewModel().warehouseId,
         )
     }
 
@@ -525,6 +530,16 @@ abstract class BaseSearchCategoryFragment:
         indices.forEach {
             searchCategoryAdapter?.notifyItemChanged(it)
         }
+    }
+
+    override fun onProductClick(productItemDataView: ProductItemDataView) {
+        val context = context ?: return
+
+        RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productItemDataView.id,
+        )
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {

@@ -5,20 +5,20 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
+import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokomart.category.domain.model.TokonowCategoryDetail.NavigationItem
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
-import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID
 import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokomart.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
@@ -40,6 +40,7 @@ class CategoryViewModel @Inject constructor (
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         addToCartUseCase: AddToCartUseCase,
+        updateCartUseCase: UpdateCartUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseSearchCategoryViewModel(
@@ -49,6 +50,7 @@ class CategoryViewModel @Inject constructor (
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
         addToCartUseCase,
+        updateCartUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
 ) {
@@ -68,7 +70,7 @@ class CategoryViewModel @Inject constructor (
         val requestParams = super.createRequestParams()
 
         requestParams.putString(CATEGORY_ID, categoryId.toString())
-        requestParams.putString(WAREHOUSE_ID, HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
+        requestParams.putString(WAREHOUSE_ID, chooseAddressData?.warehouse_id ?: "")
 
         return requestParams
     }
@@ -117,6 +119,7 @@ class CategoryViewModel @Inject constructor (
         return CategoryAisleItemDataView(
                 name = navigationItem?.name ?: "",
                 imgUrl = navigationItem?.imageUrl ?: "",
+                applink = navigationItem?.applinks ?: "",
         )
     }
 

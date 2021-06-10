@@ -91,6 +91,19 @@ internal open class InitialStatePresenterTestFixtures {
         confirmVerified(initialStateView)
     }
 
+    protected fun `Then verify initial state view behavior for failed refresh`() {
+        verifyOrder {
+            initialStateView.chooseAddressData
+            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.showInitialStateResult(capture(slotVisitableList))
+            initialStateView.chooseAddressData
+        }
+        confirmVerified(initialStateView)
+    }
+
     protected fun `Then verify view interaction for load data failed with exception`() {
         verify {
             initialStateView.chooseAddressData

@@ -12,10 +12,23 @@ interface MiniCartListActionListener {
 
     fun onNotesChanged(productId: String, newNotes: String)
 
-    fun onShowSimilarProductClicked(appLink: String)
+    fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel)
 
     fun onShowUnavailableItemsCLicked()
 
     fun onToggleShowHideUnavailableItemsClicked()
 
+    fun onProductInfoClicked(element: MiniCartProductUiModel)
+
+    fun onQuantityPlusClicked()
+
+    fun onQuantityMinusClicked()
+
+    fun onInputQuantityClicked(qty: Int)
+
+    fun onWriteNotesClicked()
+
+    fun onChangeNotesClicked()
+
+    fun onShowUnavailableItem(element: MiniCartProductUiModel)
 }

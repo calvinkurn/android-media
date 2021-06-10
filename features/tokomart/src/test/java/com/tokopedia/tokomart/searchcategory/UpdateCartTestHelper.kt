@@ -1,13 +1,15 @@
 package com.tokopedia.tokomart.searchcategory
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_SHOP_ID_PLEASE_DELETE
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.dummyChooseAddressData
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.miniCartItems
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.miniCartSimplifiedData
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
@@ -19,29 +21,6 @@ class UpdateCartTestHelper(
         private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         private val callback: Callback,
 ) {
-    private val miniCartWidgetData = MiniCartWidgetData(
-            totalProductCount = 7,
-            totalProductPrice = 1000000,
-    )
-
-    private val miniCartItems = listOf(
-            MiniCartItem(productId = "574261655", productParentId = "0", quantity = 10),
-
-            MiniCartItem(productId = "574261652", productParentId = "0", quantity = 3),
-
-            MiniCartItem(productId = "576261652", productParentId = "1682734974", quantity = 2),
-            MiniCartItem(productId = "576261651", productParentId = "1682734974", quantity = 6),
-            MiniCartItem(productId = "576261653", productParentId = "1682734974", quantity = 7),
-
-            MiniCartItem(productId = "576861653", productParentId = "2682234972", quantity = 1),
-            MiniCartItem(productId = "576861652", productParentId = "2682234972", quantity = 5),
-    )
-
-    private val miniCartSimplifiedData = MiniCartSimplifiedData(
-            miniCartWidgetData = miniCartWidgetData,
-            miniCartItems = miniCartItems,
-            isShowMiniCartWidget = true,
-    )
 
     fun `onViewResumed should update mini cart and quantity in product list`() {
         callback.`Given first page API will be successful`()
@@ -83,7 +62,7 @@ class UpdateCartTestHelper(
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         }
 
-        assertThat(shopIdListSlot.captured.first(), shouldBe(HARDCODED_SHOP_ID_PLEASE_DELETE))
+        assertThat(shopIdListSlot.captured.first(), shouldBe(dummyChooseAddressData.shop_id))
     }
 
     private fun `Then assert mini cart widget live data is updated`(
@@ -181,6 +160,25 @@ class UpdateCartTestHelper(
         val isShowMiniCartWidget = miniCartSimplifiedData.isShowMiniCartWidget
 
         assertThat(baseViewModel.isShowMiniCartLiveData.value, shouldBe(isShowMiniCartWidget))
+    }
+
+    fun `onViewReloadPage should have product with quantity from mini cart`() {
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given view created and resumed`()
+
+        `When view reload page`()
+
+        `Then assert product quantity is updated`()
+    }
+
+    private fun `Given view created and resumed`() {
+        baseViewModel.onViewCreated()
+        baseViewModel.onViewResumed()
+    }
+
+    private fun `When view reload page`() {
+        baseViewModel.onViewReloadPage()
     }
 
     fun `onViewUpdateCartItems should update quantity in product list`() {

@@ -36,9 +36,6 @@ class MiniCartProductViewHolder(private val view: View,
         AbstractViewHolder<MiniCartProductUiModel>(view) {
 
     companion object {
-        const val LABEL_CASHBACK = "cashback"
-        const val LABEL_DISCOUNT = "label diskon"
-
         val LAYOUT = R.layout.item_mini_cart_product
     }
 
@@ -132,6 +129,13 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductName(element: MiniCartProductUiModel) {
         textProductName?.text = element.productName
+        textProductName?.setOnClickListener(productInfoClickListener(element))
+    }
+
+    private fun productInfoClickListener(element: MiniCartProductUiModel): View.OnClickListener {
+        return View.OnClickListener {
+            listener.onProductInfoClicked(element)
+        }
     }
 
     private fun renderProductQtyLeft(element: MiniCartProductUiModel) {
@@ -210,12 +214,14 @@ class MiniCartProductViewHolder(private val view: View,
                 ImageHandler.loadImageWithoutPlaceholder(it, element.productImageUrl)
             }
         }
+        imageProduct?.setOnClickListener(productInfoClickListener(element))
     }
 
     private fun renderProductInformation(element: MiniCartProductUiModel) {
         val tmpProductInformation = element.productInformation.toMutableList()
         if (element.productWholeSalePrice > 0) {
-            val wholesaleLabel = layoutProductInfo?.context?.getString(R.string.mini_cart_label_wholesale_price) ?: ""
+            val wholesaleLabel = layoutProductInfo?.context?.getString(R.string.mini_cart_label_wholesale_price)
+                    ?: ""
             tmpProductInformation.add(wholesaleLabel)
         }
         if (tmpProductInformation.isNotEmpty()) {
@@ -243,9 +249,11 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductNotes(element: MiniCartProductUiModel) {
         textNotes?.setOnClickListener {
+            listener.onWriteNotesClicked()
             renderProductNotesEditable(element)
         }
         textNotesChange?.setOnClickListener {
+            listener.onChangeNotesClicked()
             renderProductNotesEditable(element)
         }
 
@@ -425,6 +433,16 @@ class MiniCartProductViewHolder(private val view: View,
                 true
             } else false
         }
+        qtyEditorProduct?.editText?.setOnClickListener {
+            val qty = qtyEditorProduct?.editText?.text?.toString().toIntOrZero()
+            listener.onInputQuantityClicked(qty)
+        }
+        qtyEditorProduct?.setAddClickListener {
+            listener.onQuantityPlusClicked()
+        }
+        qtyEditorProduct?.setSubstractListener {
+            listener.onQuantityMinusClicked()
+        }
     }
 
     private fun renderProductAction(element: MiniCartProductUiModel) {
@@ -451,7 +469,7 @@ class MiniCartProductViewHolder(private val view: View,
         textProductUnavailableAction?.text = action.message
         textProductUnavailableAction?.setOnClickListener {
             if (element.selectedUnavailableActionLink.isNotBlank()) {
-                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink)
+                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
             }
         }
         textProductUnavailableAction?.context?.let {
@@ -462,6 +480,7 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductAlpha(element: MiniCartProductUiModel) {
         if (element.isProductDisabled) {
+            listener.onShowUnavailableItem(element)
             imageProduct?.alpha = 0.5f
             textProductName?.alpha = 0.5f
             textProductVariant?.alpha = 0.5f

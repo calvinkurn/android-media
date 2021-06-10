@@ -163,7 +163,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         val nonVariant = productCardModel.nonVariant ?: return
         val newValue = nonVariant.minQuantity
 
-        addToCartNonVariantClickListener?.onQuantityChanged(newValue)
         quantityEditorNonVariant?.setValue(newValue)
         quantityEditorNonVariant?.show()
         buttonAddToCart?.gone()

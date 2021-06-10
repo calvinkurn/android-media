@@ -28,6 +28,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     val currentShopIds: LiveData<List<String>>
         get() = _currentShopIds
 
+    private val _currentPage = MutableLiveData<String>()
+    val currentPage: LiveData<String>
+        get() = _currentPage
+
     // Widget DATA
     private val _globalEvent = MutableLiveData<GlobalEvent>()
     val globalEvent: LiveData<GlobalEvent>
@@ -46,9 +50,17 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
 
     private var lastDeletedProductItem: MiniCartProductUiModel? = null
 
+    fun initializeCurrentPage(currentPage: String) {
+        _currentPage.value = currentPage
+    }
+
+    fun initializeShopIds(shopIds: List<String>) {
+        _currentShopIds.value = shopIds
+    }
+
     fun getLatestWidgetState(shopIds: List<String>? = null) {
         if (shopIds != null) {
-            _currentShopIds.value = shopIds
+            initializeShopIds(shopIds)
             getMiniCartListSimplifiedUseCase.setParams(shopIds)
         } else {
             val tmpShopIds = currentShopIds.value ?: emptyList()
@@ -66,7 +78,9 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
-                    _miniCartListBottomSheetUiModel.value = miniCartListViewHolderMapper.mapUiModel(it)
+                    val tmpMiniCartListUiModel = miniCartListViewHolderMapper.mapUiModel(it)
+                    tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
+                    _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
                 },
                 onError = {
                     if (isFirstLoad) {
@@ -471,5 +485,9 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
 
     fun getLatestMiniCartData(): MiniCartSimplifiedData {
         return miniCartListViewHolderMapper.reverseMapUiModel(miniCartListListBottomSheetUiModel.value)
+    }
+
+    fun updateMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        _miniCartSimplifiedData.value = miniCartSimplifiedData
     }
 }
