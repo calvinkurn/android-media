@@ -29,6 +29,12 @@ fun TextView.clearUnifyDrawableEnd() {
     this.setCompoundDrawables(null, null, null, null)
 }
 
+/**
+ * Toggle height of widget to wrap content or 0.
+ * This is used for statistic page because we need to implement widget removal effect
+ * without actually removing the widget in the adapter data list.
+ * If you need to use this, please make sure that the widget view is wrapped in CardUnify
+ */
 internal fun View.toggleWidgetHeight(isShown: Boolean) {
     layoutParams.height =
             if (isShown) {
