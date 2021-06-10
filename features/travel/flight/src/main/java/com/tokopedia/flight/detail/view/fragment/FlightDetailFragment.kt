@@ -1,4 +1,4 @@
-package com.tokopedia.flight.detail.view.fragmentnew
+package com.tokopedia.flight.detail.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
