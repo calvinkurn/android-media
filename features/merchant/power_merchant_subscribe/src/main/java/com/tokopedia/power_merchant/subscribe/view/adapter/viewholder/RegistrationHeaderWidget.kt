@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.widget_pm_registration_header.view.*
 
 class RegistrationHeaderWidget(
         itemView: View,
-        private val listener: Listener,
         private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetRegistrationHeaderUiModel>(itemView) {
 
@@ -83,6 +82,9 @@ class RegistrationHeaderWidget(
             adapter = termAdapter
         }
         showTermList(element.registrationTerms)
+
+        val isEligible = element.registrationTerms.all { it.isChecked }
+        setOnExpandChanged(!isEligible, element)
     }
 
     private fun onTermCtaClickedListener(term: RegistrationTermUiModel) {
@@ -91,9 +93,5 @@ class RegistrationHeaderWidget(
             is RegistrationTermUiModel.ShopScore -> powerMerchantTracking.sendEventClickLearnMoreShopPerformance()
             is RegistrationTermUiModel.Kyc -> powerMerchantTracking.sendEventClickKycDataVerification()
         }
-    }
-
-    interface Listener {
-
     }
 }
