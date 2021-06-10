@@ -12,7 +12,7 @@ import retrofit2.http.Part
 import retrofit2.http.PartMap
 
 /**
- * Created by alvarisi on 10/30/17.
+ * Created by Furqan on 06/10/2021.
  */
 interface FlightApi {
 

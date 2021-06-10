@@ -5,7 +5,7 @@ import android.content.Intent
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 
 /**
- * Created by alvarisi on 12/5/17.
+ * Created by Furqan on 06/10/2021.
  */
 object FlightFlowUtil {
     fun actionSetResultAndClose(activity: Activity, intent: Intent, status: Int) {

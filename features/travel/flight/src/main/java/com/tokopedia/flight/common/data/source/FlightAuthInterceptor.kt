@@ -17,7 +17,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
- * @author by furqan on 09/06/2021
+ * Created by Furqan on 09/06/2021.
  */
 class FlightAuthInterceptor @Inject constructor(@ApplicationContext context: Context,
                                                 networkRouter: NetworkRouter,

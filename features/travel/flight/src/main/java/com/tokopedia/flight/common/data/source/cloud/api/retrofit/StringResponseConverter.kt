@@ -7,6 +7,9 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
 
+/**
+ * Created by Furqan on 06/10/2021.
+ */
 class StringResponseConverter : Converter.Factory() {
     override fun responseBodyConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
         return if (String::class.java == type) {

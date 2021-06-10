@@ -3,7 +3,7 @@ package com.tokopedia.flight.common.di.scope
 import javax.inject.Scope
 
 /**
- * @author kulomady on 12/26/16.
+ * Created by Furqan on 06/10/2021.
  */
 @Scope
 @kotlin.annotation.Retention(AnnotationRetention.BINARY)
