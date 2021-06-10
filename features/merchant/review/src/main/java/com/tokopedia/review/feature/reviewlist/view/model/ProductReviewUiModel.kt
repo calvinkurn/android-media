@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.reviewlist.view.model
 import com.tokopedia.review.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
 
 data class ProductReviewUiModel(
-        var productID: Long? = 0,
+        var productID: String = "",
         var productImageUrl: String? = "",
         var productName: String? = "",
         var rating: Float? = 0.0F,

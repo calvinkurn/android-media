@@ -54,7 +54,7 @@ class SellerReviewListViewHolder(val view: View,
         labelKejarUlasan.showWithCondition(element.isKejarUlasan)
 
         itemView.setOnClickListener {
-            sellerReviewListener.onItemProductReviewClicked(element.productID.orZero(), adapterPosition, element.productImageUrl.orEmpty())
+            sellerReviewListener.onItemProductReviewClicked(element.productID, adapterPosition, element.productImageUrl.orEmpty())
         }
 
         if(adapterPosition == 1) {
@@ -63,7 +63,7 @@ class SellerReviewListViewHolder(val view: View,
     }
 
     interface SellerReviewListListener {
-        fun onItemProductReviewClicked(productId: Long, position: Int, imageUrl: String)
+        fun onItemProductReviewClicked(productId: String, position: Int, imageUrl: String)
         fun onAddedCoachMarkItemProduct(view: View)
     }
 }

@@ -129,7 +129,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
-                productID = getIntExtra(PRODUCT_ID, 0).toString()
+                productID = getStringExtra(PRODUCT_ID) ?: ""
                 chipFilterBundle = getStringExtra(CHIP_FILTER) ?: ReviewConstants.ALL_VALUE
                 productImageUrl = getStringExtra(PRODUCT_IMAGE) ?: ""
             }

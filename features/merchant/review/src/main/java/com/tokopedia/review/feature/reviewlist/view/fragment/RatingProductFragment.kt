@@ -629,7 +629,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    override fun onItemProductReviewClicked(productId: Long, position: Int, imageUrl: String) {
+    override fun onItemProductReviewClicked(productId: String, position: Int, imageUrl: String) {
         tracking.eventClickItemRatingProduct(
                 shopId = userSession.shopId.orEmpty(),
                 productId = productId.toString(),
