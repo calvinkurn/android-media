@@ -18,7 +18,11 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
+import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
@@ -34,7 +38,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import kotlin.Pair;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
 import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
@@ -74,7 +77,9 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private int imageIndex;
     private int[] widthHeight;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private UserSessionInterface userSession;
+
+    private Bitmap lastStateImage;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
@@ -252,6 +257,42 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         }
     }
 
+    public void saveLastStateBitmap() {
+        lastStateImage = gestureCropImageView.getViewBitmap();
+    }
+
+    public void setWatermark(int watermarkType) {
+        // first, reset the watermark state to back to default
+        cancelWatermark();
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+
+        if (bitmap == null) return;
+
+        // preparing the watermark builder
+        WatermarkBuilder watermarkBuilder = WatermarkBuilder
+                .create(requireContext(), bitmap)
+                .setTileMode(true);
+
+        if (watermarkType == Constant.TYPE_WATERMARK_TOPED) {
+            imageEditPreviewPresenter.setTokopediaWatermark(watermarkBuilder);
+        } else if (watermarkType == Constant.TYPE_WATERMARK_USER_INFO) {
+            /*
+            * get user info,
+            * the main purpose is to enable user info watermark by
+            * set the user info as user name if the user is buyer.
+            * */
+            String userInfo;
+
+            if (userSession.hasShop()) {
+                userInfo = userSession.getShopName();
+            } else {
+                userInfo = userSession.getName();
+            }
+
+            imageEditPreviewPresenter.setUserInfoNameWatermark(userInfo, watermarkBuilder);
+        }
+    }
+
     public int getImageIndex() {
         return imageIndex;
     }
@@ -329,6 +370,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageProcessingUtil.getCompressFormat(edittedImagePath));
     }
 
+    public void saveWatermarkImage() {
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        imageEditPreviewPresenter.saveCurrentBitmapImage(bitmap, ImageProcessingUtil.getCompressFormat(edittedImagePath));
+    }
+
     @Override
     public void onErrorSaveBrightnessImage(Throwable e) {
         onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
@@ -352,6 +398,21 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
     }
 
+    @Override
+    public void onErrorWatermarkImage(Throwable e) {
+        onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
+    }
+
+    @Override
+    public void onSuccessSaveWatermarkImage(String filePath) {
+        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
+    }
+
+    @Override
+    public void onSuccessGetWatermarkImage(Bitmap bitmap) {
+        gestureCropImageView.setImageBitmap(bitmap);
+    }
+
     private void initProgressBar(View view) {
         progressBar = view.findViewById(R.id.progressbar);
     }
@@ -359,6 +420,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        userSession = new UserSession(requireContext());
         setImageData();
     }
 
@@ -510,7 +572,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void cancelWatermark() {
-        setToInitialRatio();
+        gestureCropImageView.setImageBitmap(lastStateImage);
     }
 
     public void cancelBrightness() {
@@ -528,7 +590,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         super.onDestroy();
         if (imageEditPreviewPresenter != null) {
             imageEditPreviewPresenter.detachView();
-            compositeSubscription.clear();
         }
     }
 
