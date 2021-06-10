@@ -60,6 +60,14 @@ val PlayVideoPlayerUiModel.isYouTube: Boolean
     get() = this is PlayVideoPlayerUiModel.YouTube
 
 @OptIn(ExperimentalContracts::class)
+fun PlayVideoPlayerUiModel.isCasting(): Boolean {
+    contract {
+        returns(true) implies (this@isCasting is PlayVideoPlayerUiModel.General.Complete)
+    }
+    return this is PlayVideoPlayerUiModel.General.Complete && this.playerType is PlayerType.Cast
+}
+
+@OptIn(ExperimentalContracts::class)
 fun PlayVideoPlayerUiModel.isGeneral(): Boolean {
     contract {
         returns(true) implies (this@isGeneral is PlayVideoPlayerUiModel.General)

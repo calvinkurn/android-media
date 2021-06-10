@@ -10,18 +10,22 @@ import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -57,6 +61,13 @@ class VideoViewComponent(
         } else {
             ivThumbnail.hide()
         }
+    }
+
+    fun showThumbnail(url: String) {
+        ivThumbnail.show()
+        Glide.with(ivThumbnail.context)
+                .load(url)
+                .into(ivThumbnail)
     }
 
     fun hideThumbnail() {

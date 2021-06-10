@@ -50,6 +50,8 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.view.uimodel.recom.PlayerType
+import com.tokopedia.play.view.uimodel.recom.isCasting
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -345,6 +347,7 @@ class PlayVideoFragment @Inject constructor(
             videoView.setOrientation(orientation, meta.videoStream.orientation)
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
+            videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
         })
     }
 
@@ -435,21 +438,35 @@ class PlayVideoFragment @Inject constructor(
         when (videoPlayer) {
             is PlayVideoPlayerUiModel.YouTube, PlayVideoPlayerUiModel.Unknown -> videoView.hide()
             is PlayVideoPlayerUiModel.General -> {
-                if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
+                if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) {
+                    when (val playerType = videoPlayer.playerType) {
+                        PlayerType.Client -> {
+                            videoView.setPlayer(videoPlayer.exoPlayer)
+                            videoView.hideThumbnail()
+                        }
+                        is PlayerType.Cast -> videoView.showThumbnail(playerType.coverUrl)
+                    }
+                }
 
                 videoAnalyticHelper.onNewVideoState(state)
                 videoView.show()
-                handleVideoStateChanged(state)
+                if (videoPlayer is PlayVideoPlayerUiModel.General.Complete && videoPlayer.playerType == PlayerType.Client) handleVideoStateChanged(state)
             }
         }
     }
 
     private fun videoLoadingViewOnStateChanged(
             state: PlayViewerVideoState = playViewModel.viewerVideoState,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {
             videoLoadingView.hide()
+            return
+        }
+
+        if (videoPlayer.isCasting()) {
+            videoLoadingView.showCasting()
             return
         }
 

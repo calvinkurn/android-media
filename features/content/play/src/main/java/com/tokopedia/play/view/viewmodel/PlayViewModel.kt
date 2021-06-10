@@ -834,7 +834,9 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun updateVideoMetaInfo(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        if (videoMetaInfo.videoPlayer is PlayVideoPlayerUiModel.General) playGeneralVideo(videoMetaInfo.videoPlayer)
+        if (videoMetaInfo.videoPlayer is PlayVideoPlayerUiModel.General) {
+            if (videoMetaInfo.videoPlayer is PlayVideoPlayerUiModel.General.Complete && videoMetaInfo.videoPlayer.playerType == PlayerType.Client) playGeneralVideo(videoMetaInfo.videoPlayer)
+        }
         else playVideoPlayer.release()
     }
 
