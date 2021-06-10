@@ -1,5 +1,5 @@
-query getTopAdsProductManage($productID:Int!, $shopID:Int!){
-   	topAdsGetProductManage(type:1, shop_id:$shopID, item_id:$productID){
+query topAdsGetProductManageV2($productID:String!, $shopID:String!){
+   	topAdsGetProductManageV2(type:1, shop_id:$shopID, item_id:$productID){
 			data {
 			  ad_id
 			  ad_type

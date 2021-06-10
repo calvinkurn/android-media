@@ -48,6 +48,23 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
             }
         """.trimIndent()
 
+        val QUERY_TOP_ADS_PRODUCT_MANAGE = """
+            query topAdsGetProductManageV2(${'$'}productID :String!,${'$'}shopID:String!,${'$'}source:String!){
+               	topAdsGetProductManageV2(type:1, shop_id:${'$'}shopID,item_id:${'$'}productID,source:${'$'}source){
+            			data {
+            			  ad_id
+            			  ad_type
+            			  is_enable_ad
+            			  item_id
+            			  item_image
+            			  item_name
+            			  shop_id
+            			  manage_link
+            			}
+                }
+            }
+        """.trimIndent()
+
         fun createParams(shopId: Int, productId: String, isShopOwner: Boolean): RequestParams = RequestParams.create().apply {
             putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
@@ -75,8 +92,10 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
                 TopAdsPdpAffiliateResponse::class.java, affilateParams)
 
-        val topAdsManageParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toLongOrZero(), ProductDetailCommonConstant.PARAM_SHOP_ID to shopId)
-        val topAdsManageRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_TOP_ADS_MANAGE_PRODUCT],
+        val topAdsManageParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
+                ProductDetailCommonConstant.PARAM_SHOP_ID to shopId.toString(),
+                ProductDetailCommonConstant.PARAM_TEASER_SOURCE to "pdp")
+        val topAdsManageRequest = GraphqlRequest(QUERY_TOP_ADS_PRODUCT_MANAGE,
                 TopAdsGetProductManageResponse::class.java, topAdsManageParams)
 
         val topAdsShopParams = mapOf(ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID to shopId)
