@@ -89,6 +89,19 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                         ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.ovoData.phoneNumber.errorMessage,
                                 type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
+            if (payment.walletData.enableWalletAmountValidation && payment.walletData.isPhoneNumberMissing) {
+                if (payment.isOvoOnlyCampaign) {
+                    if (currentState == OccButtonState.NORMAL) {
+                        currentState = OccButtonState.DISABLE
+                    }
+                    return@withContext payment.copy(isCalculationError = true, errorData = null,
+                        ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.walletData.activation.errorMessage, buttonTitle = payment.walletData.activation.buttonTitle,
+                            type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = "")) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
+                }
+                return@withContext payment.copy(isCalculationError = true, errorData = null,
+                    ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = payment.walletData.activation.errorMessage, buttonTitle = payment.walletData.activation.buttonTitle,
+                        type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = "")) to orderTotal.copy(orderCost = orderCost, paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
             if (payment.isOvo && payment.ovoData.isActivationRequired) {
                 if (payment.isOvoOnlyCampaign) {
                     if (currentState == OccButtonState.NORMAL) {
@@ -133,6 +146,19 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                 return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.ovoData.topUp.errorMessage, buttonTitle = payment.ovoData.topUp.buttonTitle,
                         type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
                         paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
+            }
+            if (payment.walletData.enableWalletAmountValidation && subtotal > payment.walletAmount) {
+                if (payment.specificGatewayCampaignOnlyType > 0) {
+                    if (currentState == OccButtonState.NORMAL) {
+                        currentState = OccButtonState.DISABLE
+                    }
+                    return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.walletData.topUp.errorMessage, buttonTitle = payment.walletData.topUp.buttonTitle,
+                        type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.walletData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
+                        paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
+                }
+                return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, message = payment.walletData.topUp.errorMessage, buttonTitle = payment.walletData.topUp.buttonTitle,
+                    type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.walletData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
+                    paymentErrorMessage = null, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
             }
             if (payment.creditCard.selectedTerm?.isError == true && currentState == OccButtonState.NORMAL) {
                 currentState = OccButtonState.DISABLE

@@ -22,7 +22,10 @@ data class OrderPayment(
         val isOvoOnlyCampaign: Boolean = false,
         val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
         val ovoErrorData: OrderPaymentOvoErrorData? = null,
-        val errorData: OrderPaymentErrorData? = null
+        val errorData: OrderPaymentErrorData? = null,
+        val bid: String = "",
+        val specificGatewayCampaignOnlyType: Int = 0,
+        val walletData: OrderPaymentWalletAdditionalData = OrderPaymentWalletAdditionalData()
 ) {
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")
@@ -133,6 +136,23 @@ data class OrderPaymentOvoAdditionalData(
         get() = phoneNumber.isRequired
 }
 
+data class OrderPaymentWalletAdditionalData(
+    val walletType: Int = 0,
+    val enableWalletAmountValidation: Boolean = false,
+    val activation: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
+    val topUp: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
+    val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData()
+) {
+    val isActivationRequired: Boolean
+        get() = activation.isRequired
+
+    val isTopUpRequired: Boolean
+        get() = topUp.isRequired
+
+    val isPhoneNumberMissing: Boolean
+        get() = phoneNumber.isRequired
+}
+
 @Parcelize
 data class OrderPaymentOvoCustomerData(
         val name: String = "",
@@ -148,6 +168,17 @@ data class OrderPaymentOvoActionData(
         val isHideDigital: Int = 0
 )
 
+data class OrderPaymentWalletActionData(
+    val isRequired: Boolean = false,
+    val buttonTitle: String = "",
+    val successToaster: String = "",
+    val errorToaster: String = "",
+    val errorMessage: String = "",
+    val isHideDigital: Int = 0,
+    val headerTitle: String = ""
+)
+
+// TODO : to be renamed (ovo --> wallet)
 data class OrderPaymentOvoErrorData(
         val isBlockingError: Boolean = false,
         val message: String = "",

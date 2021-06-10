@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.oneclickcheckout.common.WALLET_TYPE_GOPAY
 import com.tokopedia.oneclickcheckout.common.data.model.*
 import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
@@ -204,10 +205,14 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapOrderPayment(data: GetOccCartData): OrderPayment {
         val payment = data.profileResponse.payment
+        // is it okay to fill with null?
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), mapPaymentRevampErrorMessage(payment.occRevampErrorMessage), data.errorTicker,
-                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data))
+                payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data), null,
+                null, payment.bid, payment.specificGatewayCampaignOnlyType, mapPaymentWalletDummyData())
+            // TODO : unremark & delete dummy data
+            // mapPaymentWalletData(payment.walletAdditionalData))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -264,8 +269,28 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
+    private fun mapPaymentWalletData(walletAdditionalData: WalletAdditionalData): OrderPaymentWalletAdditionalData {
+        return OrderPaymentWalletAdditionalData(
+            walletAdditionalData.walletType, walletAdditionalData.enableWalletAmountValidation,
+            activation = mapPaymentWalletActionData(walletAdditionalData.activation),
+            topUp = mapPaymentWalletActionData(walletAdditionalData.topUp),
+            phoneNumber = mapPaymentWalletActionData(walletAdditionalData.phoneNumberRegistered)
+        )
+    }
+
+    private fun mapPaymentWalletDummyData(): OrderPaymentWalletAdditionalData {
+        return OrderPaymentWalletAdditionalData(
+            WALLET_TYPE_GOPAY, true,
+            activation = OrderPaymentWalletActionData(true, "Aktivasi", "Yay, aktivasi Gopay berhasil. Sekarang kamu bisa bayar pakai Gopay.")
+        )
+    }
+
     private fun mapPaymentOvoActionData(ovoActionData: OvoActionData): OrderPaymentOvoActionData {
         return OrderPaymentOvoActionData(ovoActionData.isRequired, ovoActionData.buttonTitle, ovoActionData.errorMessage, ovoActionData.errorTicker, ovoActionData.isHideDigital)
+    }
+
+    private fun mapPaymentWalletActionData(walletData: WalletData): OrderPaymentWalletActionData {
+        return OrderPaymentWalletActionData(walletData.isRequired, walletData.buttonTitle, walletData.successToaster, walletData.errorToaster, walletData.errorMessage, walletData.isHideDigital, walletData.headerTitle)
     }
 
     private fun mapPaymentOvoCustomerData(data: CustomerData): OrderPaymentOvoCustomerData {
