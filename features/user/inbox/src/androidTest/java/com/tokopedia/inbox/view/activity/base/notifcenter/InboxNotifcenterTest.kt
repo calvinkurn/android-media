@@ -28,7 +28,6 @@ open class InboxNotifcenterTest : InboxTest() {
     private fun setupNotifcenterDaggerComponent() {
         notifcenterComponent = DaggerFakeNotificationComponent.builder()
             .fakeBaseAppComponent(baseComponent)
-            .commonModule(CommonModule(context))
             .build()
     }
 
