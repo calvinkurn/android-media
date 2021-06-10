@@ -5,7 +5,6 @@
     android:id="@+id/best_seller_info_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:orientation="vertical"
     tools:ignore="RtlSymmetry">
 

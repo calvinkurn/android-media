@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
 
@@ -43,6 +44,7 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("stock")
