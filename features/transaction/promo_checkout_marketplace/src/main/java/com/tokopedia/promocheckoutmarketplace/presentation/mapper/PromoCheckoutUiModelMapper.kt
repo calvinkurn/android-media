@@ -106,7 +106,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 id = index.toString(),
                 uiData = PromoListItemUiModel.UiData().apply {
                     uniqueId = couponItem.uniqueId
-                    shopId = couponItem.shopId
+                    shopId = couponItem.shopId.toInt()
                     title = couponItem.title
                     subTitle = couponItem.expiryInfo
                     benefitAmount = couponItem.benefitAmount
