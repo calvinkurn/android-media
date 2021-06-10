@@ -234,10 +234,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                     category = category.substring(1, category.length() - 1);
                                 }
                             } else {
-//                                RecommendationDigiPersoResponse rechargeWidgetResponse = response.getData(RecommendationDigiPersoResponse.class);
-//                                if (getView() != null) {
-//                                    getView().setRecommendation(rechargeWidgetResponse);
-//                                }
+                                RecommendationDigiPersoResponse rechargeWidgetResponse = response.getData(RecommendationDigiPersoResponse.class);
+                                if (getView() != null) {
+                                    getView().setRecommendation(rechargeWidgetResponse);
+                                }
                             }
                         }
                         if (getView() != null && getView().getActivity() != null) {
