@@ -22,17 +22,16 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
     private var shopIds: List<String> = listOf()
     private var isTokoNow: Boolean = false
 
-    fun createAggregatorRequestParams(productId: String,
-                                      source: String,
-                                      warehouseId: String? = null,
-                                      pdpSession: String? = null): Map<String, Any?> = aggregatorUseCase.createRequestParams(productId, source, warehouseId, pdpSession)
-
     override val coroutineContext: CoroutineContext
         get() = dispatcher.main + SupervisorJob()
 
-    suspend fun executeOnBackground(requestParamsAggregator: Map<String, Any?>, shopId: String,
-                                    isTokoNow: Boolean): AggregatorMiniCartUiModel {
-        this.requestParamsAggregator = requestParamsAggregator
+    suspend fun executeOnBackground(productId: String,
+                                    source: String,
+                                    warehouseId: String? = null,
+                                    pdpSession: String? = null,
+                                    shopId: String,
+                                    isTokoNow:Boolean): AggregatorMiniCartUiModel {
+        this.requestParamsAggregator = aggregatorUseCase.createRequestParams(productId, source, isTokoNow, warehouseId, pdpSession)
         this.shopIds = listOf(shopId)
         this.isTokoNow = isTokoNow
         return executeOnBackground()
