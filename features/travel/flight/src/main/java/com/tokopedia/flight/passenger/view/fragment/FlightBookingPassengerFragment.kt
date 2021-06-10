@@ -242,7 +242,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         contact.firstName = getFirstName()
         contact.lastName = getLastName()
         contact.title = getPassengerTitle()
-        if (isMandatoryDoB() || !isDomestic) contact.birthDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
+        if (isMandatoryDoB() || !isDomestic)
+            contact.birthDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                    FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
         if (!isDomestic) {
             contact.nationality = passengerModel.passportNationality.countryId
             contact.idList = listOf(TravelContactIdCard(type = "passport", title = "Paspor",
