@@ -108,9 +108,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         loadMultipleTabItem()
         val saldoHistoryPagerAdapter = SaldoHistoryPagerAdapter(childFragmentManager)
         saldoHistoryPagerAdapter.setItems(saldoTabItems)
-        depositHistoryViewPager!!.offscreenPageLimit = 2
-        depositHistoryViewPager!!.adapter = saldoHistoryPagerAdapter
-        depositHistoryTabLayout!!.setupWithViewPager(depositHistoryViewPager!!)
+        depositHistoryViewPager?.offscreenPageLimit = 2
+        depositHistoryViewPager?.adapter = saldoHistoryPagerAdapter
+        depositHistoryTabLayout?.setupWithViewPager(depositHistoryViewPager!!)
 
         datePicker = activity?.let { SaldoDatePickerUtil(it) }
     }
@@ -148,7 +148,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     private fun initListeners() {
 
-        depositHistoryViewPager!!.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        depositHistoryViewPager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 if (activePosition != position) {
                     activePosition = position

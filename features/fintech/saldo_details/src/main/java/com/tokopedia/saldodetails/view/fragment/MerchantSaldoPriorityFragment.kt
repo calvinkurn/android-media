@@ -162,13 +162,14 @@ class MerchantSaldoPriorityFragment : BaseDaggerFragment() {
             showDialog(isChecked)
         }
 
-        if (sellerDetails!!.isBoxShowPopup) {
+        if (sellerDetails?.isBoxShowPopup == true) {
             spKYCStatusLayout!!.setOnClickListener {
-                val userStatusInfoBottomSheet = UserStatusInfoBottomSheet()
-                userStatusInfoBottomSheet.setBody(sellerDetails!!.popupDesc!!)
-                userStatusInfoBottomSheet.setBottomSheetTitle(sellerDetails!!.popupTitle!!)
-                userStatusInfoBottomSheet.setButtonText(sellerDetails!!.popupButtonText!!)
-                userStatusInfoBottomSheet.show(childFragmentManager, UserStatusInfoBottomSheet.TAG)
+                val bundle = Bundle().apply {
+                    putString(UserStatusInfoBottomSheet.TITLE_TEXT, sellerDetails?.popupTitle)
+                    putString(UserStatusInfoBottomSheet.BODY_TEXT, sellerDetails?.popupDesc)
+                    putString(UserStatusInfoBottomSheet.BUTTON_TEXT, sellerDetails?.popupButtonText)
+                }
+                UserStatusInfoBottomSheet.show(bundle, childFragmentManager)
             }
         }
     }
