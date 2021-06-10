@@ -405,10 +405,10 @@ class MiniCartProductViewHolder(private val view: View,
                 delayChangeQty?.cancel()
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                     delay(500)
-                    val newValue = s.toString().toIntOrZero()
-                    if (s.toString().toIntOrZero() > element.productMaxOrder) {
+                    val newValue = s.toString().replace(".", "").toIntOrZero()
+                    if (newValue > element.productMaxOrder) {
                         qtyEditorProduct?.setValue(element.productMaxOrder)
-                    } else if (s.toString().toIntOrZero() < element.productMinOrder) {
+                    } else if (newValue < element.productMinOrder) {
                         qtyEditorProduct?.setValue(element.productMinOrder)
                     }
                     if (element.productQty != newValue) {
