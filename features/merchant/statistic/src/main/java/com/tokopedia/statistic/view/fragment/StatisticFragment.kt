@@ -58,10 +58,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -369,8 +367,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (shouldLoadDataOnCreate) {
             action()
         } else {
-            if (isVisible && isFirstLoad) {
-                action()
+            lifecycleScope.launchWhenResumed {
+                if (isVisible && isFirstLoad) {
+                    action()
+                }
             }
         }
     }
@@ -708,6 +708,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             progressBarStc.visible()
         } else {
             progressBarStc.gone()
+            swipeRefreshStc.isRefreshing = false
         }
     }
 
