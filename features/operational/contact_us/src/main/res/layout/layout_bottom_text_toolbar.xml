@@ -80,6 +80,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_rv"
