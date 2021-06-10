@@ -29,6 +29,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     testOptions {
         unitTests {
             returnDefaultValues = true
@@ -36,6 +40,8 @@ android {
     }
 
     packagingOptions {
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
         exclude 'META-INF/**'
     }
 

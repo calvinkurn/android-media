@@ -20,8 +20,8 @@
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher_sellerapp_ramadhan"
-        android:roundIcon="@mipmap/ic_sellerapp_launcher_ramadhan_round"
+        android:icon="@mipmap/ic_launcher_sellerapp"
+        android:roundIcon="@mipmap/ic_launcher_sellerapp_round"
         android:label="@string/app_name"
         android:hasCode="true"
         android:supportsRtl="true"
@@ -34,7 +34,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.Sellerapp.Launcher">
+            android:theme="@style/Theme.Tokopedia3.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

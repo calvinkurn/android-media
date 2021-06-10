@@ -20,6 +20,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.util.*
 
 class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val actionListener: ActionListener,
@@ -60,17 +61,11 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderShopBadge(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.shopGroupAvailableData?.isOfficialStore == true || cartShopHolderData.shopGroupAvailableData?.isGoldMerchant == true) {
-            if (cartShopHolderData.shopGroupAvailableData?.shopBadge?.isNotEmpty() == true) {
-                ImageHandler.loadImageWithoutPlaceholder(binding.imgShopBadge, cartShopHolderData.shopGroupAvailableData?.shopBadge)
-                val shopType = if (cartShopHolderData.shopGroupAvailableData?.isOfficialStore == true) {
-                    itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store)
-                } else {
-                    itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant)
-                }
-                binding.imgShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType)
-                binding.imgShopBadge.show()
-            }
+        val shopTypeInfoData = cartShopHolderData.shopGroupAvailableData?.shopTypeInfo
+        if (shopTypeInfoData?.shopBadge?.isNotBlank() == true) {
+            ImageHandler.loadImageWithoutPlaceholder(binding.imgShopBadge, shopTypeInfoData.shopBadge)
+            binding.imgShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopTypeInfoData.title.toLowerCase(Locale("id")))
+            binding.imgShopBadge.show()
         } else {
             binding.imgShopBadge.gone()
         }
@@ -115,7 +110,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             if (cartShopHolderData.shopGroupAvailableData?.fulfillmentName?.isNotBlank() == true) {
                 if (cartShopHolderData.shopGroupAvailableData?.isFulfillment == true && cartShopHolderData.shopGroupAvailableData?.fulfillmentBadgeUrl?.isNotEmpty() == true) {
                     iuImageFulfill.show()
-                    iuImageFulfill.loadImageWithoutPlaceholder(cartShopHolderData.shopGroupAvailableData?.fulfillmentBadgeUrl ?: "")
+                    iuImageFulfill.loadImageWithoutPlaceholder(cartShopHolderData.shopGroupAvailableData?.fulfillmentBadgeUrl
+                            ?: "")
                 } else {
                     iuImageFulfill.gone()
                 }

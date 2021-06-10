@@ -22,7 +22,7 @@ class ArrangeTemplateUseCase @Inject constructor(graphqlRepository: GraphqlRepos
         """
     }
 
-    private val requestParams = RequestParams.EMPTY
+    private val requestParams = RequestParams.create()
 
     init {
         setupUseCase()

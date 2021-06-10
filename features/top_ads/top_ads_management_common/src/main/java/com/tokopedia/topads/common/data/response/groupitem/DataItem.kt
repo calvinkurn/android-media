@@ -65,6 +65,9 @@ data class DataItem(
 	val groupEndDate: String = "",
 
 	@field:SerializedName("stat_total_income")
-	val groupTotalIncome: String = ""
+	val groupTotalIncome: String = "",
+
+	@field:SerializedName("strategies")
+	val strategies: List<String> = listOf()
 
 )

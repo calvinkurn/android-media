@@ -87,9 +87,9 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
 
             if (!TextUtils.isEmpty(merchantCreditDetails!!.logoURL)) {
                 mclLogoIV!!.show()
-                ImageHandler.loadImage(context, mclLogoIV, merchantCreditDetails!!.logoURL, com.tokopedia.design.R.drawable.ic_modal_toko)
+                ImageHandler.loadImage(context, mclLogoIV, merchantCreditDetails!!.logoURL, com.tokopedia.saldodetails.R.drawable.ic_modal_toko)
             } else {
-                mclLogoIV!!.setImageDrawable(resources.getDrawable(com.tokopedia.design.R.drawable.ic_modal_toko))
+                mclLogoIV!!.setImageDrawable(resources.getDrawable(com.tokopedia.saldodetails.R.drawable.ic_modal_toko))
             }
 
             if (!TextUtils.isEmpty(merchantCreditDetails!!.title)) {

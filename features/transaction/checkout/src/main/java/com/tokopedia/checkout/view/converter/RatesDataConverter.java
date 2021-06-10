@@ -71,6 +71,7 @@ public class RatesDataConverter {
         shipmentCartData.setWeight(totalWeight);
         shipmentCartData.setPreOrderDuration(preOrderDuration);
         shipmentCartData.setFulfillment(shipmentCartItemModel.isFulfillment());
+        shipmentCartData.setShopTier(shipmentCartItemModel.getShopTypeInfoData().getShopTier());
 
         return shipmentCartData;
     }

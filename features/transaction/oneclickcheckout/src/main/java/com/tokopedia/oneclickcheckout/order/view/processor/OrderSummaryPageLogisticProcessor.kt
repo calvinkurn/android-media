@@ -54,6 +54,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             destinationLatitude = address.latitude
             destinationLongitude = address.longitude
             shopId = orderShop.shopId.toString()
+            shopTier = orderShop.shopTier
             token = orderKero.keroToken
             ut = orderKero.keroUT
             insurance = 1

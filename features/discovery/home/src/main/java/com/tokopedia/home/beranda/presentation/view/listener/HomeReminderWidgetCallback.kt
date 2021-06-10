@@ -52,4 +52,8 @@ class HomeReminderWidgetCallback(
             }
         }
     }
+
+    override fun getReminderWidgetData(reminderData: ReminderWidgetModel) {
+        //do nothing
+    }
 }

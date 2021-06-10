@@ -280,6 +280,7 @@ class SearchProductFirstPageGqlUseCase(
                                 gold_shop
                                 gold_shop_badge
                                 shop_is_official
+                                pm_pro_shop
                                 merchant_vouchers
                                 product {
                                     id
@@ -295,6 +296,11 @@ class SearchProductFirstPageGqlUseCase(
                                         title
                                         type
                                         position
+                                        url
+                                    }
+                                    free_ongkir {
+                                        is_active
+                                        img_url
                                     }
                                     image_product{
                                         product_id

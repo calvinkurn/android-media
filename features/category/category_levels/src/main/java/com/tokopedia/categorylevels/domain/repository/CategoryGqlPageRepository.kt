@@ -26,9 +26,10 @@ class CategoryGqlPageRepository(private val departmentName: String,
 
     init {
         componentMap["chip-horizontal-scroll"] = ComponentNames.NavigationChips.componentName
-//        componentMap["product-card-horizontal-scroll"] = ComponentNames.ProductCardCarousel.componentName
+        componentMap["product-card-horizontal-scroll"] = ComponentNames.CategoryBestSeller.componentName
         componentMap["product-list-filter"] = ComponentNames.QuickFilter.componentName
         componentMap["product-list-infinite-scroll"] = ComponentNames.ProductCardRevamp.componentName
+        componentMap["static-text"] = ComponentNames.LihatSemua.componentName
     }
 
     override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
@@ -83,7 +84,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
             if(component.data.isNotEmpty()) {
                 val dataItems = arrayListOf<DataItem>()
                 component.data.forEachIndexed { index, dataItem ->
-                    dataItems.add(DataItem(title = dataItem.name, id = dataItem.id.toString(), applinks = dataItem.applinks, positionForParentItem = index))
+                    dataItems.add(DataItem(title = if(dataItem.text!=null) dataItem.text else dataItem.name, id = dataItem.id.toString(), applinks = dataItem.applinks, positionForParentItem = index))
                 }
                 componentsItem.data = dataItems
             }

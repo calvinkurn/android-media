@@ -1,0 +1,14 @@
+{
+  "readme": "open active voucher list page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "openScreen",
+      "screenName" : "/voucherlistactive",
+      "isLoggedInStatus" : ".+",
+      "currentSite" : "tokopediaseller",
+      "userId" : ".+",
+      "businessUnit" : "physical goods"
+    }
+  ]
+}

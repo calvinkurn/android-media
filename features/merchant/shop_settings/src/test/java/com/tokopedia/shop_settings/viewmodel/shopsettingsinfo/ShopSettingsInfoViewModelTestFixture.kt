@@ -2,6 +2,7 @@ package com.tokopedia.shop_settings.viewmodel.shopsettingsinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
@@ -33,6 +34,9 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
     @RelaxedMockK
     lateinit var updateShopScheduleUseCase: UpdateShopScheduleUseCase
 
+    @RelaxedMockK
+    lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
+
     protected lateinit var shopSettingsInfoViewModel: ShopSettingsInfoViewModel
     protected lateinit var shopScheduleViewModel: ShopScheduleViewModel
 
@@ -44,6 +48,7 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
                 getShopBasicDataUseCase,
                 getShopStatusUseCase,
                 updateShopScheduleUseCase,
+                getShopInfoUseCase,
                 CoroutineTestDispatchersProvider
         )
 

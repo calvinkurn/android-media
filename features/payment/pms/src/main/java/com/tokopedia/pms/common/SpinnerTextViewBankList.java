@@ -5,8 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 
-import com.tokopedia.design.text.SpinnerTextView;
-
 /**
  * Created by zulfikarrahman on 7/9/18.
  */

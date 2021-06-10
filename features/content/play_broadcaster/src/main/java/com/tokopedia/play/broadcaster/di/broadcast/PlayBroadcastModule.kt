@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.di.broadcast
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -43,8 +44,8 @@ class PlayBroadcastModule(private val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context) : ApsaraLivePusherWrapper.Builder {
-        return ApsaraLivePusherWrapper.Builder(context)
+    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context, dispatcher: CoroutineDispatchers) : ApsaraLivePusherWrapper.Builder {
+        return ApsaraLivePusherWrapper.Builder(context, dispatcher)
     }
 
     @PlayBroadcastScope

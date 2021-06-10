@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
@@ -57,7 +56,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private View dividerTwo;
     private AppCompatImageView ivMemberBadge;
     private BuyerCardPresenter buyerCardPresenter;
-    private CardView widget;
+    private CardUnify widget;
     private CardUnify sellerAccountCard;
     private CardUnify sellerOpenShopCard;
     private SellerMenuTracker sellerMenuTracker;

@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp">
-
         <include
             layout="@layout/seller_reputation_header"
             android:layout_width="match_parent"
@@ -34,7 +33,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/balance_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:longClickable="false"
             android:scrollbars="vertical" />
 

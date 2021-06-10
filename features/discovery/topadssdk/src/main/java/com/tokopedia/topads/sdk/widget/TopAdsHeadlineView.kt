@@ -31,11 +31,11 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     init {
         val view = View.inflate(context, R.layout.layout_widget_topads_headline, this)
         topadsBannerView = view.findViewById(R.id.top_ads_banner)
-        shimmerView = view.findViewById(R.id.shimmer_view)
-        topadsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { _, appLink, _ ->
-            RouteManager.route(context, appLink)
-        })
-        topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
+        shimmerView= view.findViewById(R.id.shimmer_view)
+        topadsBannerView.setTopAdsBannerClickListener { position, applink, data ->
+            RouteManager.route(context, applink)
+        }
+        topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener(){
         })
     }
 
@@ -45,6 +45,14 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
 
     fun displayAds(cpmModel: CpmModel) {
         topadsBannerView.displayAdsWithProductShimmer(cpmModel)
+    }
+
+    fun setTopAdsBannerClickListener(context: TopAdsBannerClickListener) {
+        topadsBannerView.setTopAdsBannerClickListener(context)
+    }
+
+    fun setTopAdsProductItemListsner(context: TopAdsItemImpressionListener) {
+        topadsBannerView.setTopAdsImpressionListener(context)
     }
 
     fun setFollowBtnClickListener(context: TopAdsShopFollowBtnClickListener) {
