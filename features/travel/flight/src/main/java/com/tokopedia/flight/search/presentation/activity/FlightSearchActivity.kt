@@ -71,7 +71,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     override fun getNewFragment(): Fragment? =
             FlightSearchFragment.newInstance(flightSearchPassDataModel)
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean = false
+    override fun onCreateOptionsMenu(menu: Menu): Boolean = false
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

@@ -58,7 +58,7 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
 
     override fun getComponent(): FlightPassengerComponent {
         return DaggerFlightPassengerComponent.builder()
-                .flightComponent(flightComponent)
+                .flightComponent(getFlightComponent())
                 .build()
     }
 
