@@ -27,9 +27,14 @@ class PaymentListMapperUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): ArrayList<BasePaymentModel> {
-        val list: List<PaymentListItem> =
-            (useCaseRequestParams.getObject(PARAM_PAYMENT_LIST) as List<PaymentListItem>)
-        return mapList(list)
+        try {
+            val list: List<PaymentListItem> =
+                (useCaseRequestParams.getObject(PARAM_PAYMENT_LIST) as List<PaymentListItem>)
+            return mapList(list)
+        } catch (e: Exception) {
+
+        }
+        return arrayListOf()
     }
 
     /*
@@ -43,7 +48,7 @@ class PaymentListMapperUseCase @Inject constructor(
     * */
     private fun mapList(paymentList: List<PaymentListItem>): ArrayList<BasePaymentModel> {
         val paymentListModels = arrayListOf<BasePaymentModel>()
-        val indexMap = HashMap<String?, ArrayList<Int>>()
+        val indexMap = CumulativeVaRecord()
         var indexCount = 0
         for (paymentModel in paymentList) {
             paymentModel.apply {
@@ -65,7 +70,7 @@ class PaymentListMapperUseCase @Inject constructor(
                         val vaListItem = getVirtualAccountTransactionItem(this)
                         val vaPaymentModel =
                             getVirtualAccountPaymentModel(this, arrayListOf(vaListItem))
-                        // remember VA index in result result
+                        // remember VA index in result
                         indexMap[paymentCode] = arrayListOf(indexCount)
                         indexCount++
                         vaPaymentModel
@@ -121,7 +126,7 @@ class PaymentListMapperUseCase @Inject constructor(
     }
 
     private fun combinedVirtualAccountModel(
-        indexMap: HashMap<String?, ArrayList<Int>>,
+        indexMap: CumulativeVaRecord,
         PaymentListItem: PaymentListItem,
         paymentListModels: ArrayList<BasePaymentModel>
     ): VirtualAccountPaymentModel? {
@@ -143,7 +148,7 @@ class PaymentListMapperUseCase @Inject constructor(
         gatewayName: String,
         vaListItem: VaTransactionItem,
         responseModel: PaymentListItem,
-        indexMap: HashMap<String?, ArrayList<Int>>,
+        indexMap: CumulativeVaRecord,
         paymentListModels: ArrayList<BasePaymentModel>
     ): VirtualAccountPaymentModel? {
         val indexListWithSamePaymentCode = indexMap[paymentCode] ?: listOf(0)

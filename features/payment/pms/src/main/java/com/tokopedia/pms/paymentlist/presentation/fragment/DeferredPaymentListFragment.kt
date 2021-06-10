@@ -149,7 +149,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun renderPaymentList(data: ArrayList<BasePaymentModel>) {
-        sentDataLoadingEvent(PmsEvents.DeferredPaymentsShownEvent(data.size))
+        sentDataLoadingEvent()
         handleSwipeRefresh(false)
         hideLoader()
         noPendingTransactionEmptyState.gone()
@@ -159,7 +159,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun showErrorUi(throwable: Throwable) {
-        sentDataLoadingEvent(PmsEvents.DeferredPaymentsShownEvent(0))
+        sentDataLoadingEvent()
         handleSwipeRefresh(false)
         hideLoader()
         noPendingTransactionEmptyState.gone()
@@ -171,7 +171,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun showEmptyState() {
-        sentDataLoadingEvent(PmsEvents.DeferredPaymentsShownEvent(0))
+        sentDataLoadingEvent()
         handleSwipeRefresh(false)
         noPendingTransactionEmptyState.visible()
         noPendingTransactionEmptyState.setPrimaryCTAClickListener {
@@ -180,7 +180,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun setGlobalErrors(errorType: Int) {
-        sentDataLoadingEvent(PmsEvents.DeferredPaymentsShownEvent(0))
+        sentDataLoadingEvent()
         paymentListGlobalError.setType(errorType)
         paymentListGlobalError.visible()
         paymentListGlobalError.setActionClickListener {
@@ -263,9 +263,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         loader = null
     }
 
-    fun sentDataLoadingEvent(event: PmsEvents) {
+    fun sentDataLoadingEvent() {
         if (isFirstTimeLoad) {
-            sendEventToAnalytics(event)
+            sendEventToAnalytics(PmsEvents.DeferredPaymentsShownEvent(viewModel.getTotalPendingTransactions()))
             isFirstTimeLoad = false
         }
     }

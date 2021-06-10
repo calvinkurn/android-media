@@ -89,21 +89,22 @@ class BankInfo(
     val bankId: String?
 ): Parcelable
 
-typealias PaymentCodes = Pair<String, String>
+typealias TransactionCodes = Pair<String, String>
+typealias PaymentCode = String?
+typealias VaList = ArrayList<Int>
+typealias CumulativeVaRecord = HashMap<PaymentCode, VaList>
 
-fun BasePaymentModel.extractValues(): PaymentCodes {
+fun BasePaymentModel.extractValues(): TransactionCodes {
     return when (this) {
-        is CreditCardPaymentModel -> PaymentCodes(transactionId, merchantCode)
-        is KlicBCAPaymentModel -> PaymentCodes(transactionId, merchantCode)
-        is StorePaymentModel -> PaymentCodes(transactionId, merchantCode)
-        is BankTransferPaymentModel -> PaymentCodes(transactionId, merchantCode)
-        else -> PaymentCodes("", "")
+        is CreditCardPaymentModel -> TransactionCodes(transactionId, merchantCode)
+        is KlicBCAPaymentModel -> TransactionCodes(transactionId, merchantCode)
+        is StorePaymentModel -> TransactionCodes(transactionId, merchantCode)
+        is BankTransferPaymentModel -> TransactionCodes(transactionId, merchantCode)
+        else -> TransactionCodes("", "")
     }
 }
 
-
 open class TransactionActionType(var actionName: String = "", var actionIcon: Int = -1)
-
 data class EditKlicBCA(val actionType: Int) : TransactionActionType()
 data class EditBankTransfer(val actionType: Int) : TransactionActionType()
 data class UploadProof(val actionType: Int) : TransactionActionType()
