@@ -61,16 +61,20 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private var globalEventObserver: Observer<GlobalEvent>? = null
     private var bottomSheetUiModelObserver: Observer<MiniCartListUiModel>? = null
 
+    private var isShow: Boolean = false
+
     fun show(context: Context?,
              fragmentManager: FragmentManager,
              lifecycleOwner: LifecycleOwner,
              viewModel: MiniCartWidgetViewModel,
              bottomSheetListener: MiniCartListBottomSheetListener) {
         context?.let {
-            this.bottomSheetListener = bottomSheetListener
-            initializeView(it, fragmentManager)
-            initializeViewModel(fragmentManager, viewModel, lifecycleOwner)
-            initializeCartData(viewModel)
+            if (!isShow) {
+                this.bottomSheetListener = bottomSheetListener
+                initializeView(it, fragmentManager)
+                initializeViewModel(fragmentManager, viewModel, lifecycleOwner)
+                initializeCartData(viewModel)
+            }
         }
     }
 
@@ -97,11 +101,13 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             clearContentPadding = true
             customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
             setShowListener {
+                isShow = true
                 knobView.setOnClickListener {
                     analytics.eventClickKnobToExpandMiniCartBottomSheet()
                 }
             }
             setOnDismissListener {
+                isShow = false
                 cancelAllDebounceJob()
                 bottomSheetListener?.onMiniCartListBottomSheetDismissed()
             }
@@ -211,7 +217,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun onSuccessUndoDeleteCartItem(globalEvent: GlobalEvent, viewModel: MiniCartWidgetViewModel,) {
+    private fun onSuccessUndoDeleteCartItem(globalEvent: GlobalEvent, viewModel: MiniCartWidgetViewModel) {
         hideProgressLoading()
         viewModel.getCartList()
         val data = globalEvent.data as? UndoDeleteCartDataResponse

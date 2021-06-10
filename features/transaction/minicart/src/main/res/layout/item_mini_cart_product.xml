@@ -111,7 +111,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_toEndOf="@+id/image_product"
         android:foregroundGravity="center_vertical"
-        android:paddingTop="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_4"
         app:flexWrap="wrap"
         app:layout_constraintStart_toEndOf="@+id/image_product"
         app:layout_constraintTop_toBottomOf="@+id/text_product_price"
