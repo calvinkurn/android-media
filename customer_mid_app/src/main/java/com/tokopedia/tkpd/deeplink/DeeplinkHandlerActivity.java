@@ -54,12 +54,9 @@ import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -152,17 +149,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null && getIntent().getData()!= null) {
             String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
-            Uri applink;
-            if(getIntent().hasExtra("branch_data")){
-                try {
-                    applink = Uri.parse(new JSONObject((String) Objects.requireNonNull(getIntent().getExtras().get("branch_data"))).get("+url").toString());
-                } catch (JSONException e) {
-                    applink = Uri.parse(applinkString);
-                    e.printStackTrace();
-                }
-            } else {
-                applink = Uri.parse(applinkString);
-            }
+            Uri applink = Uri.parse(applinkString);
             presenter.processUTM(this, applink);
 
             //map applink to internal if any
