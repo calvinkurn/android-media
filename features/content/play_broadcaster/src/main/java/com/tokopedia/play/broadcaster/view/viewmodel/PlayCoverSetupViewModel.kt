@@ -60,11 +60,6 @@ class PlayCoverSetupViewModel @Inject constructor(
             }
         }
 
-//    val savedCoverTitle: String
-//        get() {
-//            return observableCoverTitle.value.orEmpty()
-//        }
-
     val source: CoverSource
         get() {
             return when (val currentCropState = observableCropState.value) {
@@ -78,10 +73,6 @@ class PlayCoverSetupViewModel @Inject constructor(
         println("Latest Crop State: $it")
         it.croppedCover
     }
-
-//    val observableCoverTitle: LiveData<String> = Transformations.map(setupDataStore.getObservableSelectedCover()) {
-//            it.title
-//        }
 
     val observableSelectedProducts: LiveData<List<CarouselCoverUiModel.Product>> = setupDataStore.getObservableSelectedProducts()
             .map { dataList -> dataList.map { CarouselCoverUiModel.Product(ProductContentUiModel.createFromData(it)) } }
@@ -213,17 +204,4 @@ class PlayCoverSetupViewModel @Inject constructor(
     private fun getImagePathFromBitmap(bitmap: Bitmap): Uri {
         return coverImageUtil.getImagePathFromBitmap(bitmap)
     }
-
-    companion object {
-        private const val PARAM_ID = "id"
-        private const val PARAM_WEB_SERVICE = "web_service"
-        private const val PARAM_RESOLUTION = "param_resolution"
-        private const val DEFAULT_RESOLUTION = "100-square"
-        private const val DEFAULT_WEB_SERVICE = "1"
-        private const val DEFAULT_UPLOAD_PATH = "/upload/attachment"
-        private const val DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg"
-        private const val TEXT_PLAIN = "text/plain"
-        private const val RESOLUTION_700 = "700"
-    }
-
 }

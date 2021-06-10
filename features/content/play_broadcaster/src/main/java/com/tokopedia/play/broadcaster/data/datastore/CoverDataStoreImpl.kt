@@ -59,10 +59,8 @@ class CoverDataStoreImpl @Inject constructor(
         val currentCover = getSelectedCover()
         val coverUrl = when (val croppedCover = currentCover?.croppedCover) {
             is CoverSetupState.Cropped -> croppedCover.coverImage.toString()
-            else -> throw IllegalStateException("Cover url must not be null")
+            else -> throw IllegalStateException("Something went wrong: Cover url not found")
         }
-
-//        val coverTitle = currentCover.title
 
         updateChannelUseCase.apply {
             setQueryParams(

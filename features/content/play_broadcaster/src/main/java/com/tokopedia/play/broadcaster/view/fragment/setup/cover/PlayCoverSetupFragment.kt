@@ -260,7 +260,6 @@ class PlayCoverSetupFragment @Inject constructor(
      * CoverSetup View Component Listener
      */
     override fun onImageAreaClicked(view: CoverSetupViewComponent) {
-//        viewModel.saveCover(coverSetupView.coverTitle)
         requestGalleryPermission(REQUEST_CODE_PERMISSION_COVER_CHOOSER, isFullFlow = true)
         analytic.clickAddCover()
     }
@@ -275,7 +274,6 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onViewDestroyed(view: CoverSetupViewComponent) {
-//        viewModel.saveCover(view.coverTitle)
     }
 
     fun setListener(listener: Listener) {
