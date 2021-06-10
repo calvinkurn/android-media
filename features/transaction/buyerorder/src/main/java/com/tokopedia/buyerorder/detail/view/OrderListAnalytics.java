@@ -462,11 +462,12 @@ public class OrderListAnalytics {
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
-                                NAME, contentItemTab.getTitle(),
+                                NAME, contentItemTab.getSubtitle(),
                                 ID, contentItemTab.getTrackingData().getProductID(),
                                 PRICE, 0,
                                 LIST, contentItemTab.getTitle(),
-                                POSITION, position + 1
+                                POSITION, position + 1,
+                                CATEGORY, contentItemTab.getTrackingData().getCategoryName()
                                 )
                         )
                 )
@@ -488,7 +489,7 @@ public class OrderListAnalytics {
                                 ),
                                 PRODUCTS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                NAME, item.getTitle(),
+                                                NAME, item.getSubtitle(),
                                                 ID, item.getTrackingData().getProductID(),
                                                 PRICE, 0,
                                                 BRAND, "none",

@@ -64,9 +64,9 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
         private var clientNumber: TextView = itemView.findViewById(R.id.clientNumber)
 
         fun renderCategoryName(element: RecommendationItem) {
-            val category = when (element.trackingData?.itemType) {
-                RECOMMENDATION -> element.title
-                POPULAR -> element.trackingData.categoryName
+            val category = when (element.trackingData?.itemLabel) {
+                TYPE_PRODUCT_RECOMMENDATION -> element.title
+                TYPE_CATEGORY -> element.trackingData.categoryName
                 else -> element.title
             }
 
@@ -96,14 +96,14 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
                 clientNumber.hide()
             } else {
                 clientNumber.show()
-                clientNumber.text = MethodChecker.fromHtml(element.label1) // TODO: [Misael] check ini masi butuh fromhtml atau ngga
+                clientNumber.text = element.label1
             }
         }
     }
 
     companion object {
-        const val POPULAR = "popular categories exclude"
-        const val RECOMMENDATION = "recommendation"
+        const val TYPE_PRODUCT_RECOMMENDATION = "product"
+        const val TYPE_CATEGORY = "category"
     }
 }
 

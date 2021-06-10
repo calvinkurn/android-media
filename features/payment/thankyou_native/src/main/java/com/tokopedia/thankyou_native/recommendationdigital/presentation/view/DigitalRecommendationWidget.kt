@@ -19,8 +19,8 @@ import kotlinx.android.synthetic.main.thank_digital_recommendation_item.view.*
 class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private val POPULAR = "popular categories exclude"
-    private val RECOMMENDATION = "recommendation"
+    val TYPE_PRODUCT_RECOMMENDATION = "product"
+    val TYPE_CATEGORY = "category"
 
     var data: RecommendationItem? = null
         set(value) {
@@ -40,16 +40,16 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     }
 
     private fun renderCategoryName(element: RecommendationItem) {
-        val categoryName = when (element.trackingData?.itemType) {
-            RECOMMENDATION -> element.title
-            POPULAR -> element.trackingData.categoryName
+        val categoryName = when (element.trackingData?.itemLabel) {
+            TYPE_PRODUCT_RECOMMENDATION -> element.title
+            TYPE_CATEGORY -> element.trackingData.categoryName
             else -> element.title
         }
         if (categoryName.isNullOrEmpty()) {
             thanks_dg_rec_category_name.hide()
         } else {
             thanks_dg_rec_category_name.show()
-            thanks_dg_rec_category_name.text = MethodChecker.fromHtml(categoryName.capitalize())
+            thanks_dg_rec_category_name.text = categoryName.capitalize()
         }
     }
 
@@ -58,7 +58,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_product_name.hide()
         } else {
             thanks_dg_rec_product_name.show()
-            thanks_dg_rec_product_name.text = MethodChecker.fromHtml(element.subtitle)
+            thanks_dg_rec_product_name.text = element.subtitle
         }
     }
 
@@ -71,38 +71,9 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_client_number.hide()
         } else {
             thanks_dg_rec_client_number.show()
-            thanks_dg_rec_client_number.text = MethodChecker.fromHtml(element.label1) // TODO: [Misael] check ini masi butuh fromhtml atau ngga
+            thanks_dg_rec_client_number.text = element.label1
         }
     }
-
-//    private fun renderTitle(element: RecommendationItem) {
-//        val title: String? = when {
-//            POPULAR.equals(element.trackingData?.itemType, ignoreCase = true) -> {
-//                thanks_dg_rec_text_sub.gone()
-//                element.trackingData?.categoryName
-//            }
-//            RECOMMENDATION.equals(element.trackingData?.itemType, ignoreCase = true) -> {
-//                thanks_dg_rec_text_sub.visible()
-//                element.title
-//            }
-//            else -> {
-//                thanks_dg_rec_text_sub.visible()
-//                element.title
-//            }
-//        }
-//        renderTitle(title)
-////        if (element.productName.isNullOrBlank()) {
-////            if (element.description.isNullOrBlank()) {
-////                thanks_dg_rec_text_sub.gone()
-////            } else {
-////                thanks_dg_rec_text_sub.visible()
-////                thanks_dg_rec_text_sub.text = element.description.trim()
-////            }
-////        } else {
-////            thanks_dg_rec_text_sub.visible()
-////            thanks_dg_rec_text_sub.text = (element.title ?: "").trim()
-////        }
-//    }
 
     private fun getLayout(): Int {
         return R.layout.thank_digital_recommendation_item

@@ -70,6 +70,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String PAYMENT_ID = "paymentId";
     private static final String CART_STRING = "cartString";
     private static final int DEFAULT_DEVICE_ID = 5;
+    private static final String PARAM_INPUT = "input";
+    private static final String PARAM_CHANNEL_NAME = "channelName";
+    private static final String PARAM_CLIENT_NUMBERS = "clientNumbers";
+    private static final String PARAM_DG_CATEGORY_IDS = "dgCategoryIDs";
+    private static final String PARAM_PG_CATEGORY_IDS = "pgCategoryIDs";
+    private static final String DIGI_PERSO_CHANNEL_NAME = "dg_order_detail_recommendation";
 
     private final UserSessionInterface userSessionInterface;
     GraphqlUseCase orderDetailUseCase;
@@ -164,13 +170,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             ArrayList<Integer> dgCategoryIds = new ArrayList<>();
             ArrayList<Integer> pgCategoryIds = new ArrayList<>();
             ArrayList<String> clientNumbers = new ArrayList<>();
-            dgCategoryIds.add(1);
 
-            input.put("channelName", "dg_order_detail_recommendation");
-            input.put("clientNumbers", clientNumbers);
-            input.put("dgCategoryIDs", dgCategoryIds);
-            input.put("pgCategoryIDs", pgCategoryIds);
-            params.put("input", input);
+            input.put(PARAM_CHANNEL_NAME, DIGI_PERSO_CHANNEL_NAME);
+            input.put(PARAM_CLIENT_NUMBERS, clientNumbers);
+            input.put(PARAM_DG_CATEGORY_IDS, dgCategoryIds);
+            input.put(PARAM_PG_CATEGORY_IDS, pgCategoryIds);
+            params.put(PARAM_INPUT, input);
 
             if (getView() != null && getView().getActivity() != null) {
                 requestDigiPersoRecomm = new
@@ -229,10 +234,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                     category = category.substring(1, category.length() - 1);
                                 }
                             } else {
-                                RecommendationDigiPersoResponse rechargeWidgetResponse = response.getData(RecommendationDigiPersoResponse.class);
-                                if (getView() != null) {
-                                    getView().setRecommendation(rechargeWidgetResponse);
-                                }
+//                                RecommendationDigiPersoResponse rechargeWidgetResponse = response.getData(RecommendationDigiPersoResponse.class);
+//                                if (getView() != null) {
+//                                    getView().setRecommendation(rechargeWidgetResponse);
+//                                }
                             }
                         }
                         if (getView() != null && getView().getActivity() != null) {

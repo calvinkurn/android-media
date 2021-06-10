@@ -92,7 +92,6 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         this.fragment = fragment
         this.trackingQueue = trackingQueue
         startViewModelObserver()
-        val deviceId = 5 // TODO: [Misael] ini perlu hapus ga ya?
         viewModel.getDigitalRecommendationData("")
     }
 
