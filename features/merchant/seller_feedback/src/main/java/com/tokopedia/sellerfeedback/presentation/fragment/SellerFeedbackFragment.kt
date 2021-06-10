@@ -1,9 +1,7 @@
 package com.tokopedia.sellerfeedback.presentation.fragment
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -31,6 +30,7 @@ import com.tokopedia.sellerfeedback.R
 import com.tokopedia.sellerfeedback.SellerFeedbackTracking
 import com.tokopedia.sellerfeedback.data.SubmitResult
 import com.tokopedia.sellerfeedback.di.component.DaggerSellerFeedbackComponent
+import com.tokopedia.sellerfeedback.error.SellerFeedbackException
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.adapter.ImageFeedbackAdapter
 import com.tokopedia.sellerfeedback.presentation.bottomsheet.SellerFeedbackPageChooserBottomSheet
@@ -46,14 +46,18 @@ import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
 import javax.inject.Inject
 
 class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder.ImageClickListener {
 
     companion object {
-        const val REQUEST_CODE_PERMISSION = 5111
         const val REQUEST_CODE_IMAGE = 111
         const val EXTRA_URI_IMAGE = "uri_image"
+        const val ERROR_UPLOAD = "error upload image(s)"
+        const val ERROR_SUBMIT = "error submit feedback form"
+        const val ERROR_NETWORK = "error, please check cause"
 
         fun createInstance(uri: Uri?): SellerFeedbackFragment {
             return SellerFeedbackFragment().apply {
@@ -66,10 +70,6 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val requiredPermissions = listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE
-    )
 
     private val toolbar by lazy { SellerFeedbackToolbar(requireActivity()) }
     private val feedbackDetailTextWatcher by lazy { getFeedbackDetailWatcher() }
@@ -91,7 +91,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     private var textAreaFeedbackDetail: TextAreaUnify? = null
     private var buttonSend: UnifyButton? = null
     private var rvImageFeedback: RecyclerView? = null
-    private var customToast: Toast? = null
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     private var isValidFeedbackPage = false
     private var isValidFeedbackDetail = false
@@ -101,6 +101,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SellerFeedbackViewModel::class.java)
+        permissionCheckerHelper = PermissionCheckerHelper()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -120,36 +121,19 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         buttonSend = view.findViewById(R.id.button_send)
         rvImageFeedback = view.findViewById(R.id.rv_image_feedback)
 
-        val viewGroupToast = view.findViewById<ViewGroup>(R.id.custom_toast_root)
-        val customToastLayout = layoutInflater.inflate(R.layout.custom_toast, viewGroupToast)
-
-        customToast = Toast(context?.applicationContext).apply {
-            duration = Toast.LENGTH_LONG
-            this.view = customToastLayout
-        }
-
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
             val showBottomUp = AnimationUtils.loadAnimation(activity, R.anim.show_bottom_up)
             view.findViewById<ConstraintLayout>(R.id.layout_questions).animation = showBottomUp
         }
 
-        if (!allPermissionsGranted()) {
-            requestPermissions(requiredPermissions.toTypedArray(), REQUEST_CODE_PERMISSION)
-        }
-
         setupViewInteraction()
         observeViewModel()
-        initData()
+        checkPermission()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSION) {
-            val grantSize = grantResults.filter { it == PackageManager.PERMISSION_GRANTED }.size
-            if (grantSize == requiredPermissions.size) {
-                initData()
-            }
-        }
+        permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
 
     override fun getScreenName() = ""
@@ -317,12 +301,21 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     private val observerSubmitResult = Observer<SubmitResult> {
         when (it) {
             is SubmitResult.Success -> {
-                customToast?.show()
+                showCustomToast()
                 activity?.finish()
             }
-            is SubmitResult.UploadFail -> showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
-            is SubmitResult.SubmitFail -> showErrorToaster(getString(R.string.feedback_form_toaster_fail_submit))
-            is SubmitResult.NetworkFail -> showErrorToaster(getString(R.string.feedback_form_toaster_fail_network))
+            is SubmitResult.UploadFail -> {
+                logToCrashlytics(it.cause, ERROR_UPLOAD)
+                showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
+            }
+            is SubmitResult.SubmitFail -> {
+                logToCrashlytics(it.cause, ERROR_SUBMIT)
+                showErrorToaster(getString(R.string.feedback_form_toaster_fail_submit))
+            }
+            is SubmitResult.NetworkFail -> {
+                logToCrashlytics(it.cause, ERROR_NETWORK)
+                showErrorToaster(getString(R.string.feedback_form_toaster_fail_network))
+            }
         }
         buttonSend?.apply {
             isLoading = false
@@ -334,29 +327,30 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
-    private fun initData() {
-        val uriImage = arguments?.getParcelable<Uri>(EXTRA_URI_IMAGE)
-        if (uriImage != null) {
-            attachScreenshot(uriImage)
+    private fun attachScreenshot() {
+        val uriImage = arguments?.getParcelable<Uri>(EXTRA_URI_IMAGE) ?: return
+        val screenshotManager = ScreenshotManager(requireContext())
+        screenshotManager.getUiModel(uriImage)?.let {
+            viewModel?.setImages(listOf(it))
         }
     }
 
-    private fun attachScreenshot(uri: Uri) {
-        if (allPermissionsGranted()) {
-            val screenshotManager = ScreenshotManager(requireContext())
-            screenshotManager.getUiModel(uri)?.let {
-                viewModel?.setImages(listOf(it))
-            }
-        } else viewModel?.setImages(emptyList())
-    }
+    private fun checkPermission() {
+        permissionCheckerHelper?.checkPermission(this, PERMISSION_READ_EXTERNAL_STORAGE,
+                object : PermissionCheckerHelper.PermissionCheckListener {
 
-    private fun allPermissionsGranted(): Boolean {
-        requiredPermissions.forEach { permission ->
-            if (activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED) {
-                return false
-            }
-        }
-        return true
+                    override fun onPermissionDenied(permissionText: String) {
+                        viewModel?.setImages(emptyList())
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        viewModel?.setImages(emptyList())
+                    }
+
+                    override fun onPermissionGranted() {
+                        attachScreenshot()
+                    }
+                })
     }
 
     private fun buildImagePicker(): ImagePickerBuilder {
@@ -369,7 +363,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
 
     private fun buildImagePickerMultipleSelectionBuilder(): ImagePickerMultipleSelectionBuilder {
         return ImagePickerMultipleSelectionBuilder(
-                maximumNoPick = 3
+                maximumNoPick = ImageFeedbackAdapter.MAX_IMAGE
         )
     }
 
@@ -411,6 +405,31 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     private fun getSelectedImageUrl(imageFeedbackDataList: List<BaseImageFeedbackUiModel>): ArrayList<String> {
         return imageFeedbackDataList.filterIsInstance(ImageFeedbackUiModel::class.java)
                 .map { it.imageUrl } as ArrayList<String>
+    }
+
+    private fun showCustomToast() {
+        val currentView = view ?: return
+
+        val viewGroupToast = currentView.findViewById<ViewGroup>(R.id.custom_toast_root)
+        val customToastLayout = layoutInflater.inflate(R.layout.custom_toast, viewGroupToast)
+
+        Toast(context?.applicationContext).apply {
+            duration = Toast.LENGTH_LONG
+            view = customToastLayout
+        }.show()
+    }
+
+    private fun logToCrashlytics(throwable: Throwable, message: String) {
+        if (!BuildConfig.DEBUG) {
+            val exceptionMessage = "$message - ${throwable.localizedMessage}"
+
+            FirebaseCrashlytics.getInstance().recordException(SellerFeedbackException(
+                    message = exceptionMessage,
+                    cause = throwable
+            ))
+        } else {
+            throwable.printStackTrace()
+        }
     }
 
 }

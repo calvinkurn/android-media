@@ -28,6 +28,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.screenshot_observer)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.utils)
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

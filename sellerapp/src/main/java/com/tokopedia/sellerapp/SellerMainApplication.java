@@ -19,8 +19,6 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -37,11 +35,11 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
 import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
-import com.tokopedia.media.common.Loader;
-import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -52,8 +50,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerfeedback.SellerFeedbackScreenshot;
-import com.tokopedia.sellerfeedback.SellerFeedbackTracking;
-import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
@@ -301,10 +297,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
-        registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext().getContentResolver(), (uri, className, isFromScreenshot) -> {
-            SellerFeedbackTracking.Click.INSTANCE.eventClickFeedbackButton();
-            openFeedbackForm(uri);
-        }));
+        registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
     }
 
     @Override
@@ -373,13 +366,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private Boolean getSliceRemoteConfig() {
         return remoteConfig != null
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
-    }
-
-    private void openFeedbackForm(Uri uri) {
-        Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.SellerApp.SELLER_FEEDBACK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri);
-        getApplicationContext().startActivity(intent);
     }
 
 

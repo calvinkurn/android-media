@@ -9,8 +9,8 @@ import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.sellerfeedback.data.SubmitResult
 import com.tokopedia.sellerfeedback.domain.SubmitGlobalFeedbackUseCase
-import com.tokopedia.sellerfeedback.error.SubmitException
-import com.tokopedia.sellerfeedback.error.UploadException
+import com.tokopedia.sellerfeedback.error.SubmitThrowable
+import com.tokopedia.sellerfeedback.error.UploadThrowable
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -60,15 +60,15 @@ class SellerFeedbackViewModel @Inject constructor(
 
             val submitGlobalFeedback = result.submitGlobalFeedback
             if (submitGlobalFeedback.error) {
-                throw SubmitException(submitGlobalFeedback.errorMsg)
+                throw SubmitThrowable(submitGlobalFeedback.errorMsg)
             }
 
             submitResult.postValue(SubmitResult.Success)
         }, onError = {
             val result = when (it) {
-                is UploadException -> SubmitResult.UploadFail(it.message)
-                is SubmitException -> SubmitResult.SubmitFail(it.message)
-                else -> SubmitResult.NetworkFail
+                is UploadThrowable -> SubmitResult.UploadFail(it)
+                is SubmitThrowable -> SubmitResult.SubmitFail(it)
+                else -> SubmitResult.NetworkFail(it)
             }
             submitResult.postValue(result)
         })
@@ -82,7 +82,7 @@ class SellerFeedbackViewModel @Inject constructor(
         )
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> result.uploadId
-            is UploadResult.Error -> throw UploadException(result.message)
+            is UploadResult.Error -> throw UploadThrowable(result.message)
         }
     }
 }
