@@ -255,13 +255,6 @@ class BarChartViewHolder(
         return element.isEmpty() && element.shouldShowEmptyStateIfEmpty()
     }
 
-    private fun BarChartWidgetUiModel.isEmpty(): Boolean = data == null || data?.shouldRemove() == true
-
-    private fun BarChartWidgetUiModel.shouldShowEmptyStateIfEmpty(): Boolean =
-            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
-                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
-
-
     private fun setupEmptyState(element: BarChartWidgetUiModel) {
         with(element.emptyState) {
             emptyStateTitle?.text = title

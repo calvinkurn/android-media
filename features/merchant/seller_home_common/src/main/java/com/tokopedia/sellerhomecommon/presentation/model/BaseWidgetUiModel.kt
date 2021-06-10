@@ -27,6 +27,14 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     var emptyState: WidgetEmptyStateUiModel
     fun copy(): BaseWidgetUiModel<T>
     fun needToRefreshData(other: BaseWidgetUiModel<T>): Boolean
+
+    fun shouldShowEmptyStateIfEmpty(): Boolean =
+            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
+                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
+
+    fun isEmpty(): Boolean =
+            data == null || data?.shouldRemove() == true
+
 }
 
 data class WidgetEmptyStateUiModel(

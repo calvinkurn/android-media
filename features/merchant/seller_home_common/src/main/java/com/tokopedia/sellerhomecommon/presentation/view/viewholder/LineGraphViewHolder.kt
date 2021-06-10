@@ -171,13 +171,6 @@ class LineGraphViewHolder(
         return element.isEmpty() && element.shouldShowEmptyStateIfEmpty()
     }
 
-    private fun LineGraphWidgetUiModel.isEmpty(): Boolean =
-            isShowEmpty && data?.list?.all { it.yVal == 0f } == true
-
-    private fun LineGraphWidgetUiModel.shouldShowEmptyStateIfEmpty(): Boolean =
-            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
-                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
-
     private fun setupEmptyState(emptyState: WidgetEmptyStateUiModel) {
         with(emptyState) {
             itemView.tvLineGraphEmptyStateTitle.text = title

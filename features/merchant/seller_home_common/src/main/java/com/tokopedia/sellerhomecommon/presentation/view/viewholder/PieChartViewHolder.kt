@@ -155,13 +155,6 @@ class PieChartViewHolder(
         }
     }
 
-    private fun PieChartWidgetUiModel.isEmpty(): Boolean =
-            data?.data?.item.isNullOrEmpty()
-
-    private fun PieChartWidgetUiModel.shouldShowEmptyStateIfEmpty(): Boolean =
-            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
-                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
-
     private fun showEmptyState(element: PieChartWidgetUiModel) {
         with(itemView) {
             pieChartShc?.gone()
