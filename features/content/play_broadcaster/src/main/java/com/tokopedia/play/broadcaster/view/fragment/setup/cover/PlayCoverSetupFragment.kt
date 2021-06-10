@@ -527,12 +527,6 @@ class PlayCoverSetupFragment @Inject constructor(
         })
     }
 
-    private fun observeCoverTitle() {
-//        viewModel.observableCoverTitle.observe(viewLifecycleOwner, Observer {
-//            coverSetupView.coverTitle = it
-//        })
-    }
-
     private fun observeUploadCover() {
         viewModel.observableUploadCoverEvent.observe(viewLifecycleOwner, Observer {
             when (it) {
