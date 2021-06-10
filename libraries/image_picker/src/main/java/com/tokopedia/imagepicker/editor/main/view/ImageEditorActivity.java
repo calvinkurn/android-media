@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.URLUtil;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +28,7 @@ import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
+import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
@@ -119,12 +119,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private long maxFileSize;
 
     //watermark
-    private UnifyButton[] btnWatermarks = new UnifyButton[3];
+    private final UnifyButton[] btnWatermarks = new UnifyButton[2];
     private UnifyButton btnWatermarkUnfocus;
-    private int[] btnWatermarksId = {
+    private final int[] btnWatermarksId = {
             R.id.btn_watermark_tokopedia,
-            R.id.btn_watermark_sellername,
-            R.id.btn_watermark_both
+            R.id.btn_watermark_user_info,
+//            R.id.btn_watermark_both
     };
 
     //to give flag if the image is editted or not, in case the caller need it.
@@ -332,7 +332,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     }
                     break;
                 case ACTION_WATERMARK:
-                    // currently not supported
+                    if (fragment != null) {
+                        fragment.saveWatermarkImage();
+                    }
                     break;
                 case ACTION_BRIGHTNESS:
                     if (fragment != null) {
@@ -511,6 +513,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_WATERMARK:
                     hideAllControls();
                     setupWatermarkWidget();
+                    setLastStateWatermarkImage();
                     layoutWatermark.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.watermark));
                     break;
@@ -561,6 +564,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutRotate.setVisibility(View.GONE);
         layoutBrightness.setVisibility(View.GONE);
         layoutContrast.setVisibility(View.GONE);
+        layoutWatermark.setVisibility(View.GONE);
     }
 
     private void setupBrightnessWidget() {
@@ -680,29 +684,44 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     }
 
     private void setupWatermarkWidget() {
+        // reset color
         for (int i = 0; i < btnWatermarksId.length; i++) {
             btnWatermarks[i] = findViewById(btnWatermarksId[i]);
-            btnWatermarks[i].setButtonType(UnifyButton.Type.ALTERNATE);
+            btnWatermarks[i].setButtonVariant(UnifyButton.Variant.GHOST);
             btnWatermarks[i].setOnClickListener(buttonWatermarkWidgetClicked());
         }
+
+        btnWatermarkUnfocus = btnWatermarks[0];
     }
 
     private View.OnClickListener buttonWatermarkWidgetClicked() {
+        ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+
         return view -> {
             int id = view.getId();
+            int watermarkType = Constant.TYPE_WATERMARK_TOPED;
+
             if (id == R.id.btn_watermark_tokopedia) {
                 setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[0]);
-            } else if (id == R.id.btn_watermark_sellername) {
+                watermarkType = Constant.TYPE_WATERMARK_TOPED;
+            } else if (id == R.id.btn_watermark_user_info) {
                 setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[1]);
-            } else if (id == R.id.btn_watermark_both) {
-                setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[2]);
+                watermarkType = Constant.TYPE_WATERMARK_USER_INFO;
+            }
+//            else if (id == R.id.btn_watermark_both) {
+//                setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[2]);
+//                watermarkType = Constant.TYPE_WATERMARK_BOTH;
+//            }
+
+            if (imageEditPreviewFragment != null) {
+                imageEditPreviewFragment.setWatermark(watermarkType);
             }
         };
     }
 
     private void setButtonWatermarkFocus(UnifyButton btnUnfocus, UnifyButton btnFocus) {
-        btnUnfocus.setButtonType(UnifyButton.Type.ALTERNATE);
-        btnFocus.setButtonType(UnifyButton.Type.MAIN);
+        btnUnfocus.setButtonVariant(UnifyButton.Variant.GHOST);
+        btnFocus.setButtonVariant(UnifyButton.Variant.FILLED);
 
         this.btnWatermarkUnfocus = btnFocus;
     }
@@ -767,6 +786,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         tvContrast.setText(String.valueOf((int) contrastValue - INITIAL_CONTRAST_VALUE));
         if (contrastSeekbar != null && contrastSeekbar.getValue() != contrastValue) {
             contrastSeekbar.setValue(contrastValue);
+        }
+    }
+
+    public void setLastStateWatermarkImage() {
+        ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+
+        if (imageEditPreviewFragment != null) {
+            imageEditPreviewFragment.saveLastStateBitmap();
         }
     }
 
