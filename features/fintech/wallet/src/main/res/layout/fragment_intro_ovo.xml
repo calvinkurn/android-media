@@ -3,12 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,72 +19,92 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_15"
+                android:layout_marginTop="@dimen/unify_space_16"
                 app:srcCompat="@drawable/wallet_ic_intro_ovo" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title_intro"
-                style="@style/TextView.TitleMedium.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 android:gravity="center_horizontal"
-                android:text="@string/wallet_announcement_ovo_title" />
+                app:typographyWeight="bold"
+                app:typographyType="heading_4"
+                android:textColor="@color/Unify_N700_68"
+                android:text="@string/wallet_announcement_ovo_title"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/description_1"
-                style="@style/TextView.Small.BlackSecondary"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_24"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_2"
                 android:gravity="center_horizontal"
-                android:text="@string/wallet_announcement_ovo_description" />
+                android:text="@string/wallet_announcement_ovo_description"  />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/description_2"
-                style="@style/TextView.Small.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_24"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_2"
+                android:gravity="center_horizontal"
+                android:text="@string/wallet_announcement_ovo_second_desc"  />
+
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/activation_ovo_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:gravity="center_horizontal"
-                android:text="@string/wallet_announcement_ovo_second_desc" />
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:text="@string/wallet_announcement_ovo_btn_activation"/>
 
-            <Button
-                android:id="@+id/activation_ovo_btn"
-                style="@style/Button.Submit.Green"
-                android:text="@string/wallet_announcement_ovo_btn_activation" />
-
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/learn_more_ovo_btn"
-                android:textColor="@color/font_black_disabled_38"
-                style="@style/Button.Submit.White.Border"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unifyButtonVariant="ghost"
+                app:unifyButtonType="alternate"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 android:text="@string/wallet_announcement_ovo_btn_learn_more" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tnc_ovo"
-                style="@style/TextView.Micro.BlackSecondary"
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginRight="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_16"
                 android:gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:text="@string/wallet_announcement_ovo_text_tnc" />
+                android:text="@string/wallet_announcement_ovo_text_tnc"  />
 
         </LinearLayout>
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
             android:layout_centerInParent="true"
             android:visibility="gone" />
 
