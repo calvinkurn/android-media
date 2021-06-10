@@ -249,9 +249,11 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductNotes(element: MiniCartProductUiModel) {
         textNotes?.setOnClickListener {
+            listener.onWriteNotesClicked()
             renderProductNotesEditable(element)
         }
         textNotesChange?.setOnClickListener {
+            listener.onChangeNotesClicked()
             renderProductNotesEditable(element)
         }
 
@@ -431,6 +433,16 @@ class MiniCartProductViewHolder(private val view: View,
                 true
             } else false
         }
+        qtyEditorProduct?.editText?.setOnClickListener {
+            val qty = qtyEditorProduct?.editText?.text?.toString().toIntOrZero()
+            listener.onInputQuantityClicked(qty)
+        }
+        qtyEditorProduct?.setAddClickListener {
+            listener.onQuantityPlusClicked()
+        }
+        qtyEditorProduct?.setSubstractListener {
+            listener.onQuantityMinusClicked()
+        }
     }
 
     private fun renderProductAction(element: MiniCartProductUiModel) {
@@ -457,7 +469,7 @@ class MiniCartProductViewHolder(private val view: View,
         textProductUnavailableAction?.text = action.message
         textProductUnavailableAction?.setOnClickListener {
             if (element.selectedUnavailableActionLink.isNotBlank()) {
-                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink)
+                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
             }
         }
         textProductUnavailableAction?.context?.let {
@@ -468,6 +480,7 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductAlpha(element: MiniCartProductUiModel) {
         if (element.isProductDisabled) {
+            listener.onShowUnavailableItem(element)
             imageProduct?.alpha = 0.5f
             textProductName?.alpha = 0.5f
             textProductVariant?.alpha = 0.5f
