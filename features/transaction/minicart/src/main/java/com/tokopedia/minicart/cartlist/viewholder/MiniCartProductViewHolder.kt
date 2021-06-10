@@ -406,8 +406,9 @@ class MiniCartProductViewHolder(private val view: View,
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                     delay(500)
                     val newValue = s.toString().replace(".", "").toIntOrZero()
-                    validateQty(newValue, element)
                     if (element.productQty != newValue) {
+                        validateQty(newValue, element)
+                        element.productQty = newValue
                         listener.onQuantityChanged(element.productId, newValue)
                     }
                 }
