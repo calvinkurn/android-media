@@ -141,7 +141,7 @@ class OfficialHomeFragment :
     }
 
     fun forceLoadData() {
-        loadData(isRefresh = false)
+        reloadData(isRefresh = false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -677,6 +677,20 @@ class OfficialHomeFragment :
             if (!isLoadedOnce || isRefresh) {
                 viewModel.loadFirstData(category, getLocation())
                 isLoadedOnce = true
+
+                getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
+
+                if (!isRefresh) {
+                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+                }
+            }
+        }
+    }
+
+    private fun reloadData(isRefresh: Boolean = false) {
+        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
+            if (isRefresh) {
+                viewModel.loadFirstData(category, getLocation())
 
                 getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
 
