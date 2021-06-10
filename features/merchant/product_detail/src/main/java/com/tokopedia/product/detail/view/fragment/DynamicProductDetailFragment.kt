@@ -2034,12 +2034,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         context?.let {
             if (viewModel.getDynamicProductInfoP1 != null) {
+                val boData = viewModel.getBebasOngkirDataByProductId()
+
                 AtcVariantHelper.pdpToAtcVariant(
                         context = it,
                         productInfoP1 = viewModel.getDynamicProductInfoP1!!,
                         warehouseId = warehouseId ?: "",
                         pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
                         isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow ?: false,
+                        isFreeOngkir = boData.imageURL.isNotEmpty(),
                         isShopOwner = viewModel.isShopOwner(),
                         productVariant = viewModel.variantData ?: ProductVariant(),
                         warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),

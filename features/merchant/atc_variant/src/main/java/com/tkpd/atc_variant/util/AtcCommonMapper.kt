@@ -254,7 +254,8 @@ object AtcCommonMapper {
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
                 productStockWording = selectedChild?.stock?.stockWordingHTML
-                        ?: ""
+                        ?: "",
+                productName = selectedChild?.name ?: ""
         )
         return productImage to headerData
     }

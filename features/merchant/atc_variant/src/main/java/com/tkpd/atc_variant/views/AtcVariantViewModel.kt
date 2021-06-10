@@ -111,7 +111,7 @@ class AtcVariantViewModel @Inject constructor(
 
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
             val selectedWarehouse = getSelectedWarehouse(selectedVariantChild?.productId ?: "")
-            val selectedQuantity = localQuantityData[selectedVariantChild?.productId ?: ""] ?: 0
+            val selectedQuantity = getSelectedQuantity(selectedVariantChild?.productId ?: "")
 
             //We update visitable to re-render selected variant and header
             val list = AtcCommonMapper.updateVisitable(
@@ -179,6 +179,10 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedQuantity(productId: String): Int {
+        return localQuantityData[productId] ?: 0
+    }
+
     fun updateQuantity(quantity: Int, productId: String) {
         localQuantityData[productId] = quantity
     }
@@ -206,7 +210,7 @@ class AtcVariantViewModel @Inject constructor(
             val processedVariant = AtcVariantMapper.processVariant(aggregatorData?.variantData, initialSelectedOptionIds)
 
             assignLocalQuantityWithMiniCartQuantity(minicartData?.values?.toList())
-            val selectedQuantity = localQuantityData[selectedChild?.productId ?: ""] ?: 0
+            val selectedQuantity = getSelectedQuantity(selectedChild?.productId ?: "")
 
             //Generate visitables
             val visitables = AtcCommonMapper.mapToVisitable(
@@ -462,7 +466,7 @@ class AtcVariantViewModel @Inject constructor(
         return selectedVariantIds
     }
 
-    private fun getSelectedWarehouse(productId: String): WarehouseInfo? {
+    fun getSelectedWarehouse(productId: String): WarehouseInfo? {
         return aggregatorData?.nearestWarehouse?.get(productId)
     }
 

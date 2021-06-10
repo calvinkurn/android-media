@@ -30,5 +30,6 @@ data class ProductVariantBottomSheetParams(
         var trackerListNamePdp: String = "",
         var shopTypeString: String = "",
         var shopName: String = "",
-        var isShopOwner: Boolean = false
+        var isShopOwner: Boolean = false,
+        var isFreeOngkir: Boolean = false
 )
