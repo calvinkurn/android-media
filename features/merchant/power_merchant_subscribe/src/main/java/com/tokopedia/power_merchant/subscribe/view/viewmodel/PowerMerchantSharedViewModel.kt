@@ -8,7 +8,7 @@ import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiM
 import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetShopModerationStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
-import com.tokopedia.power_merchant.subscribe.view_old.util.PowerMerchantRemoteConfig
+import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantRemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
