@@ -2053,7 +2053,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 //            AtcVariantHelper.goToAtcVariant(
 //                    context = it,
 //                    productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-//                    pageSource = "wishlist",
+//                    pageSource = "tokonow",
 //                    shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
 //                    isTokoNow = true
 //            ) { data, code ->

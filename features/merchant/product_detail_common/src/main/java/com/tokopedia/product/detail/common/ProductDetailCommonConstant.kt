@@ -38,6 +38,7 @@ object ProductDetailCommonConstant{
     const val PARAM_TEASER_PRODUCT_ID = "productId"
     const val PARAM_TEASER_ACTION = "action"
     const val PARAM_TEASER_SOURCE = "source"
+    const val PARAM_TOKO_NOW = "isTokoNow"
     const val VALUE_TEASER_ACTION_REGISTER = "REGISTER"
     const val VALUE_TEASER_ACTION_UNREGISTER = "UNREGISTER"
     const val VALUE_TEASER_TRACKING_REGISTER = "on"

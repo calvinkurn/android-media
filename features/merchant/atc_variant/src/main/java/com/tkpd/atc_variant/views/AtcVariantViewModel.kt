@@ -246,9 +246,12 @@ class AtcVariantViewModel @Inject constructor(
          */
         if (aggregatorParams.variantAggregator.isAggregatorEmpty() || (aggregatorParams.isTokoNow && aggregatorParams.miniCartData == null)) {
             val result = aggregatorMiniCartUseCase.executeOnBackground(
-                    aggregatorMiniCartUseCase.createAggregatorRequestParams(aggregatorParams.productId,
-                            aggregatorParams.pageSource, aggregatorParams.whId, aggregatorParams.pdpSession),
-                    aggregatorParams.shopId, aggregatorParams.isTokoNow
+                    productId = aggregatorParams.productId,
+                    source = aggregatorParams.pageSource,
+                    isTokoNow = aggregatorParams.isTokoNow,
+                    warehouseId = aggregatorParams.whId,
+                    pdpSession = aggregatorParams.pdpSession,
+                    shopId = aggregatorParams.shopId
             )
             aggregatorData = result.variantAggregator
             minicartData = result.miniCartData?.toMutableMap()

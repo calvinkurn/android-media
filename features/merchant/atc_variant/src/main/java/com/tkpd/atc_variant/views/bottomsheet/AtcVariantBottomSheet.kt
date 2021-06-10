@@ -103,9 +103,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 viewModel.updateActivityResult(requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
             }
             ATC_LOGIN_REQUEST_CODE -> {
+                loadingProgressDialog?.dismiss()
                 if (resultCode == Activity.RESULT_OK) {
                     viewModel.updateActivityResult(requestCode = ATC_LOGIN_REQUEST_CODE, shouldRefreshPreviousPage = true)
-                    loadingProgressDialog?.dismiss()
                     dismiss()
                 }
             }

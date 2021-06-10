@@ -137,12 +137,14 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     fun createRequestParams(productId: String,
                             source: String,
+                            isTokoNow:Boolean,
                             warehouseId: String? = null,
                             pdpSession: String? = null): Map<String, Any?> = mapOf(
             ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
             ProductDetailCommonConstant.PARAM_PDP_SESSION to pdpSession,
             ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId,
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
+            ProductDetailCommonConstant.PARAM_TOKO_NOW to isTokoNow,
             ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
     )
 
