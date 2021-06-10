@@ -119,7 +119,7 @@ data class RatesParam(
             private set
         var weight: String = shipping.weightInKilograms.toString()
             private set
-        var weightActual: String? = if (shipping.weightActualInKilograms > 0) shipping.weightActualInKilograms.toString() else null
+        var weightActual: String = if (shipping.weightActualInKilograms > 0) shipping.weightActualInKilograms.toString() else shipping.weightInKilograms.toString()
             private set
         var trade_in: Int = RatesParamHelper.determineTradeIn(shipping)
             private set
