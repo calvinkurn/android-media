@@ -67,7 +67,7 @@ open class WatermarkBuilder {
         }
     }
 
-    constructor(context: Context, backgroundImg: Bitmap) : this(context, backgroundImg, true)
+    constructor(context: Context, backgroundImg: Bitmap) : this(context, backgroundImg, false)
 
     constructor(context: Context, backgroundImageView: ImageView) : this(context, backgroundImageView, true)
 
