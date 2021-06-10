@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.promoui.common.dpToPx
@@ -273,7 +274,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                     cta.text = context.resources.getString(R.string.mvc_mulai_belanja)
                 }
                 cta.setOnClickListener {
-                    RouteManager.route(context, "tokopedia://shop/$shopId/product")
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT,shopId)
                     Tracker.clickDaftarJadiMember(shopId, UserSession(context).userId, mvcSource)
                 }
             }

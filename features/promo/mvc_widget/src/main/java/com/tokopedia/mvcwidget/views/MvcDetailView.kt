@@ -41,7 +41,7 @@ class MvcDetailView @JvmOverloads constructor(
         return widgetImpression
     }
 
-    val adapter by lazy { MvcDetailAdapter(arrayListOf(), this, UserSession(context)) }
+    val adapter by lazy { MvcDetailAdapter(arrayListOf(), this) }
 
     private val CONTAINER_CONTENT = 0
     private val CONTAINER_SHIMMER = 1
@@ -70,7 +70,6 @@ class MvcDetailView @JvmOverloads constructor(
         viewFlipper = findViewById(R.id.viewFlipper)
         globalError = findViewById(R.id.mvcDetailGlobalError)
         rv.layoutManager = LinearLayoutManager(context)
-        adapter.userSession = userSession as UserSession
         rv.adapter = adapter
 
         DaggerMvcComponent.builder()

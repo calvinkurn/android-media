@@ -1,15 +1,13 @@
 package com.tokopedia.mvcwidget
 
-import android.content.Context
-import android.content.res.Configuration
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 
+const val COLLAPSES_SPEED = 0.5
 
 fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
     val layoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
@@ -71,7 +69,7 @@ fun expand(v: View) {
         }
     }
 
-    a.duration = ((targetHeight / v.context.resources.displayMetrics.density) * 0.5).toLong()
+    a.duration = ((targetHeight / v.context.resources.displayMetrics.density) * COLLAPSES_SPEED).toLong()
     v.startAnimation(a)
 }
 
@@ -92,7 +90,7 @@ fun collapse(v: View) {
         }
     }
 
-    a.duration = (((initialHeight / v.context.resources.displayMetrics.density) * 1).toLong())
+    a.duration = (((initialHeight / v.context.resources.displayMetrics.density)).toLong())
     v.startAnimation(a)
 }
 
