@@ -1,0 +1,235 @@
+{
+  "data": {
+    "catalogGetDetailModular": {
+      "basicInfo": {
+        "id": "63",
+        "departmentId": "3055",
+        "name": "Apple iPhone 4 - 16GB",
+        "brand": "",
+        "tag": "",
+        "description": "iPhone 4 merupakan produk telepon genggam keluaran Apple. iPhone 4 dirilis pada bulan Juni tahun 2010. Dilengkapi dengan chipset Apple A4 dan CPU 1.0 GHz Cortex-A8.\r\n\r\niPhone 4 berkapasitas 16 GB ini memiliki kamera utama dengan kapasitas 5 MP dan dilengkapi fitur geo-tagging, touch focus dan HDR photo. iPhone 4 memiliki 2 macam varian warna yaitu warna hitam dan putih.",
+        "shortDescription": "iPhone 4 merupakan produk telepon genggam keluaran Apple. iPhone 4 dirilis pada bulan Juni tahun 2010. Dilengkapi dengan chipset Apple A4 dan CPU 1.0 GHz Cortex-A8.\r\n\r\niPhone 4 berkapasitas 16 GB ini memiliki kamera utama dengan kapasitas 5 MP dan dilengkapi fitur geo-tagging, touch focus dan HDR photo. iPhone 4 memiliki 2 macam varian warna yaitu warna hitam dan putih.",
+        "url": "https://tokopedia.com/catalog/brandnotspecified-63/apple-iphone-4-16gb",
+        "mobileUrl": "https://tokopedia.com/catalog/brandnotspecified-63/apple-iphone-4-16gb",
+        "catalogImage": [
+          {
+            "imageUrl": "https://imagerouter.tokopedia.com/img/300/catalog/2015/11/20/3454752/3454752_0652fca1-bad7-40cf-9820-bc36f8c46299.png",
+            "isPrimary": true
+          },
+          {
+            "imageUrl": "https://imagerouter.tokopedia.com/img/300/catalog/2015/11/20/3454752/3454752_31772f4e-0dc9-4d6c-aa65-3357964c3a7a.png",
+            "isPrimary": true
+          },
+          {
+            "imageUrl": "https://imagerouter.tokopedia.com/img/300/catalog/2015/11/20/3454752/3454752_c52ef2bc-25da-41ad-a666-5fd60300f633.png",
+            "isPrimary": true
+          }
+        ],
+        "marketPrice": [
+          {
+            "min": 789999,
+            "max": 1500000,
+            "minFmt": "Rp. 789.999",
+            "maxFmt": "Rp. 1.500.000",
+            "date": "2020-02-01",
+            "name": "Tokopedia"
+          }
+        ],
+        "longDescription": []
+      },
+      "components": [
+        {
+          "id": 1,
+          "name": "Catalog Top Spec",
+          "type": "catalog-spec-horizontal-scroll",
+          "sticky": false,
+          "data": [
+            {
+              "key": "Features",
+              "value": "Yes, Yes, MMS, SMS &#40;threaded view&#41;, Push Email, Email, iOS 4, PowerVR SGX535GPU, Apple A4 chipset, 1 GHz ARM Cortex-A8 processor, Yes",
+              "icon": "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png"
+            },
+            {
+              "key": "Memory",
+              "value": "16 GB storage, 512 MB RAM",
+              "icon": "https://images.tokopedia.net/img/catalog/topspec/icons/chipset.png"
+            },
+            {
+              "key": "Display",
+              "value": "LED-backlit IPS LCD, capacitive touchscreen, 16 M colors, 640 x 960 pixels, 3.5 inches",
+              "icon": "https://images.tokopedia.net/img/catalog/topspec/icons/phone.png"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Catalog Spec",
+          "type": "catalog-spec-full-data",
+          "sticky": false,
+          "data": [
+            {
+              "name": "General",
+              "icon": "",
+              "row": [
+                {
+                  "key": "Brand",
+                  "value": "Apple"
+                },
+                {
+                  "key": "Style",
+                  "value": "Slate"
+                },
+                {
+                  "key": "Release Date",
+                  "value": "2010, June"
+                },
+                {
+                  "key": "Network",
+                  "value": "HSDPA 850 / 900 / 1900 / 2100, GSM 850 / 900 / 1800 / 1900"
+                },
+                {
+                  "key": "Colors",
+                  "value": "White, Black"
+                }
+              ]
+            },
+            {
+              "name": "Size",
+              "icon": "",
+              "row": [
+                {
+                  "key": "Width",
+                  "value": "58.6 mm"
+                },
+                {
+                  "key": "Weight",
+                  "value": "137 g"
+                },
+                {
+                  "key": "Thickness",
+                  "value": "9.3 mm"
+                },
+                {
+                  "key": "Length",
+                  "value": "115.2 mm"
+                }
+              ]
+            },
+            {
+              "name": "Features",
+              "icon": "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png",
+              "row": [
+                {
+                  "key": "GPS",
+                  "value": "Yes"
+                },
+                {
+                  "key": "Browser",
+                  "value": "Yes"
+                },
+                {
+                  "key": "CPU",
+                  "value": "PowerVR SGX535GPU, 1 GHz ARM Cortex-A8 processor, Apple A4 chipset"
+                },
+                {
+                  "key": "Games",
+                  "value": "Yes"
+                },
+                {
+                  "key": "Messaging",
+                  "value": "Email, MMS, SMS &#40;threaded view&#41;, Push Email"
+                },
+                {
+                  "key": "Operating System",
+                  "value": "iOS 4"
+                }
+              ]
+            },
+            {
+              "name": "Memory",
+              "icon": "https://images.tokopedia.net/img/catalog/topspec/icons/chipset.png",
+              "row": [
+                {
+                  "key": "Internal",
+                  "value": "16 GB storage, 512 MB RAM"
+                }
+              ]
+            },
+            {
+              "name": "Display",
+              "icon": "https://images.tokopedia.net/img/catalog/topspec/icons/phone.png",
+              "row": [
+                {
+                  "key": "Size",
+                  "value": "640 x 960 pixels, 3.5 inches"
+                },
+                {
+                  "key": "Colors",
+                  "value": "16 M colors"
+                },
+                {
+                  "key": "Type",
+                  "value": "LED-backlit IPS LCD, capacitive touchscreen"
+                }
+              ]
+            },
+            {
+              "name": "Data",
+              "icon": "",
+              "row": [
+                {
+                  "key": "Bluetooth",
+                  "value": "Yes"
+                },
+                {
+                  "key": "3G",
+                  "value": "Yes"
+                },
+                {
+                  "key": "WiFi",
+                  "value": "Yes"
+                },
+                {
+                  "key": "GPRS",
+                  "value": "Yes"
+                },
+                {
+                  "key": "EDGE",
+                  "value": "Yes"
+                }
+              ]
+            },
+            {
+              "name": "Camera",
+              "icon": "",
+              "row": [
+                {
+                  "key": "Front",
+                  "value": "Yes"
+                },
+                {
+                  "key": "Main",
+                  "value": "LED flash"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Product Filter",
+          "type": "product-list-filter",
+          "sticky": true,
+          "data": []
+        },
+        {
+          "id": 6,
+          "name": "Product List",
+          "type": "product-list-infinite-scroll",
+          "sticky": false,
+          "data": []
+        }
+      ]
+    }
+  }
+}
