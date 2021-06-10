@@ -6,7 +6,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokomart.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.domain.model.KeywordSearchData
@@ -29,8 +29,8 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers.*
-import java.util.*
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyString
 
 abstract class TokoMartHomeViewModelTestFixture {
 
@@ -181,8 +181,8 @@ abstract class TokoMartHomeViewModelTestFixture {
         }
     }
 
-    protected fun onGetDataFromTokoMart_thenReturn(listCategoryResponse: List<CategoryResponse>){
-        coEvery { getCategoryListUseCase.execute("1", 1) } returns listCategoryResponse
+    protected fun onGetDataFromTokoMart_thenReturn(categoryListResponse: CategoryListResponse){
+        coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
     }
 
     protected fun onGetDataFromTokoMart_thenReturn(errorThrowable: Throwable){

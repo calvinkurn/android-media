@@ -9,6 +9,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.tokomart.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokomart.home.domain.model.*
@@ -107,8 +108,10 @@ fun createMiniCartSimplifier(): MiniCartSimplifiedData {
     )
 }
 
-fun createCategoryListData(): List<CategoryResponse> {
-    return listOf(
+fun createCategoryListData(): CategoryListResponse {
+    return CategoryListResponse(
+            header = com.tokopedia.abstraction.common.data.model.response.Header(),
+            data = listOf(
             CategoryResponse(
                     id = "1",
                     name = "Category 1",
@@ -118,7 +121,7 @@ fun createCategoryListData(): List<CategoryResponse> {
                     parentId = "2",
                     childList = listOf()
             )
-    )
+    ))
 }
 
 fun createHomeLayoutListWithCategory(): HomeLayoutListUiModel {

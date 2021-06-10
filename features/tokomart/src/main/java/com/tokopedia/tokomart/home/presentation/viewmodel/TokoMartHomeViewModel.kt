@@ -22,17 +22,17 @@ import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutL
 import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokomart.home.domain.model.Ticker
-import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutDataUseCase
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiModel
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TokoMartHomeViewModel @Inject constructor(
@@ -190,7 +190,7 @@ class TokoMartHomeViewModel @Inject constructor(
         when (item) {
             is HomeCategoryGridUiModel -> {
                 val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
-                layoutList = layoutList.mapHomeCategoryGridData(item, response)
+                layoutList = layoutList.mapHomeCategoryGridData(item, response.data)
             }
         }
     }
