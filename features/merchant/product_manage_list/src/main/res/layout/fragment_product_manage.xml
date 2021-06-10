@@ -14,7 +14,6 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/mainContainer"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btnMultiEdit"
@@ -47,9 +46,17 @@
                 android:background="@drawable/bg_corner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:siv_search_icon="@drawable/unify_search_ic"
                 app:layout_scrollFlags="scroll|snap"/>
+
+            <include
+                android:id="@+id/shimmerSortFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/shimmer_sort_filter_product_manage"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <com.tokopedia.sortfilter.SortFilter
                 android:id="@+id/tabSortFilter"
@@ -113,7 +120,7 @@
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"/>
+                android:layout_height="@dimen/dp_1" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -131,12 +138,13 @@
                 android:scrollbars="vertical" />
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progressBar"
             android:visibility="gone"
             android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            app:loader_type="circular"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.cardview.widget.CardView
@@ -160,11 +168,6 @@
             android:text="@string/product_manage_button_multi_edit"
             app:unifyButtonSize="large" />
     </androidx.cardview.widget.CardView>
-
-    <include
-        android:id="@+id/pageLoading"
-        layout="@layout/layout_product_manage_shimmer"
-        tools:visibility="gone" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/errorPage"
