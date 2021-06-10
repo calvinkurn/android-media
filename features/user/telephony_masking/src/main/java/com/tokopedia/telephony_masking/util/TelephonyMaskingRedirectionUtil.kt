@@ -18,12 +18,10 @@ import kotlin.collections.ArrayList
 
 class TelephonyMaskingRedirectionUtil {
 
-    private var remoteConfig: RemoteConfig? = null
-
-    fun createIntentSavePhoneNumbers(context: Context): Intent {
+    fun createIntentSavePhoneNumbers(context: Context, listNumber: List<String>): Intent {
         val intent = createIntentToPutContacts()
         val data = ArrayList<ContentValues>()
-        addMultipleNumbers(data, getListNumbers(context))
+        addMultipleNumbers(data, listNumber)
         addImageToContact(context, data)
         intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data)
         intent.putExtra(SAVE_EXTRA, true)
@@ -70,14 +68,5 @@ class TelephonyMaskingRedirectionUtil {
         val byteArray = stream.toByteArray()
         bit.recycle()
         return byteArray
-    }
-
-    private fun getListNumbers(context: Context): List<String> {
-        if(remoteConfig == null) {
-            remoteConfig = FirebaseRemoteConfigImpl(context)
-        }
-        val contactNumbers = remoteConfig?.getString(TELEPHONY_MASKING_KEY, CONTACT_NUMBERS_DEFAULT)
-                ?: CONTACT_NUMBERS_DEFAULT
-        return contactNumbers.split(",")
     }
 }

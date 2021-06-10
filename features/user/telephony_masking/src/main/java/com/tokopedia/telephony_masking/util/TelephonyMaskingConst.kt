@@ -8,6 +8,11 @@ object TelephonyMaskingConst {
     """
 
     const val SAVE_EXTRA = "finishActivityOnSaveCompleted"
+
     const val RESULT_NOT_SAVED = -2
     const val RESULT_SKIP = -3
+    const val RESULT_ALREADY_EXIST = -4
+
+    const val PREFERENCE_NAME = "CACHE_TELEPHONY_MASKING"
+    const val KEY_LOCAL_NUMBERS = "KEY_LOCAL_NUMBERS_TELEPHONY"
 }

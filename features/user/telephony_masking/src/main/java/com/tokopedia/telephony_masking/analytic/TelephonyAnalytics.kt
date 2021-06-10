@@ -30,7 +30,7 @@ class TelephonyAnalytics(private val userSession: UserSessionInterface) {
             put(KEY_EVENT_CATEGORY, CATEGORY_CONTACT_US)
             put(KEY_EVENT_ACTION, action)
             put(KEY_EVENT_LABEL, LABEL_CONTACT_US)
-            put(KEY_USER_ID, "${userSession.userId} (HIT Level)")
+            put(KEY_USER_ID, userSession.userId)
             put(KEY_BUSINESS_UNIT, BUSINESS_UNIT_VALUE)
             put(KEY_CURRENT_SITE, CURRENT_SITE_VALUE)
         }
@@ -46,8 +46,8 @@ class TelephonyAnalytics(private val userSession: UserSessionInterface) {
         private const val KEY_BUSINESS_UNIT = "businessUnit"
         private const val KEY_CURRENT_SITE = "currentSite"
 
-        private const val BUSINESS_UNIT_VALUE= ""
-        private const val CURRENT_SITE_VALUE = ""
+        private const val BUSINESS_UNIT_VALUE= "Customer Excellence"
+        private const val CURRENT_SITE_VALUE = "tokopediamarketplace"
 
         private const val EVENT_CONTACT_US = "clickContactUs"
         private const val CATEGORY_CONTACT_US = "contact us v3"
