@@ -12,7 +12,6 @@ import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.R
 import kotlinx.android.synthetic.main.item_variant_chip_view_holder.view.*
-import android.view.ViewGroup
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 /**
