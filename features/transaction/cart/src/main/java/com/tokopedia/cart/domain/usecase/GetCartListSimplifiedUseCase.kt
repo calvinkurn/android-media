@@ -40,9 +40,9 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_SELECTED_CART_ID to cartId,
                 PARAM_KEY_ADDITIONAL to mapOf(
-                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
-                ),
-                PARAM_KEY_STATE to state
+                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                        PARAM_KEY_STATE to state
+                )
         )
     }
 
