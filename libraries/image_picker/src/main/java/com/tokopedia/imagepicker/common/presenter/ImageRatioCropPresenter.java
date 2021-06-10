@@ -123,22 +123,22 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                         .flatMap(new Func1<Pair<Bitmap, Bitmap>, Observable<Bitmap>>() {
                             @Override
                             public Observable<Bitmap> call(Pair<Bitmap, Bitmap> bitmaps) {
-                                WatermarkText watermarkText = new WatermarkText()
-                                        .contentText(" Tokopedia ")
-                                        .positionX(0.5)
-                                        .positionY(0.5)
-                                        .textAlpha(150)
-                                        .rotation(45)
-                                        .textSize(20)
-                                        .textColor(Color.WHITE);
+//                                WatermarkText watermarkText = new WatermarkText()
+//                                        .contentText(" Tokopedia ")
+//                                        .positionX(0.5)
+//                                        .positionY(0.5)
+//                                        .textAlpha(150)
+//                                        .rotation(45)
+//                                        .textSize(20)
+//                                        .textColor(Color.WHITE);
 
                                 WatermarkImage watermarkImage = new WatermarkImage()
                                         .setImageBitmap(bitmaps.getSecond())
                                         .positionX(0.5)
                                         .positionY(0.5)
                                         .rotation(45)
-                                        .imageAlpha(150)
-                                        .imageSize(20);
+                                        .imageAlpha(80)
+                                        .imageSize(0.1);
 
                                 return Observable.just(WatermarkBuilder
                                         .create(getView().getContext(), bitmaps.getFirst())
