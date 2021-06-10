@@ -12,17 +12,23 @@
 
 
     <action intentName="actions.intent.OPEN_APP_FEATURE">
-        <parameter name="feature">
-            <entity-set-reference entitySetId="ShowcaseEntitySet" />
-        </parameter>
 
         <fulfillment
             fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="tokopedia-android-internal://merchant/shop-showcase-add" />
+            urlTemplate="sellerapp://{?featureName}">
+            <parameter-mapping
+                intentParameter="feature"
+                urlParameter="featureName" />
+        </fulfillment>
+
+        <parameter name="feature">
+            <entity-set-reference entitySetId="FeatureEntitySet" />
+        </parameter>
+
     </action>
-    
-    <entity-set entitySetId="ShowcaseEntitySet">
-        <entity identifier="createNewShowcase" name="Create new showcase" />
+
+    <entity-set entitySetId="FeatureEntitySet">
+        <entity name="Home" identifier="home" />
     </entity-set>
 
 
