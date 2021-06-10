@@ -166,7 +166,7 @@ data class Coupon(
         @SerializedName("unique_id")
         val uniqueId: String = "",
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: Long = 0,
         @SerializedName("tag_image_urls")
         val tagImageUrls: List<String> = emptyList(),
         @SerializedName("benefit_amount")
