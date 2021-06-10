@@ -1,0 +1,28 @@
+{
+  "readme": "Play Broadcaster - Content Tagging Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "event":"clickSellerBroadcast",
+      "eventCategory":"seller broadcast",
+      "eventAction":"click recommendation tag",
+      "eventLabel":"\\d+( -.+)*",
+      "businessUnit":"play",
+      "currentSite":"tokopediaseller",
+      "sessionIris":".*",
+      "userId": ".*",
+      "shopId": ".*"
+    },
+    {
+      "event":"clickSellerBroadcast",
+      "eventCategory":"seller broadcast",
+      "eventAction":"click continue from recommendation tag",
+      "eventLabel":"\\d+",
+      "businessUnit":"play",
+      "currentSite":"tokopediaseller",
+      "sessionIris":".*",
+      "userId": ".*",
+      "shopId": ".*"
+    }
+  ]
+}
