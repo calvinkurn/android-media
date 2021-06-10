@@ -26,6 +26,7 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     var topadsBannerView: TopAdsBannerView
+        private set
     private val shimmerView: LoaderUnify
 
     init {
