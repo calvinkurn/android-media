@@ -6,38 +6,38 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_8"
-        app:loader_corner_radius="@dimen/dp_5"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_width="@dimen/tokonow_shimmering_line_width"
+        android:layout_height="@dimen/layout_lvl1"
+        app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
         app:loader_type="line" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_margin="@dimen/unify_space_16"
+        android:layout_margin="@dimen/layout_lvl2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_100"
-        app:loader_corner_radius="@dimen/dp_8"
+        android:layout_height="@dimen/tokonow_shimmering_banner_rect_height"
+        app:loader_corner_radius="@dimen/layout_lvl1"
         app:loader_type="rect"/>
 
     <RelativeLayout
         android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/tokonow_shimmering_margin_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_200"
-            android:layout_height="@dimen/dp_8"
-            app:loader_corner_radius="@dimen/dp_5"
+            android:layout_width="@dimen/tokonow_shimmering_line_width"
+            android:layout_height="@dimen/layout_lvl1"
+            app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
             app:loader_type="line"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_8"
+            android:layout_width="@dimen/layout_lvl7"
+            android:layout_height="@dimen/layout_lvl1"
             android:layout_alignParentEnd="true"
-            app:loader_corner_radius="@dimen/dp_5"
+            app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
             app:loader_type="line"/>
 
     </RelativeLayout>
@@ -56,20 +56,20 @@
 
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
-        app:loader_corner_radius="@dimen/dp_5"
-        app:loader_type="line"/>
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_width="@dimen/tokonow_shimmering_line_width"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
+        app:loader_type="line" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_margin="@dimen/unify_space_16"
+        android:layout_margin="@dimen/layout_lvl2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_240"
-        app:loader_corner_radius="@dimen/dp_8"
+        android:layout_height="@dimen/tokonow_shimmering_lego_rect_height"
+        app:loader_corner_radius="@dimen/layout_lvl1"
         app:loader_type="rect"/>
 
 </LinearLayout>
