@@ -21,6 +21,13 @@ class SellerFeedbackScreenshot(context: Context) : Screenshot(context.contentRes
     }
 }) {
 
+    companion object{
+        const val THRESHOLD_TIME = 1000L
+    }
+
+    private var lastTimeCall = 0L
+    private var lastTimeUpdate = 0L
+
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var currentActivity: Activity? = null
 
@@ -28,7 +35,12 @@ class SellerFeedbackScreenshot(context: Context) : Screenshot(context.contentRes
         val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity)
         if (enableSellerFeedbackScreenshot) {
             SellerFeedbackTracking.Impression.eventViewHomepage()
-            super.onScreenShotTaken(uri)
+
+            lastTimeCall = System.currentTimeMillis()
+            if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
+                super.onScreenShotTaken(uri)
+                lastTimeUpdate = System.currentTimeMillis()
+            }
         }
     }
 
