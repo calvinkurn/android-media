@@ -4,6 +4,7 @@ import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
+import java.lang.Math.random
 import java.lang.StringBuilder
 import javax.inject.Inject
 
@@ -249,8 +250,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
 
     private fun mapDropShipperInfoUiModel(): ShipmentInfoUiModel.DropShipperInfoUiModel {
         return ShipmentInfoUiModel.DropShipperInfoUiModel(
-                name = "Smitty WerbenJagerManJensen",
-                phoneNumber = "0812345678"
+                name = if (random() <= 0.5) "Smitty WerbenJagerManJensen" else "",
+                phoneNumber = if (random() <= 0.5) "0812345678" else ""
         )
     }
 

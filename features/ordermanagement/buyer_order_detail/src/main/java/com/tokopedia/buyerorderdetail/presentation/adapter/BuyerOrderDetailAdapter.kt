@@ -115,7 +115,7 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDropShipperInfoSection(dropShipperInfoUiModel: ShipmentInfoUiModel.DropShipperInfoUiModel) {
-        if (dropShipperInfoUiModel.name.isNotBlank() && dropShipperInfoUiModel.phoneNumber.isNotBlank()) {
+        if (dropShipperInfoUiModel.name.isNotBlank()) {
             add(dropShipperInfoUiModel)
         }
     }
