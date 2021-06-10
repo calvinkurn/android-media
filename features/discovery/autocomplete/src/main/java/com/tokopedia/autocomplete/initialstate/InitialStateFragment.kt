@@ -262,4 +262,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String) {
         AutocompleteTracking.impressedCuratedCampaign(iris, userId, label, type)
     }
+
+    override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
+        presenter.onRecentViewClicked(item)
+    }
+
+    override fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String) {
+        val productDataLayer = item.getRecentViewAsObjectDataLayer()
+        AutocompleteTracking.eventClickRecentView(productDataLayer, label)
+    }
 }

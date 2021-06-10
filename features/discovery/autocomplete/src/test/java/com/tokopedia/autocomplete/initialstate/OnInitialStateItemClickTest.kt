@@ -5,6 +5,7 @@ import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import io.mockk.*
@@ -186,6 +187,34 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         verifyOrder {
             trackEventClickCuratedCampaignCard(any(), expectedLabel, item.type)
+            route(item.applink, initialStatePresenter.getSearchParameter())
+            finish()
+        }
+    }
+
+    @Test
+    fun `Test click Recent View`() {
+        `Given view already get initial state`(initialStateCommonResponse)
+
+        val item = findDataView<RecentViewDataView>().list[0]
+
+        `When click recent view`(item)
+        `Then verify view interaction is correct for recent view`(item)
+    }
+
+    private fun `When click recent view`(item: BaseItemInitialStateSearch) {
+        initialStatePresenter.onRecentViewClicked(item)
+    }
+
+    private fun `Then verify view interaction is correct for recent view`(item: BaseItemInitialStateSearch) {
+        initialStateView.onClickRecentView(item)
+    }
+
+    private fun InitialStateContract.View.onClickRecentView(item: BaseItemInitialStateSearch) {
+        val expectedLabel = "po: ${item.position} - applink: ${item.applink}"
+
+        verifyOrder {
+            trackEventClickRecentView(item, expectedLabel)
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }

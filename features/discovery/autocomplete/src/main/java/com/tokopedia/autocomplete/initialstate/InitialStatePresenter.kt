@@ -18,6 +18,7 @@ import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataVie
 import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
+import com.tokopedia.autocomplete.util.getValueString
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -169,7 +170,7 @@ class InitialStatePresenter @Inject constructor(
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
                     onRecentViewImpressed(initialStateData.items)
                     data.addAll(
-                            initialStateData.convertRecentViewSearchToVisitableList().insertTitle(initialStateData.header)
+                            initialStateData.convertRecentViewSearchToVisitableList(getDimension90()).insertTitle(initialStateData.header)
                     )
                 }
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
@@ -243,6 +244,16 @@ class InitialStatePresenter @Inject constructor(
         listVisitable.add(createRecentSearchSeeMoreButton())
         seeMoreButtonPosition = listVisitable.lastIndex
         onImpressSeeMoreRecentSearch()
+    }
+
+    private fun getDimension90(): String {
+        val navSource = searchParameter.getValueString(SearchApiConst.NAVSOURCE)
+        val pageId = searchParameter.getValueString(SearchApiConst.SRP_PAGE_ID)
+        val pageTitle = searchParameter.getValueString(SearchApiConst.SRP_PAGE_TITLE)
+        val searchRef = searchParameter.getValueString(SearchApiConst.SEARCH_REF)
+
+        return if (navSource.isNotEmpty() && pageId.isNotEmpty()) "$pageTitle.$navSource.local_search.$pageId"
+        else searchRef
     }
 
     private fun MutableList<Visitable<*>>.insertTitle(title: String): List<Visitable<*>> {
@@ -533,5 +544,17 @@ class InitialStatePresenter @Inject constructor(
 
         view?.route(curatedCampaignDataView.applink, searchParameter)
         view?.finish()
+    }
+
+    override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
+        val label = getRecentViewEventLabel(item)
+        view?.trackEventClickRecentView(item, label)
+
+        view?.route(item.applink, searchParameter)
+        view?.finish()
+    }
+
+    private fun getRecentViewEventLabel(item: BaseItemInitialStateSearch): String {
+        return "po: ${item.position} - applink: ${item.applink}"
     }
 }

@@ -42,6 +42,8 @@ interface InitialStateContract {
         fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String)
 
         fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
+
+        fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -64,5 +66,7 @@ interface InitialStateContract {
         fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
 
         fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
+
+        fun onRecentViewClicked(item: BaseItemInitialStateSearch)
     }
 }

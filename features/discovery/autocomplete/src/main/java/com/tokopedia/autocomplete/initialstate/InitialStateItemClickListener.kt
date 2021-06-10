@@ -20,4 +20,6 @@ interface InitialStateItemClickListener {
     fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
 
     fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
+
+    fun onRecentViewClicked(item: BaseItemInitialStateSearch)
 }

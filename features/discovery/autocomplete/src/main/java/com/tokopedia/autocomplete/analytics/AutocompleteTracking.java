@@ -1,7 +1,6 @@
 package com.tokopedia.autocomplete.analytics;
 
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.track.TrackApp;
@@ -25,13 +24,6 @@ import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.EVENT_LABEL;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.LIST;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCTS;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_BRAND;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_CATEGORY;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_ID;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_NAME;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_POSITION;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_PRICE;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_VARIANT;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.SCREEN_NAME;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.USER_ID;
 
@@ -111,40 +103,22 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentView(String position,
-                                            BaseItemInitialStateSearch data) {
-        Map<String, Object> productData = convertSearchItemToProductData(data, position);
+    public static void eventClickRecentView(Object productDataLayer, String label) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, AutocompleteEventTracking.Event.PRODUCT_CLICK,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_VIEW_PRODUCT,
-                        EVENT_LABEL, String.
-                                format(AutocompleteEventTracking.Label.LABEL_RECENT_VIEW_CLICK,
-                                        position,
-                                        data.getApplink()),
+                        EVENT_LABEL, label,
                         ECOMMERCE, DataLayer.mapOf(
                                 CLICK,
                                 DataLayer.mapOf(
                                         ACTION_FIELD, DataLayer.mapOf(LIST, AutocompleteEventTracking.Other.RECENT_VIEW_ACTION_FIELD),
                                         PRODUCTS, DataLayer.listOf(
-                                                productData
+                                                productDataLayer
                                         )
                                 )
                         )
                 )
-        );
-    }
-
-    private static Map<String, Object> convertSearchItemToProductData(BaseItemInitialStateSearch data,
-                                                                      String position) {
-        return DataLayer.mapOf(
-                PRODUCT_NAME, data.getTitle(),
-                PRODUCT_ID, data.getProductId(),
-                PRODUCT_PRICE, "",
-                PRODUCT_BRAND, AutocompleteEventTracking.Other.NONE_OTHER,
-                PRODUCT_CATEGORY, AutocompleteEventTracking.Other.NONE_OTHER,
-                PRODUCT_VARIANT, AutocompleteEventTracking.Other.NONE_OTHER,
-                PRODUCT_POSITION, position
         );
     }
 
