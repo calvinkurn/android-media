@@ -2,14 +2,13 @@ package com.tokopedia.inbox.fake.di.notifcenter
 
 import android.content.Context
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterCacheManager
-import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeTopAdsRepository
+import com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads.FakeTopAdsRepository
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase

@@ -2,6 +2,7 @@ package com.tokopedia.inbox.fake
 
 import com.tokopedia.inbox.fake.common.FakeUserSession
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.*
+import com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads.FakeTopAdsRepository
 import javax.inject.Inject
 
 class InboxNotifcenterFakeDependency {
