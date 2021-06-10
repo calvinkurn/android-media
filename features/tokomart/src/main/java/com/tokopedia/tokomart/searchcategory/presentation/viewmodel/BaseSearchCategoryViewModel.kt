@@ -7,9 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
@@ -62,6 +60,7 @@ import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -118,17 +117,19 @@ abstract class BaseSearchCategoryViewModel(
     protected val isShowMiniCartMutableLiveData = MutableLiveData(false)
     val isShowMiniCartLiveData: LiveData<Boolean> = isShowMiniCartMutableLiveData
 
-    protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartWidgetData?>(null)
-    val miniCartWidgetLiveData: LiveData<MiniCartWidgetData?> = miniCartWidgetMutableLiveData
+    protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartSimplifiedData?>(null)
+    val miniCartWidgetLiveData: LiveData<MiniCartSimplifiedData?> = miniCartWidgetMutableLiveData
 
-    protected val updatedVisitableIndicesMutableLiveData = MutableLiveData<Event<List<Int>>>(null)
-    val updatedVisitableIndicesLiveData: LiveData<Event<List<Int>>> = updatedVisitableIndicesMutableLiveData
+    protected val updatedVisitableIndicesMutableLiveData =
+            SingleLiveEvent<List<Int>>()
+    val updatedVisitableIndicesLiveData: SingleLiveEvent<List<Int>> =
+            updatedVisitableIndicesMutableLiveData
 
     protected val isRefreshPageMutableLiveData = MutableLiveData(false)
     val isRefreshPageLiveData: LiveData<Boolean> = isRefreshPageMutableLiveData
 
-    protected val cartEventMessageMutableLiveData = MutableLiveData<Event<String>>(null)
-    val cartEventMessageLiveData: LiveData<Event<String>> = cartEventMessageMutableLiveData
+    protected val cartEventMessageMutableLiveData = SingleLiveEvent<String>()
+    val cartEventMessageLiveData: SingleLiveEvent<String> = cartEventMessageMutableLiveData
 
     init {
         updateQueryParamWithDefaultSort()
@@ -590,7 +591,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        miniCartWidgetMutableLiveData.value = miniCartSimplifiedData.miniCartWidgetData
+        miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
         isShowMiniCartMutableLiveData.value = miniCartSimplifiedData.isShowMiniCartWidget
     }
 
@@ -616,7 +617,7 @@ abstract class BaseSearchCategoryViewModel(
             }
 
             withContext(baseDispatcher.main) {
-                updatedVisitableIndicesMutableLiveData.value = Event(updatedProductIndices)
+                updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
             }
         }
     }
@@ -717,11 +718,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun updateCartMessageSuccess() {
-        cartEventMessageMutableLiveData.value = Event("")
+        cartEventMessageMutableLiveData.value = ""
     }
 
     private fun onAddToCartFailed(throwable: Throwable) {
-        cartEventMessageMutableLiveData.value = Event(throwable.message ?: "")
+        cartEventMessageMutableLiveData.value = throwable.message ?: ""
     }
 
     private fun updateCart(

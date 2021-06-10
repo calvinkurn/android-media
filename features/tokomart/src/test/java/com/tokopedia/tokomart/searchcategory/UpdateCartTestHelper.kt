@@ -7,6 +7,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils
 import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.miniCartItems
 import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.miniCartSimplifiedData
@@ -23,6 +24,7 @@ class UpdateCartTestHelper(
 ) {
 
     fun `onViewResumed should update mini cart and quantity in product list`() {
+        val miniCartSimplifiedData = SearchCategoryDummyUtils.miniCartSimplifiedData
         callback.`Given first page API will be successful`()
         `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
         `Given view already created`()
@@ -30,7 +32,7 @@ class UpdateCartTestHelper(
         `When view resumed`()
 
         `Then assert get mini cart simplified use case params`()
-        `Then assert mini cart widget live data is updated`(miniCartSimplifiedData.miniCartWidgetData)
+        `Then assert mini cart widget live data is updated`(miniCartSimplifiedData)
         `Then assert product quantity is updated`()
         `Then assert mini cart widget visibility`()
     }
@@ -66,9 +68,12 @@ class UpdateCartTestHelper(
     }
 
     private fun `Then assert mini cart widget live data is updated`(
-            expectedMiniCartWidgetData: MiniCartWidgetData
+            expectedMiniCartSimplifiedData: MiniCartSimplifiedData
     ) {
-        assertThat(baseViewModel.miniCartWidgetLiveData.value, shouldBe(expectedMiniCartWidgetData))
+        assertThat(
+                baseViewModel.miniCartWidgetLiveData.value,
+                shouldBe(expectedMiniCartSimplifiedData)
+        )
     }
 
     private fun `Then assert product quantity is updated`() {
@@ -124,8 +129,7 @@ class UpdateCartTestHelper(
             visitableList: List<Visitable<*>>,
     ) {
         val expectedUpdatedIndices = createExpectedUpdatedIndices(miniCartItems, visitableList)
-        val actualUpdatedIndices =
-                baseViewModel.updatedVisitableIndicesLiveData.value?.getContentIfNotHandled()!!
+        val actualUpdatedIndices = baseViewModel.updatedVisitableIndicesLiveData.value!!
 
         assertThat(actualUpdatedIndices, shouldBe(expectedUpdatedIndices.toList()))
     }
