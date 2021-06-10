@@ -279,8 +279,8 @@ class MiniCartProductViewHolder(private val view: View,
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                delayChangeQty?.cancel()
-                delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
+                delayChangeNotes?.cancel()
+                delayChangeNotes = GlobalScope.launch(Dispatchers.Main) {
                     delay(250)
                     val notes = s.toString()
                     element.productNotes = notes
@@ -392,17 +392,10 @@ class MiniCartProductViewHolder(private val view: View,
             // reset listener
             qtyEditorProduct?.editText?.removeTextChangedListener(qtyTextWatcher)
         }
-        qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
         qtyEditorProduct?.autoHideKeyboard = true
         qtyEditorProduct?.minValue = element.productMinOrder
         qtyEditorProduct?.maxValue = element.productMaxOrder
         qtyEditorProduct?.setValue(element.productQty)
-        qtyEditorProduct?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
-        qtyEditorProduct?.setValueChangedListener { newValue, oldValue, isOver ->
-            if (element.productQty != newValue) {
-                listener.onQuantityChanged(element.productId, newValue)
-            }
-        }
         qtyTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -411,17 +404,28 @@ class MiniCartProductViewHolder(private val view: View,
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 delayChangeQty?.cancel()
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
-                    delay(250)
+                    delay(500)
+                    val newValue = s.toString().toIntOrZero()
                     if (s.toString().toIntOrZero() > element.productMaxOrder) {
                         qtyEditorProduct?.setValue(element.productMaxOrder)
                     } else if (s.toString().toIntOrZero() < element.productMinOrder) {
                         qtyEditorProduct?.setValue(element.productMinOrder)
+                    }
+                    if (element.productQty != newValue) {
+                        listener.onQuantityChanged(element.productId, newValue)
                     }
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
 
+            }
+        }
+        qtyEditorProduct?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
+        qtyEditorProduct?.editText?.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                val qty = qtyEditorProduct?.editText?.text?.toString().toIntOrZero()
+                listener.onInputQuantityClicked(qty)
             }
         }
         qtyEditorProduct?.editText?.addTextChangedListener(qtyTextWatcher)
@@ -432,10 +436,6 @@ class MiniCartProductViewHolder(private val view: View,
                 }
                 true
             } else false
-        }
-        qtyEditorProduct?.editText?.setOnClickListener {
-            val qty = qtyEditorProduct?.editText?.text?.toString().toIntOrZero()
-            listener.onInputQuantityClicked(qty)
         }
         qtyEditorProduct?.setAddClickListener {
             listener.onQuantityPlusClicked()
