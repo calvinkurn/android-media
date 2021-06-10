@@ -15,7 +15,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [RecommendationModule::class, TopAdsWishlistModule::class])
+@Module(includes = [TopAdsWishlistModule::class])
 class FakeNotificationModule {
 
     @Provides
