@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_satisfaction_rate_description"
-        app:rating="5"/>
+        app:read_review_rating="5"/>
 
     <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
         android:id="@+id/bottom_sheet_review_statistic_four_progress_bar"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_five_progress_bar"
-        app:rating="4"/>
+        app:read_review_rating="4"/>
 
     <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
         android:id="@+id/bottom_sheet_review_statistic_three_progress_bar"
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_four_progress_bar"
-        app:rating="3"/>
+        app:read_review_rating="3"/>
 
     <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
         android:id="@+id/bottom_sheet_review_statistic_two_progress_bar"
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_three_progress_bar"
-        app:rating="2"/>
+        app:read_review_rating="2"/>
 
     <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
         android:id="@+id/bottom_sheet_review_statistic_one_progress_bar"
@@ -63,6 +63,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintTop_toBottomOf="@id/bottom_sheet_review_statistic_two_progress_bar"
-        app:rating="1"/>
+        app:read_review_rating="1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

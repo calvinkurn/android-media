@@ -9,6 +9,6 @@
         </attr>
     </declare-styleable>
     <declare-styleable name="ReadReviewRatingBar">
-        <attr name="rating" format="integer" />
+        <attr name="read_review_rating" format="integer" />
     </declare-styleable>
 </resources>

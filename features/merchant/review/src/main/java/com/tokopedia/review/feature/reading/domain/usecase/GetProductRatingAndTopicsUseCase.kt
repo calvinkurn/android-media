@@ -14,8 +14,8 @@ class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: Gr
         const val PARAM_PRODUCT_ID = "productID"
         const val GET_PRODUCT_RATING_USE_CASE_CLASS_NAME = "ProductRatingQuery"
         const val GET_PRODUCT_RATING_QUERY = """
-            query productrevGetProductRatingAndTopics(${'$'}productID: String!){
-              productrevGetProductRatingAndTopics(productID: ${'$'}productID){
+            query productrevGetProductRatingAndTopics(${'$'}productID: String!) {
+              productrevGetProductRatingAndTopics(productID: ${'$'}productID) {
                 rating {
                   positivePercentageFmt
                   ratingScore

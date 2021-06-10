@@ -38,7 +38,7 @@ class ReadReviewRatingBar : BaseCustomView {
 
     private fun setStar(attrs: AttributeSet, defStyleAttr: Int = 0) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.ReadReviewRatingBar, defStyleAttr, 0)
-        rating = typedArray.getInt(R.styleable.ReadReviewRatingBar_rating, 0)
+        rating = typedArray.getInt(R.styleable.ReadReviewRatingBar_read_review_rating, 0)
         ratingTypography?.text = rating.toString()
     }
 
