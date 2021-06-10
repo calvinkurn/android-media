@@ -159,7 +159,8 @@ class PaymentListMapperUseCase @Inject constructor(
                 isCombineVaFound = true
                 vaUIModel.transactionList.add(vaListItem)
                 vaUIModel.totalAmount += vaListItem.amount
-                if (vaUIModel.expiryTime < vaListItem.expiryTime) {
+                // if existing VA model has expiry time greater then swap expiry details to latest
+                if (vaUIModel.expiryTime > vaListItem.expiryTime) {
                     vaUIModel.expiryDate = vaListItem.expiryDate
                     vaUIModel.expiryTime = vaListItem.expiryTime
                 }

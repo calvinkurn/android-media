@@ -118,17 +118,15 @@ class PaymentListViewModel @Inject constructor(
         } ?: run { paymentCancelFailed(NullPointerException()) }
     }
 
-    private fun onPaymentListError(throwable: Throwable) {
+    private fun onPaymentListError(throwable: Throwable) =
         _paymentListResultLiveData.postValue(Fail(throwable))
-    }
 
-    private fun onCancelDetailError(throwable: Throwable) {
+    private fun onCancelDetailError(throwable: Throwable) =
         _cancelPaymentDetailLiveData.postValue(Fail(throwable))
-    }
 
-    private fun paymentCancelFailed(throwable: Throwable) {
+    private fun paymentCancelFailed(throwable: Throwable) =
         _cancelPaymentLiveData.postValue(Fail(throwable))
-    }
+
 
     override fun onCleared() {
         getPaymentListCountUseCase.cancelJobs()
@@ -138,9 +136,7 @@ class PaymentListViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun refreshPage() {
-        gqlPaymentList.clear()
-    }
+    fun refreshPage() = gqlPaymentList.clear()
 
     fun getTotalPendingTransactions() = gqlPaymentList.size
 

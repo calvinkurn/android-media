@@ -58,9 +58,8 @@ class CreditCardTransferViewHolder(
             CurrencyFormatUtil.convertPriceValueToIdrFormat(amount, false)
     }
 
-    private fun handleActionList(isActionListEmpty: Boolean) {
+    private fun handleActionList(isActionListEmpty: Boolean) =
         if (isActionListEmpty) view.cardMenu.gone() else view.cardMenu.visible()
-    }
 
     companion object {
         private val LAYOUT_ID = R.layout.credit_card_payment_list_item

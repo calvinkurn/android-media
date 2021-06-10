@@ -122,9 +122,8 @@ class CommonPaymentTransferViewHolder(
         }
     }
 
-    private fun handleActionList(isActionListEmpty: Boolean) {
+    private fun handleActionList(isActionListEmpty: Boolean) =
         if (isActionListEmpty) view.cardMenu.gone() else view.cardMenu.visible()
-    }
 
     companion object {
         private val LAYOUT_ID = R.layout.common_transfer_payment_list_item

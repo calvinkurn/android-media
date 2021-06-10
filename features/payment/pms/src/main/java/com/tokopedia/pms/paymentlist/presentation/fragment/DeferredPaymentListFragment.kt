@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pms.R
+import com.tokopedia.pms.analytics.PmsAnalytics
 import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.*
@@ -37,8 +38,6 @@ import javax.inject.Inject
 
 class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    private var isFirstTimeLoad: Boolean = true
-
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -47,17 +46,13 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         viewModelProvider.get(PaymentListViewModel::class.java)
     }
 
+    private var isFirstTimeLoad: Boolean = true
     private var loader: LoaderDialog? = null
-
-    override fun getScreenName() = ""
-
+    override fun getScreenName() = PmsAnalytics.SCREEN_NAME
     override fun initInjector() = getComponent(PmsComponent::class.java).inject(this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_payment_list, container, false)
     }
 
@@ -222,9 +217,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         transactionId: String,
         merchantCode: String,
         productName: String?
-    ) {
-        viewModel.getCancelPaymentDetail(transactionId, merchantCode, productName)
-    }
+    )  = viewModel.getCancelPaymentDetail(transactionId, merchantCode, productName)
 
     private fun openActionBottomSheet(model: BasePaymentModel) {
         val bundle = Bundle()
@@ -245,9 +238,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         }
     }
 
-    private fun showToast(toastMessage: String?, toastType: Int) {
+    private fun showToast(toastMessage: String?, toastType: Int) =
         Toaster.make(recycler_view, toastMessage ?: "", Toaster.LENGTH_LONG, toastType)
-    }
 
     private fun handleSwipeRefresh(show: Boolean) {
         swipe_refresh_layout.isRefreshing = show
@@ -270,10 +262,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         }
     }
 
-    fun sendEventToAnalytics(event: PmsEvents) {
-        activity?.let {
-            (it as PaymentListActivity).sendEventToAnalytics(event)
-        }
+    fun sendEventToAnalytics(event: PmsEvents) = activity?.let {
+        (it as PaymentListActivity).sendEventToAnalytics(event)
     }
 
     companion object {
