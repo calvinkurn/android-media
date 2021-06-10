@@ -406,11 +406,7 @@ class MiniCartProductViewHolder(private val view: View,
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
                     delay(500)
                     val newValue = s.toString().replace(".", "").toIntOrZero()
-                    if (newValue > element.productMaxOrder) {
-                        qtyEditorProduct?.setValue(element.productMaxOrder)
-                    } else if (newValue < element.productMinOrder) {
-                        qtyEditorProduct?.setValue(element.productMinOrder)
-                    }
+                    validateQty(newValue, element)
                     if (element.productQty != newValue) {
                         listener.onQuantityChanged(element.productId, newValue)
                     }
@@ -442,6 +438,24 @@ class MiniCartProductViewHolder(private val view: View,
         }
         qtyEditorProduct?.setSubstractListener {
             listener.onQuantityMinusClicked()
+        }
+    }
+
+    private fun validateQty(newValue: Int, element: MiniCartProductUiModel) {
+        if (newValue == element.productMinOrder && newValue == element.productMaxOrder) {
+            qtyEditorProduct?.addButton?.isEnabled = false
+            qtyEditorProduct?.subtractButton?.isEnabled = false
+        } else if (newValue >= element.productMaxOrder) {
+            qtyEditorProduct?.setValue(element.productMaxOrder)
+            qtyEditorProduct?.addButton?.isEnabled = false
+            qtyEditorProduct?.subtractButton?.isEnabled = true
+        } else if (newValue <= element.productMinOrder) {
+            qtyEditorProduct?.setValue(element.productMinOrder)
+            qtyEditorProduct?.addButton?.isEnabled = true
+            qtyEditorProduct?.subtractButton?.isEnabled = false
+        } else {
+            qtyEditorProduct?.addButton?.isEnabled = true
+            qtyEditorProduct?.subtractButton?.isEnabled = true
         }
     }
 
