@@ -255,7 +255,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             bottomSheet.apply {
                 setChild(view)
                 setTitle(this@SaldoHoldInfoActivity.getString(com.tokopedia.saldodetails.R.string.saldo_info_btn_text))
-                show(it, null)
+                show(it, "SaldoHoldBottomSheet")
             }
         }
     }

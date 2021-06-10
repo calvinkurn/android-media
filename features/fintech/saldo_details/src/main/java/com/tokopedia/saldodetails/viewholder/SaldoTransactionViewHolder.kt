@@ -48,7 +48,9 @@ class SaldoTransactionViewHolder(itemView: View) :
         )
         note.text = element.note
         heading.text = element.typeDescription
-        imageView.urlSrc = element.imageURL ?: ""
+        if (!element.imageURL.isNullOrEmpty())
+            imageView.urlSrc = element.imageURL ?: ""
+
         if (element.amount > 0) {
             if (context != null) {
                 nominal.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G700))

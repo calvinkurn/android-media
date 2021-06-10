@@ -688,17 +688,31 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun showBottomSheetInfoDialog(isSellerClicked: Boolean) {
         context?.let {
-            UserStatusInfoBottomSheet().apply {
-                if (isSellerClicked) {
-                    setBody(it.getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc))
-                    setBottomSheetTitle(it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller))
-                } else {
-                    setBody(it.getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc))
-                    setBottomSheetTitle(it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer))
-                }
-                setButtonText(it.getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button))
-                show(this@SaldoDepositFragment.childFragmentManager, UserStatusInfoBottomSheet.TAG)
+            val bundle = Bundle()
+            if (isSellerClicked) {
+                bundle.putString(
+                    UserStatusInfoBottomSheet.BODY_TEXT,
+                    it.getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc)
+                )
+                bundle.putString(
+                    UserStatusInfoBottomSheet.TITLE_TEXT,
+                    it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller)
+                )
+            } else {
+                bundle.putString(
+                    UserStatusInfoBottomSheet.BODY_TEXT,
+                    it.getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc)
+                )
+                bundle.putString(
+                    UserStatusInfoBottomSheet.TITLE_TEXT,
+                    it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer)
+                )
             }
+            bundle.putString(
+                UserStatusInfoBottomSheet.BUTTON_TEXT,
+                it.getString(com.tokopedia.saldodetails.R.string.sp_saldo_withdraw_warning_positiv_button)
+            )
+            UserStatusInfoBottomSheet.show(bundle, childFragmentManager)
         }
     }
 
