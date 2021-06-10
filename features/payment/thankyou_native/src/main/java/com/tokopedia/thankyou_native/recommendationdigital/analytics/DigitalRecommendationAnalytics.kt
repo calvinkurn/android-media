@@ -88,12 +88,12 @@ class DigitalRecommendationAnalytics @Inject constructor(
     private fun getProductDataMap(recommendationItem: RecommendationItem,
                                   position: Int): MutableMap<String, Any?> {
         return mutableMapOf(
-                KEY_PRODUCT_NAME to recommendationItem.trackingData.categoryName,
+                KEY_PRODUCT_NAME to recommendationItem.subtitle,
                 KEY_PRODUCT_ID to recommendationItem.trackingData.productID,
                 KEY_PRODUCT_PRICE to 0,
                 KEY_PRODUCT_BRAND to "",
                 KEY_PRODUCT_CATEGORY to recommendationItem.trackingData.categoryName,
-                KEY_PRODUCT_VARIANT to "",
+                KEY_PRODUCT_VARIANT to recommendationItem.trackingData.itemType,
                 KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE,
                 KEY_PRODUCT_POSITION to (position + 1)
         )

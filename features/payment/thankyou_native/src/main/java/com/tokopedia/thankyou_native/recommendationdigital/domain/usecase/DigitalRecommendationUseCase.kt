@@ -32,12 +32,11 @@ class DigitalRecommendationUseCase  @Inject constructor(
     }
 
     private fun getRequestParams(): Map<String, Any> {
-        // TODO: [Misael] isi categoryId pake ini mgkn ya
         return mapOf(
                 PARAM_INPUT to mapOf(
-                        PARAM_CHANNEL_NAME to "dg_thank_you_page_recommendation",
+                        PARAM_CHANNEL_NAME to DG_THANK_YOU_PAGE_RECOMMENDATION,
                         PARAM_CLIENT_NUMBERS to listOf<String>(),
-                        PARAM_DG_CATEGORY_IDS to listOf(1),
+                        PARAM_DG_CATEGORY_IDS to listOf<Int>(),
                         PARAM_PG_CATEGORY_IDS to listOf<Int>()
                 )
         )
@@ -49,6 +48,8 @@ class DigitalRecommendationUseCase  @Inject constructor(
         const val PARAM_CLIENT_NUMBERS = "clientNumbers"
         const val PARAM_DG_CATEGORY_IDS = "dgCategoryIDs"
         const val PARAM_PG_CATEGORY_IDS = "pgCategoryIDs"
+
+        const val DG_THANK_YOU_PAGE_RECOMMENDATION = "dg_thank_you_page_recommendation"
     }
 
 
