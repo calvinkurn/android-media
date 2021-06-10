@@ -88,7 +88,6 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
-    var isProductNameChanged = false
     private val mProductNameInputLiveData = MutableLiveData<String>()
     private val mIsProductNameInputError = MutableLiveData<Boolean>()
     val isProductNameInputError: LiveData<Boolean>
@@ -96,7 +95,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     var productNameMessage: String = ""
     var productNameValidationResult: TitleValidationModel = TitleValidationModel()
 
-    var isNameRecommendationSelected = false
     private val mProductNameRecommendations = MutableLiveData<Result<List<String>>>()
     val productNameRecommendations: LiveData<Result<List<String>>>
         get() = mProductNameRecommendations
@@ -250,7 +248,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun setProductNameInput(string: String) {
-        isProductNameChanged = true
         mProductNameInputLiveData.value = string
     }
 

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doOnTextChanged
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -19,15 +20,11 @@ import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
-fun TextFieldUnify?.setText(text: String) = this?.textFieldInput?.setText(text)
-
-fun TextFieldUnify2?.setText(text: String) = this?.editText?.setText(text)
-
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
-fun TextFieldUnify?.getText(): String = this?.textFieldInput?.text.toString()
+fun TextFieldUnify?.setText(text: String) = this?.textFieldInput?.setText(text)
 
-fun TextFieldUnify2?.getText(): String = this?.editText?.text.toString()
+fun TextFieldUnify?.getText(): String = this?.textFieldInput?.text.toString()
 
 fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toString().replace(".", "").toIntOrZero()
 
@@ -120,4 +117,34 @@ fun UnifyButton.setUnifyDrawableEnd(iconId: Int) {
 
     drawable?.setBounds(0, 0, dp8.toInt(), dp8.toInt())
     this.setCompoundDrawables(null, null, drawable, null)
+}
+
+fun TextFieldUnify2?.setText(text: String) = this?.editText?.setText(text)
+
+fun TextFieldUnify2?.getText(): String = this?.editText?.text.toString()
+
+// set text listener only has a focus
+fun TextFieldUnify2?.afterTextChanged(listener: (String) -> Unit) {
+    this?.editText?.let { editText ->
+        editText.doOnTextChanged { text, _, _, _ ->
+            if (editText.hasFocus()) {
+                listener.invoke(text.toString())
+            }
+        }
+    }
+}
+
+// update text without trigger listener
+fun TextFieldUnify2?.updateText(text: String) {
+    this?.editText?.apply {
+        val focused = hasFocus()
+        if (focused) {
+            clearFocus()
+        }
+        setText(text)
+        setSelection(text.length)
+        if (focused) {
+            requestFocus()
+        }
+    }
 }

@@ -517,7 +517,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         // product name text change listener
-        productNameField?.editText?.afterTextChanged { editable ->
+        productNameField.afterTextChanged { editable ->
             // make sure when user is typing the field, the behaviour to get categories is not blocked by this variable
             if (needToSetCategoryName && editable.isNotBlank()) {
                 needToSetCategoryName = false
@@ -834,8 +834,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product name validation
         val productNameInput = productNameField?.getEditableValue().toString()
-        // prevent name recommendation from being showed
-        viewModel.isProductNameChanged = false
         viewModel.validateProductNameInput(productNameInput)
         viewModel.isProductNameInputError.value?.run {
             if (this && !requestedFocus) {
@@ -1014,9 +1012,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         productNameRecView?.hide()
-        viewModel.isNameRecommendationSelected = true
-        productNameField?.editText?.setText(newProductName)
-        productNameField?.editText?.setSelection(newProductName.length)
+        productNameField.updateText(newProductName)
+        getCategoryRecommendation(newProductName) // get recommendation
 
         if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
@@ -1302,16 +1299,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
             // if product name input has no issue
             if (!it) {
-                // prevent queries getting called from recursive name selection and clicked submit button
-                if (!viewModel.isNameRecommendationSelected && viewModel.isProductNameChanged) {
-                    // show product name recommendations
-                    productNameRecAdapter?.setProductNameInput(productNameInput)
-                    viewModel.getProductNameRecommendation(query = productNameInput)
-                }
+                // show product name recommendations
+                productNameRecAdapter?.setProductNameInput(productNameInput)
+                viewModel.getProductNameRecommendation(query = productNameInput)
+
                 // show category recommendations to the product that has no variants and no category name before
-                if (viewModel.isAdding && !viewModel.hasVariants && !needToSetCategoryName) {
-                    viewModel.getCategoryRecommendation(productNameInput)
-                }
+                getCategoryRecommendation(productNameInput)
+
                 // update product name field icon warning or success
                 when {
                     validationResult.isNegativeKeyword -> {
@@ -1348,8 +1342,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
                 productCategoryRecListView?.setToDisplayText(productCategoryName, requireContext())
             }
-            // reset name selection status
-            viewModel.isNameRecommendationSelected = false
         })
     }
 
@@ -1628,6 +1620,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     displaySuggestedPriceSelected()
                 }
             }
+        }
+    }
+
+    private fun getCategoryRecommendation(productNameInput: String) {
+        if (viewModel.isAdding && !viewModel.hasVariants && !needToSetCategoryName) {
+            viewModel.getCategoryRecommendation(productNameInput)
         }
     }
 
