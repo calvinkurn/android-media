@@ -688,6 +688,7 @@ class OfficialHomeFragment :
     }
 
     private fun reloadData() {
+        officialHomeMapper.resetState(adapter)
         viewModel.loadFirstData(category, getLocation())
     }
 
