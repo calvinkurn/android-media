@@ -15,12 +15,28 @@ data class CartRedirection(
         @SerializedName("data")
         @Expose
         val data: List<CartTypeData> = listOf(),
+        @SerializedName("alternate_copy")
+        @Expose
+        val alternateCopy: List<AlternateCopy> = listOf(),
         @SerializedName("error_message")
         @Expose
         val errorMessage: List<Any> = listOf(),
         @SerializedName("status")
         @Expose
         val status: String = ""
+)
+
+//Static wording from backend
+data class AlternateCopy(
+        @SerializedName("cart_type")
+        @Expose
+        val cartType: String = "",
+        @SerializedName("color")
+        @Expose
+        val color: String = "",
+        @SerializedName("text")
+        @Expose
+        val text: String = ""
 )
 
 data class CartTypeData(
@@ -56,6 +72,6 @@ data class AvailableButton(
         val onboardingMessage: String = ""
 ) {
     fun isCartTypeDisabledOrRemindMe(): Boolean {
-        return cartType == ProductDetailCommonConstant.KEY_BUTTON_DISABLE || cartType == ProductDetailCommonConstant.KEY_CART_TYPE_REMIND_ME || cartType == ProductDetailCommonConstant.KEY_CART_TYPE_CHECK_WISHLIST
+        return cartType == ProductDetailCommonConstant.KEY_BUTTON_DISABLE || cartType == ProductDetailCommonConstant.KEY_REMIND_ME || cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST
     }
 }

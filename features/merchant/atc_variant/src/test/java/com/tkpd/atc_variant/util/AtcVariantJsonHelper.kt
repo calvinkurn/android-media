@@ -62,7 +62,8 @@ object AtcVariantJsonHelper {
         return ProductVariantAggregatorUiData(
                 data.variantData,
                 data.cardRedirection.data.associateBy({ it.productId }, { it }),
-                data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo })
+                data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo }),
+                data.cardRedirection.alternateCopy
         )
     }
 

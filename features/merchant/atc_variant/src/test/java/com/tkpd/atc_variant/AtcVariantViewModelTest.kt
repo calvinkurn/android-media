@@ -99,7 +99,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedQuantity = 23,
                 expectedMinOrder = 1
         )
-        assertButton("Perbarui Keranjang")
+        assertButton(expectedCartText = "Simpan Perubahan")
     }
     //endregion
 
@@ -162,7 +162,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedQuantity = 0,
                 expectedMinOrder = 1
         )
-        assertButton("")
+        assertButton()
     }
 
     /**
@@ -189,7 +189,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedQuantity = 23,
                 expectedMinOrder = 1
         )
-        assertButton("Perbarui Keranjang")
+        assertButton(expectedCartText = "Simpan Perubahan")
     }
 
     /**
@@ -214,7 +214,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedQuantity = 0,
                 expectedMinOrder = 2
         )
-        assertButton("")
+        assertButton()
     }
 
     /**
@@ -243,8 +243,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 3
         )
 
-        assertButton(expectedAlternateCopy = "Perbarui Keranjang",
-                expectedIsBuyable = false,
+        assertButton(expectedIsBuyable = false,
                 expectedCartType = "remind_me",
                 expectedCartColor = "secondary_green",
                 expectedCartText = "Ingatkan Saya")
@@ -284,8 +283,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1
         )
 
-        assertButton(expectedAlternateCopy = "",
-                expectedIsBuyable = true,
+        assertButton(expectedIsBuyable = true,
                 expectedCartText = "+ Keranjang Hijau M")
 
         val updateResultData = viewModel.variantActivityResult.value
@@ -328,8 +326,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 0
         )
 
-        assertButton(expectedAlternateCopy = "Perbarui Keranjang",
-                expectedIsBuyable = false,
+        assertButton(expectedIsBuyable = false,
                 expectedCartType = "remind_me",
                 expectedCartColor = "secondary_green",
                 expectedCartText = "Ingatkan Saya")
@@ -348,14 +345,16 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             listener.onSuccessAddWishlist(productId)
         }
 
-        val expectedTextChanged = "cek wishlist"
-        viewModel.addWishlist(productId, "", expectedTextChanged)
+        viewModel.addWishlist(productId, "")
 
         val updateResultData = viewModel.variantActivityResult.value
         Assert.assertTrue(updateResultData != null)
         Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, true)
 
-        assertButton("", false, "check_wishlist", "secondary_gray", expectedTextChanged)
+        assertButton(false,
+                "check_wishlist",
+                "secondary_grays",
+                "Cek wishlist kamu ya")
         Assert.assertTrue(viewModel.addWishlistResult.value is Success)
     }
 
@@ -369,14 +368,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             listener.onSuccessAddWishlist(productId)
         }
 
-        val expectedTextChanged = "cek wishlist"
-        viewModel.addWishlist(productId, "", expectedTextChanged)
+        viewModel.addWishlist(productId, "")
 
         val updateResultData = viewModel.variantActivityResult.value
         Assert.assertTrue(updateResultData != null)
         Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, true)
 
-        assertButton("", false, null, null, null)
+        assertButton(false, null, null, null)
         Assert.assertTrue(viewModel.addWishlistResult.value is Success)
     }
 
@@ -391,13 +389,15 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             listener.onErrorAddWishList("gagal", productId)
         }
 
-        val expectedTextChanged = "cek wishlist"
-        viewModel.addWishlist(productId, "", expectedTextChanged)
+        viewModel.addWishlist(productId, "")
 
         val updateResultData = viewModel.variantActivityResult.value
         Assert.assertTrue(updateResultData == null)
 
-        assertButton("Perbarui Keranjang", false, "remind_me", "secondary_green", "Ingatkan Saya")
+        assertButton(false,
+                "remind_me",
+                "secondary_green",
+                "Ingatkan Saya")
 
         Assert.assertTrue(viewModel.addWishlistResult.value is Fail)
     }
@@ -419,10 +419,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verifyAtcUsecase(verifyAtc = true)
 
         val request = slotRequest.captured.getObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
-        print(request)
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
         Assert.assertEquals(request.quantity, 2)
-        assertButton(expectedAlternateCopy = "Perbarui Keranjang", expectedIsBuyable = true)
+        assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
     }
 
     @Test
@@ -444,7 +443,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertEquals(requestParams.listTracker, "trackerlist")
         Assert.assertEquals(requestParams.attribution, "attribution")
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
-        assertButton(expectedAlternateCopy = "", expectedIsBuyable = true)
+        assertButton(expectedIsBuyable = true)
     }
 
     @Test
@@ -461,7 +460,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verifyAtcUsecase(verifyAtc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
-        assertButton(expectedAlternateCopy = "", expectedIsBuyable = true)
+        assertButton(expectedIsBuyable = true)
     }
 
     @Test
@@ -481,12 +480,12 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         coVerify {
             updateCartUseCase.setParams(capture(miniCartItem))
         }
-        print(miniCartItem)
+
         Assert.assertNotNull(miniCartItem.captured.firstOrNull { it.productId == "2147818576" })
         Assert.assertEquals(miniCartItem.captured.firstOrNull { it.productId == "2147818576" }!!.quantity, 50)
         Assert.assertTrue(viewModel.updateCartLiveData.value is Success)
         Assert.assertEquals((viewModel.updateCartLiveData.value as Success).data, "sukses gan")
-        assertButton(expectedAlternateCopy = "Perbarui Keranjang", expectedIsBuyable = true)
+        assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
     }
 
     @Test
@@ -505,11 +504,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         coVerify {
             updateCartUseCase.setParams(capture(miniCartItem))
         }
-        print(miniCartItem)
+
         Assert.assertNotNull(miniCartItem.captured.firstOrNull { it.productId == "2147818576" })
         Assert.assertEquals(miniCartItem.captured.firstOrNull { it.productId == "2147818576" }!!.quantity, 23)
         Assert.assertTrue(viewModel.updateCartLiveData.value is Fail)
-        assertButton(expectedAlternateCopy = "Perbarui Keranjang", expectedIsBuyable = true)
+        assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
     }
 
     @Test
@@ -531,7 +530,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertEquals(requestParams.shippingPrice, 30000)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
-        assertButton(expectedAlternateCopy = "", expectedIsBuyable = true)
+        assertButton(expectedIsBuyable = true)
     }
 
     @Test
@@ -549,7 +548,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verifyAtcUsecase(verifyOcs = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
-        assertButton(expectedAlternateCopy = "", expectedIsBuyable = true)
+        assertButton(expectedIsBuyable = true)
     }
 
     @Test
@@ -566,7 +565,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
-        assertButton(expectedAlternateCopy = "", expectedIsBuyable = true)
+        assertButton(expectedIsBuyable = true)
     }
 
     @Test
@@ -584,7 +583,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verifyAtcUsecase(verifyOcc = true)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
-        assertButton(expectedAlternateCopy = "", expectedIsBuyable = true)
+        assertButton(expectedIsBuyable = true)
     }
 
     @Test

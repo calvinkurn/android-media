@@ -1419,7 +1419,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
             val miniCartItem = if (it.basic.isTokoNow) viewModel.getMiniCartItem() else null
-            val alternateText = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) "Perbarui Keranjang" else ""
+            val alternateText = viewModel.p2Data.value?.alternateCopy?.firstOrNull {
+                it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
+            }?.text ?: ""
+
+            val alternateButtonVariant = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) alternateText else ""
             actionButtonView.renderData(
                     isWarehouseProduct = !it.isProductActive(),
                     hasShopAuthority = viewModel.hasShopAuthority(),
@@ -1427,7 +1431,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
                     cartTypeData = viewModel.getCartTypeByProductId(),
-                    alternateButtonVariant = alternateText,
+                    alternateButtonVariant = alternateButtonVariant,
                     miniCartItem = miniCartItem)
         }
         showOrHideButton()
@@ -2053,14 +2057,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
             }
         }
-//            AtcVariantHelper.goToAtcVariant(
-//                    context = it,
-//                    productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-//                    pageSource = "tokonow",
-//                    shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
-//                    isTokoNow = true
-//            ) { data, code ->
-//                startActivityForResult(data, code)
+//                AtcVariantHelper.goToAtcVariant(
+//                        context = it,
+//                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
+//                        pageSource = "tokonow",
+//                        shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
+//                        isTokoNow = true
+//                ) { data, code ->
+//                    startActivityForResult(data, code)
+//                }
 //            }
 //        }
     }

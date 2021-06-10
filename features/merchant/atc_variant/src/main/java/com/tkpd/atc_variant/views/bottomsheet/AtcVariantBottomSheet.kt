@@ -333,7 +333,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 successMessage
             viewModel.updateActivityResult(atcSuccessMessage = message)
             showToasterSuccess(message, getString(R.string.atc_variant_lihat_label)) {
-                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message)
+                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message, adapter.getHeaderDataModel()?.headerData?.productId ?: "")
                 doActionOrLogin({
                     startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
                 })
@@ -435,12 +435,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
                 ProductTrackingCommon.onRemindMeClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
-                val btnTextAfterAction = "Cek Wishlist Kamu"
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
                 //Use product id from params because we dont have selected id yet here
                 viewModel.addWishlist(sharedViewModel.aggregatorParams.value?.productId
-                        ?: "", userSessionInterface.userId,
-                        btnTextAfterAction)
+                        ?: "", userSessionInterface.userId)
                 return@let
             }
 
@@ -523,8 +521,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         baseAtcBtn?.renderButtonView(
                 data.isProductSelectedBuyable,
                 data.isShopOwner,
-                data.cartTypeData,
-                data.alternateText
+                data.cartTypeData
         )
     }
 }

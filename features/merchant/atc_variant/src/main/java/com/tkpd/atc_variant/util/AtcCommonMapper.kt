@@ -11,6 +11,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
+import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
@@ -33,8 +35,8 @@ object AtcCommonMapper {
                         categoryName: String,
                         shippingMinPrice: Int,
                         userId: String,
-                        isTokoNow:Boolean,
-                        selectedStock:Int
+                        isTokoNow: Boolean,
+                        selectedStock: Int
     ): Any {
         return when (actionButtonCart) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
@@ -122,11 +124,25 @@ object AtcCommonMapper {
     fun mapToCartRedirectionData(selectedChild: VariantChild?,
                                  cartTypeData: Map<String, CartTypeData>?,
                                  isShopOwner: Boolean = false,
-                                 shouldUseAlternateTokoNow: Boolean = false): PartialButtonDataModel {
-        val alternateText = if (shouldUseAlternateTokoNow) "Perbarui Keranjang" else ""
+                                 shouldUseAlternateTokoNow: Boolean = false,
+                                 alternateCopy: List<AlternateCopy>?): PartialButtonDataModel {
+        val alternateText = alternateCopy?.firstOrNull {
+            it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
+        }
+        val cartType = cartTypeData?.get(selectedChild?.productId ?: "")
+
+        val latestData: CartTypeData? = if (shouldUseAlternateTokoNow && cartType?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) {
+            cartType.copy(
+                    availableButtons = listOf(cartType.availableButtons.firstOrNull()?.copy(
+                            color = alternateText?.color ?: "",
+                            text = alternateText?.text ?: "")
+                            ?: AvailableButton()))
+        } else {
+            cartTypeData?.get(selectedChild?.productId ?: "")
+        }
+
         return PartialButtonDataModel(selectedChild?.isBuyable
-                ?: false, isShopOwner, cartTypeData?.get(selectedChild?.productId
-                ?: ""), alternateText)
+                ?: false, isShopOwner, latestData)
     }
 
     fun mapToVisitable(selectedChild: VariantChild?,

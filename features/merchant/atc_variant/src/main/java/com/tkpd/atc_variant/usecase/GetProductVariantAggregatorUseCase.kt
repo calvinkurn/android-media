@@ -100,6 +100,11 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 cartRedirection {
                   status
                   error_message
+                  alternate_copy {
+                     text
+                     cart_type
+                     color
+                  }
                   data {
                     product_id
                     config_name
@@ -177,9 +182,10 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     private fun mapToUiData(data: ProductVariantAggregator): ProductVariantAggregatorUiData {
         return ProductVariantAggregatorUiData(
-                data.variantData,
-                data.cardRedirection.data.associateBy({ it.productId }, { it }),
-                data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo })
+                variantData = data.variantData,
+                cardRedirection = data.cardRedirection.data.associateBy({ it.productId }, { it }),
+                nearestWarehouse = data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo }),
+                alternateCopy = data.cardRedirection.alternateCopy
         )
     }
 }
