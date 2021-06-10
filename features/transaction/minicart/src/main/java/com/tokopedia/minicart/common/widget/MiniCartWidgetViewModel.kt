@@ -77,13 +77,14 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         })
     }
 
-    fun getCartList(isFirstLoad: Boolean = false) {
+    fun getCartList(isFirstLoad: Boolean = false, needToCalculateAfterLoad: Boolean = true) {
         val shopIds = currentShopIds.value ?: emptyList()
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
                     val tmpMiniCartListUiModel = miniCartListViewHolderMapper.mapUiModel(it)
                     tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
+                    tmpMiniCartListUiModel.needToCalculateAfterLoad = needToCalculateAfterLoad
                     _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
                 },
                 onError = {
@@ -187,6 +188,8 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 it.miniCartSummaryTransactionUiModel.totalValue = totalValue
                 it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
                 it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
+                it.isFirstLoad = false
+                it.needToCalculateAfterLoad = false
             }
         }
 

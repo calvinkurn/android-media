@@ -240,18 +240,23 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
                 }
             }
-            hideLoading()
-            hideProgressLoading()
-            bottomSheet?.setTitle(it.title)
-            if (rvMiniCartList?.isComputingLayout == true) {
-                rvMiniCartList?.post {
+
+            if (it.needToCalculateAfterLoad) {
+                calculateProduct()
+            } else {
+                hideLoading()
+                hideProgressLoading()
+                bottomSheet?.setTitle(it.title)
+                if (rvMiniCartList?.isComputingLayout == true) {
+                    rvMiniCartList?.post {
+                        adapter?.updateList(it.visitables)
+                    }
+                } else {
                     adapter?.updateList(it.visitables)
                 }
-            } else {
-                adapter?.updateList(it.visitables)
+                updateTotalAmount(it.miniCartWidgetUiModel)
+                adjustRecyclerViewPaddingBottom()
             }
-            updateTotalAmount(it.miniCartWidgetUiModel)
-            adjustRecyclerViewPaddingBottom()
         }
     }
 
