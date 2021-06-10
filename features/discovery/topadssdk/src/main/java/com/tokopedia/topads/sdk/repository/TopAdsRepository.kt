@@ -13,11 +13,11 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 
-class TopAdsRepository {
+open class TopAdsRepository {
 
     private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
-    suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
+    open suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
 
         val response = this.getRestData<TopAdsmageViewResponse>(getTopAdsImageViewUrl(),
                 object : TypeToken<TopAdsmageViewResponse>() {}.type,
@@ -44,7 +44,7 @@ class TopAdsRepository {
         }
     }
 
-    private fun mapToListOfTopAdsImageViewModel(response: TopAdsmageViewResponse, queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
+    protected fun mapToListOfTopAdsImageViewModel(response: TopAdsmageViewResponse, queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
         val list = ArrayList<TopAdsImageViewModel>()
         response.data?.forEach{ data ->
             val model = TopAdsImageViewModel()
