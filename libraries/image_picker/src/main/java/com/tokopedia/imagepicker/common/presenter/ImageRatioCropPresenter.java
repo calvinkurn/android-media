@@ -2,30 +2,21 @@ package com.tokopedia.imagepicker.common.presenter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.ExifInterface;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
-import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
-import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkImage;
-import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import kotlin.Pair;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -105,63 +96,6 @@ public class ImageRatioCropPresenter extends BaseDaggerPresenter<ImageRatioCropP
                                     }
                                     return outputPath;
                                 }
-                            }
-                        })
-                        .flatMap(new Func1<String, Observable<Pair<Bitmap, Bitmap>>>() {
-                            @Override
-                            public Observable<Pair<Bitmap, Bitmap>> call(String path) {
-                                Bitmap mainBitmap = ImageProcessingUtil.getBitmapFromPath(path);
-
-                                Bitmap logoBitmap = BitmapFactory.decodeResource(
-                                        getView().getContext().getResources(),
-                                        R.drawable.ic_tokopedia_text
-                                );
-
-                                return Observable.just(new Pair<>(mainBitmap, logoBitmap));
-                            }
-                        })
-                        .flatMap(new Func1<Pair<Bitmap, Bitmap>, Observable<Bitmap>>() {
-                            @Override
-                            public Observable<Bitmap> call(Pair<Bitmap, Bitmap> bitmaps) {
-//                                WatermarkText watermarkText = new WatermarkText()
-//                                        .contentText(" Tokopedia ")
-//                                        .positionX(0.5)
-//                                        .positionY(0.5)
-//                                        .textAlpha(150)
-//                                        .rotation(45)
-//                                        .textSize(20)
-//                                        .textColor(Color.WHITE);
-
-                                WatermarkImage watermarkImage = new WatermarkImage()
-                                        .setImageBitmap(bitmaps.getSecond())
-                                        .positionX(0.5)
-                                        .positionY(0.5)
-                                        .rotation(45)
-                                        .imageAlpha(80)
-                                        .imageSize(0.1);
-
-                                return Observable.just(WatermarkBuilder
-                                        .create(getView().getContext(), bitmaps.getFirst())
-//                                        .loadWatermarkText(watermarkText)
-                                        .loadWatermarkImage(watermarkImage)
-                                        .setTileMode(true)
-                                        .getWatermark()
-                                        .getOutputImage()
-                                );
-                            }
-                        })
-                        .flatMap(new Func1<Bitmap, Observable<String>>() {
-                            @Override
-                            public Observable<String> call(Bitmap bitmap) {
-                                File filePath;
-
-                                if (convertToWebp) {
-                                    filePath = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.WEBP);
-                                } else {
-                                    filePath = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.PNG);
-                                }
-
-                                return Observable.just(Objects.requireNonNull(filePath).getAbsolutePath());
                             }
                         })
                         .toList()
