@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    style="@style/Theme.White.Background">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_selected_images"
@@ -16,6 +16,7 @@
         android:scrollbars="horizontal"
         android:visibility="gone"
         app:layoutManager="LinearLayoutManager"
+        android:contentDescription="@null"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         tools:listitem="@layout/selected_image_item" />
@@ -39,6 +40,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:visibility="visible"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider_rv"
