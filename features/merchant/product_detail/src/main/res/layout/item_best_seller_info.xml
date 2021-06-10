@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:foreground="?selectableItemBackground"
     android:id="@+id/best_seller_info_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -19,6 +18,7 @@
         android:background="@color/Unify_N50" />
 
     <LinearLayout
+        android:foreground="?selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">

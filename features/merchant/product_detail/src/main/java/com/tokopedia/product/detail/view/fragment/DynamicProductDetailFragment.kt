@@ -1689,26 +1689,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun updateUi() {
-        val pdpUiUpdatedData = pdpUiUpdater?.mapOfData?.values?.toList()
-        val newData = evaluateHideWidget(pdpUiUpdatedData)
+        val newData = pdpUiUpdater?.mapOfData?.values?.toList()
         submitList(newData ?: listOf())
-    }
-
-    private fun evaluateHideWidget(list: List<DynamicPdpDataModel>?): List<DynamicPdpDataModel>? {
-        val newList = list?.toMutableList()
-        val findBestSellerInfoDataModel = list?.find {
-            it is BestSellerInfoDataModel
-        }
-        val pdpP1Data = viewModel.getDynamicProductInfoP1
-        (findBestSellerInfoDataModel as? BestSellerInfoDataModel)?.let {
-            val productId = pdpP1Data?.basic?.productID
-            if (findBestSellerInfoDataModel.bestSellerInfoContent?.productID != productId ||
-                    findBestSellerInfoDataModel.bestSellerInfoContent?.isVisible == false) {
-                newList?.remove(findBestSellerInfoDataModel)
-            }
-        }
-
-        return newList
     }
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
