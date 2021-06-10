@@ -433,10 +433,16 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
             undoDeleteCartUseCase.setParams(it.cartId)
             undoDeleteCartUseCase.execute(
                     onSuccess = {
-                        getCartList()
+                        _globalEvent.value = GlobalEvent(
+                                state = GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM,
+                                data = it
+                        )
                     },
                     onError = {
-                        getCartList()
+                        _globalEvent.value = GlobalEvent(
+                                state = GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM,
+                                throwable = it
+                        )
                     }
             )
         }

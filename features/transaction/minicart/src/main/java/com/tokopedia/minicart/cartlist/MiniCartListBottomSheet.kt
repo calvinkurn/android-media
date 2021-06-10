@@ -25,6 +25,7 @@ import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartWidgetViewModel
@@ -180,10 +181,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     onFailedDeleteCartItem(it)
                 }
                 GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM -> {
-                    hideProgressLoading()
+                    onSuccessUndoDeleteCartItem(it, viewModel)
                 }
                 GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM -> {
-                    hideProgressLoading()
+                    onFailedUndoDeleteCartItem(it)
                 }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
                     onSuccessUpdateCartForCheckout(it)
@@ -195,7 +196,36 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun initializeBottomSheetUiModelObserver(){
+    private fun onFailedUndoDeleteCartItem(globalEvent: GlobalEvent) {
+        hideProgressLoading()
+        globalEvent.throwable?.let { throwable ->
+            bottomSheet?.context?.let { context ->
+                var message = ErrorHandler.getErrorMessage(context, throwable)
+                if (throwable is ResponseErrorException) {
+                    message = throwable.message
+                }
+                bottomsheetContainer?.let { view ->
+                    bottomSheetListener?.showToaster(view, message, Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessUndoDeleteCartItem(globalEvent: GlobalEvent, viewModel: MiniCartWidgetViewModel,) {
+        hideProgressLoading()
+        viewModel.getCartList()
+        val data = globalEvent.data as? UndoDeleteCartDataResponse
+        val message = data?.data?.message?.firstOrNull() ?: ""
+        if (message.isNotBlank()) {
+            val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_ok)
+                    ?: ""
+            bottomsheetContainer?.let { view ->
+                bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText)
+            }
+        }
+    }
+
+    private fun initializeBottomSheetUiModelObserver() {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
             if (it.isFirstLoad) {
                 analytics.eventLoadMiniCartBottomSheetSuccess(it.getMiniCartProductUiModelList())
@@ -268,7 +298,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         val data = globalEvent.data as? RemoveFromCartData
         val message = data?.data?.message?.firstOrNull() ?: ""
         if (message.isNotBlank()) {
-            val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_label_cancel)
+            val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_cancel)
                     ?: ""
             viewModel.getCartList()
             bottomsheetContainer?.let { view ->
