@@ -35,6 +35,7 @@ class ProductItemViewHolder(
                         productName = element.name,
                         formattedPrice = element.price,
                         slashedPrice = element.originalPrice,
+                        countSoldRating = element.ratingAverage,
                         labelGroupList = element.labelGroupDataViewList.mapToLabelGroup(),
                         labelGroupVariantList = element.labelGroupVariantDataViewList.mapToLabelGroupVariant(),
                         variant = element.variantATC?.mapToVariant(),
