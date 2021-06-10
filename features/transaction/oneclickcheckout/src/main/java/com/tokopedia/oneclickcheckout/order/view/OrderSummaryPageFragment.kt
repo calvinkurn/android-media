@@ -965,6 +965,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val orderCost = viewModel.orderTotal.value.orderCost
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, viewModel.getPaymentBid())
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -986,6 +987,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onOvoActivateClicked(callbackUrl: String) {
+            // TODO : GOPAY ACTIVATION ACTION
             OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
                 override fun onActivationResult(isSuccess: Boolean) {
                     view?.let {

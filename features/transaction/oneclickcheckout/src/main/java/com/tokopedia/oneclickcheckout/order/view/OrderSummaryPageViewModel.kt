@@ -93,6 +93,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return orderCart.paymentProfile
     }
 
+    fun getPaymentBid(): String {
+        return orderPayment.value.bid
+    }
+
     fun atcOcc(productId: String) {
         launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Loading

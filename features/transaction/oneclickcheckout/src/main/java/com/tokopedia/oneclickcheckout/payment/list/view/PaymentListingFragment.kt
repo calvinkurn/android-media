@@ -55,13 +55,15 @@ class PaymentListingFragment : BaseDaggerFragment() {
         private const val ARG_PAYMENT_AMOUNT = "payment_amount"
         private const val ARG_ADDRESS_ID = "address_id"
         private const val ARG_PROFILE_CODE = "profile_code"
+        private const val ARG_PAYMENT_BID = "bid"
 
-        fun newInstance(paymentAmount: Double, addressId: String, profileCode: String): PaymentListingFragment {
+        fun newInstance(paymentAmount: Double, addressId: String, profileCode: String, bid: String): PaymentListingFragment {
             val fragment = PaymentListingFragment()
             fragment.arguments = Bundle().apply {
                 putDouble(ARG_PAYMENT_AMOUNT, paymentAmount)
                 putString(ARG_ADDRESS_ID, addressId)
                 putString(ARG_PROFILE_CODE, profileCode)
+                putString(ARG_PAYMENT_BID, bid)
             }
             return fragment
         }
@@ -80,6 +82,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     private var paymentAmount = 0.0
     private var addressId = ""
     private var profileCode = ""
+    private var bid = ""
 
     private val viewModel: PaymentListingViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PaymentListingViewModel::class.java]
@@ -112,6 +115,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
         paymentAmount = arguments?.getDouble(ARG_PAYMENT_AMOUNT) ?: 0.0
         addressId = arguments?.getString(ARG_ADDRESS_ID) ?: ""
         profileCode = arguments?.getString(ARG_PROFILE_CODE) ?: PROFILE_CODE
+        bid = arguments?.getString()
         val parent: Context = activity ?: return
         SplitCompat.installActivity(parent)
     }

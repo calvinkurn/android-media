@@ -14,6 +14,7 @@ import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.oneclickcheckout.common.GOPAY_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccGqlResponse
@@ -110,6 +111,14 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     @Provides
     @Named(OVO_ACTIVATION_URL)
     open fun provideOvoActivationLink(): String {
+        return "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate"
+    }
+
+    @OrderSummaryPageScope
+    @Provides
+    @Named(GOPAY_ACTIVATION_URL)
+    open fun provideGopayActivationLink(): String {
+        // TODO : will be changed to gopay activation link
         return "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate"
     }
 

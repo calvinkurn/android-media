@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.payment.domain
+package com.tokopedia.oneclickcheckout.payment.list.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -12,7 +12,8 @@ interface GetPaymentListingParamUseCase {
     fun execute(param: PaymentListingParamRequest, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit)
 }
 
-class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>) : GetPaymentListingParamUseCase {
+class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlUseCase: GraphqlUseCase<PaymentListingParamGqlResponse>) :
+    GetPaymentListingParamUseCase {
 
     override fun execute(param: PaymentListingParamRequest, onSuccess: (ListingParam) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
@@ -21,7 +22,8 @@ class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlU
                 PARAM_PROFILE_CODE to param.profileCode,
                 PARAM_CALLBACK_URL to param.callbackUrl,
                 PARAM_ADDRESS_ID to param.addressId,
-                PARAM_VERSION to param.version
+                PARAM_VERSION to param.version,
+                PARAM_BID to param.bid
         ))
         graphqlUseCase.setTypeClass(PaymentListingParamGqlResponse::class.java)
         graphqlUseCase.execute({ response: PaymentListingParamGqlResponse ->
@@ -40,6 +42,7 @@ class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlU
     private val PARAM_CALLBACK_URL = "callbackURL"
     private val PARAM_ADDRESS_ID = "addressID"
     private val PARAM_VERSION = "version"
+    private val PARAM_BID = "bid"
 
     private val QUERY = """
         query getListingParams(

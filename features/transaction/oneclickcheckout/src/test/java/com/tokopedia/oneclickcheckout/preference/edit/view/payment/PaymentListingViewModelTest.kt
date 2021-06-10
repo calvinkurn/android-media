@@ -28,7 +28,7 @@ class PaymentListingViewModelTest {
 
     @Test
     fun `Get Payment Listing Param Success`() {
-        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""), 0.0)
+        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""), 0.0, "")
 
         assertEquals(OccState.Loading, viewModel.paymentListingPayload.value)
 
@@ -51,7 +51,7 @@ class PaymentListingViewModelTest {
 
     @Test
     fun `Get Payment Listing Param Failed`() {
-        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""), 0.0)
+        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""), 0.0, "")
 
         assertEquals(OccState.Loading, viewModel.paymentListingPayload.value)
 
