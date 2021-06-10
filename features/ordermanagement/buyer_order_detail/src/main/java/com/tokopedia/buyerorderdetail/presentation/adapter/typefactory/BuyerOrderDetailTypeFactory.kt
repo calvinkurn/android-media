@@ -58,6 +58,10 @@ class BuyerOrderDetailTypeFactory(
         return ReceiverAddressInfoViewHolder.LAYOUT
     }
 
+    fun type(dropShipperInfoUiModel: ShipmentInfoUiModel.DropShipperInfoUiModel): Int {
+        return DropShipperInfoViewHolder.LAYOUT
+    }
+
     fun type(thickDividerUiModel: ThickDividerUiModel): Int {
         return ThickDividerViewHolder.LAYOUT
     }
@@ -79,6 +83,7 @@ class BuyerOrderDetailTypeFactory(
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent)
+            DropShipperInfoViewHolder.LAYOUT -> DropShipperInfoViewHolder(parent)
             OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent, navigator)
             OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent, navigator)
             PaymentGrandTotalViewHolder.LAYOUT -> PaymentGrandTotalViewHolder(parent)

@@ -37,13 +37,10 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         addPlainHeaderSection(shipmentInfoUiModel.headerUiModel)
         addTickerSection(shipmentInfoUiModel.ticker)
         addCourierInfoSection(shipmentInfoUiModel.courierInfoUiModel)
-        if (shipmentInfoUiModel.courierDriverInfoUiModel.name.isNotBlank()) {
-            addThinDashedDividerSection()
-            addCourierDriverInfoSection(shipmentInfoUiModel.courierDriverInfoUiModel)
-            addThinDashedDividerSection()
-        }
+        addCourierDriverInfoSection(shipmentInfoUiModel.courierDriverInfoUiModel)
         addAwbInfoSection(shipmentInfoUiModel.awbInfoUiModel)
         addReceiverAddressInfoSection(shipmentInfoUiModel.receiverAddressInfoUiModel)
+        addDropShipperInfoSection(shipmentInfoUiModel.dropShipperInfoUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupPaymentInfoSection(paymentInfoUiModel: PaymentInfoUiModel) {
@@ -100,7 +97,11 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(courierDriverInfoUiModel: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
-        add(courierDriverInfoUiModel)
+        if (courierDriverInfoUiModel.name.isNotBlank()) {
+            addThinDashedDividerSection()
+            add(courierDriverInfoUiModel)
+            addThinDashedDividerSection()
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAwbInfoSection(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel) {
@@ -111,6 +112,12 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addReceiverAddressInfoSection(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
         add(receiverAddressInfoUiModel)
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDropShipperInfoSection(dropShipperInfoUiModel: ShipmentInfoUiModel.DropShipperInfoUiModel) {
+        if (dropShipperInfoUiModel.name.isNotBlank() && dropShipperInfoUiModel.phoneNumber.isNotBlank()) {
+            add(dropShipperInfoUiModel)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentMethodSection(paymentMethodInfoItem: PaymentInfoUiModel.PaymentInfoItemUiModel) {

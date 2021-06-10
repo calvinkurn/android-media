@@ -57,6 +57,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
                 courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
                 courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
+                dropShipperInfoUiModel = mapDropShipperInfoUiModel(), // TODO: Use data from backend
                 headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
                 receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
                 ticker = mapTicker(shipment.shippingInfo, BuyerOrderDetailConst.TICKER_KEY_SHIPPING_INFO)
@@ -243,6 +244,13 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 quantity = product.quantity,
                 totalPrice = product.totalPrice,
                 totalPriceText = product.totalPriceText
+        )
+    }
+
+    private fun mapDropShipperInfoUiModel(): ShipmentInfoUiModel.DropShipperInfoUiModel {
+        return ShipmentInfoUiModel.DropShipperInfoUiModel(
+                name = "Smitty WerbenJagerManJensen",
+                phoneNumber = "0812345678"
         )
     }
 

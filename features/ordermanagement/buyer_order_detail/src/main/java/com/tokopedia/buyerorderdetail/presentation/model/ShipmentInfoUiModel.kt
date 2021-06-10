@@ -8,6 +8,7 @@ data class ShipmentInfoUiModel(
         val awbInfoUiModel: AwbInfoUiModel,
         val courierDriverInfoUiModel: CourierDriverInfoUiModel,
         val courierInfoUiModel: CourierInfoUiModel,
+        val dropShipperInfoUiModel: DropShipperInfoUiModel,
         val headerUiModel: PlainHeaderUiModel,
         val receiverAddressInfoUiModel: ReceiverAddressInfoUiModel,
         val ticker: TickerUiModel
@@ -49,6 +50,15 @@ data class ShipmentInfoUiModel(
             val photoUrl: String,
             val plateNumber: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
+        override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
+            return typeFactory?.type(this).orZero()
+        }
+    }
+
+    data class DropShipperInfoUiModel(
+            val name: String,
+            val phoneNumber: String
+    ): Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
