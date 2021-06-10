@@ -7,6 +7,10 @@
     <string name="tokomart_common_empty_state_button_return">Belanja di Tokopedia</string>
 
     <string name="tokomart_category_list_bottom_sheet_title">Semua kategori di TokoNOW!</string>
+    <string name="tokomart_category_list_bottom_sheet_error_not_found_title">Oops, halaman ini gagal dimuat</string>
+    <string name="tokomart_category_list_bottom_sheet_error_not_found_desc">Klik tombol di bawah ini untuk refresh halaman ini, ya!</string>
+    <string name="tokomart_category_list_bottom_sheet_error_not_found_image_url">https://images.tokopedia.net/img/error_page_400_category_list.png</string>
+    <string name="tokomart_category_list_bottom_sheet_error_go_to_homepage">Ke Homepage</string>
     <string name="tokomart_see_all">Lihat Semua</string>
     <string name="tokomart_all_category_text_format">Semua Produk %1$s</string>
 

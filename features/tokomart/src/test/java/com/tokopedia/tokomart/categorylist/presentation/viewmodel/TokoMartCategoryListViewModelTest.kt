@@ -8,7 +8,7 @@ class TokoMartCategoryListViewModelTest: TokoMartCategoryListViewModelTestFixtur
 
     @Test
     fun `when getting categorylist should run and give the success result`() {
-        onGetCategoryList_thenReturn(createCategoryList().data)
+        onGetCategoryList_thenReturn(createCategoryList())
 
         viewModel.getCategoryList("1123")
 
