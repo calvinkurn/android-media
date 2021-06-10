@@ -373,6 +373,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
+            globalEvent.value = OccGlobalEvent.Loading
             val newChosenAddress = logisticProcessor.setChosenAddress(addressModel)
             if (newChosenAddress == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_ERROR_MESSAGE)
@@ -389,7 +390,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     mode = ChosenAddress.MODE_ADDRESS
             )
             param.chosenAddress = chosenAddress
-            globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
