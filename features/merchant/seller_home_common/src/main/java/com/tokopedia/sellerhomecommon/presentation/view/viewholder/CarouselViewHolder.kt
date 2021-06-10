@@ -97,6 +97,7 @@ class CarouselViewHolder(
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
                 } else {
+                    listener.onRemoveWidget(adapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
             }

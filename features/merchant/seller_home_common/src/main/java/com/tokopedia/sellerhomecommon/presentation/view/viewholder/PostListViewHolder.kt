@@ -82,6 +82,7 @@ class PostListViewHolder(
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, postListWidgetUiModel)
                 } else {
+                    listener.onRemoveWidget(adapterPosition)
                     itemView.toggleWidgetHeight(false)
                 }
             }

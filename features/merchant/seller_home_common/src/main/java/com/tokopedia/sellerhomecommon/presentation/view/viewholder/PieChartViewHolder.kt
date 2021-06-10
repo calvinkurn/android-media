@@ -95,6 +95,7 @@ class PieChartViewHolder(
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
                 } else {
+                    listener.onRemoveWidget(adapterPosition)
                     toggleWidgetHeight(false)
                 }
             }

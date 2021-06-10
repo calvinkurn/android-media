@@ -244,6 +244,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun getIsShouldRemoveWidget(): Boolean = false
 
+    override fun onRemoveWidget(position: Int) {
+        recyclerView?.post {
+            checkForSectionToBeRemoved(position)
+        }
+    }
+
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         StatisticTracker.sendClickCardEvent(model)
     }
@@ -555,9 +561,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         StatisticTracker.sendSetDateFilterEvent(item.label)
         adapter.data.forEach {
-            if (it !is TickerWidgetUiModel) {
-                it.isLoaded = false
-                it.data = null
+            when(it) {
+                is TickerWidgetUiModel -> { }
+                is SectionWidgetUiModel -> {
+                    it.shouldShow = true
+                }
+                else -> {
+                    it.isLoaded = false
+                    it.data = null
+                }
             }
         }
         adapter.notifyDataSetChanged()
@@ -930,4 +942,36 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             TrackingHelper.getCategoryPage(it, statisticPage?.pageTitle.orEmpty())
         }
     }
+
+    private fun checkForSectionToBeRemoved(removedPosition: Int) {
+        val previousWidget = adapter.data.getOrNull(removedPosition - 1)
+        if (previousWidget is SectionWidgetUiModel) {
+            if (adapter.data.getOrNull(removedPosition + 1) == null) {
+                removeEmptySection(removedPosition - 1)
+            } else {
+                var shouldRemoveSection = false
+                adapter.data?.drop(removedPosition + 1)?.forEach { widget ->
+                    when {
+                        widget.shouldShowEmptyStateIfEmpty() || !widget.isEmpty() -> {
+                            // If we found that the next widget should be shown, then we should not remove the section
+                            return@forEach
+                        }
+                        widget is SectionWidgetUiModel -> {
+                            shouldRemoveSection = true
+                            return@forEach
+                        }
+                    }
+                }
+                if (shouldRemoveSection) {
+                    removeEmptySection(removedPosition - 1)
+                }
+            }
+        }
+    }
+
+    private fun removeEmptySection(position: Int) {
+        (adapter.data.getOrNull(position) as? SectionWidgetUiModel)?.shouldShow = false
+        adapter.notifyItemChanged(position)
+    }
+
 }
