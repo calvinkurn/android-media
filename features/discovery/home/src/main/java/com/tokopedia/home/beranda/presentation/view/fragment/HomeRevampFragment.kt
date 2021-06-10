@@ -1766,6 +1766,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         .setLocalCacheModel(localCacheModel)
         )
         chooseAddressWidgetInitialized = false
+        getHomeViewModel().refresh(isFirstInstall = false, forceRefresh = true)
     }
 
     override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {
