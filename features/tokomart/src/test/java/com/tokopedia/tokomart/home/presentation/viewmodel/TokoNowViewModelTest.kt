@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.home.presentation.viewmodel
 
 import com.tokopedia.tokomart.data.*
+import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
@@ -28,7 +29,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
                         mapTickerData(createTicker().ticker.tickerList)
                 ),
                 isInitialLoad = true,
-                isHeaderBackgroundShowed = true
+                state = HomeLayoutState.SHOW
         )
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }
@@ -49,16 +50,16 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
                         mapTickerData(createTicker().ticker.tickerList)
                 ),
                 isInitialLoad = true,
-                isHeaderBackgroundShowed = true
+                state = HomeLayoutState.SHOW
         )
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }
 
     @Test
-    fun `when getting chooseAddressWidget should run and give the success result`() {
-        viewModel.getChooseAddressWidget()
+    fun `when getting loadingState should run and give the success result`() {
+        viewModel.getLoadingState()
 
-        val expectedResponse = createChooseAddressWidget()
+        val expectedResponse = createLoadingState()
 
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
     }

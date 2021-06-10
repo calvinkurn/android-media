@@ -24,6 +24,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -49,6 +50,7 @@ import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokomart.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokomart.common.view.TokoNowView
+import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
@@ -141,7 +143,7 @@ class TokoMartHomeFragment: Fragment(),
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
 
-        getChooseAddress()
+        loadLayout()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -228,16 +230,18 @@ class TokoMartHomeFragment: Fragment(),
         getMiniCart()
     }
 
-    private fun hideHeaderBackground() {
-        if (ivHeaderBackground?.isVisible == true) {
-            ivHeaderBackground?.hide()
-        }
+    private fun loadHeaderBackground() {
+        ivHeaderBackground?.show()
+        ivHeaderBackground?.loadImage(R.drawable.tokomart_ic_header_background_shimmering)
     }
 
     private fun showHeaderBackground() {
-        if (ivHeaderBackground?.isVisible == false) {
-            ivHeaderBackground?.show()
-        }
+        ivHeaderBackground?.show()
+        ivHeaderBackground?.loadImage(R.drawable.tokomart_ic_header_background)
+    }
+
+    private fun hideHeaderBackground() {
+        ivHeaderBackground?.hide()
     }
 
     private fun setupSwipeRefreshLayout() {
@@ -252,8 +256,7 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun onRefreshLayout() {
         rvLayoutManager?.setScrollEnabled(true)
-        adapter.clearAllElements()
-        getChooseAddress()
+        loadLayout()
     }
 
     private fun setupNavToolbar() {
@@ -425,10 +428,10 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
         data.run {
-            needToShowHeaderBackground(isHeaderBackgroundShowed)
+            needToShowHeaderBackground(state)
             adapter.submitList(result)
             when {
-                isChooseAddressWidgetDisplayed -> {
+                isLoadState -> {
                     checkIfChooseAddressWidgetDataUpdated()
                     checkStateNotInServiceArea(
                             shopId = localCacheModel?.shop_id.toLongOrZero(),
@@ -446,11 +449,17 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
-    private fun needToShowHeaderBackground(isShowed: Boolean) {
-        if (isShowed) {
-            showHeaderBackground()
-        } else {
-            hideHeaderBackground()
+    private fun needToShowHeaderBackground(state: Int) {
+        when (state) {
+            HomeLayoutState.SHOW -> {
+                showHeaderBackground()
+            }
+            HomeLayoutState.HIDE -> {
+                hideHeaderBackground()
+            }
+            HomeLayoutState.LOADING -> {
+                loadHeaderBackground()
+            }
         }
     }
 
@@ -462,8 +471,8 @@ class TokoMartHomeFragment: Fragment(),
         viewModel.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
     }
 
-    private fun getChooseAddress() {
-        viewModel.getChooseAddressWidget()
+    private fun loadLayout() {
+        viewModel.getLoadingState()
     }
 
     //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder

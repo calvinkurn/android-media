@@ -13,8 +13,9 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addChooseAddressIntoList
+import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
+import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.isNotStaticLayout
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
@@ -62,12 +63,12 @@ class TokoMartHomeViewModel @Inject constructor(
 
     private var layoutList = listOf<Visitable<*>>()
 
-    fun getChooseAddressWidget() {
-        layoutList = addChooseAddressIntoList()
+    fun getLoadingState() {
+        layoutList = addLoadingIntoList()
         val data = HomeLayoutListUiModel(
                 result = layoutList,
-                isChooseAddressWidgetDisplayed = true,
-                isHeaderBackgroundShowed = false
+                isLoadState = true,
+                state = HomeLayoutState.LOADING
         )
         _homeLayoutList.value = Success(data)
     }
@@ -76,7 +77,7 @@ class TokoMartHomeViewModel @Inject constructor(
         layoutList = addEmptyStateIntoList(id)
         val data = HomeLayoutListUiModel(
                 result = layoutList,
-                isHeaderBackgroundShowed = false
+                state = HomeLayoutState.HIDE
         )
         _homeLayoutList.value = Success(data)
     }
@@ -115,7 +116,7 @@ class TokoMartHomeViewModel @Inject constructor(
                 val data = HomeLayoutListUiModel(
                         result = layoutList,
                         isInitialLoad = true,
-                        isHeaderBackgroundShowed = true
+                        state = HomeLayoutState.SHOW
                 )
                 _homeLayoutList.postValue(Success(data))
             }
@@ -131,7 +132,7 @@ class TokoMartHomeViewModel @Inject constructor(
                     getHomeComponentData(it, warehouseId)
                     val data = HomeLayoutListUiModel(
                             result = layoutList,
-                            isHeaderBackgroundShowed = true
+                            state = HomeLayoutState.SHOW
                     )
                     _homeLayoutList.postValue(Success(data))
                 }) {
