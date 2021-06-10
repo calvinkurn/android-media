@@ -7,6 +7,7 @@
     <com.tokopedia.unifycomponents.ticker.Ticker android:id="@+id/ticker_announcement"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

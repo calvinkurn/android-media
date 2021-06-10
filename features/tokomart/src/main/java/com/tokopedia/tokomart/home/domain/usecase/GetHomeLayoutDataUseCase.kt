@@ -22,7 +22,7 @@ class GetHomeLayoutDataUseCase @Inject constructor(
         setTypeClass(GetHomeLayoutResponse::class.java)
     }
 
-    suspend fun execute(channelId: String): HomeLayoutResponse {
+    suspend fun execute(channelId: String?): HomeLayoutResponse {
         setRequestParams(RequestParams.create().apply {
             putString(PARAM_CHANNEL_ID, channelId)
         }.parameters)

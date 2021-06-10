@@ -78,6 +78,7 @@ class TokoMartHomeFragment: Fragment(),
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
+        const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
 
         fun newInstance() = TokoMartHomeFragment()
@@ -108,6 +109,7 @@ class TokoMartHomeFragment: Fragment(),
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
+    private var hasTickerBeenRemoved: Boolean = false
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
@@ -158,9 +160,16 @@ class TokoMartHomeFragment: Fragment(),
         checkIfChooseAddressWidgetDataUpdated()
     }
 
-    override fun onTickerDismiss() = adapter.removeTickerWidget()
+    override fun onTickerDismiss() {
+        hasTickerBeenRemoved = true
+        adapter.removeTickerWidget()
+    }
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {}
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        if (!miniCartSimplifiedData.isShowMiniCartWidget) {
+            miniCartWidget?.hide()
+        }
+    }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
         context?.let {
@@ -197,7 +206,7 @@ class TokoMartHomeFragment: Fragment(),
         context?.let {
             when {
                 shopId == 0L -> {
-                    viewModel.getChosenAddress(SOURCE)
+                    viewModel.getChooseAddress(SOURCE)
                 }
                 warehouseId == 0L -> {
                     showEmptyState(EMPTY_STATE_NO_ADDRESS)
@@ -446,7 +455,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun getHomeLayout() {
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(hasTickerBeenRemoved)
     }
 
     private fun getMiniCart()  {
@@ -454,7 +463,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun getChooseAddress() {
-        viewModel.getChooseAddress()
+        viewModel.getChooseAddressWidget()
     }
 
     //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
