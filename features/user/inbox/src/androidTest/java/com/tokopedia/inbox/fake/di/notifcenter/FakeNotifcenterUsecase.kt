@@ -4,13 +4,16 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.fake.common.FakeGraphqlUseCase
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifOrderListUseCase
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterDetailUseCase
+import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
+import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.notifcenter.domain.NotifOrderListUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -62,6 +65,27 @@ class FakeNotifcenterUsecase {
     ): FakeNotifcenterDetailUseCase {
         return FakeNotifcenterDetailUseCase(
             query, gqlUseCase, mapper, dispatchers
+        )
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @NotificationScope
+    fun provideNotifcenterFilterV2UseCase(
+        fake: FakeNotifcenterFilterV2UseCase
+    ): NotifcenterFilterV2UseCase {
+        return fake
+    }
+
+    @Provides
+    @NotificationScope
+    fun provideFakeNotifcenterFilterV2UseCase(
+        gqlUseCase: FakeGraphqlUseCase<NotifcenterFilterResponse>,
+        cacheManager: NotifcenterCacheManager
+    ): FakeNotifcenterFilterV2UseCase {
+        return FakeNotifcenterFilterV2UseCase(
+            gqlUseCase, cacheManager
         )
     }
 }
