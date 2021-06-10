@@ -25,8 +25,8 @@ class ReceiveConfirmationBottomSheet(
     }
 
     private fun View.getDescriptionView() = findViewById<Typography>(R.id.tvBottomSheetFinishOrderDescription)
-    private fun View.getPrimaryButtonView() = findViewById<UnifyButton>(R.id.btnPrimary)
-    private fun View.getSecondaryButtonView() = findViewById<UnifyButton>(R.id.btnSecondary)
+    private fun View.getPrimaryButtonView() = findViewById<UnifyButton>(R.id.btnFinishOrderPrimary)
+    private fun View.getSecondaryButtonView() = findViewById<UnifyButton>(R.id.btnFinishOrderSecondary)
 
     private fun setupBottomSheet(context: Context): BottomSheetUnify {
         return BottomSheetUnify().apply {
@@ -96,8 +96,8 @@ class ReceiveConfirmationBottomSheet(
             v.isLoading = true
         }
         when (v?.id) {
-            R.id.btnPrimary -> onPrimaryButtonClicked()
-            R.id.btnSecondary -> onSecondaryButtonClicked()
+            R.id.btnFinishOrderPrimary -> onPrimaryButtonClicked()
+            R.id.btnFinishOrderSecondary -> onSecondaryButtonClicked()
         }
     }
 

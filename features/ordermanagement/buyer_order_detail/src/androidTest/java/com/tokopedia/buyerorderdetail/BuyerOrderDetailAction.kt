@@ -38,6 +38,32 @@ import org.junit.Assert.assertTrue
 import java.util.concurrent.TimeUnit
 
 class BuyerOrderDetailAction {
+    private fun findBuyerOrderDetailFragment(activity: AppCompatActivity): BuyerOrderDetailFragment? {
+        return activity.supportFragmentManager.fragments.find { it is BuyerOrderDetailFragment } as? BuyerOrderDetailFragment
+    }
+
+    private fun findSecondaryActionButtonBottomSheet(activity: AppCompatActivity): BottomSheetUnify? {
+        return findBuyerOrderDetailFragment(activity)?.childFragmentManager?.fragments?.find {
+            it is BottomSheetUnify &&
+                    it.bottomSheetTitle.text == BuyerOrderDetailTrackerValidationConstant.SECONDARY_ACTION_BUTTON_BOTTOMSHEET_TITLE
+        } as? BottomSheetUnify
+    }
+
+    private fun findFinishOrderConfirmationBottomSheet(activity: AppCompatActivity): BottomSheetUnify? {
+        return findBuyerOrderDetailFragment(activity)?.childFragmentManager?.fragments?.find {
+            it is BottomSheetUnify &&
+                    it.bottomSheetTitle.text == BuyerOrderDetailTrackerValidationConstant.FINISH_ORDER_CONFIRMATION_BOTTOMSHEET_TITLE
+        } as? BottomSheetUnify
+    }
+
+    private fun isSecondaryActionButtonBottomSheetVisible(activity: AppCompatActivity): Boolean {
+        return findSecondaryActionButtonBottomSheet(activity)?.isVisible == true
+    }
+
+    private fun isFinishOrderConfirmationBottomSheetVisible(activity: AppCompatActivity): Boolean {
+        return findFinishOrderConfirmationBottomSheet(activity)?.isVisible == true
+    }
+
     private fun waitForCondition(timeout: Long = TimeUnit.SECONDS.toMillis(5), predicate: () -> Boolean) {
         val start = System.currentTimeMillis()
         while (!predicate() && System.currentTimeMillis() - start <= timeout) {
@@ -71,9 +97,7 @@ class BuyerOrderDetailAction {
 
     private fun clickSecondaryActionButton(buttonText: String) {
         val matcher = allOf(withId(R.id.tvBuyerOrderDetailSecondaryActionButton), withText(buttonText), isAssignableFrom(Typography::class.java))
-        waitForCondition {
-            isViewVisible(matcher)
-        }
+        waitUntilViewVisible(matcher)
         clickView(matcher)
     }
 
@@ -105,26 +129,60 @@ class BuyerOrderDetailAction {
         scrollThroughUntilViewVisible(activity, firstView(withId(R.id.icBuyerOrderDetailCopyAwb)))
     }
 
-    private fun waitUntilSeeDetailButtonVisible() {
+    private fun waitUntilViewVisible(matcher: Matcher<View>) {
         waitForCondition {
-            isViewVisible(firstView(withId(R.id.tvBuyerOrderDetailSeeDetail)))
+            isViewVisible(matcher)
         }
+    }
+
+    private fun waitUntilSeeDetailButtonVisible() {
+        waitUntilViewVisible(firstView(withId(R.id.tvBuyerOrderDetailSeeDetail)))
     }
 
     private fun waitUntilSecondaryActionButtonVisible() {
-        waitForCondition {
-            isViewVisible(firstView(withId(R.id.btnBuyerOrderDetailSecondaryActions)))
-        }
+        waitUntilViewVisible(withId(R.id.btnBuyerOrderDetailSecondaryActions))
     }
 
     private fun waitUntilToolbarChatIconVisible() {
+        waitUntilViewVisible(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+    }
+
+    private fun waitUntilSecondaryActionButtonBottomSheetVisible(activity: AppCompatActivity) {
         waitForCondition {
-            isViewVisible(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+            isSecondaryActionButtonBottomSheetVisible(activity)
         }
     }
 
-    private fun openSecondaryActionButtonBottomSheet() {
-        clickView(firstView(withId(R.id.btnBuyerOrderDetailSecondaryActions)))
+    private fun waitUntilFinishOrderConfirmationBottomSheetVisible(activity: AppCompatActivity) {
+        waitForCondition {
+            isFinishOrderConfirmationBottomSheetVisible(activity)
+        }
+    }
+
+    private fun openSecondaryActionButtonBottomSheet(activity: AppCompatActivity) {
+        if (isFinishOrderConfirmationBottomSheetVisible(activity)) {
+            closeBottomSheets(activity)
+            waitUntilSecondaryActionButtonVisible()
+        }
+        if (!isSecondaryActionButtonBottomSheetVisible(activity)) {
+            clickView(withId(R.id.btnBuyerOrderDetailSecondaryActions))
+            waitUntilSecondaryActionButtonBottomSheetVisible(activity)
+        }
+    }
+
+    private fun openFinishOrderConfirmationBottomSheet(activity: AppCompatActivity, fromPrimaryActionButton: Boolean) {
+        if (!isFinishOrderConfirmationBottomSheetVisible(activity)) {
+            if (fromPrimaryActionButton) {
+                if (isSecondaryActionButtonBottomSheetVisible(activity)) {
+                    closeBottomSheets(activity)
+                }
+                clickPrimaryActionButton()
+                waitUntilFinishOrderConfirmationBottomSheetVisible(activity)
+            } else {
+                openSecondaryActionButtonBottomSheet(activity)
+                clickSecondaryActionButton(BuyerOrderDetailTrackerValidationConstant.ACTION_BUTTON_FINISH_ORDER_TEXT)
+            }
+        }
     }
 
     private fun closeBottomSheets(activity: AppCompatActivity) {
@@ -174,10 +232,20 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickSecondaryActionButton(activity: AppCompatActivity, buttonText: String) {
-        openSecondaryActionButtonBottomSheet()
+        openSecondaryActionButtonBottomSheet(activity)
         clickSecondaryActionButton(buttonText)
-        closeBottomSheets(activity)
-        waitUntilSecondaryActionButtonVisible()
+    }
+
+    private fun clickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet() {
+        val matcher = withId(R.id.btnFinishOrderPrimary)
+        waitUntilViewVisible(matcher)
+        clickView(matcher)
+    }
+
+    private fun clickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet() {
+        val matcher = withId(R.id.btnFinishOrderSecondary)
+        waitUntilViewVisible(matcher)
+        clickView(matcher)
     }
 
     fun launchBuyerOrderDetailActivity(activityRule: ActivityTestRule<BuyerOrderDetailActivity>) {
@@ -232,6 +300,11 @@ class BuyerOrderDetailAction {
         clickShipmentTnC()
     }
 
+    fun testClickCopyAWB(activity: AppCompatActivity) {
+        scrollToCopyAWB(activity)
+        clickCopyAWB()
+    }
+
     fun testClickPrimaryActionButton() {
         clickPrimaryActionButton()
     }
@@ -247,10 +320,18 @@ class BuyerOrderDetailAction {
     fun testClickSecondaryActionButtonRequestComplaint(activity: AppCompatActivity) {
         clickSecondaryActionButton(activity, BuyerOrderDetailTrackerValidationConstant.ACTION_BUTTON_REQUEST_COMPLAINT_TEXT)
     }
+    fun testClickSecondaryActionButtonTrack(activity: AppCompatActivity) {
+        clickSecondaryActionButton(activity, BuyerOrderDetailTrackerValidationConstant.ACTION_BUTTON_TRACK_TEXT)
+    }
 
-    fun testClickCopyAWB(activity: AppCompatActivity) {
-        scrollToCopyAWB(activity)
-        clickCopyAWB()
+    fun testClickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet(activity: AppCompatActivity, fromPrimaryActionButton: Boolean) {
+        openFinishOrderConfirmationBottomSheet(activity, fromPrimaryActionButton)
+        clickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet()
+    }
+
+    fun testClickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet(activity: AppCompatActivity, fromPrimaryActionButton: Boolean) {
+        openFinishOrderConfirmationBottomSheet(activity, fromPrimaryActionButton)
+        clickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet()
     }
 
     infix fun validate(validation: BuyerOrderDetailValidator.() -> Unit) = BuyerOrderDetailValidator().apply(validation)
@@ -260,6 +341,8 @@ class BuyerOrderDetailMock {
     enum class BuyerOrderDetailMockResponse(val id: Int) {
         MOCK_RESPONSE_700(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_700),
         MOCK_RESPONSE_601(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_601),
+        MOCK_RESPONSE_600(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_600),
+        MOCK_RESPONSE_530(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_530),
         MOCK_RESPONSE_450(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_450),
         MOCK_RESPONSE_400(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_400),
         MOCK_RESPONSE_220(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_220),
@@ -309,7 +392,7 @@ class BuyerOrderDetailValidator {
                         .append(e.message)
             }
         }
-        assertTrue(errorMessage.toString(), errorMessage.isNotBlank())
+        assertTrue(errorMessage.toString(), errorMessage.isBlank())
     }
 }
 

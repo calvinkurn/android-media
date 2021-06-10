@@ -147,9 +147,11 @@ object BuyerOrderDetailTracker {
 
     fun eventClickActionButtonFromReceiveConfirmation(buttonName: String, orderStatusCode: String, orderId: String) {
         val eventAction = StringBuilder().apply {
-            append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_FINISH_ORDER_CONFIRMATION_DIALOG)
-            append(BuyerOrderDetailTrackerConstant.SEPARATOR_STRIP)
+            append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK)
+            append(BuyerOrderDetailTrackerConstant.SEPARATOR_SPACE)
             append(buttonName)
+            append(BuyerOrderDetailTrackerConstant.SEPARATOR_SPACE)
+            append(BuyerOrderDetailTrackerConstant.EVENT_ACTION_PARTIAL_CLICK_ON_FINISH_ORDER_CONFIRMATION_DIALOG)
         }.toString()
         eventGeneralBuyerOrderDetail(eventAction, orderStatusCode, orderId)
     }

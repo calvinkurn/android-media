@@ -355,7 +355,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onDoReceiveConfirmationActionButtonClicked() {
         viewModel.finishOrder()
-        trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER)
+        trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_CONFIRM_FINISH_ORDER)
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {

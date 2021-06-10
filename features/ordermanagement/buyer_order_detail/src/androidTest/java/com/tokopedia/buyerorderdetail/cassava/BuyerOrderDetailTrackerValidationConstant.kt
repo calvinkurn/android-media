@@ -16,16 +16,26 @@ object BuyerOrderDetailTrackerValidationConstant {
     const val clickPrimaryActionButtonTrackQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_track.json"
     const val clickPrimaryActionButtonSeeComplaintQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_action_button_see_complaint.json"
     const val clickPrimaryActionButtonHelpQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_help.json"
+    const val clickPrimaryActionButtonFinishOrderQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_finish_order.json"
     const val clickSecondaryActionButtonHelpQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_help.json"
     const val clickSecondaryActionButtonRequestCancelQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_request_cancel.json"
     const val clickSecondaryActionButtonRequestComplaintQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_request_complaint.json"
+    const val clickSecondaryActionButtonFinishOrderQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_finish_order.json"
+    const val clickSecondaryActionButtonTrackQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_secondary_action_button_track.json"
+    const val clickFinishOrderOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_confirm_finish.json"
+    const val clickRequestComplaintOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_request_complaint.json"
 
     const val orderId = "8176123125"
     const val paymentId = "756128312"
     const val cartString = "067128931"
 
     const val TICKER_SHIPMENT_INFO_TNC_TEXT = "Jaminan Tepat Waktu akan berlaku"
+    const val SECONDARY_ACTION_BUTTON_BOTTOMSHEET_TITLE = "Lainnya"
+    const val FINISH_ORDER_CONFIRMATION_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
+
     const val ACTION_BUTTON_HELP_TEXT = "Bantuan"
     const val ACTION_BUTTON_REQUEST_CANCEL_TEXT = "Batalkan Pesanan"
     const val ACTION_BUTTON_REQUEST_COMPLAINT_TEXT = "Komplain"
+    const val ACTION_BUTTON_FINISH_ORDER_TEXT = "Selesai"
+    const val ACTION_BUTTON_TRACK_TEXT = "Lacak"
 }
