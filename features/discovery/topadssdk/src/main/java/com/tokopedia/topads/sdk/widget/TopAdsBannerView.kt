@@ -254,7 +254,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
                     }
                 },
-                hasAddToCartButton = this.hasAddToCartButton)
+                hasAddToCartButton = this.hasAddToCartButton,
+                addToCartButtonType = UnifyButton.Type.MAIN)
     }
 
     private fun bindFavorite(isFollowed: Boolean) {
