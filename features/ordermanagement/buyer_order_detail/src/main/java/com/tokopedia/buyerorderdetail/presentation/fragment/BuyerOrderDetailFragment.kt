@@ -262,7 +262,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun getCartId(): String {
-        return activity?.intent?.extras?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "0") ?: "0"
+        return activity?.intent?.extras?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "") ?: ""
     }
 
     override fun onPopUpActionButtonClicked(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton) {

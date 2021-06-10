@@ -26,8 +26,8 @@ object BuyerOrderDetailTrackerValidationConstant {
     const val clickRequestComplaintOnFinishOrderConfirmationBottomSheet = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_finish_order_confirmation_bottomsheet_request_complaint.json"
 
     const val orderId = "8176123125"
-    const val paymentId = "756128312"
-    const val cartString = "067128931"
+    const val paymentId = "11824472"
+    const val cartString = "480946-4647129-11-18-regular-0-19469"
 
     const val TICKER_SHIPMENT_INFO_TNC_TEXT = "Jaminan Tepat Waktu akan berlaku"
     const val SECONDARY_ACTION_BUTTON_BOTTOMSHEET_TITLE = "Lainnya"
