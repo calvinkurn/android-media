@@ -18,9 +18,9 @@ class TokoNowCategoryList : RecyclerView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context, listener: CategoryListListener) : super(context) {
+    constructor(context: Context, listener: CategoryListListener, parentLvlName: String) : super(context) {
         categoryAdapter = TokoMartCategoryListAdapter(
-            TokoMartCategoryListAdapterTypeFactory(listener),
+            TokoMartCategoryListAdapterTypeFactory(listener, parentLvlName),
             TokoMartCategoryListDiffer()
         )
     }
