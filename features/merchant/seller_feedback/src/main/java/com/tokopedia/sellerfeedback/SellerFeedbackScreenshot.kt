@@ -12,16 +12,10 @@ import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE
 import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
 
-class SellerFeedbackScreenshot(context: Context) : Screenshot(context.contentResolver, object : BottomSheetListener {
-    override fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.SELLER_FEEDBACK)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri)
-        context.startActivity(intent)
-    }
-}) {
 
-    companion object{
+class SellerFeedbackScreenshot(val context: Context) : Screenshot(context.contentResolver) {
+
+    companion object {
         const val THRESHOLD_TIME = 1000L
     }
 
@@ -30,6 +24,12 @@ class SellerFeedbackScreenshot(context: Context) : Screenshot(context.contentRes
 
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var currentActivity: Activity? = null
+
+    override var listener = object : BottomSheetListener {
+        override fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean) {
+            uri?.let { openFeedbackForm(it) }
+        }
+    }
 
     override fun onScreenShotTaken(uri: Uri) {
         val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity)
@@ -59,5 +59,12 @@ class SellerFeedbackScreenshot(context: Context) : Screenshot(context.contentRes
                     REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
             ) ?: REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
         } ?: REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
+    }
+
+    private fun openFeedbackForm(uri: Uri) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.SELLER_FEEDBACK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri)
+        context.startActivity(intent)
     }
 }

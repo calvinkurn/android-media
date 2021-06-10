@@ -22,12 +22,11 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_action_screenshot.view.*
 
 
-open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetListener) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
+open class Screenshot(contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
     private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler
     private val mContentResolver: ContentResolver
     private val mContentObserver: ContentObserver
-    private val mListener: BottomSheetListener
     private var currentActivity: Activity? = null
     private var savedUri: Uri? = null
     private var className: String = ""
@@ -38,7 +37,6 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         mHandler = Handler(mHandlerThread.looper)
         mContentResolver = contentResolver
         mContentObserver = ScreenshotObserver(mHandler, contentResolver, this)
-        mListener = listener
     }
 
     fun register() {
@@ -62,7 +60,7 @@ open class Screenshot(contentResolver: ContentResolver, listener: BottomSheetLis
         val bottomSheetFeedback = BottomSheetUnify()
         val viewBottomSheet = View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
             btn_add_feedback.setOnClickListener {
-                mListener.onFeedbackClicked(uri, className, true)
+                listener?.onFeedbackClicked(uri, className, true)
                 bottomSheetFeedback.dismiss()
             }
             btn_dismiss.setOnClickListener {
