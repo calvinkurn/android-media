@@ -141,7 +141,7 @@ class OfficialHomeFragment :
     }
 
     fun forceLoadData() {
-        reloadData(isRefresh = false)
+        reloadData()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -687,18 +687,8 @@ class OfficialHomeFragment :
         }
     }
 
-    private fun reloadData(isRefresh: Boolean = false) {
-        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
-            if (isRefresh) {
-                viewModel.loadFirstData(category, getLocation())
-
-                getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-
-                if (!isRefresh) {
-                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
-                }
-            }
-        }
+    private fun reloadData() {
+        viewModel.loadFirstData(category, getLocation())
     }
 
     private fun observeBannerData() {
