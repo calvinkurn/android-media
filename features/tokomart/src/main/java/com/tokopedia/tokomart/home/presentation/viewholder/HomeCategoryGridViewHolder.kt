@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
@@ -29,7 +29,7 @@ class HomeCategoryGridViewHolder(itemView: View): AbstractViewHolder<HomeCategor
             textTitle.text = data.title
             textSeeAll.setOnClickListener {
                 val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(itemView.context)
-                RouteManager.route(context, ApplinkConstInternalTokoMart.CATEGORY_LIST, localCacheModel?.warehouse_id)
+                RouteManager.route(context, ApplinkConstInternalTokopediaNow.CATEGORY_LIST, localCacheModel?.warehouse_id)
             }
 
             with(rvCategory) {

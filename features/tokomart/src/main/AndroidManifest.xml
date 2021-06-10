@@ -15,8 +15,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_tokonow"
-                    android:path="@string/path_tokonow_home"
+                    android:host="@string/host_tokopedia_now"
+                    android:path="@string/path_tokopedia_now_home"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -24,7 +24,7 @@
         <activity
             android:name=".categorylist.presentation.activity.TokoMartCategoryListActivity"
             android:exported="true"
-            android:label="@string/title_tokonow"
+            android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
             android:theme="@style/CategoryListTheme">
             <intent-filter>
@@ -34,8 +34,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_tokonow"
-                    android:pathPattern="@string/path_tokonow_category_list"
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_category_list"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -43,7 +43,7 @@
         <activity
             android:name=".search.presentation.view.SearchActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_tokonow"
+            android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustNothing"
             android:theme="@style/TokoNowHeaderTheme">
 
@@ -53,8 +53,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_tokonow"
-                    android:path="@string/path_tokomart_search"/>
+                    android:host="@string/host_tokopedia_now"
+                    android:path="@string/path_tokopedia_now_search"/>
             </intent-filter>
 
         </activity>
@@ -62,7 +62,7 @@
         <activity
             android:name=".category.presentation.view.CategoryActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_tokonow"
+            android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustNothing"
             android:theme="@style/TokoNowHeaderTheme">
 
@@ -72,8 +72,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_tokonow"
-                    android:pathPattern="@string/path_tokomart_category"/>
+                    android:host="@string/host_tokopedia_now"
+                    android:pathPattern="@string/path_tokopedia_now_category"/>
             </intent-filter>
 
         </activity>
