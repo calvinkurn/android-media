@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/thanks_dh_rec_name"
+            android:id="@+id/thanks_dg_rec_category_name"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/layout_lvl2"
@@ -41,7 +41,7 @@
             app:typographyType="heading_5" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/thanks_dg_rec_text_sub"
+            android:id="@+id/thanks_dg_rec_product_name"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/layout_lvl1"
@@ -55,7 +55,7 @@
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/thanks_dg_rec_text_desc"
+            android:id="@+id/thanks_dg_rec_client_number"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/layout_lvl1"
@@ -66,7 +66,7 @@
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/thanks_dg_rec_text_sub"
+            app:layout_constraintTop_toBottomOf="@id/thanks_dg_rec_product_name"
             app:typographyType="body_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.domain.usecase.DigitalRecommendationUseCase
 import com.tokopedia.thankyou_native.recommendationdigital.model.DigitalRecommendationList
+import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -15,19 +16,18 @@ class DigitalRecommendationViewModel @Inject constructor(
         private val digitalRecommendationUseCase: DigitalRecommendationUseCase,
          @CoroutineMainDispatcher dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val digitalRecommendationLiveData = MutableLiveData<Result<DigitalRecommendationList>>()
+    val digitalRecommendationLiveData = MutableLiveData<Result<RechargeRecommendationDigiPersoItem>>()
 
-    fun getDigitalRecommendationData(deviceId: Int, categoryId: String) {
+    fun getDigitalRecommendationData(categoryId: String) {
         digitalRecommendationUseCase.cancelJobs()
         digitalRecommendationUseCase.getDigitalRecommendationData(
                 ::onDigitalRecomDataSuccess,
                 ::onDigitalRecomError,
-                deviceId,
                 categoryId
         )
     }
 
-    private fun onDigitalRecomDataSuccess(digitalRecommendationList: DigitalRecommendationList) {
+    private fun onDigitalRecomDataSuccess(digitalRecommendationList: RechargeRecommendationDigiPersoItem) {
         digitalRecommendationLiveData.value = Success(digitalRecommendationList)
     }
 

@@ -20,6 +20,8 @@ import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorat
 import com.tokopedia.thankyou_native.recommendationdigital.analytics.DigitalRecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
 import com.tokopedia.thankyou_native.recommendationdigital.model.DigitalRecommendationList
+import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
+import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
@@ -90,7 +92,8 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         this.fragment = fragment
         this.trackingQueue = trackingQueue
         startViewModelObserver()
-        viewModel.getDigitalRecommendationData(5, "")
+        val deviceId = 5 // TODO: [Misael] ini perlu hapus ga ya?
+        viewModel.getDigitalRecommendationData("")
     }
 
     private fun startViewModelObserver() {
@@ -106,19 +109,19 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         isObserverAttached = true
     }
 
-    private fun addResultToUI(result: DigitalRecommendationList) {
-        if(result.recommendations.isNullOrEmpty()){
+    private fun addResultToUI(result: RechargeRecommendationDigiPersoItem) {
+        if(result.recommendationItems.isNullOrEmpty()){
             hide()
         }else {
             visible()
             tvTitle.text = result.title
             tvTitle.visible()
-            setupRecyclerView(result.recommendations as List<RecommendationsItem>, result.title)
+            setupRecyclerView(result.recommendationItems, result.title)
             adapter.notifyDataSetChanged()
         }
     }
 
-    private fun setupRecyclerView(recommendationItemList: List<RecommendationsItem>,
+    private fun setupRecyclerView(recommendationItemList: List<RecommendationItem>,
                                   title: String?) {
         listener = getRecommendationListener()
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
@@ -132,11 +135,11 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     private fun getRecommendationListener(): DigitalRecommendationViewListener {
         return object : DigitalRecommendationViewListener {
-            override fun onDigitalProductClick(item: RecommendationsItem, position: Int) {
+            override fun onDigitalProductClick(item: RecommendationItem, position: Int) {
                 onRecomProductClick(item, position)
             }
 
-            override fun onDigitalProductImpression(item: RecommendationsItem, position: Int) {
+            override fun onDigitalProductImpression(item: RecommendationItem, position: Int) {
                 analytics.get().sendDigitalRecommendationItemDisplayed(trackingQueue, item,
                         position, paymentId, thanksPageData.profileCode)
             }
@@ -145,7 +148,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     }
 
 
-    private fun onRecomProductClick(item: RecommendationsItem, position: Int) {
+    private fun onRecomProductClick(item: RecommendationItem, position: Int) {
         RouteManager.route(context, item.appLink)
         analytics.get().sendDigitalRecommendationItemClick(item, position, paymentId, thanksPageData.profileCode)
     }

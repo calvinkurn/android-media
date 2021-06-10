@@ -453,18 +453,18 @@ public class OrderListAnalytics {
     }
 
     public static void eventWidgetListView(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem contentItemTab, int position) {
-        String price = (contentItemTab.getTrackingData().getItemType().equals("recommendation")) ? contentItemTab.getSubtitle() : "";
+        // TODO: [Misael] ini kekny perlu ditambahin data trackingnya: item_category
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
                 EVENT_CATEGORY, "my purchase list - " + contentItemTab.getTitle(),
                 EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, "historical - " + contentItemTab.getTitle() + " - " + (1 + position),
+                EVENT_LABEL, contentItemTab.getTrackingData().getItemType(),
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
                                 NAME, contentItemTab.getTitle(),
                                 ID, contentItemTab.getTrackingData().getProductID(),
-                                PRICE, price,
+                                PRICE, 0,
                                 LIST, contentItemTab.getTitle(),
                                 POSITION, position + 1
                                 )
@@ -476,12 +476,11 @@ public class OrderListAnalytics {
     }
 
     public static void eventWidgetClick(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem item, int position) {
-        String price = (item.getTrackingData().getItemType().equals("recommendation")) ? item.getSubtitle() : "none";
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, "recommendation - " + item.getTitle() + " - " + (1 + position),
+                EVENT_LABEL, item.getTrackingData().getItemType(),
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
@@ -491,10 +490,10 @@ public class OrderListAnalytics {
                                         DataLayer.mapOf(
                                                 NAME, item.getTitle(),
                                                 ID, item.getTrackingData().getProductID(),
-                                                PRICE, price,
+                                                PRICE, 0,
                                                 BRAND, "none",
-                                                CATEGORY, item.getTitle(),
-                                                VARIANT, "none",
+                                                CATEGORY, item.getTrackingData().getCategoryName(),
+                                                VARIANT, item.getTrackingData().getItemType(),
                                                 LIST, item.getTitle(),
                                                 POSITION, position + 1,
                                                 ATTRIBUTION, "none"

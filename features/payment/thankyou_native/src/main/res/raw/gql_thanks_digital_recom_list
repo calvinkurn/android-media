@@ -1,25 +1,43 @@
-query ($device_id: Int!, $category_ids: String) {
-rechargeFavoriteRecommendationList(device_id: $device_id, category_ids: $category_ids) {
-title
-recommendations {
-iconUrl
-title
-clientNumber
-appLink
-webLink
-type
-position
-categoryId
-categoryName
-productId
-productName
-productPrice
-isATC
-operatorName
-operatorID
-tag
-tagType
-description
-}
-}
+query digiPersoGetPersonalizedItems($input: DigiPersoGetPersonalizedItemsRequest!) {
+  digiPersoGetPersonalizedItems(input: $input) {
+    title
+    mediaURL
+    appLink
+    webLink
+    textLink
+    bannerAppLink
+    bannerWebLink
+    option1
+    option2
+    option3
+    tracking {
+      action
+      data
+    }
+    items {
+      id
+      title
+      mediaURL
+      mediaUrlType
+      subtitle
+      subtitleMode
+      label1
+      label1Mode
+      label2
+      label3
+      appLink
+      webLink
+      backgroundColor
+      trackingData {
+        productID
+        operatorID
+        businessUnit
+        categoryName
+        categoryID
+        itemType
+        itemLabel
+        __typename
+      }
+    }
+  }
 }
