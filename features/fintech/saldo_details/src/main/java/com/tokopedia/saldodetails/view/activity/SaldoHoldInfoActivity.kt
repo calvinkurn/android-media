@@ -50,6 +50,10 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     val VALUE_SELLER_TYPE = 0
     val VALUE_BUYER_TYPE = 1
 
+    override fun getLayoutRes(): Int = com.tokopedia.saldodetails.R.layout.saldo_hold_info_tabview
+
+    override fun getToolbarResourceID() = com.tokopedia.saldodetails.R.id.toolbar_saldo_info
+
     companion object {
         val TAG: String = SaldoHoldInfoItem::class.java.simpleName
         val SALDOHOLD_FINTECH_PLT_PREPARE_METRICS = "saldoholdfintech_plt_prepare_metrics"
@@ -67,7 +71,6 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
         performanceInterface.startMonitoring()
         performanceInterface.stopPreparePagePerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.saldo_hold_info_tabview)
         SaldoDetailsComponentInstance.getComponent(this).inject(this)
         tabLayout = findViewById(R.id.tabs_saldo_info_type)
         viewPager = findViewById(R.id.view_pager_saldo_info_type)
