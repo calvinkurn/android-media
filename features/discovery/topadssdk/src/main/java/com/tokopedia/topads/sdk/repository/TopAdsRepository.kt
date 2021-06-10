@@ -15,9 +15,9 @@ import java.lang.reflect.Type
 
 open class TopAdsRepository {
 
-    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+    protected open val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
-    open suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
+    suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
 
         val response = this.getRestData<TopAdsmageViewResponse>(getTopAdsImageViewUrl(),
                 object : TypeToken<TopAdsmageViewResponse>() {}.type,
@@ -44,7 +44,7 @@ open class TopAdsRepository {
         }
     }
 
-    protected fun mapToListOfTopAdsImageViewModel(response: TopAdsmageViewResponse, queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
+    private fun mapToListOfTopAdsImageViewModel(response: TopAdsmageViewResponse, queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
         val list = ArrayList<TopAdsImageViewModel>()
         response.data?.forEach{ data ->
             val model = TopAdsImageViewModel()
