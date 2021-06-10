@@ -42,6 +42,7 @@ import javax.inject.Inject
 class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener {
 
     companion object {
+        private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
         private val TAG = TokoMartCategoryListBottomSheet::class.simpleName
 
         fun newInstance(warehouseId: String): TokoMartCategoryListBottomSheet {
@@ -191,9 +192,9 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener
 
     private fun showGlobalErrorPageNotFound(){
         globalError?.let {
-            it.errorIllustration.setImage(context?.getString(R.string.tokomart_category_list_bottom_sheet_error_not_found_image_url)?: "", 0f)
-            it.errorTitle.text = context?.getString(R.string.tokomart_category_list_bottom_sheet_error_not_found_title)?: ""
-            it.errorDescription.text = context?.getString(R.string.tokomart_category_list_bottom_sheet_error_not_found_desc)?: ""
+            it.errorIllustration.setImage(ERROR_STATE_NOT_FOUND_IMAGE_URL, 0f)
+            it.errorTitle.text = context?.getString(R.string.tokomart_category_list_bottom_sheet_error_not_found_title).orEmpty()
+            it.errorDescription.text = context?.getString(R.string.tokomart_category_list_bottom_sheet_error_not_found_desc).orEmpty()
         }
         actionClickListenerTryAgain()
     }
