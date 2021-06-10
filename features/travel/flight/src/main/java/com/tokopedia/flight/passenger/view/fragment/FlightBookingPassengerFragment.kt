@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
@@ -329,7 +328,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
 
         showCalendarPickerDialog(selectedDate, minDate, maxDate, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            val calendar = FlightDateUtil.getCurrentCalendar()
+            val calendar = FlightDateUtil.currentCalendar
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.DATE, dayOfMonth)
@@ -538,21 +537,21 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             else -> {
                 minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWO)
                 minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, PLUS_ONE)
-                maxDate = FlightDateUtil.getCurrentDate()
+                maxDate = FlightDateUtil.currentDate
                 selectedDate = maxDate
             }
         }
 
         if (til_birth_date.textFieldInput.text.toString().isNotEmpty()) selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, til_birth_date.textFieldInput.text.toString())
 
-        val currentTime = FlightDateUtil.getCurrentCalendar()
+        val currentTime = FlightDateUtil.currentCalendar
         currentTime.time = maxDate
         currentTime.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
         currentTime.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY)
         currentTime.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY)
 
         var onDateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            val calendar = FlightDateUtil.getCurrentCalendar()
+            val calendar = FlightDateUtil.currentCalendar
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.DATE, dayOfMonth)
