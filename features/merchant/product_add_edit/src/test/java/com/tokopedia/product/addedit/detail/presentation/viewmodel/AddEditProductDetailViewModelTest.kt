@@ -191,7 +191,6 @@ class AddEditProductDetailViewModelTest {
         } returns resultNameRecommendation
 
         viewModel.getProductNameRecommendation(query = "batik")
-        viewModel.isNameRecommendationSelected = true
         val resultViewmodel = viewModel.productNameRecommendations.getOrAwaitValue()
 
         coVerify {
@@ -199,7 +198,6 @@ class AddEditProductDetailViewModelTest {
         }
 
         Assert.assertTrue(resultViewmodel == Success(resultNameRecommendation))
-        Assert.assertTrue(viewModel.isNameRecommendationSelected)
     }
 
     @Test
@@ -209,7 +207,6 @@ class AddEditProductDetailViewModelTest {
         } throws MessageErrorException("")
 
         viewModel.getProductNameRecommendation(query = "baju")
-        viewModel.isNameRecommendationSelected = false
         val result = viewModel.productNameRecommendations.getOrAwaitValue()
 
         coVerify {
@@ -217,7 +214,6 @@ class AddEditProductDetailViewModelTest {
         }
 
         Assert.assertTrue(result is Fail)
-        Assert.assertFalse(viewModel.isNameRecommendationSelected)
     }
 
     @Test
@@ -395,7 +391,6 @@ class AddEditProductDetailViewModelTest {
             getProductTitleValidationUseCase.getDataModelOnBackground()
         } returns TitleValidationModel()
 
-        viewModel.isProductNameChanged = true
         viewModel.validateProductNameInput(productNameInput)
 
         coVerify {
@@ -1257,7 +1252,6 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `setProductNameInput should change productNameInputLiveData value`() {
         viewModel.setProductNameInput("A")
-        assert(viewModel.isProductNameChanged)
 
         val mProductNameInputLiveData = viewModel
                 .getPrivateProperty<AddEditProductDetailViewModel, MutableLiveData<String>>("mProductNameInputLiveData")
@@ -1293,20 +1287,16 @@ class AddEditProductDetailViewModelTest {
         viewModel.shouldUpdateVariant = true
         viewModel.isDrafting = true
         viewModel.isReloadingShowCase = true
-        viewModel.isProductNameChanged = true
         assert(viewModel.shouldUpdateVariant)
         assert(viewModel.isDrafting)
         assert(viewModel.isReloadingShowCase)
-        assert(viewModel.isProductNameChanged)
 
         viewModel.shouldUpdateVariant = false
         viewModel.isDrafting = false
         viewModel.isReloadingShowCase = false
-        viewModel.isProductNameChanged = false
         assertFalse(viewModel.shouldUpdateVariant)
         assertFalse(viewModel.isDrafting)
         assertFalse(viewModel.isReloadingShowCase)
-        assertFalse(viewModel.isProductNameChanged)
 
         viewModel.productPhotoPaths = mutableListOf("sss")
         assert(viewModel.productPhotoPaths[0] == "sss")
