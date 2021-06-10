@@ -113,7 +113,12 @@ fun verifyProductItemDataViewList(
         assertThat(actualProductDataView.originalPrice, shouldBe(expectedProduct.originalPrice))
         assertThat(actualProductDataView.parentId, shouldBe(expectedProduct.parentId))
         assertThat(actualProductDataView.shop.id, shouldBe(expectedProduct.shop.id))
-        assertLabelGroupDataView(actualProductDataView.labelGroupDataViewList, expectedProduct.labelGroupList)
+        assertThat(actualProductDataView.ratingAverage, shouldBe(expectedProduct.ratingAverage))
+        assertATCConfiguration(actualProductDataView, expectedProduct)
+        assertLabelGroupDataView(
+                actualProductDataView.labelGroupDataViewList,
+                expectedProduct.labelGroupList
+        )
         assertLabelGroupVariantDataView(
                 actualProductDataView.labelGroupVariantDataViewList,
                 expectedProduct.labelGroupVariantList

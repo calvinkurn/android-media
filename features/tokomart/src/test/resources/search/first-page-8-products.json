@@ -77,6 +77,8 @@
             }
           ],
           "rating": 5,
+          "ratingAverage": "4.5",
+          "minOrder": 3,
           "countReview": 259,
           "originalPrice": "Rp7.000",
           "discountPercentage": 30,
@@ -128,6 +130,8 @@
             }
           ],
           "rating": 5,
+          "ratingAverage": "4.5",
+          "minOrder": 3,
           "countReview": 259,
           "originalPrice": "",
           "discountPercentage": 0,

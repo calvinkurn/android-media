@@ -396,7 +396,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onLocalizingAddressSelected() {
-
+        getViewModel().onLocalizingAddressSelected()
     }
 
     override fun getFragment() = this
@@ -526,8 +526,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductClick(productItemDataView: ProductItemDataView) {
-        val context = context ?: return
-
         RouteManager.route(
                 context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,

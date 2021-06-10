@@ -370,6 +370,7 @@ abstract class BaseSearchCategoryViewModel(
                 shop = ProductItemDataView.Shop(
                         id = product.shop.id,
                 ),
+                ratingAverage = product.ratingAverage,
                 variantATC = createVariantATCDataView(product),
                 nonVariantATC = createNonVariantATCDataView(product),
                 labelGroupDataViewList = product.labelGroupList.map { labelGroup ->

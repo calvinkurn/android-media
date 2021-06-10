@@ -88,6 +88,8 @@
             "isActive": true,
             "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
           },
+          "ratingAverage": "4.5",
+          "minOrder": 3,
           "labelGroups": [
             {
               "position": "offers",
@@ -144,6 +146,8 @@
             "isActive": false,
             "imgUrl": ""
           },
+          "ratingAverage": "4.5",
+          "minOrder": 3,
           "labelGroups": [
             {
               "position": "offers",
